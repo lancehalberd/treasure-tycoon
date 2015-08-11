@@ -1,0 +1,70 @@
+<html>
+<head>
+    <style type="text/css" >
+        .body {
+            background-color: black;
+            background-repeat: repeat;
+            font-family: 'kingthings_calligraphica_2Rg', Georgia, serif;
+            font-size: 20px;
+            color: white;
+        }
+        .mainGame {
+            position: relative;
+            margin-left: auto;
+            margin-right: auto;
+            padding-top: 10px;
+            width: 960px;
+            min-height: 800px;
+            background-color: black;
+            background-repeat: repeat;
+            top: 0px;
+            -moz-user-select: none;
+            -khtml-user-select: none;
+            -webkit-user-select: none;
+            -o-user-user-select: none;
+        }
+        .stat {
+            display: inline-block;
+            width: 200px;
+            margin-right: 20px;
+        }
+    </style>
+
+    <link rel="stylesheet" type="text/css" href="cssReset.css"/>
+    <link rel="stylesheet" type="text/css" href="styles.css"/>
+    <script src="jquery.min.js"></script>
+    <script src="async.js"></script>
+    <script src="utils.js"></script>
+
+    <title>Maze</title>
+</head>
+<body class="body">
+
+<div class="js-mainGame js-mouseContainer mainGame">
+    <div class="controlColumn">
+        <div class="infoPanel">
+
+        </div>
+        <div class="toolbar">
+            <button class="js-newItem" title="New Item">+</button>
+        </div>
+        <div class="js-inventory inventory">
+        </div>
+    </div><div class="js-playerColumn playerColumn">
+        <div class="js-playerPanelTemplate playerPanel" style="display: none;">
+            <div class="js-infoMode">
+            </div>
+            <div class="js-adventureMode">
+                <canvas class="js-canvas" width="685" height="240" style="background-color: blue;">
+                </canvas>
+            </div>
+        </div>
+        <button class="js-newPlayer">Hire New Adventurer</button>
+    </div>
+</div>
+</body>
+<script src="mouse.js"></script>
+<script src="keyboard.js"></script>
+<script src="draw.js"></script>
+<script src="main.js"></script>
+</html>
