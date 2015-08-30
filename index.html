@@ -6,7 +6,6 @@
             background-repeat: repeat;
             font-family: 'kingthings_calligraphica_2Rg', Georgia, serif;
             font-size: 20px;
-            color: white;
         }
         .mainGame {
             position: relative;
@@ -36,23 +35,53 @@
     <script src="async.js"></script>
     <script src="utils.js"></script>
 
-    <title>Maze</title>
+    <title>Treasure Tycoon</title>
 </head>
 <body class="body">
 
 <div class="js-mainGame js-mouseContainer mainGame">
     <div class="controlColumn">
         <div class="infoPanel">
-
+            Item Points: <span class="js-itemPoints"></span>
         </div>
         <div class="toolbar">
             <button class="js-newItem" title="New Item">+</button>
         </div>
-        <div class="js-inventory inventory">
-        </div>
+        <div class="js-inventory inventory"></div>
     </div><div class="js-playerColumn playerColumn">
         <div class="js-playerPanelTemplate playerPanel" style="display: none;">
             <div class="js-infoMode">
+                <div class="js-stats stats playerBox">
+                    <canvas class="js-canvas" width="64" height="128" style="background-color: white; display:inline; float: left">
+                    </canvas>
+                    <div>
+                        <span class="js-name">X</span>
+                    </div>
+                    <div>
+                        Lvl: <span class="js-level">X</span>
+                    </div>
+                    <div>
+                        Next Lvl: <span class="js-toLevel">X</span> xp
+                    </div>
+                    <div>
+                        Health: <span class="js-maxHealth">X</span>
+                    </div>
+                    <div>
+                        Armor: <span class="js-armor">X</span>
+                    </div>
+                    <div>
+                        Evasion: <span class="js-evasion">X</span>
+                    </div>
+                    <div>
+                        Speed: <span class="js-speed">X</span>
+                    </div>
+                </div><div class="js-equipment equipment playerBox">
+                    <div class="js-hat equipmentSlot hat"></div>
+                    <div class="js-armor equipmentSlot armor"></div>
+                    <div class="js-boots equipmentSlot boots"></div>
+                </div><div class="js-map map playerBox">
+                    <button class="js-level1">Adventure!</button>
+                </div>
             </div>
             <div class="js-adventureMode">
                 <canvas class="js-canvas" width="685" height="240" style="background-color: blue;">

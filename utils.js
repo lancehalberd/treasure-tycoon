@@ -60,7 +60,6 @@ function atan2(x1, y1, x2, y2) {
     return Math.atan((y2 - y1) / (x2 - x1)) + (x2 < x1 ? Math.PI : 0);
 }
 
-
 function ifdefor(value, defaultValue) {
     if (value !== undefined) {
         return value;
@@ -82,4 +81,16 @@ function $tag(type, classes, content) {
 
 function now() {
     return new Date().getTime();
+}
+
+function collision($div1, $div2) {
+    var T = $div1.offset().top;
+    var L = $div1.offset().left;
+    var B = T + $div1.outerHeight(true);
+    var R = L + $div1.outerWidth(true);
+    var t = $div2.offset().top;
+    var l = $div2.offset().left;
+    var b = t + $div2.outerHeight(true);
+    var r = l + $div2.outerWidth(true);
+    return !(B < t || T > b || R < l || L > r);
 }
