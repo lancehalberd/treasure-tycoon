@@ -61,13 +61,11 @@ function mainLoop() {
             var powerLevel = Math.floor(x / 500);
             character.enemies.push(makeMonster(powerLevel, x));
         }
-        if (character.attack) {
-            if (character.attack.time <= now()) {
-                performAttack(character.attack);
-                character.attack = null;
-            }
-            if (character.attack && character.attack.target.health <= 0) {
-                character.attack = null;
+        if (character.target) {
+            if (character.target.health > 0) {
+                checkToAttack(character, character.target, 0);
+            } else {
+                character.target = null;
             }
         }
         for (var i = 0; i < character.enemies.length; i++) {
@@ -80,22 +78,19 @@ function mainLoop() {
                 }
                 continue;
             }
-            if (enemy.attack && enemy.attack.time <= now()) {
-                performAttack(enemy.attack);
-                enemy.attack = null;
-            }
             var distance = Math.abs(enemy.x - (character.x + 32));
             checkToAttack(character, enemy, distance);
             checkToAttack(enemy, character, distance);
-            if (!enemy.attack) {
+            if (!enemy.target) {
                 enemy.x -= enemy.speed;
             }
             // Don't let enemy move past the character
             if (enemy.x < character.x + 32) {
                 enemy.x = character.x + 32;
             }
+            enemy.health = Math.max(0, enemy.health);
         }
-        if (!character.attack) {
+        if (!character.target) {
             character.x += character.speed;
         }
         var cameraX = character.x - 10;

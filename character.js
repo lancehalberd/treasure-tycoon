@@ -1,6 +1,8 @@
 
 function resetCharacter(character) {
     character.health = character.maxHealth;
+    character.attackCooldown = 0;
+    character.target = null;
     character.$panel.find('.js-adventureMode').hide();
     var $infoPanel = character.$panel.find('.js-infoMode');
     $infoPanel.show();
@@ -72,6 +74,7 @@ function newCharacter() {
         'canvasWidth': canvas.width,
         'canvasHeight': canvas.height,
         'area': null,
+        'attackCooldown': 0
     };
     $.each(job.startingEquipment, function (key, item) {
         equipItem(character, makeItem(item));

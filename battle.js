@@ -1,8 +1,17 @@
 
 function checkToAttack(attacker, target, distance) {
-    if (!attacker.attack && distance <=  attacker.range * 32) {
-        setAttack(attacker, target);
+    if (distance > attacker.range * 32) {
+        return;
     }
+    if (!attacker.target) {
+        // Store last target so we will keep attacking the same target until it is dead.
+        attacker.target = target;
+    }
+    if (ifdefor(attacker.attackCooldown, 0) > now()) {
+        return;
+    }
+    performAttack(attacker, target);
+    attacker.attackCooldown = now() + 1000 / attacker.attackSpeed;
 }
 function applyArmorToDamage(damage, armor) {
     //This equation looks a bit funny but is designed to have the following properties:
@@ -13,17 +22,7 @@ function applyArmorToDamage(damage, armor) {
     return Math.max(1, Math.round(damage / Math.pow(2, 3 * armor / damage)));
 }
 
-
-function setAttack(attacker, target) {
-    attacker.attack = {
-        'attacker': attacker,
-        'target': target,
-        'time': now() + 1000 / attacker.attackSpeed
-    };
-}
-function performAttack(attack) {
-    var attacker = attack.attacker;
-    var target = attack.target;
+function performAttack(attacker, target) {
     var damage = Random.range(attacker.minDamage, attacker.maxDamage);
     var magicDamage = Random.range(attacker.minMagicDamage, attacker.maxMagicDamage);
     var accuracyRoll = Random.range(0, attacker.accuracy);
@@ -65,6 +64,7 @@ function makeMonster(powerLevel, x) {
         'magicResist': 0,
         'xp': 2 * powerLevel,
         'ip': Math.floor(powerLevel / 5),
-        'offset': powerLevel < 10 ? 0 : 4 * 48
+        'offset': powerLevel < 10 ? 0 : 4 * 48,
+        'attackCooldown': 0
     };
 }
