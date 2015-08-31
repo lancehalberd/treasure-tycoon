@@ -60,6 +60,8 @@ button {
 }
 
 .playerBox {
+    font-size: 18px;
+    position: relative;
     padding: 5px;
     box-sizing: border-box;
     width: 225px;
@@ -69,6 +71,29 @@ button {
     vertical-align: top;
     margin: 2px;
     margin-right: 1px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.playerBox .dexterity {
+    position: absolute;
+    text-align: right;
+    right: 190px;
+    top: 125px;
+    color: #0f0;
+}
+.strength {
+    position: absolute;
+    color: #f00;
+    text-align: center;
+    width: 64px;
+    left: 0px;
+    top: 110px;
+}
+.intelligence {
+    position: absolute;
+    color: #00f;
+    left: 40px;
+    top: 125px;
 }
 
 .characterPreview {
@@ -94,6 +119,16 @@ button {
     left: 90px;
     top: 140px;
 }
+.equipment > .weapon {
+    position: absolute;
+    left: 30px;
+    top: 90px;
+}
+.equipment > .shield {
+    position: absolute;
+    left: 150px;
+    top: 90px;
+}
 
 .icon {
     background-image: url('gfx/iconSet.png');
@@ -109,12 +144,30 @@ button {
     min-height: 50px;
     min-width: 50px;
 }
-.icon.boots {
-    background-position: -440px -20px;
-}
 .icon.armor {
     background-position: -20px -20px;
 }
+.icon.bow {
+    background-position: -80px -20px;
+}
+.icon.club {
+    background-position: -140px -20px;
+}
+.icon.shield {
+    background-position: -320px -20px;
+}
+.icon.sword {
+    background-position: -380px -20px;
+}
+.icon.boots {
+    background-position: -440px -20px;
+}
 .icon.hat {
     background-position: -560px -20px;
+}
+.icon.wand {
+    background-position: -80px -80px;
+}
+.icon.axe {
+    background-position: -20px -80px;
 }
