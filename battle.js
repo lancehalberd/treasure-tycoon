@@ -14,7 +14,7 @@ function checkToAttack(attacker, target, distance) {
     attacker.attackCooldown = now() + 1000 / attacker.attackSpeed;
 }
 function applyArmorToDamage(damage, armor) {
-    if (damage >= 0) {
+    if (damage <= 0) {
         return 0;
     }
     //This equation looks a bit funny but is designed to have the following properties:
