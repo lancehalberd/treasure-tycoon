@@ -177,7 +177,7 @@ function getStat(character, stat) {
     });
     if (stat === 'minDamage' || stat === 'maxDamage') {
         percent += .01 * character.strength;
-        if (character.weapon && character.weapon.range >= 5) {
+        if (character.range >= 5) {
             plus += Math.floor(character.dexterity / 2);
         } else {
             plus += Math.floor(character.strength / 2);
