@@ -14,6 +14,9 @@ function checkToAttack(attacker, target, distance) {
     attacker.attackCooldown = now() + 1000 / attacker.attackSpeed;
 }
 function applyArmorToDamage(damage, armor) {
+    if (damage >= 0) {
+        return 0;
+    }
     //This equation looks a bit funny but is designed to have the following properties:
     //100% damage at 0 armor
     //50% damage when armor is 1/3 of base damage
