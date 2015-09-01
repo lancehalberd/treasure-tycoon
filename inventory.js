@@ -141,7 +141,7 @@ var items = [
         {'type': 'weapon', 'name': 'dagger', 'bonuses': {'+minDamage': 2, '+maxDamage': 5, '+range': 2, '+attackSpeed': 2}, 'icon': 'sword'},
         {'type': 'weapon', 'name': 'bow', 'bonuses': {'+minDamage': 3, '+maxDamage': 6, '+range': 10, '+attackSpeed': 1}, 'icon': 'bow'},
         {'type': 'weapon', 'name': 'axe', 'bonuses': {'+minDamage': 3, '+maxDamage': 6, '+range': 2, '+attackSpeed': 1.5}, 'icon': 'axe'},
-        {'type': 'weapon', 'name': 'wand', 'bonuses': {'+minDamage': 1, '+maxDamage': 2, '+minMagicDamage': 1, '+maxMagicDamage': 2, '+range': 7, '+attackSpeed': 1.5}, 'icon': 'wand'},
+        {'type': 'weapon', 'name': 'wand', 'bonuses': {'+minDamage': 0, '+maxDamage': 1, '+minMagicDamage': 1, '+maxMagicDamage': 2, '+range': 7, '+attackSpeed': 1.5}, 'icon': 'wand'},
         {'type': 'shield', 'name': 'small shield', 'bonuses': {'+block': 2, '+armor': 2}, 'icon': 'shield'},
         {'type': 'boots', 'name': 'swift boots', 'bonuses': {'+speed': 1}, icon: 'boots'},
         {'type': 'boots', 'name': 'steel boots', 'bonuses': {'+speed': -1, '+armor': 1}, icon: 'boots'},

@@ -140,6 +140,10 @@ function updateStats(character) {
     character.base.dexterity = character.level * character.job.dexterityBonus;
     character.base.strength = character.level * character.job.strengthBonus;
     character.base.intelligence = character.level * character.job.intelligenceBonus;
+    if (!character.weapon) {
+        character.base.minDamage = character.level;
+        character.base.maxDamage = character.level;
+    }
     ['dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
      'evasion', 'block', 'magicBlock', 'armor', 'magicResist', 'accuracy', 'range', 'attackSpeed',
      'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage'].forEach(function (stat) {
@@ -178,22 +182,18 @@ function getStat(character, stat) {
     if (stat === 'minDamage' || stat === 'maxDamage') {
         percent += .01 * character.strength;
         if (character.range >= 5) {
-            plus += Math.floor(character.dexterity / 2);
+            plus += Math.floor(character.dexterity / 4);
         } else {
-            plus += Math.floor(character.strength / 2);
+            plus += Math.floor(character.strength / 4);
         }
     }
     if ((stat === 'minMagicDamage' || stat === 'maxMagicDamage') && plus > 0) {
-        plus += Math.floor(character.intelligence / 2);
+        plus += Math.floor(character.intelligence / 4);
     }
     // If a character has no implicit base attackspeed, min or max damage, we assume these values are 1.
     // This happens when the character has no equipped weapons, for instance.
-    if (plus === 0) {
-        if (stat === 'minDamage' || stat === 'maxDamage') {
-            plus = character.level;
-        } else if (stat === 'attackSpeed' || stat === 'range') {
-            plus = 1;
-        }
+    if (plus === 0 && (stat === 'attackSpeed' || stat === 'range')) {
+        plus = 1;
     }
     return (base + plus) * percent * multiplier;
 }
