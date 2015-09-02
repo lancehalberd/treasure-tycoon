@@ -45,7 +45,7 @@ function performAttack(attacker, target) {
     magicDamage = magicDamage * Math.max(0, (1 - target.magicResist));
     // TODO: Implement flat damage reduction here.
     target.health -= (damage + magicDamage);
-    return damage + magicDamage;
+    return (damage + magicDamage) > 0 ? (damage + magicDamage) : 'blocked';
 }
 
 function makeMonster(level, baseMonster, x) {
@@ -68,7 +68,7 @@ function makeMonster(level, baseMonster, x) {
     return monster;
 }
 var caterpillar = {
-    'health': [2, 4, 1.5, 2],
+    'health': [3, 4, 2, 2.5],
     'range': 1,
     'minDamage': [1, 2, 1, 1],
     'maxDamage': [3, 4, 1, 1],
@@ -78,7 +78,7 @@ var caterpillar = {
     'speed': 1.5,
     'accuracy': [0, 0, 1, 2],
     'evasion': [0, 0, 0, 1],
-    'block': [0, 0, 1, 2],
+    'block': [0, 0, .5, 1.5],
     'magicBlock': [1, 1, .5, 1],
     'armor': [0, 0, 1, 2],
     'magicResist': 0,

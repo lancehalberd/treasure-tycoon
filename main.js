@@ -96,7 +96,7 @@ function mainLoop() {
                 hit = checkToAttack(character, character.target, 0);
                 if (hit != null){
                     character.damageNumbers.push(
-                        {value: hit, x: character.target.x + 16, y: 240 - 128}
+                        {value: hit, x: character.target.x + 32, y: 240 - 128}
                     )
                 }
             } else {
@@ -117,13 +117,13 @@ function mainLoop() {
             hit = checkToAttack(character, enemy, distance);
             if (hit != null){
                 character.damageNumbers.push(
-                    {value: hit, x: enemy.x + 16, y: 240 - 128}
+                    {value: hit, x: enemy.x + 32, y: 240 - 128}
                 )
             }
             hit = checkToAttack(enemy, character, distance);
             if (hit != null){
                 character.damageNumbers.push(
-                    {value: hit, x: character.x + 16, y: 240 - 128}
+                    {value: hit, x: character.x + 32, y: 240 - 128}
                 )
             }
             if (!enemy.target) {
