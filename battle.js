@@ -1,17 +1,17 @@
 
 function checkToAttack(attacker, target, distance) {
     if (distance > attacker.range * 32) {
-        return;
+        return null;
     }
     if (!attacker.target) {
         // Store last target so we will keep attacking the same target until it is dead.
         attacker.target = target;
     }
     if (ifdefor(attacker.attackCooldown, 0) > now()) {
-        return;
+        return null;
     }
-    performAttack(attacker, target);
     attacker.attackCooldown = now() + 1000 / attacker.attackSpeed;
+    return performAttack(attacker, target);
 }
 function applyArmorToDamage(damage, armor) {
     if (damage <= 0) {
@@ -32,7 +32,7 @@ function performAttack(attacker, target) {
     var evasionRoll = Random.range(0, target.evasion);
     if (accuracyRoll < evasionRoll) {
         // Target has evaded the attack.
-        return;
+        return 'miss';
     }
     // Apply block reduction
     var blockRoll = Random.range(0, target.block);
@@ -45,29 +45,67 @@ function performAttack(attacker, target) {
     magicDamage = magicDamage * Math.max(0, (1 - target.magicResist));
     // TODO: Implement flat damage reduction here.
     target.health -= (damage + magicDamage);
+    return damage + magicDamage;
 }
 
-function makeMonster(powerLevel, x) {
-    return {
+function makeMonster(level, baseMonster, x) {
+    var monster = {
         'x': x,
-        'health': powerLevel * 2,
-        'maxHealth': powerLevel * 2,
-        'range': 1,
-        'minDamage': powerLevel + 1,
-        'maxDamage': (powerLevel + 1) * 2,
-        'minMagicDamage': 0,
-        'maxMagicDamage': 0,
-        'attackSpeed': 1,
-        'speed': Random.range(1, 2),
-        'accuracy': 1 + Math.floor(powerLevel / 5),
-        'evasion': 1 + Math.floor(powerLevel / 5),
-        'block': 1 + Math.floor(powerLevel / 5),
-        'magicBlock': 0,
-        'armor': 1 + Math.floor(powerLevel / 5),
-        'magicResist': 0,
-        'xp': 2 * powerLevel,
-        'ip': Math.floor(powerLevel / 5),
-        'offset': powerLevel < 10 ? 0 : 4 * 48,
-        'attackCooldown': 0
+        'ip': Random.range(0, level * 2),
+        'xp': level * 2,
+        'attackColldown': 0
     };
+    $.each(baseMonster, function (stat, value) {
+        if (Array.isArray(value)) {
+            monster[stat] = Random.range(Math.floor(value[0] + level * value[2]), Math.ceil(value[1] + level * value[3]));
+        } else {
+            monster[stat] = value;
+        }
+    });
+    monster.maxHealth = monster.health;
+    monster.maxDamage = Math.max(monster.minDamage, monster.maxDamage);
+    monster.minMagicDamage = Math.max(monster.minMagicDamage, monster.maxMagicDamage);
+    return monster;
 }
+var caterpillar = {
+    'health': [2, 4, 1.5, 2],
+    'range': 1,
+    'minDamage': [1, 2, 1, 1],
+    'maxDamage': [3, 4, 1, 1],
+    'minMagicDamage': 0,
+    'maxMagicDamage': 0,
+    'attackSpeed': 1,
+    'speed': 1.5,
+    'accuracy': [0, 0, 1, 2],
+    'evasion': [0, 0, 0, 1],
+    'block': [0, 0, 1, 2],
+    'magicBlock': [1, 1, .5, 1],
+    'armor': [0, 0, 1, 2],
+    'magicResist': 0,
+    'offset': 0
+};
+var butterfly = {
+    'health': [2, 4, 1, 1.5],
+    'range': 2,
+    'minDamage': [1, 3, 1, 1],
+    'maxDamage': [3, 4, 1, 1],
+    'minMagicDamage': [1, 1, 1, 1],
+    'maxMagicDamage': [2, 2, 2, 2],
+    'attackSpeed': [1, 1, .1, .1],
+    'speed': 2,
+    'accuracy': [1, 2, 1, 2],
+    'evasion': [1, 2, 1, 2],
+    'block': 0,
+    'magicBlock': 0,
+    'armor': [0, 1, .5, .8],
+    'magicResist': 0,
+    'offset': 4 * 48
+};
+
+var levels = [
+    {'level': 1, 'monsters': [caterpillar, caterpillar, caterpillar, [caterpillar, caterpillar], caterpillar, [caterpillar, caterpillar], [caterpillar, caterpillar], caterpillar, [caterpillar, caterpillar, caterpillar, caterpillar, caterpillar]]},
+    {'level': 2, 'monsters': [[caterpillar, caterpillar], [caterpillar, caterpillar], [caterpillar, caterpillar, caterpillar], [caterpillar, caterpillar], [caterpillar, caterpillar, caterpillar], [caterpillar, caterpillar, butterfly]]},
+    {'level': 3, 'monsters': [[caterpillar, caterpillar], [butterfly, caterpillar], [butterfly, butterfly], [caterpillar, caterpillar, caterpillar, caterpillar, butterfly], [caterpillar, butterfly, caterpillar, butterfly, caterpillar]]},
+    {'level': 4, 'monsters': [[caterpillar, caterpillar, butterfly, caterpillar], [caterpillar, caterpillar, butterfly, butterfly, caterpillar, caterpillar], [butterfly, butterfly, butterfly]]},
+    {'level': 5, 'monsters': [[caterpillar, caterpillar, butterfly, caterpillar, butterfly], [caterpillar, caterpillar, butterfly, caterpillar, butterfly, caterpillar, butterfly, caterpillar, butterfly]]},
+];

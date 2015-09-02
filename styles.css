@@ -31,7 +31,7 @@
 }
 .toolbar {
     padding: 2px;
-    height: 30px;
+    height: 60px;
     border-bottom: 2px solid black;
     box-sizing: border-box;
 }
@@ -39,7 +39,7 @@
     padding: 4px;
     overflow-x: hidden;
     overflow-y: scroll;
-    height: 570px;
+    height: 540px;
     box-sizing: border-box;
 }
 
@@ -162,12 +162,34 @@ button {
 .icon.boots {
     background-position: -440px -20px;
 }
+.icon.item {
+    background-position: -500px -20px;
+}
 .icon.hat {
     background-position: -560px -20px;
+}
+.icon.axe {
+    background-position: -20px -80px;
 }
 .icon.wand {
     background-position: -80px -80px;
 }
-.icon.axe {
-    background-position: -20px -80px;
+.icon.anvil {
+    background-position: -140px -80px;
+}
+
+.toolTip {
+    position: absolute;
+    padding: 5px;
+    width: 220px;
+    font-size: 16px;
+    border: 1px solid #204070;
+    box-sizing: border-box;
+    background-color: rgba(100, 200, 100, .9);
+    border-radius: 4px;
+    z-index: 100;
+}
+
+.adventure {
+    display: block;
 }

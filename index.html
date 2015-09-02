@@ -45,7 +45,8 @@
             Item Points: <span class="js-itemPoints"></span>
         </div>
         <div class="toolbar">
-            <button class="js-newItem" title="New Item">+</button>
+            <button class="js-newItem item" helptext="Click here to generate a new item."><div class="icon item"></div></button>
+            <button class="js-sellItem item" helptext="Drag items here to sell them. <br/> You can also hover over an item and type 'S' to sell quickly."><div class="icon anvil"></div></button>
         </div>
         <div class="js-inventory inventory"></div>
     </div><div class="js-playerColumn playerColumn">
@@ -103,7 +104,7 @@
                     <div class="js-shield equipmentSlot shield"></div>
                     <div class="js-boots equipmentSlot boots"></div>
                 </div><div class="js-map map playerBox">
-                    <button class="js-level1">Adventure!</button>
+                    <button class="js-adventure adventure" data-level-index='0'>Lvl 1 Adventure!</button>
                 </div>
             </div>
             <div class="js-adventureMode">

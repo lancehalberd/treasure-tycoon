@@ -25,14 +25,14 @@ function refreshStatsPanel(character) {
     $statsPanel.find('.js-accuracy').text(character.accuracy);
     $statsPanel.find('.js-armor').text(character.armor);
     $statsPanel.find('.js-evasion').text(character.evasion);
-    $statsPanel.find('.js-block').text(character.evasion);
+    $statsPanel.find('.js-block').text(character.block);
     $statsPanel.find('.js-speed').text(character.speed);
 }
 function newCharacter() {
-    if (!spendItemPoints(1)) {
+    if (!spendItemPoints(10)) {
         return;
     }
-    var hairFrame =Math.random() < .05 ? 0 : Random.range(hair[0], hair[1]);
+    var hairFrame = Math.random() < .05 ? 0 : Random.range(hair[0], hair[1]);
     var shirtFrame = Math.random() < .05 ? 0 :Random.range(clothes[0], clothes[1]);
     var personCanvas = createCanvas(128, 64);
     var personContext = personCanvas.getContext("2d");
@@ -140,9 +140,12 @@ function updateStats(character) {
     character.base.dexterity = character.level * character.job.dexterityBonus;
     character.base.strength = character.level * character.job.strengthBonus;
     character.base.intelligence = character.level * character.job.intelligenceBonus;
-    if (!character.weapon) {
+    if (!character.equipment.weapon) {
         character.base.minDamage = character.level;
         character.base.maxDamage = character.level;
+    } else {
+        character.base.minDamage = 0;
+        character.base.maxDamage = 0;
     }
     ['dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
      'evasion', 'block', 'magicBlock', 'armor', 'magicResist', 'accuracy', 'range', 'attackSpeed',
@@ -152,7 +155,7 @@ function updateStats(character) {
     ['dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
      'evasion', 'block', 'magicBlock', 'armor', 'magicResist', 'accuracy',
      'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage'].forEach(function (stat) {
-        character[stat] = Math.floor(character[stat])
+        character[stat] = Math.floor(character[stat]);
     });
     ['range', 'attackSpeed'].forEach(function (stat) {
         character[stat] = character[stat].toFixed(2);

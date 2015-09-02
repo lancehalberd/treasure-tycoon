@@ -3,7 +3,7 @@ $('.js-newItem').on('click', function (event) {
     if (characters.length <= 0) {
         return;
     }
-    if (!spendItemPoints(1)) {
+    if (!spendItemPoints(5)) {
         return;
     }
     var item = makeItem(Random.element(items[0]));
@@ -11,31 +11,65 @@ $('.js-newItem').on('click', function (event) {
 });
 
 function equipItem(character, item) {
-    if (character.equipment[item.base.type]) {
+    if (character.equipment[item.base.slot]) {
         console.log("Tried to equip an item without first unequiping!");
         return;
     }
     item.$item.detach();
-    character.equipment[item.base.type] = item;
+    character.equipment[item.base.slot] = item;
     updateCharacter(character);
 }
+function sellValue(item) {
+    return item.level * item.level * item.level;
+}
 function isEquiped(character, item) {
-    return character.equipment[item.base.type] === item;
+    return character.equipment[item.base.slot] === item;
 }
 function makeItem(base) {
     var item = {
-        'base': base
+        'base': base,
+        'level': 1
     };
-    item.$item = $tag('div', 'js-item item', tag('div', 'icon ' + base.icon));
+    item.$item = $tag('div', 'js-item item', tag('div', 'icon ' + base.icon)).attr('helpText', itemHelpText(item));
     item.$item.data('item', item);
     return item;
 }
-
-$('body').on('click', '.js-level1', function (event) {
-    var $panel = $(this).closest('.js-playerPanel');
-    var character = $panel.data('character');
-    startArea(character, 'Adventure');
-});
+function itemHelpText(item) {
+    var sections = [item.base.name, ''];
+    if (ifdefor(item.base.bonuses['+minDamage']) != null) {
+        sections.push('Damage: ' + item.base.bonuses['+minDamage'] + ' to ' + item.base.bonuses['+maxDamage']);
+    }
+    if (ifdefor(item.base.bonuses['+minMagicDamage'] != null)) {
+        sections.push('Magic: ' + item.base.bonuses['+minMagicDamage'] + ' to ' + item.base.bonuses['+maxMagicDamage']);
+    }
+    if (ifdefor(item.base.bonuses['+range'])) {
+        sections.push('Range: ' + item.base.bonuses['+range']);
+    }
+    if (ifdefor(item.base.bonuses['+attackSpeed'])) {
+        sections.push('Attack Speed: ' + item.base.bonuses['+attackSpeed']);
+    }
+    if (ifdefor(item.base.bonuses['+armor'])) {
+        sections.push('Armor: ' + item.base.bonuses['+armor']);
+    }
+    if (ifdefor(item.base.bonuses['+evasion'])) {
+        sections.push('Evasion: ' + item.base.bonuses['+evasion']);
+    }
+    if (ifdefor(item.base.bonuses['+block'])) {
+        sections.push('Block: ' + item.base.bonuses['+block']);
+    }
+    if (ifdefor(item.base.bonuses['+maxHealth'])) {
+        sections.push('+' + item.base.bonuses['+maxHealth'] + ' health');
+    }
+    if (ifdefor(item.base.bonuses['%maxHealth'])) {
+        sections.push('%' + (100 * item.base.bonuses['%maxHealth']) + ' increased health');
+    }
+    if (ifdefor(item.base.bonuses['+speed'])) {
+        sections.push((item.base.bonuses['+speed'] > 0 ? '+' : '') + item.base.bonuses['+speed'] + ' speed');
+    }
+    sections.push('');
+    sections.push('Sell for ' + sellValue(item) + ' IP');
+    return sections.join('<br/>');
+}
 
 var $dragHelper = null;
 var dragged = false;
@@ -76,32 +110,38 @@ function stopDrag() {
         var $source = $dragHelper.data('$source');
         var item = $source.data('item');
         var hit = false;
-        $('.js-equipment .js-' + item.base.type).each(function (index, element) {
-            if (collision($dragHelper, $(element))) {
-                var sourceCharacter = $source.closest('.js-playerPanel').data('character');
-                hit = true
-                var targetCharacter = $(element).closest('.js-playerPanel').data('character');
-                var current = targetCharacter.equipment[item.base.type];
-                targetCharacter.equipment[item.base.type] = null;
-                if (sourceCharacter) {
-                    sourceCharacter.equipment[item.base.type] = null;
-                    if (!current) {
-                        updateCharacter(sourceCharacter);
+        if (collision($dragHelper, $('.js-sellItem'))) {
+            sellItem(item);
+            hit = true;
+        }
+        if (!hit) {
+            $('.js-equipment .js-' + item.base.slot).each(function (index, element) {
+                if (collision($dragHelper, $(element))) {
+                    var sourceCharacter = $source.closest('.js-playerPanel').data('character');
+                    hit = true
+                    var targetCharacter = $(element).closest('.js-playerPanel').data('character');
+                    var current = targetCharacter.equipment[item.base.slot];
+                    targetCharacter.equipment[item.base.slot] = null;
+                    if (sourceCharacter) {
+                        sourceCharacter.equipment[item.base.slot] = null;
+                        if (!current) {
+                            updateCharacter(sourceCharacter);
+                        }
+                    } else {
+                        //unequip the existing item.
+                        if (current) {
+                            current.$item.detach();
+                            $('.js-inventory').append(current.$item);
+                        }
                     }
-                } else {
-                    //unequip the existing item.
-                    if (current) {
-                        current.$item.detach();
-                        $('.js-inventory').append(current.$item);
+                    var $parent = $source.parent();
+                    equipItem(targetCharacter, item);
+                    if (sourceCharacter && current) {
+                        equipItem(sourceCharacter, current);
                     }
                 }
-                var $parent = $source.parent();
-                equipItem(targetCharacter, item);
-                if (sourceCharacter && current) {
-                    equipItem(sourceCharacter, current);
-                }
-            }
-        });
+            });
+        }
         if (!hit) {
             var $target = null;
             $('.js-inventory .js-item').each(function (index, element) {
@@ -114,7 +154,7 @@ function stopDrag() {
                 hit = true;
                 var character = $source.closest('.js-playerPanel').data('character');
                 if (character) {
-                    character.equipment[item.base.type] = null;
+                    character.equipment[item.base.slot] = null;
                     updateCharacter(character);
                 }
                 $source.detach();
@@ -124,7 +164,7 @@ function stopDrag() {
         if (!hit && collision($dragHelper, $('.js-inventory'))) {
             var character = $source.closest('.js-playerPanel').data('character');
             if (character) {
-                character.equipment[item.base.type] = null;
+                character.equipment[item.base.slot] = null;
                 updateCharacter(character);
             }
             $source.detach();
@@ -136,26 +176,48 @@ function stopDrag() {
     }
 }
 
+function sellItem(item) {
+    var sourceCharacter = item.$item.closest('.js-playerPanel').data('character');
+    if (sourceCharacter) {
+        sourceCharacter.equipment[item.base.slot] = null;
+        updateCharacter(sourceCharacter);
+    }
+    item.$item.remove();
+    item.$item = null;
+    gainIp(sellValue(item));
+}
+
 var items = [
     [
-        {'type': 'weapon', 'name': 'dagger', 'bonuses': {'+minDamage': 2, '+maxDamage': 5, '+range': 2, '+attackSpeed': 2}, 'icon': 'sword'},
-        {'type': 'weapon', 'name': 'bow', 'bonuses': {'+minDamage': 3, '+maxDamage': 6, '+range': 10, '+attackSpeed': 1}, 'icon': 'bow'},
-        {'type': 'weapon', 'name': 'axe', 'bonuses': {'+minDamage': 3, '+maxDamage': 6, '+range': 2, '+attackSpeed': 1.5}, 'icon': 'axe'},
-        {'type': 'weapon', 'name': 'wand', 'bonuses': {'+minDamage': 0, '+maxDamage': 1, '+minMagicDamage': 1, '+maxMagicDamage': 2, '+range': 7, '+attackSpeed': 1.5}, 'icon': 'wand'},
-        {'type': 'shield', 'name': 'small shield', 'bonuses': {'+block': 2, '+armor': 2}, 'icon': 'shield'},
-        {'type': 'boots', 'name': 'swift boots', 'bonuses': {'+speed': 1}, icon: 'boots'},
-        {'type': 'boots', 'name': 'steel boots', 'bonuses': {'+speed': -1, '+armor': 1}, icon: 'boots'},
-        {'type': 'armor', 'name': 'green tunic', 'bonuses': {'+evasion': 2}, 'offset': 1, icon: 'armor'},
-        {'type': 'armor', 'name': 'purple tunic', 'bonuses': {'+armor': 2}, 'offset': 2, icon: 'armor'},
-        {'type': 'armor', 'name': 'black tunic', 'bonuses': {'+maxHealth': 10}, 'offset': 3, icon: 'armor'},
-        {'type': 'hat', 'name': 'brown hair', 'bonuses': {'+evasion': 1}, 'offset': 4, icon: 'hat'},
-        {'type': 'hat', 'name': 'blond hair', 'bonuses': {'+speed': 1}, 'offset': 5, icon: 'hat'},
-        {'type': 'hat', 'name': 'purple hair', 'bonuses': {'+armor': 1}, 'offset': 6, icon: 'hat'},
-        {'type': 'hat', 'name': 'black hair', 'bonuses': {'%maxHealth': .1}, 'offset': 7, icon: 'hat'}
+        {'slot': 'weapon', 'type': 'sword', 'name': 'Dagger', 'bonuses': {'+minDamage': 2, '+maxDamage': 5, '+range': 2, '+attackSpeed': 2}, 'icon': 'sword'},
+        {'slot': 'weapon', 'type': 'bow',  'name': 'Bow', 'bonuses': {'+minDamage': 3, '+maxDamage': 6, '+range': 10, '+attackSpeed': 1}, 'icon': 'bow'},
+        {'slot': 'weapon', 'type': 'axe',  'name': 'Axe', 'bonuses': {'+minDamage': 3, '+maxDamage': 6, '+range': 2, '+attackSpeed': 1.5}, 'icon': 'axe'},
+        {'slot': 'weapon', 'type': 'wand',  'name': 'Wand', 'bonuses': {'+minDamage': 0, '+maxDamage': 1, '+minMagicDamage': 1, '+maxMagicDamage': 2, '+range': 7, '+attackSpeed': 1.5}, 'icon': 'wand'},
+        {'slot': 'shield', 'type': 'shield',  'name': 'Small Shield', 'bonuses': {'+block': 2, '+armor': 2}, 'icon': 'shield'},
+        {'slot': 'boots', 'type': 'boots',  'name': 'Swift Boots', 'bonuses': {'+speed': 1}, icon: 'boots'},
+        {'slot': 'boots', 'type': 'boots',  'name': 'Steel Boots', 'bonuses': {'+speed': -1, '+armor': 1}, icon: 'boots'},
+        {'slot': 'armor', 'type': 'tunic',  'name': 'Tunic', 'bonuses': {'+evasion': 2}, 'offset': 1, icon: 'armor'},
+        {'slot': 'armor', 'type': 'armor',  'name': 'Chainmail', 'bonuses': {'+armor': 2}, 'offset': 2, icon: 'armor'},
+        {'slot': 'armor', 'type': 'tunic',  'name': 'Leather Vest', 'bonuses': {'+maxHealth': 10}, 'offset': 3, icon: 'armor'},
+        {'slot': 'hat', 'type': 'short hair',  'name': 'Short Brown Hair', 'bonuses': {'+evasion': 1}, 'offset': 4, icon: 'hat'},
+        {'slot': 'hat', 'type': 'short hair',  'name': 'Short Blond Hair', 'bonuses': {'+speed': 1}, 'offset': 5, icon: 'hat'},
+        {'slot': 'hat', 'type': 'long hair',  'name': 'Long Purple Hair', 'bonuses': {'+armor': 1}, 'offset': 6, icon: 'hat'},
+        {'slot': 'hat', 'type': 'long hair',  'name': 'Long Black Hair', 'bonuses': {'%maxHealth': .1}, 'offset': 7, icon: 'hat'}
     ]
 ];
 var itemsByKey = {};
 items[0].forEach(function (item) {
     var key = item.name.replace(/\s*/g, '').toLowerCase();
     itemsByKey[key] = item;
+});
+
+
+$(document).on('keydown', function(event) {
+    if (event.which == 83) { // 's'
+        if ($popupTarget.closest('.js-inventory').length > 0) {
+            var item = $popupTarget.data('item');
+            sellItem(item);
+        }
+    }
+    console.log(event.which);
 });
