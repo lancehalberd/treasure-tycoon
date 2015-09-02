@@ -158,16 +158,6 @@ function mainLoop() {
             // life bar
             drawBar(context, enemy.x - cameraX + 20, 240 - 128 - 36 - 5 * i, 64, 4, 'white', 'red', enemy.health / enemy.maxHealth);
         }
-        for (var i = 0; i < character.damageNumbers.length; i++) {
-            var damageNumber = character.damageNumbers[i];
-            context.font = "20px sans-serif";
-            context.textAlign = 'center'
-            context.fillText(damageNumber.value, damageNumber.x - cameraX, damageNumber.y);
-            damageNumber.y--;
-            if (damageNumber.y < 60) {
-                character.damageNumbers.splice(i--, 1);
-            }
-        }
         // Draw enemies
         for (var i = 0; i <= 768; i += 64) {
             var x = (784 + (i - character.x) % 768) % 768 - 64;
@@ -181,6 +171,18 @@ function mainLoop() {
         context.font = "20px sans-serif";
         context.textAlign = 'right'
         context.fillText(character.level, 30, 240 - 5);
+        // Draw damage indicators
+        context.fillStyle = 'red';
+        for (var i = 0; i < character.damageNumbers.length; i++) {
+            var damageNumber = character.damageNumbers[i];
+            context.font = "20px sans-serif";
+            context.textAlign = 'center'
+            context.fillText(damageNumber.value, damageNumber.x - cameraX, damageNumber.y);
+            damageNumber.y--;
+            if (damageNumber.y < 60) {
+                character.damageNumbers.splice(i--, 1);
+            }
+        }
         if (character.health <= 0) {
             resetCharacter(character);
         }
