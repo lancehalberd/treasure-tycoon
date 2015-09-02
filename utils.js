@@ -83,6 +83,16 @@ function now() {
     return new Date().getTime();
 }
 
+function isMouseOver($div) {
+    var x = $('.js-mouseContainer').offset().left + mousePosition[0];
+    var y = $('.js-mouseContainer').offset().top + mousePosition[1];
+    var t = $div.offset().top;
+    var l = $div.offset().left;
+    var b = t + $div.outerHeight(true);
+    var r = l + $div.outerWidth(true);
+    return !(y < t || y > b || x < l || x > r);
+}
+
 function collision($div1, $div2) {
     var T = $div1.offset().top;
     var L = $div1.offset().left;

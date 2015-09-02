@@ -1,4 +1,11 @@
 
+var personFrames = 7;
+var clothes = [1, 3];
+var hair = [clothes[1] + 1, clothes[1] + 4];
+var names = ['Chris', 'Leon', 'Hillary', 'Michelle', 'Rob', 'Reuben', 'Kingston', 'Silver'];
+var walkLoop = [0, 1, 2, 3];
+var fightLoop = [4, 5, 6];
+
 function resetCharacter(character) {
     character.health = character.maxHealth;
     character.attackCooldown = 0;
@@ -34,7 +41,7 @@ function newCharacter() {
     }
     var hairFrame = Math.random() < .05 ? 0 : Random.range(hair[0], hair[1]);
     var shirtFrame = Math.random() < .05 ? 0 :Random.range(clothes[0], clothes[1]);
-    var personCanvas = createCanvas(128, 64);
+    var personCanvas = createCanvas(personFrames * 32, 64);
     var personContext = personCanvas.getContext("2d");
     personContext.imageSmoothingEnabled= false;
     var $newPlayerPanel = $('.js-playerPanelTemplate').clone()
@@ -63,6 +70,7 @@ function newCharacter() {
         },
         'bonuses': [],
         'name': Random.element(names),
+        'hairOffset': Random.range(hair[0], hair[1]),
         'level': 1,
         'xp': 0,
         'xpToLevel': xpToLevel(0),
@@ -107,9 +115,15 @@ function spendItemPoints(amount) {
 function updateCharacter(character) {
     // Clear the character's bonuses and graphics.
     character.bonuses = [];
-    character.personContext.clearRect(0, 0, 128, 64);
-    for (var i = 0; i < 4; i++) {
+    var sectionWidth = personFrames * 32;
+    var hat = character.equipment.hat;
+    var hideHair = hat ? ifdefor(hat.base.hideHair, false) : false;
+    character.personContext.clearRect(0, 0, sectionWidth, 64);
+    for (var i = 0; i < personFrames; i++) {
         character.personContext.drawImage(images['gfx/person.png'], i * 32, 0 , 32, 64, i * 32, 0, 32, 64);
+        if (!hideHair) {
+            character.personContext.drawImage(images['gfx/person.png'], i * 32 + character.hairOffset * sectionWidth, 0 , 32, 64, i * 32, 0, 32, 64);
+        }
     }
     // Add the character's current equipment to bonuses and graphics
     ['boots', 'armor', 'hat', 'weapon', 'shield'].forEach(function (type) {
@@ -123,8 +137,8 @@ function updateCharacter(character) {
             character.bonuses.push(equipment.base.bonuses);
         }
         if (equipment.base.offset) {
-            for (var i = 0; i < 4; i++) {
-                character.personContext.drawImage(images['gfx/person.png'], i * 32 + equipment.base.offset * 128, 0 , 32, 64, i * 32, 0, 32, 64);
+            for (var i = 0; i < personFrames; i++) {
+                character.personContext.drawImage(images['gfx/person.png'], i * 32 + equipment.base.offset * sectionWidth, 0 , 32, 64, i * 32, 0, 32, 64);
             }
         }
         $equipmentSlot.append(equipment.$item);

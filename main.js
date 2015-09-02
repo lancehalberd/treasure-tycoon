@@ -19,11 +19,7 @@ function createCanvas(width, height, classes) {
 }
 
 var fps = 6;
-var personFrames = 4;
-var clothes = [1, 3];
-var hair = [clothes[1] + 1, clothes[1] + 4];
 var characters = [];
-var names = ['Chris', 'Leon', 'Hillary', 'Michelle', 'Rob', 'Reuben', 'Kingston', 'Silver'];
 var itemPoints = 10;
 
 function startArea(character, area) {
@@ -65,16 +61,14 @@ function mainLoop() {
             var canvas = character.$panel.find('.js-infoMode .js-canvas')[0];
             var context = canvas.getContext("2d");
             var fps = Math.floor(3 * 5 / 3);
-            var frame = Math.floor(now() * fps / 1000) % personFrames;
+            var frame = Math.floor(now() * fps / 1000) % walkLoop.length;
             context.clearRect(0, 0, 64, 128);
-            context.drawImage(character.personCanvas, frame * 32, 0 , 32, 64, 0, -20, 64, 128);
+            context.drawImage(character.personCanvas, walkLoop[frame] * 32, 0 , 32, 64, 0, -20, 64, 128);
             return;
         }
         var width = character.canvasWidth;
         var height = character.canvasHeight;
         var context = character.context;
-        var fps = Math.floor(3 * character.speed / 3);
-        var frame = Math.floor(now() * fps / 1000) % personFrames;
         if (character.enemies.length == 0) {
             if (character.monsterIndex >= character.area.monsters.length) {
                 // Victory!
@@ -149,7 +143,7 @@ function mainLoop() {
         for (var i = 0; i < character.enemies.length; i++) {
             var enemy = character.enemies[i];
             var enemyFps = Math.floor(3 * enemy.speed);
-            var enemyFrame = Math.floor(now() * enemyFps / 1000) % personFrames;
+            var enemyFrame = Math.floor(now() * enemyFps / 1000) % 4;
             context.translate((enemy.x - cameraX + 48), 0);
             context.scale(-1, 1);
             context.drawImage(images['gfx/caterpillar.png'], enemyFrame * 48 + enemy.offset, 0 , 48, 64, -48, 240 - 128 - 72, 96, 128);
@@ -162,8 +156,17 @@ function mainLoop() {
         for (var i = 0; i <= 768; i += 64) {
             var x = (784 + (i - character.x) % 768) % 768 - 64;
         }
-        context.drawImage(character.personCanvas, frame * 32, 0 , 32, 64,
-                        character.x - cameraX, 240 - 128 - 72, 64, 128);
+        var fps = Math.floor(3 * character.speed / 3);
+        if (character.target) {
+            var attackFps = 1000 / ((1000 / character.attackSpeed) / fightLoop.length);
+            var frame = Math.floor(Math.abs(now() - character.attackCooldown) * attackFps / 1000) % fightLoop.length;
+            context.drawImage(character.personCanvas, fightLoop[frame] * 32, 0 , 32, 64,
+                            character.x - cameraX, 240 - 128 - 72, 64, 128);
+        } else {
+            var frame = Math.floor(now() * fps / 1000) % walkLoop.length;
+            context.drawImage(character.personCanvas, walkLoop[frame] * 32, 0 , 32, 64,
+                            character.x - cameraX, 240 - 128 - 72, 64, 128);
+        }
         // life bar
         drawBar(context, character.x - cameraX, 240 - 128 - 72, 64, 4, 'white', 'red', character.health / character.maxHealth);
         // xp bar

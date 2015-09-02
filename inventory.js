@@ -61,10 +61,13 @@ function itemHelpText(item) {
         sections.push('+' + item.base.bonuses['+maxHealth'] + ' health');
     }
     if (ifdefor(item.base.bonuses['%maxHealth'])) {
-        sections.push('%' + (100 * item.base.bonuses['%maxHealth']) + ' increased health');
+        sections.push((100 * item.base.bonuses['%maxHealth']) + '% increased health');
     }
     if (ifdefor(item.base.bonuses['+speed'])) {
         sections.push((item.base.bonuses['+speed'] > 0 ? '+' : '') + item.base.bonuses['+speed'] + ' speed');
+    }
+    if (ifdefor(item.base.bonuses['+accuracy'])) {
+        sections.push((item.base.bonuses['+accuracy'] > 0 ? '+' : '') + item.base.bonuses['+accuracy'] + ' accuracy');
     }
     sections.push('');
     sections.push('Sell for ' + sellValue(item) + ' IP');
@@ -194,15 +197,13 @@ var items = [
         {'slot': 'weapon', 'type': 'axe',  'name': 'Axe', 'bonuses': {'+minDamage': 3, '+maxDamage': 6, '+range': 2, '+attackSpeed': 1.5}, 'icon': 'axe'},
         {'slot': 'weapon', 'type': 'wand',  'name': 'Wand', 'bonuses': {'+minDamage': 0, '+maxDamage': 1, '+minMagicDamage': 1, '+maxMagicDamage': 2, '+range': 7, '+attackSpeed': 1.5}, 'icon': 'wand'},
         {'slot': 'shield', 'type': 'shield',  'name': 'Small Shield', 'bonuses': {'+block': 2, '+armor': 2}, 'icon': 'shield'},
-        {'slot': 'boots', 'type': 'boots',  'name': 'Swift Boots', 'bonuses': {'+speed': 1}, icon: 'boots'},
-        {'slot': 'boots', 'type': 'boots',  'name': 'Steel Boots', 'bonuses': {'+speed': -1, '+armor': 1}, icon: 'boots'},
+        {'slot': 'boots', 'type': 'boots',  'name': 'Swift Boots', 'bonuses': {'+speed': 1}, 'offset': 8, icon: 'boots'},
+        {'slot': 'boots', 'type': 'boots',  'name': 'Steel Boots', 'bonuses': {'+speed': -1, '+armor': 1}, 'offset': 8, icon: 'boots'},
         {'slot': 'armor', 'type': 'tunic',  'name': 'Tunic', 'bonuses': {'+evasion': 2}, 'offset': 1, icon: 'armor'},
         {'slot': 'armor', 'type': 'armor',  'name': 'Chainmail', 'bonuses': {'+armor': 2}, 'offset': 2, icon: 'armor'},
         {'slot': 'armor', 'type': 'tunic',  'name': 'Leather Vest', 'bonuses': {'+maxHealth': 10}, 'offset': 3, icon: 'armor'},
-        {'slot': 'hat', 'type': 'short hair',  'name': 'Short Brown Hair', 'bonuses': {'+evasion': 1}, 'offset': 4, icon: 'hat'},
-        {'slot': 'hat', 'type': 'short hair',  'name': 'Short Blond Hair', 'bonuses': {'+speed': 1}, 'offset': 5, icon: 'hat'},
-        {'slot': 'hat', 'type': 'long hair',  'name': 'Long Purple Hair', 'bonuses': {'+armor': 1}, 'offset': 6, icon: 'hat'},
-        {'slot': 'hat', 'type': 'long hair',  'name': 'Long Black Hair', 'bonuses': {'%maxHealth': .1}, 'offset': 7, icon: 'hat'}
+        {'slot': 'hat', 'type': 'helmet',  'name': 'Helmet', 'bonuses': {'+armor': 1, '+block': 1, '+evasion': 1}, 'offset': 9, icon: 'hat', hideHair: true},
+        {'slot': 'hat', 'type': 'helmet',  'name': 'Oversized Helm', 'bonuses': {'+armor': 2, '+accuracy': -1}, 'offset': 10, icon: 'hat'},
     ]
 ];
 var itemsByKey = {};
@@ -214,9 +215,15 @@ items[0].forEach(function (item) {
 
 $(document).on('keydown', function(event) {
     if (event.which == 83) { // 's'
-        if ($popupTarget.closest('.js-inventory').length > 0) {
-            var item = $popupTarget.data('item');
-            sellItem(item);
+        if (isMouseOver($('.js-inventory'))) {
+            $('.js-inventory .js-item').each(function (index) {
+                if (isMouseOver($(this))) {
+                    var item = $(this).data('item');
+                    sellItem(item);
+                    return false;
+                }
+                return true;
+            });
         }
     }
     console.log(event.which);
