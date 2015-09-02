@@ -75,12 +75,12 @@ var caterpillar = {
     'minMagicDamage': 0,
     'maxMagicDamage': 0,
     'attackSpeed': 1,
-    'speed': 1.5,
+    'speed': 100,
     'accuracy': [0, 0, 1, 2],
     'evasion': [0, 0, 0, 1],
     'block': [0, 0, .5, 1.5],
     'magicBlock': [1, 1, .5, 1],
-    'armor': [0, 0, 1, 2],
+    'armor': [0, 0, .5, 1.5],
     'magicResist': 0,
     'offset': 0
 };
@@ -92,7 +92,7 @@ var butterfly = {
     'minMagicDamage': [1, 1, 1, 1],
     'maxMagicDamage': [2, 2, 2, 2],
     'attackSpeed': [1, 1, .1, .1],
-    'speed': 2,
+    'speed': 200,
     'accuracy': [1, 2, 1, 2],
     'evasion': [1, 2, 1, 2],
     'block': 0,

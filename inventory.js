@@ -63,6 +63,9 @@ function itemHelpText(item) {
     if (ifdefor(item.base.bonuses['%maxHealth'])) {
         sections.push((100 * item.base.bonuses['%maxHealth']) + '% increased health');
     }
+    if (ifdefor(item.base.bonuses['%attackSpeed'])) {
+        sections.push((100 * item.base.bonuses['%attackSpeed']) + '% increased attack speed');
+    }
     if (ifdefor(item.base.bonuses['+speed'])) {
         sections.push((item.base.bonuses['+speed'] > 0 ? '+' : '') + item.base.bonuses['+speed'] + ' speed');
     }
@@ -192,13 +195,13 @@ function sellItem(item) {
 
 var items = [
     [
-        {'slot': 'weapon', 'type': 'sword', 'name': 'Dagger', 'bonuses': {'+minDamage': 2, '+maxDamage': 5, '+range': 2, '+attackSpeed': 2.5}, 'icon': 'sword'},
+        {'slot': 'weapon', 'type': 'sword', 'name': 'Dagger', 'bonuses': {'+minDamage': 2, '+maxDamage': 5, '+range': 2, '+attackSpeed': 2}, 'icon': 'sword'},
         {'slot': 'weapon', 'type': 'bow',  'name': 'Bow', 'bonuses': {'+minDamage': 3, '+maxDamage': 6, '+range': 10, '+attackSpeed': 1}, 'icon': 'bow'},
         {'slot': 'weapon', 'type': 'axe',  'name': 'Axe', 'bonuses': {'+minDamage': 3, '+maxDamage': 6, '+range': 2, '+attackSpeed': 1.5}, 'icon': 'axe'},
         {'slot': 'weapon', 'type': 'wand',  'name': 'Wand', 'bonuses': {'+minDamage': 0, '+maxDamage': 1, '+minMagicDamage': 1, '+maxMagicDamage': 2, '+range': 7, '+attackSpeed': 1.5}, 'icon': 'wand'},
         {'slot': 'shield', 'type': 'shield',  'name': 'Small Shield', 'bonuses': {'+block': 2, '+armor': 2}, 'icon': 'shield'},
-        {'slot': 'boots', 'type': 'boots',  'name': 'Swift Boots', 'bonuses': {'+speed': 1}, 'offset': 8, icon: 'boots'},
-        {'slot': 'boots', 'type': 'boots',  'name': 'Steel Boots', 'bonuses': {'+speed': -1, '+armor': 1}, 'offset': 8, icon: 'boots'},
+        {'slot': 'boots', 'type': 'boots',  'name': 'Swift Boots', 'bonuses': {'+speed': 25, '%attackSpeed': .1}, 'offset': 8, icon: 'boots'},
+        {'slot': 'boots', 'type': 'boots',  'name': 'Steel Boots', 'bonuses': {'+speed': -50, '+armor': 1, '+block': 2}, 'offset': 8, icon: 'boots'},
         {'slot': 'armor', 'type': 'tunic',  'name': 'Tunic', 'bonuses': {'+evasion': 2}, 'offset': 1, icon: 'armor'},
         {'slot': 'armor', 'type': 'armor',  'name': 'Chainmail', 'bonuses': {'+armor': 2}, 'offset': 2, icon: 'armor'},
         {'slot': 'armor', 'type': 'tunic',  'name': 'Leather Vest', 'bonuses': {'+maxHealth': 10}, 'offset': 3, icon: 'armor'},

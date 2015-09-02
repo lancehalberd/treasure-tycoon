@@ -22,10 +22,11 @@ var fps = 6;
 var characters = [];
 var itemPoints = 10;
 
-function startArea(character, area) {
+function startArea(character, index) {
     character.$panel.find('.js-infoMode').hide();
     character.$panel.find('.js-adventureMode').show();
-    character.area = area;
+    character.areaIndex = index;
+    character.area = levels[index];
     character.monsterIndex = 0;
     character.x = 0;
     character.enemies = [];
@@ -40,30 +41,36 @@ async.mapSeries(['gfx/person.png', 'gfx/grass.png', 'gfx/caterpillar.png'], load
 
 function completeArea(character) {
     var $adventureButton = character.$panel.find('.js-infoMode').find('.js-adventure').last();
-    var nextLevel = $adventureButton.data('levelIndex') + 1;
-    if (levels.length <= nextLevel) {
-        var monsters = levels[nextLevel - 1].monsters.slice();
-        var wave = [];
-        while (wave.length < 10) {
-            wave.push(Math.random() > .4 ? caterpillar : butterfly);
+    // If the character beat the last adventure open to them, unlock the next one
+    if ($adventureButton.data('levelIndex') == character.areaIndex) {
+        var nextLevel = $adventureButton.data('levelIndex') + 1;
+        if (levels.length <= nextLevel) {
+            var monsters = levels[nextLevel - 1].monsters.slice();
+            var wave = [];
+            while (wave.length < 10) {
+                wave.push(Math.random() > .4 ? caterpillar : butterfly);
+            }
+            monsters.push(wave);
+            levels[nextLevel] = {'level': nextLevel + 1, 'monsters': monsters};
         }
-        monsters.push(wave);
-        levels[nextLevel] = {'level': nextLevel + 1, 'monsters': monsters};
+        var $nextAdventureButton = $adventureButton.clone().data('levelIndex', nextLevel).text('Lvl ' + levels[nextLevel].level + ' Adventure!');
+        $adventureButton.after($nextAdventureButton);
     }
-    var $nextAdventureButton = $adventureButton.clone().data('levelIndex', nextLevel).text('Lvl ' + levels[nextLevel].level + ' Adventure!');
-    $adventureButton.after($nextAdventureButton);
     resetCharacter(character);
 }
 
 function mainLoop() {
+    var time = now();
     characters.forEach(function (character) {
+        var delta = time - character.lastTime;
         if (character.area == null) {
             var canvas = character.$panel.find('.js-infoMode .js-canvas')[0];
             var context = canvas.getContext("2d");
             var fps = Math.floor(3 * 5 / 3);
-            var frame = Math.floor(now() * fps / 1000) % walkLoop.length;
+            var frame = Math.floor(time * fps / 1000) % walkLoop.length;
             context.clearRect(0, 0, 64, 128);
             context.drawImage(character.personCanvas, walkLoop[frame] * 32, 0 , 32, 64, 0, -20, 64, 128);
+            character.lastTime = time;
             return;
         }
         var width = character.canvasWidth;
@@ -121,7 +128,7 @@ function mainLoop() {
                 )
             }
             if (!enemy.target) {
-                enemy.x -= enemy.speed;
+                enemy.x -= enemy.speed * delta / 1000;
             }
             // Don't let enemy move past the character
             if (enemy.x < character.x + 32) {
@@ -130,7 +137,7 @@ function mainLoop() {
             enemy.health = Math.max(0, enemy.health);
         }
         if (!character.target) {
-            character.x += character.speed;
+            character.x += character.speed * delta / 1000;
         }
         var cameraX = character.x - 10;
         context.clearRect(0, 0, width, height);
@@ -142,8 +149,8 @@ function mainLoop() {
         }
         for (var i = 0; i < character.enemies.length; i++) {
             var enemy = character.enemies[i];
-            var enemyFps = Math.floor(3 * enemy.speed);
-            var enemyFrame = Math.floor(now() * enemyFps / 1000) % 4;
+            var enemyFps = Math.floor(3 * enemy.speed / 100);
+            var enemyFrame = Math.floor(time * enemyFps / 1000) % 4;
             context.translate((enemy.x - cameraX + 48), 0);
             context.scale(-1, 1);
             context.drawImage(images['gfx/caterpillar.png'], enemyFrame * 48 + enemy.offset, 0 , 48, 64, -48, 240 - 128 - 72, 96, 128);
@@ -156,14 +163,14 @@ function mainLoop() {
         for (var i = 0; i <= 768; i += 64) {
             var x = (784 + (i - character.x) % 768) % 768 - 64;
         }
-        var fps = Math.floor(3 * character.speed / 3);
         if (character.target) {
             var attackFps = 1000 / ((1000 / character.attackSpeed) / fightLoop.length);
-            var frame = Math.floor(Math.abs(now() - character.attackCooldown) * attackFps / 1000) % fightLoop.length;
+            var frame = Math.floor(Math.abs(time - character.attackCooldown) * attackFps / 1000) % fightLoop.length;
             context.drawImage(character.personCanvas, fightLoop[frame] * 32, 0 , 32, 64,
                             character.x - cameraX, 240 - 128 - 72, 64, 128);
         } else {
-            var frame = Math.floor(now() * fps / 1000) % walkLoop.length;
+            var fps = Math.floor(3 * character.speed / 100);
+            var frame = Math.floor(time * fps / 1000) % walkLoop.length;
             context.drawImage(character.personCanvas, walkLoop[frame] * 32, 0 , 32, 64,
                             character.x - cameraX, 240 - 128 - 72, 64, 128);
         }
@@ -189,6 +196,7 @@ function mainLoop() {
         if (character.health <= 0) {
             resetCharacter(character);
         }
+        character.lastTime = time;
     });
     checkRemoveToolTip();
 }
@@ -257,5 +265,5 @@ $('body').on('click', '.js-adventure', function (event) {
     var index = $(this).data('levelIndex');
     var $panel = $(this).closest('.js-playerPanel');
     var character = $panel.data('character');
-    startArea(character, levels[index]);
+    startArea(character, index);
 });

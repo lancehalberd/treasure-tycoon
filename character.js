@@ -64,7 +64,7 @@ function newCharacter() {
         'base': {
             'maxHealth': 20,
             'armor': 0,
-            'speed': 8,
+            'speed': 250,
             'evasion': 1,
             'block': 1,
         },
@@ -82,7 +82,8 @@ function newCharacter() {
         'canvasWidth': canvas.width,
         'canvasHeight': canvas.height,
         'area': null,
-        'attackCooldown': 0
+        'attackCooldown': 0,
+        'lastTime': now()
     };
     $.each(job.startingEquipment, function (key, item) {
         equipItem(character, makeItem(item));

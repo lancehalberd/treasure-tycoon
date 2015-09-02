@@ -80,7 +80,7 @@ function $tag(type, classes, content) {
 }
 
 function now() {
-    return new Date().getTime();
+    return Math.floor(new Date().getTime());
 }
 
 function isMouseOver($div) {
