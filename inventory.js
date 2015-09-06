@@ -3,7 +3,7 @@ $('.js-newItem').on('click', function (event) {
     if (characters.length <= 0) {
         return;
     }
-    if (!spendItemPoints(5)) {
+    if (!spendIP(5)) {
         return;
     }
     var item = makeItem(Random.element(items[0]));
@@ -28,53 +28,136 @@ function isEquiped(character, item) {
 function makeItem(base) {
     var item = {
         'base': base,
+        'prefixes': [],
+        'suffixes': [],
         'level': 1
     };
-    item.$item = $tag('div', 'js-item item', tag('div', 'icon ' + base.icon)).attr('helpText', itemHelpText(item));
+    item.$item = $tag('div', 'js-item item', tag('div', 'icon ' + base.icon));
+    updateItem(item);
     item.$item.data('item', item);
     return item;
 }
+function updateItem(item) {
+    item.$item.attr('helpText', itemHelpText(item));
+    item.$item.removeClass('imbued').removeClass('enchanted');
+    var enchantments = item.prefixes.length + item.suffixes.length;
+    if (enchantments > 2) {
+        item.$item.addClass('imbued');
+    } else if (enchantments) {
+        item.$item.addClass('enchanted');
+    }
+}
 function itemHelpText(item) {
-    var sections = [item.base.name, ''];
-    if (ifdefor(item.base.bonuses['+minDamage']) != null) {
-        sections.push('Damage: ' + item.base.bonuses['+minDamage'] + ' to ' + item.base.bonuses['+maxDamage']);
+    var name = item.base.name;
+    var prefixNames = [];
+    item.prefixes.forEach(function (affix) {
+        prefixNames.unshift(affix.base.name);
+    });
+    if (prefixNames.length) {
+        name = prefixNames.join(', ') + ' ' + name;
     }
-    if (ifdefor(item.base.bonuses['+minMagicDamage'] != null)) {
-        sections.push('Magic: ' + item.base.bonuses['+minMagicDamage'] + ' to ' + item.base.bonuses['+maxMagicDamage']);
+    var suffixNames = [];
+    item.suffixes.forEach(function (affix) {
+        suffixNames.push(affix.base.name);
+    });
+    if (suffixNames.length) {
+        name = name + ' of ' + suffixNames.join(' and ');
     }
-    if (ifdefor(item.base.bonuses['+range'])) {
-        sections.push('Range: ' + item.base.bonuses['+range']);
-    }
-    if (ifdefor(item.base.bonuses['+attackSpeed'])) {
-        sections.push('Attack Speed: ' + item.base.bonuses['+attackSpeed']);
-    }
-    if (ifdefor(item.base.bonuses['+armor'])) {
-        sections.push('Armor: ' + item.base.bonuses['+armor']);
-    }
-    if (ifdefor(item.base.bonuses['+evasion'])) {
-        sections.push('Evasion: ' + item.base.bonuses['+evasion']);
-    }
-    if (ifdefor(item.base.bonuses['+block'])) {
-        sections.push('Block: ' + item.base.bonuses['+block']);
-    }
-    if (ifdefor(item.base.bonuses['+maxHealth'])) {
-        sections.push('+' + item.base.bonuses['+maxHealth'] + ' health');
-    }
-    if (ifdefor(item.base.bonuses['%maxHealth'])) {
-        sections.push((100 * item.base.bonuses['%maxHealth']) + '% increased health');
-    }
-    if (ifdefor(item.base.bonuses['%attackSpeed'])) {
-        sections.push((100 * item.base.bonuses['%attackSpeed']) + '% increased attack speed');
-    }
-    if (ifdefor(item.base.bonuses['+speed'])) {
-        sections.push((item.base.bonuses['+speed'] > 0 ? '+' : '') + item.base.bonuses['+speed'] + ' speed');
-    }
-    if (ifdefor(item.base.bonuses['+accuracy'])) {
-        sections.push((item.base.bonuses['+accuracy'] > 0 ? '+' : '') + item.base.bonuses['+accuracy'] + ' accuracy');
+    var sections = [name, ''];
+    sections.push(bonusHelpText(item.base.bonuses, true));
+
+    if (item.prefixes.length || item.suffixes.length) {
+        sections.push('');
+        item.prefixes.forEach(function (affix) {
+            sections.push(bonusHelpText(affix.bonuses, false));
+        });
+        item.suffixes.forEach(function (affix) {
+            sections.push(bonusHelpText(affix.bonuses, false));
+        });
     }
     sections.push('');
-    sections.push('Sell for ' + sellValue(item) + ' IP');
+
+    var points = [sellValue(item) + ' IP'];
+    var total = item.prefixes.length + item.suffixes.length;
+    if (total) {
+        if (total < 2) points.push(sellValue(item) * total + ' MP');
+        else points.push(sellValue(item) * (total - 2) + ' RP');
+    }
+    sections.push('Sell for ' + points.join(' '));
     return sections.join('<br/>');
+}
+function bonusHelpText(bonuses, implicit) {
+    var sections = [];
+    if (ifdefor(bonuses['+minDamage']) != null) {
+        if (implicit) sections.push('Damage: ' + bonuses['+minDamage'] + ' to ' + bonuses['+maxDamage']);
+        else sections.push(bonuses['+minDamage'] + ' to ' + bonuses['+maxDamage'] + ' increased damage');
+    }
+    if (ifdefor(bonuses['+minMagicDamage'] != null)) {
+        if (implicit) sections.push('Magic: ' + bonuses['+minMagicDamage'] + ' to ' + bonuses['+maxMagicDamage']);
+        else sections.push(bonuses['+minMagicDamage'] + ' to ' + bonuses['+maxMagicDamage'] + ' increased magic damage');
+    }
+    if (ifdefor(bonuses['+range'])) {
+        if (implicit) sections.push('Range: ' + bonuses['+range']);
+        else sections.push(bonuses['+range'] + ' increased range');
+    }
+    if (ifdefor(bonuses['+attackSpeed'])) {
+        sections.push('Attack Speed: ' + bonuses['+attackSpeed']);
+    }
+    if (ifdefor(bonuses['+damageOnMiss'])) {
+        sections.push('Deals ' + bonuses['+damageOnMiss'] + ' to enemy on miss');
+    }
+    if (ifdefor(bonuses['+armor'])) {
+        if (implicit) sections.push('Armor: ' + bonuses['+armor']);
+        else sections.push(bonuses['+armor'] + ' increased armor');
+    }
+    if (ifdefor(bonuses['+evasion'])) {
+        if (implicit) sections.push('Evasion: ' + bonuses['+evasion']);
+        else sections.push(bonuses['+evasion'] + ' increased evasion');
+    }
+    if (ifdefor(bonuses['+block'])) {
+        if (implicit) sections.push('Block: ' + bonuses['+block']);
+        else sections.push(bonuses['+block'] + ' increased block');
+    }
+    if (ifdefor(bonuses['+maxHealth'])) {
+        sections.push('+' + bonuses['+maxHealth'] + ' health');
+    }
+    if (ifdefor(bonuses['+healthGainOnHit'])) {
+        sections.push('Gain ' + bonuses['+healthGainOnHit'] + ' health on hit');
+    }
+    if (ifdefor(bonuses['+healthRegen'])) {
+        sections.push('Regenerates ' + bonuses['+healthRegen'] + ' health per second');
+    }
+    if (ifdefor(bonuses['%maxHealth'])) {
+        sections.push((100 * bonuses['%maxHealth']) + '% increased health');
+    }
+    if (ifdefor(bonuses['%attackSpeed'])) {
+        sections.push((100 * bonuses['%attackSpeed']) + '% increased attack speed');
+    }
+    if (ifdefor(bonuses['+slowOnHit'])) {
+        sections.push('Slows target by ' + (100 * bonuses['+slowOnHit']) + '%');
+    }
+    if (ifdefor(bonuses['+speed'])) {
+        sections.push((bonuses['+speed'] > 0 ? '+' : '') + bonuses['+speed'] + ' speed');
+    }
+    if (ifdefor(bonuses['+accuracy'])) {
+        sections.push((bonuses['+accuracy'] > 0 ? '+' : '') + bonuses['+accuracy'] + ' accuracy');
+    }
+    return sections.join('<br/>');
+}
+function sellItem(item) {
+    var sourceCharacter = item.$item.closest('.js-playerPanel').data('character');
+    if (sourceCharacter) {
+        sourceCharacter.equipment[item.base.slot] = null;
+        updateCharacter(sourceCharacter);
+    }
+    item.$item.remove();
+    item.$item = null;
+    gainIP(sellValue(item));
+    var total = item.prefixes.length + item.suffixes.length;
+    if (total) {
+        if (total < 2) gainMP(sellValue(item) * total);
+        else gainRP(sellValue(item) * (total - 2));
+    }
 }
 
 var $dragHelper = null;
@@ -118,6 +201,22 @@ function stopDrag() {
         var hit = false;
         if (collision($dragHelper, $('.js-sellItem'))) {
             sellItem(item);
+            hit = true;
+        }
+        if (!hit && collision($dragHelper, $('.js-enchantmentSlot'))) {
+            var $otherItem = $('.js-enchantmentSlot').find('.js-item');
+            // If there is an item already in the enchantment slot, place it
+            // back in the inventory.
+            if ($otherItem.length) {
+                $('.js-inventory').append($otherItem);
+            }
+            var character = $source.closest('.js-playerPanel').data('character');
+            if (character) {
+                character.equipment[item.base.slot] = null;
+                updateCharacter(character);
+            }
+            $('.js-enchantmentSlot').append($source);
+            updateEnchantmentOptions();
             hit = true;
         }
         if (!hit) {
@@ -179,18 +278,8 @@ function stopDrag() {
         $source.css('opacity', '1');
         $dragHelper.remove();
         $dragHelper = null;
+        updateEnchantmentOptions();
     }
-}
-
-function sellItem(item) {
-    var sourceCharacter = item.$item.closest('.js-playerPanel').data('character');
-    if (sourceCharacter) {
-        sourceCharacter.equipment[item.base.slot] = null;
-        updateCharacter(sourceCharacter);
-    }
-    item.$item.remove();
-    item.$item = null;
-    gainIp(sellValue(item));
 }
 
 var items = [
@@ -207,14 +296,37 @@ var items = [
         {'slot': 'armor', 'type': 'tunic',  'name': 'Leather Vest', 'bonuses': {'+maxHealth': 10}, 'offset': 3, icon: 'armor'},
         {'slot': 'hat', 'type': 'helmet',  'name': 'Helmet', 'bonuses': {'+armor': 1, '+block': 1, '+evasion': 1}, 'offset': 9, icon: 'hat', hideHair: true},
         {'slot': 'hat', 'type': 'helmet',  'name': 'Oversized Helm', 'bonuses': {'+armor': 2, '+accuracy': -1}, 'offset': 10, icon: 'hat'},
+
+	//Leon made Boots
+        {'slot': 'boots', 'type': 'boots',  'name': 'Sandals', 'bonuses': {'+speed': 15, '+maxHealth': 15}, 'offset': 8, icon: 'boots'},
+        {'slot': 'boots', 'type': 'boots',  'name': 'Leather Boots', 'bonuses': {'+speed': 15, '+armor': 1, '+evasion': 2}, 'offset': 8, icon: 'boots'},
+        {'slot': 'boots', 'type': 'boots',  'name': 'Cleets', 'bonuses': {'+speed': 45}, 'offset': 8, icon: 'boots'},
+        {'slot': 'boots', 'type': 'boots',  'name': 'Feet Wrappings', 'bonuses': {'+speed': 25, '+accuracy': +2}, 'offset': 8, icon: 'boots'},
+
+        //Leon Made Off Hands
+        {'slot': 'shield', 'type': 'shield',  'name': 'Heavy Shield', 'bonuses': {'+block': 4, '+armor': 2, '+speed': -50}, 'icon': 'shield'},
+        {'slot': 'shield', 'type': 'shield',  'name': 'Wooden Shield', 'bonuses': {'+block': 2, '+evasion': 2}, 'icon': 'shield'},
+        {'slot': 'shield', 'type': 'shield',  'name': 'Glowing Orb', 'bonuses': {'+minMagicDamage': 2, '+maxMagicDamage': 4, '%maxHealth': 0.1}, 'icon': 'shield'},
+        {'slot': 'shield', 'type': 'shield',  'name': 'Spell Book', 'bonuses': {'+minMagicDamage': 1, '+maxMagicDamage': 4, '%attackSpeed': 0.1}, 'icon': 'shield'},
+        {'slot': 'shield', 'type': 'shield',  'name': 'Quiver', 'bonuses': {'%attackSpeed': 0.25, '+minDamage': 2, '+maxDamage': 4}, 'icon': 'shield'},
+
+        //Leon Made Main Hands
+        {'slot': 'weapon', 'type': 'sword', 'name': 'Knife', 'bonuses': {'+minDamage': 4, '+maxDamage': 8, '+range': 2, '+attackSpeed': 1.85}, 'icon': 'sword'},
+        {'slot': 'weapon', 'type': 'bow',  'name': 'Crossbow', 'bonuses': {'+minDamage': 5, '+maxDamage': 9, '+range': 9, '+attackSpeed': 1.2}, 'icon': 'bow'},
+        {'slot': 'weapon', 'type': 'axe',  'name': 'Labrys', 'bonuses': {'+minDamage': 7, '+maxDamage': 10, '+range': 2, '+attackSpeed': 1.4}, 'icon': 'axe'},
+        {'slot': 'weapon', 'type': 'wand',  'name': 'Carved Wand', 'bonuses': {'+minDamage': 1, '+maxDamage': 3, '+minMagicDamage': 2, '+maxMagicDamage': 5, '+range': 7, '+attackSpeed': 1.6}, 'icon': 'wand'},
+        {'slot': 'weapon', 'type': 'sword', 'name': 'Short Sword', 'bonuses': {'+minDamage': 5, '+maxDamage': 8, '+range': 2, '+attackSpeed': 1.7}, 'icon': 'sword'},
+        {'slot': 'weapon', 'type': 'bow',  'name': 'Blow Gun', 'bonuses': {'+minDamage': 3, '+maxDamage':  7, '+range': 8, '+attackSpeed': 1.6}, 'icon': 'bow'},
+        {'slot': 'weapon', 'type': 'staff',  'name': 'Wooden Staff', 'bonuses': {'+minDamage': 3, '+maxDamage': 5, '+minMagicDamage': 1, '+maxMagicDamage': 3, '+range': 2, '+attackSpeed': 1.2}, 'icon': 'wand'},
+        {'slot': 'weapon', 'type': 'glove',  'name': 'Brass Knuckles', 'bonuses': {'+minDamage': 4, '+maxDamage': 6, '+range': 1, '+attackSpeed': 2.2}, 'icon': 'glove'}
     ]
 ];
+// TODO: Add unique "Sticky, Sticky Bow of Aiming and Leeching and Leeching and Aiming"
 var itemsByKey = {};
 items[0].forEach(function (item) {
     var key = item.name.replace(/\s*/g, '').toLowerCase();
     itemsByKey[key] = item;
 });
-
 
 $(document).on('keydown', function(event) {
     if (event.which == 83) { // 's'

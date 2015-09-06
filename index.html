@@ -22,6 +22,10 @@
             -webkit-user-select: none;
             -o-user-user-select: none;
         }
+        .loading {
+            font-size: 50px;
+            color: white;
+        }
         .stat {
             display: inline-block;
             width: 200px;
@@ -40,87 +44,139 @@
 <body class="body">
 
 <div class="js-mainGame js-mouseContainer mainGame">
-    <div class="controlColumn">
-        <div class="infoPanel">
-            Item Points: <span class="js-itemPoints"></span>
+    <div class="js-loading loading" style="display: none">
+        Loading...
+    </div>
+    <script>
+        // Only show the loading text if it takes more than .2 seconds to load
+        setTimeout(function () {
+            if (!$('.js-gameContent').is(':visible')) {
+                $('.js-loading').show();
+            }
+        }, 200);
+    </script>
+    <div class="js-gameContent" style="display: none">
+        <div class="pointsBar">
+            <div class="points" helptext="Spend these points to hire new adventurers.<br/>AP is gained by leveling adventurers and completing new areas.<br/>You can gain large amounts of AP by retiring high level adventurers.">
+                Adventure Points: <span class="js-adventurePoints"></span>
+            </div>
+            <div class="points" helptext="Spend these points to create brand new items.<br/>IP is frequently acquired when adventurers defeat monsters.">
+                Item Points: <span class="js-itemPoints"></span>
+            </div>
+            <div class="points" helptext="Spend these points to enchant items with up to 2 special effects.<br/>MP is sometimes acquired when adventurers defeat monsters.">
+                Magic Points: <span class="js-magicPoints"></span>
+            </div>
+            <div class="points" helptext="Spend these points to add up to 2 more effects to enchanted items.<br/>RP is sometimes acquired when adventurers defeat enchanted monsters.">
+                Rare Points: <span class="js-rarePoints"></span>
+            </div>
+            <div class="points" helptext="Spend these points to create special items that cannot otherwise be crafted.<br/>UP is rarely acquired when adventurers defeat monsters.">
+                Unique Points: <span class="js-uniquePoints"></span>
+            </div>
         </div>
-        <div class="toolbar">
-            <button class="js-newItem item" helptext="Click here to generate a new item."><div class="icon item"></div></button>
-            <button class="js-sellItem item" helptext="Drag items here to sell them. <br/> You can also hover over an item and type 'S' to sell quickly."><div class="icon anvil"></div></button>
-        </div>
-        <div class="js-inventory inventory"></div>
-    </div><div class="js-playerColumn playerColumn">
-        <div class="js-playerPanelTemplate playerPanel" style="display: none;">
-            <div class="js-infoMode">
-                <div class="js-stats stats playerBox">
-                    <canvas class="js-canvas" width="64" height="128" style="background-color: white; display:inline; float: left">
-                    </canvas>
-                    <div>
-                        <span class="js-name">X</span>
-                    </div>
-                    <div>
-                        Lvl: <span class="js-level">X</span>
-                    </div>
-                    <div class="js-dexterity dexterity">X</div>
-                    <div class="js-strength strength">X</div>
-                    <div class="js-intelligence intelligence">X</div>
-                    <div>
-                        Next Lvl: <span class="js-toLevel">X</span> xp
-                    </div>
-                    <div>
-                        Health: <span class="js-maxHealth">X</span>
-                    </div>
-                    <div>
-                        Damage: <span class="js-damage">X</span>
-                    </div>
-                    <div>
-                        Magic Damage: <span class="js-magicDamage">X</span>
-                    </div>
-                    <div>
-                        Range: <span class="js-range">X</span>
-                    </div>
-                    <div>
-                        Atk Speed: <span class="js-attackSpeed">X</span>
-                    </div>
-                    <div>
-                        Accuracy: <span class="js-accuracy">X</span>
-                    </div>
-                    <div>
-                        Armor: <span class="js-armor">X</span>
-                    </div>
-                    <div>
-                        Evasion: <span class="js-evasion">X</span>
-                    </div>
-                    <div>
-                        Block: <span class="js-block">X</span>
-                    </div>
-                    <div>
-                        Speed: <span class="js-speed">X</span>
-                    </div>
-                </div><div class="js-equipment equipment playerBox">
-                    <div class="js-hat equipmentSlot hat"></div>
-                    <div class="js-armor equipmentSlot armor"></div>
-                    <div class="js-weapon equipmentSlot weapon"></div>
-                    <div class="js-shield equipmentSlot shield"></div>
-                    <div class="js-boots equipmentSlot boots"></div>
-                </div><div class="js-map map playerBox">
-                    <button class="js-adventure adventure" data-level-index='0'>Lvl 1 Adventure!</button>
+        <div class="controlColumn">
+            <div class="js-adventurePanel js-infoPanel infoPanel">
+                <div>
+                    <select class="js-jobSelect"></select>
+                </div>
+                <div>
+                    <button class="js-hire">Hire for 10 AP!</button>
                 </div>
             </div>
-            <div class="js-adventureMode">
-                <canvas class="js-canvas" width="685" height="240" style="background-color: blue;">
-                </canvas>
+            <div class="js-craftingPanel js-infoPanel infoPanel" style="display: none;">
+                <button class="js-newItem item" helptext="Click here to craft a random item."><div class="icon item"></div></button>
+            </div>
+            <div class="js-enchantingPanel js-infoPanel infoPanel" style="display: none;">
+                <button class="js-enchantmentOption js-enchant" helptext="You can spend Magic Points to add one to two magical properties to an unenchanted item." style="display: none;">Enchant</button></span>
+                <button class="js-enchantmentOption js-imbue" helptext="You can spend Rare Points to add three to four magical properties to an unenchanted item." style="display: none;">Imbue</button></span>
+                <button class="js-enchantmentOption js-gamble" helptext="Spend both Magic and Rare Points for unpredictable results." style="display: none;">Gamble</button>
+                <div class="js-enchantmentSlot itemSlot enchantmentSlot" helptext="Drag an item here to see enchanting options."></div>
+                <button class="js-enchantmentOption js-augment" helptext="Spend Magic or Rare Points to add up to four magical properties to an enchanted item." style="display: none;">Augment</button>
+                <button class="js-enchantmentOption js-mutate" helptext="Spend Magic or Rare Points to randomize the magical properties on an item." style="display: none;">Mutate</button>
+                <button class="js-enchantmentOption js-reset" helptext="You can spend Item Points to remove all enchantments from an item.<br/>This will allow you to enchant it again differently." style="display: none;">Reset</button>
+            </div>
+            <div class="toolbar">
+                <button class="js-showAdventurePanel item" helptext="Click here to open the adventurers tab."><div class="icon hat"></div></button>
+                <button class="js-showCraftingPanel item" helptext="Click here to open the crafting tab."><div class="icon item"></div></button>
+                <button class="js-showEnchantingPanel item" helptext="Click here to open the enchanting tab."><div class="icon wand"></div></button>
+                <button class="js-sellItem item" helptext="Drag items here to sell them. <br/> You can also hover over an item and type 'S' to sell quickly."><div class="icon anvil"></div></button>
+            </div>
+            <div class="js-inventory inventory"></div>
+        </div><div class="js-playerColumn playerColumn">
+            <div class="js-playerPanelTemplate playerPanel" style="display: none;">
+                <div class="js-infoMode infoMode">
+                    <div class="js-stats stats playerBox">
+                        <canvas class="js-canvas" width="64" height="128" style="background-color: white; display:inline; float: left">
+                        </canvas>
+                        <div>
+                            <span class="js-name">X</span>
+                        </div>
+                        <div>
+                            Lvl: <span class="js-level">X</span>
+                        </div>
+                        <div class="js-dexterity dexterity">X</div>
+                        <div class="js-strength strength">X</div>
+                        <div class="js-intelligence intelligence">X</div>
+                        <div>
+                            Next Lvl: <span class="js-toLevel">X</span> xp
+                        </div>
+                        <div>
+                            Health: <span class="js-maxHealth">X</span>
+                        </div>
+                        <div>
+                            Damage: <span class="js-damage">X</span>
+                        </div>
+                        <div>
+                            Magic Damage: <span class="js-magicDamage">X</span>
+                        </div>
+                        <div>
+                            Range: <span class="js-range">X</span>
+                        </div>
+                        <div>
+                            Atk Speed: <span class="js-attackSpeed">X</span>
+                        </div>
+                        <div>
+                            Accuracy: <span class="js-accuracy">X</span>
+                        </div>
+                        <div>
+                            Armor: <span class="js-armor">X</span>
+                        </div>
+                        <div>
+                            Evasion: <span class="js-evasion">X</span>
+                        </div>
+                        <div>
+                            Block: <span class="js-block">X</span>
+                        </div>
+                        <div>
+                            Speed: <span class="js-speed">X</span>
+                        </div>
+                        <div>
+                            <button class="js-retire">Retire</button>
+                        </div>
+                    </div><div class="js-equipment equipment playerBox">
+                        <div class="js-hat itemSlot hat"></div>
+                        <div class="js-armor itemSlot armor"></div>
+                        <div class="js-weapon itemSlot weapon"></div>
+                        <div class="js-shield itemSlot shield"></div>
+                        <div class="js-boots itemSlot boots"></div>
+                    </div><div class="js-map map playerBox">
+                        <button class="js-adventure adventure" data-level-index='0'>Lvl 1 Adventure!</button>
+                    </div>
+                </div>
+                <div class="js-adventureMode">
+                    <canvas class="js-canvas" width="685" height="240" style="background-color: blue;">
+                    </canvas>
+                </div>
             </div>
         </div>
-        <button class="js-newPlayer">Hire New Adventurer</button>
     </div>
 </div>
 </body>
 <script src="mouse.js"></script>
 <script src="keyboard.js"></script>
 <script src="draw.js"></script>
-<script src="main.js"></script>
 <script src="inventory.js"></script>
+<script src="enchanting.js"></script>
 <script src="character.js"></script>
 <script src="battle.js"></script>
+<script src="main.js"></script>
 </html>
