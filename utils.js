@@ -83,6 +83,10 @@ function now() {
     return Math.floor(new Date().getTime());
 }
 
+function isPointInRect(x, y, l, t, w, h) {
+    return !(y < t || y > (t + h) || x < l || x > (l + w));
+}
+
 function isMouseOver($div) {
     var x = $('.js-mouseContainer').offset().left + mousePosition[0];
     var y = $('.js-mouseContainer').offset().top + mousePosition[1];

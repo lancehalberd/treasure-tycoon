@@ -101,7 +101,9 @@ function mainLoop() {
             monsters = Array.isArray(monsters) ? monsters : [monsters]
             var x = character.x + 800;
             monsters.forEach(function (monster) {
-                character.enemies.push(makeMonster(character.area.level, monster, x));
+                var newMonster = makeMonster(character.area.level, monster, x);
+                newMonster.character = character;
+                character.enemies.push(newMonster);
                 x += Random.range(50, 150);
             });
             character.monsterIndex++;
@@ -177,22 +179,27 @@ function mainLoop() {
         for (var i = 0; i < character.enemies.length; i++) {
             var enemy = character.enemies[i];
             var enemyFps = Math.floor(3 * enemy.speed / 100);
-            var enemyFrame = Math.floor(time * enemyFps / 1000) % enemy.source.frames;
-            if (enemy.source.flipped) {
-                context.translate((enemy.x - cameraX + enemy.source.width), 0);
+            var source = enemy.base.source;
+            var enemyFrame = Math.floor(time * enemyFps / 1000) % source.frames;
+            if (source.flipped) {
+                context.translate((enemy.x - cameraX + source.width), 0);
                 context.scale(-1, 1);
-                context.drawImage(enemy.source.image, enemyFrame * enemy.source.width + enemy.source.offset, 0 , enemy.source.width, 64, -enemy.source.width, 240 - 128 - 72, enemy.source.width * 2, 128);
+                context.drawImage(source.image, enemyFrame * source.width + source.offset, 0 , source.width, 64, -source.width, 240 - 128 - 72, source.width * 2, 128);
                 context.scale(-1, 1);
-                context.translate(-(enemy.x - cameraX + enemy.source.width), 0);
+                context.translate(-(enemy.x - cameraX + source.width), 0);
             } else {
-                context.translate((enemy.x - cameraX + enemy.source.width), 0);
-                context.drawImage(enemy.source.image, enemyFrame * enemy.source.width + enemy.source.offset, 0 , enemy.source.width, 64, -enemy.source.width, 240 - 128 - 72, enemy.source.width * 2, 128);
-                context.translate(-(enemy.x - cameraX + enemy.source.width), 0);
+                context.translate((enemy.x - cameraX + source.width), 0);
+                context.drawImage(source.image, enemyFrame * source.width + source.offset, 0 , source.width, 64, -source.width, 240 - 128 - 72, source.width * 2, 128);
+                context.translate(-(enemy.x - cameraX + source.width), 0);
             }
+            enemy.left = enemy.x - cameraX;
+            enemy.top = 240 - 128 - 72;
+            enemy.width = source.width * 2;
+            enemy.height = 128;
             // Uncomment to draw a reference of the character to show where left side of enemy should be
             //context.drawImage(character.personCanvas, 0 * 32, 0 , 32, 64, enemy.x - cameraX, 240 - 128 - 72, 64, 128);
             // life bar
-            drawBar(context, enemy.x - cameraX + 20, 240 - 128 - 36 - 5 * i, 64, 4, 'white', 'red', enemy.health / enemy.maxHealth);
+            drawBar(context, enemy.x - cameraX + 20, 240 - 128 - 36 - 5 * i, 64, 4, 'white', enemy.color, enemy.health / enemy.maxHealth);
         }
         // Draw enemies
         for (var i = 0; i <= 768; i += 64) {
@@ -245,6 +252,8 @@ function drawBar(context, x, y, width, height, background, color, percent) {
 
 var $popup = null;
 var $popupTarget = null;
+var canvasPopupTarget = null;
+var canvasCoords = [];
 $('.js-mouseContainer').on('mouseover mousemove', '[helpText]', function (event) {
     if ($popup) {
         return;
@@ -261,6 +270,31 @@ $('.js-mouseContainer').on('mouseover mousemove', '[helpText]', function (event)
 $('.js-mouseContainer').on('mouseout', '[helpText]', function (event) {
     removeToolTip();
 });
+$('.js-mouseContainer').on('mouseover mousemove', '.js-adventureMode .js-canvas', function (event) {
+    var x = event.pageX - $(this).offset().left;
+    var y = event.pageY - $(this).offset().top;
+    canvasCoords = [x, y];
+    if ($popup) {
+        return;
+    }
+    var sourceCharacter = $(this).closest('.js-playerPanel').data('character');
+    sourceCharacter.enemies.forEach(function (enemy) {
+        if (isPointInRect(x, y, enemy.left, enemy.top, enemy.width, enemy.height)) {
+            canvasPopupTarget = enemy;
+            return false;
+        }
+        return true;
+    });
+    if (!canvasPopupTarget) {
+        return;
+    }
+    x = event.pageX - $('.js-mouseContainer').offset().left;
+    y = event.pageY - $('.js-mouseContainer').offset().top;
+    //console.log([event.pageX,event.pageY]);
+    $popup = $tag('div', 'toolTip js-toolTip', canvasPopupTarget.helptext);
+    updateToolTip(x, y, $popup);
+    $('.js-mouseContainer').append($popup);
+});
 $('.js-mouseContainer').on('mousemove', function (event) {
     if (!$popup) {
         return;
@@ -271,13 +305,21 @@ $('.js-mouseContainer').on('mousemove', function (event) {
 });
 
 function checkRemoveToolTip() {
-    if (!$popupTarget || !$popupTarget.closest('body').length) {
-        removeToolTip();
+    if (canvasPopupTarget && canvasPopupTarget.health > 0 && canvasPopupTarget.character.area) {
+        if (isPointInRect(canvasCoords[0], canvasCoords[1], canvasPopupTarget.left, canvasPopupTarget.top, canvasPopupTarget.width, canvasPopupTarget.height)) {
+            return;
+        }
     }
+    if ($popupTarget && $popupTarget.closest('body').length) {
+        return;
+    }
+    removeToolTip();
 }
 function removeToolTip() {
     $('.js-toolTip').remove();
     $popup = null;
+    canvasPopupTarget = null;
+    $popupTarget = null;
 }
 function getHelpText($popupTarget) {
     return $popupTarget.attr('helpText');

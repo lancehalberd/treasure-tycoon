@@ -61,6 +61,7 @@
     background-color: white;
     box-sizing: border-box;
     padding: 4px;
+    cursor: pointer;
 }
 .item.enchanted {
     background-color: #ffa;
@@ -94,11 +95,18 @@ button {
     overflow-y: auto;
     overflow-x: hidden;
 }
-.playerBox .dexterity {
+.triStatBox {
+    position: absolute;
+    top: 110px;
+    left: 2px;
+    width: 64px;
+    height: 30px;
+}
+.dexterity {
     position: absolute;
     text-align: right;
-    right: 180px;
-    top: 125px;
+    right: 34px;
+    top: 15px;
     color: #0f0;
 }
 .strength {
@@ -107,13 +115,13 @@ button {
     text-align: center;
     width: 64px;
     left: 0px;
-    top: 110px;
+    top: 0px;
 }
 .intelligence {
     position: absolute;
     color: #00f;
-    left: 40px;
-    top: 125px;
+    left: 34px;
+    top: 15px;
 }
 
 .characterPreview {

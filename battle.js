@@ -60,23 +60,136 @@ function performAttack(attacker, target) {
 
 function makeMonster(level, baseMonster, x) {
     var monster = {
+        'level': level,
         'x': x,
         'slow': 0,
-        'ip': Random.range(0, level * 2),
-        'xp': level * 2,
-        'attackColldown': 0
+        'equipment': {},
+        'attackColldown': 0,
+        'base': {
+            'level': level,
+            'ip': Random.range(0, level * 2),
+            'xp': level * 2,
+        },
+        'bonuses': [],
+        'prefixes': [],
+        'suffixes': []
     };
     $.each(baseMonster, function (stat, value) {
         if (Array.isArray(value)) {
-            monster[stat] = Random.range(Math.floor(value[0] + level * value[2]), Math.ceil(value[1] + level * value[3]));
+            monster.base[stat] = Random.range(Math.floor(value[0] + level * value[2]), Math.ceil(value[1] + level * value[3]));
         } else {
-            monster[stat] = value;
+            monster.base[stat] = value;
         }
     });
-    monster.maxHealth = monster.health;
+    var rarity = Math.random() * level;
+    if (rarity < 1) {
+
+    } else if (rarity < 2) {
+        if (Math.random() > .5) addMonsterPrefix(monster);
+        else addMonsterSuffix(monster);
+    } else if (rarity < 4) {
+        addMonsterPrefix(monster);
+        addMonsterSuffix(monster);
+    } else if (rarity < 8) {
+        addMonsterPrefix(monster);
+        addMonsterSuffix(monster);
+        if (Math.random() > .5) addMonsterPrefix(monster);
+        else addMonsterSuffix(monster);
+    } else {
+        addMonsterPrefix(monster);
+        addMonsterSuffix(monster);
+        addMonsterPrefix(monster);
+        addMonsterSuffix(monster);
+    }
+    monster.base.maxHealth = monster.base.health;
+    updateMonster(monster);
+    return monster;
+}
+function addMonsterPrefix(monster) {
+    var alreadyUsed = [];
+    monster.prefixes.forEach(function (affix) {alreadyUsed.push(affix.base);});
+    monster.prefixes.push(makeAffix(Random.element(matchingMonsterAffixes(monsterPrefixes, monster, alreadyUsed))));
+}
+function addMonsterSuffix(monster) {
+    var alreadyUsed = [];
+    monster.suffixes.forEach(function (affix) {alreadyUsed.push(affix.base);});
+    monster.suffixes.push(makeAffix(Random.element(matchingMonsterAffixes(monsterSuffixes, monster, alreadyUsed))));
+}
+function matchingMonsterAffixes(list, monster, alreadyUsed) {
+    var choices = [];
+    for (var level = 0; level < monster.level && level < list.length; level++) {
+        list[level].forEach(function (affix) {
+            if (alreadyUsed.indexOf(affix) < 0) {
+                choices.push(affix);
+            }
+        });
+    }
+    return choices;
+}
+function updateMonster(monster) {
+    // Clear the character's bonuses and graphics.
+    monster.bonuses = [];
+    var enchantments = monster.prefixes.length + monster.suffixes.length;
+    monster.color = 'red';
+    if (enchantments > 2) {
+        monster.bonuses.push(imbuedMonsterBonuses);
+        monster.color = '#c6f';
+    } else if (enchantments) {
+        monster.bonuses.push(enchantedMonsterBonuses);
+        monster.color = '#af0';
+    }
+    var name = monster.base.name;
+    var prefixNames = []
+    monster.prefixes.forEach(function (affix) {
+        monster.bonuses.push(affix.bonuses);
+        prefixNames.push(affix.base.name);
+    });
+    if (prefixNames.length) {
+        name = prefixNames.join(', ') + ' ' + name;
+    }
+    var suffixNames = []
+    monster.suffixes.forEach(function (affix) {
+        monster.bonuses.push(affix.bonuses);
+        suffixNames.push(affix.base.name);
+    });
+    if (suffixNames.length) {
+        name = name + ' of ' + suffixNames.join(' and ');
+    }
+    monster.helptext = name;
+    // Add the character's current equipment to bonuses and graphics
+    ['boots', 'armor', 'hat', 'weapon', 'shield'].forEach(function (type) {
+        var equipment = ifdefor(monster.equipment[type]);
+        if (!equipment) {
+            return;
+        }
+        if (equipment.base.bonuses) {
+            monster.bonuses.push(equipment.base.bonuses);
+        }
+        equipment.prefixes.forEach(function (affix) {
+            monster.bonuses.push(affix.bonuses);
+        })
+        equipment.suffixes.forEach(function (affix) {
+            monster.bonuses.push(affix.bonuses);
+        })
+    });
+    ['dexterity', 'strength', 'intelligence', 'maxHealth', 'speed', 'ip', 'xp',
+     'evasion', 'block', 'magicBlock', 'armor', 'magicResist', 'accuracy', 'range', 'attackSpeed',
+     'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage',
+     'damageOnMiss', 'slowOnHit', 'healthRegen', 'healthGainOnHit'].forEach(function (stat) {
+        monster[stat] = getStat(monster, stat);
+    });
+    ['dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
+     'evasion', 'block', 'magicBlock', 'armor', 'magicResist', 'accuracy',
+     'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage'].forEach(function (stat) {
+        monster[stat] = Math.floor(monster[stat]);
+    });
+    ['range', 'attackSpeed'].forEach(function (stat) {
+        monster[stat] = monster[stat].toFixed(2);
+    });
+    monster.health = monster.maxHealth;
     monster.maxDamage = Math.max(monster.minDamage, monster.maxDamage);
     monster.minMagicDamage = Math.max(monster.minMagicDamage, monster.maxMagicDamage);
-    return monster;
+    //console.log(monster);
 }
 var levels = [];
 var monsters = {};
@@ -85,6 +198,7 @@ function addMonsters(key, data) {
 }
 function initalizeMonsters() {
     var caterpillar = {
+        'name': 'Caterpillar',
         'health': [3, 4, 2, 2.5],
         'range': 1,
         'minDamage': [1, 2, 1, 1],
@@ -102,6 +216,7 @@ function initalizeMonsters() {
         'source': {'image': images['gfx/caterpillar.png'], 'offset': 0, 'width': 48, 'flipped': true, frames: 4}
     };
     var butterfly = {
+        'name': 'Butterfly',
         'health': [2, 4, 1, 1.5],
         'range': 2,
         'minDamage': [1, 3, 1, 1],
@@ -119,6 +234,7 @@ function initalizeMonsters() {
         'source': {'image': images['gfx/caterpillar.png'], 'offset': 4 * 48, 'width': 48, 'flipped': true, frames: 4}
     };
     var gnome = {
+        'name': 'Gnome',
         'health': [30, 40, 2, 2.5],
         'range': 1,
         'minDamage': [1, 2, 1, 1],
@@ -136,6 +252,7 @@ function initalizeMonsters() {
         'source': {'image': images['gfx/gnome.png'], 'offset': 0, 'width': 32, 'flipped': false, frames: 4}
     };
     var skeleton = {
+        'name': 'Skeleton',
         'health': [20, 40, 1, 1.5],
         'range': 2,
         'minDamage': [1, 3, 1, 1],
@@ -153,6 +270,7 @@ function initalizeMonsters() {
         'source': {'image': images['gfx/skeletonSmall.png'], 'offset': 0, 'width': 48, 'flipped': true, frames: 7}
     };
     var giantSkeleton = {
+        'name': 'Skelegiant',
         'health': [300, 400, 2, 2.5],
         'range': 1,
         'minDamage': [1, 2, 1, 1],
@@ -170,6 +288,7 @@ function initalizeMonsters() {
         'source': {'image': images['gfx/skeletonGiant.png'], 'offset': 0, 'width': 48, 'flipped': true, frames: 7}
     };
     var dragon = {
+        'name': 'Dragon',
         'health': [200, 400, 1, 1.5],
         'range': 2,
         'minDamage': [1, 3, 1, 1],
@@ -201,3 +320,21 @@ function initalizeMonsters() {
         {'level': 5, 'monsters': [[caterpillar, caterpillar, butterfly, caterpillar, butterfly], [caterpillar, caterpillar, butterfly, caterpillar, butterfly, caterpillar, butterfly, caterpillar, butterfly], dragon]},
     ];
 }
+var enchantedMonsterBonuses = {'*maxHealth': 3, '*minDamge': 2, '*maxDamage': 2};
+var imbuedMonsterBonuses = {'*maxHealth': 10, '*minDamge': 4, '*maxDamage': 4};
+var monsterPrefixes = [
+    [
+        {'name': 'Frenzied', 'bonuses': {'*speed': [1.5, 2], '*attackSpeed': [1.5, 2]}},
+        {'name': 'Eldritch', 'bonuses': {'+minMagicDamage': [1, 2], '*maxMagicDamage': [2, 3]}},
+        {'name': 'Hawkeye', 'bonuses': {'+accuracy': [5, 10]}},
+        {'name': 'Telekenetic', 'bonuses': {'+range': [3, 5]}}
+    ]
+];
+var monsterSuffixes = [
+    [
+        {'name': 'Healing', 'bonuses': {'+healthRegen': [1, 2]}},
+        {'name': 'Shadows', 'bonuses': {'+evasion': [3, 5]}},
+        {'name': 'Frost', 'bonuses': {'+slowOnHit': [.1, .2]}},
+        {'name': 'Confusion', 'bonuses': {'+damageOnMiss': [2, 3]}},
+    ]
+]
