@@ -1,12 +1,11 @@
-
 var prefixes = [
     [
         {'slot': 'weapon', 'name': 'Tricky', 'bonuses': {'+damageOnMiss': [1, 2]}},
         {'slot': 'weapon', 'name': 'Strong', 'bonuses': {'+minDamage': 1, '+maxDamage': 2}},
         {'slot': 'weapon', 'name': 'Swift',  'bonuses': {'%attackSpeed': [.05, .1]}},
         {'slot': 'weapon', 'name': 'Sticky', 'bonuses': {'+slowOnHit': [.05, .1]}},
-        {'slot': ['armor', 'boots', 'hat', 'shield'], 'name': 'Hardy', 'bonuses': {'+maxHealth': [5, 10]}},
-        {'slot': ['armor', 'boots', 'hat', 'shield'], 'name': 'Soothing', 'bonuses': {'+healthRegen': [1, 2]}},
+        {'slot': armorSlots, 'name': 'Hardy', 'bonuses': {'+maxHealth': [5, 10]}},
+        {'slot': armorSlots, 'name': 'Soothing', 'bonuses': {'+healthRegen': [1, 2]}},
     ]
 ];
 var suffixes = [
@@ -14,9 +13,9 @@ var suffixes = [
         {'slot': 'weapon', 'type': ['bow', 'wand'], 'name': 'Farsight', 'bonuses': {'+range': [1, 2]}},
         {'slot': 'weapon', 'name': 'Leeching', 'bonuses': {'+healthGainOnHit': [1, 2]}},
         {'slot': 'weapon', 'name': 'Aiming', 'bonuses': {'+accuracy': [1, 5]}},
-        {'slot': ['armor', 'boots', 'hat', 'shield'], 'name': 'Toughness', 'bonuses': {'+armor': [1, 2]}},
-        {'slot': ['armor', 'boots', 'hat', 'shield'], 'name': 'Deflecting', 'bonuses': {'+block': [1, 2]}},
-        {'slot': ['armor', 'boots', 'hat', 'shield'], 'name': 'Evasion', 'bonuses': {'+evasion': [1, 2]}},
+        {'slot': armorSlots, 'name': 'Toughness', 'bonuses': {'+armor': [1, 2]}},
+        {'slot': armorSlots, 'name': 'Deflecting', 'bonuses': {'+block': [1, 2]}},
+        {'slot': armorSlots, 'name': 'Evasion', 'bonuses': {'+evasion': [1, 2]}},
     ]
 ];
 function makeAffix(baseAffix) {
@@ -90,26 +89,26 @@ function updateEnchantmentOptions() {
         $('.js-enchantmentOption.js-reset').show().text('Reset: ' + value * 10 + ' IP');
     }
     if (total == 0) {
-        $('.js-enchantmentOption.js-enchant').show().text('Enchant: ' + (value * 5) + ' MP');
-        $('.js-enchantmentOption.js-imbue').show().text('Imbue: ' + (value * 5) + ' RP');
+        $('.js-enchantmentOption.js-enchant').show().text('Enchant: ' + (value * 10) + ' MP');
+        $('.js-enchantmentOption.js-imbue').show().text('Imbue: ' + (value * 10) + ' RP');
         $('.js-enchantmentOption.js-gamble').show().text('Gamble: ' + (value * 2) + ' MP ' + (value * 2) +  ' RP');
     }
     if (total == 1) {
-        $('.js-enchantmentOption.js-augment').show().text('Augment: ' + (value * 10) + ' MP');
+        $('.js-enchantmentOption.js-augment').show().text('Augment: ' + (value * 20) + ' MP');
     }
     if (total == 2 || total == 3) {
-        $('.js-enchantmentOption.js-augment').show().text('Augment: ' + (value * 10) + ' RP');
+        $('.js-enchantmentOption.js-augment').show().text('Augment: ' + (value * 20) + ' RP');
     }
     if (total == 1 || total == 2) {
-        $('.js-enchantmentOption.js-mutate').show().text('Mutate: ' + (value * 6) + ' MP');
+        $('.js-enchantmentOption.js-mutate').show().text('Mutate: ' + (value * 12) + ' MP');
     }
     if (total == 3 || total == 4) {
-        $('.js-enchantmentOption.js-mutate').show().text('Mutate: ' + (value * 6) + ' RP');
+        $('.js-enchantmentOption.js-mutate').show().text('Mutate: ' + (value * 12) + ' RP');
     }
 }
 function resetItem() {
     var item = $('.js-enchantmentSlot').find('.js-item').data('item');
-    if (!spendIP(sellValue(item) * 10)) {
+    if (!spend('IP', sellValue(item) * 10)) {
         return;
     }
     item.prefixes = [];
@@ -119,7 +118,7 @@ function resetItem() {
 }
 function enchantItem() {
     var item = $('.js-enchantmentSlot').find('.js-item').data('item');
-    if (!spendMP(sellValue(item) * 5)) {
+    if (!spend('MP', sellValue(item) * 10)) {
         return;
     }
     enchantItemProper(item);
@@ -139,7 +138,7 @@ function enchantItemProper(item) {
 }
 function imbueItem() {
     var item = $('.js-enchantmentSlot').find('.js-item').data('item');
-    if (!spendRP(sellValue(item) * 5)) {
+    if (!spend('RP', sellValue(item) * 10)) {
         return;
     }
     imbueItemProper(item);
@@ -162,11 +161,11 @@ function imbueItemProper(item) {
 function gambleItem() {
     var item = $('.js-enchantmentSlot').find('.js-item').data('item');
     var cost = sellValue(item) * 2;
-    if (cost > magicPoints || cost > rarePoints) {
+    if (cost > state.MP || cost > state.RP) {
         return;
     }
-    spendMP(cost);
-    spendRP(cost);
+    spend('MP', cost);
+    spend('RP', cost);
     // TODO: Add chance of getting unique version of item here.
     if (Math.random() > .25) enchantItemProper(item);
     else imbueItemProper(item)
@@ -174,17 +173,17 @@ function gambleItem() {
 function augmentItem() {
     var item = $('.js-enchantmentSlot').find('.js-item').data('item');
     if (!item.prefixes.length) {
-        if (!spendMP(sellValue(item) * 10)) {
+        if (!spend('MP', sellValue(item) * 20)) {
             return;
         }
         addPrefix(item);
     } else if (!item.suffixes.length) {
-        if (!spendMP(sellValue(item) * 10)) {
+        if (!spend('MP', sellValue(item) * 20)) {
             return;
         }
         addSuffix(item);
     } else {
-        if (!spendRP(sellValue(item) * 10)) {
+        if (!spend('RP', sellValue(item) * 20)) {
             return;
         }
         if (item.suffixes.length == 2) {
@@ -203,12 +202,12 @@ function augmentItem() {
 function mutateItem() {
     var item = $('.js-enchantmentSlot').find('.js-item').data('item');
     if (item.prefixes.length < 2 && item.suffixes.length < 2) {
-        if (!spendMP(sellValue(item) * 6)) {
+        if (!spend('MP', sellValue(item) * 12)) {
             return;
         }
         enchantItemProper(item);
     } else {
-        if (!spendRP(sellValue(item) * 6)) {
+        if (!spend('RP', sellValue(item) * 12)) {
             return;
         }
         imbueItemProper(item);

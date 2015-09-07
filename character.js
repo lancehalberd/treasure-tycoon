@@ -5,6 +5,7 @@ var hair = [clothes[1] + 1, clothes[1] + 4];
 var names = ['Chris', 'Leon', 'Hillary', 'Michelle', 'Rob', 'Reuben', 'Kingston', 'Silver'];
 var walkLoop = [0, 1, 2, 3];
 var fightLoop = [4, 5, 6];
+var pointsTypes = ['IP', 'MP', 'RP', 'UP', 'AP'];
 
 function resetCharacter(character) {
     character.health = character.maxHealth;
@@ -50,13 +51,7 @@ function newCharacter(job) {
     context.imageSmoothingEnabled = false;
     var character = {
         'x': 0,
-        'equipment': {
-            'boots': null,
-            'armor': null,
-            'hat': null,
-            'weapon': null,
-            'shield': null
-        },
+        'equipment': {},
         'job': job,
         'base': {
             'maxHealth': 20,
@@ -82,14 +77,17 @@ function newCharacter(job) {
         'attackCooldown': 0,
         'lastTime': now()
     };
+    equipmentSlots.forEach(function (type) {
+        character.equipment[type] = null;
+    });
     $.each(job.startingEquipment, function (key, item) {
-        equipItem(character, makeItem(item));
+        equipItem(character, makeItem(item, 1));
     });
     updateCharacter(character);
     var canvas = $newPlayerPanel.find('.js-infoMode .js-canvas')[0];
     var context = canvas.getContext("2d");
     context.imageSmoothingEnabled = false;
-    characters.push(character);
+    state.characters.push(character);
     $newPlayerPanel.data('character', character);
     resetCharacter(character);
     updateRetireButtons();
@@ -99,67 +97,22 @@ $('.js-newPlayer').on('click', newCharacter);
 function xpToLevel(level) {
     return (level + 1) * (level + 2) * 5;
 }
-function gainIP(amount) {
-    itemPoints += amount;
-    $('.js-itemPoints').text(itemPoints);
+function gain(pointsType, amount) {
+    state[pointsType] += amount;
+    changedPoints(pointsType);
 }
-function spendIP(amount) {
-    if (amount > itemPoints) {
+function spend(pointsType, amount) {
+    if (amount > state[pointsType]) {
         return false;
     }
-    itemPoints -= amount;
-    $('.js-itemPoints').text(itemPoints);
+    state[pointsType] -= amount;
+    changedPoints(pointsType);
     return true;
 }
-function gainMP(amount) {
-    magicPoints += amount;
-    $('.js-magicPoints').text(magicPoints);
-}
-function spendMP(amount) {
-    if (amount > magicPoints) {
-        return false;
-    }
-    magicPoints -= amount;
-    $('.js-magicPoints').text(magicPoints);
-    return true;
-}
-function gainRP(amount) {
-    rarePoints += amount;
-    $('.js-rarePoints').text(rarePoints);
-}
-function spendRP(amount) {
-    if (amount > rarePoints) {
-        return false;
-    }
-    rarePoints -= amount;
-    $('.js-rarePoints').text(rarePoints);
-    return true;
-}
-function gainUP(amount) {
-    uniquePoints += amount;
-    $('.js-uniquePoints').text(uniquePoints);
-}
-function spendUP(amount) {
-    if (amount > uniquePoints) {
-        return false;
-    }
-    uniquePoints -= amount;
-    $('.js-uniquePoints').text(uniquePoints);
-    return true;
-}
-function gainAP(amount) {
-    adventurePoints += amount;
-    updateHireButton();
-    $('.js-adventurePoints').text(adventurePoints);
-}
-function spendAP(amount) {
-    if (amount > adventurePoints) {
-        return false;
-    }
-    adventurePoints -= amount;
-    updateHireButton();
-    $('.js-adventurePoints').text(adventurePoints);
-    return true;
+function changedPoints(pointsType) {
+    if (pointsType == 'AP') updateHireButton();
+    else updateCraftButton();
+    $('.js-points' + pointsType).text(state[pointsType]);
 }
 function updateCharacter(character) {
     // Clear the character's bonuses and graphics.
@@ -175,7 +128,7 @@ function updateCharacter(character) {
         }
     }
     // Add the character's current equipment to bonuses and graphics
-    ['boots', 'armor', 'hat', 'weapon', 'shield'].forEach(function (type) {
+    equipmentSlots.forEach(function (type) {
         var equipment = character.equipment[type];
         var $equipmentPanel = character.$panel.find('.js-infoMode .js-equipment');
         var $equipmentSlot = $equipmentPanel.find('.js-' + type);
@@ -268,13 +221,14 @@ function getStat(character, stat) {
     if (plus === 0 && (stat === 'attackSpeed' || stat === 'range')) {
         plus = 1;
     }
+    //console.log(stat +": " + ['(',base, '+', plus,') *', percent, '*', multiplier]);
     return (base + plus) * percent * multiplier;
 }
 function gainXP(character, amount) {
     character.xp += amount;
     while (character.xp >= character.xpToLevel) {
         character.level++;
-        gainAP(character.level);
+        gain('AP', character.level);
         character.maxHealth += 5;
         character.health = character.maxHealth;
         character.xp -= character.xpToLevel;
@@ -351,12 +305,12 @@ function updateHireButton() {
     var $jobOption = $('.js-jobSelect').find(':selected');
     var cost = $jobOption.data('cost');
     $('.js-hire').text('Hire for ' + $jobOption.data('cost') + ' AP!');
-    $('.js-hire').prop('disabled', (cost > adventurePoints));
+    $('.js-hire').prop('disabled', (cost > state.AP));
 }
 $('.js-hire').on('click', function () {
     var $jobOption = $('.js-jobSelect').find(':selected');
     var cost = $jobOption.data('cost');
-    if (!spendAP(cost)) {
+    if (!spend('AP', cost)) {
         return;
     }
     var jobKey = Random.element($jobOption.data('jobs'));

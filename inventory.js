@@ -1,15 +1,3 @@
-
-$('.js-newItem').on('click', function (event) {
-    if (characters.length <= 0) {
-        return;
-    }
-    if (!spendIP(5)) {
-        return;
-    }
-    var item = makeItem(Random.element(items[0]));
-    $('.js-inventory').prepend(item.$item);
-});
-
 function equipItem(character, item) {
     if (character.equipment[item.base.slot]) {
         console.log("Tried to equip an item without first unequiping!");
@@ -25,12 +13,12 @@ function sellValue(item) {
 function isEquiped(character, item) {
     return character.equipment[item.base.slot] === item;
 }
-function makeItem(base) {
+function makeItem(base, level) {
     var item = {
         'base': base,
         'prefixes': [],
         'suffixes': [],
-        'level': 1
+        'level': level
     };
     item.$item = $tag('div', 'js-item item', tag('div', 'icon ' + base.icon));
     updateItem(item);
@@ -152,11 +140,11 @@ function sellItem(item) {
     }
     item.$item.remove();
     item.$item = null;
-    gainIP(sellValue(item));
+    gain('IP', sellValue(item));
     var total = item.prefixes.length + item.suffixes.length;
     if (total) {
-        if (total < 2) gainMP(sellValue(item) * total);
-        else gainRP(sellValue(item) * (total - 2));
+        if (total < 2) gain('MP', sellValue(item) * total);
+        else gain('RP', sellValue(item) * (total - 2));
     }
 }
 
@@ -281,35 +269,25 @@ function stopDrag() {
         updateEnchantmentOptions();
     }
 }
-
+var armorSlots = ['body', 'feet', 'head', 'offhand'];
+var equipmentSlots = ['weapon', 'body', 'feet', 'head', 'offhand'];
 var items = [
     [
+        {'slot': 'weapon', 'type': 'axe',  'name': 'Axe', 'bonuses': {'+minDamage': 3, '+maxDamage': 6, '+range': 2, '+attackSpeed': 1.5}, 'icon': 'axe'},
         {'slot': 'weapon', 'type': 'sword', 'name': 'Dagger', 'bonuses': {'+minDamage': 2, '+maxDamage': 5, '+range': 2, '+attackSpeed': 2}, 'icon': 'sword'},
         {'slot': 'weapon', 'type': 'bow',  'name': 'Bow', 'bonuses': {'+minDamage': 3, '+maxDamage': 6, '+range': 10, '+attackSpeed': 1}, 'icon': 'bow'},
-        {'slot': 'weapon', 'type': 'axe',  'name': 'Axe', 'bonuses': {'+minDamage': 3, '+maxDamage': 6, '+range': 2, '+attackSpeed': 1.5}, 'icon': 'axe'},
         {'slot': 'weapon', 'type': 'wand',  'name': 'Wand', 'bonuses': {'+minDamage': 0, '+maxDamage': 1, '+minMagicDamage': 1, '+maxMagicDamage': 2, '+range': 7, '+attackSpeed': 1.5}, 'icon': 'wand'},
-        {'slot': 'shield', 'type': 'shield',  'name': 'Small Shield', 'bonuses': {'+block': 2, '+armor': 2}, 'icon': 'shield'},
-        {'slot': 'boots', 'type': 'boots',  'name': 'Swift Boots', 'bonuses': {'+speed': 25, '%attackSpeed': .1}, 'offset': 8, icon: 'boots'},
-        {'slot': 'boots', 'type': 'boots',  'name': 'Steel Boots', 'bonuses': {'+speed': -50, '+armor': 1, '+block': 2}, 'offset': 8, icon: 'boots'},
-        {'slot': 'armor', 'type': 'tunic',  'name': 'Tunic', 'bonuses': {'+evasion': 2}, 'offset': 1, icon: 'armor'},
-        {'slot': 'armor', 'type': 'armor',  'name': 'Chainmail', 'bonuses': {'+armor': 2}, 'offset': 2, icon: 'armor'},
-        {'slot': 'armor', 'type': 'tunic',  'name': 'Leather Vest', 'bonuses': {'+maxHealth': 10}, 'offset': 3, icon: 'armor'},
-        {'slot': 'hat', 'type': 'helmet',  'name': 'Helmet', 'bonuses': {'+armor': 1, '+block': 1, '+evasion': 1}, 'offset': 9, icon: 'hat', hideHair: true},
-        {'slot': 'hat', 'type': 'helmet',  'name': 'Oversized Helm', 'bonuses': {'+armor': 2, '+accuracy': -1}, 'offset': 10, icon: 'hat'},
-
-	//Leon made Boots
-        {'slot': 'boots', 'type': 'boots',  'name': 'Sandals', 'bonuses': {'+speed': 15, '+maxHealth': 15}, 'offset': 8, icon: 'boots'},
-        {'slot': 'boots', 'type': 'boots',  'name': 'Leather Boots', 'bonuses': {'+speed': 15, '+armor': 1, '+evasion': 2}, 'offset': 8, icon: 'boots'},
-        {'slot': 'boots', 'type': 'boots',  'name': 'Cleets', 'bonuses': {'+speed': 45}, 'offset': 8, icon: 'boots'},
-        {'slot': 'boots', 'type': 'boots',  'name': 'Feet Wrappings', 'bonuses': {'+speed': 25, '+accuracy': +2}, 'offset': 8, icon: 'boots'},
-
-        //Leon Made Off Hands
-        {'slot': 'shield', 'type': 'shield',  'name': 'Heavy Shield', 'bonuses': {'+block': 4, '+armor': 2, '+speed': -50}, 'icon': 'shield'},
-        {'slot': 'shield', 'type': 'shield',  'name': 'Wooden Shield', 'bonuses': {'+block': 2, '+evasion': 2}, 'icon': 'shield'},
-        {'slot': 'shield', 'type': 'shield',  'name': 'Glowing Orb', 'bonuses': {'+minMagicDamage': 2, '+maxMagicDamage': 4, '%maxHealth': 0.1}, 'icon': 'shield'},
-        {'slot': 'shield', 'type': 'shield',  'name': 'Spell Book', 'bonuses': {'+minMagicDamage': 1, '+maxMagicDamage': 4, '%attackSpeed': 0.1}, 'icon': 'shield'},
-        {'slot': 'shield', 'type': 'shield',  'name': 'Quiver', 'bonuses': {'%attackSpeed': 0.25, '+minDamage': 2, '+maxDamage': 4}, 'icon': 'shield'},
-
+        {'slot': 'offhand', 'type': 'shield',  'name': 'Small Shield', 'bonuses': {'+block': 2, '+armor': 2}, 'icon': 'shield'},
+        {'slot': 'feet', 'type': 'boots',  'name': 'Steel Boots', 'bonuses': {'+speed': -50, '+armor': 1, '+block': 2}, 'offset': 8, icon: 'boots'},
+        {'slot': 'body', 'type': 'tunic',  'name': 'Tunic', 'bonuses': {'+evasion': 2}, 'offset': 1, icon: 'armor'},
+        {'slot': 'body', 'type': 'armor',  'name': 'Chainmail', 'bonuses': {'+armor': 2}, 'offset': 2, icon: 'armor'},
+        {'slot': 'body', 'type': 'tunic',  'name': 'Leather Vest', 'bonuses': {'+maxHealth': 10}, 'offset': 3, icon: 'armor'},
+        {'slot': 'head', 'type': 'helmet',  'name': 'Ribbon', 'bonuses': {'+evasion': 1}, icon: 'hat'},
+    ],
+    [
+        {'slot': 'feet', 'type': 'boots',  'name': 'Swift Boots', 'bonuses': {'+speed': 25, '%attackSpeed': .1}, 'offset': 8, icon: 'boots'},
+        {'slot': 'head', 'type': 'helmet',  'name': 'Helmet', 'bonuses': {'+armor': 1, '+block': 1, '+evasion': 1}, 'offset': 9, icon: 'hat', hideHair: true},
+        {'slot': 'head', 'type': 'helmet',  'name': 'Oversized Helm', 'bonuses': {'+armor': 2, '+accuracy': -1}, 'offset': 10, icon: 'hat'},
         //Leon Made Main Hands
         {'slot': 'weapon', 'type': 'sword', 'name': 'Knife', 'bonuses': {'+minDamage': 4, '+maxDamage': 8, '+range': 2, '+attackSpeed': 1.85}, 'icon': 'sword'},
         {'slot': 'weapon', 'type': 'bow',  'name': 'Crossbow', 'bonuses': {'+minDamage': 5, '+maxDamage': 9, '+range': 9, '+attackSpeed': 1.2}, 'icon': 'bow'},
@@ -319,6 +297,21 @@ var items = [
         {'slot': 'weapon', 'type': 'bow',  'name': 'Blow Gun', 'bonuses': {'+minDamage': 3, '+maxDamage':  7, '+range': 8, '+attackSpeed': 1.6}, 'icon': 'bow'},
         {'slot': 'weapon', 'type': 'staff',  'name': 'Wooden Staff', 'bonuses': {'+minDamage': 3, '+maxDamage': 5, '+minMagicDamage': 1, '+maxMagicDamage': 3, '+range': 2, '+attackSpeed': 1.2}, 'icon': 'wand'},
         {'slot': 'weapon', 'type': 'glove',  'name': 'Brass Knuckles', 'bonuses': {'+minDamage': 4, '+maxDamage': 6, '+range': 1, '+attackSpeed': 2.2}, 'icon': 'glove'}
+    ],
+    [
+	//Leon made Boots
+        {'slot': 'feet', 'type': 'boots',  'name': 'Sandals', 'bonuses': {'+speed': 15, '+maxHealth': 15}, 'offset': 8, icon: 'boots'},
+        {'slot': 'feet', 'type': 'boots',  'name': 'Leather Boots', 'bonuses': {'+speed': 15, '+armor': 1, '+evasion': 2}, 'offset': 8, icon: 'boots'},
+        {'slot': 'feet', 'type': 'boots',  'name': 'Cleets', 'bonuses': {'+speed': 45}, 'offset': 8, icon: 'boots'},
+        {'slot': 'feet', 'type': 'boots',  'name': 'Feet Wrappings', 'bonuses': {'+speed': 25, '+accuracy': +2}, 'offset': 8, icon: 'boots'},
+    ],
+    [
+        //Leon Made Off Hands
+        {'slot': 'offhand', 'type': 'shield',  'name': 'Heavy Shield', 'bonuses': {'+block': 4, '+armor': 2, '+speed': -50}, 'icon': 'shield'},
+        {'slot': 'offhand', 'type': 'shield',  'name': 'Wooden Shield', 'bonuses': {'+block': 2, '+evasion': 2}, 'icon': 'shield'},
+        {'slot': 'offhand', 'type': 'orb',  'name': 'Glowing Orb', 'bonuses': {'+minMagicDamage': 2, '+maxMagicDamage': 4, '%maxHealth': 0.1}, 'icon': 'shield'},
+        {'slot': 'offhand', 'type': 'book',  'name': 'Spell Book', 'bonuses': {'+minMagicDamage': 1, '+maxMagicDamage': 4, '%attackSpeed': 0.1}, 'icon': 'shield'},
+        {'slot': 'offhand', 'type': 'quiver',  'name': 'Quiver', 'bonuses': {'%attackSpeed': 0.25, '+minDamage': 2, '+maxDamage': 4}, 'icon': 'shield'},
     ]
 ];
 // TODO: Add unique "Sticky, Sticky Bow of Aiming and Leeching and Leeching and Aiming"
@@ -343,3 +336,75 @@ $(document).on('keydown', function(event) {
     }
     console.log(event.which);
 });
+
+$('.js-raritySelect').on('change', updateItemCrafting);
+$('.js-levelSelect').on('change', updateItemCrafting);
+$('.js-typeSelect').on('change', updateItemCrafting);
+var craftingPointsType = 'IP';
+var itemsFilteredByType = [];
+var itemTotalCost = 5;
+var craftingLevel = 1;
+function updateItemCrafting() {
+    var rarity = $('.js-raritySelect').val();
+    craftingLevel = $('.js-levelSelect').val();
+    var type = $('.js-typeSelect').val();
+    var playerCurrency = 0;
+    if (rarity == 'plain') {
+        craftingPointsType = 'IP'
+    } else if (rarity === 'enchanted') {
+        craftingPointsType = 'MP'
+    } else if (rarity === 'imbued') {
+        craftingPointsType = 'RP'
+    }
+    var itemsFilteredByLevel = [];
+    itemsFilteredByType = [];
+    for (var itemLevel = 0; itemLevel < craftingLevel && itemLevel < items.length; itemLevel++) {
+        items[itemLevel].forEach(function (item) {
+            itemsFilteredByLevel.push(item);
+            if (itemMatchesFilter(item, type)) {
+                itemsFilteredByType.push(item);
+            }
+        });
+    }
+    var typeMultiplier = (itemsFilteredByLevel.length / itemsFilteredByType.length).toFixed(2);
+    $('.js-rarityCost').text('5 ' + craftingPointsType);
+    var levelMultiplier = craftingLevel * craftingLevel * craftingLevel;
+    $('.js-levelMultiplier').text('x ' + levelMultiplier);
+    $('.js-typeMultiplier').text('x ' + typeMultiplier);
+    itemTotalCost = Math.ceil(5 * levelMultiplier * typeMultiplier);
+    $('.js-craftItem').text('Craft for ' + itemTotalCost + ' ' + craftingPointsType);
+    updateCraftButton();
+}
+$('.js-craftItem').on('click', function () {
+    if (!spend(craftingPointsType, itemTotalCost)) {
+        return;
+    }
+    var item = makeItem(Random.element(itemsFilteredByType), craftingLevel);
+    if (craftingPointsType == 'MP') {
+        enchantItemProper(item);
+    } else if (craftingPointsType == 'RP') {
+        imbueItemProper(item);
+    }
+    updateItem(item);
+    $('.js-inventory').prepend(item.$item);
+});
+function updateCraftButton() {
+    $('.js-craftItem').prop('disabled', itemTotalCost > state[craftingPointsType]);
+}
+
+function itemMatchesFilter(item, typeFilter) {
+    switch (typeFilter) {
+        case 'all':
+            return true;
+        case 'weapon':
+        case 'head':
+        case 'body':
+        case 'feet':
+        case 'offhand':
+            return item.slot === typeFilter;
+        case 'armor':
+            return armorSlots.indexOf(item.slot) >= 0;
+        default:
+            return true;
+    }
+}

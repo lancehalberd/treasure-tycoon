@@ -19,13 +19,14 @@ function createCanvas(width, height, classes) {
 }
 
 var fps = 6;
-var characters = [];
-var adventurePoints = 0;
-var itemPoints = 0;
-var magicPoints = 0;
-var rarePoints = 0;
-var uniquePoints = 0;
-
+var state = {
+    characters: [],
+    AP: 0,
+    IP: 0,
+    MP: 0,
+    RP: 0,
+    UP: 0
+}
 function startArea(character, index) {
     character.$panel.find('.js-infoMode').hide();
     character.$panel.find('.js-adventureMode').show();
@@ -39,13 +40,14 @@ function startArea(character, index) {
 async.mapSeries(['gfx/person.png', 'gfx/grass.png', 'gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png'], loadImage, function(err, results){
     initializeJobs();
     initalizeMonsters();
+    updateItemCrafting();
     var jobKey = Random.element(ranks[0]);
     newCharacter(characterClasses[jobKey]);
-    gainIP(1000);
-    gainAP(30);
-    gainMP(2000);
-    gainRP(500);
-    gainUP(1);
+    gain('IP', 10);
+    gain('AP', 30);
+    gain('MP', 0);
+    gain('RP', 0);
+    gain('UP', 0);
     setInterval(mainLoop, 20);
     $('.js-loading').hide();
     $('.js-gameContent').show();
@@ -56,7 +58,7 @@ function completeArea(character) {
     // If the character beat the last adventure open to them, unlock the next one
     if ($adventureButton.data('levelIndex') == character.areaIndex) {
         var nextLevel = $adventureButton.data('levelIndex') + 1;
-        gainAP(nextLevel);
+        gain('AP', nextLevel);
         if (levels.length <= nextLevel) {
             var monsters = levels[nextLevel - 1].monsters.slice();
             var wave = [];
@@ -69,12 +71,15 @@ function completeArea(character) {
         var $nextAdventureButton = $adventureButton.clone().data('levelIndex', nextLevel).text('Lvl ' + levels[nextLevel].level + ' Adventure!');
         $adventureButton.after($nextAdventureButton);
     }
+    for (var itemLevel = $('.js-levelSelect').find('option').length + 1; itemLevel <= character.area.level + 1; itemLevel++) {
+        $('.js-levelSelect').append($tag('option', '', 'Level ' + itemLevel).attr('value', itemLevel));
+    }
     resetCharacter(character);
 }
 
 function mainLoop() {
     var time = now();
-    characters.forEach(function (character) {
+    state.characters.forEach(function (character) {
         var delta = time - character.lastTime;
         if (character.area == null) {
             if (!character.previewContext) {
@@ -127,7 +132,10 @@ function mainLoop() {
                 character.enemies.splice(i--, 1);
                 if (character.health > 0) {
                     gainXP(character, enemy.xp);
-                    gainIP(enemy.ip);
+                    gain('IP', enemy.ip);
+                    gain('MP', enemy.mp);
+                    gain('RP', enemy.rp);
+                    gain('UP', enemy.up);
                 }
                 continue;
             }
@@ -349,7 +357,7 @@ $('body').on('click', '.js-adventure', function (event) {
 $('body').on('click', '.js-retire', function (event) {
     var $panel = $(this).closest('.js-playerPanel');
     var character = $panel.data('character');
-    gainAP(Math.ceil(character.level * character.job.cost / 10));
+    gain('AP', Math.ceil(character.level * character.job.cost / 10));
     $panel.remove();
     updateRetireButtons();
 });
