@@ -68,7 +68,7 @@ function itemHelpText(item) {
     var points = [sellValue(item) + ' IP'];
     var total = item.prefixes.length + item.suffixes.length;
     if (total) {
-        if (total < 2) points.push(sellValue(item) * total + ' MP');
+        if (total <= 2) points.push(sellValue(item) * total + ' MP');
         else points.push(sellValue(item) * (total - 2) + ' RP');
     }
     sections.push('Sell for ' + points.join(' '));
@@ -143,7 +143,7 @@ function sellItem(item) {
     gain('IP', sellValue(item));
     var total = item.prefixes.length + item.suffixes.length;
     if (total) {
-        if (total < 2) gain('MP', sellValue(item) * total);
+        if (total <= 2) gain('MP', sellValue(item) * total);
         else gain('RP', sellValue(item) * (total - 2));
     }
 }

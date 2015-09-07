@@ -87,13 +87,13 @@ function makeMonster(level, baseMonster, x) {
     var rarity = Math.random() * level * .6;
     if (rarity < 1) {
 
-    } else if (rarity < 2) {
+    } else if (rarity < 3) {
         if (Math.random() > .5) addMonsterPrefix(monster);
         else addMonsterSuffix(monster);
-    } else if (rarity < 4) {
+    } else if (rarity < 10) {
         addMonsterPrefix(monster);
         addMonsterSuffix(monster);
-    } else if (rarity < 8) {
+    } else if (rarity < 20) {
         addMonsterPrefix(monster);
         addMonsterSuffix(monster);
         if (Math.random() > .5) addMonsterPrefix(monster);
@@ -106,15 +106,15 @@ function makeMonster(level, baseMonster, x) {
     }
     monster.base.maxHealth = monster.base.health;
     updateMonster(monster);
-    if (rarity >= 1 && monster.ip > 1) {
+    if (monster.ip > 1) {
         monster.mp = Random.range(0, monster.ip - 1);
         monster.ip -= monster.mp;
     }
-    if (rarity >= 4 && monster.mp > 1) {
+    if (rarity >= 1 && monster.mp > 1) {
         monster.rp = Random.range(0, monster.rp - 1);
         monster.mp -= monster.rp;
     }
-    if (monster.ip > 1 && monster.mp > 1 && monster.rp > 1) {
+    if (Math.random() < .1 && monster.ip > 1 && monster.mp > 1 && monster.rp > 1) {
         monster.up = Random.range(0, Math.min(monster.ip, monster.mp, monster.rp) - 1);
         monster.ip -= monster.up;
         monster.mp -= monster.mp;
