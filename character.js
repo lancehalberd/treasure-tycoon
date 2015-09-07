@@ -15,13 +15,18 @@ function resetCharacter(character) {
     character.$panel.find('.js-adventureMode').hide();
     var $infoPanel = character.$panel.find('.js-infoMode');
     $infoPanel.show();
+    var currentArea = character.area;
     character.area = null;
     refreshStatsPanel(character);
+    character.$panel.find('.js-recall').prop('disabled', true);
+    if (character.replay) {
+        startArea(character, currentArea);
+    }
 }
 function refreshStatsPanel(character) {
     var $statsPanel = character.$panel.find('.js-infoMode .js-stats');
-    $statsPanel.find('.js-name').text(character.job.name + ' ' + character.name);
-    $statsPanel.find('.js-level').text(character.level);
+    character.$panel.find('.js-name').text(character.job.name + ' ' + character.name);
+    character.$panel.find('.js-level').text(character.level);
     $statsPanel.find('.js-dexterity').text(character.dexterity);
     $statsPanel.find('.js-strength').text(character.strength);
     $statsPanel.find('.js-intelligence').text(character.intelligence);
@@ -75,8 +80,12 @@ function newCharacter(job) {
         'canvasHeight': canvas.height,
         'area': null,
         'attackCooldown': 0,
-        'lastTime': now()
+        'lastTime': now(),
+        'gameSpeed': 1,
+        'replay': false,
+        'time': now()
     };
+    character.character = character;
     equipmentSlots.forEach(function (type) {
         character.equipment[type] = null;
     });

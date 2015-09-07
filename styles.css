@@ -27,8 +27,16 @@
     overflow-x: hidden;
     overflow-y: scroll;
 }
+.playerControlBar {
+    height: 30px;
+    padding: 3px;
+    box-sizing: border-box;
+}
+.controlBarEntry {
+    margin-right: 5px;
+}
 .playerPanel {
-    height: 240px;
+    height: 270px;
     background-color: white;
     margin: 5px;
 }
@@ -251,4 +259,8 @@ button {
 
 .itemCraftingSelect {
     width: 100px;
+}
+
+label {
+    cursor: pointer;
 }

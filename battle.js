@@ -10,7 +10,7 @@ function checkToAttack(attacker, target, distance) {
     if (ifdefor(attacker.attackCooldown, 0) > now()) {
         return null;
     }
-    attacker.attackCooldown = now() + 1000 / (attacker.attackSpeed * Math.max(.1, (1 - attacker.slow)));
+    attacker.attackCooldown = now() + 1000 / (attacker.attackSpeed * attacker.character.gameSpeed * Math.max(.1, (1 - attacker.slow)));
     return performAttack(attacker, target);
 }
 function applyArmorToDamage(damage, armor) {
@@ -84,7 +84,7 @@ function makeMonster(level, baseMonster, x) {
             monster.base[stat] = value;
         }
     });
-    var rarity = Math.random() < .25 ? Math.random() * level * .6 : 0;
+    var rarity = (Math.random() < .25) ? (Math.random() * level * .6) : 0;
     if (rarity < 1) {
 
     } else if (rarity < 3) {
@@ -288,7 +288,7 @@ function initalizeMonsters() {
     };
     var giantSkeleton = {
         'name': 'Skelegiant',
-        'health': [300, 400, 2, 2.5],
+        'health': [100, 200, 2, 2.5],
         'range': 1,
         'minDamage': [1, 2, 1, 1],
         'maxDamage': [3, 4, 1, 1],
@@ -306,7 +306,7 @@ function initalizeMonsters() {
     };
     var dragon = {
         'name': 'Dragon',
-        'health': [200, 400, 1, 1.5],
+        'health': [150, 250, 1, 1.5],
         'range': 2,
         'minDamage': [1, 3, 1, 1],
         'maxDamage': [3, 4, 1, 1],
@@ -336,6 +336,7 @@ function initalizeMonsters() {
         {'level': 4, 'monsters': [[caterpillar, caterpillar, butterfly, caterpillar], [caterpillar, caterpillar, butterfly, butterfly, caterpillar, caterpillar], [butterfly, butterfly, butterfly], giantSkeleton]},
         {'level': 5, 'monsters': [[caterpillar, caterpillar, butterfly, caterpillar, butterfly], [caterpillar, caterpillar, butterfly, caterpillar, butterfly, caterpillar, butterfly, caterpillar, butterfly], dragon]},
     ];
+    levels.forEach(function (level, index) { level.index = index;});
 }
 var enchantedMonsterBonuses = {'*maxHealth': 3, '*minDamge': 2, '*maxDamage': 2, '*xp': 3, '*ip': 3};
 var imbuedMonsterBonuses = {'*maxHealth': 10, '*minDamge': 4, '*maxDamage': 4, '*xp': 10, '*ip': 10};

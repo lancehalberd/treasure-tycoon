@@ -27,15 +27,15 @@ var state = {
     RP: 0,
     UP: 0
 }
-function startArea(character, index) {
+function startArea(character, area) {
     character.$panel.find('.js-infoMode').hide();
     character.$panel.find('.js-adventureMode').show();
-    character.areaIndex = index;
-    character.area = levels[index];
+    character.area = area;
     character.monsterIndex = 0;
     character.x = 0;
     character.enemies = [];
     character.damageNumbers = [];
+    character.$panel.find('.js-recall').prop('disabled', false);
 }
 async.mapSeries(['gfx/person.png', 'gfx/grass.png', 'gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png'], loadImage, function(err, results){
     initializeJobs();
@@ -56,7 +56,7 @@ async.mapSeries(['gfx/person.png', 'gfx/grass.png', 'gfx/caterpillar.png', 'gfx/
 function completeArea(character) {
     var $adventureButton = character.$panel.find('.js-infoMode').find('.js-adventure').last();
     // If the character beat the last adventure open to them, unlock the next one
-    if ($adventureButton.data('levelIndex') == character.areaIndex) {
+    if ($adventureButton.data('levelIndex') == character.area.index) {
         var nextLevel = $adventureButton.data('levelIndex') + 1;
         gain('AP', nextLevel);
         if (levels.length <= nextLevel) {
@@ -71,26 +71,27 @@ function completeArea(character) {
         var $nextAdventureButton = $adventureButton.clone().data('levelIndex', nextLevel).text('Lvl ' + levels[nextLevel].level + ' Adventure!');
         $adventureButton.after($nextAdventureButton);
     }
-    for (var itemLevel = $('.js-levelSelect').find('option').length + 1; itemLevel <= character.area.level + 1 && itemLevel < items.length; itemLevel++) {
+    for (var itemLevel = $('.js-levelSelect').find('option').length + 1; itemLevel <= character.area.level + 1 && itemLevel <= items.length; itemLevel++) {
         $('.js-levelSelect').append($tag('option', '', 'Level ' + itemLevel).attr('value', itemLevel));
     }
     resetCharacter(character);
 }
-
+var lastTime = now();
 function mainLoop() {
     var time = now();
+    var delta = time - lastTime;
+    lastTime = time;
     state.characters.forEach(function (character) {
-        var delta = time - character.lastTime;
+        character.time += delta * character.gameSpeed;
         if (character.area == null) {
             if (!character.previewContext) {
                 var canvas = character.$panel.find('.js-infoMode .js-canvas')[0];
                 character.previewContext = canvas.getContext("2d");
             }
             var fps = Math.floor(3 * 5 / 3);
-            var frame = Math.floor(time * fps / 1000) % walkLoop.length;
+            var frame = Math.floor(character.time * fps / 1000) % walkLoop.length;
             character.previewContext.clearRect(0, 0, 64, 128);
             character.previewContext.drawImage(character.personCanvas, walkLoop[frame] * 32, 0 , 32, 64, 0, -20, 64, 128);
-            character.lastTime = time;
             return;
         }
         var width = character.canvasWidth;
@@ -153,28 +154,28 @@ function mainLoop() {
                 )
             }
             if (!enemy.target && !ifdefor(enemy.stationary)) {
-                enemy.x -= enemy.speed * Math.max(0, (1 - enemy.slow)) * delta / 1000;
+                enemy.x -= enemy.speed * Math.max(0, (1 - enemy.slow)) * delta * character.gameSpeed / 1000;
             }
             // Don't let enemy move past the character
             if (enemy.x < character.x + 32) {
                 enemy.x = character.x + 32;
             }
             if (ifdefor(enemy.healthRegen)) {
-                enemy.health += enemy.healthRegen * delta / 1000;
+                enemy.health += enemy.healthRegen * delta * character.gameSpeed / 1000;
             }
             enemy.health = Math.min(enemy.maxHealth, Math.max(0, enemy.health));
-            enemy.slow = Math.max(0, enemy.slow - .1 * delta / 1000);
+            enemy.slow = Math.max(0, enemy.slow - .1 * delta * character.gameSpeed / 1000);
         }
         // apply health regen to character, but only if it is alive.
         if (character.health > 0) {
             if (ifdefor(character.healthRegen)) {
-                character.health += character.healthRegen * delta / 1000;
+                character.health += character.healthRegen * delta * character.gameSpeed / 1000;
             }
-            character.slow = Math.max(0, character.slow - .1 * delta / 1000);
+            character.slow = Math.max(0, character.slow - .1 * delta * character.gameSpeed / 1000);
             character.health = Math.min(character.maxHealth, Math.max(0, character.health));
         }
         if (!character.target) {
-            character.x += character.speed * Math.max(0, (1 - character.slow)) * delta / 1000;
+            character.x += character.speed * Math.max(0, (1 - character.slow)) * delta * character.gameSpeed / 1000;
         }
         var cameraX = character.x - 10;
         context.clearRect(0, 0, width, height);
@@ -188,7 +189,7 @@ function mainLoop() {
             var enemy = character.enemies[i];
             var enemyFps = Math.floor(3 * enemy.speed / 100);
             var source = enemy.base.source;
-            var enemyFrame = Math.floor(time * enemyFps / 1000) % source.frames;
+            var enemyFrame = Math.floor(character.time * enemyFps / 1000) % source.frames;
             if (source.flipped) {
                 context.translate((enemy.x - cameraX + source.width), 0);
                 context.scale(-1, 1);
@@ -215,12 +216,12 @@ function mainLoop() {
         }
         if (character.target) {
             var attackFps = 1000 / ((1000 / character.attackSpeed) / fightLoop.length);
-            var frame = Math.floor(Math.abs(time - character.attackCooldown) * attackFps / 1000) % fightLoop.length;
+            var frame = Math.floor(Math.abs(character.time - character.attackCooldown) * attackFps / 1000) % fightLoop.length;
             context.drawImage(character.personCanvas, fightLoop[frame] * 32, 0 , 32, 64,
                             character.x - cameraX, 240 - 128 - 72, 64, 128);
         } else {
             var fps = Math.floor(3 * character.speed / 100);
-            var frame = Math.floor(time * fps / 1000) % walkLoop.length;
+            var frame = Math.floor(character.time * fps / 1000) % walkLoop.length;
             context.drawImage(character.personCanvas, walkLoop[frame] * 32, 0 , 32, 64,
                             character.x - cameraX, 240 - 128 - 72, 64, 128);
         }
@@ -246,7 +247,6 @@ function mainLoop() {
         if (character.health <= 0) {
             resetCharacter(character);
         }
-        character.lastTime = time;
     });
     checkRemoveToolTip();
 }
@@ -352,7 +352,7 @@ $('body').on('click', '.js-adventure', function (event) {
     var index = $(this).data('levelIndex');
     var $panel = $(this).closest('.js-playerPanel');
     var character = $panel.data('character');
-    startArea(character, index);
+    startArea(character, levels[index]);
 });
 $('body').on('click', '.js-retire', function (event) {
     var $panel = $(this).closest('.js-playerPanel');
@@ -373,4 +373,21 @@ $('.js-showCraftingPanel').on('click', function (event) {
 $('.js-showEnchantingPanel').on('click', function (event) {
     $('.js-infoPanel').hide();
     $('.js-enchantingPanel').show();
+});
+$('body').on('click', '.js-recall', function (event) {
+    var $panel = $(this).closest('.js-playerPanel');
+    var character = $panel.data('character');
+    $panel.find('.js-repeat').prop('checked', false);
+    character.replay = false;
+    resetCharacter(character);
+});
+$('body').on('click', '.js-repeat', function (event) {
+    var $panel = $(this).closest('.js-playerPanel');
+    var character = $panel.data('character');
+    character.replay = $(this).is(':checked');
+});
+$('body').on('click', '.js-fastforward', function (event) {
+    var $panel = $(this).closest('.js-playerPanel');
+    var character = $panel.data('character');
+    character.gameSpeed = $(this).is(':checked') ? 3 : 1;
 });
