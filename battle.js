@@ -84,7 +84,7 @@ function makeMonster(level, baseMonster, x) {
             monster.base[stat] = value;
         }
     });
-    var rarity = Math.random() * level * .6;
+    var rarity = Math.random() < .25 ? Math.random() * level * .6 : 0;
     if (rarity < 1) {
 
     } else if (rarity < 3) {
