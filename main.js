@@ -60,18 +60,18 @@ function completeArea(character) {
         var nextLevel = $adventureButton.data('levelIndex') + 1;
         gain('AP', nextLevel);
         if (levels.length <= nextLevel) {
-            var monsters = levels[nextLevel - 1].monsters.slice();
+            var nextLevelMonsters = levels[nextLevel - 1].monsters.slice();
             var wave = [];
             while (wave.length < 10) {
                 wave.push(Math.random() > .4 ? monsters['caterpillar'] : monsters['butterfly']);
             }
-            monsters.push(wave);
-            levels[nextLevel] = {'level': nextLevel + 1, 'monsters': monsters};
+            nextLevelMonsters.push(wave);
+            levels[nextLevel] = {'level': nextLevel + 1, 'monsters': nextLevelMonsters};
         }
         var $nextAdventureButton = $adventureButton.clone().data('levelIndex', nextLevel).text('Lvl ' + levels[nextLevel].level + ' Adventure!');
         $adventureButton.after($nextAdventureButton);
     }
-    for (var itemLevel = $('.js-levelSelect').find('option').length + 1; itemLevel <= character.area.level + 1; itemLevel++) {
+    for (var itemLevel = $('.js-levelSelect').find('option').length + 1; itemLevel <= character.area.level + 1 && itemLevel < items.length; itemLevel++) {
         $('.js-levelSelect').append($tag('option', '', 'Level ' + itemLevel).attr('value', itemLevel));
     }
     resetCharacter(character);
