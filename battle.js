@@ -111,7 +111,7 @@ function makeMonster(level, baseMonster, x) {
         monster.ip -= monster.mp;
     }
     if (rarity >= 1 && monster.mp > 1) {
-        monster.rp = Random.range(0, monster.rp - 1);
+        monster.rp = Random.range(0, monster.mp - 1);
         monster.mp -= monster.rp;
     }
     if (Math.random() < .1 && monster.ip > 1 && monster.mp > 1 && monster.rp > 1) {
