@@ -34,7 +34,7 @@ function startArea(character, area) {
     character.monsterIndex = 0;
     character.x = 0;
     character.enemies = [];
-    character.damageNumbers = [];
+    character.textPopups = [];
     character.$panel.find('.js-recall').prop('disabled', false);
 }
 async.mapSeries(['gfx/person.png', 'gfx/grass.png', 'gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png'], loadImage, function(err, results){
@@ -119,8 +119,8 @@ function mainLoop() {
             if (character.target.health > 0) {
                 hit = checkToAttack(character, character.target, 0);
                 if (hit != null){
-                    character.damageNumbers.push(
-                        {value: hit, x: character.target.x + 32, y: 240 - 128}
+                    character.textPopups.push(
+                        {value: hit, x: character.target.x + 32, y: 240 - 128, color: 'red'}
                     )
                 }
             } else {
@@ -134,23 +134,43 @@ function mainLoop() {
                 if (character.health > 0) {
                     gainXP(character, enemy.xp);
                     gain('IP', enemy.ip);
+                    if (enemy.ip) {
+                        character.textPopups.push(
+                            {value: '+' + enemy.ip, x: enemy.x + 35, y: 240 - 140, color: 'white', font: "20px sans-serif"}
+                        );
+                    }
                     gain('MP', enemy.mp);
+                    if (enemy.mp) {
+                        character.textPopups.push(
+                            {value: '+' + enemy.mp, x: enemy.x + 45, y: 240 - 145, color: '#cc8', font: "22px sans-serif"}
+                        )
+                    }
                     gain('RP', enemy.rp);
+                    if (enemy.rp) {
+                        character.textPopups.push(
+                            {value: '+' + enemy.rp, x: enemy.x + 55, y: 240 - 150, color: '#f8f', font: "24px sans-serif"}
+                        );
+                    }
                     gain('UP', enemy.up);
+                    if (enemy.up) {
+                        character.textPopups.push(
+                            {value: '+' + enemy.up, x: enemy.x + 65, y: 240 - 155, color: '#0ff', font: "26px sans-serif"}
+                        );
+                    }
                 }
                 continue;
             }
             var distance = Math.abs(enemy.x - (character.x + 32));
             hit = checkToAttack(character, enemy, distance);
             if (hit != null){
-                character.damageNumbers.push(
-                    {value: hit, x: enemy.x + 32, y: 240 - 128}
+                character.textPopups.push(
+                    {value: hit, x: enemy.x + 32, y: 240 - 128, color: 'red'}
                 )
             }
             hit = checkToAttack(enemy, character, distance);
             if (hit != null){
-                character.damageNumbers.push(
-                    {value: hit, x: character.x + 32, y: 240 - 128}
+                character.textPopups.push(
+                    {value: hit, x: character.x + 32, y: 240 - 128, color: 'red'}
                 )
             }
             if (!enemy.target && !ifdefor(enemy.stationary)) {
@@ -234,14 +254,15 @@ function mainLoop() {
         context.fillText(character.level, 30, 240 - 5);
         // Draw damage indicators
         context.fillStyle = 'red';
-        for (var i = 0; i < character.damageNumbers.length; i++) {
-            var damageNumber = character.damageNumbers[i];
-            context.font = "20px sans-serif";
+        for (var i = 0; i < character.textPopups.length; i++) {
+            var textPopup = character.textPopups[i];
+            context.fillStyle = ifdefor(textPopup.color, "red");
+            context.font = ifdefor(textPopup.font, "20px sans-serif");
             context.textAlign = 'center'
-            context.fillText(damageNumber.value, damageNumber.x - cameraX, damageNumber.y);
-            damageNumber.y--;
-            if (damageNumber.y < 60) {
-                character.damageNumbers.splice(i--, 1);
+            context.fillText(textPopup.value, textPopup.x - cameraX, textPopup.y);
+            textPopup.y--;
+            if (textPopup.y < 60) {
+                character.textPopups.splice(i--, 1);
             }
         }
         if (character.health <= 0) {
