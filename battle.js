@@ -313,7 +313,7 @@ function initalizeMonsters() {
         'minMagicDamage': [1, 1, 1, 1],
         'maxMagicDamage': [2, 2, 2, 2],
         'attackSpeed': [1, 1, .1, .1],
-        'speed': 150,
+        'speed': 150, //controls speed of animation, not forward movement
         'accuracy': [1, 2, 1, 2],
         'evasion': [1, 2, 1, 2],
         'block': 0,
