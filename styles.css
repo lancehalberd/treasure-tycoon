@@ -27,8 +27,16 @@
     overflow-x: hidden;
     overflow-y: scroll;
 }
+.playerControlBar {
+    height: 30px;
+    padding: 3px;
+    box-sizing: border-box;
+}
+.controlBarEntry {
+    margin-right: 5px;
+}
 .playerPanel {
-    height: 240px;
+    height: 270px;
     background-color: white;
     margin: 5px;
 }
@@ -132,17 +140,17 @@ button {
     position: relative;
 }
 
-.equipment > .hat {
+.equipment > .head {
     position: absolute;
     left: 90px;
     top: 20px;
 }
-.equipment > .armor {
+.equipment > .body {
     position: absolute;
     left: 90px;
     top: 80px;
 }
-.equipment > .boots {
+.equipment > .feet {
     position: absolute;
     left: 90px;
     top: 140px;
@@ -152,7 +160,7 @@ button {
     left: 30px;
     top: 90px;
 }
-.equipment > .shield {
+.equipment > .offhand {
     position: absolute;
     left: 150px;
     top: 90px;
@@ -225,6 +233,11 @@ button {
     border-radius: 4px;
     z-index: 100;
 }
+.centered {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
 
 .adventure {
     display: block;
@@ -242,4 +255,12 @@ button {
 }
 .infoPanel div {
     margin-bottom: 5px;
+}
+
+.itemCraftingSelect {
+    width: 100px;
+}
+
+label {
+    cursor: pointer;
 }

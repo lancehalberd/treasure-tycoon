@@ -1,7 +1,7 @@
 <html>
 <head>
     <style type="text/css" >
-        .body {
+        .pagebody {
             background-color: black;
             background-repeat: repeat;
             font-family: 'kingthings_calligraphica_2Rg', Georgia, serif;
@@ -42,7 +42,7 @@
 
     <title>Treasure Tycoon</title>
 </head>
-<body class="body">
+<body class="pagebody">
 
 <div class="js-mainGame js-mouseContainer mainGame">
     <div class="js-loading loading" style="display: none">
@@ -59,19 +59,19 @@
     <div class="js-gameContent" style="display: none">
         <div class="pointsBar">
             <div class="points" helptext="Spend these points to hire new adventurers.<br/>AP is gained by leveling adventurers and completing new areas.<br/>You can gain large amounts of AP by retiring high level adventurers.">
-                Adventure Points: <span class="js-adventurePoints"></span>
+                Adventure Points: <span class="js-pointsAP"></span>
             </div>
             <div class="points" helptext="Spend these points to create brand new items.<br/>IP is frequently acquired when adventurers defeat monsters.">
-                Item Points: <span class="js-itemPoints"></span>
+                Item Points: <span class="js-pointsIP"></span>
             </div>
             <div class="points" helptext="Spend these points to enchant items with up to 2 special effects.<br/>MP is sometimes acquired when adventurers defeat monsters.">
-                Magic Points: <span class="js-magicPoints"></span>
+                Magic Points: <span class="js-pointsMP"></span>
             </div>
             <div class="points" helptext="Spend these points to add up to 2 more effects to enchanted items.<br/>RP is sometimes acquired when adventurers defeat enchanted monsters.">
-                Rare Points: <span class="js-rarePoints"></span>
+                Rare Points: <span class="js-pointsRP"></span>
             </div>
             <div class="points" helptext="Spend these points to create special items that cannot otherwise be crafted.<br/>UP is rarely acquired when adventurers defeat monsters.">
-                Unique Points: <span class="js-uniquePoints"></span>
+                Unique Points: <span class="js-pointsUP"></span>
             </div>
         </div>
         <div class="controlColumn">
@@ -84,7 +84,33 @@
                 </div>
             </div>
             <div class="js-craftingPanel js-infoPanel infoPanel" style="display: none;">
-                <button class="js-newItem item" helptext="Click here to craft a random item."><div class="icon item"></div></button>
+                <div>
+                    <select class="js-raritySelect itemCraftingSelect">
+                        <option value="plain">Plain</option>
+                        <option value="enchanted">Enchanted</option>
+                        <option value="imbued">Imbued</option>
+                    </select> <span class="js-rarityCost">5 IP</span>
+                </div>
+                <div>
+                    <select class="js-levelSelect itemCraftingSelect">
+                        <option value='1'>Level 1</option>
+                    </select> <span class="js-levelMultiplier">x 1</span>
+                </div>
+                <div>
+                    <select class="js-typeSelect itemCraftingSelect">
+                        <option value='all'>All</option>
+                        <option value='weapon'>Weapon</option>
+                        <option value='armor'>Armor</option>
+                        <option value='offhand'>Offhand</option>
+                        <option value='head'>Head</option>
+                        <option value='body'>Body</option>
+                        <option value='feet'>Feet</option>
+                    </select> <span class="js-typeMultiplier">x 1</span>
+                </div>
+                <hr>
+                <div>
+                    <button class="js-craftItem centered" helptext="Click here to craft a random item. The above settings can be used to control the quality and type of items that can be created.">Craft for 5 IP</button>
+                </div>
             </div>
             <div class="js-enchantingPanel js-infoPanel infoPanel" style="display: none;">
                 <button class="js-enchantmentOption js-enchant" helptext="You can spend Magic Points to add one to two magical properties to an unenchanted item." style="display: none;">Enchant</button></span>
@@ -104,16 +130,16 @@
             <div class="js-inventory inventory"></div>
         </div><div class="js-playerColumn playerColumn">
             <div class="js-playerPanelTemplate playerPanel" style="display: none;">
+                <div class="playerControlBar">
+                    Level <span class="js-level">X</span> <span class="js-name controlBarEntry">X</span>
+                    <button class="js-recall controlBarEntry">Recall</button>
+                    <label class="controlBarEntry"><input type="checkbox" class="js-repeat"> Repeat</label>
+                    <label class="controlBarEntry"><input type="checkbox" class="js-fastforward"> Fast Forward</label>
+                </div>
                 <div class="js-infoMode infoMode">
                     <div class="js-stats stats playerBox">
                         <canvas class="js-canvas" width="64" height="128" style="background-color: white; display:inline; float: left">
                         </canvas>
-                        <div>
-                            <span class="js-name">X</span>
-                        </div>
-                        <div>
-                            Lvl: <span class="js-level">X</span>
-                        </div>
                         <div class="triStatBox">
                             <div class="js-dexterity dexterity">X</div>
                             <div class="js-strength strength">X</div>
@@ -156,11 +182,11 @@
                             <button class="js-retire">Retire</button>
                         </div>
                     </div><div class="js-equipment equipment playerBox">
-                        <div class="js-hat itemSlot hat"></div>
-                        <div class="js-armor itemSlot armor"></div>
+                        <div class="js-head itemSlot head"></div>
+                        <div class="js-body itemSlot body"></div>
                         <div class="js-weapon itemSlot weapon"></div>
-                        <div class="js-shield itemSlot shield"></div>
-                        <div class="js-boots itemSlot boots"></div>
+                        <div class="js-offhand itemSlot offhand"></div>
+                        <div class="js-feet itemSlot feet"></div>
                     </div><div class="js-map map playerBox">
                         <button class="js-adventure adventure" data-level-index='0'>Lvl 1 Adventure!</button>
                     </div>

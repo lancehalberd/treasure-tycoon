@@ -10,7 +10,7 @@ function checkToAttack(attacker, target, distance) {
     if (ifdefor(attacker.attackCooldown, 0) > now()) {
         return null;
     }
-    attacker.attackCooldown = now() + 1000 / (attacker.attackSpeed * Math.max(.1, (1 - attacker.slow)));
+    attacker.attackCooldown = now() + 1000 / (attacker.attackSpeed * attacker.character.gameSpeed * Math.max(.1, (1 - attacker.slow)));
     return performAttack(attacker, target);
 }
 function applyArmorToDamage(damage, armor) {
@@ -19,10 +19,10 @@ function applyArmorToDamage(damage, armor) {
     }
     //This equation looks a bit funny but is designed to have the following properties:
     //100% damage at 0 armor
-    //50% damage when armor is 1/3 of base damage
-    //25% damage when armor is 2/3 of base damage
-    //1/(2^N) damage when armor is N/3 of base damage
-    return Math.max(1, Math.round(damage / Math.pow(2, 3 * armor / damage)));
+    //50% damage when armor is equal to base damage
+    //25% damage when armor is double base damage
+    //1/(2^N) damage when armor is N times base damage
+    return Math.max(1, Math.round(damage / Math.pow(2, armor / damage)));
 }
 
 function performAttack(attacker, target) {
@@ -68,6 +68,9 @@ function makeMonster(level, baseMonster, x) {
         'base': {
             'level': level,
             'ip': Random.range(0, level * 2),
+            'mp': 0,
+            'rp': 0,
+            'up': 0,
             'xp': level * 2,
         },
         'bonuses': [],
@@ -81,16 +84,16 @@ function makeMonster(level, baseMonster, x) {
             monster.base[stat] = value;
         }
     });
-    var rarity = Math.random() * level;
+    var rarity = (Math.random() < .25) ? (Math.random() * level * .6) : 0;
     if (rarity < 1) {
 
-    } else if (rarity < 2) {
+    } else if (rarity < 3) {
         if (Math.random() > .5) addMonsterPrefix(monster);
         else addMonsterSuffix(monster);
-    } else if (rarity < 4) {
+    } else if (rarity < 10) {
         addMonsterPrefix(monster);
         addMonsterSuffix(monster);
-    } else if (rarity < 8) {
+    } else if (rarity < 20) {
         addMonsterPrefix(monster);
         addMonsterSuffix(monster);
         if (Math.random() > .5) addMonsterPrefix(monster);
@@ -103,6 +106,20 @@ function makeMonster(level, baseMonster, x) {
     }
     monster.base.maxHealth = monster.base.health;
     updateMonster(monster);
+    if (monster.ip > 1) {
+        monster.mp = Random.range(0, monster.ip - 1);
+        monster.ip -= monster.mp;
+    }
+    if (rarity >= 1 && monster.mp > 1) {
+        monster.rp = Random.range(0, monster.mp - 1);
+        monster.mp -= monster.rp;
+    }
+    if (Math.random() < .1 && monster.ip > 1 && monster.mp > 1 && monster.rp > 1) {
+        monster.up = Random.range(0, Math.min(monster.ip, monster.mp, monster.rp) - 1);
+        monster.ip -= monster.up;
+        monster.mp -= monster.mp;
+        monster.rp -= monster.rp;
+    }
     return monster;
 }
 function addMonsterPrefix(monster) {
@@ -157,7 +174,7 @@ function updateMonster(monster) {
     }
     monster.helptext = name;
     // Add the character's current equipment to bonuses and graphics
-    ['boots', 'armor', 'hat', 'weapon', 'shield'].forEach(function (type) {
+    equipmentSlots.forEach(function (type) {
         var equipment = ifdefor(monster.equipment[type]);
         if (!equipment) {
             return;
@@ -172,7 +189,7 @@ function updateMonster(monster) {
             monster.bonuses.push(affix.bonuses);
         })
     });
-    ['dexterity', 'strength', 'intelligence', 'maxHealth', 'speed', 'ip', 'xp',
+    ['dexterity', 'strength', 'intelligence', 'maxHealth', 'speed', 'ip', 'xp', 'mp', 'rp', 'up',
      'evasion', 'block', 'magicBlock', 'armor', 'magicResist', 'accuracy', 'range', 'attackSpeed',
      'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage',
      'damageOnMiss', 'slowOnHit', 'healthRegen', 'healthGainOnHit'].forEach(function (stat) {
@@ -199,7 +216,7 @@ function addMonsters(key, data) {
 function initalizeMonsters() {
     var caterpillar = {
         'name': 'Caterpillar',
-        'health': [3, 4, 2, 2.5],
+        'health': [5, 6, 2, 2.5],
         'range': 1,
         'minDamage': [1, 2, 1, 1],
         'maxDamage': [3, 4, 1, 1],
@@ -210,14 +227,14 @@ function initalizeMonsters() {
         'accuracy': [0, 0, 1, 2],
         'evasion': [0, 0, 0, 1],
         'block': [0, 0, .5, 1.5],
-        'magicBlock': [1, 1, .5, 1],
-        'armor': [0, 0, .5, 1.5],
+        'magicBlock': [0, 0, .5, 1],
+        'armor': [0, 0, 1, 2],
         'magicResist': 0,
         'source': {'image': images['gfx/caterpillar.png'], 'offset': 0, 'width': 48, 'flipped': true, frames: 4}
     };
     var butterfly = {
         'name': 'Butterfly',
-        'health': [2, 4, 1, 1.5],
+        'health': [3, 5, 1, 1.5],
         'range': 2,
         'minDamage': [1, 3, 1, 1],
         'maxDamage': [3, 4, 1, 1],
@@ -271,7 +288,7 @@ function initalizeMonsters() {
     };
     var giantSkeleton = {
         'name': 'Skelegiant',
-        'health': [300, 400, 2, 2.5],
+        'health': [100, 200, 2, 2.5],
         'range': 1,
         'minDamage': [1, 2, 1, 1],
         'maxDamage': [3, 4, 1, 1],
@@ -289,7 +306,7 @@ function initalizeMonsters() {
     };
     var dragon = {
         'name': 'Dragon',
-        'health': [200, 400, 1, 1.5],
+        'health': [150, 250, 1, 1.5],
         'range': 2,
         'minDamage': [1, 3, 1, 1],
         'maxDamage': [3, 4, 1, 1],
@@ -319,9 +336,10 @@ function initalizeMonsters() {
         {'level': 4, 'monsters': [[caterpillar, caterpillar, butterfly, caterpillar], [caterpillar, caterpillar, butterfly, butterfly, caterpillar, caterpillar], [butterfly, butterfly, butterfly], giantSkeleton]},
         {'level': 5, 'monsters': [[caterpillar, caterpillar, butterfly, caterpillar, butterfly], [caterpillar, caterpillar, butterfly, caterpillar, butterfly, caterpillar, butterfly, caterpillar, butterfly], dragon]},
     ];
+    levels.forEach(function (level, index) { level.index = index;});
 }
-var enchantedMonsterBonuses = {'*maxHealth': 3, '*minDamge': 2, '*maxDamage': 2};
-var imbuedMonsterBonuses = {'*maxHealth': 10, '*minDamge': 4, '*maxDamage': 4};
+var enchantedMonsterBonuses = {'*maxHealth': 3, '*minDamge': 2, '*maxDamage': 2, '*xp': 3, '*ip': 3};
+var imbuedMonsterBonuses = {'*maxHealth': 10, '*minDamge': 4, '*maxDamage': 4, '*xp': 10, '*ip': 10};
 var monsterPrefixes = [
     [
         {'name': 'Frenzied', 'bonuses': {'*speed': [1.5, 2], '*attackSpeed': [1.5, 2]}},
