@@ -2,8 +2,8 @@ var prefixes = [
     [
         {'slot': 'weapon', 'name': 'Tricky', 'bonuses': {'+damageOnMiss': [1, 2]}},
         {'slot': 'weapon', 'name': 'Strong', 'bonuses': {'+minDamage': 1, '+maxDamage': 2}},
-        {'slot': 'weapon', 'name': 'Swift',  'bonuses': {'%attackSpeed': [.05, .1]}},
-        {'slot': 'weapon', 'name': 'Sticky', 'bonuses': {'+slowOnHit': [.05, .1]}},
+        {'slot': 'weapon', 'name': 'Swift',  'bonuses': {'%attackSpeed': [5, 10, 100]}},
+        {'slot': 'weapon', 'name': 'Sticky', 'bonuses': {'+slowOnHit': [5, 10, 100]}},
         {'slot': armorSlots, 'name': 'Hardy', 'bonuses': {'+maxHealth': [5, 10]}},
         {'slot': armorSlots, 'name': 'Soothing', 'bonuses': {'+healthRegen': [1, 2]}},
     ]
@@ -25,7 +25,7 @@ function makeAffix(baseAffix) {
     };
     $.each(baseAffix.bonuses, function (key, value) {
         if (Array.isArray(value)) {
-            affix.bonuses[key] = Random.range(value[0], value[1]);
+            affix.bonuses[key] = Random.range(value[0], value[1]) / ifdefor(value[2], 1);
         } else {
             affix.bonuses[key] = value;
         }

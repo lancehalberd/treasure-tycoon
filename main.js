@@ -38,13 +38,17 @@ function startArea(character, area) {
     character.$panel.find('.js-recall').prop('disabled', false);
 }
 async.mapSeries(['gfx/person.png', 'gfx/grass.png', 'gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png'], loadImage, function(err, results){
+    ['gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png'].forEach(function (imageKey) {
+        images[imageKey + '-enchanted'] = makeTintedImage(images[imageKey], '#af0');
+        images[imageKey + '-imbued'] = makeTintedImage(images[imageKey], '#c6f');
+    });
     initializeJobs();
     initalizeMonsters();
     updateItemCrafting();
     var jobKey = Random.element(ranks[0]);
     newCharacter(characterClasses[jobKey]);
     gain('IP', 10);
-    gain('AP', 30);
+    gain('AP', 20);
     gain('MP', 0);
     gain('RP', 0);
     gain('UP', 0);
@@ -52,6 +56,22 @@ async.mapSeries(['gfx/person.png', 'gfx/grass.png', 'gfx/caterpillar.png', 'gfx/
     $('.js-loading').hide();
     $('.js-gameContent').show();
 });
+function makeTintedImage(image, tint) {
+    var tintCanvas = createCanvas(image.width, image.height);
+    var tintContext = tintCanvas.getContext('2d');
+    tintContext.clearRect(0, 0, image.width, image.height);
+    tintContext.fillStyle = tint;
+    tintContext.fillRect(0,0, image.width, image.height);
+    tintContext.globalCompositeOperation = "destination-atop";
+    tintContext.drawImage(image, 0, 0, image.width, image.height, 0, 0, image.width, image.height);
+    var resultCanvas = createCanvas(image.width, image.height);
+    var resultContext = resultCanvas.getContext('2d');
+    resultContext.drawImage(image, 0, 0, image.width, image.height, 0, 0, image.width, image.height);
+    resultContext.globalAlpha = 0.3;
+    resultContext.drawImage(tintCanvas, 0, 0, image.width, image.height, 0, 0, image.width, image.height);
+    resultContext.globalAlpha = 1;
+    return resultCanvas;
+}
 
 function completeArea(character) {
     var $adventureButton = character.$panel.find('.js-infoMode').find('.js-adventure').last();
@@ -213,12 +233,13 @@ function mainLoop() {
             if (source.flipped) {
                 context.translate((enemy.x - cameraX + source.width), 0);
                 context.scale(-1, 1);
-                context.drawImage(source.image, enemyFrame * source.width + source.offset, 0 , source.width, 64, -source.width, 240 - 128 - 72, source.width * 2, 128);
+                context.drawImage(enemy.image, enemyFrame * source.width + source.offset, 0 , source.width, 64, -source.width, 240 - 128 - 72, source.width * 2, 128);
                 context.scale(-1, 1);
                 context.translate(-(enemy.x - cameraX + source.width), 0);
+
             } else {
                 context.translate((enemy.x - cameraX + source.width), 0);
-                context.drawImage(source.image, enemyFrame * source.width + source.offset, 0 , source.width, 64, -source.width, 240 - 128 - 72, source.width * 2, 128);
+                context.drawImage(enemy.image, enemyFrame * source.width + source.offset, 0 , source.width, 64, -source.width, 240 - 128 - 72, source.width * 2, 128);
                 context.translate(-(enemy.x - cameraX + source.width), 0);
             }
             enemy.left = enemy.x - cameraX;

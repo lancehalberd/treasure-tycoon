@@ -147,13 +147,17 @@ function updateMonster(monster) {
     // Clear the character's bonuses and graphics.
     monster.bonuses = [];
     var enchantments = monster.prefixes.length + monster.suffixes.length;
-    monster.color = 'red';
     if (enchantments > 2) {
         monster.bonuses.push(imbuedMonsterBonuses);
         monster.color = '#c6f';
+        monster.image = monster.base.source.image.imbued;
     } else if (enchantments) {
         monster.bonuses.push(enchantedMonsterBonuses);
         monster.color = '#af0';
+        monster.image = monster.base.source.image.enchanted;
+    } else {
+        monster.color = 'red';
+        monster.image = monster.base.source.image.normal;
     }
     var name = monster.base.name;
     var prefixNames = []
@@ -213,6 +217,13 @@ var monsters = {};
 function addMonsters(key, data) {
     monsters[key] = data;
 }
+function enemySheet(key) {
+    return {
+        'normal': images[key],
+        'enchanted': images[key + '-enchanted'],
+        'imbued': images[key + '-imbued'],
+    }
+}
 function initalizeMonsters() {
     var caterpillar = {
         'name': 'Caterpillar',
@@ -230,7 +241,7 @@ function initalizeMonsters() {
         'magicBlock': [0, 0, .5, 1],
         'armor': [0, 0, 1, 2],
         'magicResist': 0,
-        'source': {'image': images['gfx/caterpillar.png'], 'offset': 0, 'width': 48, 'flipped': true, frames: 4}
+        'source': {'image': enemySheet('gfx/caterpillar.png'), 'offset': 0, 'width': 48, 'flipped': true, frames: 4}
     };
     var butterfly = {
         'name': 'Butterfly',
@@ -248,7 +259,7 @@ function initalizeMonsters() {
         'magicBlock': 0,
         'armor': [0, 1, .5, .8],
         'magicResist': 0,
-        'source': {'image': images['gfx/caterpillar.png'], 'offset': 4 * 48, 'width': 48, 'flipped': true, frames: 4}
+        'source': {'image': enemySheet('gfx/caterpillar.png'), 'offset': 4 * 48, 'width': 48, 'flipped': true, frames: 4}
     };
     var gnome = {
         'name': 'Gnome',
@@ -266,7 +277,7 @@ function initalizeMonsters() {
         'magicBlock': [1, 1, .5, 1],
         'armor': [0, 0, .5, 1.5],
         'magicResist': 0,
-        'source': {'image': images['gfx/gnome.png'], 'offset': 0, 'width': 32, 'flipped': false, frames: 4}
+        'source': {'image': enemySheet('gfx/gnome.png'), 'offset': 0, 'width': 32, 'flipped': false, frames: 4}
     };
     var skeleton = {
         'name': 'Skeleton',
@@ -284,7 +295,7 @@ function initalizeMonsters() {
         'magicBlock': 0,
         'armor': [0, 1, .5, .8],
         'magicResist': 0,
-        'source': {'image': images['gfx/skeletonSmall.png'], 'offset': 0, 'width': 48, 'flipped': true, frames: 7}
+        'source': {'image': enemySheet('gfx/skeletonSmall.png'), 'offset': 0, 'width': 48, 'flipped': true, frames: 7}
     };
     var giantSkeleton = {
         'name': 'Skelegiant',
@@ -302,7 +313,7 @@ function initalizeMonsters() {
         'magicBlock': [1, 1, .5, 1],
         'armor': [0, 0, .5, 1.5],
         'magicResist': 0,
-        'source': {'image': images['gfx/skeletonGiant.png'], 'offset': 0, 'width': 48, 'flipped': true, frames: 7}
+        'source': {'image': enemySheet('gfx/skeletonGiant.png'), 'offset': 0, 'width': 48, 'flipped': true, frames: 7}
     };
     var dragon = {
         'name': 'Dragon',
@@ -321,7 +332,7 @@ function initalizeMonsters() {
         'armor': [0, 1, .5, .8],
         'magicResist': 0,
         'stationary': true,
-        'source': {'image': images['gfx/dragonEastern.png'], 'offset': 0, 'width': 48, 'flipped': false, frames: 5}
+        'source': {'image': enemySheet('gfx/dragonEastern.png'), 'offset': 0, 'width': 48, 'flipped': false, frames: 5}
     };
     addMonsters('caterpillar', caterpillar);
     addMonsters('butterfly', butterfly);
@@ -330,11 +341,11 @@ function initalizeMonsters() {
     addMonsters('giantSkeleton', giantSkeleton);
     addMonsters('dragon', dragon);
     levels =[
-        {'level': 1, 'monsters': [caterpillar, caterpillar, [caterpillar, caterpillar], caterpillar, [caterpillar, caterpillar], [caterpillar, caterpillar], caterpillar, [caterpillar, caterpillar, caterpillar, caterpillar, caterpillar]]},
-        {'level': 2, 'monsters': [[caterpillar, caterpillar], [caterpillar, caterpillar], [caterpillar, caterpillar, caterpillar], [caterpillar, caterpillar], [caterpillar, caterpillar, caterpillar], [caterpillar, caterpillar, butterfly], gnome]},
-        {'level': 3, 'monsters': [[caterpillar, caterpillar], [butterfly, caterpillar], [butterfly, butterfly], [caterpillar, caterpillar, caterpillar, caterpillar, butterfly], [caterpillar, butterfly, caterpillar, butterfly, caterpillar], skeleton]},
-        {'level': 4, 'monsters': [[caterpillar, caterpillar, butterfly, caterpillar], [caterpillar, caterpillar, butterfly, butterfly, caterpillar, caterpillar], [butterfly, butterfly, butterfly], giantSkeleton]},
-        {'level': 5, 'monsters': [[caterpillar, caterpillar, butterfly, caterpillar, butterfly], [caterpillar, caterpillar, butterfly, caterpillar, butterfly, caterpillar, butterfly, caterpillar, butterfly], dragon]},
+        {'level': 1, 'monsters': [caterpillar, caterpillar, butterfly, caterpillar, [caterpillar, caterpillar], [caterpillar, caterpillar], caterpillar, [caterpillar, caterpillar, caterpillar, caterpillar, caterpillar]]},
+        {'level': 2, 'monsters': [[caterpillar, caterpillar], butterfly, [caterpillar, caterpillar, caterpillar], [butterfly, butterfly], [caterpillar, caterpillar, caterpillar], [caterpillar, caterpillar, butterfly], gnome]},
+        {'level': 3, 'monsters': [[caterpillar, caterpillar], [butterfly, caterpillar], [butterfly, butterfly], [gnome, caterpillar, caterpillar, caterpillar, gnome], [caterpillar, butterfly, gnome, butterfly, caterpillar], skeleton]},
+        {'level': 4, 'monsters': [[caterpillar, caterpillar, caterpillar, caterpillar, caterpillar], [gnome, gnome], skeleton, [skeleton, skeleton], [gnome, gnome, skeleton], [skeleton, skeleton, skeleton], giantSkeleton]},
+        {'level': 5, 'monsters': [[gnome, butterfly, butterfly], [skeleton, skeleton, skeleton], giantSkeleton, [gnome, gnome, gnome], [skeleton, skeleton, giantSkeleton], [dragon, caterpillar, gnome, skeleton, butterfly]]},
     ];
     levels.forEach(function (level, index) { level.index = index;});
 }
@@ -342,7 +353,7 @@ var enchantedMonsterBonuses = {'*maxHealth': 3, '*minDamge': 2, '*maxDamage': 2,
 var imbuedMonsterBonuses = {'*maxHealth': 10, '*minDamge': 4, '*maxDamage': 4, '*xp': 10, '*ip': 10};
 var monsterPrefixes = [
     [
-        {'name': 'Frenzied', 'bonuses': {'*speed': [1.5, 2], '*attackSpeed': [1.5, 2]}},
+        {'name': 'Frenzied', 'bonuses': {'*speed': [15, 20, 10], '*attackSpeed': [15, 20, 10]}},
         {'name': 'Eldritch', 'bonuses': {'+minMagicDamage': [1, 2], '*maxMagicDamage': [2, 3]}},
         {'name': 'Hawkeye', 'bonuses': {'+accuracy': [5, 10]}},
         {'name': 'Telekenetic', 'bonuses': {'+range': [3, 5]}}
@@ -352,7 +363,7 @@ var monsterSuffixes = [
     [
         {'name': 'Healing', 'bonuses': {'+healthRegen': [1, 2]}},
         {'name': 'Shadows', 'bonuses': {'+evasion': [3, 5]}},
-        {'name': 'Frost', 'bonuses': {'+slowOnHit': [.1, .2]}},
+        {'name': 'Frost', 'bonuses': {'+slowOnHit': [1, 2, 10]}},
         {'name': 'Confusion', 'bonuses': {'+damageOnMiss': [2, 3]}},
     ]
 ]

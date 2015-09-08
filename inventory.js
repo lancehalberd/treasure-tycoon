@@ -116,13 +116,13 @@ function bonusHelpText(bonuses, implicit) {
         sections.push('Regenerates ' + bonuses['+healthRegen'] + ' health per second');
     }
     if (ifdefor(bonuses['%maxHealth'])) {
-        sections.push((100 * bonuses['%maxHealth']) + '% increased health');
+        sections.push((100 * bonuses['%maxHealth']).toFixed(0) + '% increased health');
     }
     if (ifdefor(bonuses['%attackSpeed'])) {
-        sections.push((100 * bonuses['%attackSpeed']) + '% increased attack speed');
+        sections.push((100 * bonuses['%attackSpeed']).toFixed(0) + '% increased attack speed');
     }
     if (ifdefor(bonuses['+slowOnHit'])) {
-        sections.push('Slows target by ' + (100 * bonuses['+slowOnHit']) + '%');
+        sections.push('Slows target by ' + (100 * bonuses['+slowOnHit']).toFixed(0) + '%');
     }
     if (ifdefor(bonuses['+speed'])) {
         sections.push((bonuses['+speed'] > 0 ? '+' : '') + bonuses['+speed'] + ' speed');
@@ -333,6 +333,13 @@ $(document).on('keydown', function(event) {
                 return true;
             });
         }
+    }
+    if (event.which == 68) { // 'd'
+        gain('AP', 1000);
+        gain('IP', 1000);
+        gain('MP', 1000);
+        gain('RP', 1000);
+        gain('UP', 1000);
     }
     console.log(event.which);
 });
