@@ -86,24 +86,24 @@ function updateEnchantmentOptions() {
     var total = prefixes + suffixes;
     var value = sellValue(item);
     if (total > 0) {
-        $('.js-enchantmentOption.js-reset').show().text('Reset: ' + value * 10 + ' IP');
+        $('.js-enchantmentOption.js-reset').show().html('Reset: ' + points('IP', value * 10));
     }
     if (total == 0) {
-        $('.js-enchantmentOption.js-enchant').show().text('Enchant: ' + (value * 10) + ' MP');
-        $('.js-enchantmentOption.js-imbue').show().text('Imbue: ' + (value * 10) + ' RP');
-        $('.js-enchantmentOption.js-gamble').show().text('Gamble: ' + (value * 2) + ' MP ' + (value * 2) +  ' RP');
+        $('.js-enchantmentOption.js-enchant').show().html('Enchant: ' + points('MP', (value * 10)));
+        $('.js-enchantmentOption.js-imbue').show().html('Imbue: ' + points('RP', (value * 10)));
+        $('.js-enchantmentOption.js-gamble').show().html('Gamble: ' + points('MP', (value * 2)) + ' ' + points('RP', (value * 2)));
     }
     if (total == 1) {
-        $('.js-enchantmentOption.js-augment').show().text('Augment: ' + (value * 20) + ' MP');
+        $('.js-enchantmentOption.js-augment').show().html('Augment: ' + points('MP', (value * 20)));
     }
     if (total == 2 || total == 3) {
-        $('.js-enchantmentOption.js-augment').show().text('Augment: ' + (value * 20) + ' RP');
+        $('.js-enchantmentOption.js-augment').show().html('Augment: ' + points('RP', (value * 20)));
     }
     if (total == 1 || total == 2) {
-        $('.js-enchantmentOption.js-mutate').show().text('Mutate: ' + (value * 12) + ' MP');
+        $('.js-enchantmentOption.js-mutate').show().html('Mutate: ' + points('MP', (value * 12)));
     }
     if (total == 3 || total == 4) {
-        $('.js-enchantmentOption.js-mutate').show().text('Mutate: ' + (value * 12) + ' RP');
+        $('.js-enchantmentOption.js-mutate').show().html('Mutate: ' + points('RP', (value * 12)));
     }
 }
 function resetItem() {

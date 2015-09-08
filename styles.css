@@ -1,5 +1,5 @@
 .pointsBar {
-    background-color: #ccc;
+    background-color: #aaa;
     padding: 4px;
 }
 .pointsBar .points {
@@ -7,6 +7,18 @@
     margin-right: 10px;
     margin-left: 10px;
     min-width: 150px;
+}
+.itemPoints {
+    color: white;
+}
+.magicPoints {
+    color: #fc4;
+}
+.rarePoints {
+    color: #c4f;
+}
+.uniquePoints {
+    color: #4cf;
 }
 .controlColumn {
     width: 240px;
@@ -87,6 +99,7 @@ button.item {
 }
 button {
     cursor: pointer;
+    background-color: #ccc;
 }
 
 .playerBox {

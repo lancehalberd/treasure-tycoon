@@ -18,6 +18,17 @@ function createCanvas(width, height, classes) {
     return $('<canvas class="' + classes + '"width="' + width + '" height="' + height + '"></canvas>')[0];
 }
 
+var pointsMap = {
+    'AP': 'adventurePoints',
+    'IP': 'itemPoints',
+    'MP': 'magicPoints',
+    'RP': 'rarePoints',
+    'UP': 'uniquePoints',
+}
+function points(type, value) {
+    return tag('span', pointsMap[type], value) + ' ' + type;
+}
+
 var fps = 6;
 var state = {
     characters: [],
@@ -162,19 +173,19 @@ function mainLoop() {
                     gain('MP', enemy.mp);
                     if (enemy.mp) {
                         character.textPopups.push(
-                            {value: '+' + enemy.mp, x: enemy.x + 45, y: 240 - 145, color: '#cc8', font: "22px sans-serif"}
+                            {value: '+' + enemy.mp, x: enemy.x + 45, y: 240 - 145, color: '#fc4', font: "22px sans-serif"}
                         )
                     }
                     gain('RP', enemy.rp);
                     if (enemy.rp) {
                         character.textPopups.push(
-                            {value: '+' + enemy.rp, x: enemy.x + 55, y: 240 - 150, color: '#f8f', font: "24px sans-serif"}
+                            {value: '+' + enemy.rp, x: enemy.x + 55, y: 240 - 150, color: '#c4f', font: "24px sans-serif"}
                         );
                     }
                     gain('UP', enemy.up);
                     if (enemy.up) {
                         character.textPopups.push(
-                            {value: '+' + enemy.up, x: enemy.x + 65, y: 240 - 155, color: '#0ff', font: "26px sans-serif"}
+                            {value: '+' + enemy.up, x: enemy.x + 65, y: 240 - 155, color: '#4cf', font: "26px sans-serif"}
                         );
                     }
                 }

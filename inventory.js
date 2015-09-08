@@ -374,12 +374,12 @@ function updateItemCrafting() {
         });
     }
     var typeMultiplier = (itemsFilteredByLevel.length / itemsFilteredByType.length).toFixed(2);
-    $('.js-rarityCost').text('5 ' + craftingPointsType);
+    $('.js-rarityCost').html(points(craftingPointsType, 5));
     var levelMultiplier = craftingLevel * craftingLevel * craftingLevel;
     $('.js-levelMultiplier').text('x ' + levelMultiplier);
     $('.js-typeMultiplier').text('x ' + typeMultiplier);
     itemTotalCost = Math.ceil(5 * levelMultiplier * typeMultiplier);
-    $('.js-craftItem').text('Craft for ' + itemTotalCost + ' ' + craftingPointsType);
+    $('.js-craftItem').html('Craft for ' + points(craftingPointsType, itemTotalCost));
     updateCraftButton();
 }
 $('.js-craftItem').on('click', function () {
