@@ -97,7 +97,7 @@ function completeArea(character) {
                 wave.push(Math.random() > .4 ? monsters['caterpillar'] : monsters['butterfly']);
             }
             nextLevelMonsters.push(wave);
-            levels[nextLevel] = {'level': nextLevel + 1, 'monsters': nextLevelMonsters};
+            levels[nextLevel] = {'level': nextLevel + 1, 'monsters': nextLevelMonsters, 'index': nextLevel};
         }
         var $nextAdventureButton = $adventureButton.clone().data('levelIndex', nextLevel).text('Lvl ' + levels[nextLevel].level + ' Adventure!');
         $adventureButton.after($nextAdventureButton);
