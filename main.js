@@ -48,7 +48,8 @@ function startArea(character, area) {
     character.textPopups = [];
     character.$panel.find('.js-recall').prop('disabled', false);
 }
-async.mapSeries(['gfx/person.png', 'gfx/grass.png', 'gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png'], loadImage, function(err, results){
+// Load any graphic assets needed by the game here.
+async.mapSeries(['gfx/person.png', 'gfx/grass.png', 'gfx/cave.png', 'gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png'], loadImage, function(err, results){
     ['gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png'].forEach(function (imageKey) {
         images[imageKey + '-enchanted'] = makeTintedImage(images[imageKey], '#af0');
         images[imageKey + '-imbued'] = makeTintedImage(images[imageKey], '#c6f');
@@ -222,10 +223,11 @@ function mainLoop() {
         }
         var cameraX = character.x - 10;
         context.clearRect(0, 0, width, height);
+        var backgroundImage = ifdefor(character.area.backgroundImage, images['gfx/grass.png']);
         // Draw background
         for (var i = 0; i <= 768; i += 64) {
             var x = (784 + (i - character.x) % 768) % 768 - 64;
-            context.drawImage(images['gfx/grass.png'], 0, 0 , 64, 240,
+            context.drawImage(backgroundImage, 0, 0 , 64, 240,
                                   x, 0, 64, 240);
         }
         for (var i = 0; i < character.enemies.length; i++) {
