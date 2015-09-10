@@ -104,7 +104,10 @@ function completeArea(character) {
         $adventureButton.after($nextAdventureButton);
     }
     for (var itemLevel = $('.js-levelSelect').find('option').length + 1; itemLevel <= character.area.level + 1 && itemLevel <= items.length; itemLevel++) {
-        $('.js-levelSelect').append($tag('option', '', 'Level ' + itemLevel).attr('value', itemLevel));
+        var $newOption = $tag('option', '', 'Level ' + itemLevel).attr('value', itemLevel);
+        items[itemLevel - 1] = ifdefor(items[itemLevel - 1], []);
+        $newOption.toggle(items[itemLevel - 1].length > 0);
+        $('.js-levelSelect').append($newOption);
     }
     resetCharacter(character);
 }
