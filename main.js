@@ -87,20 +87,9 @@ function makeTintedImage(image, tint) {
 function completeArea(character) {
     var $adventureButton = character.$panel.find('.js-infoMode').find('.js-adventure').last();
     // If the character beat the last adventure open to them, unlock the next one
-    if ($adventureButton.data('levelIndex') == character.area.index) {
-        var nextLevel = $adventureButton.data('levelIndex') + 1;
-        gain('AP', nextLevel);
-        if (levels.length <= nextLevel) {
-            var nextLevelMonsters = levels[nextLevel - 1].monsters.slice();
-            var wave = [];
-            while (wave.length < 10) {
-                wave.push(Math.random() > .4 ? monsters['caterpillar'] : monsters['butterfly']);
-            }
-            nextLevelMonsters.push(wave);
-            levels[nextLevel] = {'level': nextLevel + 1, 'monsters': nextLevelMonsters, 'index': nextLevel};
-        }
-        var $nextAdventureButton = $adventureButton.clone().data('levelIndex', nextLevel).text('Lvl ' + levels[nextLevel].level + ' Adventure!');
-        $adventureButton.after($nextAdventureButton);
+    if (!character.levelsCompleted[character.area.index]) {
+        gain('AP', character.area.level);
+        $adventureButton.after($nextLevelButton(character.area));
     }
     for (var itemLevel = $('.js-levelSelect').find('option').length + 1; itemLevel <= character.area.level + 1 && itemLevel <= items.length; itemLevel++) {
         var $newOption = $tag('option', '', 'Level ' + itemLevel).attr('value', itemLevel);

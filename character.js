@@ -83,7 +83,8 @@ function newCharacter(job) {
         'lastTime': now(),
         'gameSpeed': 1,
         'replay': false,
-        'time': now()
+        'time': now(),
+        'levelsCompleted': {}
     };
     character.character = character;
     equipmentSlots.forEach(function (type) {
@@ -98,6 +99,7 @@ function newCharacter(job) {
     context.imageSmoothingEnabled = false;
     state.characters.push(character);
     $newPlayerPanel.data('character', character);
+    $newPlayerPanel.find('.js-map').append($levelButton('forest1')).append($levelButton('cave1')).append($levelButton('field1'));
     resetCharacter(character);
     updateRetireButtons();
 }

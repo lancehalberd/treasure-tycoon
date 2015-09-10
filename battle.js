@@ -67,7 +67,7 @@ function makeMonster(level, baseMonster, x) {
         'attackColldown': 0,
         'base': {
             'level': level,
-            'ip': Random.range(0, level * 2),
+            'ip': Random.range(0, level * 4),
             'mp': 0,
             'rp': 0,
             'up': 0,
@@ -212,7 +212,7 @@ function updateMonster(monster) {
     monster.minMagicDamage = Math.max(monster.minMagicDamage, monster.maxMagicDamage);
     //console.log(monster);
 }
-var levels = [];
+var levels = {};
 var monsters = {};
 function addMonsters(key, data) {
     monsters[key] = data;
@@ -227,110 +227,110 @@ function enemySheet(key) {
 function initalizeMonsters() {
     var caterpillar = {
         'name': 'Caterpillar',
-        'health': [5, 6, 2, 2.5],
-        'range': 1,
+        'health': [5, 6, 2.5, 3],
+        'range': 2,
         'minDamage': [1, 2, 1, 1],
         'maxDamage': [3, 4, 1, 1],
         'minMagicDamage': 0,
         'maxMagicDamage': 0,
         'attackSpeed': 1,
-        'speed': 100,
+        'speed': 50,
         'accuracy': [0, 0, 1, 2],
         'evasion': [0, 0, 0, 1],
-        'block': [0, 0, .5, 1.5],
-        'magicBlock': [0, 0, .5, 1],
+        'block': [0, 0, .5, 1],
+        'magicBlock': [1, 2, .5, 1],
         'armor': [0, 0, 1, 2],
-        'magicResist': 0,
+        'magicResist': .3,
         'source': {'image': enemySheet('gfx/caterpillar.png'), 'offset': 0, 'width': 48, 'flipped': true, frames: 4}
     };
     var butterfly = {
         'name': 'Butterfly',
         'health': [3, 5, 1, 1.5],
-        'range': 2,
-        'minDamage': [1, 3, 1, 1],
-        'maxDamage': [3, 4, 1, 1],
+        'range': 5,
+        'minDamage': [2, 3, 1, 1],
+        'maxDamage': [4, 5, 1, 1],
         'minMagicDamage': [1, 1, 1, 1],
-        'maxMagicDamage': [2, 2, 2, 2],
-        'attackSpeed': [1, 1, .1, .1],
-        'speed': 200,
+        'maxMagicDamage': [2, 2, 1.5, 1.5],
+        'attackSpeed': [.5, .5, .05, .05],
+        'speed': 100,
         'accuracy': [1, 2, 1, 2],
-        'evasion': [1, 2, 1, 2],
+        'evasion': [0, 1, .5, 1],
         'block': 0,
         'magicBlock': 0,
-        'armor': [0, 1, .5, .8],
+        'armor': [0, 0, .5, .8],
         'magicResist': 0,
         'source': {'image': enemySheet('gfx/caterpillar.png'), 'offset': 4 * 48, 'width': 48, 'flipped': true, frames: 4}
     };
     var gnome = {
         'name': 'Gnome',
-        'health': [30, 40, 2, 2.5],
+        'health': [10, 12, 4, 5],
         'range': 1,
         'minDamage': [1, 2, 1, 1],
         'maxDamage': [3, 4, 1, 1],
-        'minMagicDamage': 0,
-        'maxMagicDamage': 0,
+        'minMagicDamage': [1, 1, 1, 1],
+        'maxMagicDamage': [2, 2, 1.5, 1.5],
         'attackSpeed': 1,
         'speed': 100,
-        'accuracy': [0, 0, 1, 2],
-        'evasion': [0, 0, 0, 1],
+        'accuracy': [1, 1, 1, 1.5],
+        'evasion': [0, 0, .5, 1],
         'block': [0, 0, .5, 1.5],
-        'magicBlock': [1, 1, .5, 1],
-        'armor': [0, 0, .5, 1.5],
+        'magicBlock': [0, 0, 0, 0],
+        'armor': [1, 2, 1, 1.5],
         'magicResist': 0,
         'source': {'image': enemySheet('gfx/gnome.png'), 'offset': 0, 'width': 32, 'flipped': false, frames: 4}
     };
     var skeleton = {
         'name': 'Skeleton',
-        'health': [20, 40, 1, 1.5],
-        'range': 2,
-        'minDamage': [1, 3, 1, 1],
-        'maxDamage': [3, 4, 1, 1],
-        'minMagicDamage': [1, 1, 1, 1],
-        'maxMagicDamage': [2, 2, 2, 2],
-        'attackSpeed': [1, 1, .1, .1],
+        'health': [7, 8, 3, 4.5],
+        'range': 1,
+        'minDamage': [1, 2, .5, 1],
+        'maxDamage': [2, 3, .75, 1.5],
+        'minMagicDamage': 0,
+        'maxMagicDamage': 0,
+        'attackSpeed': [2, 2, .05, .05],
         'speed': 200,
-        'accuracy': [1, 2, 1, 2],
-        'evasion': [1, 2, 1, 2],
-        'block': 0,
+        'accuracy': [2, 3, 1.5, 2.5],
+        'evasion': [0, 1, 1, 2],
+        'block': 2,
         'magicBlock': 0,
-        'armor': [0, 1, .5, .8],
+        'armor': [0, 0, .5, .8],
         'magicResist': 0,
         'source': {'image': enemySheet('gfx/skeletonSmall.png'), 'offset': 0, 'width': 48, 'flipped': true, frames: 7}
     };
     var giantSkeleton = {
         'name': 'Skelegiant',
-        'health': [100, 200, 2, 2.5],
-        'range': 1,
-        'minDamage': [1, 2, 1, 1],
-        'maxDamage': [3, 4, 1, 1],
+        'health': [25, 30, 6, 8],
+        'range': 2,
+        'minDamage': [3, 5, 1, 2],
+        'maxDamage': [6, 8, 1.5, 3],
         'minMagicDamage': 0,
         'maxMagicDamage': 0,
-        'attackSpeed': 1,
-        'speed': 100,
-        'accuracy': [0, 0, 1, 2],
-        'evasion': [0, 0, 0, 1],
-        'block': [0, 0, .5, 1.5],
-        'magicBlock': [1, 1, .5, 1],
-        'armor': [0, 0, .5, 1.5],
+        'attackSpeed': 1.5,
+        'speed': 200,
+        'accuracy': [2, 3, 1.5, 2.5],
+        'evasion': [0, 1, 1, 2],
+        'block': 3,
+        'magicBlock': 0,
+        'armor': [0, 0, .5, .8],
         'magicResist': 0,
         'source': {'image': enemySheet('gfx/skeletonGiant.png'), 'offset': 0, 'width': 48, 'flipped': true, frames: 7}
     };
     var dragon = {
         'name': 'Dragon',
-        'health': [150, 250, 1, 1.5],
-        'range': 2,
+        'health': [20, 30, 8, 10],
+        'range': 5,
         'minDamage': [1, 3, 1, 1],
         'maxDamage': [3, 4, 1, 1],
         'minMagicDamage': [1, 1, 1, 1],
         'maxMagicDamage': [2, 2, 2, 2],
         'attackSpeed': [1, 1, .1, .1],
-        'speed': 150, //controls speed of animation, not forward movement
+        'speed': 200, //controls speed of animation, not forward movement
         'accuracy': [1, 2, 1, 2],
         'evasion': [1, 2, 1, 2],
-        'block': 0,
-        'magicBlock': 0,
-        'armor': [0, 1, .5, .8],
-        'magicResist': 0,
+        'block': [1, 2, 1, 2],
+        'magicBlock': [1, 2, 1, 2],
+        'armor': [1, 2, .75, 1],
+        'magicResist': .5,
         'stationary': true,
         'source': {'image': enemySheet('gfx/dragonEastern.png'), 'offset': 0, 'width': 48, 'flipped': false, frames: 5}
     };
@@ -340,14 +340,45 @@ function initalizeMonsters() {
     addMonsters('skeleton', skeleton);
     addMonsters('giantSkeleton', giantSkeleton);
     addMonsters('dragon', dragon);
-    levels =[
-        {'level': 1, 'monsters': [caterpillar, caterpillar, butterfly, caterpillar, [caterpillar, caterpillar], [caterpillar, caterpillar], caterpillar, [caterpillar, caterpillar, caterpillar, caterpillar, caterpillar]]},
-        {'level': 2, 'monsters': [[caterpillar, caterpillar], butterfly, [caterpillar, caterpillar, caterpillar], [butterfly, butterfly], [caterpillar, caterpillar, caterpillar], [caterpillar, caterpillar, butterfly], gnome]},
-        {'level': 3, 'monsters': [[caterpillar, caterpillar], [butterfly, caterpillar], [butterfly, butterfly], [gnome, caterpillar, caterpillar, caterpillar, gnome], [caterpillar, butterfly, gnome, butterfly, caterpillar], skeleton]},
-        {'level': 4, 'monsters': [[caterpillar, caterpillar, caterpillar, caterpillar, caterpillar], [gnome, gnome], skeleton, [skeleton, skeleton], [gnome, gnome, skeleton], [skeleton, skeleton, skeleton], giantSkeleton]},
-        {'level': 5, 'monsters': [[gnome, butterfly, butterfly], [skeleton, skeleton, skeleton], giantSkeleton, [gnome, gnome, gnome], [skeleton, skeleton, giantSkeleton], [dragon, caterpillar, gnome, skeleton, butterfly]]},
-    ];
-    levels.forEach(function (level, index) { level.index = index;});
+    addLevel({'name': 'Forest', 'monsters': [caterpillar, butterfly], 'boss': [gnome]}, 1);
+    addLevel({'name': 'Cave', 'monsters': [gnome, skeleton], 'boss': [giantSkeleton]}, 1);
+    addLevel({'name': 'Field',  'monsters': [caterpillar, skeleton], 'boss': [dragon]}, 1);
+}
+function addLevel(levelData, level) {
+    var key = levelData.name.replace(/\s*/g, '').toLowerCase() + level;
+    var waves = [];
+    var numberOfWaves = Math.floor(5 * Math.sqrt(level));
+    var minWaveSize = Math.floor(Math.min(4, Math.sqrt(level)) * 10);
+    var maxWaveSize = Math.floor(Math.min(10, 2.2 * Math.sqrt(level)) * 10);
+    while (waves.length < numberOfWaves) {
+        var waveSize = Math.min(1, Math.floor(Random.range(minWaveSize, maxWaveSize) / 10));
+        var wave = [];
+        waves.push(wave);
+        if (waves.length == numberOfWaves) {
+            wave.push(Random.element(levelData.boss));
+        }
+        while (wave.length < waveSize) {
+            wave.push(Random.element(levelData.monsters));
+        }
+    };
+    levels[key] = {
+        'key': key,
+        'base': levelData,
+        'level': level,
+        'name': levelData.name + ' ' + level,
+        'monsters': waves
+    };
+}
+function $levelButton(key) {
+    return $tag('button', 'js-adventure adventure', levels[key].name).data('levelIndex', key);
+}
+function $nextLevelButton(currentLevel) {
+    var levelData = currentLevel.base;
+    var key = levelData.name.replace(/\s*/g, '').toLowerCase() + (currentLevel.level + 1);
+    if (!levels[key]) {
+        addLevel(levelData, currentLevel.level + 1);
+    }
+    return $levelButton(key);
 }
 var enchantedMonsterBonuses = {'*maxHealth': 3, '*minDamge': 2, '*maxDamage': 2, '*xp': 3, '*ip': 3};
 var imbuedMonsterBonuses = {'*maxHealth': 10, '*minDamge': 4, '*maxDamage': 4, '*xp': 10, '*ip': 10};
