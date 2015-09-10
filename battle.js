@@ -246,7 +246,7 @@ function initalizeMonsters() {
     var butterfly = {
         'name': 'Butterfly',
         'health': [3, 5, 1, 1.5],
-        'range': 5,
+        'range': 6,
         'minDamage': [2, 3, 1, 1],
         'maxDamage': [4, 5, 1, 1],
         'minMagicDamage': [1, 1, 1, 1],
@@ -288,7 +288,7 @@ function initalizeMonsters() {
         'minMagicDamage': 0,
         'maxMagicDamage': 0,
         'attackSpeed': [2, 2, .05, .05],
-        'speed': 200,
+        'speed': 150,
         'accuracy': [2, 3, 1.5, 2.5],
         'evasion': [0, 1, 1, 2],
         'block': 2,
@@ -306,7 +306,7 @@ function initalizeMonsters() {
         'minMagicDamage': 0,
         'maxMagicDamage': 0,
         'attackSpeed': 1.5,
-        'speed': 200,
+        'speed': 150,
         'accuracy': [2, 3, 1.5, 2.5],
         'evasion': [0, 1, 1, 2],
         'block': 3,
@@ -340,9 +340,9 @@ function initalizeMonsters() {
     addMonsters('skeleton', skeleton);
     addMonsters('giantSkeleton', giantSkeleton);
     addMonsters('dragon', dragon);
-    addLevel({'name': 'Forest', 'monsters': [caterpillar, butterfly], 'boss': [gnome]}, 1);
-    addLevel({'name': 'Cave', 'monsters': [gnome, skeleton], 'boss': [giantSkeleton]}, 1);
-    addLevel({'name': 'Field',  'monsters': [caterpillar, skeleton], 'boss': [dragon]}, 1);
+    addLevel({'name': 'Forest', 'backgroundImage': images['gfx/forest.png'], 'monsters': [caterpillar, butterfly], 'boss': [gnome]}, 1);
+    addLevel({'name': 'Cave', 'backgroundImage': images['gfx/cave.png'], 'monsters': [gnome, skeleton], 'boss': [giantSkeleton]}, 1);
+    addLevel({'name': 'Field', 'backgroundImage': images['gfx/grass.png'],  'monsters': [caterpillar, skeleton], 'boss': [dragon]}, 1);
 }
 function addLevel(levelData, level) {
     var key = levelData.name.replace(/\s*/g, '').toLowerCase() + level;
@@ -366,7 +366,8 @@ function addLevel(levelData, level) {
         'base': levelData,
         'level': level,
         'name': levelData.name + ' ' + level,
-        'monsters': waves
+        'monsters': waves,
+        'backgroundImage': levelData.backgroundImage
     };
 }
 function $levelButton(key) {
