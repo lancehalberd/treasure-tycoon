@@ -127,7 +127,7 @@ function updateCharacter(character) {
     // Clear the character's bonuses and graphics.
     character.bonuses = [];
     var sectionWidth = personFrames * 32;
-    var hat = character.equipment.hat;
+    var hat = character.equipment.head;
     var hideHair = hat ? ifdefor(hat.base.hideHair, false) : false;
     character.personContext.clearRect(0, 0, sectionWidth, 64);
     for (var i = 0; i < personFrames; i++) {
@@ -167,7 +167,7 @@ function updateStats(character) {
     character.base.accuracy = 2 * character.level;
     character.base.evasion = character.level;
     character.base.block = character.level;
-    character.base.evasion = character.level;
+    character.base.magicBlock = character.level / 2;
     character.base.dexterity = character.level * character.job.dexterityBonus;
     character.base.strength = character.level * character.job.strengthBonus;
     character.base.intelligence = character.level * character.job.intelligenceBonus;
