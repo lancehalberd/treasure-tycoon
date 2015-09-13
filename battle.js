@@ -52,7 +52,7 @@ function performAttack(attacker, target) {
     // Apply armor and magic resistance mitigation
     // TODO: Implement armor penetration here.
     damage = applyArmorToDamage(damage, target.armor);
-    magicDamage = magicDamage * Math.max(0, (1 - target.magicResist));
+    magicDamage = Math.round(magicDamage * Math.max(0, (1 - target.magicResist)));
     // TODO: Implement flat damage reduction here.
     target.health -= (damage + magicDamage);
     return (damage + magicDamage) > 0 ? (damage + magicDamage) : 'blocked';
@@ -79,7 +79,7 @@ function makeMonster(level, baseMonster, x) {
     };
     $.each(baseMonster, function (stat, value) {
         if (Array.isArray(value)) {
-            monster.base[stat] = Random.range(Math.floor(value[0] + level * value[2]), Math.ceil(value[1] + level * value[3]));
+            monster.base[stat] = Random.range(Math.floor(value[0] + (level - 1) * value[2]), Math.ceil(value[1] + (level - 1) * value[3]));
         } else {
             monster.base[stat] = value;
         }
@@ -200,7 +200,7 @@ function updateMonster(monster) {
         monster[stat] = getStat(monster, stat);
     });
     ['dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
-     'evasion', 'block', 'magicBlock', 'armor', 'magicResist', 'accuracy',
+     'evasion', 'block', 'magicBlock', 'armor', 'accuracy',
      'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage'].forEach(function (stat) {
         monster[stat] = Math.floor(monster[stat]);
     });
@@ -227,88 +227,89 @@ function enemySheet(key) {
 function initalizeMonsters() {
     var caterpillar = {
         'name': 'Caterpillar',
-        'health': [5, 6, 2.5, 3],
+        'health': [9, 10, 2.5, 3],
         'range': 2,
-        'minDamage': [1, 2, 1, 1],
-        'maxDamage': [3, 4, 1, 1],
+        'minDamage': [2, 2, 1, 1],
+        'maxDamage': [2, 3, 1, 1],
         'minMagicDamage': 0,
         'maxMagicDamage': 0,
         'attackSpeed': 1,
         'speed': 50,
-        'accuracy': [0, 0, 1, 2],
-        'evasion': [0, 0, 0, 1],
-        'block': [0, 0, .5, 1],
-        'magicBlock': [1, 2, .5, 1],
-        'armor': [0, 0, 1, 2],
-        'magicResist': .3,
-        'source': {'image': enemySheet('gfx/caterpillar.png'), 'offset': 0, 'width': 48, 'flipped': true, frames: 4}
-    };
-    var butterfly = {
-        'name': 'Butterfly',
-        'health': [3, 5, 1, 1.5],
-        'range': 6,
-        'minDamage': [2, 3, 1, 1],
-        'maxDamage': [4, 5, 1, 1],
-        'minMagicDamage': [1, 1, 1, 1],
-        'maxMagicDamage': [2, 2, 1.5, 1.5],
-        'attackSpeed': [.5, .5, .05, .05],
-        'speed': 100,
         'accuracy': [1, 2, 1, 2],
-        'evasion': [0, 1, .5, 1],
-        'block': 0,
-        'magicBlock': 0,
-        'armor': [0, 0, .5, .8],
-        'magicResist': 0,
-        'source': {'image': enemySheet('gfx/caterpillar.png'), 'offset': 4 * 48, 'width': 48, 'flipped': true, frames: 4}
+        'evasion': [0, 0, .5, 1],
+        'block': [0, 0, .5, 1],
+        'magicBlock': [2, 3, .5, 1],
+        'armor': [1, 1, .5, 1],
+        'magicResist': .5,
+        'source': {'image': enemySheet('gfx/caterpillar.png'), 'offset': 0, 'width': 48, 'flipped': true, frames: 4}
     };
     var gnome = {
         'name': 'Gnome',
-        'health': [10, 12, 4, 5],
+        'health': [8, 9, 4, 5],
         'range': 1,
-        'minDamage': [1, 2, 1, 1],
-        'maxDamage': [3, 4, 1, 1],
-        'minMagicDamage': [1, 1, 1, 1],
-        'maxMagicDamage': [2, 2, 1.5, 1.5],
-        'attackSpeed': 1,
-        'speed': 100,
-        'accuracy': [1, 1, 1, 1.5],
+        'minDamage': [4, 4, 1, 1.2],
+        'maxDamage': [5, 5, 1.2, 1.5],
+        'minMagicDamage': [2, 2, 1, 1],
+        'maxMagicDamage': [3, 3, 1.5, 1.5],
+        'fpsMultiplier': 1.5,
+        'attackSpeed': 1.5,
+        'speed': 30,
+        'accuracy': [2, 3, 1, 1.5],
         'evasion': [0, 0, .5, 1],
         'block': [0, 0, .5, 1.5],
         'magicBlock': [0, 0, 0, 0],
-        'armor': [1, 2, 1, 1.5],
+        'armor': [2, 3, 1, 1.5],
         'magicResist': 0,
         'source': {'image': enemySheet('gfx/gnome.png'), 'offset': 0, 'width': 32, 'flipped': false, frames: 4}
     };
     var skeleton = {
         'name': 'Skeleton',
-        'health': [7, 8, 3, 4.5],
+        'health': [5, 7, 3, 4.5],
         'range': 1,
         'minDamage': [1, 2, .5, 1],
         'maxDamage': [2, 3, .75, 1.5],
         'minMagicDamage': 0,
         'maxMagicDamage': 0,
         'attackSpeed': [2, 2, .05, .05],
-        'speed': 150,
-        'accuracy': [2, 3, 1.5, 2.5],
-        'evasion': [0, 1, 1, 2],
+        'speed': 200,
+        'accuracy': [3, 4, 1.5, 2.5],
+        'evasion': [0, 0, .5, 1],
         'block': 2,
         'magicBlock': 0,
-        'armor': [0, 0, .5, .8],
+        'armor': [1, 1, .5, .8],
         'magicResist': 0,
         'source': {'image': enemySheet('gfx/skeletonSmall.png'), 'offset': 0, 'width': 48, 'flipped': true, frames: 7}
     };
+    var butterfly = {
+        'name': 'Butterfly',
+        'health': [12, 15, 3, 4],
+        'range': 5,
+        'minDamage': [2, 3, 1, 1.5],
+        'maxDamage': [3, 4, 1.5, 2],
+        'minMagicDamage': [1, 1, 1, 1],
+        'maxMagicDamage': [2, 2, 1.5, 1.5],
+        'attackSpeed': [.5, .5, .02, .02],
+        'speed': 60,
+        'accuracy': [1, 2, 1, 2],
+        'evasion': [0, 0, .5, 1],
+        'block': 0,
+        'magicBlock': [1, 2, 1, 1.5],
+        'armor': [0, 0, .5, .8],
+        'magicResist': 0,
+        'source': {'image': enemySheet('gfx/caterpillar.png'), 'offset': 4 * 48, 'width': 48, 'flipped': true, frames: 4}
+    };
     var giantSkeleton = {
         'name': 'Skelegiant',
-        'health': [25, 30, 6, 8],
+        'health': [15, 20, 6, 7],
         'range': 2,
-        'minDamage': [3, 5, 1, 2],
-        'maxDamage': [6, 8, 1.5, 3],
+        'minDamage': [2, 3, 1, 2],
+        'maxDamage': [3, 4, 1.5, 3],
         'minMagicDamage': 0,
         'maxMagicDamage': 0,
-        'attackSpeed': 1.5,
-        'speed': 150,
-        'accuracy': [2, 3, 1.5, 2.5],
-        'evasion': [0, 1, 1, 2],
+        'attackSpeed': 1,
+        'speed': 100,
+        'accuracy': [0, 0, 1.5, 2.5],
+        'evasion': [0, 0, .5, .75],
         'block': 3,
         'magicBlock': 0,
         'armor': [0, 0, .5, .8],
@@ -317,19 +318,19 @@ function initalizeMonsters() {
     };
     var dragon = {
         'name': 'Dragon',
-        'health': [20, 30, 8, 10],
-        'range': 5,
-        'minDamage': [1, 3, 1, 1],
-        'maxDamage': [3, 4, 1, 1],
-        'minMagicDamage': [1, 1, 1, 1],
-        'maxMagicDamage': [2, 2, 2, 2],
-        'attackSpeed': [1, 1, .1, .1],
+        'health': [14, 16, 7, 8],
+        'range': 4,
+        'minDamage': [1, 1, 1, 1],
+        'maxDamage': [2, 2, 1.5, 2],
+        'minMagicDamage': [0, 0, 1, 1],
+        'maxMagicDamage': [1, 1, 1.5, 1.5],
+        'attackSpeed': [1, 1, .05, .05],
         'speed': 200, //controls speed of animation, not forward movement
         'accuracy': [1, 2, 1, 2],
-        'evasion': [1, 2, 1, 2],
-        'block': [1, 2, 1, 2],
-        'magicBlock': [1, 2, 1, 2],
-        'armor': [1, 2, .75, 1],
+        'evasion': [0, 0, 1, 2],
+        'block': [1, 1, 1, 2],
+        'magicBlock': [1, 1, 1, 2],
+        'armor': [0, 0, .75, 1],
         'magicResist': .5,
         'stationary': true,
         'source': {'image': enemySheet('gfx/dragonEastern.png'), 'offset': 0, 'width': 48, 'flipped': false, frames: 5}
@@ -340,7 +341,7 @@ function initalizeMonsters() {
     addMonsters('skeleton', skeleton);
     addMonsters('giantSkeleton', giantSkeleton);
     addMonsters('dragon', dragon);
-    addLevel({'name': 'Forest', 'backgroundImage': images['gfx/forest.png'], 'monsters': [caterpillar, butterfly], 'boss': [gnome]}, 1);
+    addLevel({'name': 'Forest', 'backgroundImage': images['gfx/forest.png'], 'monsters': [caterpillar, gnome], 'boss': [butterfly]}, 1);
     addLevel({'name': 'Cave', 'backgroundImage': images['gfx/cave.png'], 'monsters': [gnome, skeleton], 'boss': [giantSkeleton]}, 1);
     addLevel({'name': 'Field', 'backgroundImage': images['gfx/grass.png'],  'monsters': [caterpillar, skeleton], 'boss': [dragon]}, 1);
 }
@@ -351,7 +352,7 @@ function addLevel(levelData, level) {
     var minWaveSize = Math.floor(Math.min(4, Math.sqrt(level)) * 10);
     var maxWaveSize = Math.floor(Math.min(10, 2.2 * Math.sqrt(level)) * 10);
     while (waves.length < numberOfWaves) {
-        var waveSize = Math.min(1, Math.floor(Random.range(minWaveSize, maxWaveSize) / 10));
+        var waveSize = Math.max(1, Math.floor(Random.range(minWaveSize, maxWaveSize) / 10));
         var wave = [];
         waves.push(wave);
         if (waves.length == numberOfWaves) {

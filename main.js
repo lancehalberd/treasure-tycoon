@@ -8,15 +8,6 @@ function loadImage(source, callback) {
     };
     images[source].src = source;
 }
-/**
- * @param {Number} width
- * @param {Number} height
- * @return {Element}
- */
-function createCanvas(width, height, classes) {
-    classes = ifdefor(classes, '');
-    return $('<canvas class="' + classes + '"width="' + width + '" height="' + height + '"></canvas>')[0];
-}
 
 var pointsMap = {
     'AP': 'adventurePoints',
@@ -88,7 +79,8 @@ function makeTintedImage(image, tint) {
 function completeArea(character) {
     var $adventureButton = character.$panel.find('.js-infoMode').find('.js-adventure').last();
     // If the character beat the last adventure open to them, unlock the next one
-    if (!character.levelsCompleted[character.area.index]) {
+    if (!character.levelsCompleted[character.area.key]) {
+        character.levelsCompleted[character.area.key] = true;
         gain('AP', character.area.level);
         $adventureButton.after($nextLevelButton(character.area));
     }
@@ -232,7 +224,7 @@ function mainLoop() {
         }
         for (var i = 0; i < character.enemies.length; i++) {
             var enemy = character.enemies[i];
-            var enemyFps = Math.floor(3 * enemy.speed / 100);
+            var enemyFps = ifdefor(enemy.base.fpsMultiplier, 1) * 3 * enemy.speed / 100;
             var source = enemy.base.source;
             var enemyFrame = Math.floor(character.time * enemyFps / 1000) % source.frames;
             if (source.flipped) {

@@ -47,7 +47,7 @@ function newCharacter(job) {
     var shirtFrame = Math.random() < .05 ? 0 : Random.range(clothes[0], clothes[1]);
     var personCanvas = createCanvas(personFrames * 32, 64);
     var personContext = personCanvas.getContext("2d");
-    personContext.imageSmoothingEnabled= false;
+    personContext.imageSmoothingEnabled = false;
     var $newPlayerPanel = $('.js-playerPanelTemplate').clone()
         .removeClass('js-playerPanelTemplate').addClass('js-playerPanel').show();
     $('.js-playerColumn').prepend($newPlayerPanel);

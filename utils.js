@@ -108,3 +108,24 @@ function collision($div1, $div2) {
     var r = l + $div2.outerWidth(true);
     return !(B < t || T > b || R < l || L > r);
 }
+
+/**
+ * @param {Number} width
+ * @param {Number} height
+ * @return {Element}
+ */
+function createCanvas(width, height, classes) {
+    classes = ifdefor(classes, '');
+    return $('<canvas class="' + classes + '"width="' + width + '" height="' + height + '"></canvas>')[0];
+}
+
+function resize(element, width, height, left, top) {
+    var $element = $(element);
+    $element.css('width', width + 'px').css('height', height + 'px');
+    if (ifdefor(left) != null) {
+        $element.css('left', left + 'px');
+    }
+    if (ifdefor(top) != null) {
+        $element.css('top', top + 'px');
+    }
+}
