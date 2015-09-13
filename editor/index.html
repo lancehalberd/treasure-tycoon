@@ -1,0 +1,93 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="../cssReset.css"/>
+    <style type="text/css" >
+        .pagebody {
+            background-color: black;
+            background-repeat: repeat;
+            font-family: 'kingthings_calligraphica_2Rg', Georgia, serif;
+            font-size: 20px;
+            -moz-user-select: none;
+            -khtml-user-select: none;
+            -webkit-user-select: none;
+            -o-user-user-select: none;
+            cursor: default;
+        }
+        .mainGame {
+            position: relative;
+            margin-left: auto;
+            margin-right: auto;
+            padding-top: 10px;
+            width: 960px;
+            min-height: 800px;
+            background-color: black;
+            background-repeat: repeat;
+            top: 0px;
+        }
+        .loading {
+            font-size: 50px;
+            color: white;
+        }
+        .stat {
+            display: inline-block;
+            width: 200px;
+            margin-right: 20px;
+        }
+        canvas {
+            image-rendering: optimizeSpeed;             /* Older versions of FF          */
+            image-rendering: -moz-crisp-edges;          /* FF 6.0+                       */
+            image-rendering: -webkit-optimize-contrast; /* Safari                        */
+            image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
+            image-rendering: pixelated;                 /* Awesome future-browsers       */
+            -ms-interpolation-mode: nearest-neighbor;   /* IE                            */
+        }
+        .canvasList canvas{
+            margin: 2px;
+            border: 1px solid black;
+        }
+        .tools {
+            width: 200px;
+            padding: 5px;
+        }
+    </style>
+
+    <link rel="stylesheet" type="text/css" href="../styles.css"/>
+    <link rel="stylesheet" type="text/css" href="panel.css">
+    <link rel="stylesheet" href="../../jquery-ui/themes/base/jquery.ui.all.css">
+    <script src="../jquery.min.js"></script>
+    <script src="../async.js"></script>
+    <script src="../utils.js"></script>
+    <script src="../../jquery-ui/ui/jquery.ui.core.js"></script>
+    <script src="../../jquery-ui/ui/jquery.ui.widget.js"></script>
+    <script src="../../jquery-ui/ui/jquery.ui.mouse.js"></script>
+    <script src="../../jquery-ui/ui/jquery.ui.draggable.js"></script>
+    <script src="../../jquery-ui/ui/jquery.ui.resizable.js"></script>
+    <script src="panel.js"></script>
+
+    <title>Treasure Tycoon</title>
+</head>
+<body class="pagebody">
+
+<div class="js-mainGame js-mouseContainer mainGame">
+    <div class="js-gameContent">
+        <div class="js-tools tools">
+            <div>
+                <input class="js-color color" value="000000" />
+                <input class="js-opacity" type="range" min="0" max="100" step="1" value="100" />
+                <input class="js-opacityText" value = "100" style="width: 30px;" />
+            </div>
+            <div>
+                <a class="js-save" href="#">Save</a>
+                <input class="js-load" type="file" size="24" />
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../mouse.js"></script>
+<script src="lib/jscolor.js"></script>
+<script src="tools.js"></script>
+<script src="frames.js"></script>
+<script src="layers.js"></script>
+<script src="main.js"></script>
+</html>
