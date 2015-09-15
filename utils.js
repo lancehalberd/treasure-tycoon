@@ -129,3 +129,7 @@ function resize(element, width, height, left, top) {
         $element.css('top', top + 'px');
     }
 }
+
+function constrain(value, min, max) {
+    return Math.min(max, Math.max(min, value));
+}

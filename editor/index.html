@@ -52,6 +52,12 @@
             width: 200px;
             padding: 5px;
         }
+        .tools div {
+            margin-bottom: 5px;
+        }
+        .tools label {
+            display: block;
+        }
     </style>
 
     <link rel="stylesheet" type="text/css" href="../styles.css"/>
@@ -80,6 +86,10 @@
                 <input class="js-opacityText" value = "100" style="width: 30px;" />
             </div>
             <div>
+                <label><input class="js-tool" type="checkbox" value="brush"> Brush</label>
+                <label><input class="js-tool" type="checkbox" value="select"> Selection</label>
+            </div>
+            <div>
                 <a class="js-save" href="#">Save</a>
                 <input class="js-load" type="file" size="24" />
             </div>
@@ -92,5 +102,8 @@
 <script src="tools.js"></script>
 <script src="frames.js"></script>
 <script src="layers.js"></script>
+<script src="drawing.js"></script>
+<script src="brush.js"></script>
+<script src="select.js"></script>
 <script src="main.js"></script>
 </html>

@@ -5,6 +5,19 @@ toolsPanel.$content.append($('.js-tools'));
 toolsPanel.contentWidth = toolsPanel.$content.outerWidth();
 toolsPanel.contentHeight = toolsPanel.$content.outerHeight();
 
+var tool = null;
+var toolHandlers = {};
+
+function setTool(type) {
+    tool = type;
+    $('.js-tool').prop('checked', false);
+    $('.js-tool[value="' + type + '"').prop('checked', true);
+}
+
+$('.js-tool').on('click', function (event) {
+    setTool($(this).val());
+})
+setTool('select');
 
 // Solution from:
 // http://stackoverflow.com/questions/12796513/html5-canvas-to-png-file
@@ -41,4 +54,58 @@ $('.js-load').on('change', function (event) {
         }
         fileReader.readAsDataURL(files[0]);
     } else alert("Loading not supported by this browser.")
+});
+
+// Add the paste event listener
+window.addEventListener("paste", pasteHandler);
+
+/* Handle paste events */
+function pasteHandler(e) {
+    console.log("paste");
+   // We need to check if event.clipboardData is supported (Chrome)
+   if (e.clipboardData) {
+      // Get the items from the clipboard
+      var items = e.clipboardData.items;
+      if (items) {
+         // Loop through all items, looking for any kind of image
+         for (var i = 0; i < items.length; i++) {
+            console.log(items[i].type);
+            if (items[i].type.indexOf("image") !== -1) {
+               // We need to represent the image as a file,
+               var blob = items[i].getAsFile();
+               // and use a URL or webkitURL (whichever is available to the browser)
+               // to create a temporary URL to the object
+               var URLObj = window.URL || window.webkitURL;
+               var source = URLObj.createObjectURL(blob);
+
+               // The URL can then be used as the source of an image
+               loadImage(source, function (image) {
+                    // Apply change to all context that are displaying the current graphics.
+                    [sourceContext, cells[selectedLayer][selectedFrame].context, previewFrameContext, previewLayerContext].forEach(function (context) {
+                        context.drawImage(image, 0, 0);
+                    });
+                    setSelection(0, 0, image.width, image.height);
+               });
+            }
+         }
+      }
+   // If we can't handle clipboard data directly (Firefox),
+   // we need to read what was pasted from the contenteditable element
+   } else {
+      // This is a cheap trick to make sure we read the data
+      // AFTER it has been inserted.
+      setTimeout(checkInput, 1);
+   }
+}
+
+$('.js-color').on('change', function (event) {
+    var hexColor = $(this).val();
+    d[0] = constrain(parseInt(hexColor.substring(0, 2), 16), 0, 255);
+    d[1] = constrain(parseInt(hexColor.substring(2, 4), 16), 0, 255);
+    d[2] = constrain(parseInt(hexColor.substring(4, 6), 16), 0, 255);
+});
+$('.js-opacity').on('change', function (event) {
+    var percent = $(this).val();
+    $('.js-opacityText').val(percent);
+    d[3] = constrain(Math.floor((percent * 255) / 100), 0, 255);
 });
