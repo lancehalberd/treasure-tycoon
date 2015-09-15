@@ -2,6 +2,9 @@
 var framesPanel = new cb.Panel('Frames');
 $('body').append(framesPanel.$);
 framesPanel.$content.addClass('canvasList');
+var previewFrameCanvas = createCanvas(160, 144);
+$(previewFrameCanvas).addClass('selected');
+var previewFrameContext = previewFrameCanvas.getContext("2d");
 function updateFramesPanel() {
     updateCanvas(previewFrameCanvas, previewScale);
     framesPanel.$content.empty();
@@ -42,4 +45,8 @@ framesPanel.$content.on('click', '.js-deleteFrame', function (event) {
     frames--;
     selectedFrame = Math.min(selectedFrame, frames - 1);
     initializePanels();
+});
+
+framesPanel.$contentFrame.bind('mousewheel', function(e){
+    framesPanel.scrollVertical(-e.originalEvent.wheelDelta);
 });

@@ -153,6 +153,17 @@ cb.Panel = function (title) {
         self.updateContent();
     };
 
+    self.scrollVertical = function (pixels) {
+        var windowHeight = self.$contentFrame.outerHeight();
+        self.contentY = Math.max(0, Math.min(self.contentY + pixels, self.contentHeight - windowHeight));
+        self.refreshScrollBars();
+    };
+    self.scrollHorizontal = function (pixels) {
+        var windowWidth = self.$contentFrame.outerWidth();
+        self.contentX = Math.max(0, Math.min(self.contentX + pixels, self.contentWidth - windowWidth));
+        self.refreshScrollBars();
+    };
+
     self.active = false;
     self.$ = $panel;
 };

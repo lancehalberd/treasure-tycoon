@@ -2,6 +2,9 @@
 var layersPanel = new cb.Panel('Layers');
 $('body').append(layersPanel.$);
 layersPanel.$content.addClass('canvasList');
+var previewLayerCanvas = createCanvas(160, 144);
+$(previewLayerCanvas).addClass('selected');
+var previewLayerContext = previewLayerCanvas.getContext("2d");
 function updateLayersPanel() {
     updateCanvas(previewLayerCanvas, previewScale);
     layersPanel.$content.empty();
@@ -52,4 +55,7 @@ layersPanel.$content.on('click', '.js-deleteLayer', function (event) {
     layers--;
     selectedLayer = Math.min(selectedLayer, layers - 1);
     initializePanels();
+});
+layersPanel.$contentFrame.bind('mousewheel', function(e){
+    layersPanel.scrollVertical(-e.originalEvent.wheelDelta);
 });

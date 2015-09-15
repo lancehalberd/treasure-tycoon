@@ -11,10 +11,6 @@ drawingPanel.$content.append(backgroundCanvas);
 drawingPanel.$content.append(sourceCanvas);
 $(backgroundCanvas).css('opacity', .5);
 var sourceContext = sourceCanvas.getContext("2d");
-var previewFrameCanvas = createCanvas(160, 144);
-var previewFrameContext = previewFrameCanvas.getContext("2d");
-var previewLayerCanvas = createCanvas(160, 144);
-var previewLayerContext = previewLayerCanvas.getContext("2d");
 
 var cellWidth = 32;
 var cellHeight = 48;
@@ -65,6 +61,7 @@ function updateDrawingPanel() {
     }
 }
 function updateDrawingPanelScale() {
+    resize(backgroundCanvas, cellWidth * drawingScale, cellHeight * drawingScale);
     resize(sourceCanvas, cellWidth * drawingScale, cellHeight * drawingScale);
     resize(previewCanvas, cellWidth * drawingScale, cellHeight * drawingScale);
     drawingPanel.contentWidth = cellWidth * drawingScale;
@@ -86,13 +83,13 @@ animationPanel.$content.append(animationCanvas);
 animationPanel.contentWidth = animationPanel.$content.outerWidth();
 animationPanel.contentHeight = animationPanel.$content.outerHeight();
 
-drawingPanel.$content.bind('mousewheel', function(e){
+drawingPanel.$contentFrame.bind('mousewheel', function(e){
     var actualX = drawingPanel.contentX / drawingScale;
     var actualY = drawingPanel.contentY / drawingScale;
-    if (e.originalEvent.wheelDelta /120 > 0) {
+    if (e.originalEvent.wheelDelta > 0) {
         drawingScale = Math.min(drawingScale * 2, 20);
     } else{
-        drawingScale = Math.max(drawingScale / 2, 1);
+        drawingScale = Math.max(drawingScale / 2, 4);
     }
     drawingPanel.contentX = Math.round(actualX * drawingScale);
     drawingPanel.contentY = Math.round(actualY * drawingScale);
