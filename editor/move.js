@@ -42,6 +42,7 @@ toolHandlers.move = {
                 toolHandlers.select.endingCoords[0] += dx;
                 toolHandlers.select.startingCoords[1] += dy;
                 toolHandlers.select.endingCoords[1] += dy;
+                toolHandlers.select.redrawSelection();
             }
             toolHandlers.move.dragCoords = coords;
         } else {

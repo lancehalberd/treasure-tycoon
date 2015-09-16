@@ -45,7 +45,7 @@ function initializePanels() {
 
 var animationCanvas = createCanvas(32, 48);
 var animationContext = animationCanvas.getContext("2d");
-(animationCanvas, previewScale);
+updateCanvas(animationCanvas, previewScale);
 animationPanel.$content.append(animationCanvas);
 animationPanel.contentWidth = animationPanel.$content.outerWidth();
 animationPanel.contentHeight = animationPanel.$content.outerHeight();

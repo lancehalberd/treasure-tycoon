@@ -58,6 +58,7 @@ toolHandlers.select = {
     'mousemove': function (event, coords) {
         if (toolHandlers.select.selecting) {
             toolHandlers.select.endingCoords = coords;
+            toolHandlers.select.redrawSelection();
         }
         if (toolHandlers.select.dragging) {
             var dx = coords[0] - toolHandlers.select.dragCoords[0];
@@ -67,6 +68,7 @@ toolHandlers.select = {
             toolHandlers.select.startingCoords[1] += dy;
             toolHandlers.select.endingCoords[1] += dy;
             toolHandlers.select.dragCoords = coords;
+            toolHandlers.select.redrawSelection();
         }
         drawingPanel.$content.css('cursor', 'crosshair');
         if (!toolHandlers.select.selecting && toolHandlers.select.pointInRectangle(coords)) {
