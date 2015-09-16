@@ -17,7 +17,7 @@ function setTool(type) {
 $('.js-tool').on('click', function (event) {
     setTool($(this).val());
 })
-setTool('select');
+setTool('brush');
 
 // Solution from:
 // http://stackoverflow.com/questions/12796513/html5-canvas-to-png-file

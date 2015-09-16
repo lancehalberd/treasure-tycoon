@@ -67,7 +67,7 @@ function loadImage(source, callback) {
 }
 function animate() {
     var frame = Math.floor(now() / 150) % frames;
-    animationContext.clearRect(0, 0, 32, 48);
+    animationContext.clearRect(0, 0, cellWidth, cellHeight);
     for (var i = layers - 1; i >= 0; i--) {
         animationContext.drawImage(cells[i][frame].canvas, 0, 0);
     }
@@ -75,5 +75,9 @@ function animate() {
     if (handler) {
         return handler(event);
     }
+    if (toolHandlers.select.startingCoords && toolHandlers.select.endingCoords) {
+        toolHandlers.select.redrawSelection();
+    }
+    return null;
 }
 setInterval(animate, 20);

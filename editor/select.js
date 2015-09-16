@@ -10,7 +10,7 @@ toolHandlers.select = {
     'endingCoords': null, // Coords of where the last/current selection ended.
     'getRectangle': function () {
         if (!toolHandlers.select.startingCoords) {
-            return null;
+            return undefined;
         }
         var l = Math.max(0, Math.min(toolHandlers.select.startingCoords[0], toolHandlers.select.endingCoords[0]));
         var r = Math.min(cellWidth, Math.max(toolHandlers.select.startingCoords[0], toolHandlers.select.endingCoords[0] ));
@@ -81,14 +81,12 @@ toolHandlers.select = {
             toolHandlers.select.startingCoords = null;
             toolHandlers.select.endingCoords = null;
         }
-    },
-    'tick': function (event) {
-        if (toolHandlers.select.startingCoords && toolHandlers.select.endingCoords) {
-            toolHandlers.select.redrawSelection();
-        }
     }
 };
 function setSelection(left, top, width, height) {
     toolHandlers.select.startingCoords = [left, top];
     toolHandlers.select.endingCoords = [left + width, top + height];
+}
+function isPointActive(coords) {
+    return !toolHandlers.select.startingCoords || toolHandlers.select.pointInRectangle(coords);
 }
