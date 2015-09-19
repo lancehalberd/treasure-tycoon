@@ -51,10 +51,12 @@ animationPanel.contentWidth = animationPanel.$content.outerWidth();
 animationPanel.contentHeight = animationPanel.$content.outerHeight();
 
 resize(animationPanel.$, 220, 220, 0, 0);
-resize(toolsPanel.$, 220, 380, 0, 220);
+resize(colorsPanel.$, 220, 236, 0, 220);
+resize(toolsPanel.$, 220, 280, 0, 456);
 resize(drawingPanel.$, 600, 600, 220, 0);
 resize(framesPanel.$, 160, 600, 220 + 600, 0);
 resize(layersPanel.$, 160, 600, 220 + 600 + 160, 0);
+colorsPanel.refreshScrollBars();
 initializeCells();
 initializePanels();
 

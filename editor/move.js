@@ -9,12 +9,16 @@ toolHandlers.move = {
     'dragging': false, // Indicates the user is in the middle of a drag selection operation.
     'dragCoords': null,
     'drawCoords': null,
-    'mousedown': function (event, coords) {
-        if (!isPointActive(coords)) return;
+    'setMoveCanvas': function () {
         var rectangle = ifdefor(toolHandlers.select.getRectangle(), {'left': 0, 'top': 0, 'width': cellWidth, 'height': cellHeight});
         moveCanvas.width = rectangle.width;
         moveCanvas.height = rectangle.height;
         moveContext.drawImage(sourceCanvas, rectangle.left, rectangle.top, rectangle.width, rectangle.height, 0, 0, rectangle.width, rectangle.height);
+    },
+    'mousedown': function (event, coords) {
+        if (!isPointActive(coords)) return;
+        var rectangle = ifdefor(toolHandlers.select.getRectangle(), {'left': 0, 'top': 0, 'width': cellWidth, 'height': cellHeight});
+        toolHandlers.move.setMoveCanvas();
         toolHandlers.move.dragging = true;
         toolHandlers.move.dragCoords = coords;
         toolHandlers.move.drawCoords = [rectangle.left, rectangle.top];

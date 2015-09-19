@@ -34,6 +34,7 @@
             margin-right: 20px;
         }
         canvas {
+            /*background-image: url('gfx/checkerboard.png');*/
             image-rendering: optimizeSpeed;             /* Older versions of FF          */
             image-rendering: -moz-crisp-edges;          /* FF 6.0+                       */
             image-rendering: -webkit-optimize-contrast; /* Safari                        */
@@ -57,6 +58,27 @@
         }
         .tools label {
             display: block;
+        }
+        .colorTile {
+            margin: 2px;
+            box-sizing: border-box;
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+        }
+        .colorTile.selected {
+            border: 2px solid #4CC;
+        }
+        .colorTile.newColor {
+            background-color: white;
+            text-align: center;
+            line-height: 30px;
+            font-size: 30px;
+            vertical-align: top;
+        }
+        .palette {
+            background-image: url('gfx/checkerboard.png');
         }
     </style>
 
@@ -82,7 +104,7 @@
         <div class="js-tools tools">
             <div>
                 <input class="js-color color" value="000000" />
-                <input class="js-opacity" type="range" min="0" max="100" step="1" value="100" />
+                <input class="js-opacity" type="range" min="0" max="255" step="1" value="255" />
                 <input class="js-opacityText" value = "100" style="width: 30px;" />
             </div>
             <div>
@@ -100,6 +122,7 @@
 </body>
 <script src="../mouse.js"></script>
 <script src="lib/jscolor.js"></script>
+<script src="colors.js"></script>
 <script src="tools.js"></script>
 <script src="frames.js"></script>
 <script src="layers.js"></script>
