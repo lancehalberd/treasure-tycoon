@@ -19,12 +19,11 @@ function colorToAlphaValue(color) {
     return (color[3] / 255).toFixed(2);
 }
 function addNewColor(color) {
-    console.log(color);
     color = [color[0], color[1], color[2], color[3]];
-    $('.js-newColor').before($tag('div', 'js-colorTile colorTile')
-        .css('background-color',  colorToHexValue(color))
-        .css('opacity',  colorToAlphaValue(color))
-        .data('color', color));
+    $tile = $tag('div', 'js-colorTile colorTile').append(
+            $tag('div', 'js-colorSquare colorSquare').css('background-color',  colorToHexValue(color)).css('opacity',  colorToAlphaValue(color))
+        ).data('color', color);
+    $('.js-newColor').before($tile);
 }
 var $colorPalette = $tag('div', 'palette').css('width', 34 * 6 + 'px');
 $colorPalette.append($tag('div', 'js-newColor colorTile newColor', '+'));
@@ -42,13 +41,20 @@ $('.js-newColor').on('click', function (event) {
 
 $colorPalette.on('click', '.js-colorTile', function (event) {
     $('.js-colorTile').removeClass('selected');
-    $(this).addClass('selected');
-    var color = $(this).data('color');
-    console.log(color);
-    setColor(drawBrush.data, color[0], color[1], color[2], color[3]);
-    updateColorsControls();
+    pickColor($(this).data('color'));
 });
-$('.js-colorTile').first().addClass('selected');
+$colorPalette.on('dblclick', '.js-colorTile', function (event) {
+    $('.js-colorTile').removeClass('selected');
+    $(this).addClass('selected');
+    pickColor($(this).data('color'));
+    setTool('dropper');
+});
+function pickColor(color) {
+    $('.js-color')[0].color.fromRGB(color[0] / 255, color[1] / 255, color[2] / 255);
+    $('.js-opacity').val(color[3]);
+    $('.js-opacityText').val(color[3]);
+    updateBrush();
+}
 
 colorsPanel.$contentFrame.bind('mousewheel', function(e){
     colorsPanel.scrollVertical(-e.originalEvent.wheelDelta);
@@ -56,4 +62,3 @@ colorsPanel.$contentFrame.bind('mousewheel', function(e){
 colorsPanel.contentWidth = 34 * 6;
 colorsPanel.contentHeight = 34 * 6;
 colorsPanel.refreshScrollBars();
-

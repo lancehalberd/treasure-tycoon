@@ -43,7 +43,7 @@ function initializePanels() {
 }
 
 
-var animationCanvas = createCanvas(32, 48);
+var animationCanvas = createCanvas(32, 48, 'animation');
 var animationContext = animationCanvas.getContext("2d");
 updateCanvas(animationCanvas, previewScale);
 animationPanel.$content.append(animationCanvas);

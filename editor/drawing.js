@@ -2,7 +2,7 @@
 var drawingPanel = new cb.Panel('Drawing');
 $('body').append(drawingPanel.$);
 
-var backgroundCanvas = createCanvas(160, 144);
+var backgroundCanvas = createCanvas(160, 144, 'background');
 var backgroundContext = backgroundCanvas.getContext("2d");
 var sourceCanvas = createCanvas(160, 144);
 var sourceContext = sourceCanvas.getContext("2d");
@@ -15,7 +15,7 @@ drawingPanel.$content.append(backgroundCanvas);
 drawingPanel.$content.append(sourceCanvas);
 drawingPanel.$content.append(previewCanvas);
 drawingPanel.$content.append(overlayCanvas);
-$(backgroundCanvas).css('opacity', .5);
+//$(backgroundCanvas).css('opacity', .5);
 [sourceCanvas, previewCanvas, overlayCanvas].forEach(function (canvas) {
     $(canvas).css('position', 'absolute').css('left', '0px');
 });
@@ -109,4 +109,3 @@ function drawPixel(coords, brush) {
         context.putImageData(brush, coords[0], coords[1]);
     });
 }
-

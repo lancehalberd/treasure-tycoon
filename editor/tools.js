@@ -41,8 +41,10 @@ $('.js-load').on('change', function (event) {
         fileReader.onload = function () {
             var source = fileReader.result;
             loadImage(source, function (image) {
-                frames = Math.floor(image.width / cellWidth);
-                layers = Math.floor(image.height / cellHeight);
+                cellWidth = Math.min(cellWidth, image.width);
+                cellHeight = Math.min(cellHeight, image.height);
+                frames = Math.ceil(image.width / cellWidth);
+                layers = Math.ceil(image.height / cellHeight);
                 initializeCells();
                 for (var layer = 0; layer < layers; layer++) {
                     for (var frame = 0; frame < frames; frame++) {
@@ -132,38 +134,55 @@ function pasteImageFromSource(source) {
     }
 }
 
+$('.js-brushSize').on('change mousemove', function (event) {
+    $('.js-brushSizeText').val($('.js-brushSize').val());
+    updateBrush();
+});
+$('.js-brushSizeText').on('click change keyup', function (event) {
+    var intValue = parseInt($('.js-brushSizeText').val());
+    if (isNaN(intValue)) {
+        intValue = 1;
+    }
+    $('.js-brushSizeText').val(constrain(intValue, 0, 255));
+    $('.js-brushSize').val(constrain(intValue, 0, 255));
+    updateBrush();
+});
+
 $('.js-color').on('change', updateBrush);
-$('.js-opacity').on('change', function (event) {
+$('.js-opacity').on('change mousemove', function (event) {
     $('.js-opacityText').val($('.js-opacity').val());
     updateBrush();
 });
-$('.js-opacityText').on('change,keyup,click,keypress,mouseover,mousedown', function (event) {
-    console.log('?');
-    $('.js-opacity').val(constrain($('.js-opacityText').val(), 0, 255));
+$('.js-opacityText').on('click change keyup', function (event) {
+    var intValue = parseInt($('.js-opacityText').val());
+    if (isNaN(intValue)) {
+        intValue = 0;
+    }
+    $('.js-opacityText').val(constrain(intValue, 0, 255));
+    $('.js-opacity').val(constrain(intValue, 0, 255));
     updateBrush();
 });
 function updateBrush() {
     var hexColor = $('.js-color').val();
-    setColor(drawBrush.data,
-        constrain(parseInt(hexColor.substring(0, 2), 16), 0, 255),
-        constrain(parseInt(hexColor.substring(2, 4), 16), 0, 255),
-        constrain(parseInt(hexColor.substring(4, 6), 16), 0, 255),
-        constrain($('.js-opacity').val(), 0, 255)
-    );
-    var color = $('.js-colorTile.selected').data('color');
-    color[0] = drawBrush.data[0];
-    color[1] = drawBrush.data[1];
-    color[2] = drawBrush.data[2];
-    color[3] = drawBrush.data[3];
-     $('.js-colorTile.selected')
-        .css('background-color',  colorToHexValue(color))
-        .css('opacity',  colorToAlphaValue(color))
-        .data('color', color);
-}
-function updateColorsControls() {
-    $('.js-color')[0].color.fromRGB(drawBrush.data[0] / 255, drawBrush.data[1] / 255, drawBrush.data[2] / 255);
-    $('.js-opacity').val(drawBrush.data[3]);
-    $('.js-opacityText').val(drawBrush.data[3]);
+    toolHandlers.brush.brushSize = $('.js-brushSize').val();
+    var newColor = [];
+    newColor[0] = constrain(parseInt(hexColor.substring(0, 2), 16), 0, 255);
+    newColor[1] = constrain(parseInt(hexColor.substring(2, 4), 16), 0, 255);
+    newColor[2] = constrain(parseInt(hexColor.substring(4, 6), 16), 0, 255);
+    newColor[3] = constrain($('.js-opacity').val(), 0, 255);
+    $('.js-colorTile.selected .js-colorSquare')
+        .css('background-color',  colorToHexValue(newColor))
+        .css('opacity',  colorToAlphaValue(newColor));
+    $('.js-colorTile.selected').data('color', newColor);
+    drawBrush = sourceContext.createImageData(toolHandlers.brush.brushSize, toolHandlers.brush.brushSize);
+    eraseBrush = sourceContext.createImageData(toolHandlers.brush.brushSize, toolHandlers.brush.brushSize);
+    var brushData = drawBrush.data;
+    for (var i = 0; i < toolHandlers.brush.brushSize * toolHandlers.brush.brushSize; i++) {
+        brushData[4*i] = newColor[0];
+        brushData[4*i + 1] = newColor[1];
+        brushData[4*i + 2] = newColor[2];
+        brushData[4*i + 3] = newColor[3];
+    }
 }
 
 // Add the paste event listener

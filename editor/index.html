@@ -34,13 +34,15 @@
             margin-right: 20px;
         }
         canvas {
-            /*background-image: url('gfx/checkerboard.png');*/
             image-rendering: optimizeSpeed;             /* Older versions of FF          */
             image-rendering: -moz-crisp-edges;          /* FF 6.0+                       */
             image-rendering: -webkit-optimize-contrast; /* Safari                        */
             image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
             image-rendering: pixelated;                 /* Awesome future-browsers       */
             -ms-interpolation-mode: nearest-neighbor;   /* IE                            */
+        }
+        canvas.background, canvas.animation {
+            background-image: url('gfx/checkerboard.png');
         }
         .canvasList canvas{
             margin: 2px;
@@ -66,6 +68,10 @@
             width: 30px;
             height: 30px;
             cursor: pointer;
+        }
+        .colorTile .colorSquare {
+            width: 100%;
+            height: 100%;
         }
         .colorTile.selected {
             border: 2px solid #4CC;
@@ -105,12 +111,15 @@
             <div>
                 <input class="js-color color" value="000000" />
                 <input class="js-opacity" type="range" min="0" max="255" step="1" value="255" />
-                <input class="js-opacityText" value = "100" style="width: 30px;" />
+                <input class="js-opacityText" value = "255" style="width: 30px;" />
             </div>
             <div>
                 <label><input class="js-tool" type="checkbox" value="brush"> Brush</label>
+                <input class="js-brushSize" type="range" min="1" max="50" step="1" value="1" />
+                <input class="js-brushSizeText" value = "1" style="width: 30px;" />
                 <label><input class="js-tool" type="checkbox" value="select"> Selection</label>
                 <label><input class="js-tool" type="checkbox" value="move"> Move</label>
+                <label><input class="js-tool" type="checkbox" value="dropper"> Dropper</label>
             </div>
             <div>
                 <a class="js-save" href="#">Save</a>
@@ -130,5 +139,6 @@
 <script src="brush.js"></script>
 <script src="select.js"></script>
 <script src="move.js"></script>
+<script src="dropper.js"></script>
 <script src="main.js"></script>
 </html>
