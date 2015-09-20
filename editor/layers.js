@@ -8,23 +8,24 @@ var previewLayerContext = previewLayerCanvas.getContext("2d");
 function updateLayersPanel() {
     updateCanvas(previewLayerCanvas, previewScale);
     layersPanel.$content.empty();
-    layersPanel.$content.append($tag('button', 'js-addLayer', 'Add Layer'));
     for (var layer = 0; layer < layers; layer++) {
         if (layer == selectedLayer) {
-            layersPanel.$content.append(previewLayerCanvas);
+            layersPanel.$content.append($previewTile(previewLayerCanvas));
             previewLayerContext.drawImage(cells[selectedLayer][selectedFrame].canvas, 0, 0);
             continue;
         }
-        layersPanel.$content.append(cells[layer][selectedFrame].canvas);
+        layersPanel.$content.append($previewTile(cells[layer][selectedFrame].canvas));
         scaleCanvas(cells[layer][selectedFrame].canvas, previewScale);
     }
-    layersPanel.$content.append($tag('button', 'js-deleteLayer', 'Delete Layer'));
     layersPanel.contentHeight = layersPanel.$content.outerHeight();
     layersPanel.contentWidth = layersPanel.$content.outerWidth();
     layersPanel.refreshScrollBars();
 }
-layersPanel.$content.on('click', 'canvas', function (event) {
-    selectedLayer = $(this).prevAll().filter('canvas').length;
+layersPanel.$content.on('click', '.js-previewTile', function (event) {
+    if ($(event.target).closest('.js-option').length) {
+        return;
+    }
+    selectedLayer = $(this).prevAll().filter('.js-previewTile').length;
     initializePanels();
 });
 $('body').on('keydown', function (event) {
@@ -37,25 +38,71 @@ $('body').on('keydown', function (event) {
         initializePanels();
     }
 });
-layersPanel.$content.on('click', '.js-addLayer', function (event) {
+layersPanel.$content.on('click', '.js-newUp', function (event) {
+    addLayer(getIndex($(this)));
+});
+layersPanel.$content.on('click', '.js-newDown', function (event) {
+    addLayer(getIndex($(this)) + 1);
+});
+layersPanel.$content.on('click', '.js-delete', function (event) {
+    deleteLayer(getIndex($(this)));
+});
+layersPanel.$content.on('click', '.js-moveUp', function (event) {
+    var index = getIndex($(this));
+    swapLayers(index, index - 1);
+});
+layersPanel.$content.on('click', '.js-moveDown', function (event) {
+    var index = getIndex($(this));
+    swapLayers(index, index + 1);
+});
+layersPanel.$content.on('click', '.js-copy', function (event) {
+    copyLayer(getIndex($(this)));
+});
+function addLayer(index) {
     var newLayer = [];
     for (var frame = 0; frame < frames; frame++) {
         newLayer.push(newCell());
     }
-    cells.unshift(newLayer);
+    cells.splice(index, 0, newLayer);
     layers++;
-    selectedLayer = 0;
+    selectedLayer = index;
     initializePanels();
-});
-layersPanel.$content.on('click', '.js-deleteLayer', function (event) {
+}
+function deleteLayer(index) {
     if (layers <= 1) {
         return;
     }
-    cells.pop();
+    cells.splice(index, 1);
     layers--;
-    selectedLayer = Math.min(selectedLayer, layers - 1);
+    selectedLayer = Math.min(index, layers - 1);
     initializePanels();
-});
+}
+function swapLayers(indexA, indexB) {
+    if (indexA < 0 || indexB < 0 || indexA >= layers || indexB >= layers) {
+        return;
+    }
+    var tmp = cells[indexA];
+    cells[indexA] = cells[indexB];
+    cells[indexB] = tmp;
+    if (selectedLayer == indexA) {
+        selectedLayer = indexB;
+    } else if (selectedLayer == indexB) {
+        selectedLayer = indexA;
+    }
+    initializePanels();
+}
+function copyLayer(index) {
+    var newLayer = [];
+    for (var frame = 0; frame < frames; frame++) {
+        var copy = newCell();
+        copy.context.drawImage(cells[index][frame].canvas, 0, 0);
+        newLayer.push(copy);
+    }
+    cells.splice(index + 1, 0, newLayer);
+    layers++;
+    selectedLayer = index + 1;
+    initializePanels();
+}
 layersPanel.$contentFrame.bind('mousewheel', function(e){
     layersPanel.scrollVertical(-e.originalEvent.wheelDelta);
 });
