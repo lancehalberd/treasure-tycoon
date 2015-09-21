@@ -40,12 +40,16 @@ function initializePanels() {
     updateDrawingPanel();
     updateFramesPanel();
     updateLayersPanel();
+    updateAnimationPanel();
+}
+
+function updateAnimationPanel() {
+    updateCanvas(animationCanvas, previewScale);
 }
 
 
 var animationCanvas = createCanvas(32, 48, 'animation');
 var animationContext = animationCanvas.getContext("2d");
-updateCanvas(animationCanvas, previewScale);
 animationPanel.$content.append(animationCanvas);
 animationPanel.contentWidth = animationPanel.$content.outerWidth();
 animationPanel.contentHeight = animationPanel.$content.outerHeight();

@@ -33,7 +33,7 @@ $('.js-save').on('click', function (event) {
     this.href = dt;
 });
 //http://stackoverflow.com/questions/3814231/loading-an-image-to-a-img-from-input-file
-$('.js-load').on('change', function (event) {
+toolsPanel.$content.on('change', '.js-load', function (event) {
     var target = event.target || window.event.srcElement, files = target.files;
     // FileReader support
     if (FileReader && files && files.length) {
@@ -52,6 +52,7 @@ $('.js-load').on('change', function (event) {
                     }
                 }
                 initializePanels();
+                $('.js-load').replaceWith($('.js-load').clone());
             })
         }
         fileReader.readAsDataURL(files[0]);
@@ -85,8 +86,6 @@ function pasteHandler(e) {
       if (items) {
          // Loop through all items, looking for any kind of image
          for (var i = 0; i < items.length; i++) {
-            console.log(items[i].type);
-
             if (items[i].type.indexOf("text/plain") !== -1) {
                 items[i].getAsString(function (result) {
                     // When a user copies an image internally, we set the clipboard
@@ -190,3 +189,15 @@ window.addEventListener("paste", pasteHandler);
 
 // Add the paste event listener
 window.addEventListener("copy", copyHandler);
+
+$('.js-updateCanvasSize').on('click', function (event) {
+   cellWidth = parseInt($('.js-canvasWidth').val());
+   cellWidth = isNaN(cellWidth) ? 32 : Math.max(1, cellWidth);
+   cellHeight = parseInt($('.js-canvasHeight').val());
+   cellHeight = isNaN(cellHeight) ? 32 : Math.max(1, cellHeight);
+   console.log([cellWidth, cellHeight]);
+   $('.js-canvasWidth').val(cellWidth);
+   $('.js-canvasHeight').val(cellHeight);
+   initializeCells();
+   initializePanels();
+});

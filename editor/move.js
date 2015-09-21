@@ -4,7 +4,6 @@
  */
 var moveCanvas = createCanvas(1, 1);
 var moveContext = moveCanvas.getContext("2d");
-$('body').append(moveCanvas);
 toolHandlers.move = {
     'dragging': false, // Indicates the user is in the middle of a drag selection operation.
     'dragCoords': null,

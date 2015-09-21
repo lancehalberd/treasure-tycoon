@@ -39,9 +39,10 @@ $('.js-newColor').on('click', function (event) {
 });
 
 
-$colorPalette.on('click', '.js-colorTile', function (event) {
+$colorPalette.on('mousedown', '.js-colorTile', function (event) {
     $('.js-colorTile').removeClass('selected');
     pickColor($(this).data('color'));
+    setTool('brush');
 });
 $colorPalette.on('dblclick', '.js-colorTile', function (event) {
     $('.js-colorTile').removeClass('selected');
