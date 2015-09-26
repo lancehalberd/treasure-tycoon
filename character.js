@@ -6,6 +6,16 @@ var names = ['Chris', 'Leon', 'Hillary', 'Michelle', 'Rob', 'Reuben', 'Kingston'
 var walkLoop = [0, 1, 2, 3];
 var fightLoop = [4, 5, 6];
 var pointsTypes = ['IP', 'MP', 'RP', 'UP', 'AP'];
+var allComputedStats = ['cloaking', 'dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
+     'ip', 'xp', 'mp', 'rp', 'up',
+     'evasion', 'block', 'magicBlock', 'armor', 'magicResist', 'accuracy', 'range', 'attackSpeed',
+     'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage',
+     'damageOnMiss', 'slowOnHit', 'healthRegen', 'healthGainOnHit'];
+var allFlooredStats = ['dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
+     'ip', 'xp', 'mp', 'rp', 'up',
+     'evasion', 'block', 'magicBlock', 'armor', 'magicResist', 'accuracy',
+     'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage'];
+var allFixed2Stats = ['range', 'attackSpeed'];
 
 function resetCharacter(character) {
     character.health = character.maxHealth;
@@ -66,6 +76,7 @@ function newCharacter(job) {
             'block': 1,
         },
         'bonuses': [],
+        'abilities': [],//[{'name': 'Stealth', 'bonuses':{'+cloaking': 1}}],
         'name': Random.element(names),
         'hairOffset': Random.range(hair[0], hair[1]),
         'level': 1,
@@ -138,6 +149,9 @@ function updateCharacter(character) {
             character.personContext.drawImage(images['gfx/person.png'], i * 32 + character.hairOffset * sectionWidth, 0 , 32, 64, i * 32, 0, 32, 64);
         }
     }
+    character.abilities.forEach(function (ability) {
+        character.bonuses.push(ability.bonuses);
+    });
     // Add the character's current equipment to bonuses and graphics
     equipmentSlots.forEach(function (type) {
         var equipment = character.equipment[type];
@@ -180,18 +194,13 @@ function updateStats(character) {
         character.base.minDamage = 0;
         character.base.maxDamage = 0;
     }
-    ['dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
-     'evasion', 'block', 'magicBlock', 'armor', 'magicResist', 'accuracy', 'range', 'attackSpeed',
-     'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage',
-     'damageOnMiss', 'slowOnHit', 'healthRegen', 'healthGainOnHit'].forEach(function (stat) {
+    allComputedStats.forEach(function (stat) {
         character[stat] = getStat(character, stat);
     });
-    ['dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
-     'evasion', 'block', 'magicBlock', 'armor', 'magicResist', 'accuracy',
-     'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage'].forEach(function (stat) {
+    allFlooredStats.forEach(function (stat) {
         character[stat] = Math.floor(character[stat]);
     });
-    ['range', 'attackSpeed'].forEach(function (stat) {
+    allFixed2Stats.forEach(function (stat) {
         character[stat] = character[stat].toFixed(2);
     });
     character.health = character.maxHealth;
