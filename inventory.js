@@ -327,23 +327,23 @@ addItem(36, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Scalemail', 'bonuses
 addItem(41, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Platemail', 'bonuses': {'+armor': 83, '+maxHealth': 415}, 'offset': 3, icon: 'armor'});
 addItem(46, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Half Plate', 'bonuses': {'+armor': 93, '+maxHealth': 465}, 'offset': 3, icon: 'armor'});
 addItem(51, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Full Plate', 'bonuses': {'+armor': 103, '+maxHealth': 515}, 'offset': 3, icon: 'armor'});
-addItem(61, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Runic Plate', 'bonuses': {'+armor': 110, '+maxHealth': 550, '+evasion': 10, '+block': 10, '+magicBlock': 10}, 'offset': 3, icon: 'armor'});
-addItem(71, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Dragonbone Plate', 'bonuses': {'+armor': 120, '+maxHealth': 700, '+evasion': 20, '+block': 20, '+magicBlock': 20}, 'offset': 3, icon: 'armor'});
+addItem(61, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Adamantium Plate', 'bonuses': {'+armor': 130, '+maxHealth': 700, '+evasion': 20, '+block': 20, '+magicBlock': 10, '%speed': -0.2}, 'offset': 3, icon: 'armor'});
+addItem(71, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Orichalcum Plate', 'bonuses': {'+armor': 120, '+maxHealth': 700, '+evasion': 20, '+block': 20, '+magicBlock': 20}, 'offset': 3, icon: 'armor'});
 
 //Light Armor gives armor and evasion
 addItem(1, {'slot': 'body', 'type': 'lightArmor', 'name': 'Cloth Tunic', 'bonuses': {'+armor': 2, '+evasion': 4}, 'offset': 3, icon: 'armor'});
 addItem(6, {'slot': 'body', 'type': 'lightArmor', 'name': 'Leather Tunic', 'bonuses': {'+armor': 7, '+evasion': 19}, 'offset': 3, icon: 'armor'});
 addItem(11, {'slot': 'body', 'type': 'lightArmor', 'name': 'Hide Tunic', 'bonuses': {'+armor': 12, '+evasion': 34}, 'offset': 3, icon: 'armor'});
 addItem(16, {'slot': 'body', 'type': 'lightArmor', 'name': 'Leather Armor', 'bonuses': {'+armor': 17, '+evasion': 49}, 'offset': 3, icon: 'armor'});
-addItem(21, {'slot': 'body', 'type': 'lightArmor', 'name': 'Studded Leather Armor', 'bonuses': {'+armor': 22, '+evasion': 64}, 'offset': 3, icon: 'armor'});
+addItem(21, {'slot': 'body', 'type': 'lightArmor', 'name': 'Studded Armor', 'bonuses': {'+armor': 22, '+evasion': 64}, 'offset': 3, icon: 'armor'});
 addItem(26, {'slot': 'body', 'type': 'lightArmor', 'name': 'Hide Armor', 'bonuses': {'+armor': 27, '+evasion': 79}, 'offset': 3, icon: 'armor'});
 addItem(31, {'slot': 'body', 'type': 'lightArmor', 'name': 'Carapace Armor', 'bonuses': {'+armor': 32, '+evasion': 94}, 'offset': 3, icon: 'armor'});
-addItem(36, {'slot': 'body', 'type': 'lightArmor', 'name': 'Treated Leather Armor', 'bonuses': {'+armor': 37, '+evasion': 109}, 'offset': 3, icon: 'armor'});
+addItem(36, {'slot': 'body', 'type': 'lightArmor', 'name': 'Treated Armor', 'bonuses': {'+armor': 37, '+evasion': 109}, 'offset': 3, icon: 'armor'});
 addItem(41, {'slot': 'body', 'type': 'lightArmor', 'name': 'Splint Armor', 'bonuses': {'+armor': 42, '+evasion': 124}, 'offset': 3, icon: 'armor'});
 addItem(46, {'slot': 'body', 'type': 'lightArmor', 'name': 'Scale Armor', 'bonuses': {'+armor': 47, '+evasion': 139}, 'offset': 3, icon: 'armor'});
 addItem(51, {'slot': 'body', 'type': 'lightArmor', 'name': 'Composite Armor', 'bonuses': {'+armor': 52, '+evasion': 154}, 'offset': 3, icon: 'armor'});
-addItem(61, {'slot': 'body', 'type': 'lightArmor', 'name': 'Runed Leather Armor', 'bonuses': {'+armor': 55, '+evasion': 155, '+maxHealth': 50, '+block': 10, '+magicBlock': 10}, 'offset': 3, icon: 'armor'});
-addItem(71, {'slot': 'body', 'type': 'lightArmor', 'name': 'Dragonhide Armor', 'bonuses': {'+armor': 70, '+evasion': 170, '+maxHealth': 200, '+block': 20, '+magicBlock': 20}, 'offset': 3, icon: 'armor'});
+addItem(61, {'slot': 'body', 'type': 'lightArmor', 'name': 'Runed Armor', 'bonuses': {'+armor': 55, '+evasion': 155, '+maxHealth': 50, '+block': 10, '+magicBlock': 10}, 'offset': 3, icon: 'armor'});
+addItem(71, {'slot': 'body', 'type': 'lightArmor', 'name': 'Dragon Armor', 'bonuses': {'+armor': 70, '+evasion': 170, '+maxHealth': 200, '+block': 20, '+magicBlock': 20}, 'offset': 3, icon: 'armor'});
 
 // Cloth Armor gives armor, block and magic block
 addItem(1, {'slot': 'body', 'type': 'clothArmor', 'name': 'Wool Shirt', 'bonuses': {'+armor': 1, '+block': 3, '+magicBlock': 1}, 'offset': 3, icon: 'armor'});
@@ -359,6 +359,51 @@ addItem(46, {'slot': 'body', 'type': 'clothArmor', 'name': 'Embroidered Robe', '
 addItem(51, {'slot': 'body', 'type': 'clothArmor', 'name': 'Sorcerous Vestment', 'bonuses': {'+armor': 31, '+block': 73, '+magicBlock': 51}, 'offset': 3, icon: 'armor'});
 addItem(61, {'slot': 'body', 'type': 'clothArmor', 'name': 'Runed Vestment', 'bonuses': {'+armor': 40, '+block': 80, '+magicBlock': 56, '+evasion': 10, '+maxHealth': 50}, 'offset': 3, icon: 'armor'});
 addItem(71, {'slot': 'body', 'type': 'clothArmor', 'name': 'Divine Vestment', 'bonuses': {'+armor': 50, '+block': 100, '+magicBlock': 75, '+evasion': 20, '+maxHealth': 100}, 'offset': 3, icon: 'armor'});
+
+//Sabatons gives armor and health
+addItem(1, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Corroded Sabatons', 'bonuses': {'+armor': 2, '+maxHealth': 5, '+speed': -50}, 'offset': 8, icon: 'boots'});
+addItem(5, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Bamboo Sabatons', 'bonuses': {'+armor': 9, '+maxHealth': 45, '+speed': -25}, 'offset': 8, icon: 'boots'});
+addItem(10, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Copper Sabatons', 'bonuses': {'+armor': 16, '+maxHealth': 85, '+speed': -50}, 'offset': 8, icon: 'boots'});
+addItem(15, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Bronze Sabatons', 'bonuses': {'+armor': 23, '+maxHealth': 125, '+speed': -60}, 'offset': 8, icon: 'boots'});
+addItem(20, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Iron Sabatons', 'bonuses': {'+armor': 30, '+maxHealth': 165, '+speed': -70}, 'offset': 8, icon: 'boots'});
+addItem(25, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Black Sabatons', 'bonuses': {'+armor': 37, '+maxHealth': 205, '+speed': -80}, 'offset': 8, icon: 'boots'});
+addItem(30, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Forged Sabatons', 'bonuses': {'+armor': 44, '+maxHealth': 245, '+speed': -90}, 'offset': 8, icon: 'boots'});
+addItem(35, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Steel Sabatons', 'bonuses': {'+armor': 51, '+maxHealth': 285, '+speed': -100}, 'offset': 8, icon: 'boots'});
+addItem(40, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Stainless Sabatons', 'bonuses': {'+armor': 58, '+maxHealth': 325, '+speed': -100}, 'offset': 8, icon: 'boots'});
+addItem(45, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Engraved Sabatons', 'bonuses': {'+armor': 65, '+maxHealth': 365, '+speed': -100}, 'offset': 8, icon: 'boots'});
+addItem(50, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Meteoric Sabatons', 'bonuses': {'+armor': 72, '+maxHealth': 405, '+speed': -100}, 'offset': 8, icon: 'boots'});
+addItem(55, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Adamantium Sabatons', 'bonuses': {'+armor': 100, '+maxHealth': 500, '+evasion': 10, '+block': 10, '+magicBlock': 10, '%speed': -0.1}, 'offset': 8, icon: 'boots'});
+addItem(60, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Orichalcum Sabatons', 'bonuses': {'+armor': 90, '+maxHealth': 500, '+evasion': 10, '+block': 10, '+magicBlock': 20}, 'offset': 8, icon: 'boots'});
+
+//Boots gives armor and evasion
+addItem(1, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Worn Shoes', 'bonuses': {'+armor': 1, '+evasion': 2, '+speed': -25}, 'offset': 8, icon: 'boots'});
+addItem(5, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Leather Shoes', 'bonuses': {'+armor': 6, '+evasion': 10, '+speed': -10}, 'offset': 8, icon: 'boots'});
+addItem(10, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Hide Shoes', 'bonuses': {'+armor': 11, '+evasion': 18, '+speed': -20}, 'offset': 8, icon: 'boots'});
+addItem(15, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Leather Boots', 'bonuses': {'+armor': 16, '+evasion': 26, '+speed': -30}, 'offset': 8, icon: 'boots'});
+addItem(20, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Studded Boots', 'bonuses': {'+armor': 21, '+evasion': 34, '+speed': -40}, 'offset': 8, icon: 'boots'});
+addItem(25, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Hide Boots', 'bonuses': {'+armor': 26, '+evasion': 42, '+speed': -50}, 'offset': 8, icon: 'boots'});
+addItem(30, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Carapace Boots', 'bonuses': {'+armor': 31, '+evasion': 50, '+speed': -50}, 'offset': 8, icon: 'boots'});
+addItem(35, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Padded Boots', 'bonuses': {'+armor': 36, '+evasion': 58, '+speed': -50}, 'offset': 8, icon: 'boots'});
+addItem(40, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Plated Boots', 'bonuses': {'+armor': 41, '+evasion': 66, '+speed': -50}, 'offset': 8, icon: 'boots'});
+addItem(45, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Scale Boots', 'bonuses': {'+armor': 46, '+evasion': 74, '+speed': -50}, 'offset': 8, icon: 'boots'});
+addItem(50, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Composite Boots', 'bonuses': {'+armor': 51, '+evasion': 82, '+speed': -50}, 'offset': 8, icon: 'boots'});
+addItem(55, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Runed Boots', 'bonuses': {'+armor': 60, '+evasion': 90, '+maxHealth': 25, '+block': 5, '+magicBlock': 5, '+speed': -50}, 'offset': 8, icon: 'boots'});
+addItem(60, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Dragon Boots', 'bonuses': {'+armor': 70, '+evasion': 110,'+maxHealth': 100, '+block': 10, '+magicBlock': 20}, 'offset': 8, icon: 'boots'});
+
+//Sandlals/Slippers gives block and magic block
+addItem(1, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Broken Sandals', 'bonuses': {'+block': 1, '+magicBlock': 1, '+speed': -10}, 'offset': 8, icon: 'boots'});
+addItem(5, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Leather Sandals', 'bonuses': {'+block': 5, '+magicBlock': 5, '+speed': 10}, 'offset': 8, icon: 'boots'});
+addItem(10, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Winged Sandals', 'bonuses': {'+block': 9, '+magicBlock': 9, '+speed': 50}, 'offset': 8, icon: 'boots'});
+addItem(15, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Cotton Slippers', 'bonuses': {'+block': 13, '+magicBlock': 13, '+speed': 40}, 'offset': 8, icon: 'boots'});
+addItem(20, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Fur Slippers', 'bonuses': {'+block': 17, '+magicBlock': 17, '+speed': 50}, 'offset': 8, icon: 'boots'});
+addItem(25, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Cashmere Slippers', 'bonuses': {'+block': 21, '+magicBlock': 21, '+speed': 60}, 'offset': 8, icon: 'boots'});
+addItem(30, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Silk Slippers', 'bonuses': {'+block': 25, '+magicBlock': 25, '+speed': 70}, 'offset': 8, icon: 'boots'});
+addItem(35, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Angora Slippers', 'bonuses': {'+block': 29, '+magicBlock': 29, '+speed': 80}, 'offset': 8, icon: 'boots'});
+addItem(40, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Velvet Slippers', 'bonuses': {'+block': 33, '+magicBlock': 33, '+speed': 90}, 'offset': 8, icon: 'boots'});
+addItem(45, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Embroidered Slippers', 'bonuses': {'+block': 37, '+magicBlock': 37, '+speed': 100}, 'offset': 8, icon: 'boots'});
+addItem(50, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Sourcerous Slippers', 'bonuses': {'+block': 41, '+magicBlock': 41, '+speed': 110}, 'offset': 8, icon: 'boots'});
+addItem(55, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Blessed Sandals', 'bonuses': {'+block': 50, '+magicBlock': 50, '+armor': 5, '+evasion': 5, '+maxHealth': 25, '+speed': 150}, 'offset': 8, icon: 'boots'});
+addItem(60, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Divine Sandals', 'bonuses': {'+block': 70, '+magicBlock': 60, '+armor': 10, '+evasion': 10, '+maxHealth': 50, '%speed': 0.25}, 'offset': 8, icon: 'boots'});
 
 // TODO: Add unique "Sticky, Sticky Bow of Aiming and Leeching and Leeching and Aiming"
 var itemsByKey = {};
