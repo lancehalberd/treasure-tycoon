@@ -1,4 +1,22 @@
 function adventureLoop(character, delta) {
+    var everybody = character.allies.concat(character.enemies);
+    everybody.forEach(function (actor) {
+        processStatusEffects(actor, delta);
+    });
+    // Check for defeated player/enemies.
+    if (character.health <= 0) {
+        resetCharacter(character);
+        return;
+    }
+    for (var i = 0; i < character.enemies.length; i++) {
+        var enemy = character.enemies[i];
+        if (enemy.health <= 0) {
+            character.enemies.splice(i--, 1);
+            defeatedEnemy(character, enemy);
+            continue;
+        }
+    }
+    // Check to start next wave/complete level.
     if (character.enemies.length == 0) {
         if (character.monsterIndex >= character.area.monsters.length) {
             completeArea(character);
@@ -6,81 +24,28 @@ function adventureLoop(character, delta) {
         }
         startNextWave(character);
     }
-    var everybody = character.allies.concat(character.enemies);
-    everybody.forEach(function (actor) {
-        processStatusEffects(actor, delta);
+    character.allies.forEach(function (actor) {
+        performAction(character, actor, character.enemies.slice());
     });
-    var hit;
-    if (character.target) {
-        if (character.target.health > 0) {
-            hit = checkToAttack(character, character, character.target, 0);
-            if (hit != null) {
-                character.textPopups.push(
-                    {value: hit, x: character.target.x + 32, y: 240 - 128, color: 'red'}
-                )
-            }
-        } else {
-            character.target = null;
+    character.enemies.forEach(function (actor) {
+        performAction(character, actor, character.allies.slice());
+    });
+    everybody.forEach(function (actor) {
+        if (!actor.blocked && !actor.target) {
+            actor.x += actor.speed * actor.direction * Math.max(0, (1 - actor.slow)) * delta;
         }
-    }
-    if (!character.target && character.cloaking) {
-        character.cloaked = true;
-    }
-    character.blocked = false;
-    for (var i = 0; i < character.enemies.length; i++) {
-        var enemy = character.enemies[i];
-        enemy.blocked = false;
-        if (enemy.health <= 0) {
-            character.enemies.splice(i--, 1);
-            defeatedEnemy(character, enemy);
-            continue;
-        }
-        var distance = Math.abs(enemy.x - (character.x + 32));
-        if (distance < 10) {
-            character.blocked = true;
-            enemy.blocked = true;
-        }
-        hit = checkToAttack(character, character, enemy, distance);
-        if (hit != null){
-            character.textPopups.push(
-                {value: hit, x: enemy.x + 32, y: 240 - 128, color: 'red'}
-            )
-        }
-        hit = checkToAttack(character, enemy, character, distance);
-        if (hit != null){
-            character.textPopups.push(
-                {value: hit, x: character.x + 32, y: 240 - 128, color: 'red'}
-            )
-        }
-        if (!enemy.target && enemy.cloaking) {
-            enemy.cloaked = true;
-        }
-        if (enemy.target || enemy.blocked) {
-            enemy.cloaked = false;
-        }
-        if (!enemy.blocked && !enemy.target && !ifdefor(enemy.stationary)) {
-            enemy.x -= enemy.speed * Math.max(0, (1 - enemy.slow)) * delta;
-        }
-        // Don't let enemy move past the character
-        if (enemy.x < character.x + 32) {
-            enemy.x = character.x + 32;
-        }
-        enemy.health = Math.min(enemy.maxHealth, Math.max(0, enemy.health));
-    }
+    });
+    everybody.forEach(function (actor) {
+        actor.health = Math.min(actor.maxHealth, Math.max(0, actor.health));
+    });
     // apply health regen to character, but only if it is alive.
     if (character.health > 0) {
         character.health = Math.min(character.maxHealth, Math.max(0, character.health));
-    }
-    if (!character.blocked && !character.target) {
-        character.x += character.speed * Math.max(0, (1 - character.slow)) * delta;
     }
     if (character.target || character.blocked) {
         character.cloaked = false;
     }
     drawAdventure(character);
-    if (character.health <= 0) {
-        resetCharacter(character);
-    }
 }
 function startNextWave(character) {
     var monsters = character.area.monsters[character.monsterIndex];
@@ -89,6 +54,7 @@ function startNextWave(character) {
     monsters.forEach(function (monster) {
         var newMonster = makeMonster(character.area.level, monster, x);
         newMonster.character = character;
+        newMonster.direction = -1; // Monsters move right to left
         character.enemies.push(newMonster);
         x += Random.range(50, 150);
     });
@@ -101,23 +67,31 @@ function processStatusEffects(character, target, delta) {
         target.health += target.healthRegen * delta;
     }
 }
-function checkToAttack(character, attacker, target, distance) {
-    if (distance > attacker.range * 32) {
-        return null;
+function performAction(character, actor, targets) {
+    actor.blocked = false; // Character is assum    ed to not be blocked each frame
+    if (actor.target) {
+        var index = targets.indexOf(actor.target);
+        if (index >= 0) {
+            targets.splice(index, 1);
+            targets.unshift(actor.target);
+        }
     }
-    if (target.cloaked) {
-        attacker.target = null;
-        return null;
-    }
-    if (!attacker.target) {
-        // Store last target so we will keep attacking the same target until it is dead.
-        attacker.target = target;
-    }
-    if (ifdefor(attacker.attackCooldown, 0) > character.time) {
-        return null;
-    }
-    attacker.attackCooldown = character.time + 1 / (attacker.attackSpeed * Math.max(.1, (1 - attacker.slow)));
-    return performAttack(attacker, target);
+    actor.target = null;
+    targets.forEach(function (target) {
+        var distance = Math.abs(target.x - actor.x) - 64; // 64 is the width of the character
+        actor.blocked = actor.blocked || distance <= 0; // block the actor if a target is too close
+        if (actor.target) return;
+        if (distance > actor.range * 32 || target.cloaked) {
+            return;
+        }
+        actor.target = target;
+        if (ifdefor(actor.attackCooldown, 0) <= character.time) { // Attack the target if possible.
+            actor.attackCooldown = character.time + 1 / (actor.attackSpeed * Math.max(.1, (1 - actor.slow)));
+            var hitText = performAttack(actor, target);
+            character.textPopups.push({value: hitText, x: target.x + 32, y: 240 - 128, color: 'red'});
+        }
+    });
+    actor.cloaked = (actor.cloaking && !actor.blocked && !actor.target);
 }
 function applyArmorToDamage(damage, armor) {
     if (damage <= 0) {
@@ -231,6 +205,7 @@ function drawAdventure(character) {
         enemy.height = 128;
         // Uncomment to draw a reference of the character to show where left side of enemy should be
         // context.drawImage(character.personCanvas, 0 * 32, 0 , 32, 64, enemy.x - cameraX, 240 - 128 - 72, 64, 128);
+        //context.fillRect(enemy.x - cameraX, 240 - 128 - 72, 64, 128);
         // life bar
         drawBar(context, enemy.x - cameraX + 20, 240 - 128 - 36 - 5 * i, 64, 4, 'white', enemy.color, enemy.health / enemy.maxHealth);
     }
@@ -249,6 +224,7 @@ function drawAdventure(character) {
         context.drawImage(character.personCanvas, walkLoop[frame] * 32, 0 , 32, 64,
                         character.x - cameraX, 240 - 128 - 72, 64, 128);
     }
+    //context.fillRect(character.x - cameraX, 240 - 128 - 72, 64, 128);
     context.globalAlpha = 1;
     // life bar
     drawBar(context, character.x - cameraX, 240 - 128 - 72, 64, 4, 'white', 'red', character.health / character.maxHealth);

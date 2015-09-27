@@ -22,6 +22,7 @@ function resetCharacter(character) {
     character.attackCooldown = 0;
     character.target = null;
     character.slow = 0;
+    character.direction = 1; // Character moves left to right.
     character.$panel.find('.js-adventureMode').hide();
     var $infoPanel = character.$panel.find('.js-infoMode');
     $infoPanel.show();
@@ -189,6 +190,8 @@ function updateStats(character) {
     if (!character.equipment.weapon) {
         character.base.minDamage = character.level;
         character.base.maxDamage = character.level;
+        character.base.range = .5;
+        character.base.attackSpeed = 1;
     } else {
         character.base.minDamage = 0;
         character.base.maxDamage = 0;
@@ -234,11 +237,6 @@ function getStat(character, stat) {
     }
     if ((stat === 'minMagicDamage' || stat === 'maxMagicDamage') && plus > 0) {
         plus += Math.floor(character.intelligence / 4);
-    }
-    // If a character has no implicit base attackspeed, min or max damage, we assume these values are 1.
-    // This happens when the character has no equipped weapons, for instance.
-    if (plus === 0 && (stat === 'attackSpeed' || stat === 'range')) {
-        plus = 1;
     }
     //console.log(stat +": " + ['(',base, '+', plus,') *', percent, '*', multiplier]);
     return (base + plus) * percent * multiplier;
