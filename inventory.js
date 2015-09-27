@@ -269,8 +269,8 @@ function stopDrag() {
         updateEnchantmentOptions();
     }
 }
-var armorSlots = ['body', 'feet', 'head', 'offhand'];
-var equipmentSlots = ['weapon', 'body', 'feet', 'head', 'offhand'];
+var armorSlots = ['body', 'feet', 'head', 'offhand', 'arms', 'legs'];
+var equipmentSlots = ['weapon', 'body', 'feet', 'head', 'offhand', 'arms', 'legs', 'back', 'ring'];
 var items = [
     [
         {'slot': 'weapon', 'type': 'axe',  'name': 'Axe', 'bonuses': {'+minDamage': 5, '+maxDamage': 8, '+range': 2, '+attackSpeed': 1.5}, 'icon': 'axe'},
@@ -315,6 +315,10 @@ function addItem(level, data) {
     items[level - 1] = ifdefor(items[level - 1], []);
     items[level - 1].push(data);
 }
+addItem(1, {'slot': 'arms', 'type': 'gauntlet', 'name': 'Gauntlet', 'bonuses': {'+armor': 1, '+minDamage': 1, '+maxDamage': 1}, icon: 'item'});
+addItem(1, {'slot': 'legs', 'type': 'leggings', 'name': 'Leggings', 'bonuses': {'+armor': 1, '+maxHealth': 5}, icon: 'item'});
+addItem(1, {'slot': 'back', 'type': 'quiver', 'name': 'Quiver', 'bonuses': {'+minDamage': 1, '+maxDamage': 2}, icon: 'item'});
+addItem(1, {'slot': 'ring', 'type': 'ring', 'name': 'Ring', 'bonuses': {'+armor': 1}, icon: 'item'});
 //Heavy Armor gives armor + health
 addItem(1, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Lamellar', 'bonuses': {'+armor': 3, '+maxHealth': 15}, 'offset': 3, icon: 'armor'});
 addItem(6, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Bamboo Armor', 'bonuses': {'+armor': 13, '+maxHealth': 65}, 'offset': 3, icon: 'armor'});
@@ -498,11 +502,17 @@ function itemMatchesFilter(item, typeFilter) {
         case 'head':
         case 'body':
         case 'feet':
+        case 'arms':
+        case 'legs':
+        case 'ring':
+        case 'back':
         case 'offhand':
             return item.slot === typeFilter;
         case 'armor':
             return armorSlots.indexOf(item.slot) >= 0;
+        case 'accessory':
+            return item.slot == 'ring' || item.slot == 'back';
         default:
-            return true;
+            return false;
     }
 }
