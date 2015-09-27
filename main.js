@@ -36,6 +36,8 @@ function startArea(character, area) {
     character.monsterIndex = 0;
     character.x = 0;
     character.enemies = [];
+    character.allies = [character];
+    character.isAlly = true;
     character.textPopups = [];
     character.$panel.find('.js-recall').prop('disabled', false);
 }
@@ -99,9 +101,21 @@ function mainLoop() {
     var delta = time - lastTime;
     lastTime = time;
     state.characters.forEach(function (character) {
-        adventureLoop(character, delta);
+        var characterDelta = delta * character.gameSpeed / 1000;
+        character.time += characterDelta;
+        if (character.area) {
+            adventureLoop(character, characterDelta);
+        } else {
+            infoLoop(character, characterDelta);
+        }
     });
     checkRemoveToolTip();
+}
+function infoLoop(character, delta) {
+    var fps = Math.floor(3 * 5 / 3);
+    var frame = Math.floor(character.time * fps) % walkLoop.length;
+    character.previewContext.clearRect(0, 0, 64, 128);
+    character.previewContext.drawImage(character.personCanvas, walkLoop[frame] * 32, 0 , 32, 64, 0, -20, 64, 128);
 }
 
 function drawBar(context, x, y, width, height, background, color, percent) {

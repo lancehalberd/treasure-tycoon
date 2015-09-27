@@ -87,6 +87,7 @@ function newCharacter(job) {
         'personContext': personContext,
         '$panel': $newPlayerPanel,
         'context': context,
+        'previewContext': $newPlayerPanel.find('.js-infoMode .js-canvas')[0].getContext("2d"),
         'canvasWidth': canvas.width,
         'canvasHeight': canvas.height,
         'area': null,
@@ -105,9 +106,7 @@ function newCharacter(job) {
         equipItem(character, makeItem(item, 1));
     });
     updateCharacter(character);
-    var canvas = $newPlayerPanel.find('.js-infoMode .js-canvas')[0];
-    var context = canvas.getContext("2d");
-    context.imageSmoothingEnabled = false;
+    character.previewContext.imageSmoothingEnabled = false;
     state.characters.push(character);
     $newPlayerPanel.data('character', character);
     $newPlayerPanel.find('.js-map').append($levelButton('forest1')).append($levelButton('cave1')).append($levelButton('field1'));
