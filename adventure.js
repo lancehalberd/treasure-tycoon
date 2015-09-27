@@ -244,7 +244,7 @@ function drawAdventure(character) {
         if (character.cloaked) {
             context.globalAlpha = .2;
         }
-        var fps = Math.floor(3 * character.speed);
+        var fps = Math.floor(3 * character.speed / 100);
         var frame = Math.floor(character.time * fps) % walkLoop.length;
         context.drawImage(character.personCanvas, walkLoop[frame] * 32, 0 , 32, 64,
                         character.x - cameraX, 240 - 128 - 72, 64, 128);
