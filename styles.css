@@ -93,7 +93,7 @@
 button.item {
     padding: 0px;
 }
-.inventory .item {
+.inventory > .item {
     margin-right: 3px;
     margin-bottom: 3px;
 }
