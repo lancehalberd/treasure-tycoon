@@ -1,17 +1,14 @@
-function equipItem(character, item) {
-    if (character.equipment[item.base.slot]) {
+function equipItem(adventurer, item) {
+    if (adventurer.equipment[item.base.slot]) {
         console.log("Tried to equip an item without first unequiping!");
         return;
     }
     item.$item.detach();
-    character.equipment[item.base.slot] = item;
-    updateCharacter(character);
+    adventurer.equipment[item.base.slot] = item;
+    updateAdventurer(adventurer);
 }
 function sellValue(item) {
     return item.level * item.level * item.level;
-}
-function isEquiped(character, item) {
-    return character.equipment[item.base.slot] === item;
 }
 function makeItem(base, level) {
     var item = {
@@ -135,8 +132,8 @@ function bonusHelpText(bonuses, implicit) {
 function sellItem(item) {
     var sourceCharacter = item.$item.closest('.js-playerPanel').data('character');
     if (sourceCharacter) {
-        sourceCharacter.equipment[item.base.slot] = null;
-        updateCharacter(sourceCharacter);
+        sourceCharacter.adventurer.equipment[item.base.slot] = null;
+        updateAdventurer(sourceCharacter.adventurer);
     }
     item.$item.remove();
     item.$item = null;
@@ -200,8 +197,8 @@ function stopDrag() {
             }
             var character = $source.closest('.js-playerPanel').data('character');
             if (character) {
-                character.equipment[item.base.slot] = null;
-                updateCharacter(character);
+                character.adventurer.equipment[item.base.slot] = null;
+                updateAdventurer(character.adventurer);
             }
             $('.js-enchantmentSlot').append($source);
             updateEnchantmentOptions();
@@ -213,12 +210,12 @@ function stopDrag() {
                     var sourceCharacter = $source.closest('.js-playerPanel').data('character');
                     hit = true
                     var targetCharacter = $(element).closest('.js-playerPanel').data('character');
-                    var current = targetCharacter.equipment[item.base.slot];
-                    targetCharacter.equipment[item.base.slot] = null;
+                    var current = targetCharacter.adventurer.equipment[item.base.slot];
+                    targetCharacter.adventurer.equipment[item.base.slot] = null;
                     if (sourceCharacter) {
-                        sourceCharacter.equipment[item.base.slot] = null;
+                        sourceCharacter.adventurer.equipment[item.base.slot] = null;
                         if (!current) {
-                            updateCharacter(sourceCharacter);
+                            updateAdventurer(sourceCharacter.adventurer);
                         }
                     } else {
                         //unequip the existing item.
@@ -228,9 +225,9 @@ function stopDrag() {
                         }
                     }
                     var $parent = $source.parent();
-                    equipItem(targetCharacter, item);
+                    equipItem(targetCharacter.adventurer, item);
                     if (sourceCharacter && current) {
-                        equipItem(sourceCharacter, current);
+                        equipItem(sourceCharacter.adventurer, current);
                     }
                 }
             });
@@ -247,8 +244,8 @@ function stopDrag() {
                 hit = true;
                 var character = $source.closest('.js-playerPanel').data('character');
                 if (character) {
-                    character.equipment[item.base.slot] = null;
-                    updateCharacter(character);
+                    character.adventurer.equipment[item.base.slot] = null;
+                    updateAdventurer(character.adventurer);
                 }
                 $source.detach();
                 $target.before($source);
@@ -257,8 +254,8 @@ function stopDrag() {
         if (!hit && collision($dragHelper, $('.js-inventory'))) {
             var character = $source.closest('.js-playerPanel').data('character');
             if (character) {
-                character.equipment[item.base.slot] = null;
-                updateCharacter(character);
+                character.adventurer.equipment[item.base.slot] = null;
+                updateAdventurer(character.adventurer);
             }
             $source.detach();
             $('.js-inventory').append($source);

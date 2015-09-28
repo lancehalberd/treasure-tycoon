@@ -13,16 +13,15 @@ var allComputedStats = ['cloaking', 'dexterity', 'strength', 'intelligence', 'ma
      'damageOnMiss', 'slowOnHit', 'healthRegen', 'healthGainOnHit'];
 var allFlooredStats = ['dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
      'ip', 'xp', 'mp', 'rp', 'up',
-     'evasion', 'block', 'magicBlock', 'armor', 'magicResist', 'accuracy',
+     'evasion', 'block', 'magicBlock', 'armor', 'accuracy',
      'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage'];
 var allFixed2Stats = ['range', 'attackSpeed'];
 
-function resetCharacter(character) {
-    character.health = character.maxHealth;
-    character.attackCooldown = 0;
-    character.target = null;
-    character.slow = 0;
-    character.direction = 1; // Character moves left to right.
+function displayInfoMode(character) {
+    character.adventurer.health = character.adventurer.maxHealth;
+    character.adventurer.attackCooldown = 0;
+    character.adventurer.target = null;
+    character.adventurer.slow = 0;
     character.$panel.find('.js-adventureMode').hide();
     var $infoPanel = character.$panel.find('.js-infoMode');
     $infoPanel.show();
@@ -35,37 +34,61 @@ function resetCharacter(character) {
     }
 }
 function refreshStatsPanel(character) {
+    var adventurer = character.adventurer;
     var $statsPanel = character.$panel.find('.js-infoMode .js-stats');
-    character.$panel.find('.js-name').text(character.job.name + ' ' + character.name);
-    character.$panel.find('.js-level').text(character.level);
-    $statsPanel.find('.js-dexterity').text(character.dexterity);
-    $statsPanel.find('.js-strength').text(character.strength);
-    $statsPanel.find('.js-intelligence').text(character.intelligence);
-    $statsPanel.find('.js-toLevel').text(character.xpToLevel - character.xp);
-    $statsPanel.find('.js-maxHealth').text(character.maxHealth);
-    $statsPanel.find('.js-damage').text(character.minDamage + ' to ' + character.maxDamage);
-    $statsPanel.find('.js-magicDamage').text(character.minMagicDamage + ' to ' + character.maxMagicDamage);
-    $statsPanel.find('.js-range').text(character.range);
-    $statsPanel.find('.js-attackSpeed').text(character.attackSpeed);
-    $statsPanel.find('.js-accuracy').text(character.accuracy);
-    $statsPanel.find('.js-armor').text(character.armor);
-    $statsPanel.find('.js-evasion').text(character.evasion);
-    $statsPanel.find('.js-block').text(character.block);
-    $statsPanel.find('.js-speed').text(character.speed);
+    character.$panel.find('.js-name').text(adventurer.job.name + ' ' + adventurer.name);
+    character.$panel.find('.js-level').text(adventurer.level);
+    $statsPanel.find('.js-dexterity').text(adventurer.dexterity);
+    $statsPanel.find('.js-strength').text(adventurer.strength);
+    $statsPanel.find('.js-intelligence').text(adventurer.intelligence);
+    $statsPanel.find('.js-toLevel').text(adventurer.xpToLevel - adventurer.xp);
+    $statsPanel.find('.js-maxHealth').text(adventurer.maxHealth);
+    $statsPanel.find('.js-damage').text(adventurer.minDamage + ' to ' + adventurer.maxDamage);
+    $statsPanel.find('.js-magicDamage').text(adventurer.minMagicDamage + ' to ' + adventurer.maxMagicDamage);
+    $statsPanel.find('.js-range').text(adventurer.range);
+    $statsPanel.find('.js-attackSpeed').text(adventurer.attackSpeed);
+    $statsPanel.find('.js-accuracy').text(adventurer.accuracy);
+    $statsPanel.find('.js-armor').text(adventurer.armor);
+    $statsPanel.find('.js-evasion').text(adventurer.evasion);
+    $statsPanel.find('.js-block').text(adventurer.block);
+    $statsPanel.find('.js-speed').text(adventurer.speed);
 }
 function newCharacter(job) {
-    var hairFrame = Math.random() < .05 ? 0 : Random.range(hair[0], hair[1]);
-    var shirtFrame = Math.random() < .05 ? 0 : Random.range(clothes[0], clothes[1]);
     var personCanvas = createCanvas(personFrames * 32, 64);
     var personContext = personCanvas.getContext("2d");
     personContext.imageSmoothingEnabled = false;
     var $newPlayerPanel = $('.js-playerPanelTemplate').clone()
         .removeClass('js-playerPanelTemplate').addClass('js-playerPanel').show();
     $('.js-playerColumn').prepend($newPlayerPanel);
-    var canvas = $newPlayerPanel.find('.js-adventureMode .js-canvas')[0];
-    var context = canvas.getContext("2d");
-    context.imageSmoothingEnabled = false;
     var character = {
+        'adventurer': makeAdventurer(job, 1, job.startingEquipment)
+    };
+    character.adventurer.character = character;
+    character.adventurer.direction = 1; // Character moves left to right.
+    character.adventurer.isMainCharacter = true;
+    character.$panel = $newPlayerPanel;
+    character.canvas = $newPlayerPanel.find('.js-adventureMode .js-canvas')[0];
+    character.context = character.canvas.getContext("2d");
+    character.context.imageSmoothingEnabled = false;
+    character.previewContext = $newPlayerPanel.find('.js-infoMode .js-canvas')[0].getContext("2d"),
+    character.previewContext.imageSmoothingEnabled = false;
+    character.lastTime = character.time = now();
+    character.gameSpeed = 1;
+    character.replay = false;
+    character.levelsCompleted = {};
+    character.previewContext.imageSmoothingEnabled = false;
+    state.characters.push(character);
+    $newPlayerPanel.data('character', character);
+    $newPlayerPanel.find('.js-map').append($levelButton('forest1')).append($levelButton('cave1')).append($levelButton('field1'));
+    displayInfoMode(character);
+    updateAdventurer(character.adventurer);
+    updateRetireButtons();
+}
+function makeAdventurer(job, level, equipment) {
+    var personCanvas = createCanvas(personFrames * 32, 64);
+    var personContext = personCanvas.getContext("2d");
+    personContext.imageSmoothingEnabled = false;
+    var adventurer = {
         'x': 0,
         'equipment': {},
         'job': job,
@@ -77,42 +100,23 @@ function newCharacter(job) {
             'block': 1,
         },
         'bonuses': [],
-        'abilities': [{'name': 'Grappling Hook', 'attacks': [{'type': 'hook', 'readyAt': 0, 'cooldown': 2, 'range': 10}]}],//[{'name': 'Stealth', 'bonuses':{'+cloaking': 1}}],
+        'abilities': [],//[{'name': 'Grappling Hook', 'attacks': [{'type': 'hook', 'readyAt': 0, 'cooldown': 2, 'range': 10}]}],//[{'name': 'Stealth', 'bonuses':{'+cloaking': 1}}],
         'name': Random.element(names),
         'hairOffset': Random.range(hair[0], hair[1]),
-        'level': 1,
+        'level': level,
         'xp': 0,
         'xpToLevel': xpToLevel(0),
-        'enemies': [],
         'personCanvas': personCanvas,
         'personContext': personContext,
-        '$panel': $newPlayerPanel,
-        'context': context,
-        'previewContext': $newPlayerPanel.find('.js-infoMode .js-canvas')[0].getContext("2d"),
-        'canvasWidth': canvas.width,
-        'canvasHeight': canvas.height,
-        'area': null,
-        'attackCooldown': 0,
-        'lastTime': now(),
-        'gameSpeed': 1,
-        'replay': false,
-        'time': now(),
-        'levelsCompleted': {}
+        'attackCooldown': 0
     };
-    character.character = character;
     equipmentSlots.forEach(function (type) {
-        character.equipment[type] = null;
+        adventurer.equipment[type] = null;
     });
-    $.each(job.startingEquipment, function (key, item) {
-        equipItem(character, makeItem(item, 1));
+    $.each(equipment, function (key, item) {
+        equipItem(adventurer, makeItem(item, 1));
     });
-    updateCharacter(character);
-    character.previewContext.imageSmoothingEnabled = false;
-    state.characters.push(character);
-    $newPlayerPanel.data('character', character);
-    $newPlayerPanel.find('.js-map').append($levelButton('forest1')).append($levelButton('cave1')).append($levelButton('field1'));
-    resetCharacter(character);
-    updateRetireButtons();
+    return adventurer;
 }
 $('.js-newPlayer').on('click', newCharacter);
 
@@ -144,120 +148,122 @@ function addBonusesAndAttacks(actor, source) {
         actor.attacks = actor.attacks.concat(source.attacks);
     }
 }
-function updateCharacter(character) {
+function updateAdventurer(adventurer) {
     // Clear the character's bonuses and graphics.
-    character.bonuses = [];
-    character.attacks = [];
+    adventurer.bonuses = [];
+    adventurer.attacks = [];
     var sectionWidth = personFrames * 32;
-    var hat = character.equipment.head;
+    var hat = adventurer.equipment.head;
     var hideHair = hat ? ifdefor(hat.base.hideHair, false) : false;
-    character.personContext.clearRect(0, 0, sectionWidth, 64);
+    adventurer.personContext.clearRect(0, 0, sectionWidth, 64);
     for (var i = 0; i < personFrames; i++) {
-        character.personContext.drawImage(images['gfx/person.png'], i * 32, 0 , 32, 64, i * 32, 0, 32, 64);
+        adventurer.personContext.drawImage(images['gfx/person.png'], i * 32, 0 , 32, 64, i * 32, 0, 32, 64);
         if (!hideHair) {
-            character.personContext.drawImage(images['gfx/person.png'], i * 32 + character.hairOffset * sectionWidth, 0 , 32, 64, i * 32, 0, 32, 64);
+            adventurer.personContext.drawImage(images['gfx/person.png'], i * 32 + adventurer.hairOffset * sectionWidth, 0 , 32, 64, i * 32, 0, 32, 64);
         }
     }
-    character.abilities.forEach(function (ability) {
-        addBonusesAndAttacks(character, ability);
+    adventurer.abilities.forEach(function (ability) {
+        addBonusesAndAttacks(adventurer, ability);
     });
-    // Add the character's current equipment to bonuses and graphics
+    // Add the adventurer's current equipment to bonuses and graphics
     equipmentSlots.forEach(function (type) {
-        var equipment = character.equipment[type];
-        var $equipmentPanel = character.$panel.find('.js-infoMode .js-equipment');
-        var $equipmentSlot = $equipmentPanel.find('.js-' + type);
+        var equipment = adventurer.equipment[type];
         if (!equipment) {
             return;
         }
-        addBonusesAndAttacks(character, equipment.base);
+        addBonusesAndAttacks(adventurer, equipment.base);
         equipment.prefixes.forEach(function (affix) {
-            addBonusesAndAttacks(character, affix);
+            addBonusesAndAttacks(adventurer, affix);
         })
         equipment.suffixes.forEach(function (affix) {
-            addBonusesAndAttacks(character, affix);
+            addBonusesAndAttacks(adventurer, affix);
         })
         if (equipment.base.offset) {
             for (var i = 0; i < personFrames; i++) {
-                character.personContext.drawImage(images['gfx/person.png'], i * 32 + equipment.base.offset * sectionWidth, 0 , 32, 64, i * 32, 0, 32, 64);
+                adventurer.personContext.drawImage(images['gfx/person.png'], i * 32 + equipment.base.offset * sectionWidth, 0 , 32, 64, i * 32, 0, 32, 64);
             }
         }
-        $equipmentSlot.append(equipment.$item);
+        if (ifdefor(adventurer.isMainCharacter)) {
+            adventurer.character.$panel.find('.js-infoMode .js-equipment .js-' + type).append(equipment.$item);
+        }
     });
-    updateStats(character);
+    updateAdventurerStats(adventurer);
 }
-function updateStats(character) {
-    character.base.maxHealth = 10 * (character.level + character.job.dexterityBonus + character.job.strengthBonus + character.job.intelligenceBonus);
-    character.base.accuracy = 2 * character.level;
-    character.base.evasion = character.level;
-    character.base.block = character.level;
-    character.base.magicBlock = character.level / 2;
-    character.base.dexterity = character.level * character.job.dexterityBonus;
-    character.base.strength = character.level * character.job.strengthBonus;
-    character.base.intelligence = character.level * character.job.intelligenceBonus;
-    if (!character.equipment.weapon) {
-        character.base.minDamage = character.level;
-        character.base.maxDamage = character.level;
-        character.base.range = .5;
-        character.base.attackSpeed = 1;
+function updateAdventurerStats(adventurer) {
+    adventurer.base.maxHealth = 10 * (adventurer.level + adventurer.job.dexterityBonus + adventurer.job.strengthBonus + adventurer.job.intelligenceBonus);
+    adventurer.base.accuracy = 2 * adventurer.level;
+    adventurer.base.evasion = adventurer.level;
+    adventurer.base.block = adventurer.level;
+    adventurer.base.magicBlock = adventurer.level / 2;
+    adventurer.base.dexterity = adventurer.level * adventurer.job.dexterityBonus;
+    adventurer.base.strength = adventurer.level * adventurer.job.strengthBonus;
+    adventurer.base.intelligence = adventurer.level * adventurer.job.intelligenceBonus;
+    if (!adventurer.equipment.weapon) {
+        adventurer.base.minDamage = adventurer.level;
+        adventurer.base.maxDamage = adventurer.level;
+        adventurer.base.range = .5;
+        adventurer.base.attackSpeed = 1;
     } else {
-        character.base.minDamage = 0;
-        character.base.maxDamage = 0;
+        adventurer.base.minDamage = 0;
+        adventurer.base.maxDamage = 0;
     }
     allComputedStats.forEach(function (stat) {
-        character[stat] = getStat(character, stat);
+        adventurer[stat] = getStat(adventurer, stat);
     });
     allFlooredStats.forEach(function (stat) {
-        character[stat] = Math.floor(character[stat]);
+        adventurer[stat] = Math.floor(adventurer[stat]);
     });
     allFixed2Stats.forEach(function (stat) {
-        character[stat] = character[stat].toFixed(2);
+        adventurer[stat] = adventurer[stat].toFixed(2);
     });
-    character.health = character.maxHealth;
-    refreshStatsPanel(character);
+    adventurer.health = adventurer.maxHealth;
+    if (ifdefor(adventurer.isMainCharacter)) {
+        refreshStatsPanel(adventurer.character);
+    }
 }
-function getStat(character, stat) {
-    var base = ifdefor(character.base[stat], 0);
+function getStat(actor, stat) {
+    var base = ifdefor(actor.base[stat], 0);
     var plus = 0;
     var percent = 1;
     var multiplier = 1;
     if (stat === 'evasion' || stat === 'attackSpeed') {
-        percent += .01 * character.dexterity;
+        percent += .01 * actor.dexterity;
     }
     if (stat === 'maxHealth') {
-        percent += .01 * character.strength;
+        percent += .01 * actor.strength;
     }
     if (stat === 'block' || stat === 'magicBlock' || stat === 'accuracy') {
-        percent += .01 * character.intelligence;
+        percent += .01 * actor.intelligence;
     }
-    character.bonuses.forEach(function (bonus) {
+    actor.bonuses.forEach(function (bonus) {
         plus += ifdefor(bonus['+' + stat], 0);
         percent += ifdefor(bonus['%' + stat], 0);
         multiplier *= ifdefor(bonus['*' + stat], 1);
     });
     if (stat === 'minDamage' || stat === 'maxDamage') {
-        percent += .01 * character.strength;
-        if (character.range >= 5) {
-            plus += Math.floor(character.dexterity / 4);
+        percent += .01 * actor.strength;
+        if (actor.range >= 5) {
+            plus += Math.floor(actor.dexterity / 4);
         } else {
-            plus += Math.floor(character.strength / 4);
+            plus += Math.floor(actor.strength / 4);
         }
     }
     if ((stat === 'minMagicDamage' || stat === 'maxMagicDamage') && plus > 0) {
-        plus += Math.floor(character.intelligence / 4);
+        plus += Math.floor(actor.intelligence / 4);
     }
     //console.log(stat +": " + ['(',base, '+', plus,') *', percent, '*', multiplier]);
     return (base + plus) * percent * multiplier;
 }
-function gainXP(character, amount) {
-    character.xp += amount;
-    while (character.xp >= character.xpToLevel) {
-        character.level++;
-        gain('AP', character.level);
-        character.maxHealth += 5;
-        character.health = character.maxHealth;
-        character.xp -= character.xpToLevel;
-        character.xpToLevel = xpToLevel(character.level);
-        updateStats(character);
+function gainXP(adventurer, amount) {
+    adventurer.xp += amount;
+    while (adventurer.xp >= adventurer.xpToLevel) {
+        adventurer.level++;
+        gain('AP', adventurer.level);
+        adventurer.maxHealth += 5;
+        adventurer.health = adventurer.maxHealth;
+        adventurer.xp -= adventurer.xpToLevel;
+        adventurer.xpToLevel = xpToLevel(adventurer.level);
+        updateAdventurerStats(adventurer);
     }
 }
 function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonus, startingEquipment) {

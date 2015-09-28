@@ -34,11 +34,11 @@ function startArea(character, area) {
     character.$panel.find('.js-adventureMode').show();
     character.area = area;
     character.monsterIndex = 0;
-    character.x = 0;
+    character.adventurer.x = 0;
     character.cameraX = -30;
     character.enemies = [];
-    character.allies = [character];
-    character.isAlly = true;
+    character.allies = [character.adventurer];
+    character.adventurer.isAlly = true;
     character.textPopups = [];
     character.$panel.find('.js-recall').prop('disabled', false);
 }
@@ -94,7 +94,7 @@ function completeArea(character) {
         $newOption.toggle(items[itemLevel - 1].length > 0);
         $('.js-levelSelect').append($newOption);
     }
-    resetCharacter(character);
+    displayInfoMode(character);
 }
 var lastTime = now();
 function mainLoop() {
@@ -116,7 +116,7 @@ function infoLoop(character, delta) {
     var fps = Math.floor(3 * 5 / 3);
     var frame = Math.floor(character.time * fps) % walkLoop.length;
     character.previewContext.clearRect(0, 0, 64, 128);
-    character.previewContext.drawImage(character.personCanvas, walkLoop[frame] * 32, 0 , 32, 64, 0, -20, 64, 128);
+    character.previewContext.drawImage(character.adventurer.personCanvas, walkLoop[frame] * 32, 0 , 32, 64, 0, -20, 64, 128);
 }
 
 function drawBar(context, x, y, width, height, background, color, percent) {
@@ -225,7 +225,7 @@ $('body').on('click', '.js-adventure', function (event) {
 $('body').on('click', '.js-retire', function (event) {
     var $panel = $(this).closest('.js-playerPanel');
     var character = $panel.data('character');
-    gain('AP', Math.ceil(character.level * character.job.cost / 10));
+    gain('AP', Math.ceil(character.adventurer.level * character.adventurer.job.cost / 10));
     $panel.remove();
     updateRetireButtons();
 });
@@ -247,7 +247,7 @@ $('body').on('click', '.js-recall', function (event) {
     var character = $panel.data('character');
     $panel.find('.js-repeat').prop('checked', false);
     character.replay = false;
-    resetCharacter(character);
+    displayInfoMode(character);
 });
 $('body').on('click', '.js-repeat', function (event) {
     var $panel = $(this).closest('.js-playerPanel');

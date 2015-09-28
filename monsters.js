@@ -29,12 +29,15 @@ var monsterSuffixes = [
     [
         {'name': 'Stealth', 'bonuses': {'+cloaking': 1}}
     ]
-]
+];
 
-function makeMonster(level, baseMonster, x) {
+function makeMonster(monsterData, level) {
+    var baseMonster;
+    if (typeof(monsterData) == 'string') {
+        baseMonster = monsters[monsterData];
+    }
     var monster = {
         'level': level,
-        'x': x,
         'slow': 0,
         'equipment': {},
         'attackColldown': 0,
@@ -52,12 +55,15 @@ function makeMonster(level, baseMonster, x) {
     };
     $.each(baseMonster, function (stat, value) {
         if (stat == 'abilities') {
+            monster[stat] = value;
             monster.base[stat] = value;
             return;
         }
         if (Array.isArray(value)) {
+            monster[stat] = value;
             monster.base[stat] = Random.range(Math.floor(value[0] + (level - 1) * value[2]), Math.ceil(value[1] + (level - 1) * value[3]));
         } else {
+            monster[stat] = value;
             monster.base[stat] = value;
         }
     });
@@ -202,13 +208,13 @@ function initalizeMonsters() {
         'name': 'Caterpillar',
         'health': [9, 10, 4, 4.5],
         'range': 1,
-        'minDamage': [2, 2, 1, 1],
-        'maxDamage': [2, 3, 1, 1],
+        'minDamage': [3, 3, 1, 1],
+        'maxDamage': [4, 4, 1, 1],
         'minMagicDamage': 0,
         'maxMagicDamage': 0,
         'attackSpeed': 1,
         'speed': 50,
-        'accuracy': [2, 2, 1.5, 2],
+        'accuracy': [3, 3, 1.5, 2],
         'evasion': [1, 1, .8, 1],
         'block': [0, 0, .5, 1],
         'magicBlock': [4, 4, 1.8, 2],

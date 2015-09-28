@@ -48,12 +48,12 @@ function $nextLevelButton(currentLevel) {
 function initializeLevels() {
     // monsters are random monsters that can be added to any waves or present in random waves.
     // events are predefined sets of monsters that will appear in order throughout the level.
-    addLevel({'name': 'Forest', 'backgroundImage': images['gfx/forest.png'], 'monsters': [monsters['caterpillar'], monsters['gnome']],
-             'events': [[monsters['gnome'], monsters['gnome']], [monsters['caterpillar'], monsters['caterpillar']], [monsters['butterfly']]]}, 1);
-    addLevel({'name': 'Cave', 'backgroundImage': images['gfx/cave.png'], 'monsters': [monsters['gnome'], monsters['skeleton']],
-             'events': [[monsters['skeleton'], monsters['skeleton']], [monsters['gnome'], monsters['gnome']], [monsters['giantSkeleton']]]}, 1);
-    addLevel({'name': 'Field', 'backgroundImage': images['gfx/grass.png'],  'monsters': [monsters['caterpillar'], monsters['skeleton']],
-             'events': [[monsters['caterpillar'], monsters['caterpillar']],
-                        [monsters['skeleton'], monsters['skeleton']],
-                        [monsters['dragon']]]}, 1);
+    addLevel({'name': 'Forest', 'backgroundImage': images['gfx/forest.png'], 'monsters': ['caterpillar', 'gnome'],
+             'events': [['gnome', 'gnome'], ['caterpillar', 'caterpillar'], ['butterfly']]}, 1);
+    addLevel({'name': 'Cave', 'backgroundImage': images['gfx/cave.png'], 'monsters': ['gnome', 'skeleton'],
+             'events': [['skeleton', 'skeleton'], ['gnome', 'gnome'], ['giantSkeleton']]}, 1);
+    addLevel({'name': 'Field', 'backgroundImage': images['gfx/grass.png'],  'monsters': ['caterpillar', 'skeleton'],
+             'events': [['caterpillar', 'caterpillar'],
+                        ['skeleton', 'skeleton'],
+                        ['dragon']]}, 1);
 }

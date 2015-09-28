@@ -195,7 +195,6 @@ $('.js-updateCanvasSize').on('click', function (event) {
    cellWidth = isNaN(cellWidth) ? 32 : Math.max(1, cellWidth);
    cellHeight = parseInt($('.js-canvasHeight').val());
    cellHeight = isNaN(cellHeight) ? 32 : Math.max(1, cellHeight);
-   console.log([cellWidth, cellHeight]);
    $('.js-canvasWidth').val(cellWidth);
    $('.js-canvasHeight').val(cellHeight);
    initializeCells();

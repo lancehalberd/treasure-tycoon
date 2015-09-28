@@ -1,11 +1,12 @@
 function adventureLoop(character, delta) {
+    var adventurer = character.adventurer;
     var everybody = character.allies.concat(character.enemies);
     everybody.forEach(function (actor) {
         processStatusEffects(character, actor, delta);
     });
     // Check for defeated player/enemies.
-    if (character.health <= 0) {
-        resetCharacter(character);
+    if (adventurer.health <= 0) {
+        displayInfoMode(character);
         return;
     }
     for (var i = 0; i < character.enemies.length; i++) {
@@ -31,28 +32,22 @@ function adventureLoop(character, delta) {
         performAction(character, actor, character.allies.slice());
     });
     everybody.forEach(function (actor) {
-        if (!actor.blocked && !actor.target && !actor.pull) {
+        if (!actor.blocked && !actor.target && !actor.pull && !ifdefor(actor.stationary)) {
             actor.x += actor.speed * actor.direction * Math.max(0, (1 - actor.slow)) * delta;
         }
     });
     everybody.forEach(function (actor) {
         actor.health = Math.min(actor.maxHealth, Math.max(0, actor.health));
     });
-    // apply health regen to character, but only if it is alive.
-    if (character.health > 0) {
-        character.health = Math.min(character.maxHealth, Math.max(0, character.health));
-    }
-    if (character.target || character.blocked) {
-        character.cloaked = false;
-    }
     drawAdventure(character, delta);
 }
 function startNextWave(character) {
     var monsters = character.area.monsters[character.monsterIndex];
     monsters = Array.isArray(monsters) ? monsters : [monsters]
-    var x = character.x + 800;
-    monsters.forEach(function (monster) {
-        var newMonster = makeMonster(character.area.level, monster, x);
+    var x = character.adventurer.x + 800;
+    monsters.forEach(function (monsterData) {
+        var newMonster = makeMonster(monsterData, character.area.level);
+        newMonster.x = x;
         newMonster.character = character;
         newMonster.direction = -1; // Monsters move right to left
         character.enemies.push(newMonster);
@@ -173,44 +168,46 @@ function performAttack(attacker, target) {
 }
 
 function defeatedEnemy(character, enemy) {
-    if (character.health > 0) {
-        // Character receives 10% penalty per level difference between them and the monster.
-        var reducedXP = Math.floor(enemy.xp * Math.max(0, 1 - .1 * Math.abs(character.level - enemy.level)));
-        gainXP(character, reducedXP);
-        gain('IP', enemy.ip);
-        if (enemy.ip) {
-            character.textPopups.push(
-                {value: '+' + enemy.ip, x: enemy.x + 35, y: 240 - 140, color: 'white', font: "20px sans-serif"}
-            );
-        }
-        gain('MP', enemy.mp);
-        if (enemy.mp) {
-            character.textPopups.push(
-                {value: '+' + enemy.mp, x: enemy.x + 45, y: 240 - 145, color: '#fc4', font: "22px sans-serif"}
-            )
-        }
-        gain('RP', enemy.rp);
-        if (enemy.rp) {
-            character.textPopups.push(
-                {value: '+' + enemy.rp, x: enemy.x + 55, y: 240 - 150, color: '#c4f', font: "24px sans-serif"}
-            );
-        }
-        gain('UP', enemy.up);
-        if (enemy.up) {
-            character.textPopups.push(
-                {value: '+' + enemy.up, x: enemy.x + 65, y: 240 - 155, color: '#4cf', font: "26px sans-serif"}
-            );
-        }
+    if (character.adventurer.health <= 0) {
+        return;
+    }
+    // Character receives 10% penalty per level difference between them and the monster.
+    var reducedXP = Math.floor(enemy.xp * Math.max(0, 1 - .1 * Math.abs(character.adventurer.level - enemy.level)));
+    gainXP(character.adventurer, reducedXP);
+    gain('IP', enemy.ip);
+    if (enemy.ip) {
+        character.textPopups.push(
+            {value: '+' + enemy.ip, x: enemy.x + 35, y: 240 - 140, color: 'white', font: "20px sans-serif"}
+        );
+    }
+    gain('MP', enemy.mp);
+    if (enemy.mp) {
+        character.textPopups.push(
+            {value: '+' + enemy.mp, x: enemy.x + 45, y: 240 - 145, color: '#fc4', font: "22px sans-serif"}
+        )
+    }
+    gain('RP', enemy.rp);
+    if (enemy.rp) {
+        character.textPopups.push(
+            {value: '+' + enemy.rp, x: enemy.x + 55, y: 240 - 150, color: '#c4f', font: "24px sans-serif"}
+        );
+    }
+    gain('UP', enemy.up);
+    if (enemy.up) {
+        character.textPopups.push(
+            {value: '+' + enemy.up, x: enemy.x + 65, y: 240 - 155, color: '#4cf', font: "26px sans-serif"}
+        );
     }
 }
 function drawAdventure(character, delta) {
+    var adventurer = character.adventurer;
     var context = character.context;
-    var targetCameraX = character.x - 10;
+    var targetCameraX = adventurer.x - 10;
     for (var i = 0; i < delta / .05; i++) {
         character.cameraX = (character.cameraX * 10 + targetCameraX ) / 11;
     }
     var cameraX = character.cameraX;
-    context.clearRect(0, 0, character.canvasWidth, character.canvasHeight);
+    context.clearRect(0, 0, character.canvas.width, character.canvas.height);
     var backgroundImage = ifdefor(character.area.backgroundImage, images['gfx/grass.png']);
     // Draw background
     for (var i = 0; i <= 768; i += 64) {
@@ -224,7 +221,7 @@ function drawAdventure(character, delta) {
         var enemyFps = ifdefor(enemy.base.fpsMultiplier, 1) * 3 * enemy.speed / 100;
         var source = enemy.base.source;
         var enemyFrame = Math.floor(character.time * enemyFps) % source.frames;
-        if (character.pull) {
+        if (enemy.pull) {
             enemyFrame = 0;
         }
         if (enemy.cloaked) {
@@ -253,32 +250,32 @@ function drawAdventure(character, delta) {
         drawBar(context, enemy.x - cameraX + 20, 240 - 128 - 36 - 5 * i, 64, 4, 'white', enemy.color, enemy.health / enemy.maxHealth);
     }
     //draw character
-    if (character.target) { // attacking loop
-        var attackFps = 1 / ((1 / character.attackSpeed) / fightLoop.length);
-        var frame = Math.floor(Math.abs(character.time - character.attackCooldown) * attackFps) % fightLoop.length;
-        context.drawImage(character.personCanvas, fightLoop[frame] * 32, 0 , 32, 64,
-                        character.x - cameraX, 240 - 128 - 72, 64, 128);
+    if (adventurer.target) { // attacking loop
+        var attackFps = 1 / ((1 / adventurer.attackSpeed) / fightLoop.length);
+        var frame = Math.floor(Math.abs(character.time - adventurer.attackCooldown) * attackFps) % fightLoop.length;
+        context.drawImage(adventurer.personCanvas, fightLoop[frame] * 32, 0 , 32, 64,
+                        adventurer.x - cameraX, 240 - 128 - 72, 64, 128);
     } else { // walking loop
-        if (character.cloaked) {
+        if (adventurer.cloaked) {
             context.globalAlpha = .2;
         }
-        var fps = Math.floor(3 * character.speed / 100);
+        var fps = Math.floor(3 * adventurer.speed / 100);
         var frame = Math.floor(character.time * fps) % walkLoop.length;
-        if (character.pull) {
+        if (adventurer.pull) {
             frame = 0;
         }
-        context.drawImage(character.personCanvas, walkLoop[frame] * 32, 0 , 32, 64,
-                        character.x - cameraX, 240 - 128 - 72, 64, 128);
+        context.drawImage(adventurer.personCanvas, walkLoop[frame] * 32, 0 , 32, 64,
+                        adventurer.x - cameraX, 240 - 128 - 72, 64, 128);
     }
-    //context.fillRect(character.x - cameraX, 240 - 128 - 72, 64, 128);
+    //context.fillRect(adventurer.x - cameraX, 240 - 128 - 72, 64, 128);
     context.globalAlpha = 1;
     // life bar
-    drawBar(context, character.x - cameraX, 240 - 128 - 72, 64, 4, 'white', 'red', character.health / character.maxHealth);
+    drawBar(context, adventurer.x - cameraX, 240 - 128 - 72, 64, 4, 'white', 'red', adventurer.health / adventurer.maxHealth);
     // xp bar
-    drawBar(context, 35, 240 - 15, 400, 6, 'white', '#00C000', character.xp / character.xpToLevel);
+    drawBar(context, 35, 240 - 15, 400, 6, 'white', '#00C000', adventurer.xp / adventurer.xpToLevel);
     context.font = "20px sans-serif";
     context.textAlign = 'right'
-    context.fillText(character.level, 30, 240 - 5);
+    context.fillText(adventurer.level, 30, 240 - 5);
     // Draw text popups such as damage dealt, item points gained, and so on.
     context.fillStyle = 'red';
     for (var i = 0; i < character.textPopups.length; i++) {
