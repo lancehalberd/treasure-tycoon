@@ -77,7 +77,7 @@ function newCharacter(job) {
             'block': 1,
         },
         'bonuses': [],
-        'abilities': [],//[{'name': 'Stealth', 'bonuses':{'+cloaking': 1}}],
+        'abilities': [{'name': 'Grappling Hook', 'attacks': [{'type': 'hook', 'readyAt': 0, 'cooldown': 2, 'range': 10}]}],//[{'name': 'Stealth', 'bonuses':{'+cloaking': 1}}],
         'name': Random.element(names),
         'hairOffset': Random.range(hair[0], hair[1]),
         'level': 1,
@@ -136,9 +136,18 @@ function changedPoints(pointsType) {
     else updateCraftButton();
     $('.js-points' + pointsType).text(state[pointsType]);
 }
+function addBonusesAndAttacks(actor, source) {
+    if (ifdefor(source.bonuses)) {
+        actor.bonuses.push(source.bonuses);
+    }
+    if (ifdefor(source.attacks)) {
+        actor.attacks = actor.attacks.concat(source.attacks);
+    }
+}
 function updateCharacter(character) {
     // Clear the character's bonuses and graphics.
     character.bonuses = [];
+    character.attacks = [];
     var sectionWidth = personFrames * 32;
     var hat = character.equipment.head;
     var hideHair = hat ? ifdefor(hat.base.hideHair, false) : false;
@@ -150,7 +159,7 @@ function updateCharacter(character) {
         }
     }
     character.abilities.forEach(function (ability) {
-        character.bonuses.push(ability.bonuses);
+        addBonusesAndAttacks(character, ability);
     });
     // Add the character's current equipment to bonuses and graphics
     equipmentSlots.forEach(function (type) {
@@ -160,14 +169,12 @@ function updateCharacter(character) {
         if (!equipment) {
             return;
         }
-        if (equipment.base.bonuses) {
-            character.bonuses.push(equipment.base.bonuses);
-        }
+        addBonusesAndAttacks(character, equipment.base);
         equipment.prefixes.forEach(function (affix) {
-            character.bonuses.push(affix.bonuses);
+            addBonusesAndAttacks(character, affix);
         })
         equipment.suffixes.forEach(function (affix) {
-            character.bonuses.push(affix.bonuses);
+            addBonusesAndAttacks(character, affix);
         })
         if (equipment.base.offset) {
             for (var i = 0; i < personFrames; i++) {

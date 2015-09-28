@@ -35,6 +35,7 @@ function startArea(character, area) {
     character.area = area;
     character.monsterIndex = 0;
     character.x = 0;
+    character.cameraX = -30;
     character.enemies = [];
     character.allies = [character];
     character.isAlly = true;

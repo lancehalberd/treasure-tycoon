@@ -51,7 +51,7 @@ function initializeLevels() {
     addLevel({'name': 'Forest', 'backgroundImage': images['gfx/forest.png'], 'monsters': [monsters['caterpillar'], monsters['gnome']],
              'events': [[monsters['gnome'], monsters['gnome']], [monsters['caterpillar'], monsters['caterpillar']], [monsters['butterfly']]]}, 1);
     addLevel({'name': 'Cave', 'backgroundImage': images['gfx/cave.png'], 'monsters': [monsters['gnome'], monsters['skeleton']],
-             'events': [[monsters['gnome'], monsters['gnome']], [monsters['skeleton'], monsters['skeleton']], [monsters['giantSkeleton']]]}, 1);
+             'events': [[monsters['skeleton'], monsters['skeleton']], [monsters['gnome'], monsters['gnome']], [monsters['giantSkeleton']]]}, 1);
     addLevel({'name': 'Field', 'backgroundImage': images['gfx/grass.png'],  'monsters': [monsters['caterpillar'], monsters['skeleton']],
              'events': [[monsters['caterpillar'], monsters['caterpillar']],
                         [monsters['skeleton'], monsters['skeleton']],

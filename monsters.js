@@ -123,6 +123,7 @@ function matchingMonsterAffixes(list, monster, alreadyUsed) {
 function updateMonster(monster) {
     // Clear the character's bonuses and graphics.
     monster.bonuses = [];
+    monster.attacks = [];
     var enchantments = monster.prefixes.length + monster.suffixes.length;
     if (enchantments > 2) {
         monster.bonuses.push(imbuedMonsterBonuses);
@@ -139,19 +140,19 @@ function updateMonster(monster) {
     var name = monster.base.name;
     var prefixNames = []
     monster.base.abilities.forEach(function (ability) {
-        monster.bonuses.push(ability.bonuses);
+        addBonusesAndAttacks(monster, ability);
     });
     monster.prefixes.forEach(function (affix) {
-        monster.bonuses.push(affix.bonuses);
         prefixNames.push(affix.base.name);
+        addBonusesAndAttacks(monster, affix);
     });
     if (prefixNames.length) {
         name = prefixNames.join(', ') + ' ' + name;
     }
     var suffixNames = []
     monster.suffixes.forEach(function (affix) {
-        monster.bonuses.push(affix.bonuses);
         suffixNames.push(affix.base.name);
+        addBonusesAndAttacks(monster, affix);
     });
     if (suffixNames.length) {
         name = name + ' of ' + suffixNames.join(' and ');
@@ -163,14 +164,12 @@ function updateMonster(monster) {
         if (!equipment) {
             return;
         }
-        if (equipment.base.bonuses) {
-            monster.bonuses.push(equipment.base.bonuses);
-        }
+        addBonusesAndAttacks(monster, equipment.base);
         equipment.prefixes.forEach(function (affix) {
-            monster.bonuses.push(affix.bonuses);
+            addBonusesAndAttacks(monster, affix);
         })
         equipment.suffixes.forEach(function (affix) {
-            monster.bonuses.push(affix.bonuses);
+            addBonusesAndAttacks(monster, affix);
         })
     });
     allComputedStats.forEach(function (stat) {
@@ -247,7 +246,7 @@ function initalizeMonsters() {
         'minMagicDamage': 0,
         'maxMagicDamage': 0,
         'attackSpeed': [2, 2, .05, .05],
-        'speed': 300,
+        'speed': 200,
         'accuracy': [3, 4, 1.5, 2.5],
         'evasion': [0, 0, .5, 1],
         'block': 0,

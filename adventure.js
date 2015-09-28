@@ -1,7 +1,7 @@
 function adventureLoop(character, delta) {
     var everybody = character.allies.concat(character.enemies);
     everybody.forEach(function (actor) {
-        processStatusEffects(actor, delta);
+        processStatusEffects(character, actor, delta);
     });
     // Check for defeated player/enemies.
     if (character.health <= 0) {
@@ -31,7 +31,7 @@ function adventureLoop(character, delta) {
         performAction(character, actor, character.allies.slice());
     });
     everybody.forEach(function (actor) {
-        if (!actor.blocked && !actor.target) {
+        if (!actor.blocked && !actor.target && !actor.pull) {
             actor.x += actor.speed * actor.direction * Math.max(0, (1 - actor.slow)) * delta;
         }
     });
@@ -45,7 +45,7 @@ function adventureLoop(character, delta) {
     if (character.target || character.blocked) {
         character.cloaked = false;
     }
-    drawAdventure(character);
+    drawAdventure(character, delta);
 }
 function startNextWave(character) {
     var monsters = character.area.monsters[character.monsterIndex];
@@ -66,6 +66,16 @@ function processStatusEffects(character, target, delta) {
     if (ifdefor(target.healthRegen)) {
         target.health += target.healthRegen * delta;
     }
+    if (ifdefor(target.pull)) {
+        var timeLeft = (target.pull.time - character.time);
+        if (timeLeft > 0) {
+            var dx = (target.pull.x - target.x) * Math.min(1, delta / timeLeft);
+            if (!target.blocked) target.x += dx;
+        } else {
+            if (!target.blocked) target.x = target.pull.x;
+            target.pull = null;
+        }
+    }
 }
 function performAction(character, actor, targets) {
     actor.blocked = false; // Character is assum    ed to not be blocked each frame
@@ -80,16 +90,42 @@ function performAction(character, actor, targets) {
     targets.forEach(function (target) {
         var distance = Math.abs(target.x - actor.x) - 64; // 64 is the width of the character
         actor.blocked = actor.blocked || distance <= 0; // block the actor if a target is too close
+        if (actor.pull) {
+            return;
+        }
         if (actor.target) return;
+        ifdefor(actor.attacks, []).forEach(function (attack) {
+            if (ifdefor(actor.attackCooldown, 0) > character.time) { // Attack the target if possible.
+                return false;
+            }
+            if (attack.readyAt > character.time) {
+                return true;
+            }
+            if (attack.type == 'hook') {
+                if (distance <= actor.range * 32 || distance > attack.range * 32 || target.cloaked) {
+                    return true;
+                }
+                attack.readyAt = character.time + attack.cooldown;
+                actor.target = target;
+                // Pull them just into range of the normal attack, no closer.
+                var targetX = (actor.x > target.x) ? (actor.x - actor.range * 32 - 64) : (actor.x + 64 + actor.range * 32);
+                target.pull = {'x': targetX, 'time': character.time + .3};
+                actor.pull = {'x': actor.x, 'time': character.time + .3};
+                //attacker.attackCooldown = character.time + 1;
+                character.textPopups.push({value: 'hooked!', x: target.x + 32, y: 240 - 128, color: 'red'});
+            }
+            return true;
+        });
         if (distance > actor.range * 32 || target.cloaked) {
             return;
         }
         actor.target = target;
-        if (ifdefor(actor.attackCooldown, 0) <= character.time) { // Attack the target if possible.
-            actor.attackCooldown = character.time + 1 / (actor.attackSpeed * Math.max(.1, (1 - actor.slow)));
-            var hitText = performAttack(actor, target);
-            character.textPopups.push({value: hitText, x: target.x + 32, y: 240 - 128, color: 'red'});
+        if (ifdefor(actor.attackCooldown, 0) > character.time) { // Attack the target if possible.
+            return;
         }
+        actor.attackCooldown = character.time + 1 / (actor.attackSpeed * Math.max(.1, (1 - actor.slow)));
+        var hitText = performAttack(actor, target);
+        character.textPopups.push({value: hitText, x: target.x + 32, y: 240 - 128, color: 'red'});
     });
     actor.cloaked = (actor.cloaking && !actor.blocked && !actor.target);
 }
@@ -167,14 +203,18 @@ function defeatedEnemy(character, enemy) {
         }
     }
 }
-function drawAdventure(character) {
+function drawAdventure(character, delta) {
     var context = character.context;
-    var cameraX = character.x - 10;
+    var targetCameraX = character.x - 10;
+    for (var i = 0; i < delta / .05; i++) {
+        character.cameraX = (character.cameraX * 10 + targetCameraX ) / 11;
+    }
+    var cameraX = character.cameraX;
     context.clearRect(0, 0, character.canvasWidth, character.canvasHeight);
     var backgroundImage = ifdefor(character.area.backgroundImage, images['gfx/grass.png']);
     // Draw background
     for (var i = 0; i <= 768; i += 64) {
-        var x = (784 + (i - character.x) % 768) % 768 - 64;
+        var x = (784 + (i - cameraX) % 768) % 768 - 64;
         context.drawImage(backgroundImage, 0, 0 , 64, 240,
                               x, 0, 64, 240);
     }
@@ -184,6 +224,9 @@ function drawAdventure(character) {
         var enemyFps = ifdefor(enemy.base.fpsMultiplier, 1) * 3 * enemy.speed / 100;
         var source = enemy.base.source;
         var enemyFrame = Math.floor(character.time * enemyFps) % source.frames;
+        if (character.pull) {
+            enemyFrame = 0;
+        }
         if (enemy.cloaked) {
             context.globalAlpha = .2;
         }
@@ -221,6 +264,9 @@ function drawAdventure(character) {
         }
         var fps = Math.floor(3 * character.speed / 100);
         var frame = Math.floor(character.time * fps) % walkLoop.length;
+        if (character.pull) {
+            frame = 0;
+        }
         context.drawImage(character.personCanvas, walkLoop[frame] * 32, 0 , 32, 64,
                         character.x - cameraX, 240 - 128 - 72, 64, 128);
     }
