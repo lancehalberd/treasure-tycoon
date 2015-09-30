@@ -283,6 +283,7 @@ function stopDrag() {
 }
 var armorSlots = ['body', 'feet', 'head', 'offhand', 'arms', 'legs'];
 var equipmentSlots = ['weapon', 'body', 'feet', 'head', 'offhand', 'arms', 'legs', 'back', 'ring'];
+var accessorySlots = ['back', 'ring'];
 var items = [
     [
         {'slot': 'weapon', 'type': 'axe',  'name': 'Axe', 'bonuses': {'+minDamage': 3, '+maxDamage': 6, '+range': 1.5, '+attackSpeed': 1.5}, 'icon': 'axe'},

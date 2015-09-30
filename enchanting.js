@@ -6,6 +6,9 @@ var prefixes = [
         {'slot': 'weapon', 'name': 'Sticky', 'bonuses': {'+slowOnHit': [5, 10, 100]}},
         {'slot': armorSlots, 'name': 'Hardy', 'bonuses': {'+maxHealth': [5, 10]}},
         {'slot': armorSlots, 'name': 'Soothing', 'bonuses': {'+healthRegen': [1, 2]}},
+        {'slot': accessorySlots, 'name': 'Basic', 'bonuses': {}},
+        {'slot': accessorySlots, 'name': 'Plain', 'bonuses': {}},
+        {'slot': accessorySlots, 'name': 'Simple', 'bonuses': {}}
     ]
 ];
 var suffixes = [
@@ -15,7 +18,9 @@ var suffixes = [
         {'slot': 'weapon', 'name': 'Aiming', 'bonuses': {'+accuracy': [1, 5]}},
         {'slot': armorSlots, 'name': 'Toughness', 'bonuses': {'+armor': [1, 2]}},
         {'slot': armorSlots, 'name': 'Deflecting', 'bonuses': {'+block': [1, 2]}},
-        {'slot': armorSlots, 'name': 'Evasion', 'bonuses': {'+evasion': [1, 2]}},
+        {'slot': accessorySlots, 'name': 'Emptiness', 'bonuses': {}},
+        {'slot': accessorySlots, 'name': 'Disappointment', 'bonuses': {}},
+        {'slot': accessorySlots, 'name': 'Frustration', 'bonuses': {}}
     ]
 ];
 function makeAffix(baseAffix) {
