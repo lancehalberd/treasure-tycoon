@@ -29,19 +29,6 @@ var state = {
     RP: 0,
     UP: 0
 }
-function startArea(character, area) {
-    character.$panel.find('.js-infoMode').hide();
-    character.$panel.find('.js-adventureMode').show();
-    character.area = area;
-    character.monsterIndex = 0;
-    character.adventurer.x = 0;
-    character.cameraX = -30;
-    character.enemies = [];
-    character.allies = [character.adventurer];
-    character.adventurer.isAlly = true;
-    character.textPopups = [];
-    character.$panel.find('.js-recall').prop('disabled', false);
-}
 // Load any graphic assets needed by the game here.
 async.mapSeries(['gfx/person.png', 'gfx/grass.png', 'gfx/cave.png', 'gfx/forest.png', 'gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png'], loadImage, function(err, results){
     ['gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png'].forEach(function (imageKey) {

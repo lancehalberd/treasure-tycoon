@@ -82,6 +82,11 @@ function newCharacter(job) {
     $newPlayerPanel.find('.js-map').append($levelButton('forest1')).append($levelButton('cave1')).append($levelButton('field1'));
     displayInfoMode(character);
     updateAdventurer(character.adventurer);
+    if (ifdefor(abilities[job.key])) {
+        unlockAbility(character, job.key);
+    } else {
+        unlockAbility(character, 'healing');
+    }
     updateRetireButtons();
 }
 function makeAdventurer(job, level, equipment) {
@@ -100,7 +105,9 @@ function makeAdventurer(job, level, equipment) {
             'block': 1,
         },
         'bonuses': [],
-        'abilities': [],//[{'name': 'Grappling Hook', 'attacks': [{'type': 'hook', 'readyAt': 0, 'cooldown': 2, 'range': 10}]}],//[{'name': 'Stealth', 'bonuses':{'+cloaking': 1}}],
+        'skillPoints': 1,
+        'unlockedAbilities': {},
+        'abilities': [], //abilities.hook, abilities.hookRange1, abilities.hookRange2, abilities.hookDrag1, abilities.hookDrag2, abilities.hookPower
         'name': Random.element(names),
         'hairOffset': Random.range(hair[0], hair[1]),
         'level': level,
@@ -145,7 +152,9 @@ function addBonusesAndAttacks(actor, source) {
         actor.bonuses.push(source.bonuses);
     }
     if (ifdefor(source.attacks)) {
-        actor.attacks = actor.attacks.concat(source.attacks);
+        source.attacks.forEach(function (baseAttack) {
+            actor.attacks.push({'base': baseAttack});
+        });
     }
 }
 function updateAdventurer(adventurer) {
@@ -217,15 +226,17 @@ function updateAdventurerStats(adventurer) {
         adventurer[stat] = adventurer[stat].toFixed(2);
     });
     adventurer.health = adventurer.maxHealth;
+    adventurer.attacks.forEach(function (attack) {
+        $.each(attack.base.stats, function (stat) {
+            attack[stat] = getStatForAttack(adventurer, attack, stat);
+        })
+    });
     if (ifdefor(adventurer.isMainCharacter)) {
         refreshStatsPanel(adventurer.character);
     }
 }
 function getStat(actor, stat) {
-    var base = ifdefor(actor.base[stat], 0);
-    var plus = 0;
-    var percent = 1;
-    var multiplier = 1;
+    var base = ifdefor(actor.base[stat], 0), plus = 0, percent = 1, multiplier = 1;
     if (stat === 'evasion' || stat === 'attackSpeed') {
         percent += .01 * actor.dexterity;
     }
@@ -254,6 +265,17 @@ function getStat(actor, stat) {
     //console.log(stat +": " + ['(',base, '+', plus,') *', percent, '*', multiplier]);
     return (base + plus) * percent * multiplier;
 }
+function getStatForAttack(actor, attack, stat) {
+    var base = ifdefor(attack.base.stats[stat], 0), plus = 0, percent = 1, multiplier = 1;
+    actor.bonuses.forEach(function (bonus) {
+        [stat, attack.base.type + ':' + stat].forEach(function (key) {
+            plus += ifdefor(bonus['+' + key], 0);
+            percent += ifdefor(bonus['%' + key], 0);
+            multiplier *= ifdefor(bonus['*' + key], 1);
+        });
+    });
+    return (base + plus) * percent * multiplier;
+}
 function gainXP(adventurer, amount) {
     adventurer.xp += amount;
     while (adventurer.xp >= adventurer.xpToLevel) {
@@ -263,7 +285,9 @@ function gainXP(adventurer, amount) {
         adventurer.health = adventurer.maxHealth;
         adventurer.xp -= adventurer.xpToLevel;
         adventurer.xpToLevel = xpToLevel(adventurer.level);
+        adventurer.skillPoints++;
         updateAdventurerStats(adventurer);
+        updateSkillTree(adventurer.character);
     }
 }
 function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonus, startingEquipment) {

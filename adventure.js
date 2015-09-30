@@ -1,3 +1,17 @@
+function startArea(character, area) {
+    character.$panel.find('.js-infoMode').hide();
+    character.$panel.find('.js-adventureMode').show();
+    character.area = area;
+    character.monsterIndex = 0;
+    character.adventurer.x = 0;
+    character.adventurer.pull = null;
+    character.cameraX = -30;
+    character.enemies = [];
+    character.allies = [character.adventurer];
+    character.adventurer.isAlly = true;
+    character.textPopups = [];
+    character.$panel.find('.js-recall').prop('disabled', false);
+}
 function adventureLoop(character, delta) {
     var adventurer = character.adventurer;
     var everybody = character.allies.concat(character.enemies);
@@ -32,7 +46,7 @@ function adventureLoop(character, delta) {
         performAction(character, actor, character.allies.slice());
     });
     everybody.forEach(function (actor) {
-        if (!actor.blocked && !actor.target && !actor.pull && !ifdefor(actor.stationary)) {
+        if (!actor.stunned && !actor.blocked && !actor.target && !actor.pull && !ifdefor(actor.stationary)) {
             actor.x += actor.speed * actor.direction * Math.max(0, (1 - actor.slow)) * delta;
         }
     });
@@ -56,6 +70,9 @@ function startNextWave(character) {
     character.monsterIndex++;
 }
 function processStatusEffects(character, target, delta) {
+    if (target.health <= 0) {
+        return;
+    }
     // Apply DOT, movement effects and other things that happen to targets here.
     target.slow = Math.max(0, target.slow - .1 * delta);
     if (ifdefor(target.healthRegen)) {
@@ -65,14 +82,26 @@ function processStatusEffects(character, target, delta) {
         var timeLeft = (target.pull.time - character.time);
         if (timeLeft > 0) {
             var dx = (target.pull.x - target.x) * Math.min(1, delta / timeLeft);
-            if (!target.blocked) target.x += dx;
+            var damage = target.pull.damage * Math.min(1, delta / timeLeft);
+            target.pull.damage -= damage;
+            if (!target.blocked) {
+                target.x += dx;
+                target.health -= damage;
+            }
         } else {
-            if (!target.blocked) target.x = target.pull.x;
+            if (!target.blocked) {
+                target.x = target.pull.x;
+                target.health -= target.pull.damage;
+            }
             target.pull = null;
         }
     }
+    if (target.stunned && target.stunned <= character.time) {
+        target.stunned = null;
+    }
 }
 function performAction(character, actor, targets) {
+    if (actor.stunned) return;
     actor.blocked = false; // Character is assum    ed to not be blocked each frame
     if (actor.target) {
         var index = targets.indexOf(actor.target);
@@ -96,18 +125,12 @@ function performAction(character, actor, targets) {
             if (attack.readyAt > character.time) {
                 return true;
             }
-            if (attack.type == 'hook') {
-                if (distance <= actor.range * 32 || distance > attack.range * 32 || target.cloaked) {
+            if (attack.base.type == 'hook') {
+                if (distance <= actor.range * 32 || distance > attack.abilityRange * 32 || target.cloaked) {
                     return true;
                 }
-                attack.readyAt = character.time + attack.cooldown;
-                actor.target = target;
-                // Pull them just into range of the normal attack, no closer.
-                var targetX = (actor.x > target.x) ? (actor.x - actor.range * 32 - 64) : (actor.x + 64 + actor.range * 32);
-                target.pull = {'x': targetX, 'time': character.time + .3};
-                actor.pull = {'x': actor.x, 'time': character.time + .3};
-                //attacker.attackCooldown = character.time + 1;
-                character.textPopups.push({value: 'hooked!', x: target.x + 32, y: 240 - 128, color: 'red'});
+                var hitText = performHookAttack(character, attack, actor, target);
+                character.textPopups.push({value: hitText, x: target.x + 32, y: 240 - 128, color: 'red'});
             }
             return true;
         });
@@ -165,6 +188,42 @@ function performAttack(attacker, target) {
     // TODO: Implement flat damage reduction here.
     target.health -= (damage + magicDamage);
     return (damage + magicDamage) > 0 ? (damage + magicDamage) : 'blocked';
+}
+function performHookAttack(character, attack, attacker, target) {
+    var distance = getDistance(attacker, target);
+    attack.readyAt = character.time + attack.cooldown;
+    attacker.target = target;
+    // Pull them just into range of the normal attack, no closer.
+    var targetX = (attacker.x > target.x) ? (attacker.x - attacker.range * 32 - 64) : (attacker.x + 64 + attacker.range * 32);
+    var multiplier = (1 + ifdefor(attack.rangeDamage, 0) * distance / 32);
+    var damage = Random.range(attacker.minDamage, attacker.maxDamage);
+    var magicDamage = Random.range(attacker.minMagicDamage, attacker.maxMagicDamage);
+    damage = Math.floor(damage * multiplier);
+    magicDamage = Math.floor(magicDamage * multiplier);
+    if (ifdefor(attacker.healthGainOnHit)) {
+        attacker.health += attacker.healthGainOnHit;
+    }
+    if (ifdefor(attacker.slowOnHit)) {
+        target.slow = Math.max(target.slow, attacker.slowOnHit);
+    }
+    // Apply block reduction
+    var blockRoll = Random.range(0, target.block);
+    var magicBlockRoll = Random.range(0, target.magicBlock);
+    damage = Math.max(0, damage - blockRoll);
+    magicDamage = Math.max(0, magicDamage - magicBlockRoll);
+    // Apply armor and magic resistance mitigation
+    // TODO: Implement armor penetration here.
+    damage = applyArmorToDamage(damage, target.armor);
+    magicDamage = Math.round(magicDamage * Math.max(0, (1 - target.magicResist)));
+    var totalDamage = damage + magicDamage;
+    target.health -= totalDamage;
+    target.stunned = character.time + .3 + distance / 32 * ifdefor(attack.dragStun, 0);
+    target.pull = {'x': targetX, 'time': character.time + .3, 'damage': Math.floor(distance / 32 * damage * ifdefor(attack.dragDamage, 0))};
+    attacker.pull = {'x': attacker.x, 'time': character.time + .3, 'damage': 0};
+    return totalDamage + ' hooked!';
+}
+function getDistance(actorA, actorB) {
+    return Math.max(0, (actorA.x > actorB.x) ? (actorA.x - actorB.x - 64) : (actorB.x - actorA.x - 64));
 }
 
 function defeatedEnemy(character, enemy) {

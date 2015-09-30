@@ -81,6 +81,15 @@ function bonusHelpText(bonuses, implicit) {
         if (implicit) sections.push('Magic: ' + bonuses['+minMagicDamage'] + ' to ' + bonuses['+maxMagicDamage']);
         else sections.push(bonuses['+minMagicDamage'] + ' to ' + bonuses['+maxMagicDamage'] + ' increased magic damage');
     }
+    if (ifdefor(bonuses['+dexterity']) != null) {
+        sections.push('+' + bonuses['+dexterity'] + ' Dexterity');
+    }
+    if (ifdefor(bonuses['+strength']) != null) {
+        sections.push('+' + bonuses['+strength'] + ' Strength');
+    }
+    if (ifdefor(bonuses['+intelligence']) != null) {
+        sections.push('+' + bonuses['+intelligence'] + ' Intelligence');
+    }
     if (ifdefor(bonuses['+range'])) {
         if (implicit) sections.push('Range: ' + bonuses['+range']);
         else sections.push(bonuses['+range'] + ' increased range');
@@ -117,6 +126,12 @@ function bonusHelpText(bonuses, implicit) {
     }
     if (ifdefor(bonuses['%attackSpeed'])) {
         sections.push((100 * bonuses['%attackSpeed']).toFixed(0) + '% increased attack speed');
+    }
+    if (ifdefor(bonuses['%damage'])) {
+        sections.push((100 * bonuses['%damage']).toFixed(0) + '% increased damage');
+    }
+    if (ifdefor(bonuses['%accuracy'])) {
+        sections.push((100 * bonuses['%accuracy']).toFixed(0) + '% increased accuracy');
     }
     if (ifdefor(bonuses['+slowOnHit'])) {
         sections.push('Slows target by ' + (100 * bonuses['+slowOnHit']).toFixed(0) + '%');

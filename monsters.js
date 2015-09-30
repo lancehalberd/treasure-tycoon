@@ -190,6 +190,11 @@ function updateMonster(monster) {
     monster.health = monster.maxHealth;
     monster.maxDamage = Math.max(monster.minDamage, monster.maxDamage);
     monster.minMagicDamage = Math.max(monster.minMagicDamage, monster.maxMagicDamage);
+    monster.attacks.forEach(function (attack) {
+        $.each(attack.base.stats, function (stat) {
+            attack[stat] = getStatForAttack(monster, attack, stat);
+        })
+    });
     //console.log(monster);
 }
 var monsters = {};

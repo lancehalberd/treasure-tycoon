@@ -75,6 +75,24 @@
     box-sizing: border-box;
 }
 
+.map {
+    display: inline-block;
+    width: 45%;
+    vertical-align: top;
+}
+.skilltree {
+    display: inline-block;
+    width: 50%;
+    vertical-align: top;
+}
+.learnedSkill {
+    font-size: 12px;
+    margin-bottom: 2px;
+}
+.skill {
+    margin-bottom: 2px;
+}
+
 .item {
     display: inline-block;
     width: 50px;
@@ -297,4 +315,7 @@ button {
 
 label {
     cursor: pointer;
+}
+button.skill.disabled {
+    opacity: .5;
 }
