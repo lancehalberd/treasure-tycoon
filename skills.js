@@ -20,7 +20,7 @@ var abilities = {
 
     'priest': {'name': 'Soul of Priest', 'next': ['healing'], 'bonuses': {'+intelligence': 5, '+block': 2, '%accuracy': .05}},
 
-    'healing': {'name': 'Healing', 'next': ['archer'], 'bonuses': {'+healthRegen': 2}},
+    'healing': {'name': 'Healing', 'next': ['archer'], 'bonuses': {'+healthRegen': 2}}
 };
 
 function unlockAbility(character, key) {
