@@ -10,6 +10,7 @@ var allComputedStats = ['cloaking', 'dexterity', 'strength', 'intelligence', 'ma
      'ip', 'xp', 'mp', 'rp', 'up',
      'evasion', 'block', 'magicBlock', 'armor', 'magicResist', 'accuracy', 'range', 'attackSpeed',
      'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage',
+     'critChance', 'critDamage', 'critAccuracy',
      'damageOnMiss', 'slowOnHit', 'healthRegen', 'healthGainOnHit'];
 var allFlooredStats = ['dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
      'ip', 'xp', 'mp', 'rp', 'up',
@@ -207,11 +208,14 @@ function updateAdventurerStats(adventurer) {
     adventurer.base.dexterity = adventurer.level * adventurer.job.dexterityBonus;
     adventurer.base.strength = adventurer.level * adventurer.job.strengthBonus;
     adventurer.base.intelligence = adventurer.level * adventurer.job.intelligenceBonus;
+    adventurer.base.critDamage = .5;
+    adventurer.base.critAccuracy = .5;
     if (!adventurer.equipment.weapon) {
         adventurer.base.minDamage = adventurer.level;
         adventurer.base.maxDamage = adventurer.level;
         adventurer.base.range = .5;
         adventurer.base.attackSpeed = 1;
+        adventurer.base.critChance = .01;
     } else {
         adventurer.base.minDamage = 0;
         adventurer.base.maxDamage = 0;

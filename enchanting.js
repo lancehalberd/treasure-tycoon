@@ -4,6 +4,8 @@ var prefixes = [
         {'slot': 'weapon', 'name': 'Strong', 'bonuses': {'+minDamage': 1, '+maxDamage': 2}},
         {'slot': 'weapon', 'name': 'Swift',  'bonuses': {'%attackSpeed': [5, 10, 100]}},
         {'slot': 'weapon', 'name': 'Sticky', 'bonuses': {'+slowOnHit': [5, 10, 100]}},
+        {'slot': 'weapon', 'name': 'Sharp', 'bonuses': {'+critDamage': [20, 50, 100]}},
+        {'slot': 'weapon', 'name': 'Precise', 'bonuses': {'%critChance': [20, 50, 100], '+critAccuracy': [20, 50, 100]}},
         {'slot': armorSlots, 'name': 'Hardy', 'bonuses': {'+maxHealth': [5, 10]}},
         {'slot': armorSlots, 'name': 'Soothing', 'bonuses': {'+healthRegen': [1, 2]}},
         {'slot': accessorySlots, 'name': 'Basic', 'bonuses': {}},

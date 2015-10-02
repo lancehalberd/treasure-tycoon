@@ -130,6 +130,19 @@ function bonusHelpText(bonuses, implicit) {
     if (ifdefor(bonuses['%damage'])) {
         sections.push((100 * bonuses['%damage']).toFixed(0) + '% increased damage');
     }
+    if (ifdefor(bonuses['+critChance'])) {
+        if (implicit) sections.push((100 * bonuses['+critChance']).toFixed(0) + '% critical strike chance');
+        else sections.push('Additional ' + (100 * bonuses['+critChance']).toFixed(0) + '% chance to critical strike');
+    }
+    if (ifdefor(bonuses['%critChance'])) {
+        sections.push((100 * bonuses['%critChance']).toFixed(0) + '% increased critical chance');
+    }
+    if (ifdefor(bonuses['+critDamage'])) {
+        sections.push((100 * bonuses['+critDamage']).toFixed(0) + '% increased critical damage');
+    }
+    if (ifdefor(bonuses['+critAccuracy'])) {
+        sections.push((100 * bonuses['+critAccuracy']).toFixed(0) + '% increased critical accuracy');
+    }
     if (ifdefor(bonuses['%accuracy'])) {
         sections.push((100 * bonuses['%accuracy']).toFixed(0) + '% increased accuracy');
     }
@@ -286,10 +299,10 @@ var equipmentSlots = ['weapon', 'body', 'feet', 'head', 'offhand', 'arms', 'legs
 var accessorySlots = ['back', 'ring'];
 var items = [
     [
-        {'slot': 'weapon', 'type': 'axe',  'name': 'Axe', 'bonuses': {'+minDamage': 3, '+maxDamage': 6, '+range': 1.5, '+attackSpeed': 1.5}, 'icon': 'axe'},
-        {'slot': 'weapon', 'type': 'sword', 'name': 'Dagger', 'bonuses': {'+minDamage': 2, '+maxDamage': 4, '+range': 1, '+attackSpeed': 2}, 'icon': 'sword'},
-        {'slot': 'weapon', 'type': 'bow',  'name': 'Bow', 'bonuses': {'+minDamage': 2, '+maxDamage': 4, '+range': 10, '+attackSpeed': 1}, 'icon': 'bow'},
-        {'slot': 'weapon', 'type': 'wand',  'name': 'Wand', 'bonuses': {'+minDamage': 0, '+maxDamage': 0, '+minMagicDamage': 2, '+maxMagicDamage': 3, '+range': 6, '+attackSpeed': 1.5}, 'icon': 'wand'},
+        {'slot': 'weapon', 'type': 'axe',  'name': 'Axe', 'bonuses': {'+minDamage': 3, '+maxDamage': 6, '+range': 1.5, '+attackSpeed': 1.5, '+critChance': .05 }, 'icon': 'axe'},
+        {'slot': 'weapon', 'type': 'sword', 'name': 'Dagger', 'bonuses': {'+minDamage': 2, '+maxDamage': 4, '+range': 1, '+attackSpeed': 2, '+critChance': .06}, 'icon': 'sword'},
+        {'slot': 'weapon', 'type': 'bow',  'name': 'Bow', 'bonuses': {'+minDamage': 2, '+maxDamage': 4, '+range': 10, '+attackSpeed': 1}, 'icon': 'bow', '+critChance': .05},
+        {'slot': 'weapon', 'type': 'wand',  'name': 'Wand', 'bonuses': {'+minDamage': 0, '+maxDamage': 0, '+minMagicDamage': 2, '+maxMagicDamage': 3, '+range': 6, '+attackSpeed': 1.5, '+critChance': .05}, 'icon': 'wand'},
         {'slot': 'offhand', 'type': 'shield',  'name': 'Small Shield', 'bonuses': {'+block': 2, '+armor': 2}, 'icon': 'shield'},
         {'slot': 'feet', 'type': 'boots',  'name': 'Steel Boots', 'bonuses': {'+speed': -50, '+armor': 1, '+block': 2}, 'offset': 8, icon: 'boots'},
         {'slot': 'head', 'type': 'helmet',  'name': 'Ribbon', 'bonuses': {'+evasion': 1}, icon: 'hat'},
@@ -299,14 +312,14 @@ var items = [
         {'slot': 'head', 'type': 'helmet',  'name': 'Helmet', 'bonuses': {'+armor': 1, '+block': 1, '+evasion': 1}, 'offset': 9, icon: 'hat', hideHair: true},
         {'slot': 'head', 'type': 'helmet',  'name': 'Oversized Helm', 'bonuses': {'+armor': 2, '+accuracy': -1}, 'offset': 10, icon: 'hat'},
         //Leon Made Main Hands
-        {'slot': 'weapon', 'type': 'sword', 'name': 'Knife', 'bonuses': {'+minDamage': 4, '+maxDamage': 8, '+range': 1, '+attackSpeed': 1.85}, 'icon': 'sword'},
-        {'slot': 'weapon', 'type': 'bow',  'name': 'Crossbow', 'bonuses': {'+minDamage': 5, '+maxDamage': 9, '+range': 9, '+attackSpeed': 1.2}, 'icon': 'bow'},
-        {'slot': 'weapon', 'type': 'axe',  'name': 'Labrys', 'bonuses': {'+minDamage': 7, '+maxDamage': 10, '+range': 1.5, '+attackSpeed': 1.4}, 'icon': 'axe'},
-        {'slot': 'weapon', 'type': 'wand',  'name': 'Carved Wand', 'bonuses': {'+minDamage': 1, '+maxDamage': 3, '+minMagicDamage': 2, '+maxMagicDamage': 5, '+range': 7, '+attackSpeed': 1.6}, 'icon': 'wand'},
-        {'slot': 'weapon', 'type': 'sword', 'name': 'Short Sword', 'bonuses': {'+minDamage': 5, '+maxDamage': 8, '+range': 2, '+attackSpeed': 1.7}, 'icon': 'sword'},
-        {'slot': 'weapon', 'type': 'bow',  'name': 'Blow Gun', 'bonuses': {'+minDamage': 3, '+maxDamage':  7, '+range': 8, '+attackSpeed': 1.6}, 'icon': 'bow'},
-        {'slot': 'weapon', 'type': 'staff',  'name': 'Wooden Staff', 'bonuses': {'+minDamage': 3, '+maxDamage': 5, '+minMagicDamage': 1, '+maxMagicDamage': 3, '+range': 2, '+attackSpeed': 1.2}, 'icon': 'wand'},
-        {'slot': 'weapon', 'type': 'glove',  'name': 'Brass Knuckles', 'bonuses': {'+minDamage': 4, '+maxDamage': 6, '+range': 1, '+attackSpeed': 2.2}, 'icon': 'glove'}
+        {'slot': 'weapon', 'type': 'sword', 'name': 'Knife', 'bonuses': {'+minDamage': 4, '+maxDamage': 8, '+range': 1, '+attackSpeed': 1.85, '+critChance': .06}, 'icon': 'sword'},
+        {'slot': 'weapon', 'type': 'bow',  'name': 'Crossbow', 'bonuses': {'+minDamage': 5, '+maxDamage': 9, '+range': 9, '+attackSpeed': 1.2, '+critChance': .05}, 'icon': 'bow'},
+        {'slot': 'weapon', 'type': 'axe',  'name': 'Labrys', 'bonuses': {'+minDamage': 7, '+maxDamage': 10, '+range': 1.5, '+attackSpeed': 1.4, '+critChance': .05}, 'icon': 'axe'},
+        {'slot': 'weapon', 'type': 'wand',  'name': 'Carved Wand', 'bonuses': {'+minDamage': 1, '+maxDamage': 3, '+minMagicDamage': 2, '+maxMagicDamage': 5, '+range': 7, '+attackSpeed': 1.6, '+critChance': .05}, 'icon': 'wand'},
+        {'slot': 'weapon', 'type': 'sword', 'name': 'Short Sword', 'bonuses': {'+minDamage': 5, '+maxDamage': 8, '+range': 2, '+attackSpeed': 1.7, '+critChance': .04}, 'icon': 'sword'},
+        {'slot': 'weapon', 'type': 'bow',  'name': 'Blow Gun', 'bonuses': {'+minDamage': 3, '+maxDamage':  7, '+range': 8, '+attackSpeed': 1.6}, 'icon': 'bow', '+critChance': .05},
+        {'slot': 'weapon', 'type': 'staff',  'name': 'Wooden Staff', 'bonuses': {'+minDamage': 3, '+maxDamage': 5, '+minMagicDamage': 1, '+maxMagicDamage': 3, '+range': 2, '+attackSpeed': 1.2, '+critChance': .03}, 'icon': 'wand'},
+        {'slot': 'weapon', 'type': 'glove',  'name': 'Brass Knuckles', 'bonuses': {'+minDamage': 4, '+maxDamage': 6, '+range': 1, '+attackSpeed': 2.2, '+critChance': .04}, 'icon': 'glove'}
     ],
     [
 	//Leon made Boots

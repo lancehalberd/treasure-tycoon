@@ -13,6 +13,9 @@ var monsterPrefixes = [
     ],
     [
         {'name': 'Frenzied', 'bonuses': {'*speed': [15, 20, 10], '*attackSpeed': [15, 20, 10]}}
+    ],
+    [
+        {'name': 'Lethal', 'bonuses': {'+critChance': [10, 20, 100], '+critDamage': [20, 50, 100], '+critAccuracy': [20, 50, 100]}}
     ]
 ];
 var monsterSuffixes = [
@@ -215,6 +218,9 @@ function initalizeMonsters() {
         'range': 1,
         'minDamage': [3, 3, 1, 1],
         'maxDamage': [4, 4, 1, 1],
+        'critChance': 0,
+        'critDamage': .5,
+        'critAccuracy': 1,
         'minMagicDamage': 0,
         'maxMagicDamage': 0,
         'attackSpeed': 1,
@@ -236,6 +242,9 @@ function initalizeMonsters() {
         'maxDamage': [5, 5, 1.2, 1.5],
         'minMagicDamage': [3, 3, 1, 1],
         'maxMagicDamage': [3, 3, 1.5, 1.5],
+        'critChance': 0,
+        'critDamage': .5,
+        'critAccuracy': 1,
         'fpsMultiplier': 1.5,
         'attackSpeed': 1.5,
         'speed': 30,
@@ -254,6 +263,9 @@ function initalizeMonsters() {
         'range': .5,
         'minDamage': [2, 2, .5, 1],
         'maxDamage': [2, 2, .75, 1.5],
+        'critChance': .05,
+        'critDamage': .5,
+        'critAccuracy': 1,
         'minMagicDamage': 0,
         'maxMagicDamage': 0,
         'attackSpeed': [2, 2, .05, .05],
@@ -275,6 +287,9 @@ function initalizeMonsters() {
         'maxDamage': [3, 4, 1.5, 2],
         'minMagicDamage': [1, 1, 1, 1],
         'maxMagicDamage': [2, 2, 1.5, 1.5],
+        'critChance': .1,
+        'critDamage': .6,
+        'critAccuracy': 1.5,
         'attackSpeed': [.5, .5, .02, .02],
         'speed': 60,
         'accuracy': [1, 2, 1, 2],
@@ -294,6 +309,9 @@ function initalizeMonsters() {
         'maxDamage': [3, 4, 1.5, 3],
         'minMagicDamage': 0,
         'maxMagicDamage': 0,
+        'critChance': .05,
+        'critDamage': 1,
+        'critAccuracy': 1,
         'attackSpeed': 1,
         'speed': 100,
         'accuracy': [0, 0, 1.5, 2.5],
@@ -313,6 +331,9 @@ function initalizeMonsters() {
         'maxDamage': [2, 2, 1.5, 2],
         'minMagicDamage': [0, 0, 1, 1],
         'maxMagicDamage': [1, 1, 1.5, 1.5],
+        'critChance': .2,
+        'critDamage': .5,
+        'critAccuracy': 1,
         'attackSpeed': [1, 1, .05, .05],
         'speed': 200, //controls speed of animation, not forward movement
         'accuracy': [1, 2, 1, 2],
