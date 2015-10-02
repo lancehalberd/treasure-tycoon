@@ -272,7 +272,11 @@ function getStat(actor, stat) {
 function getStatForAttack(actor, attack, stat) {
     var base = ifdefor(attack.base.stats[stat], 0), plus = 0, percent = 1, multiplier = 1;
     actor.bonuses.forEach(function (bonus) {
-        [stat, attack.base.type + ':' + stat].forEach(function (key) {
+        var keys = [stat];
+        ifdefor(attack.base.tags, []).concat([attack.base.type]).forEach(function (prefix) {
+            keys.push(prefix + ':' + stat);
+        });
+        keys.forEach(function (key) {
             plus += ifdefor(bonus['+' + key], 0);
             percent += ifdefor(bonus['%' + key], 0);
             multiplier *= ifdefor(bonus['*' + key], 1);

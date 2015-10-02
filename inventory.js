@@ -599,6 +599,11 @@ $(document).on('keydown', function(event) {
         gain('RP', 1000);
         gain('UP', 1000);
     }
+    if (event.which == 76) { // 'l'
+        state.characters.forEach(function (character) {
+            gainXP(character.adventurer, character.adventurer.xpToLevel);
+        });
+    }
     console.log(event.which);
 });
 

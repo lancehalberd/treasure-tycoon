@@ -141,9 +141,12 @@ $('.js-mouseContainer').on('mouseover mousemove', '.js-adventureMode .js-canvas'
         return;
     }
     var sourceCharacter = $(this).closest('.js-playerPanel').data('character');
-    sourceCharacter.enemies.forEach(function (enemy) {
-        if (isPointInRect(x, y, enemy.left, enemy.top, enemy.width, enemy.height)) {
-            canvasPopupTarget = enemy;
+    sourceCharacter.allies.concat(sourceCharacter.enemies).forEach(function (actor) {
+        if (actor == sourceCharacter.adventurer) {
+            return true; // not implemented yet
+        }
+        if (isPointInRect(x, y, actor.left, actor.top, actor.width, actor.height)) {
+            canvasPopupTarget = actor;
             return false;
         }
         return true;

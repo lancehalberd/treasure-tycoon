@@ -35,10 +35,6 @@ var monsterSuffixes = [
 ];
 
 function makeMonster(monsterData, level) {
-    var baseMonster;
-    if (typeof(monsterData) == 'string') {
-        baseMonster = monsters[monsterData];
-    }
     var monster = {
         'level': level,
         'slow': 0,
@@ -56,6 +52,15 @@ function makeMonster(monsterData, level) {
         'prefixes': [],
         'suffixes': []
     };
+    var baseMonster;
+    if (typeof(monsterData) == 'string') {
+        baseMonster = monsters[monsterData];
+    } else if (typeof(monsterData) == 'object') {
+        baseMonster = monsters[monsterData.key];
+        if (monsterData.bonuses) {
+            monster.bonuses = monsterData.bonuses;
+        }
+    }
     $.each(baseMonster, function (stat, value) {
         if (stat == 'abilities') {
             monster[stat] = value;

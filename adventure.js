@@ -5,12 +5,16 @@ function startArea(character, area) {
     character.monsterIndex = 0;
     character.adventurer.x = 0;
     character.adventurer.pull = null;
+    character.finishTime = false;
     character.cameraX = -30;
     character.enemies = [];
     character.allies = [character.adventurer];
     character.adventurer.isAlly = true;
     character.textPopups = [];
     character.$panel.find('.js-recall').prop('disabled', false);
+    character.adventurer.attacks.forEach(function (attack) {
+        attack.readyAt = 0;
+    });
 }
 function adventureLoop(character, delta) {
     var adventurer = character.adventurer;
@@ -31,13 +35,25 @@ function adventureLoop(character, delta) {
             continue;
         }
     }
+    for (var i = 0; i < character.allies.length; i++) {
+        var ally = character.allies[i];
+        if (ally.health <= 0) {
+            character.allies.splice(i--, 1);
+            continue;
+        }
+    }
     // Check to start next wave/complete level.
     if (character.enemies.length == 0) {
         if (character.monsterIndex >= character.area.monsters.length) {
-            completeArea(character);
-            return;
+            if (!character.finishTime) {
+                character.finishTime = character.time + 2;
+            } else if (character.finishTime <= character.time) {
+                completeArea(character);
+                return;
+            }
+        } else {
+            startNextWave(character);
         }
-        startNextWave(character);
     }
     character.allies.forEach(function (actor) {
         performAction(character, actor, character.enemies.slice());
@@ -124,6 +140,32 @@ function performAction(character, actor, targets) {
             }
             if (attack.readyAt > character.time) {
                 return true;
+            }
+            if (attack.base.type == 'monster') {
+                var count = 0;
+                character.allies.forEach(function (ally) {
+                    if (ally.source == attack) count++;
+                });
+                if (count >= attack.limit) {
+                    return true;
+                }
+                attack.readyAt = character.time + attack.cooldown;
+                var monsterData = {
+                    'key': attack.base.key,
+                    'bonuses': {'*maxHealth': ifdefor(attack.healthBonus, 1),
+                                '*minDamage': ifdefor(attack.damageBonus, 1),
+                                '*maxDamage': ifdefor(attack.damageBonus, 1),
+                                '*minMagicDamage': ifdefor(attack.damageBonus, 1),
+                                '*maxMagicDamage': ifdefor(attack.damageBonus, 1)}
+                }
+                var newMonster = makeMonster(monsterData, character.adventurer.level);
+                newMonster.x = actor.x + 32 + actor.direction * 64;
+                newMonster.character = character;
+                newMonster.direction = 1; // Minios move left to right
+                newMonster.speed = Math.max(actor.speed + 5, newMonster.speed);
+                newMonster.source = attack;
+                character.allies.push(newMonster);
+                actor.stunned = character.time + .3;
             }
             if (attack.base.type == 'hook') {
                 if (distance <= actor.range * 32 || distance > attack.abilityRange * 32 || target.cloaked) {
@@ -306,39 +348,76 @@ function drawAdventure(character, delta) {
                               x, 0, 64, 240);
     }
     // Draw enemies
-    for (var i = 0; i < character.enemies.length; i++) {
-        var enemy = character.enemies[i];
-        var enemyFps = ifdefor(enemy.base.fpsMultiplier, 1) * 3 * enemy.speed / 100;
-        var source = enemy.base.source;
-        var enemyFrame = Math.floor(character.time * enemyFps) % source.frames;
-        if (enemy.pull) {
-            enemyFrame = 0;
+    character.enemies.forEach(function (actor, index) {
+        if (actor == adventurer) return;
+        drawActor(character, actor, index)
+    });
+    character.allies.forEach(function (actor, index) {
+        if (actor == adventurer) return;
+        drawActor(character, actor, -index)
+    });
+    drawActor(character, adventurer);
+    context.globalAlpha = 1;
+    // xp bar
+    drawBar(context, 35, 240 - 15, 400, 6, 'white', '#00C000', adventurer.xp / adventurer.xpToLevel);
+    context.font = "20px sans-serif";
+    context.textAlign = 'right'
+    context.fillText(adventurer.level, 30, 240 - 5);
+    // Draw text popups such as damage dealt, item points gained, and so on.
+    context.fillStyle = 'red';
+    for (var i = 0; i < character.textPopups.length; i++) {
+        var textPopup = character.textPopups[i];
+        context.fillStyle = ifdefor(textPopup.color, "red");
+        context.font = ifdefor(textPopup.font, "20px sans-serif");
+        context.textAlign = 'center'
+        context.fillText(textPopup.value, textPopup.x - cameraX, textPopup.y);
+        textPopup.y--;
+        if (textPopup.y < 60) {
+            character.textPopups.splice(i--, 1);
         }
-        if (enemy.cloaked) {
-            context.globalAlpha = .2;
-        }
-        if (source.flipped) {
-            context.translate((enemy.x - cameraX + source.width), 0);
-            context.scale(-1, 1);
-            context.drawImage(enemy.image, enemyFrame * source.width + source.offset, 0 , source.width, 64, -source.width, 240 - 128 - 72, source.width * 2, 128);
-            context.scale(-1, 1);
-            context.translate(-(enemy.x - cameraX + source.width), 0);
-        } else {
-            context.translate((enemy.x - cameraX + source.width), 0);
-            context.drawImage(enemy.image, enemyFrame * source.width + source.offset, 0 , source.width, 64, -source.width, 240 - 128 - 72, source.width * 2, 128);
-            context.translate(-(enemy.x - cameraX + source.width), 0);
-        }
-        context.globalAlpha = 1;
-        enemy.left = enemy.x - cameraX;
-        enemy.top = 240 - 128 - 72;
-        enemy.width = source.width * 2;
-        enemy.height = 128;
-        // Uncomment to draw a reference of the character to show where left side of enemy should be
-        // context.drawImage(character.personCanvas, 0 * 32, 0 , 32, 64, enemy.x - cameraX, 240 - 128 - 72, 64, 128);
-        //context.fillRect(enemy.x - cameraX, 240 - 128 - 72, 64, 128);
-        // life bar
-        drawBar(context, enemy.x - cameraX + 20, 240 - 128 - 36 - 5 * i, 64, 4, 'white', enemy.color, enemy.health / enemy.maxHealth);
     }
+}
+function drawActor(character, actor, index) {
+    if (actor.personCanvas) drawAdventurer(character, actor, index);
+    else drawMonster(character, actor, index);
+}
+function drawMonster(character, monster, index) {
+    var cameraX = character.cameraX;
+    var context = character.context;
+    var fps = ifdefor(monster.base.fpsMultiplier, 1) * 3 * monster.speed / 100;
+    var source = monster.base.source;
+    var frame = Math.floor(character.time * fps) % source.frames;
+    if (monster.pull) {
+        frame = 0;
+    }
+    if (monster.cloaked) {
+        context.globalAlpha = .2;
+    }
+    if (source.flipped && monster.direction < 0) {
+        context.translate((monster.x - cameraX + source.width), 0);
+        context.scale(-1, 1);
+        context.drawImage(monster.image, frame * source.width + source.offset, 0 , source.width, 64, -source.width, 240 - 128 - 72, source.width * 2, 128);
+        context.scale(-1, 1);
+        context.translate(-(monster.x - cameraX + source.width), 0);
+    } else {
+        context.translate((monster.x - cameraX + source.width), 0);
+        context.drawImage(monster.image, frame * source.width + source.offset, 0 , source.width, 64, -source.width, 240 - 128 - 72, source.width * 2, 128);
+        context.translate(-(monster.x - cameraX + source.width), 0);
+    }
+    context.globalAlpha = 1;
+    monster.left = monster.x - cameraX;
+    monster.top = 240 - 128 - 72;
+    monster.width = source.width * 2;
+    monster.height = 128;
+    // Uncomment to draw a reference of the character to show where left side of monster should be
+    // context.drawImage(character.personCanvas, 0 * 32, 0 , 32, 64, monster.x - cameraX, 240 - 128 - 72, 64, 128);
+    //context.fillRect(monster.x - cameraX, 240 - 128 - 72, 64, 128);
+    // life bar
+    drawBar(context, monster.x - cameraX + 20, 240 - 128 - 36 - 5 * index, 64, 4, 'white', monster.color, monster.health / monster.maxHealth);
+}
+function drawAdventurer(character, adventurer, index) {
+    var cameraX = character.cameraX;
+    var context = character.context;
     //draw character
     if (adventurer.target) { // attacking loop
         var attackFps = 1 / ((1 / adventurer.attackSpeed) / fightLoop.length);
@@ -358,25 +437,6 @@ function drawAdventure(character, delta) {
                         adventurer.x - cameraX, 240 - 128 - 72, 64, 128);
     }
     //context.fillRect(adventurer.x - cameraX, 240 - 128 - 72, 64, 128);
-    context.globalAlpha = 1;
     // life bar
-    drawBar(context, adventurer.x - cameraX, 240 - 128 - 72, 64, 4, 'white', 'red', adventurer.health / adventurer.maxHealth);
-    // xp bar
-    drawBar(context, 35, 240 - 15, 400, 6, 'white', '#00C000', adventurer.xp / adventurer.xpToLevel);
-    context.font = "20px sans-serif";
-    context.textAlign = 'right'
-    context.fillText(adventurer.level, 30, 240 - 5);
-    // Draw text popups such as damage dealt, item points gained, and so on.
-    context.fillStyle = 'red';
-    for (var i = 0; i < character.textPopups.length; i++) {
-        var textPopup = character.textPopups[i];
-        context.fillStyle = ifdefor(textPopup.color, "red");
-        context.font = ifdefor(textPopup.font, "20px sans-serif");
-        context.textAlign = 'center'
-        context.fillText(textPopup.value, textPopup.x - cameraX, textPopup.y);
-        textPopup.y--;
-        if (textPopup.y < 60) {
-            character.textPopups.splice(i--, 1);
-        }
-    }
+    drawBar(context, adventurer.x - cameraX, 240 - 128 - 36 - 5 * index, 64, 4, 'white', 'red', adventurer.health / adventurer.maxHealth);
 }
