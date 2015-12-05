@@ -356,7 +356,7 @@ function drawAdventure(character, delta) {
         if (actor == adventurer) return;
         drawActor(character, actor, -index)
     });
-    drawActor(character, adventurer);
+    drawActor(character, adventurer, 0);
     context.globalAlpha = 1;
     // xp bar
     drawBar(context, 35, 240 - 15, 400, 6, 'white', '#00C000', adventurer.xp / adventurer.xpToLevel);
