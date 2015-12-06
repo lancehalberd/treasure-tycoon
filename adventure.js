@@ -359,10 +359,10 @@ function drawAdventure(character, delta) {
     drawActor(character, adventurer, 0);
     context.globalAlpha = 1;
     // xp bar
-    drawBar(context, 35, 240 - 15, 400, 6, 'white', '#00C000', adventurer.xp / adventurer.xpToLevel);
+    drawBar(context, 35, 240 - 45, 400, 6, 'white', '#00C000', adventurer.xp / adventurer.xpToLevel);
     context.font = "20px sans-serif";
     context.textAlign = 'right'
-    context.fillText(adventurer.level, 30, 240 - 5);
+    context.fillText(adventurer.level, 30, 240 - 35);
     // Draw text popups such as damage dealt, item points gained, and so on.
     context.fillStyle = 'red';
     for (var i = 0; i < character.textPopups.length; i++) {
@@ -376,6 +376,7 @@ function drawAdventure(character, delta) {
             character.textPopups.splice(i--, 1);
         }
     }
+    drawMinimap(character);
 }
 function drawActor(character, actor, index) {
     if (actor.personCanvas) drawAdventurer(character, actor, index);
@@ -439,4 +440,32 @@ function drawAdventurer(character, adventurer, index) {
     //context.fillRect(adventurer.x - cameraX, 240 - 128 - 72, 64, 128);
     // life bar
     drawBar(context, adventurer.x - cameraX, 240 - 128 - 36 - 5 * index, 64, 4, 'white', 'red', adventurer.health / adventurer.maxHealth);
+}
+function drawMinimap(character) {
+    var y = 240 - 18;
+    var height = 6;
+    var x = 10;
+    var width = 650;
+    var context = character.context;
+    drawBar(context, x, y, width, height, 'white', 'white', character.monsterIndex / character.area.monsters.length);
+    for (var i = 0; i < character.area.monsters.length; i++) {
+        context.fillStyle = 'white';
+        context.beginPath();
+            context.arc(x + (i + 1) * width / character.area.monsters.length, y + height / 2, 11, 0, 2 * Math.PI);
+        context.fill();
+        if (i < character.monsterIndex) {
+            context.fillStyle = 'orange';
+            context.beginPath();
+            context.arc(x + (i + 1) * width / character.area.monsters.length, y + height / 2, 10, 0, 2 * Math.PI);
+            context.fill();
+        }
+        if ((i >= character.monsterIndex - 1 && character.enemies.length) || i >= character.monsterIndex) {
+            context.fillStyle = 'black';
+            context.font = "20px sans-serif";
+            context.textAlign = 'right'
+            context.fillText('M', x + (i + 1) * width / character.area.monsters.length + 8, y + 10);
+        }
+    }
+    context.fillStyle = 'orange';
+    context.fillRect(x + 1, y + 1, (width - 2) * (character.monsterIndex / character.area.monsters.length) - 10, height - 2);
 }
