@@ -95,12 +95,12 @@
 
 .item {
     display: inline-block;
-    width: 50px;
-    height: 50px;
+    width: 46px;
+    height: 46px;
     background-color: white;
     box-sizing: border-box;
-    padding: 4px;
     cursor: pointer;
+    padding: 2px;
 }
 .item.enchanted {
     background-color: #ffa;
@@ -228,9 +228,14 @@ button {
 }
 
 .itemSlot {
-    border: 1px solid black;
+    background-color: #aaaaaa;
     height: 50px;
     width: 50px;
+    padding: 2px;
+    box-sizing: border-box;
+}
+.itemSlot.active {
+    background-color: #88ff88;
 }
 .enchantmentSlot {
     margin-top: 5px;

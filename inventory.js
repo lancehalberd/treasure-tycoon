@@ -179,6 +179,7 @@ $('body').on('mouseup', function (event) {
     if (dragged) {
         stopDrag();
     }
+    $('.js-itemSlot.active').removeClass('active');
 });
 $('body').on('mousedown', '.js-item', function (event) {
     if ($dragHelper) {
@@ -192,6 +193,9 @@ $('body').on('mousedown', '.js-item', function (event) {
     updateDragHelper();
     $('.js-mouseContainer').append($dragHelper);
     dragged = false;
+    var item = $(this).data('item');
+    $('.js-equipment .js-' + item.base.slot).addClass('active');
+    $('.js-enchantmentSlot').addClass('active');
 });
 
 function updateDragHelper() {
