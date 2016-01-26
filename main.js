@@ -99,7 +99,9 @@ function mainLoop() {
     var time = now();
     var delta = time - lastTime;
     lastTime = time;
-    redrawInventoryJewels();
+    if ($('.js-jewel-inventory').is(":visible")) {
+        redrawInventoryJewels();
+    }
     state.characters.forEach(function (character) {
         var characterDelta = delta * character.gameSpeed / 1000;
         character.time += characterDelta;
@@ -116,7 +118,9 @@ function infoLoop(character, delta) {
     var frame = Math.floor(character.time * fps) % walkLoop.length;
     character.previewContext.clearRect(0, 0, 64, 128);
     character.previewContext.drawImage(character.adventurer.personCanvas, walkLoop[frame] * 32, 0 , 32, 64, 0, -20, 64, 128);
-    drawBoardJewels(character);
+    if ($('.js-jewel-inventory').is(":visible")) {
+        drawBoardJewels(character);
+    }
 }
 
 function drawBar(context, x, y, width, height, background, color, percent) {

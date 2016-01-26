@@ -77,8 +77,10 @@ $.each(jewelDefinitions, function (key) {
     jewelTypes.push(key);
 });
 
+var basicShapeTypes = ['triangle', 'diamond', 'trapezoid'];
+
 function addJewelToInventory() {
-    var jewel = makeJewel(Random.element(shapeTypes), Random.element(jewelTypes), 1);
+    var jewel = makeJewel(Random.element(basicShapeTypes), Random.element(jewelTypes), 1);
     $('.js-jewel-inventory').prepend(jewel.$item);
 }
 
