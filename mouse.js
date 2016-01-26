@@ -12,3 +12,9 @@ $(document).on('mousedown', function() {
 $(document).on('mouseup', function() {
     mouseDown = false;
 });
+function relativeMousePosition(element) {
+    var elementOffset = $(element).offset();
+    var containerOffset = $('.js-mouseContainer').offset();
+    return [mousePosition[0] - (elementOffset.left - containerOffset.left),
+            mousePosition[1] - (elementOffset.top - containerOffset.top)];
+}

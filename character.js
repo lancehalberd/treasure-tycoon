@@ -73,11 +73,17 @@ function newCharacter(job) {
     character.context.imageSmoothingEnabled = false;
     character.previewContext = $newPlayerPanel.find('.js-infoMode .js-canvas')[0].getContext("2d"),
     character.previewContext.imageSmoothingEnabled = false;
+    character.jewelsCanvas = $newPlayerPanel.find('.js-infoMode .js-mapBox .js-canvas')[0];
+    character.jewelsContext = character.jewelsCanvas.getContext("2d");
+    character.boardCanvas = createCanvas(character.jewelsCanvas.width, character.jewelsCanvas.height);
+    character.boardContext = character.boardCanvas.getContext("2d");
     character.lastTime = character.time = now();
     character.gameSpeed = 1;
     character.replay = false;
     character.levelsCompleted = {};
     character.previewContext.imageSmoothingEnabled = false;
+    centerShapesInRectangle(character.adventurer.board.fixed.concat(character.adventurer.board.spaces), rectangle(0, 0, character.boardCanvas.width, character.boardCanvas.height));
+    drawBoardBackground(character.boardContext, character.adventurer.board);
     state.characters.push(character);
     $newPlayerPanel.data('character', character);
     $newPlayerPanel.find('.js-map').append($levelButton('forest1')).append($levelButton('cave1')).append($levelButton('field1'));
@@ -88,7 +94,18 @@ function newCharacter(job) {
     } else {
         unlockAbility(character, 'healing');
     }
+    $('.js-inventory').hide();
+    $('.js-jewel-inventory').show();
+    addJewelToInventory();
+    addJewelToInventory();
+    addJewelToInventory();
+    addJewelToInventory();
+    addJewelToInventory();
+    addJewelToInventory();
     updateRetireButtons();
+}
+function convertShapeDataToShape(shapeData) {
+    return makeShape(shapeData.p[0], shapeData.p[1], (shapeData.t % 360 + 360) % 360, shapeDefinitions[shapeData.k][0], 30);
 }
 function makeAdventurer(job, level, equipment) {
     var personCanvas = createCanvas(personFrames * 32, 64);
@@ -116,8 +133,12 @@ function makeAdventurer(job, level, equipment) {
         'xpToLevel': xpToLevel(0),
         'personCanvas': personCanvas,
         'personContext': personContext,
-        'attackCooldown': 0
+        'attackCooldown': 0,
+        'board' : {}
     };
+    adventurer.board.fixed = job.startingBoard.fixed.map(convertShapeDataToShape);
+    adventurer.board.spaces = job.startingBoard.spaces.map(convertShapeDataToShape);
+    adventurer.board.jewels = [];
     equipmentSlots.forEach(function (type) {
         adventurer.equipment[type] = null;
     });
@@ -174,6 +195,9 @@ function updateAdventurer(adventurer) {
     }
     adventurer.abilities.forEach(function (ability) {
         addBonusesAndAttacks(adventurer, ability);
+    });
+    adventurer.board.jewels.forEach(function (jewel) {
+        addBonusesAndAttacks(adventurer, jewel);
     });
     // Add the adventurer's current equipment to bonuses and graphics
     equipmentSlots.forEach(function (type) {
@@ -298,7 +322,7 @@ function gainXP(adventurer, amount) {
         updateSkillTree(adventurer.character);
     }
 }
-function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonus, startingEquipment) {
+function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonus, startingEquipment, startingBoard) {
     var key = name.replace(/\s*/g, '').toLowerCase();
     characterClasses[key] = {
         'key': key,
@@ -306,16 +330,39 @@ function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonu
         'dexterityBonus': dexterityBonus,
         'strengthBonus': strengthBonus,
         'intelligenceBonus': intelligenceBonus,
-        'startingEquipment': ifdefor(startingEquipment, {'weapon': itemsByKey.dagger})
+        'startingEquipment': ifdefor(startingEquipment, {'weapon': itemsByKey.dagger}),
+        'startingBoard': ifdefor(startingBoard, squareBoard)
     };
 }
+
+var triangleBoard = {
+    'fixed': [{"k":"triangle","p":[187,106],"t":0}],
+    'spaces': [{"k":"hexagon","p":[217,106],"t":0},{"k":"hexagon","p":[157,106],"t":0},{"k":"hexagon","p":[187,54.03847577293368],"t":0}]
+};
+var diamondBoard = {
+    'fixed': [{"k":"diamond","p":[206.5,107.99038105676658],"t":-60}],
+    'spaces': [{"k":"hexagon","p":[236.5,107.99038105676658],"t":0},{"k":"trapezoid","p":[236.5,107.99038105676658],"t":-120},{"k":"trapezoid","p":[206.5,107.99038105676658],"t":60},{"k":"hexagon","p":[176.5,56.02885682970026],"t":0}]
+};
+var hexBoard = {
+    'fixed': [{"k":"hexagon","p":[195,80],"t":0}],
+    'spaces': [{"k":"trapezoid","p":[195,131.96152422706632],"t":0},{"k":"trapezoid","p":[225,80],"t":180},
+               {"k":"trapezoid","p":[240,105.98076211353316],"t":240},{"k":"trapezoid","p":[225,131.96152422706632],"t":300},
+               {"k":"trapezoid","p":[195,80],"t": 120},{"k":"trapezoid","p":[180,105.98076211353316],"t":60}]
+};
+var squareBoard = {
+    'fixed': [{"k":"square","p":[89,76],"t":0}],
+    'spaces': [{"k":"hexagon","p":[89,106],"t":0},{"k":"hexagon","p":[89,24.03847577293368],"t":0},
+        {"k":"hexagon","p":[144.98076211353316,61],"t":30},{"k":"hexagon","p":[63.01923788646684,61],"t":30},
+        {"k":"rhombus","p":[134,50.01923788646684],"t":-30},{"k":"rhombus","p":[63.019237886466826,121],"t":-30},
+        {"k":"rhombus","p":[144.98076211353316,121],"t":60},{"k":"rhombus","p":[73.99999999999999,50.01923788646685],"t":60}]
+};
 
 var characterClasses = {};
 addCharacterClass('Fool', 0, 0, 0);
 
-addCharacterClass('Archer', 2, 1, 0, {'weapon': itemsByKey.bow});
-addCharacterClass('Black Belt', 0, 2, 1, {'weapon': itemsByKey.dagger});
-addCharacterClass('Priest', 1, 0, 2, {'weapon': itemsByKey.wand});
+addCharacterClass('Archer', 2, 1, 0, {'weapon': itemsByKey.bow}, triangleBoard);
+addCharacterClass('Black Belt', 0, 2, 1, {'weapon': itemsByKey.dagger}, diamondBoard);
+addCharacterClass('Priest', 1, 0, 2, {'weapon': itemsByKey.wand}, hexBoard);
 
 addCharacterClass('Corsair', 2, 2, 1);
 addCharacterClass('Paladin', 1, 2, 2);

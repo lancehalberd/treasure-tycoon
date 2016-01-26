@@ -75,6 +75,26 @@
     box-sizing: border-box;
 }
 
+.jewel-inventory {
+    padding: 5px;
+    padding-right:0;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    height: 540px;
+    box-sizing: border-box;
+}
+
+.jewel {
+    width: 68px;
+    height: 68px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+    background-color: white;
+    display: inline-block;
+    /* For some reason drag and drop messes up v-align without this. */
+    vertical-align: middle;
+}
+
 .map {
     display: inline-block;
     width: 45%;

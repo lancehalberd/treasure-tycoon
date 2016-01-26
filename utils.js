@@ -133,3 +133,7 @@ function resize(element, width, height, left, top) {
 function constrain(value, min, max) {
     return Math.min(max, Math.max(min, value));
 }
+
+function rectangle(left, top, width, height) {
+    return {left: left, top: top, width: width, height: height};
+}

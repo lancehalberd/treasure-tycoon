@@ -23,6 +23,7 @@ function points(type, value) {
 var fps = 6;
 var state = {
     characters: [],
+    jewels: [],
     AP: 0,
     IP: 0,
     MP: 0,
@@ -91,6 +92,7 @@ function mainLoop() {
     var time = now();
     var delta = time - lastTime;
     lastTime = time;
+    redrawInventoryJewels();
     state.characters.forEach(function (character) {
         var characterDelta = delta * character.gameSpeed / 1000;
         character.time += characterDelta;
@@ -107,6 +109,7 @@ function infoLoop(character, delta) {
     var frame = Math.floor(character.time * fps) % walkLoop.length;
     character.previewContext.clearRect(0, 0, 64, 128);
     character.previewContext.drawImage(character.adventurer.personCanvas, walkLoop[frame] * 32, 0 , 32, 64, 0, -20, 64, 128);
+    drawBoardJewels(character);
 }
 
 function drawBar(context, x, y, width, height, background, color, percent) {
@@ -164,6 +167,25 @@ $('.js-mouseContainer').on('mouseover mousemove', '.js-adventureMode .js-canvas'
     updateToolTip(x, y, $popup);
     $('.js-mouseContainer').append($popup);
 });
+$('.js-mouseContainer').on('mouseover mousemove', '.js-skillCanvas', checkToShowJewelToolTip);
+function checkToShowJewelToolTip() {
+    var jewel = draggedJewel || overJewel;
+    if (!jewel) {
+        return;
+    }
+    if ($popup) {
+        if ($popup.data('jewel') === jewel) {
+            return;
+        } else {
+            $popup.remove();
+        }
+    }
+    //console.log([event.pageX,event.pageY]);
+    $popup = $tag('div', 'toolTip js-toolTip', jewel.$item.attr('helptext'));
+    $popup.data('jewel', jewel);
+    updateToolTip(mousePosition[0], mousePosition[1], $popup);
+    $('.js-mouseContainer').append($popup);
+}
 $('.js-mouseContainer').on('mousemove', function (event) {
     if (!$popup) {
         return;
@@ -174,6 +196,9 @@ $('.js-mouseContainer').on('mousemove', function (event) {
 });
 
 function checkRemoveToolTip() {
+    if (overJewel || draggedJewel) {
+        return;
+    }
     if (canvasPopupTarget && canvasPopupTarget.health > 0 && canvasPopupTarget.character.area) {
         if (isPointInRect(canvasCoords[0], canvasCoords[1], canvasPopupTarget.left, canvasPopupTarget.top, canvasPopupTarget.width, canvasPopupTarget.height)) {
             return;
@@ -252,3 +277,5 @@ $('body').on('click', '.js-fastforward', function (event) {
     var character = $panel.data('character');
     character.gameSpeed = $(this).is(':checked') ? 3 : 1;
 });
+
+var testShape = makeShape(0, 0, 0, shapeDefinitions.triangle[0]).scale(100);

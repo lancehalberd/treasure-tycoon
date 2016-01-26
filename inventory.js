@@ -82,13 +82,13 @@ function bonusHelpText(bonuses, implicit) {
         else sections.push(bonuses['+minMagicDamage'] + ' to ' + bonuses['+maxMagicDamage'] + ' increased magic damage');
     }
     if (ifdefor(bonuses['+dexterity']) != null) {
-        sections.push('+' + bonuses['+dexterity'] + ' Dexterity');
+        sections.push('+' + bonuses['+dexterity'].format(1) + ' Dexterity');
     }
     if (ifdefor(bonuses['+strength']) != null) {
-        sections.push('+' + bonuses['+strength'] + ' Strength');
+        sections.push('+' + bonuses['+strength'].format(1) + ' Strength');
     }
     if (ifdefor(bonuses['+intelligence']) != null) {
-        sections.push('+' + bonuses['+intelligence'] + ' Intelligence');
+        sections.push('+' + bonuses['+intelligence'].format(1) + ' Intelligence');
     }
     if (ifdefor(bonuses['+range'])) {
         if (implicit) sections.push('Range: ' + bonuses['+range']);
@@ -119,32 +119,32 @@ function bonusHelpText(bonuses, implicit) {
         sections.push('Gain ' + bonuses['+healthGainOnHit'] + ' health on hit');
     }
     if (ifdefor(bonuses['+healthRegen'])) {
-        sections.push('Regenerates ' + bonuses['+healthRegen'] + ' health per second');
+        sections.push('Regenerates ' + bonuses['+healthRegen'].toFixed(1) + ' health per second');
     }
     if (ifdefor(bonuses['%maxHealth'])) {
-        sections.push((100 * bonuses['%maxHealth']).toFixed(0) + '% increased health');
+        sections.push((100 * bonuses['%maxHealth']).format(1) + '% increased health');
     }
     if (ifdefor(bonuses['%attackSpeed'])) {
-        sections.push((100 * bonuses['%attackSpeed']).toFixed(0) + '% increased attack speed');
+        sections.push((100 * bonuses['%attackSpeed']).format(1) + '% increased attack speed');
     }
     if (ifdefor(bonuses['%damage'])) {
-        sections.push((100 * bonuses['%damage']).toFixed(0) + '% increased damage');
+        sections.push((100 * bonuses['%damage']).format(1) + '% increased damage');
     }
     if (ifdefor(bonuses['+critChance'])) {
         if (implicit) sections.push((100 * bonuses['+critChance']).toFixed(0) + '% critical strike chance');
         else sections.push('Additional ' + (100 * bonuses['+critChance']).toFixed(0) + '% chance to critical strike');
     }
     if (ifdefor(bonuses['%critChance'])) {
-        sections.push((100 * bonuses['%critChance']).toFixed(0) + '% increased critical chance');
+        sections.push((100 * bonuses['%critChance']).format(1) + '% increased critical chance');
     }
     if (ifdefor(bonuses['+critDamage'])) {
-        sections.push((100 * bonuses['+critDamage']).toFixed(0) + '% increased critical damage');
+        sections.push((100 * bonuses['+critDamage']).format(1) + '% increased critical damage');
     }
     if (ifdefor(bonuses['+critAccuracy'])) {
-        sections.push((100 * bonuses['+critAccuracy']).toFixed(0) + '% increased critical accuracy');
+        sections.push((100 * bonuses['+critAccuracy']).format(1) + '% increased critical accuracy');
     }
     if (ifdefor(bonuses['%accuracy'])) {
-        sections.push((100 * bonuses['%accuracy']).toFixed(0) + '% increased accuracy');
+        sections.push((100 * bonuses['%accuracy']).format(1) + '% increased accuracy');
     }
     if (ifdefor(bonuses['+slowOnHit'])) {
         sections.push('Slows target by ' + (100 * bonuses['+slowOnHit']).toFixed(0) + '%');
@@ -156,6 +156,11 @@ function bonusHelpText(bonuses, implicit) {
         sections.push((bonuses['+accuracy'] > 0 ? '+' : '') + bonuses['+accuracy'] + ' accuracy');
     }
     return sections.join('<br/>');
+}
+// Wrapper for toFixed that strips trailing '0's and '.'s.
+// Foundt at http://stackoverflow.com/questions/7312468/javascript-round-to-a-number-of-decimal-places-but-strip-extra-zeros
+Number.prototype.format = function (digits) {
+    return parseFloat(this.toFixed(digits));
 }
 function sellItem(item) {
     var sourceCharacter = item.$item.closest('.js-playerPanel').data('character');
@@ -179,7 +184,6 @@ $('body').on('mouseup', function (event) {
     if (dragged) {
         stopDrag();
     }
-    $('.js-itemSlot.active').removeClass('active');
 });
 $('body').on('mousedown', '.js-item', function (event) {
     if ($dragHelper) {
@@ -202,8 +206,8 @@ function updateDragHelper() {
     if (!$dragHelper) {
         return;
     }
-    $dragHelper.css('left', (mousePosition[0] - 10) + 'px');
-    $dragHelper.css('top', (mousePosition[1] - 10) + 'px');
+    $dragHelper.css('left', (mousePosition[0] - $dragHelper[0].width / 2) + 'px');
+    $dragHelper.css('top', (mousePosition[1] - $dragHelper[0].height / 2) + 'px');
     dragged = true;
 }
 
@@ -214,6 +218,11 @@ $(document).on("mousemove", function (event) {
 function stopDrag() {
     if ($dragHelper) {
         var $source = $dragHelper.data('$source');
+        // If this doesn't have item data, it must be a jewel.
+        if (!$source) {
+            stopJewelDrag();
+            return;
+        }
         var item = $source.data('item');
         var hit = false;
         if (collision($dragHelper, $('.js-sellItem'))) {
@@ -297,6 +306,7 @@ function stopDrag() {
         $dragHelper = null;
         updateEnchantmentOptions();
     }
+    $('.js-itemSlot.active').removeClass('active');
 }
 var armorSlots = ['body', 'feet', 'head', 'offhand', 'arms', 'legs'];
 var equipmentSlots = ['weapon', 'body', 'feet', 'head', 'offhand', 'arms', 'legs', 'back', 'ring'];
