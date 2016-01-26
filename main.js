@@ -51,8 +51,15 @@ async.mapSeries([
     gain('RP', 0);
     gain('UP', 0);
     setInterval(mainLoop, 20);
+    var $options = $('.js-toolbar').children();
+    $options.detach();
+    $('.js-toolbar').empty().append($options);
     $('.js-loading').hide();
     $('.js-gameContent').show();
+    var testShape = makeShape(0, 0, 0, shapeDefinitions.triangle[0]).scale(30);
+    var jewelButtonCanvas = $('.js-jewelButtonCanvas')[0];
+    centerShapesInRectangle([testShape], rectangle(0, 0, jewelButtonCanvas.width, jewelButtonCanvas.height));
+    drawJewel(jewelButtonCanvas.getContext('2d'), testShape, [0, 0]);
 });
 function makeTintedImage(image, tint) {
     var tintCanvas = createCanvas(image.width, image.height);
@@ -253,13 +260,30 @@ $('.js-showAdventurePanel').on('click', function (event) {
     $('.js-adventurePanel').show();
 });
 $('.js-showCraftingPanel').on('click', function (event) {
+    showEquipment();
     $('.js-infoPanel').hide();
     $('.js-craftingPanel').show();
 });
 $('.js-showEnchantingPanel').on('click', function (event) {
+    showEquipment();
     $('.js-infoPanel').hide();
     $('.js-enchantingPanel').show();
 });
+$('.js-showJewelsPanel').on('click', function (event) {
+    showJewels();
+});
+function showJewels() {
+    $('.js-equipment').hide();
+    $('.js-inventory').hide();
+    $('.js-jewelBoard').show();
+    $('.js-jewel-inventory').show();
+}
+function showEquipment() {
+    $('.js-equipment').show();
+    $('.js-inventory').show();
+    $('.js-jewelBoard').hide();
+    $('.js-jewel-inventory').hide();
+}
 $('body').on('click', '.js-recall', function (event) {
     var $panel = $(this).closest('.js-playerPanel');
     var character = $panel.data('character');
@@ -277,5 +301,3 @@ $('body').on('click', '.js-fastforward', function (event) {
     var character = $panel.data('character');
     character.gameSpeed = $(this).is(':checked') ? 3 : 1;
 });
-
-var testShape = makeShape(0, 0, 0, shapeDefinitions.triangle[0]).scale(100);

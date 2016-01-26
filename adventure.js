@@ -416,10 +416,6 @@ function drawMonster(character, monster, index) {
     // Uncomment to draw a reference of the character to show where left side of monster should be
     // context.drawImage(character.personCanvas, 0 * 32, 0 , 32, 64, monster.x - cameraX, 240 - 128 - 72, 64, 128);
     //context.fillRect(monster.x - cameraX, 240 - 128 - 72, 64, 128);
-    var x = monster.x - cameraX + source.width;
-    var y = 240 - 72 - 24;
-    var lightSource = relativeMousePosition(character.canvas);
-    drawJewel(context, testShape.setRotation((monster.x - (character.time - monster.timeOffset) * 10) % 360).setCenterPosition(x, y), lightSource);
     // life bar
     drawBar(context, monster.x - cameraX + source.width - 32, 240 - 128 - 36 - 5 * index, 64, 4, 'white', monster.color, monster.health / monster.maxHealth);
 }
@@ -447,7 +443,6 @@ function drawAdventurer(character, adventurer, index) {
     //context.fillRect(adventurer.x - cameraX, 240 - 128 - 72, 64, 128);
     // life bar
     drawBar(context, adventurer.x - cameraX, 240 - 128 - 36 - 5 * index, 64, 4, 'white', 'red', adventurer.health / adventurer.maxHealth);
-    testShape.rotate(1);
 }
 function drawMinimap(character) {
     var y = 240 - 18;

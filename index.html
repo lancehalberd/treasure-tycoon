@@ -126,14 +126,15 @@
                 <button class="js-enchantmentOption js-mutate" helptext="Spend Magic or Rare Points to randomize the magical properties on an item." style="display: none;">Mutate</button>
                 <button class="js-enchantmentOption js-reset" helptext="You can spend Item Points to remove all enchantments from an item.<br/>This will allow you to enchant it again differently." style="display: none;">Reset</button>
             </div>
-            <div class="toolbar">
+            <div class="toolbar js-toolbar">
                 <button class="js-showAdventurePanel item" helptext="Click here to open the adventurers tab."><div class="icon hat"></div></button>
                 <button class="js-showCraftingPanel item" helptext="Click here to open the crafting tab."><div class="icon bag"></div></button>
                 <button class="js-showEnchantingPanel item" helptext="Click here to open the enchanting tab."><div class="icon wand"></div></button>
-                <button class="js-sellItem item" helptext="Drag items here to sell them. <br/> You can also hover over an item and type 'S' to sell quickly."><div class="icon anvil"></div></button>
+                <button class="js-showJewelsPanel item" helptext="Click here to open the jewels tab."><canvas class="js-jewelButtonCanvas" width="40" height="40"></canvas></button>
+                <button class="js-sellItem item" helptext="Drag items here to sell them. <br/> You can also hover over an item and type 'S' to sell quickly."><div class="icon anvil "></div></button>
             </div>
             <div class="js-inventory inventory"></div>
-            <div class="js-jewel-inventory jewel-inventory"></div>
+            <div class="js-jewel-inventory jewel-inventory" style="display: none;"></div>
         </div><div class="js-playerColumn playerColumn">
             <div class="js-playerPanelTemplate playerPanel" style="display: none;">
                 <div class="playerControlBar">
@@ -197,11 +198,12 @@
                         <div class="js-feet js-itemSlot itemSlot feet"></div>
                         <div class="js-back js-itemSlot itemSlot back"></div>
                         <div class="js-ring js-itemSlot itemSlot ring"></div>
+                    </div><div class="js-jewelBoard jewelBoard playerBox" style="display: none;">
+                        <canvas class="js-canvas js-skillCanvas" width="220" height="220">
+                        </canvas>
                     </div><div class="js-mapBox playerBox">
                         <div class="js-map map"></div>
                         <div class="js-skilltree skilltree"></div>
-                        <canvas class="js-canvas js-skillCanvas" width="220" height="220" style="background-color: #AAAAAA; position: absolute; left: 2px; top: 5px;">
-                        </canvas>
                     </div>
                 </div>
                 <div class="js-adventureMode">

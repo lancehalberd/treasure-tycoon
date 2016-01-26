@@ -156,6 +156,7 @@ $('body').on('mousemove', '.js-skillCanvas', function (event) {
     }
 });
 $('body').on('mousemove', function () {
+    checkIfStillOverJewel();
     if (!draggedJewel) {
         return;
     }
@@ -187,6 +188,25 @@ $('body').on('mousemove', function () {
         }
     }
 })
+function checkIfStillOverJewel() {
+    if (!overJewel) return;
+    var relativePosition
+    if (overJewel.character) {
+        relativePosition = relativeMousePosition(overJewel.character.jewelsCanvas);
+    } else {
+        relativePosition = relativeMousePosition(overJewel.canvas);
+    }
+    var points = overJewel.shape.points;
+    for (var j = 0; j < points.length; j++) {
+        if (distanceSquared(points[j], relativePosition) < 25) {
+            return;
+        }
+    }
+    if (isPointInPoints(relativePosition, overJewel.shape.points)) {
+        return;
+    }
+    overJewel = null;
+}
 $('body').on('mouseout', '.js-jewel', function (event) {
     redrawInventoryJewel($(this).data('jewel'));
 });

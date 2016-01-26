@@ -62,7 +62,7 @@
     box-sizing: border-box;
 }
 .toolbar {
-    padding: 4px;
+    padding: 1px;
     height: 60px;
     border-bottom: 2px solid black;
     box-sizing: border-box;
@@ -189,6 +189,10 @@ button {
 }
 
 .equipment {
+    position: relative;
+}
+
+.jewelBoard {
     position: relative;
 }
 

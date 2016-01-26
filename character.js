@@ -73,7 +73,7 @@ function newCharacter(job) {
     character.context.imageSmoothingEnabled = false;
     character.previewContext = $newPlayerPanel.find('.js-infoMode .js-canvas')[0].getContext("2d"),
     character.previewContext.imageSmoothingEnabled = false;
-    character.jewelsCanvas = $newPlayerPanel.find('.js-infoMode .js-mapBox .js-canvas')[0];
+    character.jewelsCanvas = $newPlayerPanel.find('.js-skillCanvas')[0];
     character.jewelsContext = character.jewelsCanvas.getContext("2d");
     character.boardCanvas = createCanvas(character.jewelsCanvas.width, character.jewelsCanvas.height);
     character.boardContext = character.boardCanvas.getContext("2d");
@@ -94,8 +94,6 @@ function newCharacter(job) {
     } else {
         unlockAbility(character, 'healing');
     }
-    $('.js-inventory').hide();
-    $('.js-jewel-inventory').show();
     addJewelToInventory();
     addJewelToInventory();
     addJewelToInventory();
