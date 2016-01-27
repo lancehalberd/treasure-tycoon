@@ -106,8 +106,8 @@ $('body').on('mousedown', function (event) {
     draggedJewel.$item.detach();
     draggedJewel.shape.setCenterPosition(draggedJewel.canvas.width / 2, draggedJewel.canvas.height / 2);
     $dragHelper.css('position', 'absolute');
-    updateDragHelper();
     $('.js-mouseContainer').append($dragHelper);
+    updateDragHelper();
     redrawInventoryJewel(draggedJewel);
     dragged = false;
 });

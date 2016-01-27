@@ -194,8 +194,8 @@ $('body').on('mousedown', '.js-item', function (event) {
     $dragHelper.data('$source', $(this));
     $(this).css('opacity', '.3');
     $dragHelper.css('position', 'absolute');
-    updateDragHelper();
     $('.js-mouseContainer').append($dragHelper);
+    updateDragHelper();
     dragged = false;
     var item = $(this).data('item');
     $('.js-equipment .js-' + item.base.slot).addClass('active');
@@ -206,8 +206,8 @@ function updateDragHelper() {
     if (!$dragHelper) {
         return;
     }
-    $dragHelper.css('left', (mousePosition[0] - $dragHelper[0].width / 2) + 'px');
-    $dragHelper.css('top', (mousePosition[1] - $dragHelper[0].height / 2) + 'px');
+    $dragHelper.css('left', (mousePosition[0] - $dragHelper.width() / 2) + 'px');
+    $dragHelper.css('top', (mousePosition[1] - $dragHelper.height() / 2) + 'px');
     dragged = true;
 }
 
