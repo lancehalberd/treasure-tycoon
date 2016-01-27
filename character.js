@@ -1,4 +1,11 @@
 
+// TODO: Add unique "Sticky, Sticky Bow of Aiming and Leeching and Leeching and Aiming"
+var itemsByKey = {};
+items[0].forEach(function (item) {
+    var key = item.name.replace(/\s*/g, '').toLowerCase();
+    itemsByKey[key] = item;
+});
+
 var personFrames = 7;
 var clothes = [1, 3];
 var hair = [clothes[1] + 1, clothes[1] + 4];
