@@ -97,17 +97,20 @@ function completeArea(character) {
 var lastTime = now();
 function mainLoop() {
     var time = now();
-    var delta = time - lastTime;
+    var delta = 20;
     lastTime = time;
     if ($('.js-jewel-inventory').is(":visible")) {
         redrawInventoryJewels();
     }
     state.characters.forEach(function (character) {
-        var characterDelta = delta * character.gameSpeed / 1000;
-        character.time += characterDelta;
         if (character.area) {
-            adventureLoop(character, characterDelta);
+            for (var i = 0; i < character.gameSpeed && character.area; i++) {
+                character.time += delta / 1000;
+                adventureLoop(character, delta / 1000);
+            }
         } else {
+            var characterDelta = delta * character.gameSpeed / 1000;
+            character.time += characterDelta;
             infoLoop(character, characterDelta);
         }
     });
