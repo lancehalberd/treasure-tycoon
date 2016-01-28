@@ -21,6 +21,30 @@ var Random = {
         }
         console.log("Warning @ Random.element: "+ collection + " is neither Array or Object");
         return null;
+    },
+
+    /**
+     * Shuffles an array.
+     *
+     * Knuth algorithm found at:
+     * http://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+     *
+     * @param {Array} array  The array of elements to shuffle
+     */
+    'shuffle': function (array) {
+        array = array.concat();
+        var currentIndex = array.length, temporaryValue, randomIndex;
+        // While there remain elements to shuffle...
+        while (0 !== currentIndex) {
+          // Pick a remaining element...
+          randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex -= 1;
+          // And swap it with the current element.
+          temporaryValue = array[currentIndex];
+          array[currentIndex] = array[randomIndex];
+          array[randomIndex] = temporaryValue;
+        }
+        return array;
     }
 };
 
@@ -109,6 +133,26 @@ function collision($div1, $div2) {
     return !(B < t || T > b || R < l || L > r);
 }
 
+function $getClosestElement($element, $elements, threshold) {
+    var closestElement = null;
+    var closestDistanceSquared = threshold * threshold;
+    var center = rectangleCenter(getElementRectangle($element));
+    $elements.each(function (index, element) {
+        var elementCenter = rectangleCenter(getElementRectangle(element));
+        var d2 = distanceSquared(center, elementCenter);
+        if (d2 <= closestDistanceSquared) {
+            closestDistanceSquared = d2;
+            closestElement = element;
+        }
+    });
+    return closestElement ? $(closestElement) : null;
+}
+
+function getElementRectangle(element) {
+    var $element = $(element);
+    return rectangle($element.offset().left, $element.offset().top, $element.outerWidth(true), $element.outerHeight(true));
+}
+
 /**
  * @param {Number} width
  * @param {Number} height
@@ -136,4 +180,7 @@ function constrain(value, min, max) {
 
 function rectangle(left, top, width, height) {
     return {left: left, top: top, width: width, height: height};
+}
+function rectangleCenter(rectangle) {
+    return [rectangle.left + rectangle.width / 2, rectangle.top + rectangle.height / 2];
 }

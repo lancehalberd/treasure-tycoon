@@ -260,6 +260,7 @@ $('body').on('click', '.js-retire', function (event) {
 });
 
 $('.js-showAdventurePanel').on('click', function (event) {
+    showEquipment();
     $('.js-infoPanel').hide();
     $('.js-adventurePanel').show();
 });
@@ -281,6 +282,8 @@ function showJewels() {
     $('.js-inventory').hide();
     $('.js-jewelBoard').show();
     $('.js-jewel-inventory').show();
+    $('.js-infoPanel').hide();
+    $('.js-jewelPanel').show();
 }
 function showEquipment() {
     $('.js-equipment').show();
