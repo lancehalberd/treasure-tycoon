@@ -219,7 +219,7 @@ function enemySheet(key) {
 function initalizeMonsters() {
     addMonster('caterpillar', {
         'name': 'Caterpillar',
-        'health': [9, 10, 4, 4.5],
+        'health': [9, 10, 10, 11],
         'range': 1,
         'minDamage': [3, 3, 1, 1],
         'maxDamage': [4, 4, 1, 1],
@@ -230,8 +230,8 @@ function initalizeMonsters() {
         'maxMagicDamage': 0,
         'attackSpeed': 1,
         'speed': 50,
-        'accuracy': [3, 3, 1.5, 2],
-        'evasion': [1, 1, .8, 1],
+        'accuracy': [3, 3, 2, 2],
+        'evasion': [1, 1, 1, 1],
         'block': [0, 0, .5, 1],
         'magicBlock': [4, 4, 1.8, 2],
         'armor': [1, 1, .5, 1],
@@ -241,7 +241,7 @@ function initalizeMonsters() {
     });
     addMonster('gnome', {
         'name': 'Gnome',
-        'health': [8, 8, 4, 5],
+        'health': [8, 8, 10, 12],
         'range': 1.5,
         'minDamage': [5, 5, 1, 1.2],
         'maxDamage': [5, 5, 1.2, 1.5],
@@ -253,8 +253,8 @@ function initalizeMonsters() {
         'fpsMultiplier': 1.5,
         'attackSpeed': 1.5,
         'speed': 30,
-        'accuracy': [2, 3, 1, 1.5],
-        'evasion': [0, 0, .5, 1],
+        'accuracy': [2, 3, 1.5, 1.5],
+        'evasion': [0, 0, 1, 1],
         'block': [0, 0, .8, 1.5],
         'magicBlock': [0, 0, 0, 0],
         'armor': [3, 3, 1, 1.5],
@@ -264,7 +264,7 @@ function initalizeMonsters() {
     });
     addMonster('skeleton', {
         'name': 'Skeleton',
-        'health': [9, 10, 7, 7.5],
+        'health': [9, 10, 18, 20],
         'range': .5,
         'minDamage': [2, 2, .5, 1],
         'maxDamage': [2, 2, .75, 1.5],
@@ -275,8 +275,8 @@ function initalizeMonsters() {
         'maxMagicDamage': 0,
         'attackSpeed': [2, 2, .05, .05],
         'speed': 200,
-        'accuracy': [3, 4, 1.5, 2.5],
-        'evasion': [0, 0, .5, 1],
+        'accuracy': [3, 4, 2.5, 2.5],
+        'evasion': [0, 0, 1, 1],
         'block': 0,
         'magicBlock': 0,
         'armor': [0, 0, .5, .8],
@@ -286,7 +286,7 @@ function initalizeMonsters() {
     });
     addMonster('butterfly', {
         'name': 'Butterfly',
-        'health': [12, 15, 6, 7],
+        'health': [12, 15, 14, 16],
         'range': 5,
         'minDamage': [2, 3, 1, 1.5],
         'maxDamage': [3, 4, 1.5, 2],
@@ -297,8 +297,8 @@ function initalizeMonsters() {
         'critAccuracy': 1.5,
         'attackSpeed': [.5, .5, .02, .02],
         'speed': 60,
-        'accuracy': [1, 2, 1, 2],
-        'evasion': [0, 0, .5, 1],
+        'accuracy': [1, 2, 2, 2],
+        'evasion': [0, 0, 1, 1],
         'block': 0,
         'magicBlock': [1, 2, 1, 1.5],
         'armor': [0, 0, .5, .8],
@@ -308,7 +308,7 @@ function initalizeMonsters() {
     });
     addMonster('giantSkeleton', {
         'name': 'Skelegiant',
-        'health': [15, 20, 10, 11],
+        'health': [15, 20, 20, 22],
         'range': 1,
         'minDamage': [2, 3, 1, 2],
         'maxDamage': [3, 4, 1.5, 3],
@@ -319,8 +319,8 @@ function initalizeMonsters() {
         'critAccuracy': 1,
         'attackSpeed': 1,
         'speed': 100,
-        'accuracy': [0, 0, 1.5, 2.5],
-        'evasion': [0, 0, .5, .75],
+        'accuracy': [0, 0, 2.5, 2.5],
+        'evasion': [0, 0, .75, .75],
         'block': 3,
         'magicBlock': 0,
         'armor': [0, 0, .5, .8],
@@ -330,7 +330,7 @@ function initalizeMonsters() {
     });
     addMonster('dragon', {
         'name': 'Dragon',
-        'health': [14, 16, 9, 12],
+        'health': [14, 16, 18, 22],
         'range': 3,
         'minDamage': [1, 1, 1, 1],
         'maxDamage': [2, 2, 1.5, 2],
@@ -341,8 +341,8 @@ function initalizeMonsters() {
         'critAccuracy': 1,
         'attackSpeed': [1, 1, .05, .05],
         'speed': 200, //controls speed of animation, not forward movement
-        'accuracy': [1, 2, 1, 2],
-        'evasion': [0, 0, 1, 2],
+        'accuracy': [1, 2, 2, 2],
+        'evasion': [0, 0, 2, 2],
         'block': [1, 1, 1, 2],
         'magicBlock': [1, 1, 1, 2],
         'armor': [0, 0, .75, 1],
