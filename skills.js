@@ -25,7 +25,7 @@ var abilities = {
 
     'healing': {'name': 'Healing', 'next': ['raiseDead'], 'bonuses': {'+healthRegen': 2}},
 
-    'raiseDead': {'name': 'Raise Dead', 'next': ['archer'], 'attacks': [{'type': 'monster',  'tags': ['skeleton'], 'key': 'skeleton', 'stats': {'limit': 1, 'cooldown': 10, 'healthBonus': .5,}}]},
+    'raiseDead': {'name': 'Raise Dead', 'next': ['archer'], 'attacks': [{'type': 'monster',  'tags': ['skeleton'], 'key': 'skeleton', 'stats': {'limit': 1, 'cooldown': 10, 'healthBonus': .5}}], 'helpText': 'Raise a skeleton to fight for you.'},
 };
 
 function unlockAbility(character, key) {

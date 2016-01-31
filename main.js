@@ -83,7 +83,6 @@ function completeArea(character) {
     // If the character beat the last adventure open to them, unlock the next one
     if (!character.levelsCompleted[character.currentLevelIndex]) {
         character.levelsCompleted[character.currentLevelIndex] = true;
-        gain('AP', character.area.level);
         $adventureButton.after($nextLevelButton(character.area));
     }
     for (var itemLevel = $('.js-levelSelect').find('option').length + 1; itemLevel <= character.area.level + 1 && itemLevel <= items.length; itemLevel++) {

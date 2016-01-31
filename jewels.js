@@ -120,6 +120,7 @@ var jewelDefinitions = [
 var jewelTierDefinitions = [
     [0], [1.1, .1], [1.8, .2], [2.6, .3], [3.5, .4], [4.5, .5]
 ];
+var jewelTierLevels = [0, 1, 10, 20, 40, 60];
 
 var basicShapeTypes = ['triangle', 'diamond', 'trapezoid'];
 var triangleShapes = ['triangle', 'diamond', 'trapezoid', 'hexagon'];

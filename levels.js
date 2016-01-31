@@ -44,9 +44,37 @@ function $levelButton(key) {
     return $tag('button', 'js-adventure adventure', levels[key].name).data('levelIndex', key);
 }
 function $nextLevelButton(currentLevel) {
-    var levelData = currentLevel.base;
-    var key = levelData.name.replace(/\s*/g, '').toLowerCase() + (currentLevel.level + 1);
+    var levelData = copy(currentLevel.base);
+    var level = currentLevel.level + 1;
+    var key = levelData.name.replace(/\s*/g, '').toLowerCase() + level;
     if (!levels[key]) {
+        var tier = 1;
+        if (level >= jewelTierLevels[5]) {
+            tier = 5
+        } else if (level >= jewelTierLevels[4]) {
+            tier = 4
+        } else if (level >= jewelTierLevels[3]) {
+            tier = 3
+        } else if (level >= jewelTierLevels[2]) {
+            tier = 2
+        }
+        var componentBonus = (10 + tier) * (level - jewelTierLevels[tier]);
+        if (levelData.name === 'Forest') {
+            components = [[80 + componentBonus, 100 + componentBonus], [5,20], [5, 20]];
+        } else if (levelData.name === 'Cave') {
+            components = [[5,20], [5, 20], [80 + componentBonus, 100 + componentBonus]];
+        } else {
+            components = [[5,20], [80 + componentBonus, 100 + componentBonus], [5, 20]];
+        }
+        levelData.firstChest = firstChest([
+                        jewelLoot(basicShapeTypes, [tier, tier], components, false),
+                        pointLoot('AP', [level * level, level * level]),
+                        pointLoot('IP', [50 * level, 55 * level + 50]),
+                        pointLoot('MP', [Math.floor(10 * level), Math.floor(11 * level + 10)]),
+                        pointLoot('RP', [5 * level, 5.5 * level])]);
+        levelData.backupChest = backupChest([pointLoot('IP', [10 * level, 11 * level + 10]),
+                                             pointLoot('MP', [Math.floor(2 * level), Math.floor(2.2 * level + 2)]),
+                                             pointLoot('RP', [level, 1.1 * level])]);
         addLevel(levelData, currentLevel.level + 1);
     }
     return $levelButton(key);
