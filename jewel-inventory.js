@@ -176,8 +176,11 @@ $('body').on('mouseup', function (event) {
 function removeFromBoard(jewel) {
     if (!jewel.character) return;
     var jewels = jewel.character.adventurer.board.jewels;
-    jewels.splice(jewels.indexOf(jewel), 1);
-    updateAdventurer(jewel.character.adventurer);
+    var index = jewels.indexOf(jewel);
+    if (index >= 0) {
+        jewels.splice(index, 1);
+        updateAdventurer(jewel.character.adventurer);
+    }
 }
 
 function stopJewelDrag() {
@@ -325,6 +328,7 @@ function fuseJewels(jewelA, jewelB) {
 }
 function destroyJewel(jewel) {
     removeFromBoard(jewel);
+    jewel.character = null;
     jewel.$item.data('jewel', null).remove();
     jewel.$canvas.data('jewel', null).remove();
 }
