@@ -28,7 +28,7 @@ function jewelHelpText(jewel) {
     sections.push('');
     sections.push(bonusHelpText(jewel.bonuses, true));
     sections.push('');
-    points = [jewel.price + ' IP', jewel.price + ' MP'];
+    var points = [jewel.price + ' IP', jewel.price + ' MP'];
     sections.push('Sell for ' + points.join(' '));
     return sections.join('<br/>');
 }
