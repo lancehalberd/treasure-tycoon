@@ -112,6 +112,10 @@ function bonusHelpText(bonuses, implicit) {
         if (implicit) sections.push('Block: ' + bonuses['+block']);
         else sections.push(bonuses['+block'] + ' increased block');
     }
+    if (ifdefor(bonuses['+magicBlock'])) {
+        if (implicit) sections.push('Magic Block: ' + bonuses['+magicBlock']);
+        else sections.push(bonuses['+magicBlock'] + ' increased magic block');
+    }
     if (ifdefor(bonuses['+maxHealth'])) {
         sections.push('+' + bonuses['+maxHealth'] + ' health');
     }

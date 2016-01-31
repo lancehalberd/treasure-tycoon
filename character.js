@@ -60,6 +60,7 @@ function refreshStatsPanel(character) {
     $statsPanel.find('.js-armor').text(adventurer.armor);
     $statsPanel.find('.js-evasion').text(adventurer.evasion);
     $statsPanel.find('.js-block').text(adventurer.block);
+    $statsPanel.find('.js-magicBlock').text(adventurer.magicBlock);
     $statsPanel.find('.js-speed').text(adventurer.speed);
 }
 function newCharacter(job) {
