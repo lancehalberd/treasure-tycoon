@@ -60,11 +60,11 @@ function $nextLevelButton(currentLevel) {
         }
         var componentBonus = (10 + tier) * (level - jewelTierLevels[tier]);
         if (levelData.name === 'Forest') {
-            components = [[80 + componentBonus, 100 + componentBonus], [5,20], [5, 20]];
+            components = [[5,20], [80 + componentBonus, 100 + componentBonus], [5, 20]];
         } else if (levelData.name === 'Cave') {
             components = [[5,20], [5, 20], [80 + componentBonus, 100 + componentBonus]];
         } else {
-            components = [[5,20], [80 + componentBonus, 100 + componentBonus], [5, 20]];
+            components = [[80 + componentBonus, 100 + componentBonus], [5,20], [5, 20]];
         }
         levelData.firstChest = firstChest([
                         jewelLoot(basicShapeTypes, [tier, tier], components, false),
