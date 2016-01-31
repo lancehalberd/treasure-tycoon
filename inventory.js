@@ -362,6 +362,11 @@ addItem(1, {'slot': 'ring', 'type': 'ring', 'name': 'Ring', 'bonuses': {'+armor'
 
 $(document).on('keydown', function(event) {
     if (event.which == 83) { // 's'
+        if (overJewel) {
+            sellJewel(overJewel);
+            overJewel = null;
+            return;
+        }
         if (isMouseOver($('.js-inventory'))) {
             $('.js-inventory .js-item').each(function (index) {
                 if (isMouseOver($(this))) {

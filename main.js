@@ -33,7 +33,7 @@ var state = {
 // Load any graphic assets needed by the game here.
 async.mapSeries([
     'gfx/person.png', 'gfx/grass.png', 'gfx/cave.png', 'gfx/forest.png', 'gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png',
-    'gfx/chest-closed.png', 'gfx/chest-open.png'
+    'gfx/chest-closed.png', 'gfx/chest-open.png', 'gfx/treasureChest.png'
 ], loadImage, function(err, results){
     ['gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png'].forEach(function (imageKey) {
         images[imageKey + '-enchanted'] = makeTintedImage(images[imageKey], '#af0');
@@ -81,8 +81,8 @@ function makeTintedImage(image, tint) {
 function completeArea(character) {
     var $adventureButton = character.$panel.find('.js-infoMode').find('.js-adventure').last();
     // If the character beat the last adventure open to them, unlock the next one
-    if (!character.levelsCompleted[character.area.key]) {
-        character.levelsCompleted[character.area.key] = true;
+    if (!character.levelsCompleted[character.currentLevelIndex]) {
+        character.levelsCompleted[character.currentLevelIndex] = true;
         gain('AP', character.area.level);
         $adventureButton.after($nextLevelButton(character.area));
     }
@@ -249,10 +249,7 @@ function updateRetireButtons() {
 }
 
 $('body').on('click', '.js-adventure', function (event) {
-    var index = $(this).data('levelIndex');
-    var $panel = $(this).closest('.js-playerPanel');
-    var character = $panel.data('character');
-    startArea(character, levels[index]);
+    startArea($(this).closest('.js-playerPanel').data('character'), $(this).data('levelIndex'));
 });
 $('body').on('click', '.js-retire', function (event) {
     var $panel = $(this).closest('.js-playerPanel');
@@ -297,6 +294,13 @@ function showEquipment() {
 $('body').on('click', '.js-recall', function (event) {
     var $panel = $(this).closest('.js-playerPanel');
     var character = $panel.data('character');
+    // The last wave of an area is always the bonus treasure chest. In order to prevent
+    // the player from missing this chest or opening it without clearing the level,
+    // which would allow them to claim the reward again, we disable recall during
+    // this wave.
+    if (character.area && character.waveIndex >= character.area.waves.length) {
+        return;
+    }
     $panel.find('.js-repeat').prop('checked', false);
     character.replay = false;
     displayInfoMode(character);
@@ -309,5 +313,5 @@ $('body').on('click', '.js-repeat', function (event) {
 $('body').on('click', '.js-fastforward', function (event) {
     var $panel = $(this).closest('.js-playerPanel');
     var character = $panel.data('character');
-    character.gameSpeed = $(this).is(':checked') ? 3 : 1;
+    character.gameSpeed = $(this).is(':checked') ? 4 : 1;
 });

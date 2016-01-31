@@ -19,7 +19,7 @@ var allComputedStats = ['cloaking', 'dexterity', 'strength', 'intelligence', 'ma
      'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage',
      'critChance', 'critDamage', 'critAccuracy',
      'damageOnMiss', 'slowOnHit', 'healthRegen', 'healthGainOnHit'];
-var allFlooredStats = ['dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
+var allRoundedStats = ['dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
      'ip', 'xp', 'mp', 'rp', 'up',
      'evasion', 'block', 'magicBlock', 'armor', 'accuracy',
      'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage'];
@@ -33,12 +33,13 @@ function displayInfoMode(character) {
     character.$panel.find('.js-adventureMode').hide();
     var $infoPanel = character.$panel.find('.js-infoMode');
     $infoPanel.show();
-    var currentArea = character.area;
+    var currentLevelIndex = character.currentLevelIndex;
     character.area = null;
+    character.currentLevelIndex = null;
     refreshStatsPanel(character);
     character.$panel.find('.js-recall').prop('disabled', true);
     if (character.replay) {
-        startArea(character, currentArea);
+        startArea(character, currentLevelIndex);
     }
 }
 function refreshStatsPanel(character) {
@@ -101,13 +102,9 @@ function newCharacter(job) {
     } else {
         unlockAbility(character, 'healing');
     }
-    addJewelToInventory();
-    addJewelToInventory();
-    addJewelToInventory();
-    addJewelToInventory();
-    addJewelToInventory();
-    addJewelToInventory();
-    updateRetireButtons();
+    ifdefor(job.loot, [simpleJewelLoot, simpleJewelLoot, simpleJewelLoot]).forEach(function (loot) {
+        loot.generateLootDrop().gainLoot();
+    });
 }
 function convertShapeDataToShape(shapeData) {
     return makeShape(shapeData.p[0], shapeData.p[1], (shapeData.t % 360 + 360) % 360, shapeDefinitions[shapeData.k][0], 30);
@@ -127,6 +124,7 @@ function makeAdventurer(job, level, equipment) {
             'evasion': 1,
             'block': 1,
         },
+        'width': 64,
         'bonuses': [],
         'skillPoints': 1,
         'unlockedAbilities': {},
@@ -252,8 +250,8 @@ function updateAdventurerStats(adventurer) {
     allComputedStats.forEach(function (stat) {
         adventurer[stat] = getStat(adventurer, stat);
     });
-    allFlooredStats.forEach(function (stat) {
-        adventurer[stat] = Math.floor(adventurer[stat]);
+    allRoundedStats.forEach(function (stat) {
+        adventurer[stat] = Math.round(adventurer[stat]);
     });
     allFixed2Stats.forEach(function (stat) {
         adventurer[stat] = adventurer[stat].toFixed(2);
@@ -327,7 +325,7 @@ function gainXP(adventurer, amount) {
         updateSkillTree(adventurer.character);
     }
 }
-function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonus, startingEquipment, startingBoard) {
+function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonus, startingEquipment, startingBoard, loot) {
     var key = name.replace(/\s*/g, '').toLowerCase();
     characterClasses[key] = {
         'key': key,
@@ -336,7 +334,8 @@ function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonu
         'strengthBonus': strengthBonus,
         'intelligenceBonus': intelligenceBonus,
         'startingEquipment': ifdefor(startingEquipment, {'weapon': itemsByKey.dagger}),
-        'startingBoard': ifdefor(startingBoard, squareBoard)
+        'startingBoard': ifdefor(startingBoard, squareBoard),
+        'loot': loot
     };
 }
 
@@ -365,9 +364,12 @@ var squareBoard = {
 var characterClasses = {};
 addCharacterClass('Fool', 0, 0, 0);
 
-addCharacterClass('Archer', 2, 1, 0, {'weapon': itemsByKey.bow}, triangleBoard);
-addCharacterClass('Black Belt', 0, 2, 1, {'weapon': itemsByKey.dagger}, diamondBoard);
-addCharacterClass('Priest', 1, 0, 2, {'weapon': itemsByKey.wand}, hexBoard);
+addCharacterClass('Archer', 2, 1, 0, {'weapon': itemsByKey.bow}, triangleBoard,
+    [jewelLoot(['trapezoid'], [1, 1], [[5,20], [80, 100], [5, 20]], false), simpleJewelLoot, simpleJewelLoot]);
+addCharacterClass('Black Belt', 0, 2, 1, {'weapon': itemsByKey.dagger}, diamondBoard,
+    [jewelLoot(['trapezoid'], [1, 1], [[80, 100], [5,20], [5, 20]], false), simpleJewelLoot, simpleJewelLoot]);
+addCharacterClass('Priest', 1, 0, 2, {'weapon': itemsByKey.wand}, hexBoard,
+    [jewelLoot(['trapezoid'], [1, 1], [[5,20], [5, 20], [80, 100]], false), simpleJewelLoot, simpleJewelLoot]);
 
 addCharacterClass('Corsair', 2, 2, 1);
 addCharacterClass('Paladin', 1, 2, 2);

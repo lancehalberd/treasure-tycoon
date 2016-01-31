@@ -189,8 +189,8 @@ function updateMonster(monster) {
     allComputedStats.forEach(function (stat) {
         monster[stat] = getStat(monster, stat);
     });
-    allFlooredStats.forEach(function (stat) {
-        monster[stat] = Math.floor(monster[stat]);
+    allRoundedStats.forEach(function (stat) {
+        monster[stat] = Math.round(monster[stat]);
     });
     allFixed2Stats.forEach(function (stat) {
         monster[stat] = monster[stat].toFixed(2);
@@ -206,7 +206,7 @@ function updateMonster(monster) {
     //console.log(monster);
 }
 var monsters = {};
-function addMonsters(key, data) {
+function addMonster(key, data) {
     monsters[key] = data;
 }
 function enemySheet(key) {
@@ -217,7 +217,7 @@ function enemySheet(key) {
     }
 }
 function initalizeMonsters() {
-    addMonsters('caterpillar', {
+    addMonster('caterpillar', {
         'name': 'Caterpillar',
         'health': [9, 10, 4, 4.5],
         'range': 1,
@@ -239,7 +239,7 @@ function initalizeMonsters() {
         'source': {'image': enemySheet('gfx/caterpillar.png'), 'offset': 0, 'width': 48, 'flipped': true, frames: 4},
         'abilities': []
     });
-    addMonsters('gnome', {
+    addMonster('gnome', {
         'name': 'Gnome',
         'health': [8, 8, 4, 5],
         'range': 1.5,
@@ -262,7 +262,7 @@ function initalizeMonsters() {
         'source': {'image': enemySheet('gfx/gnome.png'), 'offset': 0, 'width': 32, 'flipped': false, frames: 4},
         'abilities': []
     });
-    addMonsters('skeleton', {
+    addMonster('skeleton', {
         'name': 'Skeleton',
         'health': [9, 10, 7, 7.5],
         'range': .5,
@@ -284,7 +284,7 @@ function initalizeMonsters() {
         'source': {'image': enemySheet('gfx/skeletonSmall.png'), 'offset': 0, 'width': 48, 'flipped': true, frames: 7},
         'abilities': []
     });
-    addMonsters('butterfly', {
+    addMonster('butterfly', {
         'name': 'Butterfly',
         'health': [12, 15, 6, 7],
         'range': 5,
@@ -306,7 +306,7 @@ function initalizeMonsters() {
         'source': {'image': enemySheet('gfx/caterpillar.png'), 'offset': 4 * 48, 'width': 48, 'flipped': true, frames: 4},
         'abilities': []
     });
-    addMonsters('giantSkeleton', {
+    addMonster('giantSkeleton', {
         'name': 'Skelegiant',
         'health': [15, 20, 10, 11],
         'range': 1,
@@ -328,7 +328,7 @@ function initalizeMonsters() {
         'source': {'image': enemySheet('gfx/skeletonGiant.png'), 'offset': 0, 'width': 48, 'flipped': true, frames: 7},
         'abilities': []
     });
-    addMonsters('dragon', {
+    addMonster('dragon', {
         'name': 'Dragon',
         'health': [14, 16, 9, 12],
         'range': 3,

@@ -1,111 +1,3 @@
-function makeJewel(tier, shapeType, components, quality) {
-    var componentsSum = 0;
-    var componentBonuses = {};
-    var jewelType = 0;
-    for (var i = 0; i < 3; i++) {
-        componentsSum += components[i];
-    }
-    var RGB = [0, 0, 0];
-    var minActiveComponent = 1;
-    var maxActiveComponent = 0;
-    var totalActiveCompontent = 0;
-    var numberOfActiveComponents = 0;
-    for (var i = 0; i < 3; i++) {
-        components[i] /= componentsSum;
-        // A compontent is not activy if it is less than 30% of the jewel.
-        if (components[i] < .3) continue;
-        numberOfActiveComponents++;
-        if (i == 0) componentBonuses['+strength'] = components[i];
-        else if (i == 1) componentBonuses['+dexterity'] = components[i];
-        else componentBonuses['+intelligence'] = components[i];
-        totalActiveCompontent += components[i];
-        minActiveComponent = Math.min(minActiveComponent, components[i]);
-        maxActiveComponent = Math.max(maxActiveComponent, components[i]);
-        jewelType += (1 << i);
-    }
-    var qualifierIndex = 3;
-    var qualifierBonus = 1;
-    if (jewelType === 7) {
-        // Diamonds quality is based on how evenly components are
-        if (maxActiveComponent - minActiveComponent <= .01) {
-            qualifierIndex = 0;
-        } else {
-            qualifierIndex = Math.min(4, Math.ceil((maxActiveComponent - minActiveComponent) / .02));
-        }
-        qualifierBonus = [3, 2, 1.5, 1, .5][qualifierIndex];
-    } else {
-        // Other jewels are based on the total % of active components
-        if (totalActiveCompontent >= .99) {
-            qualifierIndex = 0;
-        } else if (totalActiveCompontent >= .95) {
-            qualifierIndex = 1;
-        } else if (totalActiveCompontent >= .9) {
-            qualifierIndex = 2;
-        } else if (totalActiveCompontent >= .8) {
-            qualifierIndex = 3;
-        } else {
-            qualifierIndex = 4;
-        }
-        qualifierBonus = [1.2, 1.1, 1.05, 1, .9][qualifierIndex];
-    }
-    for (var i = 0; i < 3; i++) {
-        if (numberOfActiveComponents == 1) {
-            RGB[i] = 50 + Math.round(200 * components[i]);
-        } else if (numberOfActiveComponents == 2) {
-            RGB[i] = 50 + Math.round(290 * components[i]);
-        } else {
-            RGB[i] = 50 + Math.round(500 * components[i]);
-        }
-        RGB[i] = Math.min(255, Math.max(0, RGB[i] - [0, 5, 10, 20, 40][qualifierIndex]));
-    }
-    var shapeDefinition = shapeDefinitions[shapeType][0];
-    var area = shapeDefinition.area;
-    var jewel = {
-        'tier': tier,
-        'shapeType': shapeType,
-        'components': components,
-        'componentBonuses': componentBonuses,
-        'qualifierName': ['Perfect', 'Brilliant', 'Shining', '', 'Dull'][qualifierIndex],
-        'qualifierBonus': qualifierBonus,
-        'jewelType': jewelType,
-        'quality': quality,
-        'shape': makeShape(0, 0, 0, shapeDefinition).scale(30),
-        'area': area,
-        'price': Math.round(Math.pow(10, tier) * quality * quality * (5 - qualifierIndex) * area)
-    };
-    var typeIndex = 0;
-    jewel.shape.color = arrayToCssRGB(RGB);
-    jewel.canvas = createCanvas(68, 68);
-    jewel.context = jewel.canvas.getContext("2d");
-    // Jewels can be displayed in 3 different states:
-    // Drawn directly inside of the canvas for a character's jewel board.
-    // Drawn on the jewel.$canvas canvas while being dragged by the user.
-    // Drawn on the jewel.$canvas canvas while it is inside jewel.$item and
-    // being displayed in grid in the jewel-inventory panel.
-    jewel.$canvas = $(jewel.canvas);
-    jewel.$canvas.data('jewel', jewel);
-    jewel.$item = $tag('div', 'js-jewel jewel').append(jewel.canvas);
-    jewel.$item.data('jewel', jewel);
-    jewel.character = null;
-    updateJewel(jewel);
-    return jewel;
-}
-function arrayToCssRGB(array) {
-    return '#' + toHex(array[0]) + toHex(array[1]) + toHex(array[2]);
-}
-function toHex(d) {
-    return  ("0"+(Number(d).toString(16))).slice(-2).toUpperCase();
-}
-function updateJewel(jewel) {
-    var shapeDefinition = shapeDefinitions[jewel.shapeType][0];
-    var bonusMultiplier = jewel.quality * shapeDefinition.area * jewel.qualifierBonus;
-    jewel.bonuses = copy(jewel.componentBonuses);
-    $.each(jewel.bonuses, function (key, value) {
-        jewel.bonuses[key] = value * bonusMultiplier;
-    });
-    jewel.$item.attr('helpText', jewelHelpText(jewel));
-    jewel.shape.setCenterPosition(jewel.canvas.width / 2, jewel.canvas.height / 2);
-}
 function redrawInventoryJewel(jewel) {
     //centerShapesInRectangle([jewel.shape], rectangle(0, 0, jewel.canvas.width, jewel.canvas.height));
     jewel.context.clearRect(0, 0, jewel.canvas.width, jewel.canvas.height);
@@ -140,41 +32,11 @@ function jewelHelpText(jewel) {
     sections.push('Sell for ' + points.join(' '));
     return sections.join('<br/>');
 }
-var jewelDefinitions = [
-    {'name': 'Onyx'},
-    {'name': 'Ruby'},
-    {'name': 'Emerald'},
-    {'name': 'Topaz'},
-    {'name': 'Saphire'},
-    {'name': 'Amethyst'},
-    {'name': 'Aquamarine'},
-    {'name': 'Diamond'}
-];
-var jewelTierDefinitions = [
-    [0], [1.1, .1], [1.8, .2], [2.6, .3], [3.5, .4], [4.5, .5]
-];
-var jewelTypes = [];
-
-var basicShapeTypes = ['triangle', 'diamond', 'trapezoid'];
-var triangleShapes = ['triangle', 'diamond', 'trapezoid', 'hexagon'];
-function jewelDrop(shapes, tiers, components) {
-    return {'shapes': shapes, 'tiers': tiers, 'components': components};
-}
-function createJewelFromJewelDrop(jewelDrop) {
-    var shapeType = Random.element(jewelDrop.shapes);
-    var tier = Random.range(jewelDrop.tiers[0], jewelDrop.tiers[1]);
-    var tierDefinition = jewelTierDefinitions[tier]
-    var quality = tierDefinition[0] - tierDefinition[1] + Math.random() * 2 * tierDefinition[1];
-    var components = jewelDrop.components.map(function (component) { return Random.range(component[0], component[1]);});
-    return makeJewel(tier, shapeType, Random.shuffle(components), quality);
-}
-
-var simpleJewelDrop = jewelDrop(basicShapeTypes, [1, 1], [[80, 100],[5,20],[5, 20]]);
-//simpleJewelDrop = jewelDrop(basicShapeTypes, [1, 1], [[80, 100],[0,1],[0, 1]]);
-//simpleJewelDrop = jewelDrop(basicShapeTypes, [1, 5], [[1, 100],[1,100],[1, 100]]);
-function addJewelToInventory() {
-    var jewel = createJewelFromJewelDrop(simpleJewelDrop);
-    $('.js-jewel-inventory').prepend(jewel.$item);
+function sellJewel(jewel) {
+    // unequip and deletes the jewel.
+    destroyJewel(jewel);
+    gain('IP', jewel.price);
+    gain('MP', jewel.price);
 }
 
 var overVertex = null;
@@ -339,6 +201,12 @@ function stopJewelDrag() {
         $dragHelper = null;
         return;
     }
+    if (collision(draggedJewel.$canvas, $('.js-sellItem'))) {
+        sellJewel(draggedJewel);
+        draggedJewel = null;
+        $dragHelper = null;
+        return;
+    }
     draggedJewel.character = null;
     // Drop the jewel on a skill board if it is over one.
     $('.js-skillCanvas').each(function (index, element) {
@@ -456,6 +324,7 @@ function fuseJewels(jewelA, jewelB) {
     updateJewelCraftingOptions();
 }
 function destroyJewel(jewel) {
+    removeFromBoard(jewel);
     jewel.$item.data('jewel', null).remove();
     jewel.$canvas.data('jewel', null).remove();
 }
