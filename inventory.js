@@ -314,9 +314,7 @@ var accessorySlots = ['back', 'ring'];
 var items = [
     [
         {'slot': 'weapon', 'type': 'axe',  'name': 'Axe', 'bonuses': {'+minDamage': 3, '+maxDamage': 6, '+range': 1.5, '+attackSpeed': 1.5, '+critChance': .05 }, 'icon': 'axe'},
-        {'slot': 'weapon', 'type': 'sword', 'name': 'Dagger', 'bonuses': {'+minDamage': 2, '+maxDamage': 4, '+range': 1, '+attackSpeed': 2, '+critChance': .06}, 'icon': 'sword'},
         {'slot': 'weapon', 'type': 'bow',  'name': 'Bow', 'bonuses': {'+minDamage': 2, '+maxDamage': 4, '+range': 10, '+attackSpeed': 1}, 'icon': 'bow', '+critChance': .05},
-        {'slot': 'weapon', 'type': 'wand',  'name': 'Wand', 'bonuses': {'+minDamage': 0, '+maxDamage': 0, '+minMagicDamage': 2, '+maxMagicDamage': 3, '+range': 6, '+attackSpeed': 1.5, '+critChance': .05}, 'icon': 'wand'},
         {'slot': 'offhand', 'type': 'shield',  'name': 'Small Shield', 'bonuses': {'+block': 2, '+armor': 2}, 'icon': 'shield'},
         {'slot': 'feet', 'type': 'boots',  'name': 'Steel Boots', 'bonuses': {'+speed': -50, '+armor': 1, '+block': 2}, 'offset': 8, icon: 'boots'},
         {'slot': 'head', 'type': 'helmet',  'name': 'Ribbon', 'bonuses': {'+evasion': 1}, icon: 'hat'},

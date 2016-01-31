@@ -366,9 +366,9 @@ addCharacterClass('Fool', 0, 0, 0);
 
 addCharacterClass('Archer', 2, 1, 0, {'weapon': itemsByKey.bow}, triangleBoard,
     [jewelLoot(['trapezoid'], [1, 1], [[5,20], [80, 100], [5, 20]], false), simpleJewelLoot, simpleJewelLoot]);
-addCharacterClass('Black Belt', 0, 2, 1, {'weapon': itemsByKey.dagger}, diamondBoard,
+addCharacterClass('Black Belt', 0, 2, 1, {'weapon': itemsByKey.rock}, diamondBoard,
     [jewelLoot(['trapezoid'], [1, 1], [[80, 100], [5,20], [5, 20]], false), simpleJewelLoot, simpleJewelLoot]);
-addCharacterClass('Priest', 1, 0, 2, {'weapon': itemsByKey.wand}, hexBoard,
+addCharacterClass('Priest', 1, 0, 2, {'weapon': itemsByKey.stick}, hexBoard,
     [jewelLoot(['trapezoid'], [1, 1], [[5,20], [5, 20], [80, 100]], false), simpleJewelLoot, simpleJewelLoot]);
 
 addCharacterClass('Corsair', 2, 2, 1);
