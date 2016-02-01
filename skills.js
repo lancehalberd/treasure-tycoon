@@ -70,7 +70,7 @@ function updateSkillTree(character) {
     character.$panel.find('.js-skill').toggleClass('disabled', (character.adventurer.skillPoints <= 0));
 }
 function abilityHelpText(ability) {
-    var sections = [];
+    var sections = [ability.name, ''];
     if (ifdefor(ability.helpText)) {
         sections.push(ability.helpText);
     }

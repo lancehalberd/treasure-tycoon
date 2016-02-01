@@ -90,6 +90,16 @@ function makeJewel(tier, shapeType, components, quality) {
     updateJewel(jewel);
     return jewel;
 }
+function makeFixedJewel(shape, character, abilityKey) {
+    shape.color = '#333333';
+    return {
+        'shape': shape,
+        'fixed': true,
+        'character': character,
+        'abilityKey': abilityKey,
+        'helpText': abilityHelpText(abilities[abilityKey])
+    };
+}
 function arrayToCssRGB(array) {
     return '#' + toHex(array[0]) + toHex(array[1]) + toHex(array[2]);
 }
@@ -103,7 +113,7 @@ function updateJewel(jewel) {
     $.each(jewel.bonuses, function (key, value) {
         jewel.bonuses[key] = value * bonusMultiplier;
     });
-    jewel.$item.attr('helpText', jewelHelpText(jewel));
+    jewel.helpText = jewelHelpText(jewel);
     jewel.shape.setCenterPosition(jewel.canvas.width / 2, jewel.canvas.height / 2);
 }
 

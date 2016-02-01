@@ -33,6 +33,7 @@ function jewelHelpText(jewel) {
     return sections.join('<br/>');
 }
 function sellJewel(jewel) {
+    if (jewel.fixed) return;
     // unequip and deletes the jewel.
     destroyJewel(jewel);
     gain('IP', jewel.price);
@@ -47,7 +48,7 @@ $('body').on('mousedown', function (event) {
         stopJewelDrag();
         return;
     }
-    if (!overJewel) {
+    if (!overJewel || overJewel.fixed) {
         return;
     }
     draggedJewel = overJewel;
@@ -97,6 +98,21 @@ $('body').on('mousemove', '.js-skillCanvas', function (event) {
     var character = $(this).closest('.js-playerPanel').data('character');
     var relativePosition = relativeMousePosition(this);
     var jewels = character.adventurer.board.jewels;
+    for (var i = 0; i < jewels.length; i++) {
+        var jewel = jewels[i];
+        var points = jewel.shape.points;
+        for (var j = 0; j < points.length; j++) {
+            if (distanceSquared(points[j], relativePosition) < 25) {
+                overJewel = jewel;
+                overVertex = points[j].concat();
+                return;
+            }
+        }
+        if (isPointInPoints(relativePosition, points)) {
+            overJewel = jewel;
+        }
+    }
+    var jewels = character.adventurer.board.fixed;
     for (var i = 0; i < jewels.length; i++) {
         var jewel = jewels[i];
         var points = jewel.shape.points;
@@ -367,7 +383,7 @@ function splitJewel(jewel) {
     updateJewelCraftingOptions();
 }
 function snapToBoard(shape, board) {
-    var otherShapes = board.fixed.concat(board.jewels.map(function (jewel) { return jewel.shape;}));
+    var otherShapes = board.fixed.map(function (jewel) { return jewel.shape;}).concat(board.jewels.map(function (jewel) { return jewel.shape;}));
     var vectors = [];
     var checkedPoints = shape.points;
     var otherPoints = allPoints(otherShapes);

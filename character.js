@@ -96,12 +96,10 @@ function newCharacter(job) {
     $newPlayerPanel.data('character', character);
     $newPlayerPanel.find('.js-map').append($levelButton('forest1')).append($levelButton('cave1')).append($levelButton('field1'));
     displayInfoMode(character);
+    var abilityKey = ifdefor(abilities[job.key]) ? job.key : 'healing';
+    character.adventurer.abilities.push(abilities[abilityKey]);
+    character.adventurer.board.fixed[0] = makeFixedJewel(character.adventurer.board.fixed[0], character, abilityKey);
     updateAdventurer(character.adventurer);
-    if (ifdefor(abilities[job.key])) {
-        unlockAbility(character, job.key);
-    } else {
-        unlockAbility(character, 'healing');
-    }
     ifdefor(job.loot, [simpleJewelLoot, simpleJewelLoot, simpleJewelLoot]).forEach(function (loot) {
         loot.generateLootDrop().gainLoot();
     });
