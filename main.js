@@ -59,7 +59,7 @@ async.mapSeries([
     var testShape = makeShape(0, 0, 0, shapeDefinitions.triangle[0]).scale(30);
     var jewelButtonCanvas = $('.js-jewelButtonCanvas')[0];
     centerShapesInRectangle([testShape], rectangle(0, 0, jewelButtonCanvas.width, jewelButtonCanvas.height));
-    drawJewel(jewelButtonCanvas.getContext('2d'), testShape, [0, 0]);
+    drawJewel(jewelButtonCanvas.getContext('2d'), testShape, [0, 0], 'black');
 });
 function makeTintedImage(image, tint) {
     var tintCanvas = createCanvas(image.width, image.height);
@@ -180,7 +180,7 @@ $('.js-mouseContainer').on('mouseover mousemove', '.js-adventureMode .js-canvas'
     updateToolTip(x, y, $popup);
     $('.js-mouseContainer').append($popup);
 });
-$('.js-mouseContainer').on('mouseover mousemove', '.js-skillCanvas', checkToShowJewelToolTip);
+$('.js-mouseContainer').on('mouseover mousemove', checkToShowJewelToolTip);
 function checkToShowJewelToolTip() {
     var jewel = draggedJewel || overJewel;
     if (!jewel) {
@@ -194,8 +194,9 @@ function checkToShowJewelToolTip() {
         }
     }
     //console.log([event.pageX,event.pageY]);
-    $popup = $tag('div', 'toolTip js-toolTip', jewel.$item.attr('helptext'));
+    $popup = $tag('div', 'toolTip js-toolTip', jewel.helpText);
     $popup.data('jewel', jewel);
+    $popupTarget = null;
     updateToolTip(mousePosition[0], mousePosition[1], $popup);
     $('.js-mouseContainer').append($popup);
 }

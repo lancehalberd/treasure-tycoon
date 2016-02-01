@@ -92,3 +92,56 @@ var simpleJewelLoot = jewelLoot(basicShapeTypes, [1, 1], [[80, 100], [5,20], [5,
 var simpleRubyLoot = jewelLoot(basicShapeTypes, [1, 1], [[80, 100], [5,20], [5, 20]], false);
 var simpleEmeraldLoot = jewelLoot(basicShapeTypes, [1, 1], [[5, 20], [80,100], [5, 20]], false);
 var simpleSaphireLoot = jewelLoot(basicShapeTypes, [1, 1], [[5, 20], [5,20], [80, 100]], false);
+
+
+function firstChest(loot) {
+    return treasureChest(loot, closedChestSource, openChestSource);
+}
+function backupChest(loot) {
+    return treasureChest(loot, openChestSource, openChestSource);
+}
+var closedChestSource, openChestSource; // initialized in initializeLevels
+function treasureChest(loot, closedImage, openImage) {
+    var self = {
+        'x': 0,
+        'type': 'chest',
+        'width': 64,
+        'loot': loot,
+        'closedImage': closedImage,
+        'openImage': openImage,
+        'open': false,
+        'update': function (character) {
+            if (!self.open && character.adventurer.x + character.adventurer.width >= self.x) {
+                if (character.adventurer.stunned) {
+                    character.adventurer.x = self.x - character.adventurer.width;
+                } else {
+                    character.adventurer.stunned = character.time + .5;
+                    self.open = true;
+                    // the loot array is an array of objects that can generate
+                    // specific loot drops. Iterate over each one, generate a
+                    // drop and then give the loot to the player and
+                    // display it on the screen.
+                    var thetaRange = Math.min(2 * Math.PI / 3, (loot.length - 1) * Math.PI / 6);
+                    var theta = (Math.PI - thetaRange) / 2;
+                    var delay = 0;
+                    self.loot.forEach(function (loot) {
+                        var drop = loot.generateLootDrop();
+                        drop.gainLoot();
+                        var vx =  Math.cos(theta);
+                        var vy = -Math.sin(theta);
+                        drop.addTreasurePopup(character, self.x + 32 + vx * 40, 240 - 80 + vy * 40, vx, vy, delay += 5);
+                        theta += thetaRange / Math.max(1, self.loot.length - 1);
+                    });
+                }
+            }
+        },
+        'draw': function (context, x, y) {
+            var frameOffset = self.open ? 64 : 0;
+            context.drawImage(images['gfx/treasureChest.png'], frameOffset, 0, 64, 64, x, y, 64, 64);
+        },
+        'clone': function() {
+            return treasureChest(copy(loot), closedImage, openImage);
+        }
+    };
+    return self;
+}

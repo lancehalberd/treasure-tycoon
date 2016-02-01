@@ -34,7 +34,7 @@ var monsterSuffixes = [
     ]
 ];
 
-function makeMonster(monsterData, level) {
+function makeMonster(monsterData, level, extraBonuses) {
     var monster = {
         'level': level,
         'slow': 0,
@@ -47,10 +47,12 @@ function makeMonster(monsterData, level) {
             'rp': 0,
             'up': 0,
             'xp': level * 2,
+            'abilities': []
         },
         'bonuses': [],
         'prefixes': [],
-        'suffixes': []
+        'suffixes': [],
+        'abilities': []
     };
     var baseMonster;
     if (typeof(monsterData) == 'string') {
@@ -58,23 +60,17 @@ function makeMonster(monsterData, level) {
     } else if (typeof(monsterData) == 'object') {
         baseMonster = monsters[monsterData.key];
         if (monsterData.bonuses) {
-            monster.bonuses = monsterData.bonuses;
+            extraBonuses = monsterData.bonuses;
         }
     }
+    monster.extraBonuses = ifdefor(extraBonuses, {});
     $.each(baseMonster, function (stat, value) {
-        if (stat == 'abilities') {
-            monster[stat] = value;
-            monster.base[stat] = value;
-            return;
-        }
-        if (Array.isArray(value)) {
-            monster[stat] = value;
-            monster.base[stat] = Random.range(Math.floor(value[0] + (level - 1) * value[2]), Math.ceil(value[1] + (level - 1) * value[2]));
-        } else {
-            monster[stat] = value;
-            monster.base[stat] = value;
-        }
+        monster[stat] = value;
+        monster.base[stat] = value;
     });
+
+    setBaseMonsterStats(monster, level);
+
     var rarity = (Math.random() < .25) ? (Math.random() * level * .6) : 0;
     if (rarity < 1) {
 
@@ -95,7 +91,7 @@ function makeMonster(monsterData, level) {
         addMonsterPrefix(monster);
         addMonsterSuffix(monster);
     }
-    monster.base.maxHealth = monster.base.health;
+    monster.base.health = monster.base.maxHealth;
     updateMonster(monster);
     if (monster.ip > 1) {
         monster.mp = Random.range(0, monster.ip - 1);
@@ -136,7 +132,7 @@ function matchingMonsterAffixes(list, monster, alreadyUsed) {
 }
 function updateMonster(monster) {
     // Clear the character's bonuses and graphics.
-    monster.bonuses = [];
+    monster.bonuses = [monster.implicitBonuses, monster.extraBonuses];
     monster.attacks = [];
     var enchantments = monster.prefixes.length + monster.suffixes.length;
     if (enchantments > 2) {
@@ -192,9 +188,6 @@ function updateMonster(monster) {
     allRoundedStats.forEach(function (stat) {
         monster[stat] = Math.round(monster[stat]);
     });
-    allFixed2Stats.forEach(function (stat) {
-        monster[stat] = monster[stat].toFixed(2);
-    });
     monster.health = monster.maxHealth;
     monster.maxDamage = Math.max(monster.minDamage, monster.maxDamage);
     monster.minMagicDamage = Math.max(monster.minMagicDamage, monster.maxMagicDamage);
@@ -216,139 +209,67 @@ function enemySheet(key) {
         'imbued': images[key + '-imbued'],
     }
 }
+function setBaseMonsterStats(monster, level) {
+    var growth = level - 1;
+    // Health scales linearly to level 10, then 10% a level.
+    monster.base.maxHealth = (growth <= 10) ? (10 + 20 * growth) : 200 * Math.pow(1.1, growth - 10);
+    monster.base.range = 1;
+    monster.base.minDamage = Math.round(.9 * (5 + 10 * growth));
+    monster.base.maxDamage = Math.round(1.1 * (5 + 10 * growth));
+    monster.base.minMagicDamage = Math.round(.9 * (2 + 4 * growth));
+    monster.base.maxMagicDamage = Math.round(1.1 * (2 + 4 * growth));
+    monster.base.critChance = .05;
+    monster.base.critDamage = .5;
+    monster.base.critAccuracy = 1;
+    monster.base.attackSpeed = 1 + .05 * growth;
+    monster.base.speed = 100;
+    monster.base.accuracy = 3 + 3 * growth;
+    monster.base.evasion = growth * .5;
+    monster.base.block = 2 * growth;
+    monster.base.magicBlock = growth;
+    monster.base.armor = 1 + 2 * growth;
+    monster.base.magicResist = .001 * growth;
+    monster.base.strength = 5 * growth;
+    monster.base.intelligence = 5 * growth;
+    monster.base.dexterity = 5 * growth;
+}
 function initalizeMonsters() {
+    var caterpillarSource = {'image': enemySheet('gfx/caterpillar.png'), 'offset': 0, 'width': 48, 'flipped': true, frames: 4};
+    var gnomeSource = {'image': enemySheet('gfx/gnome.png'), 'offset': 0, 'width': 32, 'flipped': false, frames: 4};
+    var skeletonSource = {'image': enemySheet('gfx/skeletonSmall.png'), 'offset': 0, 'width': 48, 'flipped': true, frames: 7};
+    var butterflySource = {'image': enemySheet('gfx/caterpillar.png'), 'offset': 4 * 48, 'width': 48, 'flipped': true, frames: 4};
+    var skeletonGiantSource = {'image': enemySheet('gfx/skeletonGiant.png'), 'offset': 0, 'width': 48, 'flipped': true, frames: 7};
+    var dragonSource = {'image': enemySheet('gfx/dragonEastern.png'), 'offset': 0, 'width': 48, 'flipped': false, frames: 5};
     addMonster('caterpillar', {
-        'name': 'Caterpillar',
-        'health': [9, 10, 11],
-        'range': 1,
-        'minDamage': [3, 3, 3],
-        'maxDamage': [4, 4, 3],
-        'critChance': 0,
-        'critDamage': .5,
-        'critAccuracy': 1,
-        'minMagicDamage': 0,
-        'maxMagicDamage': 0,
-        'attackSpeed': 1,
-        'speed': 50,
-        'accuracy': [3, 3, 2],
-        'evasion': [1, 1, 1],
-        'block': [0, 0, 1],
-        'magicBlock': [4, 4, 2],
-        'armor': [1, 1, 1],
-        'magicResist': .5,
-        'source': {'image': enemySheet('gfx/caterpillar.png'), 'offset': 0, 'width': 48, 'flipped': true, frames: 4},
-        'abilities': []
+        'name': 'Caterpillar', 'source': caterpillarSource,
+        'implicitBonuses': {'*magicDamage': 0,
+                            '*block': .5, '+magicBlock': 2, '*magicBlock': 2, '+magicResist': .5,
+                            '*speed': .5}
     });
-    addMonster('gnome', {
-        'name': 'Gnome',
-        'health': [8, 8, 12],
-        'range': 1.5,
-        'minDamage': [5, 5, 3],
-        'maxDamage': [5, 5, 3.1],
-        'minMagicDamage': [3, 3, 1.5],
-        'maxMagicDamage': [3, 3, 2],
-        'critChance': 0,
-        'critDamage': .5,
-        'critAccuracy': 1,
-        'fpsMultiplier': 1.5,
-        'attackSpeed': 1.5,
-        'speed': 30,
-        'accuracy': [2, 3, 1.5],
-        'evasion': [0, 0, 1],
-        'block': [0, 0, 1.5],
-        'magicBlock': [0, 0, 0],
-        'armor': [3, 3, 1.5],
-        'magicResist': 0,
-        'source': {'image': enemySheet('gfx/gnome.png'), 'offset': 0, 'width': 32, 'flipped': false, frames: 4},
-        'abilities': []
+    addMonster('gnome', {'name': 'Gnome', 'source': gnomeSource, 'fpsMultiplier': 1.5,
+        'implicitBonuses': {'+range': .5, '*attackSpeed': 1.5, '+magicDamage': 2,
+                            '*block': .5, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
+                            '*speed': .3}
     });
-    addMonster('skeleton', {
-        'name': 'Skeleton',
-        'health': [9, 10, 20],
-        'range': .5,
-        'minDamage': [2, 2, 2],
-        'maxDamage': [2, 2, 2],
-        'critChance': .05,
-        'critDamage': .5,
-        'critAccuracy': 1,
-        'minMagicDamage': 0,
-        'maxMagicDamage': 0,
-        'attackSpeed': [2, 2, .05],
-        'speed': 200,
-        'accuracy': [3, 4, 2.5],
-        'evasion': [0, 0, 1, 1],
-        'block': 0,
-        'magicBlock': 0,
-        'armor': [0, 0, .8],
-        'magicResist': 0,
-        'source': {'image': enemySheet('gfx/skeletonSmall.png'), 'offset': 0, 'width': 48, 'flipped': true, frames: 7},
-        'abilities': []
+    addMonster('skeleton', {'name': 'Skeleton', 'source': skeletonSource,
+        // Fast to counter ranged heroes, low range+damage + fast attacks to be weak to armored heroes.
+        'implicitBonuses': {'+range': -.5, '*minDamage': .4, '*maxDamage': .4, '*attackSpeed': 2, '*magicDamage': 0,
+                            '*block': 0, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
+                            '*speed': 2}
     });
-    addMonster('butterfly', {
-        'name': 'Butterfly',
-        'health': [12, 15, 14],
-        'range': 5,
-        'minDamage': [2, 3, 2.5],
-        'maxDamage': [3, 4, 2.5],
-        'minMagicDamage': [1, 1, 1.5],
-        'maxMagicDamage': [2, 2, 2],
-        'critChance': .1,
-        'critDamage': .6,
-        'critAccuracy': 1.5,
-        'attackSpeed': [.5, .5, .02],
-        'speed': 60,
-        'accuracy': [1, 2, 2],
-        'evasion': [0, 0, 1],
-        'block': 0,
-        'magicBlock': [1, 2, 1.5],
-        'armor': [0, 0, .8],
-        'magicResist': 0,
-        'source': {'image': enemySheet('gfx/caterpillar.png'), 'offset': 4 * 48, 'width': 48, 'flipped': true, frames: 4},
-        'abilities': []
+    addMonster('butterfly', {'name': 'Butterfly', 'source': butterflySource,
+        'implicitBonuses': {'*maxHealth': 1.5, '+range': 4, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5,
+                            '*minDamage': .5, '*maxDamage': .5, '*attackSpeed': .5, '*magicDamage': 0,
+                            '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
+                            '*speed': .6}
     });
-    addMonster('giantSkeleton', {
-        'name': 'Skelegiant',
-        'health': [15, 20, 22],
-        'range': 1,
-        'minDamage': [2, 3, 3],
-        'maxDamage': [3, 4, 3],
-        'minMagicDamage': 0,
-        'maxMagicDamage': 0,
-        'critChance': .05,
-        'critDamage': 1,
-        'critAccuracy': 1,
-        'attackSpeed': 1,
-        'speed': 100,
-        'accuracy': [0, 0, 2.5],
-        'evasion': [0, 0, .75],
-        'block': 3,
-        'magicBlock': 0,
-        'armor': [0, 0, .8],
-        'magicResist': 0,
-        'source': {'image': enemySheet('gfx/skeletonGiant.png'), 'offset': 0, 'width': 48, 'flipped': true, frames: 7},
-        'abilities': []
+    addMonster('giantSkeleton', {'name': 'Skelegiant', 'source': skeletonGiantSource,
+        'implicitBonuses': {'*maxHealth': 2, '+critDamage': .5, '*magicDamage': 0,
+                            '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 0, '*magicResist': 0}
     });
-    addMonster('dragon', {
-        'name': 'Dragon',
-        'health': [14, 16, 22],
-        'range': 3,
-        'minDamage': [1, 1, 2],
-        'maxDamage': [2, 2, 2],
-        'minMagicDamage': [0, 0, 1.5],
-        'maxMagicDamage': [1, 1, 1.5],
-        'critChance': .2,
-        'critDamage': .5,
-        'critAccuracy': 1,
-        'attackSpeed': [1, 1, .05],
-        'speed': 200, //controls speed of animation, not forward movement
-        'accuracy': [1, 2, 2],
-        'evasion': [0, 0, 2],
-        'block': [1, 1, 2],
-        'magicBlock': [1, 1, 2],
-        'armor': [0, 0, 1],
-        'magicResist': .5,
-        'stationary': true,
-        'source': {'image': enemySheet('gfx/dragonEastern.png'), 'offset': 0, 'width': 48, 'flipped': false, frames: 5},
-        'abilities': []
+    addMonster('dragon', {'name': 'Dragon', 'source': dragonSource, 'stationary': true, // speed still effects animation
+        'implicitBonuses': {'*maxHealth': 1.6, '+range': 2, '+critChance': .15,
+                            '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 2, '*magicResist': .5,
+                            '*speed': 2}
     });
 }

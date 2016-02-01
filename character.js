@@ -23,7 +23,6 @@ var allRoundedStats = ['dexterity', 'strength', 'intelligence', 'maxHealth', 'sp
      'ip', 'xp', 'mp', 'rp', 'up',
      'evasion', 'block', 'magicBlock', 'armor', 'accuracy',
      'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage'];
-var allFixed2Stats = ['range', 'attackSpeed'];
 
 function displayInfoMode(character) {
     character.adventurer.health = character.adventurer.maxHealth;
@@ -54,8 +53,8 @@ function refreshStatsPanel(character) {
     $statsPanel.find('.js-maxHealth').text(adventurer.maxHealth);
     $statsPanel.find('.js-damage').text(adventurer.minDamage + ' to ' + adventurer.maxDamage);
     $statsPanel.find('.js-magicDamage').text(adventurer.minMagicDamage + ' to ' + adventurer.maxMagicDamage);
-    $statsPanel.find('.js-range').text(adventurer.range);
-    $statsPanel.find('.js-attackSpeed').text(adventurer.attackSpeed);
+    $statsPanel.find('.js-range').text(adventurer.range.format(2));
+    $statsPanel.find('.js-attackSpeed').text(adventurer.attackSpeed.format(2));
     $statsPanel.find('.js-accuracy').text(adventurer.accuracy);
     $statsPanel.find('.js-armor').text(adventurer.armor);
     $statsPanel.find('.js-evasion').text(adventurer.evasion);
@@ -236,6 +235,11 @@ function updateAdventurerStats(adventurer) {
     adventurer.base.dexterity = adventurer.level * adventurer.job.dexterityBonus;
     adventurer.base.strength = adventurer.level * adventurer.job.strengthBonus;
     adventurer.base.intelligence = adventurer.level * adventurer.job.intelligenceBonus;
+    adventurer.base.minDamage = 0;
+    adventurer.base.maxDamage = 0;
+    adventurer.base.range = 0;
+    adventurer.base.attackSpeed = 0;
+    adventurer.base.critChance = 0;
     adventurer.base.critDamage = .5;
     adventurer.base.critAccuracy = .5;
     if (!adventurer.equipment.weapon) {
@@ -244,18 +248,12 @@ function updateAdventurerStats(adventurer) {
         adventurer.base.range = .5;
         adventurer.base.attackSpeed = 1;
         adventurer.base.critChance = .01;
-    } else {
-        adventurer.base.minDamage = 0;
-        adventurer.base.maxDamage = 0;
     }
     allComputedStats.forEach(function (stat) {
         adventurer[stat] = getStat(adventurer, stat);
     });
     allRoundedStats.forEach(function (stat) {
         adventurer[stat] = Math.round(adventurer[stat]);
-    });
-    allFixed2Stats.forEach(function (stat) {
-        adventurer[stat] = adventurer[stat].toFixed(2);
     });
     adventurer.health = adventurer.maxHealth;
     adventurer.attacks.forEach(function (attack) {
@@ -270,13 +268,13 @@ function updateAdventurerStats(adventurer) {
 function getStat(actor, stat) {
     var base = ifdefor(actor.base[stat], 0), plus = 0, percent = 1, multiplier = 1;
     if (stat === 'evasion' || stat === 'attackSpeed') {
-        percent += .01 * actor.dexterity;
+        percent += .002 * actor.dexterity;
     }
     if (stat === 'maxHealth') {
-        percent += .01 * actor.strength;
+        percent += .002 * actor.strength;
     }
     if (stat === 'block' || stat === 'magicBlock' || stat === 'accuracy') {
-        percent += .01 * actor.intelligence;
+        percent += .002 * actor.intelligence;
     }
     actor.bonuses.forEach(function (bonus) {
         plus += ifdefor(bonus['+' + stat], 0);
@@ -284,15 +282,15 @@ function getStat(actor, stat) {
         multiplier *= ifdefor(bonus['*' + stat], 1);
     });
     if (stat === 'minDamage' || stat === 'maxDamage') {
-        percent += .01 * actor.strength;
+        percent += .002 * actor.strength;
         if (actor.range >= 5) {
-            plus += Math.floor(actor.dexterity / 4);
+            plus += Math.floor(actor.dexterity / 10);
         } else {
-            plus += Math.floor(actor.strength / 4);
+            plus += Math.floor(actor.strength / 10);
         }
     }
     if ((stat === 'minMagicDamage' || stat === 'maxMagicDamage') && plus > 0) {
-        plus += Math.floor(actor.intelligence / 4);
+        plus += Math.floor(actor.intelligence / 10);
     }
     //console.log(stat +": " + ['(',base, '+', plus,') *', percent, '*', multiplier]);
     return (base + plus) * percent * multiplier;
