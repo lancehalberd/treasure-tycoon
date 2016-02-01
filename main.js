@@ -32,8 +32,11 @@ var state = {
 }
 // Load any graphic assets needed by the game here.
 async.mapSeries([
+    // Original images from project contributors:
     'gfx/person.png', 'gfx/grass.png', 'gfx/cave.png', 'gfx/forest.png', 'gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png',
-    'gfx/chest-closed.png', 'gfx/chest-open.png', 'gfx/treasureChest.png'
+    'gfx/treasureChest.png',
+    // Public domain images:
+    'gfx/chest-closed.png', 'gfx/chest-open.png' // http://opengameart.org/content/treasure-chests
 ], loadImage, function(err, results){
     ['gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png'].forEach(function (imageKey) {
         images[imageKey + '-enchanted'] = makeTintedImage(images[imageKey], '#af0');
