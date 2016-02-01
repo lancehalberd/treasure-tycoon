@@ -50,13 +50,17 @@ function makeJewel(tier, shapeType, components, quality) {
     }
     for (var i = 0; i < 3; i++) {
         if (numberOfActiveComponents == 1) {
-            RGB[i] = 50 + Math.round(200 * components[i]);
+            RGB[i] = Math.round(200 * components[i]);
         } else if (numberOfActiveComponents == 2) {
-            RGB[i] = 50 + Math.round(290 * components[i]);
+            RGB[i] = Math.round(290 * components[i]);
         } else {
-            RGB[i] = 50 + Math.round(500 * components[i]);
+            RGB[i] = Math.round(500 * components[i]);
         }
-        RGB[i] = Math.min(255, Math.max(0, RGB[i] - [0, 5, 10, 20, 40][qualifierIndex]));
+        if (components[i] >= .3) {
+            RGB[i] = Math.min(255, Math.max(0, RGB[i] + [50, 30, 10, -10, -20][qualifierIndex]));
+        } else {
+            RGB[i] = Math.min(255, Math.max(0, RGB[i] + [0, 10, 20, 40, 60][qualifierIndex]));
+        }
     }
     var shapeDefinition = shapeDefinitions[shapeType][0];
     var area = shapeDefinition.area;
