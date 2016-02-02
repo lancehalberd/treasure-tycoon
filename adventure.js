@@ -371,12 +371,6 @@ function drawAdventure(character, delta) {
         context.drawImage(backgroundImage, lndscpFrame*4, 0 , 64, 240,
                               x, 0, 64, 240);
     }
-    //sky every four, far distant (slow speed)
-    for (var i = 0; i <= 704; i += lndscpFrame*4) {
-        var x = (768 + (i - cloudX * .5) % 768) % 768 - 64;
-        context.drawImage(backgroundImage, lndscpFrame*7, 0 , 64, 240,
-                              x, 0, 64, 240);
-    }
     //sky every other, distant (slower speed)
     for (var i = 0; i <= 704; i += lndscpFrame*2) {
         var x = (768 + (i - cloudX * .3) % 768) % 768 - 64;
@@ -385,8 +379,14 @@ function drawAdventure(character, delta) {
     }
     //sky every three, closer (medium speed)
     for (var i = 0; i <= 704; i += lndscpFrame*3) {
-        var x = (768 + (i - cloudX * .6) % 768) % 768 - 64;
+        var x = (768 + (i - cloudX * .5) % 768) % 768 - 64;
         context.drawImage(backgroundImage, lndscpFrame*5, 0 , 64, 240,
+                              x, 0, 64, 240);
+    }
+    //sky every four
+    for (var i = 0; i <= 704; i += lndscpFrame*4) {
+        var x = (768 + (i - cloudX * .65) % 768) % 768 - 64;
+        context.drawImage(backgroundImage, lndscpFrame*7, 0 , 64, 240,
                               x, 0, 64, 240);
     }
     // floor, fixed to landscape, every frame
