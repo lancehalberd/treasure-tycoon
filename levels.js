@@ -124,7 +124,7 @@ function initializeLevels() {
                 'fixed' : [{"k":"triangle","p":[105,68],"t":60}],
                 'spaces' : [{"k":"triangle","p":[75,68],"t":0},{"k":"triangle","p":[120,93.98076211353316],"t":120}]
              },
-             'next': ['grove', 'cemetary'],
+             'next': ['grove', 'cemetery'],
              'enemySkills': [{'bonuses': {'+intelligence': 5}}],
              'monsters': ['gnome', 'skeleton'],
              'events': [['skeleton', 'gnome'], ['skeleton', 'skeleton'], ['gnome', 'gnome'], ['giantSkeleton']],
@@ -145,7 +145,7 @@ function initializeLevels() {
              'backupChest': backupChest([pointLoot('IP', [10, 20])])
              }, 1);
     // Level 1 Utility
-    addLevel({'name': 'Cemetary', 'level': 1, 'backgroundImage': images['gfx/grass.png'],
+    addLevel({'name': 'Cemetery', 'level': 1, 'backgroundImage': images['gfx/grass.png'],
              'skill': abilities['raiseDead'],
              'board': {
                 'fixed' : [{"k":"diamond","p":[134.75,120.47595264191645],"t":-120}],
