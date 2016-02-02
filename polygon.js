@@ -52,18 +52,16 @@ function polygon(x, y, angle, color, scale) {
         return clone.addVerticesAndLengths(lengths, angles);
     };
     self.setPosition = function (x, y) {
-        translateShapes([self], [x - self.points[0][0], y - self.points[0][1]]);
-        self.center[0] += x - self.points[0][0];
-        self.center[1] += y - self.points[0][1];
-        return self;
+        return self.translate(x - self.points[0][0], y - self.points[0][1]);
     };
     self.setCenterPosition = function (x, y) {
-        translateShapes([self], [x - self.center[0], y - self.center[1]]);
-        self.center = [x, y];
-        return self;
+        return self.translate(x - self.center[0], y - self.center[1]);
     };
     self.translate = function (x, y) {
-        translateShapes([self], [x, y]);
+        for (var i = 0; i < self.points.length; i++) {
+            self.points[i][0] += x;
+            self.points[i][1] += y;
+        }
         self.center[0] += x;
         self.center[1] += y;
         return self;
@@ -362,10 +360,7 @@ function isSeparatingLine(shapeA, shapeB, vector) {
 }
 function translateShapes(shapes, vector) {
     shapes.forEach(function (shape) {
-        for (var i = 0; i < shape.points.length; i++) {
-            shape.points[i][0] += vector[0];
-            shape.points[i][1] += vector[1];
-        }
+        shape.translate(vector[0], vector[1]);
     });
 }
 function rotateShapes(shapes, center, radians) {

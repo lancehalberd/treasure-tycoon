@@ -44,7 +44,7 @@ addItem(58, {'slot': 'weapon', 'type': 'dagger',  'name': 'Runed Dirk', 'bonuses
 addItem(68, {'slot': 'weapon', 'type': 'dagger',  'name': 'Etched Dragon Fang', 'bonuses': {'+minDamage': 190, '+maxDamage': 286,  '+attackSpeed': 2,'+range': 1.8, '+critChance': .05, '+minMagicDamage': 9, '+maxMagicDamage': 13 }, 'icon': 'sword'});
 
 //Fists low damage, high attack speed, melee range, low crit chance
-addItem(1, {'slot': 'weapon', 'type': 'fist',  'name': 'Rock', 'bonuses': {'+minDamage': 3, '+maxDamage': 5,  '+attackSpeed': 1.4,'+range': 1, '+critChance': .03 }, 'icon': 'glove'});
+addItem(1, {'slot': 'weapon', 'type': 'fist',  'name': 'Rock', 'bonuses': {'+minDamage': 4, '+maxDamage': 5,  '+attackSpeed': 1.4,'+range': 1, '+critChance': .03 }, 'icon': 'glove'});
 addItem(2, {'slot': 'weapon', 'type': 'fist',  'name': 'Cestus', 'bonuses': {'+minDamage': 24, '+maxDamage': 36,  '+attackSpeed': 1.6,'+range': 1, '+critChance': .03 }, 'icon': 'glove'});
 addItem(7, {'slot': 'weapon', 'type': 'fist',  'name': 'Bronze Weights', 'bonuses': {'+minDamage': 43, '+maxDamage': 65,  '+attackSpeed': 1.6,'+range': 1, '+critChance': .03 }, 'icon': 'glove'});
 addItem(12, {'slot': 'weapon', 'type': 'fist',  'name': 'Iron Weights', 'bonuses': {'+minDamage': 62, '+maxDamage': 94,  '+attackSpeed': 1.6,'+range': 1, '+critChance': .03 }, 'icon': 'glove'});

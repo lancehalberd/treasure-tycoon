@@ -97,20 +97,7 @@
 
 .map {
     display: inline-block;
-    width: 45%;
     vertical-align: top;
-}
-.skilltree {
-    display: inline-block;
-    width: 50%;
-    vertical-align: top;
-}
-.learnedSkill {
-    font-size: 12px;
-    margin-bottom: 2px;
-}
-.skill {
-    margin-bottom: 2px;
 }
 
 .item {
@@ -322,6 +309,11 @@ button {
 
 .adventure {
     display: block;
+    font-size: .6em;
+}
+
+.adventureButton {
+    margin-right: 5px;
 }
 
 select {

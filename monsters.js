@@ -1,6 +1,6 @@
 
-var enchantedMonsterBonuses = {'*maxHealth': 1.5, '*minDamge': 1.5, '*maxDamage': 1.5, '*xp': 3, '*ip': 3};
-var imbuedMonsterBonuses = {'*maxHealth': 5, '*minDamge': 5, '*maxDamage': 5, '*xp': 10, '*ip': 10};
+var enchantedMonsterBonuses = {'*maxHealth': 1.5, '*minDamge': 1.5, '*maxDamage': 1.5, '*xpValue': 3, '*ip': 3};
+var imbuedMonsterBonuses = {'*maxHealth': 5, '*minDamge': 5, '*maxDamage': 5, '*xpValue': 10, '*ip': 10};
 var monsterPrefixes = [
     [
         {'name': 'Hawkeye', 'bonuses': {'+accuracy': [5, 10]}}
@@ -46,7 +46,7 @@ function makeMonster(monsterData, level, extraBonuses) {
             'mp': 0,
             'rp': 0,
             'up': 0,
-            'xp': level * 2,
+            'xpValue': level * 2,
             'abilities': []
         },
         'bonuses': [],
@@ -212,22 +212,22 @@ function enemySheet(key) {
 function setBaseMonsterStats(monster, level) {
     var growth = level - 1;
     // Health scales linearly to level 10, then 10% a level.
-    monster.base.maxHealth = (growth <= 10) ? (10 + 20 * growth) : 200 * Math.pow(1.1, growth - 10);
+    monster.base.maxHealth = (growth <= 10) ? (8 + 20 * growth) : 200 * Math.pow(1.1, growth - 10);
     monster.base.range = 1;
-    monster.base.minDamage = Math.round(.9 * (5 + 10 * growth));
-    monster.base.maxDamage = Math.round(1.1 * (5 + 10 * growth));
-    monster.base.minMagicDamage = Math.round(.9 * (2 + 4 * growth));
-    monster.base.maxMagicDamage = Math.round(1.1 * (2 + 4 * growth));
+    monster.base.minDamage = Math.round(.9 * (3 + 10 * growth));
+    monster.base.maxDamage = Math.round(1.1 * (3 + 10 * growth));
+    monster.base.minMagicDamage = Math.round(.9 * (1 + 4 * growth));
+    monster.base.maxMagicDamage = Math.round(1.1 * (1 + 4 * growth));
     monster.base.critChance = .05;
     monster.base.critDamage = .5;
     monster.base.critAccuracy = 1;
     monster.base.attackSpeed = 1 + .05 * growth;
     monster.base.speed = 100;
-    monster.base.accuracy = 3 + 3 * growth;
-    monster.base.evasion = growth * .5;
+    monster.base.accuracy = 10 + 3 * growth;
+    monster.base.evasion = 1 + growth * .5;
     monster.base.block = 2 * growth;
     monster.base.magicBlock = growth;
-    monster.base.armor = 1 + 2 * growth;
+    monster.base.armor = 2 * growth;
     monster.base.magicResist = .001 * growth;
     monster.base.strength = 5 * growth;
     monster.base.intelligence = 5 * growth;
@@ -243,7 +243,7 @@ function initalizeMonsters() {
     addMonster('caterpillar', {
         'name': 'Caterpillar', 'source': caterpillarSource,
         'implicitBonuses': {'*magicDamage': 0,
-                            '*block': .5, '+magicBlock': 2, '*magicBlock': 2, '+magicResist': .5,
+                            '*block': .5, '+magicBlock': 4, '*magicBlock': 2, '+magicResist': .5,
                             '*speed': .5}
     });
     addMonster('gnome', {'name': 'Gnome', 'source': gnomeSource, 'fpsMultiplier': 1.5,
@@ -253,10 +253,11 @@ function initalizeMonsters() {
     });
     addMonster('skeleton', {'name': 'Skeleton', 'source': skeletonSource,
         // Fast to counter ranged heroes, low range+damage + fast attacks to be weak to armored heroes.
-        'implicitBonuses': {'+range': -.5, '*minDamage': .4, '*maxDamage': .4, '*attackSpeed': 2, '*magicDamage': 0,
+        'implicitBonuses': {'+range': -.5, '*minDamage': .4, '*maxDamage': .4, '+accuracy': 2, '*attackSpeed': 2, '*magicDamage': 0,
                             '*block': 0, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': 2}
     });
+    //console.log(JSON.stringify(makeMonster('skeleton', 1)));
     addMonster('butterfly', {'name': 'Butterfly', 'source': butterflySource,
         'implicitBonuses': {'*maxHealth': 1.5, '+range': 4, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5,
                             '*minDamage': .5, '*maxDamage': .5, '*attackSpeed': .5, '*magicDamage': 0,
@@ -268,8 +269,8 @@ function initalizeMonsters() {
                             '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 0, '*magicResist': 0}
     });
     addMonster('dragon', {'name': 'Dragon', 'source': dragonSource, 'stationary': true, // speed still effects animation
-        'implicitBonuses': {'*maxHealth': 1.6, '+range': 2, '+critChance': .15,
-                            '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 2, '*magicResist': .5,
+        'implicitBonuses': {'*maxHealth': 1.6, '+range': 8, '+critChance': .15,
+                            '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 2, '+magicResist': .5,
                             '*speed': 2}
     });
 }

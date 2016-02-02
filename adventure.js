@@ -93,7 +93,7 @@ function startNextWave(character) {
     var wave = character.area.waves[character.waveIndex];
     var x = character.adventurer.x + 800;
     wave.monsters.forEach(function (entityData) {
-        var newMonster = makeMonster(entityData, character.area.level);
+        var newMonster = makeMonster(entityData, character.area.level, character.area.enemyBonuses);
         newMonster.x = x;
         newMonster.character = character;
         newMonster.direction = -1; // Monsters move right to left
@@ -329,7 +329,7 @@ function defeatedEnemy(character, enemy) {
         return;
     }
     // Character receives 10% penalty per level difference between them and the monster.
-    var reducedXP = Math.floor(enemy.xp * Math.max(0, 1 - .1 * Math.abs(character.adventurer.level - enemy.level)));
+    var reducedXP = Math.floor(enemy.xpValue * Math.max(0, 1 - .1 * Math.abs(character.adventurer.level - enemy.level)));
     gainXP(character.adventurer, reducedXP);
     var loot = [];
     if (enemy.ip) loot.push(pointsLootDrop('IP', enemy.ip));

@@ -48,6 +48,9 @@ async.mapSeries([
     updateItemCrafting();
     var jobKey = Random.element(ranks[0]);
     newCharacter(characterClasses[jobKey]);
+    gainJewel(makeJewel(1, 'diamond', [90, 5, 5], 1.1));
+    gainJewel(makeJewel(1, 'diamond', [5, 90, 5], 1.1));
+    gainJewel(makeJewel(1, 'diamond', [5, 5, 90], 1.1));
     gain('IP', 10);
     gain('AP', 20);
     gain('MP', 0);
@@ -82,11 +85,17 @@ function makeTintedImage(image, tint) {
 }
 
 function completeArea(character) {
-    var $adventureButton = character.$panel.find('.js-infoMode').find('.js-adventure').last();
+    var $adventureDiv = character.$panel.find('.js-infoMode').find('.js-area-' + character.currentLevelIndex);
     // If the character beat the last adventure open to them, unlock the next one
     if (!character.levelsCompleted[character.currentLevelIndex]) {
+        $adventureDiv.append($tag('button','js-learnSkill', '+skill'));
         character.levelsCompleted[character.currentLevelIndex] = true;
-        $adventureButton.after($nextLevelButton(character.area));
+        character.area.base.next.forEach(function (areaKey) {
+            // Add a button for the unlocked area only if no such button exists already.
+            if (!character.$panel.find('.js-infoMode').find('.js-area-' + areaKey).length) {
+                $adventureDiv.after($levelDiv(areaKey));
+            }
+        });
     }
     for (var itemLevel = $('.js-levelSelect').find('option').length + 1; itemLevel <= character.area.level + 1 && itemLevel <= items.length; itemLevel++) {
         var $newOption = $tag('option', '', 'Level ' + itemLevel).attr('value', itemLevel);
@@ -197,7 +206,11 @@ function checkToShowJewelToolTip() {
         }
     }
     //console.log([event.pageX,event.pageY]);
-    $popup = $tag('div', 'toolTip js-toolTip', jewel.helpText);
+    if (jewel.fixed && !jewel.confirmed) {
+        $popup = $tag('div', 'toolTip js-toolTip', 'Drag and rotate to adjust this augmentation.<br/><br/> Click the "Apply" button to the right when you are done. <br/><br/>' + jewel.helpText);
+    } else {
+        $popup = $tag('div', 'toolTip js-toolTip', jewel.helpText);
+    }
     $popup.data('jewel', jewel);
     $popupTarget = null;
     updateToolTip(mousePosition[0], mousePosition[1], $popup);
@@ -251,9 +264,55 @@ function updateRetireButtons() {
     $('.js-retire').toggle($('.js-playerPanel').length > 1);
 }
 
-$('body').on('click', '.js-adventure', function (event) {
+$('body').on('click', '.js-adventureButton', function (event) {
     startArea($(this).closest('.js-playerPanel').data('character'), $(this).data('levelIndex'));
 });
+// When a player clicks the learn skill button, we add the board segment to their skill board
+// as a preview, center it and then snap it to a valid position. From there they can move it
+// around and either apply the change or cancel.
+$('body').on('click', '.js-learnSkill', function (event) {
+    var character = $(this).closest('.js-playerPanel').data('character');
+    if (character.adventurer.xp < character.adventurer.xpToLevel) {
+        return;
+    }
+    var areaKey = $(this).closest('.js-adventure').data('levelIndex');
+    var level = levels[areaKey];
+    var board = readBoardFromData(level.board, character, level.skill);
+    $(this).closest('.js-adventure').find('.js-confirmSkill, .js-cancelSkill').show();
+    character.$panel.find('.js-learnSkill').hide();
+    centerShapesInRectangle(board.fixed.map(jewelToShape).concat(board.spaces), rectangle(0, 0, character.boardCanvas.width, character.boardCanvas.height));
+    snapBoardToBoard(board, character.board);
+    character.board.boardPreview = board;
+    showJewels();
+});
+$('body').on('click', '.js-confirmSkill', function (event) {
+    var character = $(this).closest('.js-playerPanel').data('character');
+    var areaKey = $(this).closest('.js-adventure').data('levelIndex');
+    var level = levels[areaKey];
+    character.adventurer.abilities.push(level.skill);
+    character.board.spaces = character.board.spaces.concat(character.board.boardPreview.spaces);
+    character.board.boardPreview.fixed.forEach(function (jewel) {
+        jewel.confirmed = true;
+    });
+    character.board.fixed = character.board.fixed.concat(character.board.boardPreview.fixed);
+    character.board.boardPreview = null;
+    drawBoardBackground(character.boardContext, character.board);
+    showJewels();
+    gainLevel(character.adventurer);
+    updateSkillButtons(character);
+    // Replace the skill buttons with a checkmark, they aren't used any more.
+    $(this).closest('.js-adventure').append($tag('span','', '&#10003;'));
+    $(this).closest('.js-adventure').find('.js-learnSkill, .js-confirmSkill, .js-cancelSkill').remove();
+    character.$panel.find('.js-learnSkill').show();
+});
+$('body').on('click', '.js-cancelSkill', function (event) {
+    var character = $(this).closest('.js-playerPanel').data('character');
+    $(this).closest('.js-adventure').find('.js-confirmSkill, .js-cancelSkill').hide();
+    character.$panel.find('.js-learnSkill').show();
+    character.board.boardPreview = null;
+    showJewels();
+});
+
 $('body').on('click', '.js-retire', function (event) {
     var $panel = $(this).closest('.js-playerPanel');
     var character = $panel.data('character');

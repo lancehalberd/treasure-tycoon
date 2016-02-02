@@ -14,13 +14,13 @@ var walkLoop = [0, 1, 2, 3];
 var fightLoop = [4, 5, 6];
 var pointsTypes = ['IP', 'MP', 'RP', 'UP', 'AP'];
 var allComputedStats = ['cloaking', 'dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
-     'ip', 'xp', 'mp', 'rp', 'up',
+     'ip', 'xpValue', 'mp', 'rp', 'up',
      'evasion', 'block', 'magicBlock', 'armor', 'magicResist', 'accuracy', 'range', 'attackSpeed',
      'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage',
      'critChance', 'critDamage', 'critAccuracy',
      'damageOnMiss', 'slowOnHit', 'healthRegen', 'healthGainOnHit'];
 var allRoundedStats = ['dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
-     'ip', 'xp', 'mp', 'rp', 'up',
+     'ip', 'xpValue', 'mp', 'rp', 'up',
      'evasion', 'block', 'magicBlock', 'armor', 'accuracy',
      'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage'];
 
@@ -37,6 +37,7 @@ function displayInfoMode(character) {
     character.currentLevelIndex = null;
     refreshStatsPanel(character);
     character.$panel.find('.js-recall').prop('disabled', true);
+    updateSkillButtons(character);
     if (character.replay) {
         startArea(character, currentLevelIndex);
     }
@@ -69,9 +70,8 @@ function newCharacter(job) {
     var $newPlayerPanel = $('.js-playerPanelTemplate').clone()
         .removeClass('js-playerPanelTemplate').addClass('js-playerPanel').show();
     $('.js-playerColumn').prepend($newPlayerPanel);
-    var character = {
-        'adventurer': makeAdventurer(job, 1, job.startingEquipment)
-    };
+    var character = {};
+    character.adventurer = makeAdventurer(job, 1, job.startingEquipment);
     character.adventurer.character = character;
     character.adventurer.direction = 1; // Character moves left to right.
     character.adventurer.isMainCharacter = true;
@@ -90,15 +90,15 @@ function newCharacter(job) {
     character.replay = false;
     character.levelsCompleted = {};
     character.previewContext.imageSmoothingEnabled = false;
-    centerShapesInRectangle(character.adventurer.board.fixed.concat(character.adventurer.board.spaces), rectangle(0, 0, character.boardCanvas.width, character.boardCanvas.height));
-    drawBoardBackground(character.boardContext, character.adventurer.board);
     state.characters.push(character);
     $newPlayerPanel.data('character', character);
-    $newPlayerPanel.find('.js-map').append($levelButton('forest1')).append($levelButton('cave1')).append($levelButton('field1'));
+    $newPlayerPanel.find('.js-map').append($levelDiv(ifdefor(job.areaKey, 'meadow')));
     displayInfoMode(character);
     var abilityKey = ifdefor(abilities[job.key]) ? job.key : 'healing';
     character.adventurer.abilities.push(abilities[abilityKey]);
-    character.adventurer.board.fixed[0] = makeFixedJewel(character.adventurer.board.fixed[0], character, abilityKey);
+    character.board = readBoardFromData(job.startingBoard, character, abilities[abilityKey], true);
+    centerShapesInRectangle(character.board.fixed.map(jewelToShape).concat(character.board.spaces), rectangle(0, 0, character.boardCanvas.width, character.boardCanvas.height));
+    drawBoardBackground(character.boardContext, character.board);
     updateAdventurer(character.adventurer);
     ifdefor(job.loot, [simpleJewelLoot, simpleJewelLoot, simpleJewelLoot]).forEach(function (loot) {
         loot.generateLootDrop().gainLoot();
@@ -124,7 +124,6 @@ function makeAdventurer(job, level, equipment) {
         },
         'width': 64,
         'bonuses': [],
-        'skillPoints': 1,
         'unlockedAbilities': {},
         'abilities': [], //abilities.hook, abilities.hookRange1, abilities.hookRange2, abilities.hookDrag1, abilities.hookDrag2, abilities.hookPower
         'name': Random.element(names),
@@ -134,12 +133,8 @@ function makeAdventurer(job, level, equipment) {
         'xpToLevel': xpToLevel(0),
         'personCanvas': personCanvas,
         'personContext': personContext,
-        'attackCooldown': 0,
-        'board' : {}
+        'attackCooldown': 0
     };
-    adventurer.board.fixed = job.startingBoard.fixed.map(convertShapeDataToShape);
-    adventurer.board.spaces = job.startingBoard.spaces.map(convertShapeDataToShape);
-    adventurer.board.jewels = [];
     equipmentSlots.forEach(function (type) {
         adventurer.equipment[type] = null;
     });
@@ -147,6 +142,18 @@ function makeAdventurer(job, level, equipment) {
         equipItem(adventurer, makeItem(item, 1));
     });
     return adventurer;
+}
+function readBoardFromData(boardData, character, ability, confirmed) {
+    return {
+        'fixed': boardData.fixed.map(convertShapeDataToShape)
+            .map(function(fixedJewelData) {
+                var fixedJewel = makeFixedJewel(fixedJewelData, character, ability);
+                fixedJewel.confirmed = ifdefor(confirmed, false);
+                return fixedJewel;
+            }),
+        'spaces': boardData.fixed.concat(boardData.spaces).map(convertShapeDataToShape),
+        'jewels': []
+    };
 }
 $('.js-newPlayer').on('click', newCharacter);
 
@@ -197,9 +204,11 @@ function updateAdventurer(adventurer) {
     adventurer.abilities.forEach(function (ability) {
         addBonusesAndAttacks(adventurer, ability);
     });
-    adventurer.board.jewels.forEach(function (jewel) {
-        addBonusesAndAttacks(adventurer, jewel);
-    });
+    if (adventurer.character) {
+        adventurer.character.board.jewels.forEach(function (jewel) {
+            addBonusesAndAttacks(adventurer, jewel);
+        });
+    }
     // Add the adventurer's current equipment to bonuses and graphics
     equipmentSlots.forEach(function (type) {
         var equipment = adventurer.equipment[type];
@@ -309,20 +318,19 @@ function getStatForAttack(actor, attack, stat) {
     return (base + plus) * percent * multiplier;
 }
 function gainXP(adventurer, amount) {
-    adventurer.xp += amount;
-    while (adventurer.xp >= adventurer.xpToLevel) {
-        adventurer.level++;
-        gain('AP', adventurer.level);
-        adventurer.maxHealth += 5;
-        adventurer.health = adventurer.maxHealth;
-        adventurer.xp -= adventurer.xpToLevel;
-        adventurer.xpToLevel = xpToLevel(adventurer.level);
-        adventurer.skillPoints++;
-        updateAdventurerStats(adventurer);
-        updateSkillTree(adventurer.character);
-    }
+    adventurer.xp = Math.min(adventurer.xp + amount, adventurer.xpToLevel);
 }
-function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonus, startingEquipment, startingBoard, loot) {
+function gainLevel(adventurer) {
+    adventurer.level++;
+    gain('AP', adventurer.level);
+    adventurer.maxHealth += 5;
+    adventurer.health = adventurer.maxHealth;
+    adventurer.xp = 0;
+    adventurer.xpToLevel = xpToLevel(adventurer.level);
+    updateAdventurerStats(adventurer);
+    updateSkillTree(adventurer.character);
+}
+function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonus, startingEquipment, startingBoard, loot, areaKey) {
     var key = name.replace(/\s*/g, '').toLowerCase();
     characterClasses[key] = {
         'key': key,
@@ -332,7 +340,8 @@ function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonu
         'intelligenceBonus': intelligenceBonus,
         'startingEquipment': ifdefor(startingEquipment, {'weapon': itemsByKey.dagger}),
         'startingBoard': ifdefor(startingBoard, squareBoard),
-        'loot': loot
+        'loot': loot,
+        'areaKey': ifdefor(areaKey, 'meadow')
     };
 }
 
@@ -361,12 +370,12 @@ var squareBoard = {
 var characterClasses = {};
 addCharacterClass('Fool', 0, 0, 0);
 
-addCharacterClass('Archer', 2, 1, 0, {'weapon': itemsByKey.bow}, triangleBoard,
-    [jewelLoot(['trapezoid'], [1, 1], [[5,20], [80, 100], [5, 20]], false), simpleJewelLoot, simpleJewelLoot]);
-addCharacterClass('Black Belt', 0, 2, 1, {'weapon': itemsByKey.rock}, diamondBoard,
-    [jewelLoot(['trapezoid'], [1, 1], [[80, 100], [5,20], [5, 20]], false), simpleJewelLoot, simpleJewelLoot]);
-addCharacterClass('Priest', 1, 0, 2, {'weapon': itemsByKey.stick}, hexBoard,
-    [jewelLoot(['trapezoid'], [1, 1], [[5,20], [5, 20], [80, 100]], false), simpleJewelLoot, simpleJewelLoot]);
+addCharacterClass('Archer', 2, 1, 0, {'weapon': itemsByKey.bow, 'body': itemsByKey.clothtunic}, triangleBoard,
+    [jewelLoot(['trapezoid'], [1, 1], [[5,20], [80, 100], [5, 20]], false), simpleJewelLoot, simpleJewelLoot], 'grove');
+addCharacterClass('Black Belt', 0, 2, 1, {'weapon': itemsByKey.rock, 'body': itemsByKey.lamellar}, diamondBoard,
+    [jewelLoot(['trapezoid'], [1, 1], [[80, 100], [5,20], [5, 20]], false), simpleJewelLoot, simpleJewelLoot], 'meadow');
+addCharacterClass('Priest', 1, 0, 2, {'weapon': itemsByKey.stick, 'body': itemsByKey.woolshirt}, hexBoard,
+    [jewelLoot(['trapezoid'], [1, 1], [[5,20], [5, 20], [80, 100]], false), simpleJewelLoot, simpleJewelLoot], 'cave');
 
 addCharacterClass('Corsair', 2, 2, 1);
 addCharacterClass('Paladin', 1, 2, 2);

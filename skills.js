@@ -54,20 +54,15 @@ function learnAbility(character, key) {
         $tag('div', 'js-learnedSkill learnedSkill', abilities[key].name).attr('helptext', helpText)
     );
 }
-
+/*
 $(document).on('click', '.js-skill', function (event) {
     var character = $(this).closest('.js-playerPanel').data('character');
-    if (character.adventurer.skillPoints <= 0) {
-        return;
-    }
-    character.adventurer.skillPoints--;
     learnAbility(character, $(this).data('key'));
     $(this).remove();
     updateSkillTree(character);
 });
-
+*/
 function updateSkillTree(character) {
-    character.$panel.find('.js-skill').toggleClass('disabled', (character.adventurer.skillPoints <= 0));
 }
 function abilityHelpText(ability) {
     var sections = [ability.name, ''];

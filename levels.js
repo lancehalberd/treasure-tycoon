@@ -1,14 +1,12 @@
 
 var levels = {};
 
-function addLevel(levelData, level) {
-    var key = levelData.name.replace(/\s*/g, '').toLowerCase() + level;
-    levels[key] = {'base': levelData, 'level' : level, 'name': 'Level ' + level +': ' + levelData.name};
+function addLevel(levelData) {
+    levels[levelData.name.replace(/\s*/g, '').toLowerCase()] = levelData;
 }
 function instantiateLevel(levelData, completed) {
     var waves = [];
     var level = levelData.level;
-    levelData = levelData.base;
     var numberOfWaves = Math.floor(5 * Math.sqrt(level));
     // Make sure we have at least enough waves for the required events
     numberOfWaves = Math.max(levelData.events.length, numberOfWaves);
@@ -36,12 +34,35 @@ function instantiateLevel(levelData, completed) {
     return {
         'base': levelData,
         'level': level,
+        'enemyBonuses': levelData.enemyBonuses,
         'waves': waves,
         'backgroundImage': levelData.backgroundImage
     };
 }
-function $levelButton(key) {
-    return $tag('button', 'js-adventure adventure', levels[key].name).data('levelIndex', key);
+function $levelDiv(key) {
+    if (!levels[key]) {
+        throw new Error('Level ' + key + ' not found');
+    }
+    var $levelButton = $tag('button', 'js-adventureButton adventureButton' , 'Lvl ' + levels[key].level + ' ' + levels[key].name).data('levelIndex', key);
+    var $confirmButton = $tag('button','js-confirmSkill', 'Apply').attr('helptext', 'Finalize augmentation and level this character.').hide();
+    var $cancelButton = $tag('button','js-cancelSkill', 'Abort').attr('helptext', 'Cancel augmentation.').hide();
+    return $tag('div', 'js-adventure adventure js-area-' + key).data('levelIndex', key).append($levelButton).append($confirmButton).append($cancelButton);
+}
+function updateSkillButtons(character) {
+    character.$panel.find('.js-learnSkill').each(function (index, element) {
+        var areaKey = $(element).closest('.js-adventure').data('levelIndex');
+        var level = levels[areaKey];
+        var sections = [];
+        if (character.adventurer.xpToLevel > character.adventurer.xp) {
+            $(element).addClass('disabled');
+            sections.push(character.adventurer.name + ' still needs ' + (character.adventurer.xpToLevel - character.adventurer.xp) + ' XP before learning a new skill.');
+            sections.push('');
+        } else {
+            $(element).removeClass('disabled');
+        }
+        sections.push(abilityHelpText(level.skill));
+        $(element).attr('helptext', sections.join('<br/>'));
+    });
 }
 function $nextLevelButton(currentLevel) {
     var levelData = copy(currentLevel.base);
@@ -77,14 +98,54 @@ function $nextLevelButton(currentLevel) {
                                              pointLoot('RP', [level, 1.1 * level])]);
         addLevel(levelData, currentLevel.level + 1);
     }
-    return $levelButton(key);
+    return $levelDiv(key);
 }
 function initializeLevels() {
     closedChestSource = {'image': images['gfx/chest-closed.png'], 'xOffset': 0, 'width': 32, 'height': 32};
     openChestSource = {'image': images['gfx/chest-open.png'], 'xOffset': 0, 'width': 32, 'height': 32};
     // monsters are random monsters that can be added to any waves or present in random waves.
     // events are predefined sets of monsters that will appear in order throughout the level.
-    addLevel({'name': 'Forest', 'backgroundImage': images['gfx/forest.png'],
+    addLevel({'name': 'Meadow', 'level': 1, 'backgroundImage': images['gfx/grass.png'],
+             'skill': {'name': 'Minor Strength', 'bonuses': {'+strength': 5}},
+             'board': {
+                'fixed' : [{"k":"diamond","p":[134.75,120.47595264191645],"t":-120}],
+                'spaces' : [{"k":"triangle","p":[104.75,120.47595264191645],"t":-60},{"k":"triangle","p":[134.75,120.47595264191645],"t":0}]
+             },
+             'next': ['cave'],
+             'enemyBonuses': {'+strength': 5},
+             'monsters': ['caterpillar', 'skeleton'],
+             'events': [['skeleton', 'caterpillar'], ['caterpillar', 'caterpillar'], ['skeleton', 'skeleton'], ['dragon']],
+             'firstChest': firstChest([simpleRubyLoot, pointLoot('AP', [1, 1]), pointLoot('IP', [40, 50])]),
+             'backupChest': backupChest([pointLoot('IP', [10, 20])])
+             });
+    addLevel({'name': 'Cave', 'level': 1, 'backgroundImage': images['gfx/cave.png'],
+             'skill': {'name': 'Minor Intelligence', 'bonuses': {'+intelligence': 5}},
+             'board': {
+                'fixed' : [{"k":"triangle","p":[105,68],"t":60}],
+                'spaces' : [{"k":"triangle","p":[75,68],"t":0},{"k":"triangle","p":[120,93.98076211353316],"t":120}]
+             },
+             'next': ['grove'],
+             'enemyBonuses': {'+intelligence': 5},
+             'monsters': ['gnome', 'skeleton'],
+             'events': [['skeleton', 'gnome'], ['skeleton', 'skeleton'], ['gnome', 'gnome'], ['giantSkeleton']],
+             'firstChest': firstChest([simpleSaphireLoot, pointLoot('AP', [1, 1]), pointLoot('IP', [40, 50])]),
+             'backupChest': backupChest([pointLoot('IP', [10, 20])])
+             });
+    addLevel({'name': 'Grove', 'level': 1, 'backgroundImage': images['gfx/forest.png'],
+             'skill': {'name': 'Minor Dexterity', 'bonuses': {'+dexterity': 5}},
+             'board': {
+                'fixed' : [{"k":"diamond","p":[161,75],"t":0}],
+                'spaces' : [{"k":"diamond","p":[131,75],"t":-60}]
+             },
+             'next': ['meadow'],
+             'enemyBonuses': {'+dexterity': 5},
+             'monsters': ['caterpillar', 'gnome'],
+             'events': [['caterpillar', 'gnome'], ['gnome', 'gnome'], ['caterpillar', 'caterpillar'], ['butterfly']],
+             'firstChest': firstChest([simpleEmeraldLoot, pointLoot('AP', [1, 1]), pointLoot('IP', [40, 50])]),
+             'backupChest': backupChest([pointLoot('IP', [10, 20])])
+             }, 1);
+
+    /*addLevel({'name': 'Forest', 'backgroundImage': images['gfx/forest.png'],
              'monsters': ['caterpillar', 'gnome'],
              'events': [['gnome', 'gnome'], ['caterpillar', 'caterpillar'], ['butterfly']],
              'firstChest': firstChest([simpleEmeraldLoot, pointLoot('AP', [1, 1]), pointLoot('IP', [40, 50])]),
@@ -101,7 +162,7 @@ function initializeLevels() {
              'events': [['caterpillar', 'caterpillar'], ['skeleton', 'skeleton'], ['dragon']],
              'firstChest': firstChest([simpleRubyLoot, pointLoot('AP', [1, 1]), pointLoot('IP', [40, 50])]),
              'backupChest': backupChest([pointLoot('IP', [10, 20])])
-             }, 1);
+             }, 1);*/
 }
 function basicWave(monsters, objects, letter) {
     return {
