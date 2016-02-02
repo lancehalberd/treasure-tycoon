@@ -140,7 +140,7 @@ function initializeLevels() {
              'next': ['meadow'],
              'enemyBonuses': {'+dexterity': 5},
              'monsters': ['caterpillar', 'gnome'],
-             'events': [['gnome', 'gnome'], ['caterpillar', 'caterpillar'], ['butterfly']],
+             'events': [['caterpillar', 'gnome'], ['gnome', 'gnome'], ['caterpillar', 'caterpillar'], ['butterfly']],
              'firstChest': firstChest([simpleEmeraldLoot, pointLoot('AP', [1, 1]), pointLoot('IP', [40, 50])]),
              'backupChest': backupChest([pointLoot('IP', [10, 20])])
              }, 1);

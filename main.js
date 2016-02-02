@@ -301,8 +301,8 @@ $('body').on('click', '.js-confirmSkill', function (event) {
     gainLevel(character.adventurer);
     updateSkillButtons(character);
     // Replace the skill buttons with a checkmark, they aren't used any more.
-    $(this).closest('.js-adventure').find('.js-learnSkill, .js-confirmSkill, .js-cancelSkill').remove();
     $(this).closest('.js-adventure').append($tag('span','', '&#10003;'));
+    $(this).closest('.js-adventure').find('.js-learnSkill, .js-confirmSkill, .js-cancelSkill').remove();
     character.$panel.find('.js-learnSkill').show();
 });
 $('body').on('click', '.js-cancelSkill', function (event) {

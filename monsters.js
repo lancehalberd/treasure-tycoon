@@ -214,8 +214,8 @@ function setBaseMonsterStats(monster, level) {
     // Health scales linearly to level 10, then 10% a level.
     monster.base.maxHealth = (growth <= 10) ? (8 + 20 * growth) : 200 * Math.pow(1.1, growth - 10);
     monster.base.range = 1;
-    monster.base.minDamage = Math.round(.9 * (5 + 10 * growth));
-    monster.base.maxDamage = Math.round(1.1 * (5 + 10 * growth));
+    monster.base.minDamage = Math.round(.9 * (3 + 10 * growth));
+    monster.base.maxDamage = Math.round(1.1 * (3 + 10 * growth));
     monster.base.minMagicDamage = Math.round(.9 * (1 + 4 * growth));
     monster.base.maxMagicDamage = Math.round(1.1 * (1 + 4 * growth));
     monster.base.critChance = .05;
@@ -225,7 +225,7 @@ function setBaseMonsterStats(monster, level) {
     monster.base.speed = 100;
     monster.base.accuracy = 10 + 3 * growth;
     monster.base.evasion = 1 + growth * .5;
-    monster.base.block = 1 + 2 * growth;
+    monster.base.block = 2 * growth;
     monster.base.magicBlock = growth;
     monster.base.armor = 2 * growth;
     monster.base.magicResist = .001 * growth;
