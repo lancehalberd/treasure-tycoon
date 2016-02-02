@@ -71,7 +71,29 @@ function itemHelpText(item) {
     sections.push('Sell for ' + points.join(' '));
     return sections.join('<br/>');
 }
-function bonusHelpText(bonuses, implicit) {
+function evaluteForDisplay(value) {
+    if (typeof value === 'number') {
+        return value;
+    }
+    var formula = value;
+    if (!formula || !formula.length) {
+        throw new Error('Expected "formula" to be an array, but value is: ' + formula);
+    }
+    formula = formula.slice();
+    value = formula.shift();
+    while (formula.length > 1) {
+        value += ' ' + formula.shift() + ' ' + formula.shift();
+        if (formula.length > 1) {
+            value = '(' + value + ')';
+        }
+    }
+    return value;
+}
+function bonusHelpText(rawBonuses, implicit) {
+    var bonuses = {};
+    $.each(rawBonuses, function (key, value) {
+        bonuses[key] = evaluteForDisplay(value);
+    });
     var sections = [];
     if (ifdefor(bonuses['+minDamage']) != null) {
         if (implicit) sections.push('Damage: ' + bonuses['+minDamage'] + ' to ' + bonuses['+maxDamage']);
@@ -123,7 +145,7 @@ function bonusHelpText(bonuses, implicit) {
         sections.push('Gain ' + bonuses['+healthGainOnHit'] + ' health on hit');
     }
     if (ifdefor(bonuses['+healthRegen'])) {
-        sections.push('Regenerates ' + bonuses['+healthRegen'].toFixed(1) + ' health per second');
+        sections.push('Regenerates ' + bonuses['+healthRegen'].format(1) + ' health per second');
     }
     if (ifdefor(bonuses['%maxHealth'])) {
         sections.push((100 * bonuses['%maxHealth']).format(1) + '% increased health');
@@ -135,8 +157,8 @@ function bonusHelpText(bonuses, implicit) {
         sections.push((100 * bonuses['%damage']).format(1) + '% increased damage');
     }
     if (ifdefor(bonuses['+critChance'])) {
-        if (implicit) sections.push((100 * bonuses['+critChance']).toFixed(0) + '% critical strike chance');
-        else sections.push('Additional ' + (100 * bonuses['+critChance']).toFixed(0) + '% chance to critical strike');
+        if (implicit) sections.push((100 * bonuses['+critChance']).format(0) + '% critical strike chance');
+        else sections.push('Additional ' + (100 * bonuses['+critChance']).format(0) + '% chance to critical strike');
     }
     if (ifdefor(bonuses['%critChance'])) {
         sections.push((100 * bonuses['%critChance']).format(1) + '% increased critical chance');
@@ -151,7 +173,7 @@ function bonusHelpText(bonuses, implicit) {
         sections.push((100 * bonuses['%accuracy']).format(1) + '% increased accuracy');
     }
     if (ifdefor(bonuses['+slowOnHit'])) {
-        sections.push('Slows target by ' + (100 * bonuses['+slowOnHit']).toFixed(0) + '%');
+        sections.push('Slows target by ' + (100 * bonuses['+slowOnHit']).format(0) + '%');
     }
     if (ifdefor(bonuses['+speed'])) {
         sections.push((bonuses['+speed'] > 0 ? '+' : '') + bonuses['+speed'] + ' speed');
@@ -165,6 +187,9 @@ function bonusHelpText(bonuses, implicit) {
 // Foundt at http://stackoverflow.com/questions/7312468/javascript-round-to-a-number-of-decimal-places-but-strip-extra-zeros
 Number.prototype.format = function (digits) {
     return parseFloat(this.toFixed(digits));
+}
+String.prototype.format = function (digits) {
+    return this;
 }
 function sellItem(item) {
     var sourceCharacter = item.$item.closest('.js-playerPanel').data('character');

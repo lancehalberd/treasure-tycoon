@@ -284,9 +284,9 @@ function getStat(actor, stat) {
         percent += .002 * actor.intelligence;
     }
     actor.bonuses.forEach(function (bonus) {
-        plus += ifdefor(bonus['+' + stat], 0);
-        percent += ifdefor(bonus['%' + stat], 0);
-        multiplier *= ifdefor(bonus['*' + stat], 1);
+        plus += evaluateValue(actor, ifdefor(bonus['+' + stat], 0));
+        percent += evaluateValue(actor, ifdefor(bonus['%' + stat], 0));
+        multiplier *= evaluateValue(actor, ifdefor(bonus['*' + stat], 1));
     });
     if (stat === 'minDamage' || stat === 'maxDamage') {
         percent += .002 * actor.strength;
@@ -303,19 +303,44 @@ function getStat(actor, stat) {
     return (base + plus) * percent * multiplier;
 }
 function getStatForAttack(actor, attack, stat) {
-    var base = ifdefor(attack.base.stats[stat], 0), plus = 0, percent = 1, multiplier = 1;
+    var base = evaluateValue(actor, ifdefor(attack.base.stats[stat], 0)), plus = 0, percent = 1, multiplier = 1;
     actor.bonuses.forEach(function (bonus) {
         var keys = [stat];
         ifdefor(attack.base.tags, []).concat([attack.base.type]).forEach(function (prefix) {
             keys.push(prefix + ':' + stat);
         });
         keys.forEach(function (key) {
-            plus += ifdefor(bonus['+' + key], 0);
-            percent += ifdefor(bonus['%' + key], 0);
-            multiplier *= ifdefor(bonus['*' + key], 1);
+            plus += evaluateValue(actor, ifdefor(bonus['+' + key], 0));
+            percent += evaluateValue(actor, ifdefor(bonus['%' + key], 0));
+            multiplier *= evaluateValue(actor, ifdefor(bonus['*' + key], 1));
         });
     });
     return (base + plus) * percent * multiplier;
+}
+function evaluateValue(actor, value) {
+    if (typeof value === 'number') {
+        return value;
+    }
+    var formula = value;
+    if (!formula || !formula.length) {
+        throw new Error('Expected "formula" to be an array, but value is: ' + formula);
+    }
+    formula = formula.slice();
+    value = actor[formula.shift()];
+    while (formula.length > 1) {
+        var operator = formula.shift();
+        var operand = formula.shift();
+        if (operator == '+') {
+            value += operand;
+        } else if (operator == '-') {
+            value -= operand;
+        } else if (operator == '*') {
+            value *= operand;
+        } else if (operator == '/') {
+            value /= operand;
+        }
+    }
+    return value;
 }
 function gainXP(adventurer, amount) {
     adventurer.xp = Math.min(adventurer.xp + amount, adventurer.xpToLevel);

@@ -173,6 +173,16 @@ function performAction(character, actor, targets) {
             if (attack.readyAt > character.time) {
                 return true;
             }
+            if (attack.base.type == 'heal') {
+                // Don't use a heal ability unless none of it will be wasted or the
+                // actor is below half life.
+                if (actor.health + attack.amount > actor.maxHealth && actor.health > actor.maxHealth / 2) {
+                    return true;
+                }
+                attack.readyAt = character.time + attack.cooldown;
+                actor.health += attack.amount;
+                actor.stunned = character.time + .3;
+            }
             if (attack.base.type == 'monster') {
                 var count = 0;
                 actor.allies.forEach(function (ally) {

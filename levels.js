@@ -100,6 +100,16 @@ function $nextLevelButton(currentLevel) {
     }
     return $levelDiv(key);
 }
+var triforceBoard = {
+    'fixed' : [{"k":"triangle","p":[136,79],"t":0}], 'spaces' : [{"k":"triangle","p":[151,104.98076211353316],"t":-60},{"k":"triangle","p":[121,104.98076211353316],"t":-60},{"k":"triangle","p":[136,79],"t":-60}]
+};
+var halfHexBoard = {
+    'fixed' : [{"k":"trapezoid","p":[383,172.96152422706632],"t":-180}], 'spaces': [{"k":"trapezoid","p":[353,121],"t":0}]
+};
+var spikeBoard = {
+    'fixed': [{"k":"trapezoid","p":[295,236.96152422706632],"t":0}],
+    'spaces': [{"k":"triangle","p":[295,236.96152422706632],"t":-60},{"k":"triangle","p":[280,262.9422863405995],"t":-120},{"k":"triangle","p":[340,262.9422863405995],"t":-120}]
+};
 function initializeLevels() {
     closedChestSource = {'image': images['gfx/chest-closed.png'], 'xOffset': 0, 'width': 32, 'height': 32};
     openChestSource = {'image': images['gfx/chest-open.png'], 'xOffset': 0, 'width': 32, 'height': 32};
@@ -111,7 +121,7 @@ function initializeLevels() {
                 'fixed' : [{"k":"diamond","p":[134.75,120.47595264191645],"t":-120}],
                 'spaces' : [{"k":"triangle","p":[104.75,120.47595264191645],"t":-60},{"k":"triangle","p":[134.75,120.47595264191645],"t":0}]
              },
-             'next': ['cave', 'garden'],
+             'next': ['cave', 'garden', 'road'],
              'enemySkills': [{'bonuses': {'+strength': 5}}],
              'monsters': ['caterpillar', 'skeleton'],
              'events': [['skeleton', 'caterpillar'], ['caterpillar', 'caterpillar'], ['skeleton', 'skeleton'], ['dragon']],
@@ -124,7 +134,7 @@ function initializeLevels() {
                 'fixed' : [{"k":"triangle","p":[105,68],"t":60}],
                 'spaces' : [{"k":"triangle","p":[75,68],"t":0},{"k":"triangle","p":[120,93.98076211353316],"t":120}]
              },
-             'next': ['grove', 'cemetery'],
+             'next': ['grove', 'cemetery', 'temple'],
              'enemySkills': [{'bonuses': {'+intelligence': 5}}],
              'monsters': ['gnome', 'skeleton'],
              'events': [['skeleton', 'gnome'], ['skeleton', 'skeleton'], ['gnome', 'gnome'], ['giantSkeleton']],
@@ -137,7 +147,7 @@ function initializeLevels() {
                 'fixed' : [{"k":"diamond","p":[161,75],"t":0}],
                 'spaces' : [{"k":"diamond","p":[131,75],"t":-60}]
              },
-             'next': ['meadow', 'savannah'],
+             'next': ['meadow', 'savannah', 'orchard'],
              'enemySkills': [{'bonuses': {'+dexterity': 5}}],
              'monsters': ['caterpillar', 'gnome'],
              'events': [['caterpillar', 'gnome'], ['gnome', 'gnome'], ['caterpillar', 'caterpillar'], ['butterfly']],
@@ -181,6 +191,37 @@ function initializeLevels() {
              'events': [['butterfly'], ['giantSkeleton'], ['dragon']],
              'firstChest': firstChest([simpleEmeraldLoot, pointLoot('AP', [1, 1]), pointLoot('IP', [40, 50])]),
              'backupChest': backupChest([pointLoot('IP', [10, 20])])
+             }, 1);
+    // Level 1 Healing
+    addLevel({'name': 'Temple', 'level': 2, 'backgroundImage': images['gfx/cave.png'],
+             'skill': abilities['heal'],
+             'board': triforceBoard,
+             'next': [],
+             'enemySkills': [abilities['heal']],
+             'monsters': ['gnome', 'butterfly'],
+             'events': [['dragon']],
+             'firstChest': firstChest([simpleSaphireLoot, pointLoot('AP', [3, 3]), pointLoot('IP', [100, 200])]),
+             'backupChest': backupChest([pointLoot('IP', [50, 100])])
+             });
+    addLevel({'name': 'Orchard', 'level': 2, 'backgroundImage': images['gfx/forest.png'],
+             'skill': abilities['sap'],
+             'board': spikeBoard,
+             'next': [],
+             'enemySkills': [abilities['sap'], {'bonuses': {'+range': 2, '+attackSpeed': .5}}],
+             'monsters': ['butterfly', 'gnome'],
+             'events': [['butterfly', 'butterfly'], ['gnome', 'gnome'],  ['dragon']],
+             'firstChest': firstChest([simpleEmeraldLoot, pointLoot('AP', [3, 3]), pointLoot('IP', [100, 200])]),
+             'backupChest': backupChest([pointLoot('IP', [50, 100])])
+             });
+    addLevel({'name': 'Road', 'level': 2, 'backgroundImage': images['gfx/grass.png'],
+             'skill': abilities['vitality'],
+             'board': halfHexBoard,
+             'next': [],
+             'enemySkills': [abilities['vitality']],
+             'monsters': ['skeleton'],
+             'events': [['skeleton', 'skeleton'], ['gnomecromancer'], ['skeleton', 'skeleton', 'skeleton', 'skeleton'], ['gnomecromancer', 'gnomecromancer']],
+             'firstChest': firstChest([simpleRubyLoot, pointLoot('AP', [3, 3]), pointLoot('IP', [100, 200])]),
+             'backupChest': backupChest([pointLoot('IP', [50, 100])])
              }, 1);
 
     /*addLevel({'name': 'Forest', 'backgroundImage': images['gfx/forest.png'],

@@ -94,7 +94,7 @@ function completeArea(character) {
         character.area.base.next.forEach(function (areaKey) {
             // Add a button for the unlocked area only if no such button exists already.
             if (!character.$panel.find('.js-infoMode').find('.js-area-' + areaKey).length) {
-                $adventureDiv.after($levelDiv(areaKey));
+                character.$panel.find('.js-map').append($levelDiv(areaKey));
             }
         });
     }
