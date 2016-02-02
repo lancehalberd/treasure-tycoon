@@ -38,6 +38,7 @@ function sellJewel(jewel) {
     destroyJewel(jewel);
     gain('IP', jewel.price);
     gain('MP', jewel.price);
+    updateJewelCraftingOptions();
 }
 
 var overVertex = null;
