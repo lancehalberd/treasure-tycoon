@@ -318,7 +318,7 @@ var accessorySlots = ['back', 'ring'];
 var items = [
     [
         {'slot': 'weapon', 'type': 'axe',  'name': 'Axe', 'bonuses': {'+minDamage': 3, '+maxDamage': 6, '+range': 1.5, '+attackSpeed': 1.5, '+critChance': .05 }, 'icon': 'axe'},
-        {'slot': 'weapon', 'type': 'bow',  'name': 'Bow', 'bonuses': {'+minDamage': 2, '+maxDamage': 4, '+range': 10, '+attackSpeed': 1}, 'icon': 'bow', '+critChance': .05},
+        {'slot': 'weapon', 'type': 'bow',  'name': 'Bow', 'bonuses': {'+minDamage': 3, '+maxDamage': 4, '+range': 8, '+attackSpeed': 1}, 'icon': 'bow', '+critChance': .05},
         {'slot': 'offhand', 'type': 'shield',  'name': 'Small Shield', 'bonuses': {'+block': 2, '+armor': 2}, 'icon': 'shield'},
         {'slot': 'feet', 'type': 'boots',  'name': 'Steel Boots', 'bonuses': {'+speed': -50, '+armor': 1, '+block': 2}, 'offset': 8, icon: 'boots'},
         {'slot': 'head', 'type': 'helmet',  'name': 'Ribbon', 'bonuses': {'+evasion': 1}, icon: 'hat'},
@@ -389,6 +389,8 @@ $(document).on('keydown', function(event) {
     if (event.which == 76) { // 'l'
         state.characters.forEach(function (character) {
             gainXP(character.adventurer, character.adventurer.xpToLevel);
+            updateAdventurer(character.adventurer);
+            updateSkillButtons(character);
         });
     }
     console.log(event.which);

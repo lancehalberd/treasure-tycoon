@@ -1,6 +1,7 @@
 function drawBoardBackground(context, board) {
-    for (var i = 0; i < board.spaces.length; i++) {
-        var points = board.spaces[i].points;
+    var spaces = board.spaces;
+    for (var i = 0; i < spaces.length; i++) {
+        var points = spaces[i].points;
         context.beginPath();
         context.moveTo(points[0][0], points[0][1]);
         for (var j = 1; j < points.length; j++) {
@@ -10,7 +11,9 @@ function drawBoardBackground(context, board) {
         context.lineWidth = 5;
         context.lineCap = 'round';
         context.lineJoin = 'round';
+        context.fillStyle = '#888888';
         context.strokeStyle = '#888888';
+        context.fill();
         context.stroke();
     }
     for (var i = 0; i < board.spaces.length; i++) {
@@ -32,13 +35,36 @@ function drawBoardJewels(character) {
     var canvas = character.jewelsCanvas;
     var lightSource = relativeMousePosition(canvas);
     var context = character.jewelsContext
+    var board = character.board;
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.drawImage(character.boardCanvas, 0, 0, canvas.width, canvas.height);
-    var board = character.adventurer.board;
     var focusedJewelIsOnBoard = false;
-    for (var i = 0; i < board.fixed.length; i++) {
-        var jewel = board.fixed[i];
+    var fixedJewels = board.fixed;
+    for (var i = 0; i < fixedJewels.length; i++) {
+        var jewel = fixedJewels[i];
         drawJewel(context, jewel.shape, lightSource);
+    }
+    if (board.boardPreview) {
+        fixedJewels = board.boardPreview.fixed;
+        for (var i = 0; i < fixedJewels.length; i++) {
+            var jewel = fixedJewels[i];
+            drawJewel(context, jewel.shape, lightSource);
+            focusedJewelIsOnBoard = focusedJewelIsOnBoard || draggingBoardJewel == jewel || overJewel == jewel;
+        }
+        var spaces = board.boardPreview.spaces;
+        for (var i = 0; i < spaces.length; i++) {
+            var points = spaces[i].points;
+            context.beginPath();
+            context.moveTo(points[0][0], points[0][1]);
+            for (var j = 1; j < points.length; j++) {
+                context.lineTo(points[j][0], points[j][1]);
+            }
+            context.closePath();
+            context.globalAlpha = .5;
+            context.fillStyle = 'green';
+            context.fill();
+            context.globalAlpha = 1;
+        }
     }
     for (var i = 0; i < board.jewels.length; i++) {
         var jewel = board.jewels[i];

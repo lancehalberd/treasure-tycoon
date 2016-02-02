@@ -94,15 +94,18 @@ function makeJewel(tier, shapeType, components, quality) {
     updateJewel(jewel);
     return jewel;
 }
-function makeFixedJewel(shape, character, abilityKey) {
+function makeFixedJewel(shape, character, ability) {
     shape.color = '#333333';
     return {
         'shape': shape,
         'fixed': true,
         'character': character,
-        'abilityKey': abilityKey,
-        'helpText': abilityHelpText(abilities[abilityKey])
+        'helpText': abilityHelpText(ability)
     };
+}
+// Used like: arrayOfShapes = arrayOfJewels.map(jewelToShape)
+function jewelToShape(jewel) {
+    return jewel.shape;
 }
 function arrayToCssRGB(array) {
     return '#' + toHex(array[0]) + toHex(array[1]) + toHex(array[2]);

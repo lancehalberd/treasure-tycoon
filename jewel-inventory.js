@@ -43,12 +43,19 @@ function sellJewel(jewel) {
 var overVertex = null;
 var overJewel = null;
 var draggedJewel = null;
+var draggingBoardJewel = null;
 $('body').on('mousedown', function (event) {
-    if (draggedJewel) {
+    if (draggedJewel || draggingBoardJewel) {
         stopJewelDrag();
         return;
     }
-    if (!overJewel || overJewel.fixed) {
+    if (!overJewel) {
+        return;
+    }
+    if (overJewel.fixed) {
+        if (!overJewel.confirmed) {
+            draggingBoardJewel = overJewel;
+        }
         return;
     }
     draggedJewel = overJewel;
@@ -63,12 +70,12 @@ $('body').on('mousedown', function (event) {
     draggedJewel.shape.setCenterPosition(draggedJewel.canvas.width / 2, draggedJewel.canvas.height / 2);
     $dragHelper.css('position', 'absolute');
     $('.js-mouseContainer').append($dragHelper);
-    updateDragHelper();
     redrawInventoryJewel(draggedJewel);
+    updateDragHelper();
     dragged = false;
 });
 $('body').on('mousemove', '.js-jewel', function (event) {
-    if (draggedJewel || $dragHelper) {
+    if (draggedJewel || $dragHelper || draggingBoardJewel) {
         return;
     }
     overJewel = null;
@@ -80,24 +87,22 @@ $('body').on('mousemove', '.js-jewel', function (event) {
         if (distanceSquared(points[j], relativePosition) < 25) {
             overJewel = jewel;
             overVertex = points[j].concat();
-            redrawInventoryJewel(jewel);
             return;
         }
     }
     if (isPointInPoints(relativePosition, points)) {
         overJewel = jewel;
-        redrawInventoryJewel(jewel);
     }
 });
 $('body').on('mousemove', '.js-skillCanvas', function (event) {
-    if (draggedJewel || $dragHelper) {
+    if (draggedJewel || $dragHelper || draggingBoardJewel) {
         return;
     }
     overJewel = null;
     overVertex = null;
     var character = $(this).closest('.js-playerPanel').data('character');
     var relativePosition = relativeMousePosition(this);
-    var jewels = character.adventurer.board.jewels;
+    var jewels = character.board.jewels;
     for (var i = 0; i < jewels.length; i++) {
         var jewel = jewels[i];
         var points = jewel.shape.points;
@@ -112,7 +117,10 @@ $('body').on('mousemove', '.js-skillCanvas', function (event) {
             overJewel = jewel;
         }
     }
-    var jewels = character.adventurer.board.fixed;
+    var jewels = character.board.fixed.concat();
+    if (character.board.boardPreview) {
+        jewels = jewels.concat(character.board.boardPreview.fixed);
+    }
     for (var i = 0; i < jewels.length; i++) {
         var jewel = jewels[i];
         var points = jewel.shape.points;
@@ -130,6 +138,7 @@ $('body').on('mousemove', '.js-skillCanvas', function (event) {
 });
 $('body').on('mousemove', function () {
     checkIfStillOverJewel();
+    if (draggingBoardJewel) dragBoard();
     if (!draggedJewel) {
         return;
     }
@@ -160,7 +169,39 @@ $('body').on('mousemove', function () {
             }
         }
     }
-})
+});
+function dragBoard() {
+    var character = draggingBoardJewel.character;
+    var boardShapes = character.board.boardPreview.fixed.map(jewelToShape).concat(character.board.boardPreview.spaces)
+    var mousePosition = relativeMousePosition(character.jewelsCanvas);
+    // Translate the board so the fixed jewel is centered under the mouse.
+    if (overVertex === null) {
+        var v = vector(draggingBoardJewel.shape.center, mousePosition);
+        translateShapes(boardShapes, v);
+        dragged = true;
+        return;
+    }
+    // Rotate the board
+    var points = draggingBoardJewel.shape.points;
+    var center = draggingBoardJewel.shape.center;
+    var centerToMouse = vector(center, mousePosition);
+    var centerToVertex = vector(center, overVertex);
+    var dotProduct = centerToVertex[0] * centerToMouse[0] + centerToVertex[1] * centerToMouse[1];
+    var mag1 = magnitude(centerToVertex);
+    var mag2 = magnitude(centerToMouse);
+    var cosine = dotProduct / mag1 / mag2;
+    if (mag1 * mag2 > tolerance && cosine <= 1) {
+        var theta = Math.acos(cosine);
+        if (centerToVertex[0] * centerToMouse[1] - centerToVertex[1] * centerToMouse[0] < 0) {
+            theta = -theta;
+        }
+        theta = Math.round(theta / (Math.PI / 6));
+        if (theta != 0) {
+            rotateShapes(boardShapes, center, theta * Math.PI / 6);
+            overVertex = rotatePoint(overVertex, center, theta * Math.PI / 6);
+        }
+    }
+}
 function checkIfStillOverJewel() {
     if (!overJewel) return;
     var relativePosition
@@ -191,7 +232,7 @@ $('body').on('mouseup', function (event) {
 
 function removeFromBoard(jewel) {
     if (!jewel.character) return;
-    var jewels = jewel.character.adventurer.board.jewels;
+    var jewels = jewel.character.board.jewels;
     var index = jewels.indexOf(jewel);
     if (index >= 0) {
         jewels.splice(index, 1);
@@ -200,6 +241,7 @@ function removeFromBoard(jewel) {
 }
 
 function stopJewelDrag() {
+    if (draggingBoardJewel) stopBoardDrag();
     if (!draggedJewel) return;
     if (overVertex) {
         overVertex = null;
@@ -253,6 +295,12 @@ function stopJewelDrag() {
     }
     appendDraggedJewelToElement($('.js-jewel-inventory'));
 }
+
+function stopBoardDrag() {
+    var character = draggingBoardJewel.character;
+    snapBoardToBoard(character.board.boardPreview, character.board);
+    draggingBoardJewel = null;
+}
 function appendDraggedJewelToElement($element) {
     if (!draggedJewel) return;
     appendJewelToElement(draggedJewel, $element);
@@ -268,11 +316,11 @@ function appendJewelToElement(jewel, $element) {
     jewel.$canvas.css('position', '');
 }
 function equipJewel(character) {
-    if (snapToBoard(draggedJewel.shape, character.adventurer.board)) {
+    if (snapToBoard(draggedJewel.shape, character.board)) {
         draggedJewel.character = character;
         draggedJewel.$item.detach();
         draggedJewel.$canvas.detach();
-        character.adventurer.board.jewels.push(draggedJewel);
+        character.board.jewels.push(draggedJewel);
         overJewel = draggedJewel;
         draggedJewel = null;
         $dragHelper = null;
@@ -383,7 +431,7 @@ function splitJewel(jewel) {
     updateJewelCraftingOptions();
 }
 function snapToBoard(shape, board) {
-    var otherShapes = board.fixed.map(function (jewel) { return jewel.shape;}).concat(board.jewels.map(function (jewel) { return jewel.shape;}));
+    var otherShapes = board.fixed.map(jewelToShape).concat(board.jewels.map(jewelToShape));
     var vectors = [];
     var checkedPoints = shape.points;
     var otherPoints = allPoints(otherShapes);
@@ -407,6 +455,33 @@ function snapToBoard(shape, board) {
         if (checkForCollision([shape], otherShapes) || !isOnBoard(shape, board)) {
             shape.translate(-vectors[i].vector[0], -vectors[i].vector[1]);
         } else {
+            return true;
+        }
+    }
+    return false;
+}
+function snapBoardToBoard(boardA, boardB) {
+    var shapesA = boardA.spaces;
+    var shapesB = boardB.spaces;
+    var vectors = [];
+    var checkedPoints = allPoints(shapesA);
+    var otherPoints = allPoints(shapesB);
+    for (var i = 0; i < checkedPoints.length; i++) {
+        for (var j = 0; j < otherPoints.length; j++) {
+            var d2 = distanceSquared(checkedPoints[i], otherPoints[j]);
+            vectors.push({d2: d2, vector: vector(checkedPoints[i], otherPoints[j])});
+        }
+    }
+    if (!vectors.length) {
+        return false;
+    }
+    vectors.sort(function (a, b) { return a.d2 - b.d2;});
+    for (var i = 0; i < vectors.length; i++) {
+        translateShapes(shapesA, vectors[i].vector);
+        if (checkForCollision(shapesA, shapesB)) {
+            translateShapes(shapesA, [-vectors[i].vector[0], -vectors[i].vector[1]]);
+        } else {
+            translateShapes(boardA.fixed.map(jewelToShape), vectors[i].vector);
             return true;
         }
     }

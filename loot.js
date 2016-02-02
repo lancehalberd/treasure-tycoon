@@ -67,12 +67,15 @@ function jewelTreasurePopup(jewel, x, y, vx, vy, delay) {
 function jewelLootDrop(jewel) {
     return {
         'gainLoot': function () {
-            $('.js-jewel-inventory').append(jewel.$item);
+            gainJewel(jewel);
         },
         'addTreasurePopup': function (character, x, y, vx, vy, delay) {
             character.treasurePopups.push(jewelTreasurePopup(jewel, x, y, vx, vy, delay));
         }
     }
+}
+function gainJewel(jewel) {
+    $('.js-jewel-inventory').append(jewel.$item);
 }
 
 function jewelLoot(shapes, tiers, components, permute) {
@@ -88,10 +91,10 @@ function createRandomJewel(shapes, tiers, components, permute) {
     components = components.map(function (component) { return Random.range(component[0], component[1]);});
     return makeJewel(tier, shapeType, permute ? Random.shuffle(components) : components, quality);
 }
-var simpleJewelLoot = jewelLoot(basicShapeTypes, [1, 1], [[80, 100], [5,20], [5, 20]], true);
-var simpleRubyLoot = jewelLoot(basicShapeTypes, [1, 1], [[80, 100], [5,20], [5, 20]], false);
-var simpleEmeraldLoot = jewelLoot(basicShapeTypes, [1, 1], [[5, 20], [80,100], [5, 20]], false);
-var simpleSaphireLoot = jewelLoot(basicShapeTypes, [1, 1], [[5, 20], [5,20], [80, 100]], false);
+var simpleJewelLoot = jewelLoot(basicShapeTypes, [1, 1], [[90, 90], [5, 10], [0, 5]], true);
+var simpleRubyLoot = jewelLoot(basicShapeTypes, [1, 1], [[90, 100], [5, 10], [5, 10]], false);
+var simpleEmeraldLoot = jewelLoot(basicShapeTypes, [1, 1], [[5, 10], [90,100], [5, 10]], false);
+var simpleSaphireLoot = jewelLoot(basicShapeTypes, [1, 1], [[5, 10], [5, 10], [90, 100]], false);
 
 
 function firstChest(loot) {
@@ -127,9 +130,9 @@ function treasureChest(loot, closedImage, openImage) {
                     self.loot.forEach(function (loot) {
                         var drop = loot.generateLootDrop();
                         drop.gainLoot();
-                        var vx =  Math.cos(theta);
-                        var vy = -Math.sin(theta);
-                        drop.addTreasurePopup(character, self.x + 32 + vx * 40, 240 - 80 + vy * 40, vx, vy, delay += 5);
+                        var vx =  Math.cos(theta) * 2;
+                        var vy = -Math.sin(theta) * 2;
+                        drop.addTreasurePopup(character, self.x + 32 + vx * 20, 240 - 80 + vy * 20, vx, vy, delay += 5);
                         theta += thetaRange / Math.max(1, self.loot.length - 1);
                     });
                 }
