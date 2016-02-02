@@ -165,7 +165,7 @@ function initializeLevels() {
              },
              'next': [],
              'monsters': ['butterfly'],
-             'events': [['motherfly'], ['caterpillar', 'caterpillar', 'caterpillar'], ['caterpillar', 'caterpillar', 'motherfly']],
+             'events': [['caterpillar', 'caterpillar', 'caterpillar'], ['caterpillar', 'caterpillar', 'motherfly']],
              'firstChest': firstChest([simpleRubyLoot, pointLoot('AP', [1, 1]), pointLoot('IP', [40, 50])]),
              'backupChest': backupChest([pointLoot('IP', [10, 20])])
              });
