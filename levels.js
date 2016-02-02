@@ -34,7 +34,7 @@ function instantiateLevel(levelData, completed) {
     return {
         'base': levelData,
         'level': level,
-        'enemyBonuses': levelData.enemyBonuses,
+        'enemySkills': levelData.enemySkills,
         'waves': waves,
         'backgroundImage': levelData.backgroundImage
     };
@@ -111,8 +111,8 @@ function initializeLevels() {
                 'fixed' : [{"k":"diamond","p":[134.75,120.47595264191645],"t":-120}],
                 'spaces' : [{"k":"triangle","p":[104.75,120.47595264191645],"t":-60},{"k":"triangle","p":[134.75,120.47595264191645],"t":0}]
              },
-             'next': ['cave'],
-             'enemyBonuses': {'+strength': 5},
+             'next': ['cave', 'garden'],
+             'enemySkills': [{'bonuses': {'+strength': 5}}],
              'monsters': ['caterpillar', 'skeleton'],
              'events': [['skeleton', 'caterpillar'], ['caterpillar', 'caterpillar'], ['skeleton', 'skeleton'], ['dragon']],
              'firstChest': firstChest([simpleRubyLoot, pointLoot('AP', [1, 1]), pointLoot('IP', [40, 50])]),
@@ -124,8 +124,8 @@ function initializeLevels() {
                 'fixed' : [{"k":"triangle","p":[105,68],"t":60}],
                 'spaces' : [{"k":"triangle","p":[75,68],"t":0},{"k":"triangle","p":[120,93.98076211353316],"t":120}]
              },
-             'next': ['grove'],
-             'enemyBonuses': {'+intelligence': 5},
+             'next': ['grove', 'cemetary'],
+             'enemySkills': [{'bonuses': {'+intelligence': 5}}],
              'monsters': ['gnome', 'skeleton'],
              'events': [['skeleton', 'gnome'], ['skeleton', 'skeleton'], ['gnome', 'gnome'], ['giantSkeleton']],
              'firstChest': firstChest([simpleSaphireLoot, pointLoot('AP', [1, 1]), pointLoot('IP', [40, 50])]),
@@ -137,10 +137,48 @@ function initializeLevels() {
                 'fixed' : [{"k":"diamond","p":[161,75],"t":0}],
                 'spaces' : [{"k":"diamond","p":[131,75],"t":-60}]
              },
-             'next': ['meadow'],
-             'enemyBonuses': {'+dexterity': 5},
+             'next': ['meadow', 'savannah'],
+             'enemySkills': [{'bonuses': {'+dexterity': 5}}],
              'monsters': ['caterpillar', 'gnome'],
              'events': [['caterpillar', 'gnome'], ['gnome', 'gnome'], ['caterpillar', 'caterpillar'], ['butterfly']],
+             'firstChest': firstChest([simpleEmeraldLoot, pointLoot('AP', [1, 1]), pointLoot('IP', [40, 50])]),
+             'backupChest': backupChest([pointLoot('IP', [10, 20])])
+             }, 1);
+    // Level 1 Utility
+    addLevel({'name': 'Cemetary', 'level': 1, 'backgroundImage': images['gfx/grass.png'],
+             'skill': abilities['raiseDead'],
+             'board': {
+                'fixed' : [{"k":"diamond","p":[134.75,120.47595264191645],"t":-120}],
+                'spaces' : [{"k":"triangle","p":[104.75,120.47595264191645],"t":-60},{"k":"triangle","p":[134.75,120.47595264191645],"t":0}]
+             },
+             'next': [],
+             'monsters': ['caterpillar', 'skeleton'],
+             'events': [['skeleton', 'skeleton'], ['gnomecromancer'], ['skeleton', 'skeleton', 'skeleton', 'skeleton'], ['gnomecromancer', 'gnomecromancer']],
+             'firstChest': firstChest([simpleRubyLoot, pointLoot('AP', [1, 1]), pointLoot('IP', [40, 50])]),
+             'backupChest': backupChest([pointLoot('IP', [10, 20])])
+             });
+    addLevel({'name': 'Savannah', 'level': 1, 'backgroundImage': images['gfx/grass.png'],
+             'skill': abilities['pet'],
+             'board': {
+                'fixed' : [{"k":"diamond","p":[134.75,120.47595264191645],"t":-120}],
+                'spaces' : [{"k":"triangle","p":[104.75,120.47595264191645],"t":-60},{"k":"triangle","p":[134.75,120.47595264191645],"t":0}]
+             },
+             'next': [],
+             'monsters': ['butterfly'],
+             'events': [['motherfly'], ['caterpillar', 'caterpillar', 'caterpillar'], ['caterpillar', 'caterpillar', 'motherfly']],
+             'firstChest': firstChest([simpleRubyLoot, pointLoot('AP', [1, 1]), pointLoot('IP', [40, 50])]),
+             'backupChest': backupChest([pointLoot('IP', [10, 20])])
+             });
+    addLevel({'name': 'Garden', 'level': 1, 'backgroundImage': images['gfx/forest.png'],
+             'skill': abilities['stealth'],
+             'board': {
+                'fixed' : [{"k":"diamond","p":[161,75],"t":0}],
+                'spaces' : [{"k":"diamond","p":[131,75],"t":-60}]
+             },
+             'next': [],
+             'enemySkills': [abilities['stealth']],
+             'monsters': ['caterpillar', 'gnome', 'butterfly', 'skeleton'],
+             'events': [['butterfly'], ['giantSkeleton'], ['dragon']],
              'firstChest': firstChest([simpleEmeraldLoot, pointLoot('AP', [1, 1]), pointLoot('IP', [40, 50])]),
              'backupChest': backupChest([pointLoot('IP', [10, 20])])
              }, 1);

@@ -385,11 +385,27 @@ $(document).on('keydown', function(event) {
         gain('MP', 1000);
         gain('RP', 1000);
         gain('UP', 1000);
+        state.characters.forEach(function (character) {
+            $.each(levels, function (key) {
+                if (!character.$panel.find('.js-area-' + key).length) {
+                    var $div = $levelDiv(key);
+                    character.$panel.find('.js-map').append($div);
+                    //$div.append($tag('button','js-learnSkill', '+skill'));
+                }
+            });
+            //updateSkillButtons(character);
+        });
     }
     if (event.which == 76) { // 'l'
         state.characters.forEach(function (character) {
             gainXP(character.adventurer, character.adventurer.xpToLevel);
             updateAdventurer(character.adventurer);
+            $.each(levels, function (key) {
+                if (character.$panel.find('.js-area-' + key).length && !character.levelsCompleted[key]) {
+                    character.levelsCompleted[key] = true;
+                    character.$panel.find('.js-area-' + key).append($tag('button','js-learnSkill', '+skill'));
+                }
+            });
             updateSkillButtons(character);
         });
     }

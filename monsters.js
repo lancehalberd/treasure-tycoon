@@ -34,7 +34,7 @@ var monsterSuffixes = [
     ]
 ];
 
-function makeMonster(monsterData, level, extraBonuses) {
+function makeMonster(monsterData, level, extraSkills) {
     var monster = {
         'level': level,
         'slow': 0,
@@ -52,7 +52,8 @@ function makeMonster(monsterData, level, extraBonuses) {
         'bonuses': [],
         'prefixes': [],
         'suffixes': [],
-        'abilities': []
+        'abilities': [],
+        'extraSkills': ifdefor(extraSkills, [])
     };
     var baseMonster;
     if (typeof(monsterData) == 'string') {
@@ -60,10 +61,9 @@ function makeMonster(monsterData, level, extraBonuses) {
     } else if (typeof(monsterData) == 'object') {
         baseMonster = monsters[monsterData.key];
         if (monsterData.bonuses) {
-            extraBonuses = monsterData.bonuses;
+            monster.extraSkills.push({'bonuses': monsterData.bonuses});
         }
     }
-    monster.extraBonuses = ifdefor(extraBonuses, {});
     $.each(baseMonster, function (stat, value) {
         monster[stat] = value;
         monster.base[stat] = value;
@@ -132,7 +132,7 @@ function matchingMonsterAffixes(list, monster, alreadyUsed) {
 }
 function updateMonster(monster) {
     // Clear the character's bonuses and graphics.
-    monster.bonuses = [monster.implicitBonuses, monster.extraBonuses];
+    monster.bonuses = [monster.implicitBonuses];
     monster.attacks = [];
     var enchantments = monster.prefixes.length + monster.suffixes.length;
     if (enchantments > 2) {
@@ -148,7 +148,10 @@ function updateMonster(monster) {
         monster.image = monster.base.source.image.normal;
     }
     var name = monster.base.name;
-    var prefixNames = []
+    var prefixNames = [];
+    monster.extraSkills.forEach(function (ability) {
+        addBonusesAndAttacks(monster, ability);
+    });
     monster.base.abilities.forEach(function (ability) {
         addBonusesAndAttacks(monster, ability);
     });
@@ -251,6 +254,12 @@ function initalizeMonsters() {
                             '*block': .5, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': .3}
     });
+    addMonster('gnomecromancer', {'name': 'Gnomecromancer', 'source': gnomeSource, 'fpsMultiplier': 1.5,
+        'implicitBonuses': {'+range': .5, '*attackSpeed': 1.5, '+magicDamage': 2,
+                            '*block': .5, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
+                            '*speed': .3},
+        'abilities': [{'name': 'raiseDead', 'attacks': [{'type': 'monster', 'tags': ['skeleton'], 'key': 'skeleton', 'stats': {'limit': 2, 'cooldown': 5, 'healthBonus': 0, 'damageBonus': 1}}]}]
+    });
     addMonster('skeleton', {'name': 'Skeleton', 'source': skeletonSource,
         // Fast to counter ranged heroes, low range+damage + fast attacks to be weak to armored heroes.
         'implicitBonuses': {'+range': -.5, '*minDamage': .4, '*maxDamage': .4, '+accuracy': 2, '*attackSpeed': 2, '*magicDamage': 0,
@@ -263,6 +272,13 @@ function initalizeMonsters() {
                             '*minDamage': .5, '*maxDamage': .5, '*attackSpeed': .5, '*magicDamage': 0,
                             '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
                             '*speed': .6}
+    });
+    addMonster('motherfly', {'name': 'Motherfly', 'source': butterflySource,
+        'implicitBonuses': {'+maxHealth': 20, '*maxHealth': 3, '+range': 5, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5,
+                            '*minDamage': .5, '*maxDamage': .5, '*attackSpeed': .5, '*magicDamage': 0,
+                            '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
+                            '*speed': .6},
+        'abilities': [{'name': 'Pet', 'attacks': [{'type': 'monster', 'tags': ['pet'], 'key': 'caterpillar', 'stats': {'limit': 2, 'cooldown': 10, 'healthBonus': 2, 'damageBonus': 1}}]}]
     });
     addMonster('giantSkeleton', {'name': 'Skelegiant', 'source': skeletonGiantSource,
         'implicitBonuses': {'*maxHealth': 2, '+critDamage': .5, '*magicDamage': 0,

@@ -14,6 +14,7 @@ function startArea(character, index) {
     character.enemies = [];
     character.objects = [];
     character.allies = [character.adventurer];
+    character.adventurer.allies = character.allies;
     character.adventurer.isAlly = true;
     character.treasurePopups = [];
     character.textPopups = [];
@@ -93,12 +94,14 @@ function startNextWave(character) {
     var wave = character.area.waves[character.waveIndex];
     var x = character.adventurer.x + 800;
     wave.monsters.forEach(function (entityData) {
-        var newMonster = makeMonster(entityData, character.area.level, character.area.enemyBonuses);
+        var newMonster = makeMonster(entityData, character.area.level, ifdefor(character.area.enemySkills, []));
         newMonster.x = x;
         newMonster.character = character;
         newMonster.direction = -1; // Monsters move right to left
+        newMonster.allies = character.enemies;
         character.enemies.push(newMonster);
         newMonster.timeOffset = character.time + newMonster.x;
+        x += 120 + Math.floor(Math.random() * 50);
     });
     wave.objects.forEach(function (entityData) {
         if (entityData.type === 'chest') {
@@ -151,6 +154,10 @@ function performAction(character, actor, targets) {
             targets.unshift(actor.target);
         }
     }
+    // Target the enemy closest to you, not necessarily the one previously targeted.
+    targets.sort(function (A, B) {
+        return actor.direction * (A.x - B.x);
+    });
     actor.target = null;
     targets.forEach(function (target) {
         var distance = Math.abs(target.x - actor.x) - 64; // 64 is the width of the character
@@ -168,7 +175,7 @@ function performAction(character, actor, targets) {
             }
             if (attack.base.type == 'monster') {
                 var count = 0;
-                character.allies.forEach(function (ally) {
+                actor.allies.forEach(function (ally) {
                     if (ally.source == attack) count++;
                 });
                 if (count >= attack.limit) {
@@ -183,13 +190,14 @@ function performAction(character, actor, targets) {
                                 '*minMagicDamage': ifdefor(attack.damageBonus, 1),
                                 '*maxMagicDamage': ifdefor(attack.damageBonus, 1)}
                 }
-                var newMonster = makeMonster(monsterData, character.adventurer.level);
-                newMonster.x = actor.x + 32 + actor.direction * 64;
+                actor.pull = {'x': actor.x - actor.direction * 64, 'time': character.time + .3, 'damage': 0};
+                var newMonster = makeMonster(monsterData, actor.level);
+                newMonster.x = actor.x + actor.direction * 32;
                 newMonster.character = character;
-                newMonster.direction = 1; // Minios move left to right
+                newMonster.direction = actor.direction; // Minios move left to right
                 newMonster.speed = Math.max(actor.speed + 5, newMonster.speed);
                 newMonster.source = attack;
-                character.allies.push(newMonster);
+                actor.allies.push(newMonster);
                 actor.stunned = character.time + .3;
             }
             if (attack.base.type == 'hook') {

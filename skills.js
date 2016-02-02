@@ -3,7 +3,7 @@ var abilities = {
 
     'sap': {'name': 'Sap', 'next': ['pet'], 'bonuses': {'+slowOnHit': .2, '+healthGainOnHit': 1}},
 
-    'pet': {'name': 'Pet', 'next': ['blackbelt', 'petFood', 'petTraining'], 'attacks': [{'type': 'monster', 'tags': ['pet'], 'key': 'caterpillar', 'stats': {'limit': 1, 'cooldown': 30, 'healthBonus': 2, 'damageBonus': 1}}], 'helpText': 'Call up to 1 pet to fight with you.'},
+    'pet': {'name': 'Pet', 'next': ['blackbelt', 'petFood', 'petTraining'], 'attacks': [{'type': 'monster', 'tags': ['pet'], 'key': 'caterpillar', 'stats': {'limit': 1, 'cooldown': 30, 'healthBonus': 1, 'damageBonus': .5}}], 'helpText': 'Call up to 1 pet to fight with you.'},
     'petFood': {'name': 'Pet Food', 'next': ['whistle'], 'bonuses': {'+pet:cooldown': -3, '+pet:healthBonus': 1}, 'helpText': 'Pet has 50% more health and can be called more frequently.'},
     'petTraining': {'name': 'Pet Training', 'next': ['whistle'], 'bonuses': {'+pet:cooldown': -3, '+pet:damageBonus': .5}, 'helpText': 'Pet deals 50% more damage and can be called more frequently.'},
     'whistle': {'name': 'Whistle', 'next': [], 'bonuses': {'+pet:cooldown': -10}, 'helpText': 'Greatly reduces the cooldown for calling your pet.'},
