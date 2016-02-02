@@ -32,8 +32,11 @@ var state = {
 }
 // Load any graphic assets needed by the game here.
 async.mapSeries([
+    // Original images from project contributors:
     'gfx/person.png', 'gfx/grass.png', 'gfx/cave.png', 'gfx/forest.png', 'gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png',
-    'gfx/chest-closed.png', 'gfx/chest-open.png'
+    'gfx/treasureChest.png',
+    // Public domain images:
+    'gfx/chest-closed.png', 'gfx/chest-open.png' // http://opengameart.org/content/treasure-chests
 ], loadImage, function(err, results){
     ['gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png'].forEach(function (imageKey) {
         images[imageKey + '-enchanted'] = makeTintedImage(images[imageKey], '#af0');
@@ -59,7 +62,7 @@ async.mapSeries([
     var testShape = makeShape(0, 0, 0, shapeDefinitions.triangle[0]).scale(30);
     var jewelButtonCanvas = $('.js-jewelButtonCanvas')[0];
     centerShapesInRectangle([testShape], rectangle(0, 0, jewelButtonCanvas.width, jewelButtonCanvas.height));
-    drawJewel(jewelButtonCanvas.getContext('2d'), testShape, [0, 0]);
+    drawJewel(jewelButtonCanvas.getContext('2d'), testShape, [0, 0], 'black');
 });
 function makeTintedImage(image, tint) {
     var tintCanvas = createCanvas(image.width, image.height);
@@ -81,9 +84,8 @@ function makeTintedImage(image, tint) {
 function completeArea(character) {
     var $adventureButton = character.$panel.find('.js-infoMode').find('.js-adventure').last();
     // If the character beat the last adventure open to them, unlock the next one
-    if (!character.levelsCompleted[character.area.key]) {
-        character.levelsCompleted[character.area.key] = true;
-        gain('AP', character.area.level);
+    if (!character.levelsCompleted[character.currentLevelIndex]) {
+        character.levelsCompleted[character.currentLevelIndex] = true;
         $adventureButton.after($nextLevelButton(character.area));
     }
     for (var itemLevel = $('.js-levelSelect').find('option').length + 1; itemLevel <= character.area.level + 1 && itemLevel <= items.length; itemLevel++) {
@@ -97,17 +99,20 @@ function completeArea(character) {
 var lastTime = now();
 function mainLoop() {
     var time = now();
-    var delta = time - lastTime;
+    var delta = 20;
     lastTime = time;
     if ($('.js-jewel-inventory').is(":visible")) {
         redrawInventoryJewels();
     }
     state.characters.forEach(function (character) {
-        var characterDelta = delta * character.gameSpeed / 1000;
-        character.time += characterDelta;
         if (character.area) {
-            adventureLoop(character, characterDelta);
+            for (var i = 0; i < character.gameSpeed && character.area; i++) {
+                character.time += delta / 1000;
+                adventureLoop(character, delta / 1000);
+            }
         } else {
+            var characterDelta = delta * character.gameSpeed / 1000;
+            character.time += characterDelta;
             infoLoop(character, characterDelta);
         }
     });
@@ -178,7 +183,7 @@ $('.js-mouseContainer').on('mouseover mousemove', '.js-adventureMode .js-canvas'
     updateToolTip(x, y, $popup);
     $('.js-mouseContainer').append($popup);
 });
-$('.js-mouseContainer').on('mouseover mousemove', '.js-skillCanvas', checkToShowJewelToolTip);
+$('.js-mouseContainer').on('mouseover mousemove', checkToShowJewelToolTip);
 function checkToShowJewelToolTip() {
     var jewel = draggedJewel || overJewel;
     if (!jewel) {
@@ -192,8 +197,9 @@ function checkToShowJewelToolTip() {
         }
     }
     //console.log([event.pageX,event.pageY]);
-    $popup = $tag('div', 'toolTip js-toolTip', jewel.$item.attr('helptext'));
+    $popup = $tag('div', 'toolTip js-toolTip', jewel.helpText);
     $popup.data('jewel', jewel);
+    $popupTarget = null;
     updateToolTip(mousePosition[0], mousePosition[1], $popup);
     $('.js-mouseContainer').append($popup);
 }
@@ -246,10 +252,7 @@ function updateRetireButtons() {
 }
 
 $('body').on('click', '.js-adventure', function (event) {
-    var index = $(this).data('levelIndex');
-    var $panel = $(this).closest('.js-playerPanel');
-    var character = $panel.data('character');
-    startArea(character, levels[index]);
+    startArea($(this).closest('.js-playerPanel').data('character'), $(this).data('levelIndex'));
 });
 $('body').on('click', '.js-retire', function (event) {
     var $panel = $(this).closest('.js-playerPanel');
@@ -260,6 +263,7 @@ $('body').on('click', '.js-retire', function (event) {
 });
 
 $('.js-showAdventurePanel').on('click', function (event) {
+    showEquipment();
     $('.js-infoPanel').hide();
     $('.js-adventurePanel').show();
 });
@@ -281,6 +285,8 @@ function showJewels() {
     $('.js-inventory').hide();
     $('.js-jewelBoard').show();
     $('.js-jewel-inventory').show();
+    $('.js-infoPanel').hide();
+    $('.js-jewelPanel').show();
 }
 function showEquipment() {
     $('.js-equipment').show();
@@ -291,6 +297,13 @@ function showEquipment() {
 $('body').on('click', '.js-recall', function (event) {
     var $panel = $(this).closest('.js-playerPanel');
     var character = $panel.data('character');
+    // The last wave of an area is always the bonus treasure chest. In order to prevent
+    // the player from missing this chest or opening it without clearing the level,
+    // which would allow them to claim the reward again, we disable recall during
+    // this wave.
+    if (character.area && character.waveIndex >= character.area.waves.length) {
+        return;
+    }
     $panel.find('.js-repeat').prop('checked', false);
     character.replay = false;
     displayInfoMode(character);
@@ -303,5 +316,5 @@ $('body').on('click', '.js-repeat', function (event) {
 $('body').on('click', '.js-fastforward', function (event) {
     var $panel = $(this).closest('.js-playerPanel');
     var character = $panel.data('character');
-    character.gameSpeed = $(this).is(':checked') ? 3 : 1;
+    character.gameSpeed = $(this).is(':checked') ? 4 : 1;
 });

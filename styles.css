@@ -84,7 +84,7 @@
     box-sizing: border-box;
 }
 
-.jewel {
+.jewel, .jewelCraftingSlot {
     width: 68px;
     height: 68px;
     margin-right: 4px;
@@ -345,6 +345,6 @@ button {
 label {
     cursor: pointer;
 }
-button.skill.disabled {
+button.disabled {
     opacity: .5;
 }

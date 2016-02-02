@@ -1,15 +1,21 @@
-function startArea(character, area) {
+function startArea(character, index) {
+    if (!levels[index]) {
+        throw new Error('No level found for ' + index);
+    }
+    character.currentLevelIndex = index;
     character.$panel.find('.js-infoMode').hide();
     character.$panel.find('.js-adventureMode').show();
-    character.area = area;
-    character.monsterIndex = 0;
+    character.area = instantiateLevel(levels[index], character.levelsCompleted[index]);
+    character.waveIndex = 0;
     character.adventurer.x = 0;
     character.adventurer.pull = null;
     character.finishTime = false;
     character.cameraX = -30;
     character.enemies = [];
+    character.objects = [];
     character.allies = [character.adventurer];
     character.adventurer.isAlly = true;
+    character.treasurePopups = [];
     character.textPopups = [];
     character.$panel.find('.js-recall').prop('disabled', false);
     character.adventurer.attacks.forEach(function (attack) {
@@ -42,9 +48,18 @@ function adventureLoop(character, delta) {
             continue;
         }
     }
+    for (var i = 0; i < character.objects.length; i++) {
+        var object = character.objects[i];
+        if (object.x < character.adventurer.x && object.x + object.width - character.cameraX < 0 ) {
+            character.objects.splice(i--, 1);
+            continue;
+        } else {
+            object.update(character);
+        }
+    }
     // Check to start next wave/complete level.
-    if (character.enemies.length == 0) {
-        if (character.monsterIndex >= character.area.monsters.length) {
+    if (character.enemies.length + character.objects.length == 0) {
+        if (character.waveIndex >= character.area.waves.length) {
             if (!character.finishTime) {
                 character.finishTime = character.time + 2;
             } else if (character.finishTime <= character.time) {
@@ -53,6 +68,9 @@ function adventureLoop(character, delta) {
             }
         } else {
             startNextWave(character);
+            if (character.waveIndex >= character.area.waves.length) {
+                character.$panel.find('.js-recall').prop('disabled', true);
+            }
         }
     }
     character.allies.forEach(function (actor) {
@@ -72,19 +90,25 @@ function adventureLoop(character, delta) {
     drawAdventure(character, delta);
 }
 function startNextWave(character) {
-    var monsters = character.area.monsters[character.monsterIndex];
-    monsters = Array.isArray(monsters) ? monsters : [monsters]
+    var wave = character.area.waves[character.waveIndex];
     var x = character.adventurer.x + 800;
-    monsters.forEach(function (monsterData) {
-        var newMonster = makeMonster(monsterData, character.area.level);
+    wave.monsters.forEach(function (entityData) {
+        var newMonster = makeMonster(entityData, character.area.level);
         newMonster.x = x;
         newMonster.character = character;
         newMonster.direction = -1; // Monsters move right to left
         character.enemies.push(newMonster);
         newMonster.timeOffset = character.time + newMonster.x;
-        x += Random.range(50, 150);
     });
-    character.monsterIndex++;
+    wave.objects.forEach(function (entityData) {
+        if (entityData.type === 'chest') {
+            entityData.x = x;
+            character.objects.push(entityData);
+            return;
+        }
+    throw Error("Unrecognized object: " + JSON.stringify(entityData));
+    });
+    character.waveIndex++;
 }
 function processStatusEffects(character, target, delta) {
     if (target.health <= 0) {
@@ -119,7 +143,7 @@ function processStatusEffects(character, target, delta) {
 }
 function performAction(character, actor, targets) {
     if (actor.stunned) return;
-    actor.blocked = false; // Character is assum    ed to not be blocked each frame
+    actor.blocked = false; // Character is assumed to not be blocked each frame
     if (actor.target) {
         var index = targets.indexOf(actor.target);
         if (index >= 0) {
@@ -307,30 +331,15 @@ function defeatedEnemy(character, enemy) {
     // Character receives 10% penalty per level difference between them and the monster.
     var reducedXP = Math.floor(enemy.xp * Math.max(0, 1 - .1 * Math.abs(character.adventurer.level - enemy.level)));
     gainXP(character.adventurer, reducedXP);
-    gain('IP', enemy.ip);
-    if (enemy.ip) {
-        character.textPopups.push(
-            {value: '+' + enemy.ip, x: enemy.x + 35, y: 240 - 140, color: 'white', font: "20px sans-serif"}
-        );
-    }
-    gain('MP', enemy.mp);
-    if (enemy.mp) {
-        character.textPopups.push(
-            {value: '+' + enemy.mp, x: enemy.x + 45, y: 240 - 145, color: '#fc4', font: "22px sans-serif"}
-        )
-    }
-    gain('RP', enemy.rp);
-    if (enemy.rp) {
-        character.textPopups.push(
-            {value: '+' + enemy.rp, x: enemy.x + 55, y: 240 - 150, color: '#c4f', font: "24px sans-serif"}
-        );
-    }
-    gain('UP', enemy.up);
-    if (enemy.up) {
-        character.textPopups.push(
-            {value: '+' + enemy.up, x: enemy.x + 65, y: 240 - 155, color: '#4cf', font: "26px sans-serif"}
-        );
-    }
+    var loot = [];
+    if (enemy.ip) loot.push(pointsLootDrop('IP', enemy.ip));
+    if (enemy.mp) loot.push(pointsLootDrop('MP', enemy.mp));
+    if (enemy.rp) loot.push(pointsLootDrop('RP', enemy.rp));
+    if (enemy.up) loot.push(pointsLootDrop('UP', enemy.up));
+    loot.forEach(function (loot, index) {
+        loot.gainLoot();
+        loot.addTreasurePopup(character, enemy.x + index * 20, 240 - 140, 0, -1, index * 10);
+    });
 }
 function drawAdventure(character, delta) {
     var adventurer = character.adventurer;
@@ -428,9 +437,10 @@ function drawAdventure(character, delta) {
         context.drawImage(backgroundImage, lndscpFrame*10, 0 , 64, 240,
                               x, 0, 64, 240);
     }
-    // Draw enemies
+    character.objects.forEach(function (object, index) {
+        object.draw(character.context, object.x - cameraX, 240 - 128);
+    });
     character.enemies.forEach(function (actor, index) {
-        if (actor == adventurer) return;
         drawActor(character, actor, index)
     });
     character.allies.forEach(function (actor, index) {
@@ -446,6 +456,14 @@ function drawAdventure(character, delta) {
     context.fillText(adventurer.level, 30, 240 - 35);
     // Draw text popups such as damage dealt, item points gained, and so on.
     context.fillStyle = 'red';
+    for (var i = 0; i < character.treasurePopups.length; i++) {
+        var treasurePopup = character.treasurePopups[i];
+        treasurePopup.update(character);
+        treasurePopup.draw(character);
+        if (treasurePopup.done) {
+            character.treasurePopups.splice(i--, 1);
+        }
+    }
     for (var i = 0; i < character.textPopups.length; i++) {
         var textPopup = character.textPopups[i];
         context.fillStyle = ifdefor(textPopup.color, "red");
@@ -514,7 +532,7 @@ function drawAdventurer(character, adventurer, index) {
         }
         var fps = Math.floor(3 * adventurer.speed / 100);
         var frame = Math.floor(character.time * fps) % walkLoop.length;
-        if (adventurer.pull) {
+        if (adventurer.pull || adventurer.stunned) {
             frame = 0;
         }
         context.drawImage(adventurer.personCanvas, walkLoop[frame] * 32, 0 , 32, 64,
@@ -530,25 +548,27 @@ function drawMinimap(character) {
     var x = 10;
     var width = 650;
     var context = character.context;
-    drawBar(context, x, y, width, height, 'white', 'white', character.monsterIndex / character.area.monsters.length);
-    for (var i = 0; i < character.area.monsters.length; i++) {
+    drawBar(context, x, y, width, height, 'white', 'white', character.waveIndex / character.area.waves.length);
+    for (var i = 0; i < character.area.waves.length; i++) {
+        var centerX = x + (i + 1) * width / character.area.waves.length;
+        var centerY = y + height / 2;
         context.fillStyle = 'white';
         context.beginPath();
-            context.arc(x + (i + 1) * width / character.area.monsters.length, y + height / 2, 11, 0, 2 * Math.PI);
+            context.arc(centerX, centerY, 11, 0, 2 * Math.PI);
         context.fill();
-        if (i < character.monsterIndex) {
-            context.fillStyle = 'orange';
-            context.beginPath();
-            context.arc(x + (i + 1) * width / character.area.monsters.length, y + height / 2, 10, 0, 2 * Math.PI);
-            context.fill();
-        }
-        if ((i >= character.monsterIndex - 1 && character.enemies.length) || i >= character.monsterIndex) {
-            context.fillStyle = 'black';
-            context.font = "20px sans-serif";
-            context.textAlign = 'right'
-            context.fillText('M', x + (i + 1) * width / character.area.monsters.length + 8, y + 10);
-        }
     }
     context.fillStyle = 'orange';
-    context.fillRect(x + 1, y + 1, (width - 2) * (character.monsterIndex / character.area.monsters.length) - 10, height - 2);
+    context.fillRect(x + 1, y + 1, (width - 2) * (character.waveIndex / character.area.waves.length) - 10, height - 2);
+    for (var i = 0; i < character.area.waves.length; i++) {
+        var centerX = x + (i + 1) * width / character.area.waves.length;
+        var centerY = y + height / 2;
+        if (i < character.waveIndex) {
+            context.fillStyle = 'orange';
+            context.beginPath();
+            context.arc(centerX, centerY, 10, 0, 2 * Math.PI);
+            context.fill();
+        }
+        var waveCompleted = (i < character.waveIndex - 1)  || (i <= character.waveIndex && (character.enemies.length + character.objects.length) === 0);
+        character.area.waves[i].draw(context, waveCompleted, centerX, centerY);
+    }
 }

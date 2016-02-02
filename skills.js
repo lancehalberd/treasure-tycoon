@@ -25,7 +25,7 @@ var abilities = {
 
     'healing': {'name': 'Healing', 'next': ['raiseDead'], 'bonuses': {'+healthRegen': 2}},
 
-    'raiseDead': {'name': 'Raise Dead', 'next': ['archer'], 'attacks': [{'type': 'monster',  'tags': ['skeleton'], 'key': 'skeleton', 'stats': {'limit': 1, 'cooldown': 10, 'healthBonus': .5,}}]},
+    'raiseDead': {'name': 'Raise Dead', 'next': ['archer'], 'attacks': [{'type': 'monster',  'tags': ['skeleton'], 'key': 'skeleton', 'stats': {'limit': 1, 'cooldown': 10, 'healthBonus': .5}}], 'helpText': 'Raise a skeleton to fight for you.'},
 };
 
 function unlockAbility(character, key) {
@@ -70,7 +70,7 @@ function updateSkillTree(character) {
     character.$panel.find('.js-skill').toggleClass('disabled', (character.adventurer.skillPoints <= 0));
 }
 function abilityHelpText(ability) {
-    var sections = [];
+    var sections = [ability.name, ''];
     if (ifdefor(ability.helpText)) {
         sections.push(ability.helpText);
     }

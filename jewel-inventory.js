@@ -1,37 +1,3 @@
-function makeJewel(shapeType, jewelType, quality) {
-    var jewel = {
-        'shapeType': shapeType,
-        'jewelType': jewelType,
-        'quality': quality,
-        'shape': makeShape(0, 0, 0, shapeDefinitions[shapeType][0]).scale(30)
-    };
-    jewel.shape.color = jewelDefinitions[jewelType].color;
-    jewel.canvas = createCanvas(68, 68);
-    jewel.context = jewel.canvas.getContext("2d");
-    // Jewels can be displayed in 3 different states:
-    // Drawn directly inside of the canvas for a character's jewel board.
-    // Drawn on the jewel.$canvas canvas while being dragged by the user.
-    // Drawn on the jewel.$canvas canvas while it is inside jewel.$item and
-    // being displayed in grid in the jewel-inventory panel.
-    jewel.$canvas = $(jewel.canvas);
-    jewel.$canvas.data('jewel', jewel);
-    jewel.$item = $tag('div', 'js-jewel jewel').append(jewel.canvas);
-    jewel.$item.data('jewel', jewel);
-    jewel.character = null;
-    updateJewel(jewel);
-    return jewel;
-}
-function updateJewel(jewel) {
-    var shapeDefinition = shapeDefinitions[jewel.shapeType][0];
-    var jewelDefinition = jewelDefinitions[jewel.jewelType];
-    var bonusMultiplier = jewel.quality * shapeDefinition.area;
-    jewel.bonuses = copy(jewelDefinition.bonuses);
-    $.each(jewel.bonuses, function (key, value) {
-        jewel.bonuses[key] = value * bonusMultiplier;
-    });
-    jewel.$item.attr('helpText', jewelHelpText(jewel));
-    jewel.shape.setCenterPosition(jewel.canvas.width / 2, jewel.canvas.height / 2);
-}
 function redrawInventoryJewel(jewel) {
     //centerShapesInRectangle([jewel.shape], rectangle(0, 0, jewel.canvas.width, jewel.canvas.height));
     jewel.context.clearRect(0, 0, jewel.canvas.width, jewel.canvas.height);
@@ -51,37 +17,27 @@ function redrawInventoryJewels() {
 }
 function jewelHelpText(jewel) {
     var jewelDefinition = jewelDefinitions[jewel.jewelType];
-    var name = jewelDefinition.name + ' Jewel';
-    var sections = [name, ''];
-    sections.push(bonusHelpText(jewel.bonuses, true));
-    /*var points = [sellValue(item) + ' IP'];
-    var total = item.prefixes.length + item.suffixes.length;
-    if (total) {
-        if (total <= 2) points.push(sellValue(item) * total + ' MP');
-        else points.push(sellValue(item) * (total - 2) + ' RP');
+    var name = jewelDefinition.name;
+    if (jewel.qualifierName) {
+        name = jewel.qualifierName + ' ' + name;
     }
-    sections.push('Sell for ' + points.join(' '));*/
+    name = 'Tier ' + jewel.tier + ' ' + name;
+    var sections = [name, ''];
+    sections.push('Quality ' + jewel.quality.format(2));
+    sections.push('Balance ' + [(300 * jewel.components[0]).format(0), (300 * jewel.components[1]).format(0), (300 * jewel.components[2]).format(0)].join('/'));
+    sections.push('');
+    sections.push(bonusHelpText(jewel.bonuses, true));
+    sections.push('');
+    var points = [jewel.price + ' IP', jewel.price + ' MP'];
+    sections.push('Sell for ' + points.join(' '));
     return sections.join('<br/>');
 }
-
-var jewelDefinitions = {
-    'ruby': {'name': 'Ruby', 'color': 'red', 'bonuses': {'+strength': 1}},
-    'emerald': {'name': 'Emerald', 'color': 'green', 'bonuses': {'+dexterity': 1}},
-    'saphire': {'name': 'Saphire', 'color': 'blue', 'bonuses': {'+intelligence': 1}},
-    'amethyst': {'name': 'Amethyst', 'color': 'purple', 'bonuses': {'+healthRegen': 1}},
-    'diamond': {'name': 'Diamond', 'color': '#bbdddd', 'bonuses': {'+critDamage': .1}},
-    'topaz': {'name': 'Topaz', 'color': 'orange', 'bonuses': {'%attackSpeed': .01}}
-}
-var jewelTypes = [];
-$.each(jewelDefinitions, function (key) {
-    jewelTypes.push(key);
-});
-
-var basicShapeTypes = ['triangle', 'diamond', 'trapezoid'];
-
-function addJewelToInventory() {
-    var jewel = makeJewel(Random.element(basicShapeTypes), Random.element(jewelTypes), 1);
-    $('.js-jewel-inventory').prepend(jewel.$item);
+function sellJewel(jewel) {
+    if (jewel.fixed) return;
+    // unequip and deletes the jewel.
+    destroyJewel(jewel);
+    gain('IP', jewel.price);
+    gain('MP', jewel.price);
 }
 
 var overVertex = null;
@@ -92,7 +48,7 @@ $('body').on('mousedown', function (event) {
         stopJewelDrag();
         return;
     }
-    if (!overJewel) {
+    if (!overJewel || overJewel.fixed) {
         return;
     }
     draggedJewel = overJewel;
@@ -142,6 +98,21 @@ $('body').on('mousemove', '.js-skillCanvas', function (event) {
     var character = $(this).closest('.js-playerPanel').data('character');
     var relativePosition = relativeMousePosition(this);
     var jewels = character.adventurer.board.jewels;
+    for (var i = 0; i < jewels.length; i++) {
+        var jewel = jewels[i];
+        var points = jewel.shape.points;
+        for (var j = 0; j < points.length; j++) {
+            if (distanceSquared(points[j], relativePosition) < 25) {
+                overJewel = jewel;
+                overVertex = points[j].concat();
+                return;
+            }
+        }
+        if (isPointInPoints(relativePosition, points)) {
+            overJewel = jewel;
+        }
+    }
+    var jewels = character.adventurer.board.fixed;
     for (var i = 0; i < jewels.length; i++) {
         var jewel = jewels[i];
         var points = jewel.shape.points;
@@ -221,8 +192,11 @@ $('body').on('mouseup', function (event) {
 function removeFromBoard(jewel) {
     if (!jewel.character) return;
     var jewels = jewel.character.adventurer.board.jewels;
-    jewels.splice(jewels.indexOf(jewel), 1);
-    updateAdventurer(jewel.character.adventurer);
+    var index = jewels.indexOf(jewel);
+    if (index >= 0) {
+        jewels.splice(index, 1);
+        updateAdventurer(jewel.character.adventurer);
+    }
 }
 
 function stopJewelDrag() {
@@ -246,6 +220,12 @@ function stopJewelDrag() {
         $dragHelper = null;
         return;
     }
+    if (collision(draggedJewel.$canvas, $('.js-sellItem'))) {
+        sellJewel(draggedJewel);
+        draggedJewel = null;
+        $dragHelper = null;
+        return;
+    }
     draggedJewel.character = null;
     // Drop the jewel on a skill board if it is over one.
     $('.js-skillCanvas').each(function (index, element) {
@@ -255,20 +235,37 @@ function stopJewelDrag() {
             draggedJewel.shape.setCenterPosition(relativePosition[0], relativePosition[1]);
             if (equipJewel(targetCharacter)) {
                 checkToShowJewelToolTip();
+                updateJewelCraftingOptions();
                 return false;
             }
         }
         return true;
     });
     if (!draggedJewel) return;
-    draggedJewel.shape.setCenterPosition(draggedJewel.canvas.width / 2, draggedJewel.canvas.height / 2);
-    // Return the jewel to the inventory slot if it was not placed in a valid location.
-    $dragHelper.css('position', '');
-    draggedJewel.$item.append(draggedJewel.$canvas);
-    $('.js-jewel-inventory').append(draggedJewel.$item);
+    $craftingSlot = $getClosestElement(draggedJewel.$canvas, $('.js-jewelCraftingSlot'), 60);
+    if ($craftingSlot) {
+        var $existingItem = $craftingSlot.find('.js-jewel');
+        if ($existingItem.length) {
+            $existingItem.detach();
+            $('.js-jewel-inventory').append($existingItem);
+        }
+        appendDraggedJewelToElement($craftingSlot);
+    }
+    appendDraggedJewelToElement($('.js-jewel-inventory'));
+}
+function appendDraggedJewelToElement($element) {
+    if (!draggedJewel) return;
+    appendJewelToElement(draggedJewel, $element);
     overJewel = draggedJewel;
     draggedJewel = null;
     $dragHelper = null;
+    updateJewelCraftingOptions();
+}
+function appendJewelToElement(jewel, $element) {
+    jewel.shape.setCenterPosition(jewel.canvas.width / 2, jewel.canvas.height / 2);
+    jewel.$item.append(jewel.$canvas);
+    $element.append(jewel.$item);
+    jewel.$canvas.css('position', '');
 }
 function equipJewel(character) {
     if (snapToBoard(draggedJewel.shape, character.adventurer.board)) {
@@ -284,9 +281,109 @@ function equipJewel(character) {
     }
     return false;
 }
+function updateJewelCraftingOptions() {
+    var jewelA = $('.js-jewelCraftingSlot').first().find('.js-jewel').data('jewel');
+    var jewelB = $('.js-jewelCraftingSlot').last().find('.js-jewel').data('jewel');
+    if (!jewelA && !jewelB) {
+        $('.js-jewelCraftingButton').hide();
+        return;
+    }
+    if (jewelA && jewelB) {
+        $('.js-jewelCraftingButton').html('Fuse Jewels').show();
+        var fusedShape = getFusedShape(jewelA, jewelB);
+        if (fusedShape) {
+            $('.js-jewelCraftingButton').attr('helptext', 'Click to fuse these jewels together').removeClass('disabled');
+        } else {
+            $('.js-jewelCraftingButton').attr('helptext', 'These jewels cannot be fused.').addClass('disabled');
+        }
+        return;
+    }
+    var jewel = jewelA || jewelB;
+    $('.js-jewelCraftingButton').html('Split Jewel').show();
+    if (jewel.shapeType == 'triangle' || jewel.shapeType == 'rhombus') {
+        $('.js-jewelCraftingButton').attr('helptext', 'This jewel cannot be split.').addClass('disabled');
+    } else {
+        $('.js-jewelCraftingButton').attr('helptext', 'Click to split this jewel into smaller jewels').removeClass('disabled');
+    }
+}
 
+function getFusedShape(jewelA, jewelB) {
+    var totalArea = jewelA.area + jewelB.area;
+    var fusedKey = null;
+    $.each(shapeDefinitions, function (key, data) {
+        if (Math.abs(data[0].area - totalArea) < tolerance) {
+            fusedKey = key;
+            return false;
+        }
+        return true;
+    });
+    return fusedKey ? shapeDefinitions[fusedKey][0] : null;
+}
+
+$('.js-jewelCraftingButton').on('click', function () {
+    var jewelA = $('.js-jewelCraftingSlot').first().find('.js-jewel').data('jewel');
+    var jewelB = $('.js-jewelCraftingSlot').last().find('.js-jewel').data('jewel');
+    if (!jewelA && !jewelB) return;
+    if (jewelA && jewelB) fuseJewels(jewelA, jewelB);
+    else splitJewel(jewelA || jewelB);
+});
+function fuseJewels(jewelA, jewelB) {
+    var fusedShape = getFusedShape(jewelA, jewelB);
+    if (!fusedShape) return; // No fused shape exists for this combination of jewels.
+    var tier = Math.max(jewelA.tier, jewelB.tier);
+    var quality = (jewelA.quality * jewelA.area + jewelB.quality * jewelB.area) / fusedShape.area;
+    var components = [];
+    for (var i = 0;i < 3; i++) {
+        components[i] = jewelA.components[i] * jewelA.area + jewelB.components[i] * jewelB.area;
+    }
+    var newJewel = makeJewel(tier, fusedShape.key, components, quality);
+    destroyJewel(jewelA);
+    destroyJewel(jewelB);
+    appendJewelToElement(newJewel, $('.js-jewelCraftingSlot').first());
+    updateJewelCraftingOptions();
+}
+function destroyJewel(jewel) {
+    removeFromBoard(jewel);
+    jewel.character = null;
+    jewel.$item.data('jewel', null).remove();
+    jewel.$canvas.data('jewel', null).remove();
+}
+function splitJewel(jewel) {
+    if (jewel.shapeType === 'triangle' || jewel.shapeType === 'rhombus') return; // Jewels are too small to split
+    var shapeDefinitionA, shapeDefinitionB;
+    if (jewel.shapeType === 'hexagon') {
+        shapeDefinitionA = shapeDefinitionB = shapeDefinitions['trapezoid'][0];
+    } else if (jewel.shapeType === 'trapezoid') {
+        shapeDefinitionA = shapeDefinitions['diamond'][0];
+        shapeDefinitionB = shapeDefinitions['triangle'][0];
+    } else if (jewel.shapeType === 'diamond') {
+        shapeDefinitionA = shapeDefinitionB = shapeDefinitions['triangle'][0];
+    } else {
+        shapeDefinitionA = shapeDefinitionB = shapeDefinitions['rhombus'][0];
+    }
+    var qualityA, qualityB;
+    if (Math.random() < .5) {
+        var qualityA = jewel.quality * .99 * (1.1 + Math.random() * .1);
+        var qualityB = (jewel.quality * .99 * jewel.area - qualityA * shapeDefinitionA.area ) / shapeDefinitionB.area;
+    } else {
+        var qualityB = jewel.quality * .99 * (1.1 + Math.random() * .1);
+        var qualityA = (jewel.quality * .99 * jewel.area - qualityB * shapeDefinitionB.area ) / shapeDefinitionA.area;
+    }
+    var componentsA = [];
+    var componentsB = [];
+    for (var i = 0;i < 3; i++) {
+        componentsA[i] = jewel.components[i] * (.9 + Math.random() * .2);
+        componentsB[i] = (jewel.components[i] * jewel.area - componentsA[i] * shapeDefinitionA.area) / shapeDefinitionB.area;
+    }
+    var newJewelA = makeJewel(jewel.tier, shapeDefinitionA.key, componentsA, qualityA);
+    var newJewelB = makeJewel(jewel.tier, shapeDefinitionB.key, componentsB, qualityB);
+    destroyJewel(jewel);
+    appendJewelToElement(newJewelA, $('.js-jewelCraftingSlot').first());
+    appendJewelToElement(newJewelB, $('.js-jewelCraftingSlot').last());
+    updateJewelCraftingOptions();
+}
 function snapToBoard(shape, board) {
-    var otherShapes = board.fixed.concat(board.jewels.map(function (jewel) { return jewel.shape;}));
+    var otherShapes = board.fixed.map(function (jewel) { return jewel.shape;}).concat(board.jewels.map(function (jewel) { return jewel.shape;}));
     var vectors = [];
     var checkedPoints = shape.points;
     var otherPoints = allPoints(otherShapes);

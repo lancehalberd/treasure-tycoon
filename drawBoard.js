@@ -37,8 +37,8 @@ function drawBoardJewels(character) {
     var board = character.adventurer.board;
     var focusedJewelIsOnBoard = false;
     for (var i = 0; i < board.fixed.length; i++) {
-        board.fixed[i].color = '#333333';
-        drawJewel(context, board.fixed[i], lightSource);
+        var jewel = board.fixed[i];
+        drawJewel(context, jewel.shape, lightSource);
     }
     for (var i = 0; i < board.jewels.length; i++) {
         var jewel = board.jewels[i];
