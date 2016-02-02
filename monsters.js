@@ -258,7 +258,7 @@ function initalizeMonsters() {
         'implicitBonuses': {'+range': .5, '*attackSpeed': 1.5, '+magicDamage': 2,
                             '*block': .5, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': .3},
-        'abilities': [{'name': 'raiseDead', 'attacks': [{'type': 'monster', 'tags': ['skeleton'], 'key': 'skeleton', 'stats': {'limit': 2, 'cooldown': 5, 'healthBonus': 0, 'damageBonus': 1}}]}]
+        'abilities': [{'name': 'raiseDead', 'attacks': [{'type': 'monster', 'tags': ['skeleton'], 'key': 'skeleton', 'stats': {'limit': 2, 'cooldown': 5, 'healthBonus': 1, 'damageBonus': 2}}]}]
     });
     addMonster('skeleton', {'name': 'Skeleton', 'source': skeletonSource,
         // Fast to counter ranged heroes, low range+damage + fast attacks to be weak to armored heroes.
