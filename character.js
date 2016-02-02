@@ -378,6 +378,10 @@ var diamondBoard = {
     'fixed': [{"k":"diamond","p":[206.5,107.99038105676658],"t":-60}],
     'spaces': [{"k":"hexagon","p":[236.5,107.99038105676658],"t":0},{"k":"trapezoid","p":[236.5,107.99038105676658],"t":-120},{"k":"trapezoid","p":[206.5,107.99038105676658],"t":60},{"k":"hexagon","p":[176.5,56.02885682970026],"t":0}]
 };
+var diamondBoard2 = {
+    'fixed': [{"k":"diamond","p":[442.51923788646684,283.9519052838329],"t":-240}],
+    'spaces': [{"k":"hexagon","p":[382.51923788646684,231.99038105676658],"t":0},{"k":"hexagon","p":[442.51923788646684,283.9519052838329],"t":0},{"k":"trapezoid","p":[472.51923788646684,283.9519052838329],"t":-180},{"k":"trapezoid","p":[382.51923788646684,283.9519052838329],"t":-360}]
+};
 var hexBoard = {
     'fixed': [{"k":"hexagon","p":[195,80],"t":0}],
     'spaces': [{"k":"trapezoid","p":[195,131.96152422706632],"t":0},{"k":"trapezoid","p":[225,80],"t":180},
@@ -397,7 +401,7 @@ addCharacterClass('Fool', 0, 0, 0);
 
 addCharacterClass('Archer', 2, 1, 0, {'weapon': itemsByKey.bow, 'body': itemsByKey.clothtunic}, triangleBoard,
     [jewelLoot(['trapezoid'], [1, 1], [[5,20], [80, 100], [5, 20]], false), simpleJewelLoot, simpleJewelLoot], 'grove');
-addCharacterClass('Black Belt', 0, 2, 1, {'weapon': itemsByKey.rock, 'body': itemsByKey.lamellar}, diamondBoard,
+addCharacterClass('Black Belt', 0, 2, 1, {'weapon': itemsByKey.rock, 'body': itemsByKey.lamellar}, diamondBoard2,
     [jewelLoot(['trapezoid'], [1, 1], [[80, 100], [5,20], [5, 20]], false), simpleJewelLoot, simpleJewelLoot], 'meadow');
 addCharacterClass('Priest', 1, 0, 2, {'weapon': itemsByKey.stick, 'body': itemsByKey.woolshirt}, hexBoard,
     [jewelLoot(['trapezoid'], [1, 1], [[5,20], [5, 20], [80, 100]], false), simpleJewelLoot, simpleJewelLoot], 'cave');
