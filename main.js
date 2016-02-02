@@ -1,12 +1,13 @@
 'use strict';
 
+var assetVersion = '0.1';
 var images = {};
 function loadImage(source, callback) {
     images[source] = new Image();
     images[source].onload = function () {
         callback();
     };
-    images[source].src = source;
+    images[source].src = source + '?v=' + assetVersion;
 }
 
 var pointsMap = {
