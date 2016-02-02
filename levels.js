@@ -153,7 +153,7 @@ function initializeLevels() {
              'events': [['caterpillar', 'gnome'], ['gnome', 'gnome'], ['caterpillar', 'caterpillar'], ['butterfly']],
              'firstChest': firstChest([simpleEmeraldLoot, pointLoot('AP', [1, 1]), pointLoot('IP', [40, 50])]),
              'backupChest': backupChest([pointLoot('IP', [10, 20])])
-             }, 1);
+             });
     // Level 1 Utility
     addLevel({'name': 'Cemetery', 'level': 1, 'backgroundImage': images['gfx/grass.png'],
              'skill': abilities['raiseDead'],
@@ -191,7 +191,7 @@ function initializeLevels() {
              'events': [['butterfly'], ['giantSkeleton'], ['dragon']],
              'firstChest': firstChest([simpleEmeraldLoot, pointLoot('AP', [1, 1]), pointLoot('IP', [40, 50])]),
              'backupChest': backupChest([pointLoot('IP', [10, 20])])
-             }, 1);
+             });
     // Level 1 Healing
     addLevel({'name': 'Temple', 'level': 2, 'backgroundImage': images['gfx/cave.png'],
              'skill': abilities['heal'],
@@ -222,7 +222,7 @@ function initializeLevels() {
              'events': [['skeleton', 'skeleton'], ['gnomecromancer'], ['skeleton', 'skeleton', 'skeleton', 'skeleton'], ['gnomecromancer', 'gnomecromancer']],
              'firstChest': firstChest([simpleRubyLoot, pointLoot('AP', [3, 3]), pointLoot('IP', [100, 200])]),
              'backupChest': backupChest([pointLoot('IP', [50, 100])])
-             }, 1);
+             });
 
     /*addLevel({'name': 'Forest', 'backgroundImage': images['gfx/forest.png'],
              'monsters': ['caterpillar', 'gnome'],
