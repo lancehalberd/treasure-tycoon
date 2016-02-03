@@ -442,12 +442,9 @@ $(document).on('keydown', function(event) {
             gainXP(character.adventurer, character.adventurer.xpToLevel);
             updateAdventurer(character.adventurer);
             $.each(levels, function (key) {
-                if (character.$panel.find('.js-area-' + key).length && !character.levelsCompleted[key]) {
-                    character.levelsCompleted[key] = true;
-                    character.$panel.find('.js-area-' + key).append($tag('button','js-learnSkill learnSkill', '+' + levels[key].skill.name));
-                }
+                character.currentLevelIndex = key
+                completeArea(character);
             });
-            updateSkillButtons(character);
         });
     }
     console.log(event.which);

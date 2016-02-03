@@ -58,6 +58,9 @@ function makeMonster(monsterData, level, extraSkills) {
     var baseMonster;
     if (typeof(monsterData) == 'string') {
         baseMonster = monsters[monsterData];
+        if (!baseMonster) {
+            throw new Error('Invalid monster key ' + monsterData);
+        }
     } else if (typeof(monsterData) == 'object') {
         baseMonster = monsters[monsterData.key];
         if (monsterData.bonuses) {
@@ -274,24 +277,29 @@ function initalizeMonsters() {
     });
     //console.log(JSON.stringify(makeMonster('skeleton', 1)));
     addMonster('butterfly', {'name': 'Butterfly', 'source': butterflySource,
-        'implicitBonuses': {'*maxHealth': 1.5, '+range': 4, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5,
+        'implicitBonuses': {'*maxHealth': 1.5, '+range': 4, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5, '*accuracy': 2,
                             '*minDamage': .5, '*maxDamage': .5, '*attackSpeed': .5, '*magicDamage': 0,
                             '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
                             '*speed': .6}
     });
     addMonster('motherfly', {'name': 'Motherfly', 'source': butterflySource,
-        'implicitBonuses': {'+maxHealth': 20, '*maxHealth': 3, '+range': 5, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5,
+        'implicitBonuses': {'+maxHealth': 20, '*maxHealth': 3, '+range': 5, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5, '*accuracy': 2,
                             '*minDamage': .5, '*maxDamage': .5, '*attackSpeed': .5, '*magicDamage': 0,
                             '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
                             '*speed': .6},
         'abilities': [{'name': 'Pet', 'attacks': [{'type': 'monster', 'tags': ['pet'], 'key': 'caterpillar', 'stats': {'limit': 2, 'cooldown': 10, 'healthBonus': 2, 'damageBonus': 1}}]}]
     });
     addMonster('giantSkeleton', {'name': 'Skelegiant', 'source': skeletonGiantSource,
-        'implicitBonuses': {'*maxHealth': 2, '+critDamage': .5, '*magicDamage': 0,
+        'implicitBonuses': {'*maxHealth': 2, '+critDamage': .5, '*magicDamage': 0, '*accuracy': 2,
                             '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 0, '*magicResist': 0}
     });
+    addMonster('butcher', {'name': 'Skelegiant', 'source': skeletonGiantSource,
+        'implicitBonuses': {'*maxHealth': 3, '+critDamage': .5, '*magicDamage': 0, '*accuracy': 2,
+                            '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 0, '*magicResist': 0},
+        'abilities': [abilities['hook']]
+    });
     addMonster('dragon', {'name': 'Dragon', 'source': dragonSource, 'stationary': true, // speed still effects animation
-        'implicitBonuses': {'*maxHealth': 1.6, '+range': 8, '+critChance': .15,
+        'implicitBonuses': {'*maxHealth': 1.6, '+range': 8, '+critChance': .15, '*accuracy': 2,
                             '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 2, '+magicResist': .5,
                             '*speed': 2}
     });

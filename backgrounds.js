@@ -46,6 +46,27 @@ function initializeBackground() {
         {'source': bgSources.rootsA, 'spacing': 4},
         {'source': bgSources.rootsB, 'spacing': 3}
     ];
+    backgrounds.garden = [
+        {'source': bgSources.field},
+        {'source': bgSources.roses, 'parallax': .4, 'spacing': 3.5},
+        {'source': bgSources.roses, 'parallax': .65, 'spacing': 2},
+        {'source': bgSources.sparseLeaves, 'spacing': 3},
+        {'source': bgSources.stick, 'spacing': 5},
+        {'source': bgSources.bedrock},
+        {'source': bgSources.rootsA, 'spacing': 4},
+        {'source': bgSources.rootsB, 'spacing': 3}
+    ];
+    backgrounds.orchard = [
+        {'source': bgSources.forest},
+        {'source': bgSources.treeTops, 'parallax': .2},
+        {'source': bgSources.shortTrees, 'parallax': .3, 'spacing': 1},
+        {'source': bgSources.tallTrees, 'parallax': .5, 'spacing': 1.5},
+        {'source': bgSources.denseFallenLeaves, 'spacing': 2},
+        {'source': bgSources.sparseLeaves, 'spacing': 1},
+        {'source': bgSources.bedrock},
+        {'source': bgSources.rootsA, 'spacing': 4},
+        {'source': bgSources.rootsB, 'spacing': 3}
+    ];
     backgrounds.field = [
         {'source': bgSources.field},
         {'source': bgSources.skinnyCloud, 'parallax': .2, 'spacing': 3, 'velocity': -50},
@@ -56,6 +77,15 @@ function initializeBackground() {
         {'source': bgSources.grassA},
         {'source': bgSources.grassB, 'spacing': 4},
         {'source': bgSources.grassC, 'spacing': 3}
+    ];
+    backgrounds.cemetery = [
+        {'source': bgSources.cave},
+        {'source': bgSources.shortTrees, 'parallax': .3, 'spacing': 2.5},
+        {'source': bgSources.tallTrees, 'parallax': .5, 'spacing': 3},
+        {'source': bgSources.stick, 'spacing': 4},
+        {'source': bgSources.bedrock},
+        {'source': bgSources.rootsA, 'spacing': 4},
+        {'source': bgSources.rootsB, 'spacing': 3}
     ];
     backgrounds.cave = [
         {'source': bgSources.cave},

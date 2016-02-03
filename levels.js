@@ -2,7 +2,8 @@
 var levels = {};
 
 function addLevel(levelData) {
-    levels[levelData.name.replace(/\s*/g, '').toLowerCase()] = levelData;
+    var key = ifdefor(levelData.key, levelData.name.replace(/\s*/g, '').toLowerCase());
+    levels[key] = levelData;
 }
 function instantiateLevel(levelData, completed) {
     var waves = [];
@@ -65,7 +66,15 @@ function instantiateLevel(levelData, completed) {
 }
 function $levelDiv(key) {
     if (!levels[key]) {
-        throw new Error('Level ' + key + ' not found');
+        if (key.indexOf('eternalfields') >= 0) {
+            createEndlessLevel('eternalfields', Number(key.substring(13)));
+        } else if (key.indexOf('bottomlessdepths') >= 0) {
+            createEndlessLevel('bottomlessdepths', Number(key.substring(16)));
+        } else if (key.indexOf('oceanoftrees') >= 0) {
+            createEndlessLevel('oceanoftrees', Number(key.substring(12)));
+        } else {
+            throw new Error('Level ' + key + ' not found');
+        }
     }
     var $levelButton = $tag('button', 'js-adventureButton adventureButton' , 'Lv' + levels[key].level + ' ' + levels[key].name).data('levelIndex', key);
     var $confirmButton = $tag('button','js-confirmSkill', 'Apply').attr('helptext', 'Finalize augmentation and level this character.').hide();
@@ -88,41 +97,41 @@ function updateSkillButtons(character) {
         $(element).attr('helptext', sections.join('<br/>'));
     });
 }
-function $nextLevelButton(currentLevel) {
-    var levelData = copy(currentLevel.base);
-    var level = currentLevel.level + 1;
-    var key = levelData.name.replace(/\s*/g, '').toLowerCase() + level;
-    if (!levels[key]) {
-        var tier = 1;
-        if (level >= jewelTierLevels[5]) {
-            tier = 5
-        } else if (level >= jewelTierLevels[4]) {
-            tier = 4
-        } else if (level >= jewelTierLevels[3]) {
-            tier = 3
-        } else if (level >= jewelTierLevels[2]) {
-            tier = 2
-        }
-        var componentBonus = (10 + tier) * (level - jewelTierLevels[tier]);
-        if (levelData.name === 'Forest') {
-            components = [[5,20], [80 + componentBonus, 100 + componentBonus], [5, 20]];
-        } else if (levelData.name === 'Cave') {
-            components = [[5,20], [5, 20], [80 + componentBonus, 100 + componentBonus]];
-        } else {
+function createEndlessLevel(key, level) {
+    var tier = 1;
+    if (level >= jewelTierLevels[5]) tier = 5
+    else if (level >= jewelTierLevels[4]) tier = 4
+    else if (level >= jewelTierLevels[3]) tier = 3
+    else if (level >= jewelTierLevels[2]) tier = 2
+    var componentBonus = (10 + tier) * (level - jewelTierLevels[tier]);
+    var name, background, monsters, events;
+    switch (key) {
+        case 'eternalfields':
+            name = 'Eternal Fields';
+            background = backgrounds.field;
             components = [[80 + componentBonus, 100 + componentBonus], [5,20], [5, 20]];
-        }
-        levelData.firstChest = firstChest([
-                        jewelLoot(basicShapeTypes, [tier, tier], components, false),
-                        pointLoot('AP', [level * level, level * level]),
-                        pointLoot('IP', [50 * level, 55 * level + 50]),
-                        pointLoot('MP', [Math.floor(10 * level), Math.floor(11 * level + 10)]),
-                        pointLoot('RP', [5 * level, 5.5 * level])]);
-        levelData.backupChest = backupChest([pointLoot('IP', [10 * level, 11 * level + 10]),
-                                             pointLoot('MP', [Math.floor(2 * level), Math.floor(2.2 * level + 2)]),
-                                             pointLoot('RP', [level, 1.1 * level])]);
-        addLevel(levelData, currentLevel.level + 1);
+            monsters = ['skeleton', 'caterpillar'];
+            events = [['butcher'], ['dragon'], ['butcher', 'giantSkeleton', 'dragon']];
+            break;
+        case 'bottomlessdepths':
+            name = 'Bottomless Depths';
+            background = backgrounds.cave;
+            components = [[5,20], [5, 20], [80 + componentBonus, 100 + componentBonus]];
+            monsters = ['skeleton', 'gnome'];
+            events = [['giantSkeleton'], ['butcher', 'butterfly', 'butterfly'], ['motherfly', 'gnomecromancer', 'gnomecromancer']];
+            break;
+        case 'oceanoftrees':
+            name = 'Ocean of Trees';
+            background = backgrounds.forest;
+            components = [[5,20], [80 + componentBonus, 100 + componentBonus], [5, 20]];
+            monsters = ['gnome', 'caterpillar'];
+            events = [['motherfly'], ['dragon'], ['motherfly', 'dragon', 'motherfly']];
     }
-    return $levelDiv(key);
+    addLevel({'name': name, 'level': level, 'background': background, 'specialLoot': [jewelLoot(basicShapeTypes, [tier, tier], components, false)], 'next': [key + (level + 1)],
+             'enemySkills': [], 'monsters': monsters, 'events': events, 'key' : key + level});
+}
+function board(shapes) {
+    return {'fixed': [shapes.shift()], 'spaces': shapes};
 }
 // 3 triangle boards
 var triforceBoard = {
@@ -142,9 +151,12 @@ var thirdHexBoard = {
 var hourGlassBoard = {
     'fixed': [{"k":"diamond","p":[232.5,212.99038105676658],"t":-60}], 'spaces': [{"k":"triangle","p":[232.5,212.99038105676658],"t":60},{"k":"triangle","p":[262.5,212.99038105676658],"t":60},{"k":"triangle","p":[217.5,187.00961894323342],"t":0},{"k":"triangle","p":[247.5,187.00961894323342],"t":0}]
 }
-var fangBoard = {
-    'fixed': [{"k":"triangle","p":[414.00000000000006,103.78729582162231],"t":-120}], 'spaces': [{"k":"diamond","p":[444.00000000000006,103.78729582162231],"t":-240},{"k":"diamond","p":[414.00000000000006,103.78729582162231],"t":-240}]
-}
+var fangBoard = {'fixed': [{"k":"triangle","p":[414.00000000000006,103.78729582162231],"t":-120}], 'spaces': [{"k":"diamond","p":[444.00000000000006,103.78729582162231],"t":-240},{"k":"diamond","p":[414.00000000000006,103.78729582162231],"t":-240}]};
+var petalBoard = {'fixed': [{"k":"diamond","p":[270.5,77.99038105676658],"t":-60}], 'spaces': [{"k":"diamond","p":[255.5,103.97114317029974],"t":-120},{"k":"diamond","p":[315.5,103.97114317029974],"t":-180}]};
+// 5 triangle board
+var pieBoard = board([{"k":"triangle","p":[90,148.03847577293365],"t":60}, {"k":"triangle","p":[60,148.03847577293365],"t":0},{"k":"trapezoid","p":[90,200],"t":180},{"k":"triangle","p":[60,148.03847577293365],"t":60}]);
+var helmBoard = board([{"k":"trapezoid","p":[151,87],"t":0},{"k":"diamond","p":[151,87],"t":-240},{"k":"diamond","p":[181,87],"t":-60},{"k":"triangle","p":[166,61.01923788646684],"t":60}]);
+var crownBoard = board([{"k":"triangle","p":[443,326.1346123343714],"t":-60},{"k":"diamond","p":[488,352.11537444790457],"t":-540},{"k":"triangle","p":[458,352.11537444790457],"t":-120},{"k":"diamond","p":[428,352.11537444790457],"t":-120}]);
 function initializeLevels() {
     closedChestSource = {'image': images['gfx/chest-closed.png'], 'xOffset': 0, 'width': 32, 'height': 32};
     openChestSource = {'image': images['gfx/chest-open.png'], 'xOffset': 0, 'width': 32, 'height': 32};
@@ -167,7 +179,7 @@ function initializeLevels() {
              'monsters': ['caterpillar', 'gnome'],
              'events': [['caterpillar', 'gnome'], ['gnome', 'gnome'], ['caterpillar', 'caterpillar'], ['butterfly']]});
     // Level 1 Utility
-    addLevel({'name': 'Cemetery', 'level': 1, 'background': backgrounds.field, 'specialLoot': [simpleRubyLoot], 'next': ['crypt'], 'skill': abilities['raiseDead'],
+    addLevel({'name': 'Cemetery', 'level': 1, 'background': backgrounds.cemetery, 'specialLoot': [simpleRubyLoot], 'next': ['crypt'], 'skill': abilities['raiseDead'],
              'board': {'fixed' : [{"k":"diamond","p":[134.75,120.47595264191645],"t":-120}], 'spaces' : [{"k":"triangle","p":[104.75,120.47595264191645],"t":-60},{"k":"triangle","p":[134.75,120.47595264191645],"t":0}]},
              'monsters': ['skeleton'],
              'events': [['skeleton', 'skeleton'], ['gnomecromancer'], ['skeleton', 'skeleton', 'skeleton', 'skeleton'], ['gnomecromancer', 'gnomecromancer']]});
@@ -175,9 +187,9 @@ function initializeLevels() {
              'board': {'fixed' : [{"k":"diamond","p":[134.75,120.47595264191645],"t":-120}],'spaces' : [{"k":"triangle","p":[104.75,120.47595264191645],"t":-60},{"k":"triangle","p":[134.75,120.47595264191645],"t":0}]},
              'monsters': ['butterfly'],
              'events': [['caterpillar', 'caterpillar', 'caterpillar'], ['caterpillar', 'caterpillar', 'motherfly']]});
-    addLevel({'name': 'Garden', 'level': 1, 'background': backgrounds.forest, 'specialLoot': [simpleEmeraldLoot], 'next': ['trail'], 'skill': abilities['stealth'],
+    addLevel({'name': 'Garden', 'level': 1, 'background': backgrounds.garden, 'specialLoot': [simpleEmeraldLoot], 'next': ['trail'], 'skill': abilities['stealth'],
              'board': {'fixed' : [{"k":"diamond","p":[161,75],"t":0}],'spaces' : [{"k":"diamond","p":[131,75],"t":-60}]},
-             'enemySkills': [abilities['stealth']],
+             'enemySkills': [abilities['stealth'], {'bonuses': {'+evasion': 3}}],
              'monsters': ['caterpillar', 'gnome', 'butterfly', 'skeleton'],
              'events': [['butterfly'], ['giantSkeleton'], ['dragon']]});
     // Level 2 Healing
@@ -186,7 +198,7 @@ function initializeLevels() {
              'enemySkills': [abilities['heal']],
              'monsters': ['gnome', 'butterfly'],
              'events': [['dragon']]});
-    addLevel({'name': 'Orchard', 'level': 2, 'background': backgrounds.forest, 'specialLoot': [simpleEmeraldLoot], 'next': ['crevice'],
+    addLevel({'name': 'Orchard', 'level': 2, 'background': backgrounds.orchard, 'specialLoot': [simpleEmeraldLoot], 'next': ['crevice'],
              'skill': abilities['sap'],'board': spikeBoard,
              'enemySkills': [abilities['sap'], {'bonuses': {'+range': 2, '+attackSpeed': .5}}],
              'monsters': ['butterfly', 'gnome'],
@@ -197,56 +209,53 @@ function initializeLevels() {
              'monsters': ['skeleton'],
              'events': [['skeleton', 'skeleton'], ['gnomecromancer'], ['skeleton', 'skeleton', 'skeleton', 'skeleton'], ['gnomecromancer', 'gnomecromancer']]});
     // Level 3 Offense
-    addLevel({'name': 'Crypt', 'level': 3, 'background': backgrounds.cave, 'specialLoot': [simpleSaphireLoot],'next': [],
+    addLevel({'name': 'Crypt', 'level': 3, 'background': backgrounds.cave, 'specialLoot': [simpleSaphireLoot],'next': ['dungeon'],
              'skill': {'name': 'Resonance', 'bonuses': {'%magicDamage': .2}}, 'board': triforceBoard,
              'enemySkills': [{'name': 'Resonance', 'bonuses': {'%magicDamage': .2}}],
              'monsters': ['gnome', 'butterfly'],
              'events': [['dragon']]});
-    addLevel({'name': 'Range', 'level': 3, 'background': backgrounds.forest, 'specialLoot': [simpleEmeraldLoot], 'next': [],
+    addLevel({'name': 'Range', 'level': 3, 'background': backgrounds.forest, 'specialLoot': [simpleEmeraldLoot], 'next': ['valley'],
              'skill':  {'name': 'Finesse', 'bonuses': {'%attackSpeed': .2}},'board': spikeBoard,
              'enemySkills': [{'name': 'Finesse', 'bonuses': {'%attackSpeed': .2}}],
              'monsters': ['butterfly', 'gnome'],
              'events': [['butterfly', 'butterfly'], ['gnome', 'gnome'],  ['dragon']]});
-    addLevel({'name': 'Trail', 'level': 3, 'background': backgrounds.field, 'specialLoot': [simpleRubyLoot],'next': [],
+    addLevel({'name': 'Trail', 'level': 3, 'background': backgrounds.field, 'specialLoot': [simpleRubyLoot],'next': ['mountain'],
              'skill':  {'name': 'Ferocity', 'bonuses': {'%damage': .2}},'board': halfHexBoard,
              'enemySkills': [{'name': 'Ferocity', 'bonuses': {'%damage': .2}}],
              'monsters': ['skeleton'],
              'events': [['skeleton', 'skeleton'], ['gnomecromancer'], ['skeleton', 'skeleton', 'skeleton', 'skeleton'], ['gnomecromancer', 'gnomecromancer']]});
     // Level 4 Utility
-    addLevel({'name': 'Tunnel', 'level': 4, 'background': backgrounds.cave, 'specialLoot': [simpleSaphireLoot],'next': [],
+    addLevel({'name': 'Tunnel', 'level': 4, 'background': backgrounds.cave, 'specialLoot': [simpleSaphireLoot],'next': ['mountain'],
              'skill': abilities['hook'],'board': thirdHexBoard,
              'enemySkills': [],
              'monsters': ['dragon', 'skeleton'],
              'events': [['skeleton', 'skeleton'],['butcher'], ['skeleton', 'skeleton', 'dragon'], ['butcher', 'dragon']]});
-    addLevel({'name': 'Crevice', 'level': 4, 'background': backgrounds.cave, 'specialLoot': [simpleSaphireLoot],'next': [],
+    addLevel({'name': 'Crevice', 'level': 4, 'background': backgrounds.cave, 'specialLoot': [simpleSaphireLoot],'next': ['valley'],
              'skill': abilities['dodge'],'board': fangBoard,
              'enemySkills': [abilities['dodge']],
              'monsters': ['gnome', 'butterfly'],
              'events': [['dragon']]});
-    addLevel({'name': 'Bayou', 'level': 4, 'background': backgrounds.forest, 'specialLoot': [simpleEmeraldLoot], 'next': [],
-             'skill':  abilities['protect'],'board': hourGlassBoard,
-             'enemySkills': [abilities['sap'], {'bonuses': {'+range': 2, '+attackSpeed': .5}}],
+    addLevel({'name': 'Bayou', 'level': 4, 'background': backgrounds.forest, 'specialLoot': [simpleEmeraldLoot], 'next': ['dungeon'],
+             'skill':  abilities['protect'],'board': petalBoard,
+             'enemySkills': [abilities['protect'], {'bonuses': {'+magicResist': .2, '+intelligence': 10}}],
              'monsters': ['butterfly', 'gnome'],
              'events': [['butterfly', 'butterfly'], ['gnome', 'gnome'],  ['dragon']]});
-
-    /*addLevel({'name': 'Forest', 'background': backgrounds.forest,
-             'monsters': ['caterpillar', 'gnome'],
-             'events': [['gnome', 'gnome'], ['caterpillar', 'caterpillar'], ['butterfly']],
-             'firstChest': firstChest([simpleEmeraldLoot, pointLoot('AP', [1, 1]), pointLoot('IP', [40, 50])]),
-             'backupChest': backupChest([pointLoot('IP', [10, 20])])
-             }, 1);
-    addLevel({'name': 'Cave', 'background': backgrounds.cave,
-             'monsters': ['gnome', 'skeleton'],
-             'events': [['skeleton', 'skeleton'], ['gnome', 'gnome'], ['giantSkeleton']],
-             'firstChest': firstChest([simpleSaphireLoot, pointLoot('AP', [1, 1]), pointLoot('IP', [40, 50])]),
-             'backupChest': backupChest([pointLoot('IP', [10, 20])])
-             }, 1);
-    addLevel({'name': 'Field', 'background': backgrounds.field,
-             'monsters': ['caterpillar', 'skeleton'],
-             'events': [['caterpillar', 'caterpillar'], ['skeleton', 'skeleton'], ['dragon']],
-             'firstChest': firstChest([simpleRubyLoot, pointLoot('AP', [1, 1]), pointLoot('IP', [40, 50])]),
-             'backupChest': backupChest([pointLoot('IP', [10, 20])])
-             }, 1);*/
+    // Level 5 Core Stat Boost
+    addLevel({'name': 'Mountain', 'level': 5, 'background': backgrounds.field, 'specialLoot': [simpleRubyLoot],'next': ['eternalfields6'],
+             'skill': {'name': 'Major Strength', 'bonuses': {'+strength': 20}}, 'board': pieBoard,
+             'enemySkills': [],
+             'monsters': ['dragon', 'skeleton'],
+             'events': [['skeleton', 'skeleton'],['butcher'], ['skeleton', 'skeleton', 'dragon'], ['butcher', 'dragon']]});
+    addLevel({'name': 'Dungeon', 'level': 5, 'background': backgrounds.cave, 'specialLoot': [simpleSaphireLoot],'next': ['bottomlessdepths6'],
+             'skill': {'name': 'Major Dexterity', 'bonuses': {'+dexterity': 20}}, 'board': helmBoard,
+             'enemySkills': [abilities['dodge']],
+             'monsters': ['gnome', 'butterfly'],
+             'events': [['dragon']]});
+    addLevel({'name': 'Valley', 'level': 5, 'background': backgrounds.forest, 'specialLoot': [simpleEmeraldLoot], 'next': ['oceanoftrees6'],
+             'skill':  {'name': 'Major Intelligence', 'bonuses': {'+intelligence': 20}}, 'board': crownBoard,
+             'enemySkills': [abilities['protect'], {'bonuses': {'+magicResist': .2, '+intelligence': 10}}],
+             'monsters': ['butterfly', 'gnome'],
+             'events': [['butterfly', 'butterfly'], ['gnome', 'gnome'],  ['dragon']]});
 }
 function basicWave(monsters, objects, letter) {
     return {

@@ -89,17 +89,24 @@ function makeTintedImage(image, tint) {
 function completeArea(character) {
     var $adventureDiv = character.$panel.find('.js-infoMode').find('.js-area-' + character.currentLevelIndex);
     // If the character beat the last adventure open to them, unlock the next one
+    var level = levels[character.currentLevelIndex];
     if (!character.levelsCompleted[character.currentLevelIndex]) {
-        $adventureDiv.append($tag('button','js-learnSkill learnSkill', '+' + levels[character.currentLevelIndex].skill.name));
+        if (level.skill) {
+            $adventureDiv.append($tag('button','js-learnSkill learnSkill', '+' + level.skill.name));
+        } else {
+            // Just show a checkmark if the area has no skill associated with it.
+            $adventureDiv.append($tag('span','', '&#10003;'));
+            $adventureDiv.find('.js-learnSkill, .js-confirmSkill, .js-cancelSkill').remove();
+        }
         character.levelsCompleted[character.currentLevelIndex] = true;
-        character.area.base.next.forEach(function (areaKey) {
+        level.next.forEach(function (areaKey) {
             // Add a button for the unlocked area only if no such button exists already.
             if (!character.$panel.find('.js-infoMode').find('.js-area-' + areaKey).length) {
                 character.$panel.find('.js-map').append($levelDiv(areaKey));
             }
         });
     }
-    for (var itemLevel = $('.js-levelSelect').find('option').length + 1; itemLevel <= character.area.level + 1 && itemLevel <= items.length; itemLevel++) {
+    for (var itemLevel = $('.js-levelSelect').find('option').length + 1; itemLevel <= level.level + 1 && itemLevel <= items.length; itemLevel++) {
         var $newOption = $tag('option', '', 'Level ' + itemLevel).attr('value', itemLevel);
         items[itemLevel - 1] = ifdefor(items[itemLevel - 1], []);
         $newOption.toggle(items[itemLevel - 1].length > 0);
