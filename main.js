@@ -89,7 +89,7 @@ function completeArea(character) {
     var $adventureDiv = character.$panel.find('.js-infoMode').find('.js-area-' + character.currentLevelIndex);
     // If the character beat the last adventure open to them, unlock the next one
     if (!character.levelsCompleted[character.currentLevelIndex]) {
-        $adventureDiv.append($tag('button','js-learnSkill', '+skill'));
+        $adventureDiv.append($tag('button','js-learnSkill learnSkill', '+' + levels[character.currentLevelIndex].skil.name));
         character.levelsCompleted[character.currentLevelIndex] = true;
         character.area.base.next.forEach(function (areaKey) {
             // Add a button for the unlocked area only if no such button exists already.
@@ -278,6 +278,7 @@ $('body').on('click', '.js-learnSkill', function (event) {
     }
     var areaKey = $(this).closest('.js-adventure').data('levelIndex');
     var level = levels[areaKey];
+    //$('body').append(abilityHelpText(level.skill));
     var board = readBoardFromData(level.board, character, level.skill);
     $(this).closest('.js-adventure').find('.js-confirmSkill, .js-cancelSkill').show();
     character.$panel.find('.js-learnSkill').hide();

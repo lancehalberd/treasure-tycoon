@@ -8,7 +8,10 @@ function startArea(character, index) {
     character.area = instantiateLevel(levels[index], character.levelsCompleted[index]);
     character.waveIndex = 0;
     character.adventurer.x = 0;
+    character.adventurer.stunned = 0;
     character.adventurer.pull = null;
+    character.adventurer.timedEffects = [];
+    character.adventurer.health = character.adventurer.maxHealth;
     character.finishTime = false;
     character.cameraX = -30;
     character.enemies = [];
@@ -41,6 +44,7 @@ function adventureLoop(character, delta) {
             defeatedEnemy(character, enemy);
             continue;
         }
+        expireTimedEffects(character, enemy);
     }
     for (var i = 0; i < character.allies.length; i++) {
         var ally = character.allies[i];
@@ -48,6 +52,7 @@ function adventureLoop(character, delta) {
             character.allies.splice(i--, 1);
             continue;
         }
+        expireTimedEffects(character, ally);
     }
     for (var i = 0; i < character.objects.length; i++) {
         var object = character.objects[i];
@@ -89,6 +94,31 @@ function adventureLoop(character, delta) {
         actor.health = Math.min(actor.maxHealth, Math.max(0, actor.health));
     });
     drawAdventure(character, delta);
+}
+function expireTimedEffects(character, actor) {
+    var changed = false;
+    for (var i = 0; i < actor.timedEffects.length; i++) {
+        if (actor.timedEffects[i].expirationTime < character.time) {
+            actor.timedEffects.splice(i--);
+            changed = true;
+        }
+    }
+    if (changed) {
+        updateActorStats(actor);
+        console.log('Buff off Armor: ' + actor.armor);
+    }
+}
+function addTimedEffect(character, actor, effect) {
+    effect = copy(effect);
+    effect.expirationTime = character.time + effect.duration;
+    actor.timedEffects.push(effect);
+    updateActorStats(actor);
+    console.log
+    console.log('Buff on Armor: ' + actor.armor);
+}
+function updateActorStats(actor) {
+    if (actor.personCanvas) updateAdventurerStats(actor);
+    else updateMonsterStats(actor);
 }
 function startNextWave(character) {
     var wave = character.area.waves[character.waveIndex];
@@ -216,6 +246,12 @@ function performAction(character, actor, targets) {
                 }
                 performHookAttack(character, attack, actor, target);
             }
+            if (attack.base.type == 'buff') {
+                attack.readyAt = character.time + attack.cooldown;
+                addTimedEffect(character, actor, attack.buff);
+                actor.stunned = character.time + .3;
+                return false;
+            }
             return true;
         });
         if (distance > actor.range * 32 || target.cloaked) {
@@ -260,6 +296,28 @@ function performAttack(character, attacker, target) {
             hitText.value = 'miss (' + attacker.damageOnMiss + ')';
         }
         // Target has evaded the attack.
+        hitText.color = 'blue';
+        hitText.font, "15px sans-serif"
+        character.textPopups.push(hitText);
+        return;
+    }
+    var dodged = false;
+    ifdefor(target.attacks, []).forEach(function (attack) {
+        if (attack.readyAt > character.time) {
+            return true;
+        }
+        if (attack.base.type == 'dodge') {
+            dodged = true;
+            attack.readyAt = character.time + attack.cooldown;
+            target.pull = {'x': target.x - target.direction * attack.distance, 'time': character.time + .3, 'damage': 0};
+            addTimedEffect(character, target, attack.buff);
+            return false;
+        }
+        return true;
+    });
+    if (dodged) {
+        // Target has evaded the attack using an ability like 'dodge'.
+        hitText.value = 'dodged';
         hitText.color = 'blue';
         hitText.font, "15px sans-serif"
         character.textPopups.push(hitText);

@@ -35,7 +35,10 @@ function pointsLootDrop(type, amount) {
 }
 
 function pointLoot(type, range) {
-    return {'generateLootDrop': function () {
+    return {
+        'type': 'pointLoot',
+        'pointType': type,
+        'generateLootDrop': function () {
         return pointsLootDrop(type, Random.range(range[0], range[1]));
     }};
 }
@@ -79,7 +82,9 @@ function gainJewel(jewel) {
 }
 
 function jewelLoot(shapes, tiers, components, permute) {
-    return {'generateLootDrop': function () {
+    return {
+        'type': 'jewelLoot',
+        'generateLootDrop': function () {
         return jewelLootDrop(createRandomJewel(shapes, tiers, components, permute));
     }};
 }

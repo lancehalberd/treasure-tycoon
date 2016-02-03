@@ -92,7 +92,9 @@ function makeMonster(monsterData, level, extraSkills) {
         addMonsterSuffix(monster);
     }
     monster.base.health = monster.base.maxHealth;
+    monster.timedEffects = [];
     updateMonster(monster);
+    monster.health = monster.maxHealth;
     if (monster.ip > 1) {
         monster.mp = Random.range(0, monster.ip - 1);
         monster.ip -= monster.mp;
@@ -185,21 +187,25 @@ function updateMonster(monster) {
             addBonusesAndAttacks(monster, affix);
         })
     });
+    updateMonsterStats(monster);
+    //console.log(monster);
+}
+function updateMonsterStats(monster) {
     allComputedStats.forEach(function (stat) {
         monster[stat] = getStat(monster, stat);
     });
     allRoundedStats.forEach(function (stat) {
         monster[stat] = Math.round(monster[stat]);
     });
-    monster.health = monster.maxHealth;
     monster.maxDamage = Math.max(monster.minDamage, monster.maxDamage);
     monster.minMagicDamage = Math.max(monster.minMagicDamage, monster.maxMagicDamage);
     monster.attacks.forEach(function (attack) {
         $.each(attack.base.stats, function (stat) {
-            attack[stat] = getStatForAttack(monster, attack, stat);
+            console.log(attack.base);
+            console.log(stat);
+            attack[stat] = getStatForAttack(monster, attack.base, stat);
         })
     });
-    //console.log(monster);
 }
 var monsters = {};
 function addMonster(key, data) {

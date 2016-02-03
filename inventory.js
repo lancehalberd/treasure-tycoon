@@ -71,18 +71,24 @@ function itemHelpText(item) {
     sections.push('Sell for ' + points.join(' '));
     return sections.join('<br/>');
 }
-function evaluteForDisplay(value) {
+function evaluateForDisplay(value) {
     if (typeof value === 'number') {
         return value;
+    }
+    if (typeof value === 'string' && value.charAt(0) === '{') {
+        return tag('span', 'formulaStat', value.substring(1, value.length - 1));
+    }
+    if (value.constructor !== Array && value.stats) {
+        return bonusHelpText(value.stats);
     }
     var formula = value;
     if (!formula || !formula.length) {
         throw new Error('Expected "formula" to be an array, but value is: ' + formula);
     }
     formula = formula.slice();
-    value = formula.shift();
+    value = evaluateForDisplay(formula.shift());
     while (formula.length > 1) {
-        value += ' ' + formula.shift() + ' ' + formula.shift();
+        value += ' ' + formula.shift() + ' ' + evaluateForDisplay(formula.shift());
         if (formula.length > 1) {
             value = '(' + value + ')';
         }
@@ -92,7 +98,7 @@ function evaluteForDisplay(value) {
 function bonusHelpText(rawBonuses, implicit) {
     var bonuses = {};
     $.each(rawBonuses, function (key, value) {
-        bonuses[key] = evaluteForDisplay(value);
+        bonuses[key] = evaluateForDisplay(value);
     });
     var sections = [];
     if (ifdefor(bonuses['+minDamage']) != null) {
@@ -102,6 +108,12 @@ function bonusHelpText(rawBonuses, implicit) {
     if (ifdefor(bonuses['+minMagicDamage'] != null)) {
         if (implicit) sections.push('Magic: ' + bonuses['+minMagicDamage'] + ' to ' + bonuses['+maxMagicDamage']);
         else sections.push(bonuses['+minMagicDamage'] + ' to ' + bonuses['+maxMagicDamage'] + ' increased magic damage');
+    }
+    if (ifdefor(bonuses['%damage'] != null)) {
+        sections.push((100 * bonuses['%damage']).format(1) + '% increased damage');
+    }
+    if (ifdefor(bonuses['%magicDamage'] != null)) {
+        sections.push((100 * bonuses['%magicDamage']).format(1) + '% increased magic damage');
     }
     if (ifdefor(bonuses['+dexterity']) != null) {
         sections.push('+' + bonuses['+dexterity'].format(1) + ' Dexterity');
@@ -125,6 +137,9 @@ function bonusHelpText(rawBonuses, implicit) {
     if (ifdefor(bonuses['+armor'])) {
         if (implicit) sections.push('Armor: ' + bonuses['+armor']);
         else sections.push(bonuses['+armor'] + ' increased armor');
+    }
+    if (ifdefor(bonuses['%evasion'] != null)) {
+        sections.push((100 * bonuses['%evasion']).format(1) + '% increased evasion');
     }
     if (ifdefor(bonuses['+evasion'])) {
         if (implicit) sections.push('Evasion: ' + bonuses['+evasion']);
@@ -153,9 +168,6 @@ function bonusHelpText(rawBonuses, implicit) {
     if (ifdefor(bonuses['%attackSpeed'])) {
         sections.push((100 * bonuses['%attackSpeed']).format(1) + '% increased attack speed');
     }
-    if (ifdefor(bonuses['%damage'])) {
-        sections.push((100 * bonuses['%damage']).format(1) + '% increased damage');
-    }
     if (ifdefor(bonuses['+critChance'])) {
         if (implicit) sections.push((100 * bonuses['+critChance']).format(0) + '% critical strike chance');
         else sections.push('Additional ' + (100 * bonuses['+critChance']).format(0) + '% chance to critical strike');
@@ -180,6 +192,10 @@ function bonusHelpText(rawBonuses, implicit) {
     }
     if (ifdefor(bonuses['+accuracy'])) {
         sections.push((bonuses['+accuracy'] > 0 ? '+' : '') + bonuses['+accuracy'] + ' accuracy');
+    }
+    if (ifdefor(bonuses['duration'])) { // Buffs/debuffs only.
+        sections.push('For ' + bonuses.duration + ' seconds');
+        return tag('div', 'buffText', sections.join('<br/>'));
     }
     return sections.join('<br/>');
 }
@@ -428,7 +444,7 @@ $(document).on('keydown', function(event) {
             $.each(levels, function (key) {
                 if (character.$panel.find('.js-area-' + key).length && !character.levelsCompleted[key]) {
                     character.levelsCompleted[key] = true;
-                    character.$panel.find('.js-area-' + key).append($tag('button','js-learnSkill', '+skill'));
+                    character.$panel.find('.js-area-' + key).append($tag('button','js-learnSkill learnSkill', '+' + levels[key].skill.name));
                 }
             });
             updateSkillButtons(character);

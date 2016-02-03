@@ -5,7 +5,6 @@
             background-color: black;
             background-repeat: repeat;
             font-family: 'kingthings_calligraphica_2Rg', Georgia, serif;
-            font-size: 20px;
         }
         .mainGame {
             position: relative;
@@ -147,19 +146,19 @@
             <div class="js-playerPanelTemplate playerPanel" style="display: none;">
                 <div class="playerControlBar">
                     Level <span class="js-level">X</span> <span class="js-name controlBarEntry">X</span>
-                    <button class="js-recall controlBarEntry">Recall</button>
+                    <button class="js-recall controlBarEntry recallButton">Recall</button>
                     <label class="controlBarEntry"><input type="checkbox" class="js-repeat"> Repeat</label>
                     <label class="controlBarEntry"><input type="checkbox" class="js-fastforward"> Fast Forward</label>
                 </div>
                 <div class="js-infoMode infoMode">
+                    <canvas class="js-canvas" width="64" height="128" style="background-color: white; position: absolute; left: 0px">
+                    </canvas>
+                    <div class="triStatBox">
+                        <div class="js-dexterity dexterity">X</div>
+                        <div class="js-strength strength">X</div>
+                        <div class="js-intelligence intelligence">X</div>
+                    </div>
                     <div class="js-stats stats playerBox">
-                        <canvas class="js-canvas" width="64" height="128" style="background-color: white; display:inline; float: left">
-                        </canvas>
-                        <div class="triStatBox">
-                            <div class="js-dexterity dexterity">X</div>
-                            <div class="js-strength strength">X</div>
-                            <div class="js-intelligence intelligence">X</div>
-                        </div>
                         <div>
                             Next Lvl: <span class="js-toLevel">X</span> xp
                         </div>

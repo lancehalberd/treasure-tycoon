@@ -48,12 +48,16 @@
 .controlBarEntry {
     margin-right: 5px;
 }
+.recallButton {
+    font-size: .6em;
+}
 .playerPanel {
     height: 270px;
     background-color: white;
     margin: 5px;
 }
 .playerPanel .infoMode {
+    position: relative;
     width: 800px;
 }
 .infoPanel {
@@ -128,7 +132,7 @@ button {
 }
 
 .playerBox {
-    font-size: 18px;
+    font-size: 1em;
     position: relative;
     padding: 5px;
     box-sizing: border-box;
@@ -142,10 +146,13 @@ button {
     overflow-y: auto;
     overflow-x: hidden;
 }
+.stats {
+    padding-left: 60px;
+}
 .triStatBox {
     position: absolute;
     top: 110px;
-    left: 2px;
+    left: 0px;
     width: 64px;
     height: 30px;
 }
@@ -309,19 +316,22 @@ button {
 
 .adventure {
     display: block;
-    font-size: .6em;
+    font-size: 1em;
 }
 
 .adventureButton {
-    margin-right: 5px;
+    margin-right: 3px;
 }
 
 select {
     font-size: 20px;
 }
 button {
-    font-size: 12px;
-    padding: 4px;
+    font-size: .8em;
+    padding: 2px;
+}
+.learnSkill {
+    font-size: .6em;
 }
 .infoPanel {
     padding: 5px;
@@ -339,4 +349,21 @@ label {
 }
 button.disabled {
     opacity: .5;
+}
+
+.formulaStat {
+    font-weight: bold;
+    font-size: .8em;
+    font-style: italic;
+}
+
+.buffText {
+    padding: 5px;
+    background-color: rgba(200, 200, 50, .9);
+    border: 1px solid white;
+}
+.abilityText {
+    padding: 5px;
+    background-color: rgba(50, 200, 200, .9);
+    border: 1px solid white;
 }

@@ -47,9 +47,9 @@ function refreshStatsPanel(character) {
     var $statsPanel = character.$panel.find('.js-infoMode .js-stats');
     character.$panel.find('.js-name').text(adventurer.job.name + ' ' + adventurer.name);
     character.$panel.find('.js-level').text(adventurer.level);
-    $statsPanel.find('.js-dexterity').text(adventurer.dexterity);
-    $statsPanel.find('.js-strength').text(adventurer.strength);
-    $statsPanel.find('.js-intelligence').text(adventurer.intelligence);
+    character.$panel.find('.js-infoMode .js-dexterity').text(adventurer.dexterity);
+    character.$panel.find('.js-infoMode .js-strength').text(adventurer.strength);
+    character.$panel.find('.js-infoMode .js-intelligence').text(adventurer.intelligence);
     $statsPanel.find('.js-toLevel').text(adventurer.xpToLevel - adventurer.xp);
     $statsPanel.find('.js-maxHealth').text(adventurer.maxHealth);
     $statsPanel.find('.js-damage').text(adventurer.minDamage + ' to ' + adventurer.maxDamage);
@@ -262,10 +262,9 @@ function updateAdventurerStats(adventurer) {
     allRoundedStats.forEach(function (stat) {
         adventurer[stat] = Math.round(adventurer[stat]);
     });
-    adventurer.health = adventurer.maxHealth;
     adventurer.attacks.forEach(function (attack) {
         $.each(attack.base.stats, function (stat) {
-            attack[stat] = getStatForAttack(adventurer, attack, stat);
+            attack[stat] = getStatForAttack(adventurer, attack.base, stat);
         })
     });
     if (ifdefor(adventurer.isMainCharacter)) {
@@ -274,6 +273,7 @@ function updateAdventurerStats(adventurer) {
 }
 function getStat(actor, stat) {
     var base = ifdefor(actor.base[stat], 0), plus = 0, percent = 1, multiplier = 1;
+    var keys = [stat];
     if (stat === 'evasion' || stat === 'attackSpeed') {
         percent += .002 * actor.dexterity;
     }
@@ -283,12 +283,8 @@ function getStat(actor, stat) {
     if (stat === 'block' || stat === 'magicBlock' || stat === 'accuracy') {
         percent += .002 * actor.intelligence;
     }
-    actor.bonuses.forEach(function (bonus) {
-        plus += evaluateValue(actor, ifdefor(bonus['+' + stat], 0));
-        percent += evaluateValue(actor, ifdefor(bonus['%' + stat], 0));
-        multiplier *= evaluateValue(actor, ifdefor(bonus['*' + stat], 1));
-    });
     if (stat === 'minDamage' || stat === 'maxDamage') {
+        keys.push('damage');
         percent += .002 * actor.strength;
         if (actor.range >= 5) {
             plus += Math.floor(actor.dexterity / 10);
@@ -297,18 +293,33 @@ function getStat(actor, stat) {
         }
     }
     if ((stat === 'minMagicDamage' || stat === 'maxMagicDamage') && plus > 0) {
+        keys.push('magicDamage');
         plus += Math.floor(actor.intelligence / 10);
     }
+    actor.bonuses.concat(ifdefor(actor.timedEffects, [])).forEach(function (bonus) {
+        keys.forEach(function (key) {
+            plus += evaluateValue(actor, ifdefor(bonus['+' + key], 0));
+            percent += evaluateValue(actor, ifdefor(bonus['%' + key], 0));
+            multiplier *= evaluateValue(actor, ifdefor(bonus['*' + key], 1));
+        });
+    });
     //console.log(stat +": " + ['(',base, '+', plus,') *', percent, '*', multiplier]);
     return (base + plus) * percent * multiplier;
 }
-function getStatForAttack(actor, attack, stat) {
-    var base = evaluateValue(actor, ifdefor(attack.base.stats[stat], 0)), plus = 0, percent = 1, multiplier = 1;
-    actor.bonuses.forEach(function (bonus) {
-        var keys = [stat];
-        ifdefor(attack.base.tags, []).concat([attack.base.type]).forEach(function (prefix) {
-            keys.push(prefix + ':' + stat);
+function getStatForAttack(actor, dataObject, stat) {
+    var base = evaluateValue(actor, ifdefor(dataObject.stats[stat], 0)), plus = 0, percent = 1, multiplier = 1;
+    if (typeof base === 'object' && base.constructor != Array) {
+        var subObject = {};
+        $.each(base.stats, function (key, value) {
+            subObject[key] = getStatForAttack(actor, base, key);
         });
+        return subObject;
+    }
+    var keys = [stat];
+    ifdefor(dataObject.tags, []).concat([dataObject.type]).forEach(function (prefix) {
+        keys.push(prefix + ':' + stat);
+    });
+    actor.bonuses.forEach(function (bonus) {
         keys.forEach(function (key) {
             plus += evaluateValue(actor, ifdefor(bonus['+' + key], 0));
             percent += evaluateValue(actor, ifdefor(bonus['%' + key], 0));
@@ -321,15 +332,22 @@ function evaluateValue(actor, value) {
     if (typeof value === 'number') {
         return value;
     }
+    if (typeof value === 'string' && value.charAt(0) === '{') {
+        return actor[value.substring(1, value.length - 1)];
+    }
+    // If this is an object, just return it for further processing.
+    if (value.constructor !== Array) {
+        return value;
+    }
     var formula = value;
     if (!formula || !formula.length) {
         throw new Error('Expected "formula" to be an array, but value is: ' + formula);
     }
     formula = formula.slice();
-    value = actor[formula.shift()];
+    value = evaluateValue(actor, formula.shift());
     while (formula.length > 1) {
         var operator = formula.shift();
-        var operand = formula.shift();
+        var operand = evaluateValue(actor, formula.shift());
         if (operator == '+') {
             value += operand;
         } else if (operator == '-') {
@@ -353,7 +371,6 @@ function gainLevel(adventurer) {
     adventurer.xp = 0;
     adventurer.xpToLevel = xpToLevel(adventurer.level);
     updateAdventurerStats(adventurer);
-    updateSkillTree(adventurer.character);
 }
 function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonus, startingEquipment, startingBoard, loot, areaKey) {
     var key = name.replace(/\s*/g, '').toLowerCase();
