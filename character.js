@@ -292,9 +292,8 @@ function getStat(actor, stat) {
             plus += Math.floor(actor.strength / 10);
         }
     }
-    if ((stat === 'minMagicDamage' || stat === 'maxMagicDamage') && plus > 0) {
+    if ((stat === 'minMagicDamage' || stat === 'maxMagicDamage')) {
         keys.push('magicDamage');
-        plus += Math.floor(actor.intelligence / 10);
     }
     actor.bonuses.concat(ifdefor(actor.timedEffects, [])).forEach(function (bonus) {
         keys.forEach(function (key) {
@@ -303,6 +302,9 @@ function getStat(actor, stat) {
             multiplier *= evaluateValue(actor, ifdefor(bonus['*' + key], 1));
         });
     });
+    if ((stat === 'minMagicDamage' || stat === 'maxMagicDamage') && plus > 0) {
+        plus += Math.floor(actor.intelligence / 10);
+    }
     //console.log(stat +": " + ['(',base, '+', plus,') *', percent, '*', multiplier]);
     return (base + plus) * percent * multiplier;
 }
