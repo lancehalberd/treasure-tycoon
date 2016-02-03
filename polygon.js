@@ -442,8 +442,7 @@ function atanPoints(p1, p2) {
 function fixInteger(value, tolerance) {
     return Math.abs(value - Math.round(value)) < tolerance ? Math.round(value) : value;
 }
-function getBounds(shapes) {
-    var points = allPoints(shapes);
+function getBounds(points) {
     var left = right = points[0][0], top = bottom = points[0][1];
     for (var i = 1; i < points.length; i++) {
         left = Math.min(left, points[i][0]);
@@ -454,7 +453,7 @@ function getBounds(shapes) {
     return {left: left, top: top, width: right - left, height: bottom - top};
 }
 function centerShapesInRectangle(shapes, rectangle) {
-    var bounds = getBounds(shapes);
+    var bounds = getBounds(allPoints(shapes));
     var targetLeft = rectangle.left + rectangle.width / 2 - bounds.width / 2;
     var targetTop = rectangle.top + rectangle.height / 2 - bounds.height / 2;
     translateShapes(shapes, [targetLeft - bounds.left, targetTop - bounds.top]);

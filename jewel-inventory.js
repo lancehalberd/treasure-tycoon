@@ -54,9 +54,7 @@ $('body').on('mousedown', function (event) {
         return;
     }
     if (overJewel.fixed) {
-        if (!overJewel.confirmed) {
-            draggingBoardJewel = overJewel;
-        }
+        draggingBoardJewel = overJewel;
         return;
     }
     draggedJewel = overJewel;
@@ -173,13 +171,30 @@ $('body').on('mousemove', function () {
 });
 function dragBoard() {
     var character = draggingBoardJewel.character;
-    var boardShapes = character.board.boardPreview.fixed.map(jewelToShape).concat(character.board.boardPreview.spaces)
+    var boardShapes = [];
+    if (character.board.boardPreview) {
+        boardShapes = character.board.boardPreview.fixed.map(jewelToShape).concat(character.board.boardPreview.spaces);
+    }
+    if (draggingBoardJewel.confirmed) {
+        boardShapes = boardShapes.concat(character.board.jewels.map(jewelToShape)).concat(character.board.fixed.map(jewelToShape)).concat(character.board.spaces);
+    }
     var mousePosition = relativeMousePosition(character.jewelsCanvas);
     // Translate the board so the fixed jewel is centered under the mouse.
     if (overVertex === null) {
         var v = vector(draggingBoardJewel.shape.center, mousePosition);
+        if (draggingBoardJewel.confirmed) {
+            var bounds = getBounds(allPoints(boardShapes));
+            v[0] = Math.min(character.boardCanvas.width / 2 - bounds.left, v[0]);
+            v[0] = Math.max(character.boardCanvas.width / 2 - bounds.left - bounds.width, v[0]);
+            v[1] = Math.min(character.boardCanvas.height / 2 - bounds.top, v[1]);
+            v[1] = Math.max(character.boardCanvas.height / 2 - bounds.top - bounds.height, v[1]);
+        }
         translateShapes(boardShapes, v);
         dragged = true;
+        if (draggingBoardJewel.confirmed) {
+            character.boardContext.clearRect(0, 0, character.boardCanvas.width, character.boardCanvas.height);
+            drawBoardBackground(character.boardContext, character.board);
+        }
         return;
     }
     // Rotate the board
@@ -200,6 +215,10 @@ function dragBoard() {
         if (theta != 0) {
             rotateShapes(boardShapes, center, theta * Math.PI / 6);
             overVertex = rotatePoint(overVertex, center, theta * Math.PI / 6);
+            if (draggingBoardJewel.confirmed) {
+                character.boardContext.clearRect(0, 0, character.boardCanvas.width, character.boardCanvas.height);
+                drawBoardBackground(character.boardContext, character.board);
+            }
         }
     }
 }
@@ -299,7 +318,9 @@ function stopJewelDrag() {
 
 function stopBoardDrag() {
     var character = draggingBoardJewel.character;
-    snapBoardToBoard(character.board.boardPreview, character.board);
+    if (!draggingBoardJewel.confirmed) {
+        snapBoardToBoard(character.board.boardPreview, character.board);
+    }
     draggingBoardJewel = null;
 }
 function appendDraggedJewelToElement($element) {
