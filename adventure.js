@@ -426,93 +426,22 @@ function drawAdventure(character, delta) {
     }
     var cameraX = character.cameraX;
     context.clearRect(0, 0, character.canvas.width, character.canvas.height);
-    var backgroundImage = ifdefor(character.area.backgroundImage, images['gfx/grass.png']);
-    // Draw background
-    for (var i = 0; i <= 704; i += 64) {
-        var x = (768 + (i - cameraX) % 768) % 768 - 64;
-        context.drawImage(backgroundImage, 64, 0, 64, 240,
-                              x, 0, 64, 240);
-    }
-
-    //make clouds move even when character is stopped
+    var background = ifdefor(character.area.background, backgrounds.field);
     var cloudX = cameraX + character.time * .5;
-    //clouds move with character now
-
-    cloudX = cameraX;
-
-    var lndscpFrame = 64;
-    //sky every, distant (slowest speed)
-    for (var i = 0; i <= 704; i += lndscpFrame) {
-        var x = (768 + (i - cloudX * .2) % 768) % 768 - 64;
-        context.drawImage(backgroundImage, lndscpFrame*4, 0 , 64, 240,
-                              x, 0, 64, 240);
-    }
-    //sky every other, distant (slower speed)
-    for (var i = 0; i <= 704; i += lndscpFrame*2) {
-        var x = (768 + (i - cloudX * .3) % 768) % 768 - 64;
-        context.drawImage(backgroundImage, lndscpFrame*6, 0 , 64, 240,
-                              x, 0, 64, 240);
-    }
-    //sky every three, closer (medium speed)
-    for (var i = 0; i <= 704; i += lndscpFrame*3) {
-        var x = (768 + (i - cloudX * .5) % 768) % 768 - 64;
-        context.drawImage(backgroundImage, lndscpFrame*5, 0 , 64, 240,
-                              x, 0, 64, 240);
-    }
-    //sky every four
-    for (var i = 0; i <= 704; i += lndscpFrame*4) {
-        var x = (768 + (i - cloudX * .65) % 768) % 768 - 64;
-        context.drawImage(backgroundImage, lndscpFrame*7, 0 , 64, 240,
-                              x, 0, 64, 240);
-    }
-    // floor, fixed to landscape, every frame
-    for (var i = 0; i <= 704; i += lndscpFrame) {
-        var x = (768 + (i - cloudX) % 768) % 768 - 64;
-        context.drawImage(backgroundImage, lndscpFrame*2, 0 , 64, 240,
-                              x, 0, 64, 240);
-    }
-    // floor, fixed to landscape, every other
-    for (var i = 0; i <= 704; i += lndscpFrame*2) {
-        var x = (768 + (i - cloudX) % 768) % 768 - 64;
-        context.drawImage(backgroundImage, lndscpFrame*11, 0 , 64, 240,
-                              x, 0, 64, 240);
-    }
-    // floor, fixed to landscape, every three
-    for (var i = 0; i <= 704; i += lndscpFrame*3) {
-        var x = (768 + (i - cloudX) % 768) % 768 - 64;
-        context.drawImage(backgroundImage, lndscpFrame*12, 0 , 64, 240,
-                              x, 0, 64, 240);
-    }
-    // floor, fixed to landscape, every five
-    for (var i = 0; i <= 704; i += lndscpFrame*5) {
-        var x = (768 + (i - cloudX) % 768) % 768 - 64;
-        context.drawImage(backgroundImage, lndscpFrame*13, 0 , 64, 240,
-                              x, 0, 64, 240);
-    }
-    // basement, fixed to landscape, all frames, decoration
-    for (var i = 0; i <= 704; i += lndscpFrame) {
-        var x = (768 + (i - cloudX) % 768) % 768 - 64;
-        context.drawImage(backgroundImage, lndscpFrame*8, 0 , 64, 240,
-                              x, 0, 64, 240);
-    }
-    // basement, fixed to landscape, all frames, main texture
-    for (var i = 0; i <= 704; i += lndscpFrame) {
-        var x = (768 + (i - cloudX) % 768) % 768 - 64;
-        context.drawImage(backgroundImage, lndscpFrame*3, 0 , 64, 240,
-                              x, 0, 64, 240);
-    }
-    // basement, fixed to landscape, every four
-    for (var i = 0; i <= 704; i += lndscpFrame*4) {
-        var x = (768 + (i - cloudX) % 768) % 768 - 64;
-        context.drawImage(backgroundImage, lndscpFrame*9, 0 , 64, 240,
-                              x, 0, 64, 240);
-    }
-    // basement, fixed to landscape, every three
-    for (var i = 0; i <= 704; i += lndscpFrame*3) {
-        var x = (768 + (i - cloudX) % 768) % 768 - 64;
-        context.drawImage(backgroundImage, lndscpFrame*10, 0 , 64, 240,
-                              x, 0, 64, 240);
-    }
+    background.forEach(function(section) {
+        var source = section.source;
+        var y = ifdefor(section.y, 0);
+        var height = ifdefor(section.height, 240 - y);
+        var width = ifdefor(section.width, 64);
+        var parallax = ifdefor(section.parallax, 1);
+        var spacing = ifdefor(section.spacing, 1);
+        var velocity = ifdefor(section.velocity, 0);
+        for (var i = 0; i <= 704; i += 64 * spacing) {
+            var x = (768 + (i - (cameraX - character.time * velocity) * parallax) % 768) % 768 - 64;
+            context.drawImage(source.image, source.x, source.y, source.width, source.height,
+                                  x, y, width, height);
+        }
+    });
     character.objects.forEach(function (object, index) {
         object.draw(character.context, object.x - cameraX, 240 - 128);
     });

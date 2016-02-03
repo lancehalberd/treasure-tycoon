@@ -45,6 +45,7 @@ async.mapSeries([
     });
     initializeJobs();
     initalizeMonsters();
+    initializeBackground();
     initializeLevels();
     updateItemCrafting();
     var jobKey = Random.element(ranks[0]);
@@ -89,7 +90,7 @@ function completeArea(character) {
     var $adventureDiv = character.$panel.find('.js-infoMode').find('.js-area-' + character.currentLevelIndex);
     // If the character beat the last adventure open to them, unlock the next one
     if (!character.levelsCompleted[character.currentLevelIndex]) {
-        $adventureDiv.append($tag('button','js-learnSkill learnSkill', '+' + levels[character.currentLevelIndex].skil.name));
+        $adventureDiv.append($tag('button','js-learnSkill learnSkill', '+' + levels[character.currentLevelIndex].skill.name));
         character.levelsCompleted[character.currentLevelIndex] = true;
         character.area.base.next.forEach(function (areaKey) {
             // Add a button for the unlocked area only if no such button exists already.
