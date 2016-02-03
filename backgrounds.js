@@ -65,13 +65,3 @@ function initializeBackground() {
         {'source': bgSources.rocks}
     ];
 }
-
-function blah(character, delta) {
-    var lndscpFrame = 64;
-    // floor, fixed to landscape, every frame
-    for (var i = 0; i <= 704; i += lndscpFrame) {
-        var x = (768 + (i - cloudX) % 768) % 768 - 64;
-        context.drawImage(backgroundImage, lndscpFrame*2, 0 , 64, 240,
-                              x, 0, 64, 240);
-    }
-}
