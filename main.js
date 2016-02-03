@@ -127,6 +127,10 @@ function mainLoop() {
             for (var i = 0; i < character.gameSpeed && character.area; i++) {
                 character.time += delta / 1000;
                 adventureLoop(character, delta / 1000);
+                character.cameraX = (character.cameraX * 10 + character.adventurer.x - 10 ) / 11;
+            }
+            if (character.area) {
+                drawAdventure(character);
             }
         } else {
             var characterDelta = delta * character.gameSpeed / 1000;

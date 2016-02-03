@@ -204,8 +204,6 @@ function updateMonsterStats(monster) {
     monster.minMagicDamage = Math.max(monster.minMagicDamage, monster.maxMagicDamage);
     monster.attacks.forEach(function (attack) {
         $.each(attack.base.stats, function (stat) {
-            console.log(attack.base);
-            console.log(stat);
             attack[stat] = getStatForAttack(monster, attack.base, stat);
         })
     });

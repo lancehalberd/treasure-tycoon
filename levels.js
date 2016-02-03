@@ -207,7 +207,7 @@ function initializeLevels() {
              'skill': abilities['vitality'],'board': halfHexBoard,
              'enemySkills': [abilities['vitality']],
              'monsters': ['skeleton'],
-             'events': [['skeleton', 'skeleton'], ['gnomecromancer'], ['skeleton', 'skeleton', 'skeleton', 'skeleton'], ['gnomecromancer', 'gnomecromancer']]});
+             'events': [['skeleton', 'skeleton'], ['dragon'], ['skeleton', 'skeleton', 'skeleton', 'skeleton'], ['gnomecromancer']]});
     // Level 3 Offense
     addLevel({'name': 'Crypt', 'level': 3, 'background': backgrounds.cave, 'specialLoot': [simpleSaphireLoot],'next': ['dungeon'],
              'skill': {'name': 'Resonance', 'bonuses': {'%magicDamage': .2}}, 'board': triforceBoard,

@@ -3,8 +3,6 @@ function startArea(character, index) {
         throw new Error('No level found for ' + index);
     }
     character.currentLevelIndex = index;
-    character.$panel.find('.js-infoMode').hide();
-    character.$panel.find('.js-adventureMode').show();
     character.area = instantiateLevel(levels[index], character.levelsCompleted[index]);
     character.waveIndex = 0;
     character.adventurer.x = 0;
@@ -25,6 +23,9 @@ function startArea(character, index) {
     character.adventurer.attacks.forEach(function (attack) {
         attack.readyAt = 0;
     });
+    drawAdventure(character);
+    character.$panel.find('.js-infoMode').hide();
+    character.$panel.find('.js-adventureMode').show();
 }
 function adventureLoop(character, delta) {
     var adventurer = character.adventurer;
@@ -93,7 +94,6 @@ function adventureLoop(character, delta) {
     everybody.forEach(function (actor) {
         actor.health = Math.min(actor.maxHealth, Math.max(0, actor.health));
     });
-    drawAdventure(character, delta);
 }
 function expireTimedEffects(character, actor) {
     var changed = false;
@@ -417,13 +417,9 @@ function defeatedEnemy(character, enemy) {
         loot.addTreasurePopup(character, enemy.x + index * 20, 240 - 140, 0, -1, index * 10);
     });
 }
-function drawAdventure(character, delta) {
+function drawAdventure(character) {
     var adventurer = character.adventurer;
     var context = character.context;
-    var targetCameraX = adventurer.x - 10;
-    for (var i = 0; i < delta / .05; i++) {
-        character.cameraX = (character.cameraX * 10 + targetCameraX ) / 11;
-    }
     var cameraX = character.cameraX;
     context.clearRect(0, 0, character.canvas.width, character.canvas.height);
     var background = ifdefor(character.area.background, backgrounds.field);
