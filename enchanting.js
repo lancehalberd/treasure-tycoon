@@ -28,7 +28,7 @@ var suffixes = [
 function makeAffix(baseAffix) {
     var affix = {
         'base': baseAffix,
-        'bonuses': []
+        'bonuses': {}
     };
     $.each(baseAffix.bonuses, function (key, value) {
         if (Array.isArray(value)) {
