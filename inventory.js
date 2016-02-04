@@ -203,7 +203,7 @@ function bonusHelpText(rawBonuses, implicit) {
         sections.push('Gain ' + (100 * bonuses['+increasedItems']).format(1) + '% more item points.');
     }
     if (ifdefor(bonuses['+increasedExperience'])) {
-        sections.push('Gain ' + (100 * bonuses['+increasedExperience']).format(1) + '% more item experience.');
+        sections.push('Gain ' + (100 * bonuses['+increasedExperience']).format(1) + '% more experience.');
     }
 
     if (ifdefor(bonuses['duration'])) { // Buffs/debuffs only.
