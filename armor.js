@@ -222,3 +222,33 @@ addItem(45, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Embroidered Slippers
 addItem(50, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Sourcerous Slippers', 'bonuses': {'+block': 41, '+magicBlock': 41, '+speed': 110}, 'offset': 8, icon: 'boots'});
 addItem(55, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Blessed Sandals', 'bonuses': {'+block': 50, '+magicBlock': 50, '+armor': 5, '+evasion': 5, '+maxHealth': 25, '+speed': 150}, 'offset': 8, icon: 'boots'});
 addItem(60, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Divine Sandals', 'bonuses': {'+block': 70, '+magicBlock': 60, '+armor': 10, '+evasion': 10, '+maxHealth': 50, '%speed': 0.25}, 'offset': 8, icon: 'boots'});
+
+//Heavy Shields
+addItem(1, {'slot': 'offhand', 'type': 'heavyShield', 'name': 'Wooden Board', 'bonuses': {'+maxHealth': 10, '+block': 3}, 'icon': 'shield'});
+addItem(4, {'slot': 'offhand', 'type': 'heavyShield', 'name': 'Scuta', 'bonuses': {'+maxHealth': 50, '+block': 10}, 'icon': 'shield'});
+addItem(9, {'slot': 'offhand', 'type': 'heavyShield', 'name': 'Wooden Kite Shield', 'bonuses': {'+maxHealth': 90, '+block': 17}, 'icon': 'shield'});
+addItem(14, {'slot': 'offhand', 'type': 'heavyShield', 'name': 'Iron Kite Shield', 'bonuses': {'+maxHealth': 130, '+block': 24}, 'icon': 'shield'});
+addItem(19, {'slot': 'offhand', 'type': 'heavyShield', 'name': 'Wooden Heater Shield', 'bonuses': {'+maxHealth': 170, '+block': 31}, 'icon': 'shield'});
+addItem(24, {'slot': 'offhand', 'type': 'heavyShield', 'name': 'Iron Heater Shield', 'bonuses': {'+maxHealth': 210, '+block': 39}, 'icon': 'shield'});
+addItem(29, {'slot': 'offhand', 'type': 'heavyShield', 'name': 'Steel Heater Shield', 'bonuses': {'+maxHealth': 250, '+block': 46}, 'icon': 'shield'});
+addItem(34, {'slot': 'offhand', 'type': 'heavyShield', 'name': 'Iron Tower Shield', 'bonuses': {'+maxHealth': 290, '+block': 53}, 'icon': 'shield'});
+addItem(39, {'slot': 'offhand', 'type': 'heavyShield', 'name': 'Steel Tower Shield', 'bonuses': {'+maxHealth': 330, '+block': 60}, 'icon': 'shield'});
+addItem(44, {'slot': 'offhand', 'type': 'heavyShield', 'name': 'Stainless Tower Shield', 'bonuses': {'+maxHealth': 370, '+block': 67}, 'icon': 'shield'});
+addItem(49, {'slot': 'offhand', 'type': 'heavyShield', 'name': 'Meteoric Tower Shield', 'bonuses': {'+maxHealth': 400, '+block': 75}, 'icon': 'shield'});
+addItem(59, {'slot': 'offhand', 'type': 'heavyShield', 'name': 'Adamantium Tower Shield', 'bonuses': {'+maxHealth': 400, '+block': 120, '+armor': 5, '+evasion': 5, '+magicBlock': 10, '%speed': -0.1}, 'icon': 'shield'});
+addItem(69, {'slot': 'offhand', 'type': 'heavyShield', 'name': 'Orichalcum Tower Shield', 'bonuses': {'+maxHealth': 400, '+block': 110, '+armor': 10, '+evasion': 10, '+magicBlock': 20}, 'icon': 'shield'});
+
+//Light Shields
+addItem(1, {'slot': 'offhand', 'type': 'lightShield', 'name': 'Wooden Bowl', 'bonuses': {'+evasion': 3, '+block': 2}, 'icon': 'shield'});
+addItem(3, {'slot': 'offhand', 'type': 'lightShield', 'name': 'Parma', 'bonuses': {'+evasion': 11, '+block': 9}, 'icon': 'shield'});
+addItem(8, {'slot': 'offhand', 'type': 'lightShield', 'name': 'Wooden Round Shield', 'bonuses': {'+evasion': 19, '+block': 16}, 'icon': 'shield'});
+addItem(13, {'slot': 'offhand', 'type': 'lightShield', 'name': 'Leather Round Shield', 'bonuses': {'+evasion': 27, '+block': 23}, 'icon': 'shield'});
+addItem(18, {'slot': 'offhand', 'type': 'lightShield', 'name': 'Hide Round Shield', 'bonuses': {'+evasion': 35, '+block': 30}, 'icon': 'shield'});
+addItem(23, {'slot': 'offhand', 'type': 'lightShield', 'name': 'Iron Round Shield', 'bonuses': {'+evasion': 43, '+block': 37}, 'icon': 'shield'});
+addItem(28, {'slot': 'offhand', 'type': 'lightShield', 'name': 'Steel Round Shield', 'bonuses': {'+evasion': 51, '+block': 44}, 'icon': 'shield'});
+addItem(33, {'slot': 'offhand', 'type': 'lightShield', 'name': 'Iron Buckler', 'bonuses': {'+evasion': 59, '+block': 51}, 'icon': 'shield'});
+addItem(38, {'slot': 'offhand', 'type': 'lightShield', 'name': 'Steel Buckler', 'bonuses': {'+evasion': 67, '+block': 58}, 'icon': 'shield'});
+addItem(43, {'slot': 'offhand', 'type': 'lightShield', 'name': 'Stainless Buckler', 'bonuses': {'+evasion': 75, '+block': 65}, 'icon': 'shield'});
+addItem(48, {'slot': 'offhand', 'type': 'lightShield', 'name': 'Meteoric Buckler', 'bonuses': {'+evasion': 83, '+block': 72}, 'icon': 'shield'});
+addItem(58, {'slot': 'offhand', 'type': 'lightShield', 'name': 'Runed Buckler', 'bonuses': {'+evasion': 90, '+block': 80, '+armor': 5, '+maxHealth': 25, '+magicBlock': 10}, 'icon': 'shield'});
+addItem(68, {'slot': 'offhand', 'type': 'lightShield', 'name': 'Dragon Buckler', 'bonuses': {'+evasion': 100, '+block': 90, '+armor': 10, '+maxHealth': 50, '+magicBlock': 20}, 'icon': 'shield'});
