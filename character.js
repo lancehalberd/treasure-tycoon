@@ -72,7 +72,7 @@ function newCharacter(job) {
         .removeClass('js-playerPanelTemplate').addClass('js-playerPanel').show();
     $('.js-playerColumn').prepend($newPlayerPanel);
     var character = {};
-    character.adventurer = makeAdventurer(job, 1, job.startingEquipment);
+    character.adventurer = makeAdventurer(job, 1, ifdefor(job.startingEquipment, {}));
     character.adventurer.character = character;
     character.adventurer.direction = 1; // Character moves left to right.
     character.adventurer.isMainCharacter = true;
@@ -95,7 +95,7 @@ function newCharacter(job) {
     $newPlayerPanel.data('character', character);
     $newPlayerPanel.find('.js-map').append($levelDiv(ifdefor(job.areaKey, 'meadow')));
     displayInfoMode(character);
-    var abilityKey = ifdefor(abilities[job.key]) ? job.key : 'healing';
+    var abilityKey = ifdefor(abilities[job.key]) ? job.key : 'heal';
     character.adventurer.abilities.push(abilities[abilityKey]);
     character.board = readBoardFromData(job.startingBoard, character, abilities[abilityKey], true);
     centerShapesInRectangle(character.board.fixed.map(jewelToShape).concat(character.board.spaces), rectangle(0, 0, character.boardCanvas.width, character.boardCanvas.height));
@@ -385,7 +385,7 @@ function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonu
         'dexterityBonus': dexterityBonus,
         'strengthBonus': strengthBonus,
         'intelligenceBonus': intelligenceBonus,
-        'startingEquipment': ifdefor(startingEquipment, {'weapon': itemsByKey.dagger}),
+        'startingEquipment': ifdefor(startingEquipment, {'weapon': itemsByKey.rock}),
         'startingBoard': ifdefor(startingBoard, squareBoard),
         'loot': loot,
         'areaKey': ifdefor(areaKey, 'meadow')
