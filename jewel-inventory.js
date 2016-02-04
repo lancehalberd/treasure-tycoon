@@ -22,7 +22,11 @@ function jewelHelpText(jewel) {
         name = jewel.qualifierName + ' ' + name;
     }
     name = 'Tier ' + jewel.tier + ' ' + name;
-    var sections = [name, ''];
+    var sections = [name];
+    if (!jewel.fixed) {
+        sections.push('Requires level ' + jewelTierLevels[jewel.tier]);
+    }
+    sections.push('');
     sections.push('Quality ' + jewel.quality.format(2));
     sections.push('Balance ' + [(300 * jewel.components[0]).format(0), (300 * jewel.components[1]).format(0), (300 * jewel.components[2]).format(0)].join('/'));
     sections.push('');
@@ -59,6 +63,11 @@ $('body').on('mousedown', function (event) {
         return;
     }
     if (overJewel.fixed) {
+        // Don't allow users to rotate the entire board. This can be confusing,
+        // and they may accidentally trigger this trying to rotate other jewels.
+        if (overVertex && overJewel.confirmed) {
+            return;
+        }
         draggingBoardJewel = overJewel;
         return;
     }
@@ -344,7 +353,8 @@ function appendJewelToElement(jewel, $element) {
     jewel.$canvas.css('position', '');
 }
 function equipJewel(character) {
-    if (snapToBoard(draggedJewel.shape, character.board)) {
+    if (jewelTierLevels[draggedJewel.tier] <= character.adventurer.level
+        && snapToBoard(draggedJewel.shape, character.board)) {
         draggedJewel.character = character;
         draggedJewel.$item.detach();
         draggedJewel.$canvas.detach();

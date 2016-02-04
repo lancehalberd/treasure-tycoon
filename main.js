@@ -106,13 +106,16 @@ function completeArea(character) {
             }
         });
     }
-    for (var itemLevel = $('.js-levelSelect').find('option').length + 1; itemLevel <= level.level + 1 && itemLevel <= items.length; itemLevel++) {
+    unlockItemLevel(level.level);
+    displayInfoMode(character);
+}
+function unlockItemLevel(level) {
+    for (var itemLevel = $('.js-levelSelect').find('option').length + 1; itemLevel <= level + 1 && itemLevel <= items.length; itemLevel++) {
         var $newOption = $tag('option', '', 'Level ' + itemLevel).attr('value', itemLevel);
         items[itemLevel - 1] = ifdefor(items[itemLevel - 1], []);
         $newOption.toggle(items[itemLevel - 1].length > 0);
         $('.js-levelSelect').append($newOption);
     }
-    displayInfoMode(character);
 }
 var lastTime = now();
 function mainLoop() {

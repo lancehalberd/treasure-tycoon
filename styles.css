@@ -255,6 +255,9 @@ button {
 .itemSlot.active {
     background-color: #88ff88;
 }
+.itemSlot.invalid {
+    background-color: #ff8888;
+}
 .enchantmentSlot {
     margin-top: 5px;
     margin-left: auto;

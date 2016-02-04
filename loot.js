@@ -96,7 +96,7 @@ function createRandomJewel(shapes, tiers, components, permute) {
     components = components.map(function (component) { return Random.range(component[0], component[1]);});
     return makeJewel(tier, shapeType, permute ? Random.shuffle(components) : components, quality);
 }
-var simpleJewelLoot = jewelLoot(basicShapeTypes, [1, 1], [[90, 90], [5, 10], [0, 5]], true);
+var simpleJewelLoot = jewelLoot(basicShapeTypes, [1, 1], [[90, 90], [16, 20], [7, 10]], true);
 var simpleRubyLoot = jewelLoot(basicShapeTypes, [1, 1], [[90, 100], [5, 10], [5, 10]], false);
 var simpleEmeraldLoot = jewelLoot(basicShapeTypes, [1, 1], [[5, 10], [90,100], [5, 10]], false);
 var simpleSaphireLoot = jewelLoot(basicShapeTypes, [1, 1], [[5, 10], [5, 10], [90, 100]], false);
