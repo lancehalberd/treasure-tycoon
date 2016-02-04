@@ -8,14 +8,16 @@ function equipItem(adventurer, item) {
     updateAdventurer(adventurer);
 }
 function sellValue(item) {
-    return item.level * item.level * item.level;
+    return item.itemLevel * item.itemLevel * item.itemLevel;
 }
 function makeItem(base, level) {
     var item = {
         'base': base,
         'prefixes': [],
         'suffixes': [],
-        'level': level
+        // level is used to represent the required level, itemLevel is used
+        // to calculate available enchantments and sell value.
+        'itemLevel': level
     };
     item.$item = $tag('div', 'js-item item', tag('div', 'icon ' + base.icon));
     updateItem(item);
