@@ -25,7 +25,7 @@ function pointsLootDrop(type, amount) {
     var color = ['#fff', '#fc4', '#c4f', '#4cf'][index];
     var font = (20 + 2* index) + 'px sans-serif';
     return {
-        'gainLoot': function () {
+        'gainLoot': function (character) {
             gain(type, Math.round(amount * (1 + character.adventurer.increasedItems)));
         },
         'addTreasurePopup': function (character, x, y, vx, vy, delay) {
@@ -69,7 +69,7 @@ function jewelTreasurePopup(jewel, x, y, vx, vy, delay) {
 
 function jewelLootDrop(jewel) {
     return {
-        'gainLoot': function () {
+        'gainLoot': function (character) {
             gainJewel(jewel);
         },
         'addTreasurePopup': function (character, x, y, vx, vy, delay) {
