@@ -75,7 +75,9 @@ function makeJewel(tier, shapeType, components, quality) {
         'quality': quality,
         'shape': makeShape(0, 0, 0, shapeDefinition).scale(30),
         'area': area,
-        'price': Math.round(Math.pow(10, tier) * quality * quality * (5 - qualifierIndex) * area)
+        'price': Math.round(Math.pow(10, tier) * quality * quality * (5 - qualifierIndex) * area),
+        'adjacentJewels': [],
+        'adjacencyBonuses': {}
     };
     var typeIndex = 0;
     jewel.shape.color = arrayToCssRGB(RGB);
@@ -94,13 +96,123 @@ function makeJewel(tier, shapeType, components, quality) {
     updateJewel(jewel);
     return jewel;
 }
+function clearAdjacentJewels(jewel) {
+    while (jewel.adjacentJewels.length) {
+        var adjacentJewel = jewel.adjacentJewels.pop();
+        var jewelIndex = adjacentJewel.adjacentJewels.indexOf(jewel);
+        if (jewelIndex >= 0) {
+            adjacentJewel.adjacentJewels.splice(jewelIndex, 1);
+        }
+        updateAdjacencyBonsues(adjacentJewel);
+    }
+}
+function updateAdjacentJewels(jewel) {
+    clearAdjacentJewels(jewel);
+    if (!jewel.character) {
+        return;
+    }
+    var jewels = jewel.character.board.jewels.concat(jewel.character.board.fixed);
+    for (var i = 0; i < jewels.length; i++) {
+        if (jewels[i] === jewel) continue;
+        var count = 0;
+        for (var j = 0; j < jewel.shape.points.length && count < 2; j++) {
+            if (isPointInPoints(jewel.shape.points[j], jewels[i].shape.points)) {
+                count++
+            }
+        }
+        if (count < 2) {
+            count = 0;
+            for (var j = 0; j < jewels[i].shape.points.length && count < 2; j++) {
+                if (isPointInPoints(jewels[i].shape.points[j], jewel.shape.points)) {
+                    count++
+                }
+            }
+        }
+        if (count == 2) {
+            jewel.adjacentJewels.push(jewels[i]);
+            jewels[i].adjacentJewels.push(jewel);
+            updateAdjacencyBonsues(jewels[i]);
+        }
+    }
+    updateAdjacencyBonsues(jewel);
+    removeToolTip();
+}
+function updateAdjacencyBonsues(jewel) {
+    jewel.adjacencyBonuses = {};
+    if (jewel.fixed) {
+        return;
+    }
+    var matches = 0;
+    var typesSeen = {};
+    typesSeen[jewel.jewelType] = true;
+    var uniqueTypes = 0;
+    var shapeDefinition = shapeDefinitions[jewel.shapeType][0];
+    var coefficient = jewel.quality * shapeDefinition.area;
+    // Pure gems qualifier bonus is applied to their own adjacency bonuses
+    if (jewel.jewelType === 1 || jewel.jewelType === 2 || jewel.jewelType === 4) {
+        coefficient *= jewel.qualifierBonus;
+    }
+    var adjacentQualifierBonus = 1;
+    for (var i = 0; i < jewel.adjacentJewels.length; i++) {
+        var adjacent = jewel.adjacentJewels[i];
+        if (adjacent.jewelType === jewel.jewelType) {
+            matches++;
+        }
+        if (!typesSeen[adjacent.jewelType]) {
+            typesSeen[adjacent.jewelType] = true;
+            uniqueTypes++;
+        }
+        // Dual gems qualifier bonus is applied to adjacent gems' adjacency bonuses
+        if (adjacent.jewelType === 3 || adjacent.jewelType === 5 || adjacent.jewelType === 6) {
+            // These are additive, otherwise they could result in 3x multiplier on hexagons.
+            adjacentQualifierBonus += (jewel.qualifierBonus - 1);
+        }
+    }
+    coefficient *= adjacentQualifierBonus;
+    var resonanceBonus = coefficient * [0, 1, 2, 3, 5, 8, 13, 21, 34][matches];
+    var contrastBonus = coefficient * [0, 1, 2, 3, 5, 8, 13, 21, 34][uniqueTypes];
+    switch(jewel.jewelType) {
+        case 1:
+            jewel.adjacencyBonuses['%maxHealth'] = resonanceBonus / 100;
+            jewel.adjacencyBonuses['%damage'] = contrastBonus / 100;
+            break;
+        case 2:
+            jewel.adjacencyBonuses['%evasion'] = resonanceBonus / 100;
+            jewel.adjacencyBonuses['%attackSpeed'] = contrastBonus / 100;
+            break;
+        case 4:
+            jewel.adjacencyBonuses['%accuracy'] = resonanceBonus / 100;
+            jewel.adjacencyBonuses['%block'] = contrastBonus / 100;
+            break;
+        case 3:
+            jewel.adjacencyBonuses['%critChance'] = resonanceBonus / 100;
+            jewel.adjacencyBonuses['+critDamage'] = contrastBonus / 100;
+            break;
+        case 5:
+            jewel.adjacencyBonuses['+healthGainOnHit'] = resonanceBonus / 100;
+            jewel.adjacencyBonuses['+healthRegen'] = contrastBonus / 100;
+            break;
+        case 6:
+            jewel.adjacencyBonuses['%magicBlock'] = resonanceBonus / 100;
+            jewel.adjacencyBonuses['%magicDamage'] = contrastBonus / 100;
+            break;
+        case 7:
+            jewel.adjacencyBonuses['+increasedItems'] = resonanceBonus / 100;
+            jewel.adjacencyBonuses['+increasedExperience'] = contrastBonus / 100;
+            break;
+    }
+    jewel.helpText = jewelHelpText(jewel);
+}
 function makeFixedJewel(shape, character, ability) {
     shape.color = '#333333';
     return {
         'shape': shape,
+        'jewelType': 0,
         'fixed': true,
         'character': character,
-        'helpText': abilityHelpText(ability)
+        'helpText': abilityHelpText(ability),
+        'adjacentJewels': [],
+        'adjacencyBonuses': {}
     };
 }
 // Used like: arrayOfShapes = arrayOfJewels.map(jewelToShape)

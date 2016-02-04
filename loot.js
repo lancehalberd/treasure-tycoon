@@ -26,7 +26,7 @@ function pointsLootDrop(type, amount) {
     var font = (20 + 2* index) + 'px sans-serif';
     return {
         'gainLoot': function () {
-            gain(type, amount);
+            gain(type, Math.round(amount * (1 + character.adventurer.increasedItems)));
         },
         'addTreasurePopup': function (character, x, y, vx, vy, delay) {
             character.treasurePopups.push(treasurePopup(x, y, vx, vy, delay, '+' + amount, color, font));
@@ -134,7 +134,7 @@ function treasureChest(loot, closedImage, openImage) {
                     var delay = 0;
                     self.loot.forEach(function (loot) {
                         var drop = loot.generateLootDrop();
-                        drop.gainLoot();
+                        drop.gainLoot(character);
                         var vx =  Math.cos(theta) * 2;
                         var vy = -Math.sin(theta) * 2;
                         drop.addTreasurePopup(character, self.x + 32 + vx * 20, 240 - 80 + vy * 20, vx, vy, delay += 5);

@@ -18,7 +18,8 @@ var allComputedStats = ['cloaking', 'dexterity', 'strength', 'intelligence', 'ma
      'evasion', 'block', 'magicBlock', 'armor', 'magicResist', 'accuracy', 'range', 'attackSpeed',
      'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage',
      'critChance', 'critDamage', 'critAccuracy',
-     'damageOnMiss', 'slowOnHit', 'healthRegen', 'healthGainOnHit'];
+     'damageOnMiss', 'slowOnHit', 'healthRegen', 'healthGainOnHit',
+     'increasedItems', 'increasedExperience'];
 var allRoundedStats = ['dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
      'ip', 'xpValue', 'mp', 'rp', 'up',
      'evasion', 'block', 'magicBlock', 'armor', 'accuracy',
@@ -101,7 +102,7 @@ function newCharacter(job) {
     drawBoardBackground(character.boardContext, character.board);
     updateAdventurer(character.adventurer);
     ifdefor(job.loot, [simpleJewelLoot, simpleJewelLoot, simpleJewelLoot]).forEach(function (loot) {
-        loot.generateLootDrop().gainLoot();
+        loot.generateLootDrop().gainLoot(character);
     });
 }
 function convertShapeDataToShape(shapeData) {
@@ -206,7 +207,8 @@ function updateAdventurer(adventurer) {
     });
     if (adventurer.character) {
         adventurer.character.board.jewels.forEach(function (jewel) {
-            addBonusesAndAttacks(adventurer, jewel);
+            adventurer.bonuses.push(jewel.bonuses);
+            adventurer.bonuses.push(jewel.adjacencyBonuses);
         });
     }
     // Add the adventurer's current equipment to bonuses and graphics
@@ -363,6 +365,7 @@ function evaluateValue(actor, value) {
     return value;
 }
 function gainXP(adventurer, amount) {
+    amount *= (1 + adventurer.increasedExperience);
     adventurer.xp = Math.min(adventurer.xp + amount, adventurer.xpToLevel);
 }
 function gainLevel(adventurer) {

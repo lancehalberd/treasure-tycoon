@@ -26,8 +26,13 @@ function jewelHelpText(jewel) {
     sections.push('Quality ' + jewel.quality.format(2));
     sections.push('Balance ' + [(300 * jewel.components[0]).format(0), (300 * jewel.components[1]).format(0), (300 * jewel.components[2]).format(0)].join('/'));
     sections.push('');
-    sections.push(bonusHelpText(jewel.bonuses, true));
+    sections.push(bonusHelpText(jewel.bonuses));
     sections.push('');
+    var adjacencyBonusText = bonusHelpText(jewel.adjacencyBonuses);
+    if (adjacencyBonusText.length) {
+        sections.push(adjacencyBonusText);
+        sections.push('');
+    }
     var points = [jewel.price + ' IP', jewel.price + ' MP'];
     sections.push('Sell for ' + points.join(' '));
     return sections.join('<br/>');
@@ -58,6 +63,7 @@ $('body').on('mousedown', function (event) {
         return;
     }
     draggedJewel = overJewel;
+    clearAdjacentJewels(draggedJewel);
     if (overVertex) {
         return;
     }
@@ -344,11 +350,13 @@ function equipJewel(character) {
         draggedJewel.$canvas.detach();
         character.board.jewels.push(draggedJewel);
         overJewel = draggedJewel;
+        updateAdjacentJewels(draggedJewel);
         draggedJewel = null;
         $dragHelper = null;
         updateAdventurer(character.adventurer);
         return true;
     }
+    updateAdjacentJewels(draggedJewel);
     return false;
 }
 function updateJewelCraftingOptions() {

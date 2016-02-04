@@ -413,7 +413,7 @@ function defeatedEnemy(character, enemy) {
     if (enemy.rp) loot.push(pointsLootDrop('RP', enemy.rp));
     if (enemy.up) loot.push(pointsLootDrop('UP', enemy.up));
     loot.forEach(function (loot, index) {
-        loot.gainLoot();
+        loot.gainLoot(character);
         loot.addTreasurePopup(character, enemy.x + index * 20, 240 - 140, 0, -1, index * 10);
     });
 }
