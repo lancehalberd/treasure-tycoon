@@ -8,21 +8,28 @@ function equipItem(adventurer, item) {
     updateAdventurer(adventurer);
 }
 function sellValue(item) {
-    return item.level * item.level * item.level;
+    return item.itemLevel * item.itemLevel * item.itemLevel;
 }
 function makeItem(base, level) {
     var item = {
         'base': base,
         'prefixes': [],
         'suffixes': [],
-        'level': level
+        // level is used to represent the required level, itemLevel is used
+        // to calculate available enchantments and sell value.
+        'itemLevel': level
     };
-    item.$item = $tag('div', 'js-item item', tag('div', 'icon ' + base.icon));
+    item.$item = $tag('div', 'js-item item', tag('div', 'icon ' + base.icon) + tag('div', 'itemLevel', base.level));
     updateItem(item);
     item.$item.data('item', item);
     return item;
 }
 function updateItem(item) {
+    var levelRequirement = item.base.level;
+    item.prefixes.concat(item.suffixes).forEach(function (affix) {
+        levelRequirement = Math.max(levelRequirement, affix.base.level);
+    });
+    item.level = levelRequirement;
     item.$item.attr('helpText', itemHelpText(item));
     item.$item.removeClass('imbued').removeClass('enchanted');
     var enchantments = item.prefixes.length + item.suffixes.length;
@@ -48,7 +55,7 @@ function itemHelpText(item) {
     if (suffixNames.length) {
         name = name + ' of ' + suffixNames.join(' and ');
     }
-    var sections = [name, ''];
+    var sections = [name, 'Requires level ' + item.level, ''];
     sections.push(bonusHelpText(item.base.bonuses, true));
 
     if (item.prefixes.length || item.suffixes.length) {
@@ -256,7 +263,9 @@ $('body').on('mousedown', '.js-item', function (event) {
     updateDragHelper();
     dragged = false;
     var item = $(this).data('item');
-    $('.js-equipment .js-' + item.base.slot).addClass('active');
+    state.characters.forEach(function (character) {
+        character.$panel.find('.js-equipment .js-' + item.base.slot).addClass(item.level > character.adventurer.level ? 'invalid' : 'active');
+    });
     $('.js-enchantmentSlot').addClass('active');
 });
 
@@ -306,29 +315,33 @@ function stopDrag() {
         if (!hit) {
             $('.js-equipment .js-' + item.base.slot).each(function (index, element) {
                 if (collision($dragHelper, $(element))) {
+                    var targetCharacter = $(element).closest('.js-playerPanel').data('character');
+                    if (targetCharacter.adventurer.level < item.level) {
+                        return false;
+                    }
                     var sourceCharacter = $source.closest('.js-playerPanel').data('character');
                     hit = true
-                    var targetCharacter = $(element).closest('.js-playerPanel').data('character');
                     var current = targetCharacter.adventurer.equipment[item.base.slot];
                     targetCharacter.adventurer.equipment[item.base.slot] = null;
                     if (sourceCharacter) {
                         sourceCharacter.adventurer.equipment[item.base.slot] = null;
                         if (!current) {
                             updateAdventurer(sourceCharacter.adventurer);
-                        }
-                    } else {
-                        //unequip the existing item.
-                        if (current) {
-                            current.$item.detach();
-                            $('.js-inventory').append(current.$item);
+                        } else if (current.level <= sourceCharacter.adventurer.level) {
+                            // Swap the item back to the source character if they can equip it.
+                            equipItem(sourceCharacter.adventurer, current);
+                            current = null;
                         }
                     }
-                    var $parent = $source.parent();
+                    //unequip the existing item if it hasn't already been swapped.
+                    if (current) {
+                        current.$item.detach();
+                        $('.js-inventory').append(current.$item);
+                    }
                     equipItem(targetCharacter.adventurer, item);
-                    if (sourceCharacter && current) {
-                        equipItem(sourceCharacter.adventurer, current);
-                    }
+                    return false;
                 }
+                return true;
             });
         }
         if (!hit) {
@@ -365,53 +378,37 @@ function stopDrag() {
         updateEnchantmentOptions();
     }
     $('.js-itemSlot.active').removeClass('active');
+    $('.js-itemSlot.invalid').removeClass('invalid');
 }
 var armorSlots = ['body', 'feet', 'head', 'offhand', 'arms', 'legs'];
 var equipmentSlots = ['weapon', 'body', 'feet', 'head', 'offhand', 'arms', 'legs', 'back', 'ring'];
 var accessorySlots = ['back', 'ring'];
-var items = [
-    [
-        {'slot': 'weapon', 'type': 'axe',  'name': 'Axe', 'bonuses': {'+minDamage': 3, '+maxDamage': 6, '+range': 1.5, '+attackSpeed': 1.5, '+critChance': .05 }, 'icon': 'axe'},
-        {'slot': 'weapon', 'type': 'bow',  'name': 'Bow', 'bonuses': {'+minDamage': 3, '+maxDamage': 4, '+range': 8, '+attackSpeed': 1}, 'icon': 'bow', '+critChance': .05},
-        {'slot': 'offhand', 'type': 'shield',  'name': 'Small Shield', 'bonuses': {'+block': 2, '+armor': 2}, 'icon': 'shield'},
-        {'slot': 'feet', 'type': 'boots',  'name': 'Steel Boots', 'bonuses': {'+speed': -50, '+armor': 1, '+block': 2}, 'offset': 8, icon: 'boots'},
-        {'slot': 'head', 'type': 'helmet',  'name': 'Ribbon', 'bonuses': {'+evasion': 1}, icon: 'hat'},
-    ],
-    [
-        {'slot': 'feet', 'type': 'boots',  'name': 'Swift Boots', 'bonuses': {'+speed': 25, '%attackSpeed': .1}, 'offset': 8, icon: 'boots'},
-        {'slot': 'head', 'type': 'helmet',  'name': 'Helmet', 'bonuses': {'+armor': 1, '+block': 1, '+evasion': 1}, 'offset': 9, icon: 'hat', hideHair: true},
-        {'slot': 'head', 'type': 'helmet',  'name': 'Oversized Helm', 'bonuses': {'+armor': 2, '+accuracy': -1}, 'offset': 10, icon: 'hat'},
-        //Leon Made Main Hands
-        {'slot': 'weapon', 'type': 'sword', 'name': 'Knife', 'bonuses': {'+minDamage': 4, '+maxDamage': 8, '+range': 1, '+attackSpeed': 1.85, '+critChance': .06}, 'icon': 'sword'},
-        {'slot': 'weapon', 'type': 'bow',  'name': 'Crossbow', 'bonuses': {'+minDamage': 5, '+maxDamage': 9, '+range': 9, '+attackSpeed': 1.2, '+critChance': .05}, 'icon': 'bow'},
-        {'slot': 'weapon', 'type': 'axe',  'name': 'Labrys', 'bonuses': {'+minDamage': 7, '+maxDamage': 10, '+range': 1.5, '+attackSpeed': 1.4, '+critChance': .05}, 'icon': 'axe'},
-        {'slot': 'weapon', 'type': 'wand',  'name': 'Carved Wand', 'bonuses': {'+minDamage': 1, '+maxDamage': 3, '+minMagicDamage': 2, '+maxMagicDamage': 5, '+range': 7, '+attackSpeed': 1.6, '+critChance': .05}, 'icon': 'wand'},
-        {'slot': 'weapon', 'type': 'bow',  'name': 'Blow Gun', 'bonuses': {'+minDamage': 3, '+maxDamage':  7, '+range': 8, '+attackSpeed': 1.6}, 'icon': 'bow', '+critChance': .05},
-        {'slot': 'weapon', 'type': 'staff',  'name': 'Wooden Staff', 'bonuses': {'+minDamage': 3, '+maxDamage': 5, '+minMagicDamage': 1, '+maxMagicDamage': 3, '+range': 2, '+attackSpeed': 1.2, '+critChance': .03}, 'icon': 'wand'},
-        {'slot': 'weapon', 'type': 'glove',  'name': 'Brass Knuckles', 'bonuses': {'+minDamage': 4, '+maxDamage': 6, '+range': 1, '+attackSpeed': 2.2, '+critChance': .04}, 'icon': 'glove'}
-    ],
-    [
-	//Leon made Boots
-        {'slot': 'feet', 'type': 'boots',  'name': 'Sandals', 'bonuses': {'+speed': 15, '+maxHealth': 15}, 'offset': 8, icon: 'boots'},
-        {'slot': 'feet', 'type': 'boots',  'name': 'Leather Boots', 'bonuses': {'+speed': 15, '+armor': 1, '+evasion': 2}, 'offset': 8, icon: 'boots'},
-        {'slot': 'feet', 'type': 'boots',  'name': 'Cleets', 'bonuses': {'+speed': 45}, 'offset': 8, icon: 'boots'},
-        {'slot': 'feet', 'type': 'boots',  'name': 'Feet Wrappings', 'bonuses': {'+speed': 25, '+accuracy': +2}, 'offset': 8, icon: 'boots'},
-    ],
-    [
-        //Leon Made Off Hands
-        {'slot': 'offhand', 'type': 'shield',  'name': 'Heavy Shield', 'bonuses': {'+block': 4, '+armor': 2, '+speed': -50}, 'icon': 'shield'},
-        {'slot': 'offhand', 'type': 'shield',  'name': 'Wooden Shield', 'bonuses': {'+block': 2, '+evasion': 2}, 'icon': 'shield'},
-        {'slot': 'offhand', 'type': 'orb',  'name': 'Glowing Orb', 'bonuses': {'+minMagicDamage': 2, '+maxMagicDamage': 4, '%maxHealth': 0.1}, 'icon': 'shield'},
-        {'slot': 'offhand', 'type': 'book',  'name': 'Spell Book', 'bonuses': {'+minMagicDamage': 1, '+maxMagicDamage': 4, '%attackSpeed': 0.1}, 'icon': 'shield'},
-        {'slot': 'offhand', 'type': 'quiver',  'name': 'Quiver', 'bonuses': {'%attackSpeed': 0.25, '+minDamage': 2, '+maxDamage': 4}, 'icon': 'shield'},
-    ]
-];
+var items = [[]];
+var itemsByKey = {};
+var itemsBySlotAndLevel = {};
+var maxItemsInSlot = {}
+equipmentSlots.forEach(function (slot) {
+    itemsBySlotAndLevel[slot] = [];
+    maxItemsInSlot[slot] = 0;
+});
+var maxItemWidth = 0;
+// TODO: Add unique "Sticky, Sticky Bow of Aiming and Leeching and Leeching and Aiming"
 function addItem(level, data) {
-    items[level - 1] = ifdefor(items[level - 1], []);
-    items[level - 1].push(data);
+    items[level] = ifdefor(items[level], []);
+    itemsBySlotAndLevel[data.slot][level] = ifdefor(itemsBySlotAndLevel[data.slot][level], []);
+    data.level = level;
+    data.craftingWeight = 5 * level;
+    data.crafted = false;
+    items[level].push(data);
+    itemsBySlotAndLevel[data.slot][level].push(data);
+    var key = data.name.replace(/\s*/g, '').toLowerCase();
+    itemsByKey[key] = data;
+    maxItemsInSlot[data.slot] = Math.max(itemsBySlotAndLevel[data.slot][level].length, maxItemsInSlot[data.slot]);
+    maxItemWidth = 0;
+    $.each(maxItemsInSlot, function (key) {
+        maxItemWidth+=maxItemsInSlot[key];
+    });
 }
-addItem(1, {'slot': 'arms', 'type': 'gauntlet', 'name': 'Gauntlet', 'bonuses': {'+armor': 1, '+minDamage': 1, '+maxDamage': 1}, icon: 'bag'});
-addItem(1, {'slot': 'legs', 'type': 'leggings', 'name': 'Leggings', 'bonuses': {'+armor': 1, '+maxHealth': 5}, icon: 'bag'});
 addItem(1, {'slot': 'back', 'type': 'quiver', 'name': 'Quiver', 'bonuses': {'+minDamage': 1, '+maxDamage': 2}, icon: 'bag'});
 addItem(1, {'slot': 'ring', 'type': 'ring', 'name': 'Ring', 'bonuses': {'+armor': 1}, icon: 'bag'});
 
@@ -433,12 +430,20 @@ $(document).on('keydown', function(event) {
             });
         }
     }
+    if (event.which == 67) { // 'c'
+        $('.js-craftingCanvas').toggle();
+    }
     if (event.which == 68) { // 'd'
         gain('AP', 1000);
         gain('IP', 1000);
         gain('MP', 1000);
         gain('RP', 1000);
         gain('UP', 1000);
+        $('.js-craftingCanvas').show();
+        $.each(itemsByKey, function (key, item) {
+            item.crafted = true;
+        });
+        unlockItemLevel(100);
         state.characters.forEach(function (character) {
             $.each(levels, function (key) {
                 if (!character.$panel.find('.js-area-' + key).length) {
@@ -452,91 +457,21 @@ $(document).on('keydown', function(event) {
     }
     if (event.which == 76) { // 'l'
         state.characters.forEach(function (character) {
+            var visibleLevels = {};
+            $.each(levels, function (key) {
+                if (character.$panel.find('.js-area-' + key).length) {
+                    visibleLevels[key] = true;
+                }
+            });
             gainXP(character.adventurer, character.adventurer.xpToLevel);
             updateAdventurer(character.adventurer);
             $.each(levels, function (key) {
-                character.currentLevelIndex = key
-                completeArea(character);
+                if (visibleLevels[key]) {
+                    character.currentLevelIndex = key
+                    completeArea(character);
+                }
             });
         });
     }
     console.log(event.which);
 });
-
-$('.js-raritySelect').on('change', updateItemCrafting);
-$('.js-levelSelect').on('change', updateItemCrafting);
-$('.js-typeSelect').on('change', updateItemCrafting);
-var craftingPointsType = 'IP';
-var itemsFilteredByType = [];
-var itemTotalCost = 5;
-var craftingLevel = 1;
-function updateItemCrafting() {
-    var rarity = $('.js-raritySelect').val();
-    craftingLevel = $('.js-levelSelect').val();
-    var type = $('.js-typeSelect').val();
-    var playerCurrency = 0;
-    if (rarity == 'plain') {
-        craftingPointsType = 'IP'
-    } else if (rarity === 'enchanted') {
-        craftingPointsType = 'MP'
-    } else if (rarity === 'imbued') {
-        craftingPointsType = 'RP'
-    }
-    var itemsFilteredByLevel = [];
-    itemsFilteredByType = [];
-    for (var itemLevel = 0; itemLevel < craftingLevel && itemLevel < items.length; itemLevel++) {
-        items[itemLevel].forEach(function (item) {
-            itemsFilteredByLevel.push(item);
-            if (itemMatchesFilter(item, type)) {
-                itemsFilteredByType.push(item);
-            }
-        });
-    }
-    var typeMultiplier = (itemsFilteredByLevel.length / itemsFilteredByType.length).toFixed(2);
-    $('.js-rarityCost').html(points(craftingPointsType, 5));
-    var levelMultiplier = craftingLevel * craftingLevel * craftingLevel;
-    $('.js-levelMultiplier').text('x ' + levelMultiplier);
-    $('.js-typeMultiplier').text('x ' + typeMultiplier);
-    itemTotalCost = Math.ceil(5 * levelMultiplier * typeMultiplier);
-    $('.js-craftItem').html('Craft for ' + points(craftingPointsType, itemTotalCost));
-    updateCraftButton();
-}
-$('.js-craftItem').on('click', function () {
-    if (!spend(craftingPointsType, itemTotalCost)) {
-        return;
-    }
-    var item = makeItem(Random.element(itemsFilteredByType), craftingLevel);
-    if (craftingPointsType == 'MP') {
-        enchantItemProper(item);
-    } else if (craftingPointsType == 'RP') {
-        imbueItemProper(item);
-    }
-    updateItem(item);
-    $('.js-inventory').prepend(item.$item);
-});
-function updateCraftButton() {
-    $('.js-craftItem').prop('disabled', itemTotalCost > state[craftingPointsType]);
-}
-
-function itemMatchesFilter(item, typeFilter) {
-    switch (typeFilter) {
-        case 'all':
-            return true;
-        case 'weapon':
-        case 'head':
-        case 'body':
-        case 'feet':
-        case 'arms':
-        case 'legs':
-        case 'ring':
-        case 'back':
-        case 'offhand':
-            return item.slot === typeFilter;
-        case 'armor':
-            return armorSlots.indexOf(item.slot) >= 0;
-        case 'accessory':
-            return item.slot == 'ring' || item.slot == 'back';
-        default:
-            return false;
-    }
-}

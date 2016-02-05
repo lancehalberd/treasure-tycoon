@@ -84,6 +84,7 @@
             </div>
             <div class="js-craftingPanel js-infoPanel infoPanel" style="display: none;">
                 <div>
+                    <canvas class="js-craftingCanvas" width="210" height="810" style="background-color: white; position: absolute; left: -220px; top: 10px; display: none;"></canvas>
                     <select class="js-raritySelect itemCraftingSelect">
                         <option value="plain">Plain</option>
                         <option value="enchanted">Enchanted</option>
@@ -151,8 +152,7 @@
                     <label class="controlBarEntry"><input type="checkbox" class="js-fastforward"> Fast Forward</label>
                 </div>
                 <div class="js-infoMode infoMode">
-                    <canvas class="js-canvas" width="64" height="128" style="background-color: white; position: absolute; left: 0px">
-                    </canvas>
+                    <canvas class="js-canvas" width="64" height="128" style="background-color: white; position: absolute; left: 0px"></canvas>
                     <div class="triStatBox">
                         <div class="js-dexterity dexterity">X</div>
                         <div class="js-strength strength">X</div>
@@ -233,6 +233,7 @@ Feeling generous? Send me a tip using <a href="http://paypal.me/ChrisFlash" targ
 <script src="drawJewel.js"></script>
 <script src="drawBoard.js"></script>
 <script src="inventory.js"></script>
+<script src="crafting.js"></script>
 <script src="armor.js"></script>
 <script src="weapons.js"></script>
 <script src="jewels.js"></script>

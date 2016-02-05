@@ -1,11 +1,3 @@
-
-// TODO: Add unique "Sticky, Sticky Bow of Aiming and Leeching and Leeching and Aiming"
-var itemsByKey = {};
-items[0].forEach(function (item) {
-    var key = item.name.replace(/\s*/g, '').toLowerCase();
-    itemsByKey[key] = item;
-});
-
 var personFrames = 7;
 var clothes = [1, 3];
 var hair = [clothes[1] + 1, clothes[1] + 4];
@@ -140,6 +132,7 @@ function makeAdventurer(job, level, equipment) {
         adventurer.equipment[type] = null;
     });
     $.each(equipment, function (key, item) {
+        item.crafted = true;
         equipItem(adventurer, makeItem(item, 1));
     });
     return adventurer;
@@ -421,12 +414,12 @@ var squareBoard = {
 var characterClasses = {};
 addCharacterClass('Fool', 0, 0, 0);
 
-addCharacterClass('Archer', 2, 1, 0, {'weapon': itemsByKey.bow, 'body': itemsByKey.clothtunic}, triangleBoard,
-    [jewelLoot(['trapezoid'], [1, 1], [[5,20], [80, 100], [5, 20]], false), simpleJewelLoot, simpleJewelLoot], 'grove');
+addCharacterClass('Archer', 2, 1, 0, {'weapon': itemsByKey.boomerang, 'body': itemsByKey.lamellar}, triangleBoard,
+    [jewelLoot(['trapezoid'], [1, 1], [[10,15], [90, 100], [5, 10]], false), simpleJewelLoot, simpleJewelLoot], 'grove');
 addCharacterClass('Black Belt', 0, 2, 1, {'weapon': itemsByKey.rock, 'body': itemsByKey.lamellar}, diamondBoard2,
-    [jewelLoot(['trapezoid'], [1, 1], [[80, 100], [5,20], [5, 20]], false), simpleJewelLoot, simpleJewelLoot], 'meadow');
-addCharacterClass('Priest', 1, 0, 2, {'weapon': itemsByKey.stick, 'body': itemsByKey.woolshirt}, hexBoard,
-    [jewelLoot(['trapezoid'], [1, 1], [[5,20], [5, 20], [80, 100]], false), simpleJewelLoot, simpleJewelLoot], 'cave');
+    [jewelLoot(['trapezoid'], [1, 1], [[90, 100], [10,15], [5, 10]], false), simpleJewelLoot, simpleJewelLoot], 'meadow');
+addCharacterClass('Priest', 1, 0, 2, {'weapon': itemsByKey.stick, 'body': itemsByKey.lamellar}, hexBoard,
+    [jewelLoot(['trapezoid'], [1, 1], [[10,15], [5, 10], [90, 100]], false), simpleJewelLoot, simpleJewelLoot], 'cave');
 
 addCharacterClass('Corsair', 2, 2, 1);
 addCharacterClass('Paladin', 1, 2, 2);
@@ -488,4 +481,5 @@ $('.js-hire').on('click', function () {
     }
     var jobKey = Random.element($jobOption.data('jobs'));
     newCharacter(characterClasses[jobKey]);
+    updateRetireButtons();
 });

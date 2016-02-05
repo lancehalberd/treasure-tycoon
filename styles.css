@@ -105,6 +105,7 @@
 }
 
 .item {
+    position: relative;
     display: inline-block;
     width: 46px;
     height: 46px;
@@ -112,6 +113,13 @@
     box-sizing: border-box;
     cursor: pointer;
     padding: 2px;
+}
+.itemLevel {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    font-weight: bold;
+    background-color: rgba(255,255,255, .6);
 }
 .item.enchanted {
     background-color: #ffa;
@@ -254,6 +262,9 @@ button {
 }
 .itemSlot.active {
     background-color: #88ff88;
+}
+.itemSlot.invalid {
+    background-color: #ff8888;
 }
 .enchantmentSlot {
     margin-top: 5px;

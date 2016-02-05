@@ -1,4 +1,5 @@
 var prefixes = [
+    [],
     [
         {'slot': 'weapon', 'name': 'Tricky', 'bonuses': {'+damageOnMiss': [1, 2]}},
         {'slot': 'weapon', 'name': 'Strong', 'bonuses': {'+minDamage': 1, '+maxDamage': 2}},
@@ -11,9 +12,13 @@ var prefixes = [
         {'slot': accessorySlots, 'name': 'Basic', 'bonuses': {}},
         {'slot': accessorySlots, 'name': 'Plain', 'bonuses': {}},
         {'slot': accessorySlots, 'name': 'Simple', 'bonuses': {}}
+    ],
+    [
+        {'slot': 'weapon', 'name': 'Subtle', 'bonuses': {'+damageOnMiss': [10, 20]}}
     ]
 ];
 var suffixes = [
+    [],
     [
         {'slot': 'weapon', 'type': ['bow', 'wand'], 'name': 'Farsight', 'bonuses': {'+range': [1, 2]}},
         {'slot': 'weapon', 'name': 'Leeching', 'bonuses': {'+healthGainOnHit': [1, 2]}},
@@ -25,6 +30,16 @@ var suffixes = [
         {'slot': accessorySlots, 'name': 'Frustration', 'bonuses': {}}
     ]
 ];
+$.each(prefixes, function (level, levelAffixes) {
+    levelAffixes.forEach(function (affix) {
+        affix.level = level;
+    });
+});
+$.each(suffixes, function (level, levelAffixes) {
+    levelAffixes.forEach(function (affix) {
+        affix.level = level;
+    });
+});
 function makeAffix(baseAffix) {
     var affix = {
         'base': baseAffix,
@@ -51,7 +66,7 @@ function addSuffix(item) {
 }
 function matchingAffixes(list, item, alreadyUsed) {
     var choices = [];
-    for (var level = 0; level < item.level && level < list.length; level++) {
+    for (var level = 0; level <= item.itemLevel && level < list.length; level++) {
         list[level].forEach(function (affix) {
             if (alreadyUsed.indexOf(affix) < 0 && affixMatchesItem(item.base, affix)) {
                 choices.push(affix);

@@ -189,16 +189,16 @@ function updateAdjacencyBonsues(jewel) {
             jewel.adjacencyBonuses['+critDamage'] = contrastBonus / 100;
             break;
         case 5:
-            jewel.adjacencyBonuses['+healthGainOnHit'] = resonanceBonus / 10;
-            jewel.adjacencyBonuses['+healthRegen'] = contrastBonus / 10;
+            jewel.adjacencyBonuses['+healthRegen'] = resonanceBonus / 10;
+            jewel.adjacencyBonuses['+healthGainOnHit'] = contrastBonus / 10;
             break;
         case 6:
             jewel.adjacencyBonuses['%magicBlock'] = resonanceBonus / 100;
             jewel.adjacencyBonuses['%magicDamage'] = contrastBonus / 100;
             break;
         case 7:
-            jewel.adjacencyBonuses['+increasedItems'] = resonanceBonus / 100;
-            jewel.adjacencyBonuses['+increasedExperience'] = contrastBonus / 100;
+            jewel.adjacencyBonuses['+increasedExperience'] = resonanceBonus / 100;
+            jewel.adjacencyBonuses['+increasedItems'] = contrastBonus / 100;
             break;
     }
     jewel.helpText = jewelHelpText(jewel);
