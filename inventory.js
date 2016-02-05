@@ -397,13 +397,10 @@ function addItem(level, data) {
     items[level] = ifdefor(items[level], []);
     itemsBySlotAndLevel[data.slot][level] = ifdefor(itemsBySlotAndLevel[data.slot][level], []);
     data.level = level;
-    data.craftingWeight = items[level].length;
+    data.craftingWeight = 5 * level;
     data.crafted = false;
     items[level].push(data);
     itemsBySlotAndLevel[data.slot][level].push(data);
-    items[level].forEach(function (itemData) {
-        itemData.craftingWeight++;
-    });
     var key = data.name.replace(/\s*/g, '').toLowerCase();
     itemsByKey[key] = data;
     maxItemsInSlot[data.slot] = Math.max(itemsBySlotAndLevel[data.slot][level].length, maxItemsInSlot[data.slot]);

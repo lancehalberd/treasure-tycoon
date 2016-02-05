@@ -166,7 +166,7 @@ $('.js-craftItem').on('click', function () {
     }
     var craftedItem = itemsFilteredByType[index];
     itemsFilteredByType.forEach(function (item) {
-        item.craftingWeight++;
+        item.craftingWeight += item.level * 5;
     });
     craftedItem.craftingWeight /= 2;
     craftedItem.crafted = true;
