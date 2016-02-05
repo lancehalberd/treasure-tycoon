@@ -22,6 +22,8 @@ function points(type, value) {
 }
 
 var fps = 6;
+var craftingViewCanvas = $('.js-craftingCanvas')[0];
+var craftingCanvas = createCanvas(craftingViewCanvas.width, craftingViewCanvas.height);
 var state = {
     characters: [],
     jewels: [],
@@ -29,7 +31,11 @@ var state = {
     IP: 0,
     MP: 0,
     RP: 0,
-    UP: 0
+    UP: 0,
+    craftingCanvas: craftingCanvas,
+    craftingContext: craftingCanvas.getContext('2d'),
+    craftingViewCanvas: craftingViewCanvas,
+    craftingViewContext: craftingViewCanvas.getContext('2d')
 }
 // Load any graphic assets needed by the game here.
 async.mapSeries([
@@ -47,6 +53,7 @@ async.mapSeries([
     initalizeMonsters();
     initializeBackground();
     initializeLevels();
+    initializeCraftingImage();
     updateItemCrafting();
     var jobKey = Random.element(ranks[0]);
     newCharacter(characterClasses[jobKey]);
@@ -113,7 +120,6 @@ function unlockItemLevel(level) {
     for (var itemLevel = $('.js-levelSelect').find('option').length + 1; itemLevel <= level + 1 && itemLevel <= items.length; itemLevel++) {
         var $newOption = $tag('option', '', 'Level ' + itemLevel).attr('value', itemLevel);
         items[itemLevel - 1] = ifdefor(items[itemLevel - 1], []);
-        $newOption.toggle(items[itemLevel - 1].length > 0);
         $('.js-levelSelect').append($newOption);
     }
 }
@@ -242,7 +248,7 @@ $('.js-mouseContainer').on('mousemove', function (event) {
 });
 
 function checkRemoveToolTip() {
-    if (overJewel || draggedJewel) {
+    if (overJewel || draggedJewel || overCraftingItem) {
         return;
     }
     if (canvasPopupTarget && canvasPopupTarget.health > 0 && canvasPopupTarget.character.area) {

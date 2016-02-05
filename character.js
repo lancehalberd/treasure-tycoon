@@ -132,6 +132,7 @@ function makeAdventurer(job, level, equipment) {
         adventurer.equipment[type] = null;
     });
     $.each(equipment, function (key, item) {
+        item.crafted = true;
         equipItem(adventurer, makeItem(item, 1));
     });
     return adventurer;
@@ -413,11 +414,11 @@ var squareBoard = {
 var characterClasses = {};
 addCharacterClass('Fool', 0, 0, 0);
 
-addCharacterClass('Archer', 2, 1, 0, {'weapon': itemsByKey.bow, 'body': itemsByKey.clothtunic}, triangleBoard,
+addCharacterClass('Archer', 2, 1, 0, {'weapon': itemsByKey.boomerang, 'body': itemsByKey.lamellar}, triangleBoard,
     [jewelLoot(['trapezoid'], [1, 1], [[10,15], [90, 100], [5, 10]], false), simpleJewelLoot, simpleJewelLoot], 'grove');
 addCharacterClass('Black Belt', 0, 2, 1, {'weapon': itemsByKey.rock, 'body': itemsByKey.lamellar}, diamondBoard2,
     [jewelLoot(['trapezoid'], [1, 1], [[90, 100], [10,15], [5, 10]], false), simpleJewelLoot, simpleJewelLoot], 'meadow');
-addCharacterClass('Priest', 1, 0, 2, {'weapon': itemsByKey.stick, 'body': itemsByKey.woolshirt}, hexBoard,
+addCharacterClass('Priest', 1, 0, 2, {'weapon': itemsByKey.stick, 'body': itemsByKey.lamellar}, hexBoard,
     [jewelLoot(['trapezoid'], [1, 1], [[10,15], [5, 10], [90, 100]], false), simpleJewelLoot, simpleJewelLoot], 'cave');
 
 addCharacterClass('Corsair', 2, 2, 1);

@@ -1,5 +1,5 @@
 // Axes high damage, slow attack speed, melee range, high crit chance
-addItem(1, {'slot': 'weapon', 'type': 'axe',  'name': 'Worn Hatchet', 'bonuses': {'+minDamage': 13, '+maxDamage': 19,  '+attackSpeed': 0.6,'+range': 1.4, '+critChance': .04 }, 'icon': 'axe'});
+addItem(2, {'slot': 'weapon', 'type': 'axe',  'name': 'Worn Hatchet', 'bonuses': {'+minDamage': 13, '+maxDamage': 19,  '+attackSpeed': 0.6,'+range': 1.4, '+critChance': .04 }, 'icon': 'axe'});
 addItem(6, {'slot': 'weapon', 'type': 'axe',  'name': 'Hatchet', 'bonuses': {'+minDamage': 42, '+maxDamage': 62,  '+attackSpeed': 0.9,'+range': 1.5, '+critChance': .05 }, 'icon': 'axe'});
 addItem(11, {'slot': 'weapon', 'type': 'axe',  'name': 'Climbing Axe', 'bonuses': {'+minDamage': 76, '+maxDamage': 114,  '+attackSpeed': 0.9,'+range': 1.5, '+critChance': .05 }, 'icon': 'axe'});
 addItem(16, {'slot': 'weapon', 'type': 'axe',  'name': 'Tomahawk', 'bonuses': {'+minDamage': 98, '+maxDamage': 146,  '+attackSpeed': 1,'+range': 1.6, '+critChance': .06 }, 'icon': 'axe'});
@@ -14,7 +14,6 @@ addItem(61, {'slot': 'weapon', 'type': 'axe',  'name': 'Runed Battle Axe', 'bonu
 addItem(71, {'slot': 'weapon', 'type': 'axe',  'name': 'Admantine Battle Axe', 'bonuses': {'+minDamage': 519, '+maxDamage': 779,  '+attackSpeed': 0.7,'+range': 2, '+critChance': .1, '+minMagicDamage': 28, '+maxMagicDamage': 38 }, 'icon': 'axe'});
 
 //Swords medium damage, medium attack speed, melee range, medium crit chance
-addItem(1, {'slot': 'weapon', 'type': 'sword',  'name': 'Cleaver', 'bonuses': {'+minDamage': 8, '+maxDamage': 12,  '+attackSpeed': 0.9,'+range': 1.4, '+critChance': .03 }, 'icon': 'sword'});
 addItem(5, {'slot': 'weapon', 'type': 'sword',  'name': 'Gladius', 'bonuses': {'+minDamage': 38, '+maxDamage': 58,  '+attackSpeed': 1,'+range': 1.5, '+critChance': .04 }, 'icon': 'sword'});
 addItem(10, {'slot': 'weapon', 'type': 'sword',  'name': 'Short Sword', 'bonuses': {'+minDamage': 58, '+maxDamage': 86,  '+attackSpeed': 1.2,'+range': 1.5, '+critChance': .04 }, 'icon': 'sword'});
 addItem(15, {'slot': 'weapon', 'type': 'sword',  'name': 'Falchion', 'bonuses': {'+minDamage': 66, '+maxDamage': 100,  '+attackSpeed': 1.5,'+range': 1.8, '+critChance': .04 }, 'icon': 'sword'});
@@ -29,7 +28,6 @@ addItem(60, {'slot': 'weapon', 'type': 'sword',  'name': 'Runed Saber', 'bonuses
 addItem(70, {'slot': 'weapon', 'type': 'sword',  'name': 'Etched Dragon Horn', 'bonuses': {'+minDamage': 198, '+maxDamage': 298,  '+attackSpeed': 1.9,'+range': 2.5, '+critChance': .06, '+minMagicDamage': 10, '+maxMagicDamage': 14 }, 'icon': 'sword'});
 
 //Daggers low damage, high attack speed, melee range, low crit chance
-addItem(1, {'slot': 'weapon', 'type': 'dagger',  'name': 'Dull Knife', 'bonuses': {'+minDamage': 5, '+maxDamage': 7,  '+attackSpeed': 1.4,'+range': 1.1, '+critChance': .03 }, 'icon': 'sword'});
 addItem(3, {'slot': 'weapon', 'type': 'dagger',  'name': 'Pugio', 'bonuses': {'+minDamage': 26, '+maxDamage': 38,  '+attackSpeed': 1.5,'+range': 1.2, '+critChance': .03 }, 'icon': 'sword'});
 addItem(8, {'slot': 'weapon', 'type': 'dagger',  'name': 'Hewing Knife', 'bonuses': {'+minDamage': 46, '+maxDamage': 70,  '+attackSpeed': 1.5,'+range': 1.2, '+critChance': .03 }, 'icon': 'sword'});
 addItem(13, {'slot': 'weapon', 'type': 'dagger',  'name': 'Cross-hilt Dagger', 'bonuses': {'+minDamage': 67, '+maxDamage': 101,  '+attackSpeed': 1.5,'+range': 1.2, '+critChance': .03 }, 'icon': 'sword'});
@@ -74,16 +72,16 @@ addItem(60, {'slot': 'weapon', 'type': 'wand',  'name': 'Adamantine Wand', 'bonu
 addItem(70, {'slot': 'weapon', 'type': 'wand',  'name': 'Orichalcum Wand', 'bonuses': {'+minMagicDamage': 101, '+maxMagicDamage': 151,  '+attackSpeed': 1.9,'+range': 14, '+critChance': .04, '+minDamage': 20, '+maxDamage': 30 }, 'icon': 'wand'});
 
 //Thrown medium damage, medium attack speed, medium range, medium crit chance
-addItem(1, {'slot': 'weapon', 'type': 'thrown',  'name': 'Boomerang', 'bonuses': {'+minDamage': 7, '+maxDamage': 11,  '+attackSpeed': 1,'+range': 7, '+critChance': .03 }, 'icon': 'glove'});
-addItem(4, {'slot': 'weapon', 'type': 'thrown',  'name': 'Pilum', 'bonuses': {'+minDamage': 34, '+maxDamage': 52,  '+attackSpeed': 1.1,'+range': 9, '+critChance': .04 }, 'icon': 'glove'});
-addItem(9, {'slot': 'weapon', 'type': 'thrown',  'name': 'Throwing Knife', 'bonuses': {'+minDamage': 58, '+maxDamage': 86,  '+attackSpeed': 1.2,'+range': 9, '+critChance': .04 }, 'icon': 'glove'});
-addItem(14, {'slot': 'weapon', 'type': 'thrown',  'name': 'Throwing Club', 'bonuses': {'+minDamage': 83, '+maxDamage': 125,  '+attackSpeed': 1.2,'+range': 10, '+critChance': .04 }, 'icon': 'glove'});
-addItem(19, {'slot': 'weapon', 'type': 'thrown',  'name': 'Throwing Axe', 'bonuses': {'+minDamage': 109, '+maxDamage': 163,  '+attackSpeed': 1.2,'+range': 10, '+critChance': .04 }, 'icon': 'glove'});
-addItem(24, {'slot': 'weapon', 'type': 'thrown',  'name': 'Shuriken', 'bonuses': {'+minDamage': 80, '+maxDamage': 120,  '+attackSpeed': 2,'+range': 11, '+critChance': .04 }, 'icon': 'glove'});
-addItem(29, {'slot': 'weapon', 'type': 'thrown',  'name': 'Bolas', 'bonuses': {'+minDamage': 120, '+maxDamage': 180,  '+attackSpeed': 1.6,'+range': 11, '+critChance': .04 }, 'icon': 'glove'});
-addItem(34, {'slot': 'weapon', 'type': 'thrown',  'name': 'Chakram', 'bonuses': {'+minDamage': 139, '+maxDamage': 209,  '+attackSpeed': 1.6,'+range': 12, '+critChance': .04 }, 'icon': 'glove'});
-addItem(39, {'slot': 'weapon', 'type': 'thrown',  'name': 'Javelin', 'bonuses': {'+minDamage': 141, '+maxDamage': 211,  '+attackSpeed': 1.8,'+range': 12, '+critChance': .04 }, 'icon': 'glove'});
-addItem(44, {'slot': 'weapon', 'type': 'thrown',  'name': 'Heavy Javelin', 'bonuses': {'+minDamage': 187, '+maxDamage': 281,  '+attackSpeed': 1.5,'+range': 13, '+critChance': .05 }, 'icon': 'glove'});
-addItem(49, {'slot': 'weapon', 'type': 'thrown',  'name': 'Meteoric Javelin', 'bonuses': {'+minDamage': 208, '+maxDamage': 312,  '+attackSpeed': 1.5,'+range': 13, '+critChance': .05 }, 'icon': 'glove'});
-addItem(59, {'slot': 'weapon', 'type': 'thrown',  'name': 'Runed Javelin', 'bonuses': {'+minDamage': 190, '+maxDamage': 286,  '+attackSpeed': 1.8,'+range': 14, '+critChance': .05, '+minMagicDamage': 6, '+maxMagicDamage': 8 }, 'icon': 'glove'});
-addItem(69, {'slot': 'weapon', 'type': 'thrown',  'name': 'Adamantine Javelin', 'bonuses': {'+minDamage': 415, '+maxDamage': 623,  '+attackSpeed': .9,'+range': 15, '+critChance': .07, '+minMagicDamage': 20, '+maxMagicDamage': 30 }, 'icon': 'glove'});
+addItem(1, {'slot': 'weapon', 'type': 'thrown',  'name': 'Boomerang', 'bonuses': {'+minDamage': 7, '+maxDamage': 11,  '+attackSpeed': 1,'+range': 7, '+critChance': .03 }, 'icon': 'bow'});
+addItem(4, {'slot': 'weapon', 'type': 'thrown',  'name': 'Pilum', 'bonuses': {'+minDamage': 34, '+maxDamage': 52,  '+attackSpeed': 1.1,'+range': 9, '+critChance': .04 }, 'icon': 'bow'});
+addItem(9, {'slot': 'weapon', 'type': 'thrown',  'name': 'Throwing Knife', 'bonuses': {'+minDamage': 58, '+maxDamage': 86,  '+attackSpeed': 1.2,'+range': 9, '+critChance': .04 }, 'icon': 'bow'});
+addItem(14, {'slot': 'weapon', 'type': 'thrown',  'name': 'Throwing Club', 'bonuses': {'+minDamage': 83, '+maxDamage': 125,  '+attackSpeed': 1.2,'+range': 10, '+critChance': .04 }, 'icon': 'bow'});
+addItem(19, {'slot': 'weapon', 'type': 'thrown',  'name': 'Throwing Axe', 'bonuses': {'+minDamage': 109, '+maxDamage': 163,  '+attackSpeed': 1.2,'+range': 10, '+critChance': .04 }, 'icon': 'bow'});
+addItem(24, {'slot': 'weapon', 'type': 'thrown',  'name': 'Shuriken', 'bonuses': {'+minDamage': 80, '+maxDamage': 120,  '+attackSpeed': 2,'+range': 11, '+critChance': .04 }, 'icon': 'bow'});
+addItem(29, {'slot': 'weapon', 'type': 'thrown',  'name': 'Bolas', 'bonuses': {'+minDamage': 120, '+maxDamage': 180,  '+attackSpeed': 1.6,'+range': 11, '+critChance': .04 }, 'icon': 'bow'});
+addItem(34, {'slot': 'weapon', 'type': 'thrown',  'name': 'Chakram', 'bonuses': {'+minDamage': 139, '+maxDamage': 209,  '+attackSpeed': 1.6,'+range': 12, '+critChance': .04 }, 'icon': 'bow'});
+addItem(39, {'slot': 'weapon', 'type': 'thrown',  'name': 'Javelin', 'bonuses': {'+minDamage': 141, '+maxDamage': 211,  '+attackSpeed': 1.8,'+range': 12, '+critChance': .04 }, 'icon': 'bow'});
+addItem(44, {'slot': 'weapon', 'type': 'thrown',  'name': 'Heavy Javelin', 'bonuses': {'+minDamage': 187, '+maxDamage': 281,  '+attackSpeed': 1.5,'+range': 13, '+critChance': .05 }, 'icon': 'bow'});
+addItem(49, {'slot': 'weapon', 'type': 'thrown',  'name': 'Meteoric Javelin', 'bonuses': {'+minDamage': 208, '+maxDamage': 312,  '+attackSpeed': 1.5,'+range': 13, '+critChance': .05 }, 'icon': 'bow'});
+addItem(59, {'slot': 'weapon', 'type': 'thrown',  'name': 'Runed Javelin', 'bonuses': {'+minDamage': 190, '+maxDamage': 286,  '+attackSpeed': 1.8,'+range': 14, '+critChance': .05, '+minMagicDamage': 6, '+maxMagicDamage': 8 }, 'icon': 'bow'});
+addItem(69, {'slot': 'weapon', 'type': 'thrown',  'name': 'Adamantine Javelin', 'bonuses': {'+minDamage': 415, '+maxDamage': 623,  '+attackSpeed': .9,'+range': 15, '+critChance': .07, '+minMagicDamage': 20, '+maxMagicDamage': 30 }, 'icon': 'bow'});

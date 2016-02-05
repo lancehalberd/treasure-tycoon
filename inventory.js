@@ -19,7 +19,7 @@ function makeItem(base, level) {
         // to calculate available enchantments and sell value.
         'itemLevel': level
     };
-    item.$item = $tag('div', 'js-item item', tag('div', 'icon ' + base.icon));
+    item.$item = $tag('div', 'js-item item', tag('div', 'icon ' + base.icon) + tag('div', 'itemLevel', base.level));
     updateItem(item);
     item.$item.data('item', item);
     return item;
@@ -385,15 +385,33 @@ var equipmentSlots = ['weapon', 'body', 'feet', 'head', 'offhand', 'arms', 'legs
 var accessorySlots = ['back', 'ring'];
 var items = [[]];
 var itemsByKey = {};
+var itemsBySlotAndLevel = {};
+var maxItemsInSlot = {}
+equipmentSlots.forEach(function (slot) {
+    itemsBySlotAndLevel[slot] = [];
+    maxItemsInSlot[slot] = 0;
+});
+var maxItemWidth = 0;
 // TODO: Add unique "Sticky, Sticky Bow of Aiming and Leeching and Leeching and Aiming"
 function addItem(level, data) {
-    var key = data.name.replace(/\s*/g, '').toLowerCase();
+    items[level] = ifdefor(items[level], []);
+    itemsBySlotAndLevel[data.slot][level] = ifdefor(itemsBySlotAndLevel[data.slot][level], []);
     data.level = level;
-    items[level - 1] = ifdefor(items[level - 1], []);
-    items[level - 1].push(data);
+    data.craftingWeight = items[level].length;
+    data.crafted = false;
+    items[level].push(data);
+    itemsBySlotAndLevel[data.slot][level].push(data);
+    items[level].forEach(function (itemData) {
+        itemData.craftingWeight++;
+    });
+    var key = data.name.replace(/\s*/g, '').toLowerCase();
     itemsByKey[key] = data;
+    maxItemsInSlot[data.slot] = Math.max(itemsBySlotAndLevel[data.slot][level].length, maxItemsInSlot[data.slot]);
+    maxItemWidth = 0;
+    $.each(maxItemsInSlot, function (key) {
+        maxItemWidth+=maxItemsInSlot[key];
+    });
 }
-addItem(1, {'slot': 'weapon', 'type': 'bow',  'name': 'Bow', 'bonuses': {'+minDamage': 3, '+maxDamage': 4, '+range': 8, '+attackSpeed': 1}, 'icon': 'bow', '+critChance': .05});
 addItem(1, {'slot': 'back', 'type': 'quiver', 'name': 'Quiver', 'bonuses': {'+minDamage': 1, '+maxDamage': 2}, icon: 'bag'});
 addItem(1, {'slot': 'ring', 'type': 'ring', 'name': 'Ring', 'bonuses': {'+armor': 1}, icon: 'bag'});
 
@@ -415,12 +433,19 @@ $(document).on('keydown', function(event) {
             });
         }
     }
+    if (event.which == 67) { // 'c'
+        $('.js-craftingCanvas').toggle();
+    }
     if (event.which == 68) { // 'd'
         gain('AP', 1000);
         gain('IP', 1000);
         gain('MP', 1000);
         gain('RP', 1000);
         gain('UP', 1000);
+        $('.js-craftingCanvas').show();
+        $.each(itemsByKey, function (key, item) {
+            item.crafted = true;
+        });
         unlockItemLevel(100);
         state.characters.forEach(function (character) {
             $.each(levels, function (key) {
@@ -453,81 +478,3 @@ $(document).on('keydown', function(event) {
     }
     console.log(event.which);
 });
-
-$('.js-raritySelect').on('change', updateItemCrafting);
-$('.js-levelSelect').on('change', updateItemCrafting);
-$('.js-typeSelect').on('change', updateItemCrafting);
-var craftingPointsType = 'IP';
-var itemsFilteredByType = [];
-var itemTotalCost = 5;
-var craftingLevel = 1;
-function updateItemCrafting() {
-    var rarity = $('.js-raritySelect').val();
-    craftingLevel = $('.js-levelSelect').val();
-    var type = $('.js-typeSelect').val();
-    var playerCurrency = 0;
-    if (rarity == 'plain') {
-        craftingPointsType = 'IP'
-    } else if (rarity === 'enchanted') {
-        craftingPointsType = 'MP'
-    } else if (rarity === 'imbued') {
-        craftingPointsType = 'RP'
-    }
-    var itemsFilteredByLevel = [];
-    itemsFilteredByType = [];
-    for (var itemLevel = 0; itemLevel < craftingLevel && itemLevel < items.length; itemLevel++) {
-        items[itemLevel].forEach(function (item) {
-            itemsFilteredByLevel.push(item);
-            if (itemMatchesFilter(item, type)) {
-                itemsFilteredByType.push(item);
-            }
-        });
-    }
-    var typeMultiplier = (itemsFilteredByLevel.length / itemsFilteredByType.length).toFixed(2);
-    $('.js-rarityCost').html(points(craftingPointsType, 5));
-    var levelMultiplier = craftingLevel * craftingLevel * craftingLevel;
-    $('.js-levelMultiplier').text('x ' + levelMultiplier);
-    $('.js-typeMultiplier').text('x ' + typeMultiplier);
-    itemTotalCost = Math.ceil(5 * levelMultiplier * typeMultiplier);
-    $('.js-craftItem').html('Craft for ' + points(craftingPointsType, itemTotalCost));
-    updateCraftButton();
-}
-$('.js-craftItem').on('click', function () {
-    if (!spend(craftingPointsType, itemTotalCost)) {
-        return;
-    }
-    var item = makeItem(Random.element(itemsFilteredByType), craftingLevel);
-    if (craftingPointsType == 'MP') {
-        enchantItemProper(item);
-    } else if (craftingPointsType == 'RP') {
-        imbueItemProper(item);
-    }
-    updateItem(item);
-    $('.js-inventory').prepend(item.$item);
-});
-function updateCraftButton() {
-    $('.js-craftItem').prop('disabled', itemTotalCost > state[craftingPointsType]);
-}
-
-function itemMatchesFilter(item, typeFilter) {
-    switch (typeFilter) {
-        case 'all':
-            return true;
-        case 'weapon':
-        case 'head':
-        case 'body':
-        case 'feet':
-        case 'arms':
-        case 'legs':
-        case 'ring':
-        case 'back':
-        case 'offhand':
-            return item.slot === typeFilter;
-        case 'armor':
-            return armorSlots.indexOf(item.slot) >= 0;
-        case 'accessory':
-            return item.slot == 'ring' || item.slot == 'back';
-        default:
-            return false;
-    }
-}
