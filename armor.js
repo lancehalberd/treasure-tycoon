@@ -108,8 +108,8 @@ addItem(70, {'slot': 'arms', 'type': 'heavyArmor', 'name': 'Orichalcum Vambracer
 addItem(3, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Leather Bracelets', 'bonuses': {'+armor': 7, '+evasion': 13}, icon: 'bag'});
 addItem(8, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Hide Bracelets', 'bonuses': {'+armor': 13, '+evasion': 23}, icon: 'bag'});
 addItem(13, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Leather Bracers', 'bonuses': {'+armor': 19, '+evasion': 33}, icon: 'bag'});
-addItem(18, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Hide Bracers', 'bonuses': {'+armor': 25, '+evasion': 43}, icon: 'bag'});
-addItem(23, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Leather Bracers', 'bonuses': {'+armor': 31, '+evasion': 53}, icon: 'bag'});
+addItem(18, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Studded Bracers', 'bonuses': {'+armor': 25, '+evasion': 43}, icon: 'bag'});
+addItem(23, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Hide Bracers', 'bonuses': {'+armor': 31, '+evasion': 53}, icon: 'bag'});
 addItem(28, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Carapace Bracers', 'bonuses': {'+armor': 37, '+evasion': 63}, icon: 'bag'});
 addItem(33, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Padded Bracers', 'bonuses': {'+armor': 43, '+evasion': 73}, icon: 'bag'});
 addItem(38, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Plated Bracers', 'bonuses': {'+armor': 49, '+evasion': 83}, icon: 'bag'});
