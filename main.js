@@ -122,6 +122,7 @@ function unlockItemLevel(level) {
         items[itemLevel - 1] = ifdefor(items[itemLevel - 1], []);
         $('.js-levelSelect').append($newOption);
     }
+    updateItemCrafting();
 }
 var lastTime = now();
 function mainLoop() {

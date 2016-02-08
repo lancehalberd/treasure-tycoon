@@ -510,16 +510,12 @@ $(document).on('keydown', function(event) {
             });
         }
     }
-    if (event.which == 67) { // 'c'
-        $('.js-craftingCanvas').toggle();
-    }
     if (event.which == 68) { // 'd'
         gain('AP', 1000);
         gain('IP', 1000);
         gain('MP', 1000);
         gain('RP', 1000);
         gain('UP', 1000);
-        $('.js-craftingCanvas').show();
         $.each(itemsByKey, function (key, item) {
             item.crafted = true;
         });

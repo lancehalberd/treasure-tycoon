@@ -39,7 +39,8 @@ function initializeCraftingImage() {
         });
         var items = ifdefor(ifdefor(itemsBySlotAndLevel[overSlot], [])[level], []);
         var index = tx - slotOffset;
-        if (index < items.length) {
+        var maxLevel = $('.js-levelSelect option').last().attr('value');
+        if (level <= maxLevel && index < items.length) {
             overCraftingItem = items[index];
         } else {
             overCraftingItem = null
@@ -101,8 +102,11 @@ function drawCraftingViewCanvas() {
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.fillStyle = '#3DD';
     context.fillRect(offset * 11, 0, 2 + columns * 11, 2 + 11 * craftingLevel);
-    context.drawImage(state.craftingCanvas, 0, 0, state.craftingCanvas.width, state.craftingCanvas.height,
-                      0, 0, state.craftingCanvas.width, state.craftingCanvas.height);
+    var maxLevel = $('.js-levelSelect option').last().attr('value');
+    context.fillStyle = '#000';
+    context.fillRect(0, 2 + 11 * maxLevel, canvas.width, canvas.height - (2 + 11 * maxLevel));
+    context.drawImage(state.craftingCanvas, 0, 0, state.craftingCanvas.width, 2 + 11 * maxLevel,
+                      0, 0, state.craftingCanvas.width, 2 + 11 * maxLevel);
 }
 
 $('.js-raritySelect').on('change', updateItemCrafting);
