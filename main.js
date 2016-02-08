@@ -142,7 +142,8 @@ function mainLoop() {
                 drawAdventure(character);
             }
         } else {
-            var characterDelta = delta * character.gameSpeed / 1000;
+            // Don't do the full fastforward during info mode, it is annoying.
+            var characterDelta = Math.min(character.gameSpeed, 2) * delta / 1000;
             character.time += characterDelta;
             infoLoop(character, characterDelta);
         }
