@@ -139,6 +139,12 @@ function updateMonster(monster) {
     // Clear the character's bonuses and graphics.
     monster.bonuses = [monster.implicitBonuses];
     monster.attacks = [];
+    monster.tags = [];
+    if (monster.base.ranged > 5) {
+        monster.tags.push('ranged');
+    } else {
+        monster.tags.push('melee');
+    }
     var enchantments = monster.prefixes.length + monster.suffixes.length;
     if (enchantments > 2) {
         monster.bonuses.push(imbuedMonsterBonuses);
@@ -190,6 +196,8 @@ function updateMonster(monster) {
             addBonusesAndAttacks(monster, affix);
         })
     });
+
+    monster.attacks.push({'base': createAttack({})});
     updateMonsterStats(monster);
     //console.log(monster);
 }

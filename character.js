@@ -177,14 +177,48 @@ function addBonusesAndAttacks(actor, source) {
     }
     if (ifdefor(source.attacks)) {
         source.attacks.forEach(function (baseAttack) {
-            actor.attacks.push({'base': baseAttack});
+            actor.attacks.push({'base': createAttack(baseAttack)});
         });
     }
+}
+var allComputedStats = ['cloaking', 'dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
+     'ip', 'xpValue', 'mp', 'rp', 'up',
+     'evasion', 'block', 'magicBlock', 'armor', 'magicResist', 'accuracy', 'range', 'attackSpeed',
+     'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage',
+     'critChance', 'critDamage', 'critAccuracy',
+     'damageOnMiss', 'slowOnHit', 'healthRegen', 'healthGainOnHit',
+     'increasedItems', 'increasedExperience'];
+var inheritedAttackStats = ['range', 'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage',
+    'accuracy', 'attackSpeed', 'critChance', 'critDamage', 'critAccuracy', 'damageOnMiss', 'slowOnHit', 'healthGainOnHit'];
+function createAttack(data) {
+    var stats = ifdefor(data.stats, {});
+    var attack =  {'type': 'basic', 'tags': [], 'helpText': 'A basic attack.', 'stats': {'cooldown': 0}};
+    $.each(data, function (key, value) {
+        attack[key] = copy(value);
+    });
+    // Inherit stats from the base character stats by default.
+    inheritedAttackStats.forEach(function (stat) {
+        attack.stats[stat] = ['{' + stat + '}'];
+    });
+    $.each(stats, function (stat, value) {
+        console.log(stat + ':' + value);
+        attack.stats[stat] = value;
+    });
+    return attack;
 }
 function updateAdventurer(adventurer) {
     // Clear the character's bonuses and graphics.
     adventurer.bonuses = [];
     adventurer.attacks = [];
+    adventurer.tags = [];
+    if (!adventurer.equipment.weapon) {
+        // Fighting unarmed is considered using a fist weapon.
+        adventurer.tags = ['unarmed', 'fist', 'melee'];
+    } else {
+        adventurer.tags.push(adventurer.equipment.weapon.base.type);
+        adventurer.tags = adventurer.tags.concat(ifdefor(adventurer.equipment.weapon.base.tags, []));
+    }
+
     var sectionWidth = personFrames * 32;
     var hat = adventurer.equipment.head;
     var hideHair = hat ? ifdefor(hat.base.hideHair, false) : false;
@@ -204,7 +238,7 @@ function updateAdventurer(adventurer) {
             adventurer.bonuses.push(jewel.adjacencyBonuses);
         });
         // Don't show the offhand slot if equipped with a two handed weapon.
-        adventurer.character.$panel.find('.js-offhand').toggle(!hasTwoHandedWeapon(adventurer));
+        adventurer.character.$panel.find('.js-offhand').toggle(!isTwoHandedWeapon(adventurer.equipment.weapon));
     }
     // Add the adventurer's current equipment to bonuses and graphics
     equipmentSlots.forEach(function (type) {
@@ -228,6 +262,7 @@ function updateAdventurer(adventurer) {
             adventurer.character.$panel.find('.js-infoMode .js-equipment .js-' + type).append(equipment.$item);
         }
     });
+    adventurer.attacks.push({'base': createAttack({})});
     updateAdventurerStats(adventurer);
 }
 function updateAdventurerStats(adventurer) {
@@ -270,7 +305,7 @@ function updateAdventurerStats(adventurer) {
 }
 function getStat(actor, stat) {
     var base = ifdefor(actor.base[stat], 0), plus = 0, percent = 1, multiplier = 1;
-    var keys = [stat];
+    var baseKeys = [stat];
     if (stat === 'evasion' || stat === 'attackSpeed') {
         percent += .002 * actor.dexterity;
     }
@@ -281,17 +316,29 @@ function getStat(actor, stat) {
         percent += .002 * actor.intelligence;
     }
     if (stat === 'minDamage' || stat === 'maxDamage') {
-        keys.push('damage');
+        baseKeys.push('damage');
         percent += .002 * actor.strength;
-        if (actor.range >= 5) {
+        if (actor.tags.indexOf('ranged') >= 0) {
             plus += Math.floor(actor.dexterity / 10);
         } else {
             plus += Math.floor(actor.strength / 10);
         }
     }
     if ((stat === 'minMagicDamage' || stat === 'maxMagicDamage')) {
-        keys.push('magicDamage');
+        baseKeys.push('magicDamage');
+        // Int boost to magic damage, but only for weapons/monsters tagged 'magic'.
+        if (actor.tags.indexOf('magic') >= 0) {
+            plus += Math.floor(actor.intelligence / 10);
+        }
     }
+    // For example, when calculating min magic damage for a wand user, we check for all the following:
+    // minMagicDamage, magicDamage, wand:minMagicDamage, wand:magicDamage, ranged:minMagicDamage, ranged:magicDamage, etc
+    var keys = baseKeys.slice();
+    ifdefor(actor.tags, []).forEach(function (tagPrefix) {
+        baseKeys.forEach(function(baseKey) {
+            keys.push(tagPrefix + ':' + baseKey);
+        });
+    });
     actor.bonuses.concat(ifdefor(actor.timedEffects, [])).forEach(function (bonus) {
         keys.forEach(function (key) {
             plus += evaluateValue(actor, ifdefor(bonus['+' + key], 0));
@@ -299,9 +346,6 @@ function getStat(actor, stat) {
             multiplier *= evaluateValue(actor, ifdefor(bonus['*' + key], 1));
         });
     });
-    if ((stat === 'minMagicDamage' || stat === 'maxMagicDamage') && plus > 0) {
-        plus += Math.floor(actor.intelligence / 10);
-    }
     //console.log(stat +": " + ['(',base, '+', plus,') *', percent, '*', multiplier]);
     return (base + plus) * percent * multiplier;
 }
@@ -314,7 +358,11 @@ function getStatForAttack(actor, dataObject, stat) {
         });
         return subObject;
     }
-    var keys = [stat];
+    // stats from skills are prefixed with 'skill:' always so they won't be effected
+    // by bonuses to global characters stats. For instance, skill.attackSpeed: ['attackSpeed']
+    // inherits the attackSpeed value from the skill user, so we don't want to apply
+    // '*attackSpeed': 2 to it as this has already been applied to the base attackSpeed.
+    var keys = ['skill:' + stat];
     ifdefor(dataObject.tags, []).concat([dataObject.type]).forEach(function (prefix) {
         keys.push(prefix + ':' + stat);
     });

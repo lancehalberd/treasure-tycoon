@@ -249,159 +249,20 @@ function checkToAttackTarget(character, actor, target, distance) {
             actor.stunned = character.time + .3;
             return true;
         }
-        if (attack.base.type == 'hook') {
-            if (distance <= actor.range * 32 || distance > attack.abilityRange * 32 || target.cloaked) {
-                continue;
-            }
-            performHookAttack(character, attack, actor, target);
-            return true;
-        }
         if (attack.base.type == 'buff') {
             attack.readyAt = character.time + attack.cooldown;
             addTimedEffect(character, actor, attack.buff);
             actor.stunned = character.time + .3;
             return true;
         }
-    }
-    if (distance > actor.range * 32 || target.cloaked) {
-        return false;
-    }
-    // Do a regular attack if no special abilities were used and target is in range.
-    actor.attackCooldown = character.time + 1 / (actor.attackSpeed * Math.max(.1, (1 - actor.slow)));
-    performAttack(character, actor, target);
-    return true;
-}
-function applyArmorToDamage(damage, armor) {
-    if (damage <= 0) {
-        return 0;
-    }
-    //This equation looks a bit funny but is designed to have the following properties:
-    //100% when armor = 0, 50% when armor = damage, 25% when armor = 2 * damage
-    //1/(2^N) damage when armor is N times base damage
-    return Math.max(1, Math.round(damage / Math.pow(2, armor / damage)));
-}
-
-function performAttack(character, attacker, target) {
-    var damage = Random.range(attacker.minDamage, attacker.maxDamage);
-    var magicDamage = Random.range(attacker.minMagicDamage, attacker.maxMagicDamage);
-    var accuracyRoll = Random.range(0, attacker.accuracy);
-    var hitText = {x: target.x + 32, y: 240 - 128, color: 'red'};
-    if (Math.random() <= attacker.critChance) {
-        damage *= (1 + attacker.critDamage);
-        magicDamage *= (1 + attacker.critDamage);
-        accuracyRoll *= (1 + attacker.critAccuracy);
-        hitText.color = 'yellow';
-        hitText.font, "40px sans-serif"
-    }
-    var evasionRoll = Random.range(0, target.evasion);
-    if (accuracyRoll < evasionRoll) {
-        hitText.value = 'miss';
-        if (ifdefor(attacker.damageOnMiss)) {
-            target.health -= attacker.damageOnMiss;
-            hitText.value = 'miss (' + attacker.damageOnMiss + ')';
+        if (distance > attack.range * 32 || target.cloaked) {
+            continue;
         }
-        // Target has evaded the attack.
-        hitText.color = 'blue';
-        hitText.font, "15px sans-serif"
-        character.textPopups.push(hitText);
-        return;
-    }
-    var dodged = false;
-    ifdefor(target.attacks, []).forEach(function (attack) {
-        if (attack.readyAt > character.time) {
-            return true;
-        }
-        if (attack.base.type == 'dodge') {
-            dodged = true;
-            attack.readyAt = character.time + attack.cooldown;
-            target.pull = {'x': target.x - target.direction * attack.distance, 'time': character.time + .3, 'damage': 0};
-            addTimedEffect(character, target, attack.buff);
-            return false;
-        }
+        performAttack(character, attack, actor, target, distance);
         return true;
-    });
-    if (dodged) {
-        // Target has evaded the attack using an ability like 'dodge'.
-        hitText.value = 'dodged';
-        hitText.color = 'blue';
-        hitText.font, "15px sans-serif"
-        character.textPopups.push(hitText);
-        return;
     }
-    if (ifdefor(attacker.healthGainOnHit)) {
-        attacker.health += attacker.healthGainOnHit;
-    }
-    if (ifdefor(attacker.slowOnHit)) {
-        target.slow = Math.max(target.slow, attacker.slowOnHit);
-    }
-    // Apply block reduction
-    var blockRoll = Random.range(0, target.block);
-    var magicBlockRoll = Random.range(0, target.magicBlock);
-    damage = Math.max(0, damage - blockRoll);
-    magicDamage = Math.max(0, magicDamage - magicBlockRoll);
-    // Apply armor and magic resistance mitigation
-    // TODO: Implement armor penetration here.
-    damage = applyArmorToDamage(damage, target.armor);
-    magicDamage = Math.round(magicDamage * Math.max(0, (1 - target.magicResist)));
-    // TODO: Implement flat damage reduction here.
-    var totalDamage = (damage + magicDamage);
-    target.health -= totalDamage;
-    hitText.value = totalDamage;
-    if (totalDamage <= 0) {
-        hitText.value = 'blocked';
-        hitText.color = 'blue';
-        hitText.font, "15px sans-serif"
-    }
-    character.textPopups.push(hitText);
+    return false;
 }
-function performHookAttack(character, attack, attacker, target) {
-    var distance = getDistance(attacker, target);
-    attack.readyAt = character.time + attack.cooldown;
-    attacker.target = target;
-    // Pull them just into range of the normal attack, no closer.
-    var targetX = (attacker.x > target.x) ? (attacker.x - attacker.range * 32 - 64) : (attacker.x + 64 + attacker.range * 32);
-    var multiplier = (1 + ifdefor(attack.rangeDamage, 0) * distance / 32);
-    var damage = Random.range(attacker.minDamage, attacker.maxDamage);
-    var magicDamage = Random.range(attacker.minMagicDamage, attacker.maxMagicDamage);
-    var hitText = {x: target.x + 32, y: 240 - 128, color: 'red'};
-    if (Math.random() <= attacker.critChance) {
-        damage *= (1 + attacker.critDamage);
-        magicDamage *= (1 + attacker.critDamage);
-        hitText.color = 'yellow';
-        hitText.font, "40px sans-serif"
-    }
-    damage = Math.floor(damage * multiplier);
-    magicDamage = Math.floor(magicDamage * multiplier);
-    if (ifdefor(attacker.healthGainOnHit)) {
-        attacker.health += attacker.healthGainOnHit;
-    }
-    if (ifdefor(attacker.slowOnHit)) {
-        target.slow = Math.max(target.slow, attacker.slowOnHit);
-    }
-    // Apply block reduction
-    var blockRoll = Random.range(0, target.block);
-    var magicBlockRoll = Random.range(0, target.magicBlock);
-    damage = Math.max(0, damage - blockRoll);
-    magicDamage = Math.max(0, magicDamage - magicBlockRoll);
-    // Apply armor and magic resistance mitigation
-    // TODO: Implement armor penetration here.
-    damage = applyArmorToDamage(damage, target.armor);
-    magicDamage = Math.round(magicDamage * Math.max(0, (1 - target.magicResist)));
-    var totalDamage = damage + magicDamage;
-    if (totalDamage > 0) {
-        target.health -= totalDamage;
-        target.stunned = character.time + .3 + distance / 32 * ifdefor(attack.dragStun, 0);
-        target.pull = {'x': targetX, 'time': character.time + .3, 'damage': Math.floor(distance / 32 * damage * ifdefor(attack.dragDamage, 0))};
-        attacker.pull = {'x': attacker.x, 'time': character.time + .3, 'damage': 0};
-        hitText.value = totalDamage + ' hooked!';
-    } else {
-        hitText.value = 'blocked';
-        hitText.color = 'blue';
-        hitText.font, "15px sans-serif"
-    }
-    character.textPopups.push(hitText);
-}
-
 
 function getDistance(actorA, actorB) {
     return Math.max(0, (actorA.x > actorB.x) ? (actorA.x - actorB.x - 64) : (actorB.x - actorA.x - 64));

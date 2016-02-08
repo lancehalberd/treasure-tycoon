@@ -3,7 +3,7 @@ function equipItem(adventurer, item) {
         console.log("Tried to equip an item without first unequiping!");
         return;
     }
-    if (item.base.slot === 'offhand' && hasTwoHandedWeapon(adventurer)) {
+    if (item.base.slot === 'offhand' && isTwoHandedWeapon(adventurer.equipment.weapon)) {
         console.log("Tried to equip an offhand while wielding a two handed weapon!");
         return;
     }
@@ -11,8 +11,8 @@ function equipItem(adventurer, item) {
     adventurer.equipment[item.base.slot] = item;
     updateAdventurer(adventurer);
 }
-function hasTwoHandedWeapon(adventurer) {
-    return adventurer.equipment.weapon && adventurer.equipment.weapon.base.twoHanded;
+function isTwoHandedWeapon(item) {
+    return item && ifdefor(item.base.tags, []).indexOf('twoHanded') >= 0;
 }
 function sellValue(item) {
     return item.itemLevel * item.itemLevel * item.itemLevel;
@@ -46,6 +46,16 @@ function updateItem(item) {
         item.$item.addClass('enchanted');
     }
 }
+var tagToDisplayNameMap = {
+    'twoHanded': '2-handed',
+    'oneHanded': '1-handed',
+    'ranged': 'Ranged',
+    'melee': 'Melee',
+    'magic': 'Magic'
+};
+function tagToDisplayName(tag) {
+    return ifdefor(tagToDisplayNameMap[tag], tag);
+}
 function itemHelpText(item) {
     var name = item.base.name;
     var prefixNames = [];
@@ -63,8 +73,8 @@ function itemHelpText(item) {
         name = name + ' of ' + suffixNames.join(' and ');
     }
     var sections = [name];
-    if (item.base.twoHanded) {
-        sections.push('2-Handed');
+    if (item.base.tags) {
+        sections.push(item.base.tags.map(tagToDisplayName).join(', '));
     }
     sections.push('Requires level ' + item.level);
     sections.push('');
@@ -354,7 +364,7 @@ function stopDrag() {
                     hit = true
                     var currentMain = targetCharacter.adventurer.equipment[item.base.slot];
                     var currentSub = null;
-                    if (item.base.twoHanded) {
+                    if (isTwoHandedWeapon(item)) {
                         currentSub = targetCharacter.adventurer.equipment.offhand;
                         targetCharacter.adventurer.equipment.offhand = null;
                     }
@@ -441,6 +451,16 @@ equipmentSlots.forEach(function (slot) {
 var maxItemWidth = 0;
 // TODO: Add unique "Sticky, Sticky Bow of Aiming and Leeching and Leeching and Aiming"
 function addItem(level, data) {
+    data.tags = ifdefor(data.tags, []);
+    // Assume weapons are one handed melee if not specified
+    if (data.slot === 'weapon') {
+        if (data.tags.indexOf('ranged') < 0 && data.tags.indexOf('melee') < 0) {
+            data.tags.unshift('melee');
+        }
+        if (data.tags.indexOf('twoHanded') < 0 && data.tags.indexOf('oneHanded') < 0) {
+            data.tags.unshift('oneHanded');
+        }
+    }
     items[level] = ifdefor(items[level], []);
     itemsBySlotAndLevel[data.slot][level] = ifdefor(itemsBySlotAndLevel[data.slot][level], []);
     data.level = level;
@@ -456,7 +476,7 @@ function addItem(level, data) {
         maxItemWidth+=maxItemsInSlot[key];
     });
 }
-addItem(1, {'slot': 'back', 'type': 'quiver', 'name': 'Quiver', 'bonuses': {'+minDamage': 1, '+maxDamage': 2}, icon: 'bag'});
+addItem(1, {'slot': 'back', 'type': 'quiver', 'name': 'Quiver', 'bonuses': {'+bow:minDamage': 1, '+bow:maxDamage': 2}, icon: 'bag'});
 addItem(1, {'slot': 'ring', 'type': 'ring', 'name': 'Ring', 'bonuses': {'+armor': 1}, icon: 'bag'});
 
 $(document).on('keydown', function(event) {
