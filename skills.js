@@ -13,7 +13,7 @@ var abilities = {
              {'type': 'dodge', 'stats': {'cooldown': 10, 'distance': 128, 'buff': {'stats': {'%evasion': .5, 'duration': 5}}}, 'helpText': 'Leap back to dodge an attack and gain: {buff}'}]},
 
 
-    'blackbelt': {'name': 'Soul of Black Belt', 'bonuses': {'+strength': 5, '+maxHealth': 10, '%damage': .05}},
+    'fighter': {'name': 'Soul of Fighter', 'bonuses': {'+strength': 5, '+maxHealth': 10, '%damage': .05}},
 
     'vitality': {'name': 'Vitality', 'bonuses': {'+healthRegen': ['{strength}', '/', 10], '+strength': 5}},
 

@@ -464,9 +464,9 @@ var squareBoard = {
 var characterClasses = {};
 addCharacterClass('Fool', 0, 0, 0);
 
-addCharacterClass('Archer', 2, 1, 0, {'weapon': itemsByKey.boomerang, 'body': itemsByKey.lamellar}, triangleBoard,
+addCharacterClass('Archer', 2, 1, 0, {'weapon': itemsByKey.primitivebow, 'body': itemsByKey.lamellar}, triangleBoard,
     [jewelLoot(['trapezoid'], [1, 1], [[10,15], [90, 100], [5, 10]], false), simpleJewelLoot, simpleJewelLoot], 'grove');
-addCharacterClass('Black Belt', 0, 2, 1, {'weapon': itemsByKey.rock, 'body': itemsByKey.lamellar}, diamondBoard2,
+addCharacterClass('Fighter', 0, 2, 1, {'weapon': itemsByKey.rock, 'body': itemsByKey.lamellar}, diamondBoard2,
     [jewelLoot(['trapezoid'], [1, 1], [[90, 100], [10,15], [5, 10]], false), simpleJewelLoot, simpleJewelLoot], 'meadow');
 addCharacterClass('Priest', 1, 0, 2, {'weapon': itemsByKey.stick, 'body': itemsByKey.lamellar}, hexBoard,
     [jewelLoot(['trapezoid'], [1, 1], [[10,15], [5, 10], [90, 100]], false), simpleJewelLoot, simpleJewelLoot], 'cave');
@@ -494,7 +494,7 @@ addCharacterClass('Sage', 4, 2, 4);
 addCharacterClass('Master', 4, 4, 4);
 
 var ranks = [
-    ['archer', 'blackbelt', 'priest'],
+    ['archer', 'fighter', 'priest'],
     ['corsair', 'paladin', 'dancer'],
     ['marksman', 'warrior', 'wizard'],
     ['assassin', 'darkknight', 'bard'],
