@@ -1,5 +1,5 @@
 // Axes high damage, slow attack speed, melee range, high crit chance
-addItem(2, {'slot': 'weapon', 'type': 'axe',  'name': 'Worn Hatchet', 'bonuses': {'+minDamage': 13, '+maxDamage': 19,  '+attackSpeed': 0.6,'+range': 1.4, '+critChance': .04 }, 'icon': 'axe'});
+//addItem(2, {'slot': 'weapon', 'type': 'axe',  'name': 'Worn Hatchet', 'bonuses': {'+minDamage': 13, '+maxDamage': 19,  '+attackSpeed': 0.6,'+range': 1.4, '+critChance': .04 }, 'icon': 'axe'});
 addItem(6, {'slot': 'weapon', 'type': 'axe',  'name': 'Hatchet', 'bonuses': {'+minDamage': 42, '+maxDamage': 62,  '+attackSpeed': 0.9,'+range': 1.5, '+critChance': .05 }, 'icon': 'axe'});
 addItem(11, {'slot': 'weapon', 'type': 'axe',  'name': 'Climbing Axe', 'bonuses': {'+minDamage': 76, '+maxDamage': 114,  '+attackSpeed': 0.9,'+range': 1.5, '+critChance': .05 }, 'icon': 'axe'});
 addItem(16, {'slot': 'weapon', 'type': 'axe',  'name': 'Tomahawk', 'bonuses': {'+minDamage': 98, '+maxDamage': 146,  '+attackSpeed': 1,'+range': 1.6, '+critChance': .06 }, 'icon': 'axe'});
