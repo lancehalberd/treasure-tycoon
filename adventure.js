@@ -81,10 +81,10 @@ function adventureLoop(character, delta) {
         }
     }
     character.allies.forEach(function (actor) {
-        performAction(character, actor, character.enemies.slice());
+        runActorLoop(character, actor, character.enemies.slice());
     });
     character.enemies.forEach(function (actor) {
-        performAction(character, actor, character.allies.slice());
+        runActorLoop(character, actor, character.allies.slice());
     });
     everybody.forEach(function (actor) {
         if (!actor.stunned && !actor.blocked && !actor.target && !actor.pull && !ifdefor(actor.stationary)) {
@@ -172,7 +172,7 @@ function processStatusEffects(character, target, delta) {
         target.stunned = null;
     }
 }
-function performAction(character, actor, targets) {
+function runActorLoop(character, actor, targets) {
     if (actor.stunned) return;
     actor.blocked = false; // Character is assumed to not be blocked each frame
     if (actor.target) {
@@ -186,83 +186,90 @@ function performAction(character, actor, targets) {
     targets.sort(function (A, B) {
         return actor.direction * (A.x - B.x);
     });
+    // Don't choose a new target until
+    if (ifdefor(actor.attackCooldown, 0) > character.time) {
+        return;
+    }
     actor.target = null;
-    targets.forEach(function (target) {
+    for (var i = 0; i < targets.length; i++) {
+        var target = targets[i];
         var distance = Math.abs(target.x - actor.x) - 64; // 64 is the width of the character
         actor.blocked = actor.blocked || distance <= 0; // block the actor if a target is too close
-        if (actor.pull) {
-            return;
+        // Don't check to attack if the character is disabled, already has a
+        if (actor.pull || actor.target) {
+            continue;
         }
-        if (actor.target) return;
-        ifdefor(actor.attacks, []).forEach(function (attack) {
-            if (ifdefor(actor.attackCooldown, 0) > character.time) { // Attack the target if possible.
-                return false;
-            }
-            if (attack.readyAt > character.time) {
-                return true;
-            }
-            if (attack.base.type == 'heal') {
-                // Don't use a heal ability unless none of it will be wasted or the
-                // actor is below half life.
-                if (actor.health + attack.amount > actor.maxHealth && actor.health > actor.maxHealth / 2) {
-                    return true;
-                }
-                attack.readyAt = character.time + attack.cooldown;
-                actor.health += attack.amount;
-                actor.stunned = character.time + .3;
-            }
-            if (attack.base.type == 'monster') {
-                var count = 0;
-                actor.allies.forEach(function (ally) {
-                    if (ally.source == attack) count++;
-                });
-                if (count >= attack.limit) {
-                    return true;
-                }
-                attack.readyAt = character.time + attack.cooldown;
-                var monsterData = {
-                    'key': attack.base.key,
-                    'bonuses': {'*maxHealth': ifdefor(attack.healthBonus, 1),
-                                '*minDamage': ifdefor(attack.damageBonus, 1),
-                                '*maxDamage': ifdefor(attack.damageBonus, 1),
-                                '*minMagicDamage': ifdefor(attack.damageBonus, 1),
-                                '*maxMagicDamage': ifdefor(attack.damageBonus, 1)}
-                }
-                actor.pull = {'x': actor.x - actor.direction * 64, 'time': character.time + .3, 'damage': 0};
-                var newMonster = makeMonster(monsterData, actor.level);
-                newMonster.x = actor.x + actor.direction * 32;
-                newMonster.character = character;
-                newMonster.direction = actor.direction; // Minios move left to right
-                newMonster.speed = Math.max(actor.speed + 5, newMonster.speed);
-                newMonster.source = attack;
-                actor.allies.push(newMonster);
-                actor.stunned = character.time + .3;
-            }
-            if (attack.base.type == 'hook') {
-                if (distance <= actor.range * 32 || distance > attack.abilityRange * 32 || target.cloaked) {
-                    return true;
-                }
-                performHookAttack(character, attack, actor, target);
-            }
-            if (attack.base.type == 'buff') {
-                attack.readyAt = character.time + attack.cooldown;
-                addTimedEffect(character, actor, attack.buff);
-                actor.stunned = character.time + .3;
-                return false;
-            }
-            return true;
-        });
-        if (distance > actor.range * 32 || target.cloaked) {
-            return;
+        // Returns true if the actor chose an action. May actually take an action
+        // that doesn't target an enemy, but that's okay, we set target anyway
+        // to indicate that he has acted this frame.
+        if (checkToAttackTarget(character, actor, target, distance)) {
+            actor.target = target;
         }
-        actor.target = target;
-        if (ifdefor(actor.attackCooldown, 0) > character.time) { // Attack the target if possible.
-            return;
-        }
-        actor.attackCooldown = character.time + 1 / (actor.attackSpeed * Math.max(.1, (1 - actor.slow)));
-        performAttack(character, actor, target);
-    });
+    }
     actor.cloaked = (actor.cloaking && !actor.blocked && !actor.target);
+}
+function checkToAttackTarget(character, actor, target, distance) {
+    for(var i = 0; i < ifdefor(actor.attacks, []).length; i++) {
+        var attack = actor.attacks[i];
+        if (attack.readyAt > character.time) continue;
+        if (attack.base.type == 'heal') {
+            // Don't use a heal ability unless none of it will be wasted or the
+            // actor is below half life.
+            if (actor.health + attack.amount > actor.maxHealth && actor.health > actor.maxHealth / 2) {
+                continue;
+            }
+            attack.readyAt = character.time + attack.cooldown;
+            actor.health += attack.amount;
+            actor.stunned = character.time + .3;
+            return true;
+        }
+        if (attack.base.type == 'monster') {
+            var count = 0;
+            actor.allies.forEach(function (ally) {
+                if (ally.source == attack) count++;
+            });
+            if (count >= attack.limit) continue;
+            attack.readyAt = character.time + attack.cooldown;
+            var monsterData = {
+                'key': attack.base.key,
+                'bonuses': {'*maxHealth': ifdefor(attack.healthBonus, 1),
+                            '*minDamage': ifdefor(attack.damageBonus, 1),
+                            '*maxDamage': ifdefor(attack.damageBonus, 1),
+                            '*minMagicDamage': ifdefor(attack.damageBonus, 1),
+                            '*maxMagicDamage': ifdefor(attack.damageBonus, 1)}
+            }
+            actor.pull = {'x': actor.x - actor.direction * 64, 'time': character.time + .3, 'damage': 0};
+            var newMonster = makeMonster(monsterData, actor.level);
+            newMonster.x = actor.x + actor.direction * 32;
+            newMonster.character = character;
+            newMonster.direction = actor.direction; // Minios move left to right
+            newMonster.speed = Math.max(actor.speed + 5, newMonster.speed);
+            newMonster.source = attack;
+            actor.allies.push(newMonster);
+            actor.stunned = character.time + .3;
+            return true;
+        }
+        if (attack.base.type == 'hook') {
+            if (distance <= actor.range * 32 || distance > attack.abilityRange * 32 || target.cloaked) {
+                continue;
+            }
+            performHookAttack(character, attack, actor, target);
+            return true;
+        }
+        if (attack.base.type == 'buff') {
+            attack.readyAt = character.time + attack.cooldown;
+            addTimedEffect(character, actor, attack.buff);
+            actor.stunned = character.time + .3;
+            return true;
+        }
+    }
+    if (distance > actor.range * 32 || target.cloaked) {
+        return false;
+    }
+    // Do a regular attack if no special abilities were used and target is in range.
+    actor.attackCooldown = character.time + 1 / (actor.attackSpeed * Math.max(.1, (1 - actor.slow)));
+    performAttack(character, actor, target);
+    return true;
 }
 function applyArmorToDamage(damage, armor) {
     if (damage <= 0) {
@@ -394,6 +401,8 @@ function performHookAttack(character, attack, attacker, target) {
     }
     character.textPopups.push(hitText);
 }
+
+
 function getDistance(actorA, actorB) {
     return Math.max(0, (actorA.x > actorB.x) ? (actorA.x - actorB.x - 64) : (actorB.x - actorA.x - 64));
 }
