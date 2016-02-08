@@ -378,3 +378,8 @@ button.disabled {
     background-color: rgba(50, 200, 200, .9);
     border: 1px solid white;
 }
+.tagText {
+    padding: 5px;
+    background-color: rgba(200, 50, 200, .9);
+    border: 1px solid white;
+}

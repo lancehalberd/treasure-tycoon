@@ -126,7 +126,16 @@ function evaluateForDisplay(value) {
 }
 function bonusHelpText(rawBonuses, implicit) {
     var bonuses = {};
+    var tagBonuses = {};
     $.each(rawBonuses, function (key, value) {
+        // Transform things like {'+bow:minDamage': 1} => 'bow': {'+minDamage': 1}
+        // so that we can display per tag bonuses.
+        if (key.indexOf(':') >= 0) {
+            var parts = key.split(':');
+            var tag = parts[0].substring(1);
+            tagBonuses[tag] = ifdefor(tagBonuses[tag], {});
+            tagBonuses[tag][parts[0].charAt(0) + parts[1]] = value;
+        }
         bonuses[key] = evaluateForDisplay(value);
     });
     var sections = [];
@@ -234,6 +243,10 @@ function bonusHelpText(rawBonuses, implicit) {
     if (ifdefor(bonuses['+increasedExperience'])) {
         sections.push('Gain ' + (100 * bonuses['+increasedExperience']).format(1) + '% more experience.');
     }
+
+    $.each(tagBonuses, function (tagName, bonuses) {
+        sections.push(tag('div', 'tagText', tagName + ':<br/>' + bonusHelpText(bonuses, false)));
+    });
 
     if (ifdefor(bonuses['duration'])) { // Buffs/debuffs only.
         sections.push('For ' + bonuses.duration + ' seconds');
