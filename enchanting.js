@@ -30,14 +30,21 @@ var suffixes = [
         {'slot': accessorySlots, 'name': 'Frustration', 'bonuses': {}}
     ]
 ];
+var affixesByKey = {};
 $.each(prefixes, function (level, levelAffixes) {
     levelAffixes.forEach(function (affix) {
+        var key = affix.name.replace(/\s*/g, '').toLowerCase();
+        affixesByKey[key] = affix;
         affix.level = level;
+        affix.prefix = true;
     });
 });
 $.each(suffixes, function (level, levelAffixes) {
     levelAffixes.forEach(function (affix) {
+        var key = affix.name.replace(/\s*/g, '').toLowerCase();
+        affixesByKey[key] = affix;
         affix.level = level;
+        affix.suffix = true;
     });
 });
 function makeAffix(baseAffix) {
@@ -110,6 +117,9 @@ function updateEnchantmentOptions() {
     if (total > 0) {
         $('.js-enchantmentOption.js-reset').show().html('Reset: ' + points('IP', value * 10));
     }
+    if (item.unique) {
+        return;
+    }
     if (total == 0) {
         $('.js-enchantmentOption.js-enchant').show().html('Enchant: ' + points('MP', (value * 10)));
         $('.js-enchantmentOption.js-imbue').show().html('Imbue: ' + points('RP', (value * 10)));
@@ -135,6 +145,8 @@ function resetItem() {
     }
     item.prefixes = [];
     item.suffixes = [];
+    delete item.displayName;
+    item.unique = false;
     updateItem(item);
     updateEnchantmentOptions();
 }

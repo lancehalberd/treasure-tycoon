@@ -24,7 +24,8 @@ function makeItem(base, level) {
         'suffixes': [],
         // level is used to represent the required level, itemLevel is used
         // to calculate available enchantments and sell value.
-        'itemLevel': level
+        'itemLevel': level,
+        'unique': false
     };
     item.$item = $tag('div', 'js-item item', tag('div', 'icon ' + base.icon) + tag('div', 'itemLevel', base.level));
     updateItem(item);
@@ -38,9 +39,11 @@ function updateItem(item) {
     });
     item.level = levelRequirement;
     item.$item.attr('helpText', itemHelpText(item));
-    item.$item.removeClass('imbued').removeClass('enchanted');
+    item.$item.removeClass('imbued').removeClass('enchanted').removeClass('unique');
     var enchantments = item.prefixes.length + item.suffixes.length;
-    if (enchantments > 2) {
+    if (item.unique) {
+        item.$item.addClass('unique');
+    } else if (enchantments > 2) {
         item.$item.addClass('imbued');
     } else if (enchantments) {
         item.$item.addClass('enchanted');
@@ -57,20 +60,27 @@ function tagToDisplayName(tag) {
     return ifdefor(tagToDisplayNameMap[tag], tag);
 }
 function itemHelpText(item) {
-    var name = item.base.name;
-    var prefixNames = [];
-    item.prefixes.forEach(function (affix) {
-        prefixNames.unshift(affix.base.name);
-    });
-    if (prefixNames.length) {
-        name = prefixNames.join(', ') + ' ' + name;
-    }
-    var suffixNames = [];
-    item.suffixes.forEach(function (affix) {
-        suffixNames.push(affix.base.name);
-    });
-    if (suffixNames.length) {
-        name = name + ' of ' + suffixNames.join(' and ');
+    // Unique items have a distinct display name that is used instead of the
+    // affix generated name.
+    var name;
+    if (ifdefor(item.displayName)) {
+        name = item.displayName;
+    } else {
+        name = item.base.name;
+        var prefixNames = [];
+        item.prefixes.forEach(function (affix) {
+            prefixNames.unshift(affix.base.name);
+        });
+        if (prefixNames.length) {
+            name = prefixNames.join(', ') + ' ' + name;
+        }
+        var suffixNames = [];
+        item.suffixes.forEach(function (affix) {
+            suffixNames.push(affix.base.name);
+        });
+        if (suffixNames.length) {
+            name = name + ' of ' + suffixNames.join(' and ');
+        }
     }
     var sections = [name];
     if (item.base.tags) {
@@ -456,13 +466,10 @@ var accessorySlots = ['back', 'ring'];
 var items = [[]];
 var itemsByKey = {};
 var itemsBySlotAndLevel = {};
-var maxItemsInSlot = {}
 equipmentSlots.forEach(function (slot) {
     itemsBySlotAndLevel[slot] = [];
-    maxItemsInSlot[slot] = 0;
 });
-var maxItemWidth = 0;
-// TODO: Add unique "Sticky, Sticky Bow of Aiming and Leeching and Leeching and Aiming"
+
 function addItem(level, data) {
     data.tags = ifdefor(data.tags, []);
     // Assume weapons are one handed melee if not specified
@@ -483,11 +490,6 @@ function addItem(level, data) {
     itemsBySlotAndLevel[data.slot][level].push(data);
     var key = data.name.replace(/\s*/g, '').toLowerCase();
     itemsByKey[key] = data;
-    maxItemsInSlot[data.slot] = Math.max(itemsBySlotAndLevel[data.slot][level].length, maxItemsInSlot[data.slot]);
-    maxItemWidth = 0;
-    $.each(maxItemsInSlot, function (key) {
-        maxItemWidth+=maxItemsInSlot[key];
-    });
 }
 addItem(1, {'slot': 'back', 'type': 'quiver', 'name': 'Quiver', 'bonuses': {'+bow:minDamage': 1, '+bow:maxDamage': 2}, icon: 'bag'});
 addItem(1, {'slot': 'ring', 'type': 'ring', 'name': 'Ring', 'bonuses': {'+armor': 1}, icon: 'bag'});

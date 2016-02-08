@@ -127,6 +127,9 @@
 .item.imbued {
     background-color: #f8f;
 }
+.item.unique {
+    background-color: #4cf;
+}
 button.item {
     padding: 0px;
 }
@@ -381,5 +384,11 @@ button.disabled {
 .tagText {
     padding: 5px;
     background-color: rgba(200, 50, 200, .9);
+    border: 1px solid white;
+}
+
+.uniqueText {
+    padding: 5px;
+    background-color: rgba(50, 200, 250, .9);
     border: 1px solid white;
 }

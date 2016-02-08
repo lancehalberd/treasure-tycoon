@@ -100,7 +100,7 @@ function drawCraftingViewCanvas() {
             columns = 2;
     }
     context.clearRect(0, 0, canvas.width, canvas.height);
-    context.fillStyle = '#3DD';
+    context.fillStyle = '#8F8';
     context.fillRect(offset * 11, 0, 2 + columns * 11, 2 + 11 * craftingLevel);
     var maxLevel = $('.js-levelSelect option').last().attr('value');
     context.fillStyle = '#000';
@@ -168,7 +168,7 @@ $('.js-craftItem').on('click', function () {
         index++;
     }
     if (lastCraftedItem) {
-        state.craftingContext.fillStyle = 'green';
+        state.craftingContext.fillStyle = ifdefor(lastCraftedItem.craftedUnique ? '#44ccff' : 'green');
         state.craftingContext.fillRect(lastCraftedItem.craftingX, lastCraftedItem.craftingY, 10, 10);
     }
     var craftedItem = itemsFilteredByType[index];
@@ -176,17 +176,24 @@ $('.js-craftItem').on('click', function () {
         item.craftingWeight += item.level * item.level * 5;
     });
     craftedItem.craftingWeight /= 2;
-    craftedItem.crafted = true;
-    state.craftingContext.fillStyle = 'orange';
-    state.craftingContext.fillRect(craftedItem.craftingX, craftedItem.craftingY, 10, 10);
-    drawCraftingViewCanvas();
     updateSelectedCraftingWeight();
     var item = makeItem(craftedItem, craftingLevel);
     if (craftingPointsType == 'MP') {
         enchantItemProper(item);
     } else if (craftingPointsType == 'RP') {
         imbueItemProper(item);
+    } else {
+        // Rolling a plain item has a chance to create a unique if one exists for
+        // this base type.
+        checkToMakeItemUnique(item);
+        if (item.unique) {
+            craftedItem.craftedUnique = true;
+        }
     }
+    craftedItem.crafted = true;
+    state.craftingContext.fillStyle = ifdefor(craftedItem.craftedUnique) ? '#0088ff' : 'orange';
+    state.craftingContext.fillRect(craftedItem.craftingX, craftedItem.craftingY, 10, 10);
+    drawCraftingViewCanvas();
     updateItem(item);
     $('.js-inventory').prepend(item.$item);
     lastCraftedItem = craftedItem;
@@ -221,6 +228,9 @@ function checkToShowCraftingToopTip() {
     if (overCraftingItem.crafted) {
         sections = [overCraftingItem.name, 'Requires level ' + overCraftingItem.level, ''];
         sections.push(bonusHelpText(overCraftingItem.bonuses, true));
+        if (ifdefor(overCraftingItem.craftedUnique)) {
+            sections.push(tag('div', 'uniqueText', 'Unique Variant: </br>' + overCraftingItem.unique.displayName + '<br/>' + (100 * overCraftingItem.unique.chance).format(1) + '% chance'));
+        }
     } else {
         sections = ['??? ' + overCraftingItem.slot, 'Requires level ' + overCraftingItem.level, ''];
     }
