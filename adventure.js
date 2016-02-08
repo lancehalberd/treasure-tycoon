@@ -113,8 +113,6 @@ function addTimedEffect(character, actor, effect) {
     effect.expirationTime = character.time + effect.duration;
     actor.timedEffects.push(effect);
     updateActorStats(actor);
-    console.log
-    console.log('Buff on Armor: ' + actor.armor);
 }
 function updateActorStats(actor) {
     if (actor.personCanvas) updateAdventurerStats(actor);

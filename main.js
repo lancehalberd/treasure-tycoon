@@ -338,6 +338,9 @@ $('body').on('click', '.js-cancelSkill', function (event) {
 });
 
 $('body').on('click', '.js-retire', function (event) {
+    if (state.characters.length < 2) {
+        return;
+    }
     var $panel = $(this).closest('.js-playerPanel');
     var character = $panel.data('character');
     gain('AP', Math.ceil(character.adventurer.level * character.adventurer.job.cost / 10));

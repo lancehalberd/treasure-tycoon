@@ -228,19 +228,38 @@ String.prototype.format = function (digits) {
     return this;
 }
 function sellItem(item) {
+    if ($dragHelper && (!$dragHelper.data('$source') || $dragHelper.data('$source').data('item') !== item)) {
+        return;
+    }
     var sourceCharacter = item.$item.closest('.js-playerPanel').data('character');
     if (sourceCharacter) {
         sourceCharacter.adventurer.equipment[item.base.slot] = null;
         updateAdventurer(sourceCharacter.adventurer);
     }
-    item.$item.remove();
-    item.$item = null;
     gain('IP', sellValue(item));
+    destroyItem(item);
     var total = item.prefixes.length + item.suffixes.length;
     if (total) {
         if (total <= 2) gain('MP', sellValue(item) * total);
         else gain('RP', sellValue(item) * (total - 2));
     }
+}
+function destroyItem(item) {
+    if ($dragHelper) {
+        var $source = $dragHelper.data('$source');
+        if ($source && $source.data('item') === item) {
+            $source.data('item', null);
+            $dragHelper.data('$source', null);
+            $dragHelper.remove();
+            $dragHelper = null;
+            $('.js-itemSlot.active').removeClass('active');
+            $('.js-itemSlot.invalid').removeClass('invalid');
+        }
+    }
+    item.$item.data('item', null);
+    item.$item.remove();
+    item.$item = null;
+    updateEnchantmentOptions();
 }
 
 var $dragHelper = null;
@@ -294,7 +313,7 @@ function stopDrag() {
         var hit = false;
         if (collision($dragHelper, $('.js-sellItem'))) {
             sellItem(item);
-            hit = true;
+            return;
         }
         if (!hit && collision($dragHelper, $('.js-enchantmentSlot'))) {
             var $otherItem = $('.js-enchantmentSlot').find('.js-item');
@@ -397,7 +416,7 @@ function addItem(level, data) {
     items[level] = ifdefor(items[level], []);
     itemsBySlotAndLevel[data.slot][level] = ifdefor(itemsBySlotAndLevel[data.slot][level], []);
     data.level = level;
-    data.craftingWeight = 5 * level;
+    data.craftingWeight = 5 * level * level;
     data.crafted = false;
     items[level].push(data);
     itemsBySlotAndLevel[data.slot][level].push(data);

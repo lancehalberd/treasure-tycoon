@@ -181,8 +181,8 @@ function updateAdjacencyBonsues(jewel) {
             jewel.adjacencyBonuses['%attackSpeed'] = contrastBonus / 100;
             break;
         case 4:
-            jewel.adjacencyBonuses['%accuracy'] = resonanceBonus / 100;
-            jewel.adjacencyBonuses['%block'] = contrastBonus / 100;
+            jewel.adjacencyBonuses['%block'] = resonanceBonus / 100;
+            jewel.adjacencyBonuses['%accuracy'] = contrastBonus / 100;
             break;
         case 3:
             jewel.adjacencyBonuses['%critChance'] = resonanceBonus / 100;

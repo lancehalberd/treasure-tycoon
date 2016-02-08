@@ -43,6 +43,9 @@ function jewelHelpText(jewel) {
 }
 function sellJewel(jewel) {
     if (jewel.fixed) return;
+    if ($dragHelper && jewel !== draggedJewel) {
+        return;
+    }
     // unequip and deletes the jewel.
     destroyJewel(jewel);
     gain('IP', jewel.price);

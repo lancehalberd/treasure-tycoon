@@ -45,8 +45,7 @@ function initializeCraftingImage() {
             overCraftingItem = null
         }
         if (mouseDown) {
-            $('.js-levelSelect').val(level);
-            updateItemCrafting();
+            setCraftingLevel(level);
         }
     });
     $(state.craftingViewCanvas).on('click', function () {
@@ -64,13 +63,17 @@ function initializeCraftingImage() {
         });
         var items = ifdefor(ifdefor(itemsBySlotAndLevel[overSlot], [])[level], []);
         var index = tx - slotOffset;
-        $('.js-levelSelect').val(level);
-        updateItemCrafting();
+        setCraftingLevel(level);
     });
     $(state.craftingViewCanvas).on('mouseout', function () {
         overCraftingItem = null
     });
     drawCraftingViewCanvas();
+}
+function setCraftingLevel(level) {
+    var maxLevel = $('.js-levelSelect option').last().attr('value');
+    $('.js-levelSelect').val(Math.min(maxLevel, level));
+    updateItemCrafting();
 }
 function drawCraftingViewCanvas() {
     var canvas = state.craftingViewCanvas;
@@ -166,7 +169,7 @@ $('.js-craftItem').on('click', function () {
     }
     var craftedItem = itemsFilteredByType[index];
     itemsFilteredByType.forEach(function (item) {
-        item.craftingWeight += item.level * 5;
+        item.craftingWeight += item.level * item.level * 5;
     });
     craftedItem.craftingWeight /= 2;
     craftedItem.crafted = true;
