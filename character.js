@@ -203,6 +203,8 @@ function updateAdventurer(adventurer) {
             adventurer.bonuses.push(jewel.bonuses);
             adventurer.bonuses.push(jewel.adjacencyBonuses);
         });
+        // Don't show the offhand slot if equipped with a two handed weapon.
+        adventurer.character.$panel.find('.js-offhand').toggle(!hasTwoHandedWeapon(adventurer));
     }
     // Add the adventurer's current equipment to bonuses and graphics
     equipmentSlots.forEach(function (type) {

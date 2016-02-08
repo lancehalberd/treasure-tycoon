@@ -3,9 +3,16 @@ function equipItem(adventurer, item) {
         console.log("Tried to equip an item without first unequiping!");
         return;
     }
+    if (item.base.slot === 'offhand' && hasTwoHandedWeapon(adventurer)) {
+        console.log("Tried to equip an offhand while wielding a two handed weapon!");
+        return;
+    }
     item.$item.detach();
     adventurer.equipment[item.base.slot] = item;
     updateAdventurer(adventurer);
+}
+function hasTwoHandedWeapon(adventurer) {
+    return adventurer.equipment.weapon && adventurer.equipment.weapon.base.twoHanded;
 }
 function sellValue(item) {
     return item.itemLevel * item.itemLevel * item.itemLevel;
@@ -55,7 +62,12 @@ function itemHelpText(item) {
     if (suffixNames.length) {
         name = name + ' of ' + suffixNames.join(' and ');
     }
-    var sections = [name, 'Requires level ' + item.level, ''];
+    var sections = [name];
+    if (item.base.twoHanded) {
+        sections.push('2-Handed');
+    }
+    sections.push('Requires level ' + item.level);
+    sections.push('');
     sections.push(bonusHelpText(item.base.bonuses, true));
 
     if (item.prefixes.length || item.suffixes.length) {
@@ -340,22 +352,38 @@ function stopDrag() {
                     }
                     var sourceCharacter = $source.closest('.js-playerPanel').data('character');
                     hit = true
-                    var current = targetCharacter.adventurer.equipment[item.base.slot];
+                    var currentMain = targetCharacter.adventurer.equipment[item.base.slot];
+                    var currentSub = null;
+                    if (item.base.twoHanded) {
+                        currentSub = targetCharacter.adventurer.equipment.offhand;
+                        targetCharacter.adventurer.equipment.offhand = null;
+                    }
                     targetCharacter.adventurer.equipment[item.base.slot] = null;
-                    if (sourceCharacter) {
+                   if (sourceCharacter && sourceCharacter !== targetCharacter) {
                         sourceCharacter.adventurer.equipment[item.base.slot] = null;
-                        if (!current) {
+                        if (!currentMain && !currentSub) {
                             updateAdventurer(sourceCharacter.adventurer);
-                        } else if (current.level <= sourceCharacter.adventurer.level) {
-                            // Swap the item back to the source character if they can equip it.
-                            equipItem(sourceCharacter.adventurer, current);
-                            current = null;
+                        } else {
+                            if (currentMain && currentMain.level <= sourceCharacter.adventurer.level) {
+                                // Swap the item back to the source character if they can equip it.
+                                equipItem(sourceCharacter.adventurer, currentMain);
+                                currentMain = null;
+                            }
+                            if (currentSub && currentSub.level <= sourceCharacter.adventurer.level) {
+                                // Swap the item back to the source character if they can equip it.
+                                equipItem(sourceCharacter.adventurer, currentSub);
+                                currentSub = null;
+                            }
                         }
                     }
                     //unequip the existing item if it hasn't already been swapped.
-                    if (current) {
-                        current.$item.detach();
-                        $('.js-inventory').append(current.$item);
+                    if (currentMain) {
+                        currentMain.$item.detach();
+                        $('.js-inventory').append(currentMain.$item);
+                    }
+                    if (currentSub) {
+                        currentSub.$item.detach();
+                        $('.js-inventory').append(currentSub.$item);
                     }
                     equipItem(targetCharacter.adventurer, item);
                     return false;

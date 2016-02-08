@@ -72,16 +72,18 @@ addItem(60, {'slot': 'weapon', 'type': 'wand',  'name': 'Adamantine Wand', 'bonu
 addItem(70, {'slot': 'weapon', 'type': 'wand',  'name': 'Orichalcum Wand', 'bonuses': {'+minMagicDamage': 101, '+maxMagicDamage': 151,  '+attackSpeed': 1.9,'+range': 14, '+critChance': .04, '+minDamage': 20, '+maxDamage': 30 }, 'icon': 'wand'});
 
 //Thrown medium damage, medium attack speed, medium range, medium crit chance
-addItem(1, {'slot': 'weapon', 'type': 'thrown',  'name': 'Boomerang', 'bonuses': {'+minDamage': 7, '+maxDamage': 11,  '+attackSpeed': 1,'+range': 7, '+critChance': .03 }, 'icon': 'bow'});
-addItem(4, {'slot': 'weapon', 'type': 'thrown',  'name': 'Pilum', 'bonuses': {'+minDamage': 34, '+maxDamage': 52,  '+attackSpeed': 1.1,'+range': 9, '+critChance': .04 }, 'icon': 'bow'});
-addItem(9, {'slot': 'weapon', 'type': 'thrown',  'name': 'Throwing Knife', 'bonuses': {'+minDamage': 58, '+maxDamage': 86,  '+attackSpeed': 1.2,'+range': 9, '+critChance': .04 }, 'icon': 'bow'});
-addItem(14, {'slot': 'weapon', 'type': 'thrown',  'name': 'Throwing Club', 'bonuses': {'+minDamage': 83, '+maxDamage': 125,  '+attackSpeed': 1.2,'+range': 10, '+critChance': .04 }, 'icon': 'bow'});
-addItem(19, {'slot': 'weapon', 'type': 'thrown',  'name': 'Throwing Axe', 'bonuses': {'+minDamage': 109, '+maxDamage': 163,  '+attackSpeed': 1.2,'+range': 10, '+critChance': .04 }, 'icon': 'bow'});
-addItem(24, {'slot': 'weapon', 'type': 'thrown',  'name': 'Shuriken', 'bonuses': {'+minDamage': 80, '+maxDamage': 120,  '+attackSpeed': 2,'+range': 11, '+critChance': .04 }, 'icon': 'bow'});
-addItem(29, {'slot': 'weapon', 'type': 'thrown',  'name': 'Bolas', 'bonuses': {'+minDamage': 120, '+maxDamage': 180,  '+attackSpeed': 1.6,'+range': 11, '+critChance': .04 }, 'icon': 'bow'});
-addItem(34, {'slot': 'weapon', 'type': 'thrown',  'name': 'Chakram', 'bonuses': {'+minDamage': 139, '+maxDamage': 209,  '+attackSpeed': 1.6,'+range': 12, '+critChance': .04 }, 'icon': 'bow'});
-addItem(39, {'slot': 'weapon', 'type': 'thrown',  'name': 'Javelin', 'bonuses': {'+minDamage': 141, '+maxDamage': 211,  '+attackSpeed': 1.8,'+range': 12, '+critChance': .04 }, 'icon': 'bow'});
-addItem(44, {'slot': 'weapon', 'type': 'thrown',  'name': 'Heavy Javelin', 'bonuses': {'+minDamage': 187, '+maxDamage': 281,  '+attackSpeed': 1.5,'+range': 13, '+critChance': .05 }, 'icon': 'bow'});
-addItem(49, {'slot': 'weapon', 'type': 'thrown',  'name': 'Meteoric Javelin', 'bonuses': {'+minDamage': 208, '+maxDamage': 312,  '+attackSpeed': 1.5,'+range': 13, '+critChance': .05 }, 'icon': 'bow'});
-addItem(59, {'slot': 'weapon', 'type': 'thrown',  'name': 'Runed Javelin', 'bonuses': {'+minDamage': 190, '+maxDamage': 286,  '+attackSpeed': 1.8,'+range': 14, '+critChance': .05, '+minMagicDamage': 6, '+maxMagicDamage': 8 }, 'icon': 'bow'});
-addItem(69, {'slot': 'weapon', 'type': 'thrown',  'name': 'Adamantine Javelin', 'bonuses': {'+minDamage': 415, '+maxDamage': 623,  '+attackSpeed': .9,'+range': 15, '+critChance': .07, '+minMagicDamage': 20, '+maxMagicDamage': 30 }, 'icon': 'bow'});
+addItem(1, {'slot': 'weapon', 'type': 'thrown', 'name': 'Boomerang', 'bonuses': {'+minDamage': 7, '+maxDamage': 11,  '+attackSpeed': 1,'+range': 7, '+critChance': .03 }, 'icon': 'bow'});
+addItem(4, {'slot': 'weapon', 'type': 'thrown', 'name': 'Pilum', 'bonuses': {'+minDamage': 34, '+maxDamage': 52,  '+attackSpeed': 1.1,'+range': 9, '+critChance': .04 }, 'icon': 'bow'});
+addItem(9, {'slot': 'weapon', 'type': 'thrown', 'name': 'Throwing Knife', 'bonuses': {'+minDamage': 58, '+maxDamage': 86,  '+attackSpeed': 1.2,'+range': 9, '+critChance': .04 }, 'icon': 'bow'});
+addItem(14, {'slot': 'weapon', 'type': 'thrown', 'name': 'Throwing Club', 'bonuses': {'+minDamage': 83, '+maxDamage': 125,  '+attackSpeed': 1.2,'+range': 10, '+critChance': .04 }, 'icon': 'bow'});
+addItem(19, {'slot': 'weapon', 'type': 'thrown', 'name': 'Throwing Axe', 'bonuses': {'+minDamage': 109, '+maxDamage': 163,  '+attackSpeed': 1.2,'+range': 10, '+critChance': .04 }, 'icon': 'bow'});
+addItem(24, {'slot': 'weapon', 'type': 'thrown', 'name': 'Shuriken', 'bonuses': {'+minDamage': 80, '+maxDamage': 120,  '+attackSpeed': 2,'+range': 11, '+critChance': .04 }, 'icon': 'bow'});
+addItem(29, {'slot': 'weapon', 'type': 'thrown', 'name': 'Bolas', 'bonuses': {'+minDamage': 120, '+maxDamage': 180,  '+attackSpeed': 1.6,'+range': 11, '+critChance': .04 }, 'icon': 'bow'});
+addItem(34, {'slot': 'weapon', 'type': 'thrown', 'name': 'Chakram', 'bonuses': {'+minDamage': 139, '+maxDamage': 209,  '+attackSpeed': 1.6,'+range': 12, '+critChance': .04 }, 'icon': 'bow'});
+addItem(39, {'slot': 'weapon', 'type': 'thrown', 'name': 'Javelin', 'bonuses': {'+minDamage': 141, '+maxDamage': 211,  '+attackSpeed': 1.8,'+range': 12, '+critChance': .04 }, 'icon': 'bow'});
+addItem(44, {'slot': 'weapon', 'type': 'thrown', 'name': 'Heavy Javelin', 'bonuses': {'+minDamage': 187, '+maxDamage': 281,  '+attackSpeed': 1.5,'+range': 13, '+critChance': .05 }, 'icon': 'bow'});
+addItem(49, {'slot': 'weapon', 'type': 'thrown', 'name': 'Meteoric Javelin', 'bonuses': {'+minDamage': 208, '+maxDamage': 312,  '+attackSpeed': 1.5,'+range': 13, '+critChance': .05 }, 'icon': 'bow'});
+addItem(59, {'slot': 'weapon', 'type': 'thrown', 'name': 'Runed Javelin', 'bonuses': {'+minDamage': 190, '+maxDamage': 286,  '+attackSpeed': 1.8,'+range': 14, '+critChance': .05, '+minMagicDamage': 6, '+maxMagicDamage': 8 }, 'icon': 'bow'});
+addItem(69, {'slot': 'weapon', 'type': 'thrown', 'name': 'Adamantine Javelin', 'bonuses': {'+minDamage': 415, '+maxDamage': 623,  '+attackSpeed': .9,'+range': 15, '+critChance': .07, '+minMagicDamage': 20, '+maxMagicDamage': 30 }, 'icon': 'bow'});
+
+addItem(2, {'slot': 'weapon', 'type': 'bow', 'twoHanded': true, 'name': 'Bow', 'bonuses': {'+minDamage': 10, '+maxDamage': 15,  '+attackSpeed': 1, '+range': 9, '+critChance': .03 }, 'icon': 'bow'});
