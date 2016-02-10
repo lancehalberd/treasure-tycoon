@@ -33,8 +33,8 @@ function instantiateLevel(levelData, completed) {
     };
     var loot = [];
     var pointsFactor = completed ? 1 : 4;
-    // IP/MP/RP are granted at the end of each level
-    loot.push(pointLoot('IP', [pointsFactor * level * level * 10, pointsFactor * level * level * 15]));
+    // coins/MP/RP are granted at the end of each level
+    loot.push(pointLoot('coins', [pointsFactor * level * level * 10, pointsFactor * level * level * 15]));
     if (level > 2) {
         loot.push(pointLoot('MP', [pointsFactor * (level - 2) * (level - 2) * 10,
                                     pointsFactor * (level - 2) * (level - 2) * 15]));
@@ -43,12 +43,8 @@ function instantiateLevel(levelData, completed) {
         loot.push(pointLoot('RP', [pointsFactor * (level - 4) * (level - 4) * 10,
                                     pointsFactor * (level - 4) * (level - 4) * 15]));
     }
-    // UP/AP/Special Loot are given only the first time an adventurer complets an area.
+    // AP/Special Loot are given only the first time an adventurer complets an area.
     if (!completed) {
-        if (level > 6) {
-            loot.push(pointLoot('UP', [pointsFactor * (level - 6) * (level - 6) * 5,
-                                        pointsFactor * (level - 6) * (level - 6) * 10]));
-        }
         loot.unshift(pointLoot('AP', [level, level]));
         loot = levelData.specialLoot.concat(loot);
         waves.push(chestWave(firstChest(loot)));

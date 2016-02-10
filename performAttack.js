@@ -73,10 +73,10 @@ function performAttack(character, attack, attacker, target, distance) {
     var totalDamage = damage + magicDamage;
     if (totalDamage > 0) {
         target.health -= totalDamage;
-        target.stunned = character.time + .3 + distance / 32 * ifdefor(attack.dragStun, 0);
         hitText.value = totalDamage;
         // Hook attacks pull the target in if it lands.
         if (attack.base.type === 'hook') {
+            target.stunned = character.time + .3 + distance / 32 * ifdefor(attack.dragStun, 0);
             var targetX = (attacker.x > target.x) ? (attacker.x - 64) : (attacker.x + 64);
             target.pull = {'x': targetX, 'time': character.time + .3, 'damage': Math.floor(distance / 32 * damage * ifdefor(attack.dragDamage, 0))};
             attacker.pull = {'x': attacker.x, 'time': character.time + .3, 'damage': 0};

@@ -101,7 +101,7 @@ function itemHelpText(item) {
     }
     sections.push('');
 
-    var points = [sellValue(item) + ' IP'];
+    var points = [sellValue(item) + ' Coins'];
     var total = item.prefixes.length + item.suffixes.length;
     if (total) {
         if (total <= 2) points.push(sellValue(item) * total + ' MP');
@@ -281,7 +281,7 @@ function sellItem(item) {
         sourceCharacter.adventurer.equipment[item.base.slot] = null;
         updateAdventurer(sourceCharacter.adventurer);
     }
-    gain('IP', sellValue(item));
+    gain('coins', sellValue(item));
     destroyItem(item);
     var total = item.prefixes.length + item.suffixes.length;
     if (total) {
@@ -461,8 +461,10 @@ function stopDrag() {
     $('.js-itemSlot.invalid').removeClass('invalid');
 }
 var armorSlots = ['body', 'feet', 'head', 'offhand', 'arms', 'legs'];
+var smallArmorSlots = ['feet', 'head', 'offhand', 'arms', 'legs'];
 var equipmentSlots = ['weapon', 'body', 'feet', 'head', 'offhand', 'arms', 'legs', 'back', 'ring'];
 var accessorySlots = ['back', 'ring'];
+var nonWeapons = ['body', 'feet', 'head', 'offhand', 'arms', 'legs', 'back', 'ring'];
 var items = [[]];
 var itemsByKey = {};
 var itemsBySlotAndLevel = {};
@@ -514,10 +516,9 @@ $(document).on('keydown', function(event) {
     }
     if (event.which == 68) { // 'd'
         gain('AP', 1000);
-        gain('IP', 1000);
+        gain('coins', 1000);
         gain('MP', 1000);
         gain('RP', 1000);
-        gain('UP', 1000);
         $.each(itemsByKey, function (key, item) {
             item.crafted = true;
         });

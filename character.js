@@ -4,16 +4,16 @@ var hair = [clothes[1] + 1, clothes[1] + 4];
 var names = ['Chris', 'Leon', 'Hillary', 'Michelle', 'Rob', 'Reuben', 'Kingston', 'Silver'];
 var walkLoop = [0, 1, 2, 3];
 var fightLoop = [4, 5, 6];
-var pointsTypes = ['IP', 'MP', 'RP', 'UP', 'AP'];
+var pointsTypes = ['coins', 'MP', 'RP', 'AP'];
 var allComputedStats = ['cloaking', 'dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
-     'ip', 'xpValue', 'mp', 'rp', 'up',
+     'coins', 'xpValue', 'mp', 'rp', 'up',
      'evasion', 'block', 'magicBlock', 'armor', 'magicResist', 'accuracy', 'range', 'attackSpeed',
      'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage',
      'critChance', 'critDamage', 'critAccuracy',
      'damageOnMiss', 'slowOnHit', 'healthRegen', 'healthGainOnHit',
      'increasedItems', 'increasedExperience'];
 var allRoundedStats = ['dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
-     'ip', 'xpValue', 'mp', 'rp', 'up',
+     'coins', 'xpValue', 'mp', 'rp', 'up',
      'evasion', 'block', 'magicBlock', 'armor', 'accuracy',
      'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage'];
 
@@ -62,7 +62,8 @@ function newCharacter(job) {
     personContext.imageSmoothingEnabled = false;
     var $newPlayerPanel = $('.js-playerPanelTemplate').clone()
         .removeClass('js-playerPanelTemplate').addClass('js-playerPanel').show();
-    $('.js-playerColumn').prepend($newPlayerPanel);
+    // The player template will be between the adventure panels and the hire adventure controls.
+    $('.js-playerColumn .js-playerPanelTemplate').before($newPlayerPanel);
     var character = {};
     character.adventurer = makeAdventurer(job, 1, ifdefor(job.startingEquipment, {}));
     character.adventurer.character = character;
@@ -149,7 +150,6 @@ function readBoardFromData(boardData, character, ability, confirmed) {
         'jewels': []
     };
 }
-$('.js-newPlayer').on('click', newCharacter);
 
 function xpToLevel(level) {
     return (level + 1) * (level + 2) * 5;
@@ -169,7 +169,7 @@ function spend(pointsType, amount) {
 function changedPoints(pointsType) {
     if (pointsType == 'AP') updateHireButton();
     else updateCraftButton();
-    $('.js-points' + pointsType).text(state[pointsType]);
+    $('.js-' + pointsType).text(state[pointsType]);
 }
 function addBonusesAndAttacks(actor, source) {
     if (ifdefor(source.bonuses)) {
@@ -181,13 +181,6 @@ function addBonusesAndAttacks(actor, source) {
         });
     }
 }
-var allComputedStats = ['cloaking', 'dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
-     'ip', 'xpValue', 'mp', 'rp', 'up',
-     'evasion', 'block', 'magicBlock', 'armor', 'magicResist', 'accuracy', 'range', 'attackSpeed',
-     'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage',
-     'critChance', 'critDamage', 'critAccuracy',
-     'damageOnMiss', 'slowOnHit', 'healthRegen', 'healthGainOnHit',
-     'increasedItems', 'increasedExperience'];
 var inheritedAttackStats = ['range', 'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage',
     'accuracy', 'attackSpeed', 'critChance', 'critDamage', 'critAccuracy', 'damageOnMiss', 'slowOnHit', 'healthGainOnHit'];
 function createAttack(data) {
@@ -201,7 +194,6 @@ function createAttack(data) {
         attack.stats[stat] = ['{' + stat + '}'];
     });
     $.each(stats, function (stat, value) {
-        console.log(stat + ':' + value);
         attack.stats[stat] = value;
     });
     return attack;
@@ -521,7 +513,7 @@ function updateHireButton() {
     var $jobOption = $('.js-jobSelect').find(':selected');
     var cost = $jobOption.data('cost');
     $('.js-hire').text('Hire for ' + $jobOption.data('cost') + ' AP!');
-    $('.js-hire').prop('disabled', (cost > state.AP));
+    $('.js-hire').toggleClass('disabled', (cost > state.AP));
 }
 $('.js-hire').on('click', function () {
     var $jobOption = $('.js-jobSelect').find(':selected');

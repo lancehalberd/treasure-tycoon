@@ -8,7 +8,7 @@
     margin-left: 10px;
     min-width: 150px;
 }
-.itemPoints {
+.coins {
     color: white;
 }
 .magicPoints {
@@ -66,10 +66,17 @@
     box-sizing: border-box;
 }
 .toolbar {
-    padding: 1px;
+    padding: 5px;
     height: 60px;
     border-bottom: 2px solid black;
     box-sizing: border-box;
+}
+.toolbar .item {
+    margin-right: 5px;
+    vertical-align: top;
+}
+.toolbar .item.sellItem {
+    margin-right: 25px;
 }
 .inventory {
     padding: 4px;
@@ -77,6 +84,14 @@
     overflow-y: scroll;
     height: 540px;
     box-sizing: border-box;
+}
+
+.infoPanel .panelTitle {
+    font-size: 1.2em;
+    font-family: sans-serif;
+    border-bottom: 1px solid black;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
 }
 
 .jewel-inventory {
@@ -254,6 +269,23 @@ button {
     width: 40px;
     height: 40px;
     background-position: -200px -80px;
+    vertical-align: middle;
+}
+
+.icon.money {
+    background-image: url('gfx/moneyIcon.png');
+    background-size: auto;
+    width: 32px;
+    height: 32px;
+    background-position: -96px -0px;
+}
+
+.icon.coin {
+    background-image: url('gfx/moneyIcon.png');
+    background-size: auto;
+    width: 16px;
+    height: 16px;
+    background-position: -64px -0;
 }
 
 .itemSlot {
@@ -391,4 +423,8 @@ button.disabled {
     padding: 5px;
     background-color: rgba(50, 200, 250, .9);
     border: 1px solid white;
+}
+
+select {
+    margin-right: 5px;
 }

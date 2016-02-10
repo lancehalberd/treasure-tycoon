@@ -37,7 +37,7 @@ function jewelHelpText(jewel) {
         sections.push(adjacencyBonusText);
         sections.push('');
     }
-    var points = [jewel.price + ' IP', jewel.price + ' MP'];
+    var points = [jewel.price + ' Coins', jewel.price + ' MP'];
     sections.push('Sell for ' + points.join(' '));
     return sections.join('<br/>');
 }
@@ -48,7 +48,7 @@ function sellJewel(jewel) {
     }
     // unequip and deletes the jewel.
     destroyJewel(jewel);
-    gain('IP', jewel.price);
+    gain('coins', jewel.price);
     gain('MP', jewel.price);
     updateJewelCraftingOptions();
 }

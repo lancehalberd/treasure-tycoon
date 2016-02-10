@@ -105,14 +105,14 @@ function drawCraftingViewCanvas() {
     var maxLevel = $('.js-levelSelect option').last().attr('value');
     context.fillStyle = '#000';
     context.fillRect(0, 2 + 11 * maxLevel, canvas.width, canvas.height - (2 + 11 * maxLevel));
-    context.drawImage(state.craftingCanvas, 0, 0, state.craftingCanvas.width, 2 + 11 * maxLevel,
-                      0, 0, state.craftingCanvas.width, 2 + 11 * maxLevel);
+    context.drawImage(state.craftingCanvas, 0, 0, state.craftingCanvas.width, Math.min(state.craftingCanvas.height, 2 + 11 * maxLevel),
+                      0, 0, state.craftingCanvas.width, Math.min(state.craftingCanvas.height, 2 + 11 * maxLevel));
 }
 
 $('.js-raritySelect').on('change', updateItemCrafting);
 $('.js-levelSelect').on('change', updateItemCrafting);
 $('.js-typeSelect').on('change', updateItemCrafting);
-var craftingPointsType = 'IP';
+var craftingPointsType = 'coins';
 var itemsFilteredByType = [];
 var selectedCraftingWeight = 0;
 var itemTotalCost = 5;
@@ -124,7 +124,7 @@ function updateItemCrafting() {
     craftingTypeFilter = $('.js-typeSelect').val();
     var playerCurrency = 0;
     if (rarity == 'plain') {
-        craftingPointsType = 'IP'
+        craftingPointsType = 'coins'
     } else if (rarity === 'enchanted') {
         craftingPointsType = 'MP'
     } else if (rarity === 'imbued') {
