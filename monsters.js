@@ -1,6 +1,7 @@
 
-var enchantedMonsterBonuses = {'*maxHealth': 1.5, '*minDamge': 1.5, '*maxDamage': 1.5, '*xpValue': 3, '*ip': 3};
-var imbuedMonsterBonuses = {'*maxHealth': 5, '*minDamge': 5, '*maxDamage': 5, '*xpValue': 10, '*ip': 10};
+var enchantedMonsterBonuses = {'*maxHealth': 1.5, '*minDamge': 1.5, '*maxDamage': 1.5, '*xpValue': 3, '*coins': 2, '*anima': 3};
+var imbuedMonsterBonuses = {'*maxHealth': 5, '*minDamge': 5, '*maxDamage': 5, '*xpValue': 10, '*coins': 6, '*anima': 10};
+var bossMonsterBonuses = {'*maxHealth': 2, '*minDamge': 2, '*maxDamage': 2, '*xpValue': 4, '+coins': 2, '*coins': 4, '+anima': 1, '*anima': 4};
 var monsterPrefixes = [
     [
         {'name': 'Hawkeye', 'bonuses': {'+accuracy': [5, 10]}}
@@ -42,10 +43,8 @@ function makeMonster(monsterData, level, extraSkills) {
         'attackColldown': 0,
         'base': {
             'level': level,
-            'ip': Random.range(0, level * level * 4),
-            'mp': 0,
-            'rp': 0,
-            'up': 0,
+            'coins': Random.range(1, level * level * 4),
+            'anima': Random.range(1, level * level),
             'xpValue': level * 2,
             'abilities': []
         },
@@ -98,20 +97,6 @@ function makeMonster(monsterData, level, extraSkills) {
     monster.timedEffects = [];
     updateMonster(monster);
     monster.health = monster.maxHealth;
-    if (monster.ip > 1) {
-        monster.mp = Random.range(0, monster.ip - 1);
-        monster.ip -= monster.mp;
-    }
-    if (rarity >= 1 && monster.mp > 1) {
-        monster.rp = Random.range(0, monster.mp - 1);
-        monster.mp -= monster.rp;
-    }
-    if (Math.random() < .1 && monster.ip > 1 && monster.mp > 1 && monster.rp > 1) {
-        monster.up = Random.range(0, Math.min(monster.ip, monster.mp, monster.rp) - 1);
-        monster.ip -= monster.up;
-        monster.mp -= monster.mp;
-        monster.rp -= monster.rp;
-    }
     return monster;
 }
 function addMonsterPrefix(monster) {

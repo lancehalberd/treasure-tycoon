@@ -11,13 +11,14 @@ function loadImage(source, callback) {
 }
 
 var pointsMap = {
-    'AP': 'adventurePoints',
-    'IP': 'itemPoints',
-    'MP': 'magicPoints',
-    'RP': 'rarePoints',
-    'UP': 'uniquePoints',
+    'fame': 'Fame',
+    'coins': 'Coins',
+    'anima': 'Anima'
 }
 function points(type, value) {
+    if (type === 'coins') {
+        return tag('span', 'icon coin') + ' ' + tag('span', pointsMap[type], value);
+    }
     return tag('span', pointsMap[type], value) + ' ' + type;
 }
 
@@ -27,21 +28,45 @@ var craftingCanvas = createCanvas(craftingViewCanvas.width, craftingViewCanvas.h
 var state = {
     characters: [],
     jewels: [],
-    AP: 0,
-    IP: 0,
-    MP: 0,
-    RP: 0,
-    UP: 0,
+    fame: 0,
+    coins: 0,
+    anima: 0,
     craftingCanvas: craftingCanvas,
     craftingContext: craftingCanvas.getContext('2d'),
     craftingViewCanvas: craftingViewCanvas,
     craftingViewContext: craftingViewCanvas.getContext('2d')
 }
+var coins, animaDrops;
+function initializeCoins() {
+    var coinImage = images['gfx/moneyIcon.png'];
+    coins = [
+        {'value': 1, 'image': coinImage, 'x': 0, 'y': 0, 'width': 16, 'height': 16},
+        {'value': 5, 'image': coinImage, 'x': 0, 'y': 32, 'width': 20, 'height': 20},
+        {'value': 20, 'image': coinImage, 'x': 0, 'y': 64, 'width': 24, 'height': 24},
+        {'value': 100, 'image': coinImage, 'x': 32, 'y': 0, 'width': 16, 'height': 16},
+        {'value': 500, 'image': coinImage, 'x': 32, 'y': 32, 'width': 20, 'height': 20},
+        {'value': 2000, 'image': coinImage, 'x': 32, 'y': 64, 'width': 24, 'height': 24},
+        {'value': 10000, 'image': coinImage, 'x': 64, 'y': 0, 'width': 16, 'height': 16},
+        {'value': 50000, 'image': coinImage, 'x': 64, 'y': 32, 'width': 20, 'height': 20},
+        {'value': 200000, 'image': coinImage, 'x': 64, 'y': 64, 'width': 24, 'height': 24},
+    ];
+    animaDrops = [
+        {'value': 1, 'image': coinImage, 'x': 0, 'y': 0, 'width': 16, 'height': 16},
+        {'value': 5, 'image': coinImage, 'x': 0, 'y': 32, 'width': 20, 'height': 20},
+        {'value': 20, 'image': coinImage, 'x': 0, 'y': 64, 'width': 24, 'height': 24},
+        {'value': 100, 'image': coinImage, 'x': 32, 'y': 0, 'width': 16, 'height': 16},
+        {'value': 500, 'image': coinImage, 'x': 32, 'y': 32, 'width': 20, 'height': 20},
+        {'value': 2000, 'image': coinImage, 'x': 32, 'y': 64, 'width': 24, 'height': 24},
+        {'value': 10000, 'image': coinImage, 'x': 64, 'y': 0, 'width': 16, 'height': 16},
+        {'value': 50000, 'image': coinImage, 'x': 64, 'y': 32, 'width': 20, 'height': 20},
+        {'value': 200000, 'image': coinImage, 'x': 64, 'y': 64, 'width': 24, 'height': 24},
+    ];
+}
 // Load any graphic assets needed by the game here.
 async.mapSeries([
     // Original images from project contributors:
     'gfx/person.png', 'gfx/grass.png', 'gfx/cave.png', 'gfx/forest.png', 'gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png',
-    'gfx/treasureChest.png',
+    'gfx/treasureChest.png', 'gfx/moneyIcon.png',
     // Public domain images:
     'gfx/chest-closed.png', 'gfx/chest-open.png' // http://opengameart.org/content/treasure-chests
 ], loadImage, function(err, results){
@@ -54,17 +79,16 @@ async.mapSeries([
     initializeBackground();
     initializeLevels();
     initializeCraftingImage();
+    initializeCoins();
     updateItemCrafting();
     var jobKey = Random.element(ranks[0]);
     newCharacter(characterClasses[jobKey]);
     gainJewel(makeJewel(1, 'diamond', [90, 5, 5], 1.1));
     gainJewel(makeJewel(1, 'diamond', [5, 90, 5], 1.1));
     gainJewel(makeJewel(1, 'diamond', [5, 5, 90], 1.1));
-    gain('IP', 10);
-    gain('AP', 20);
-    gain('MP', 0);
-    gain('RP', 0);
-    gain('UP', 0);
+    gain('fame', 20);
+    gain('coins', 10);
+    gain('anima', 0);
     setInterval(mainLoop, 20);
     var $options = $('.js-toolbar').children();
     $options.detach();
@@ -98,6 +122,7 @@ function completeArea(character) {
     // If the character beat the last adventure open to them, unlock the next one
     var level = levels[character.currentLevelIndex];
     if (!character.levelsCompleted[character.currentLevelIndex]) {
+        gain('fame', level.level);
         if (level.skill) {
             $adventureDiv.append($tag('button','js-learnSkill learnSkill', '+' + level.skill.name));
         } else {
@@ -137,7 +162,11 @@ function mainLoop() {
             for (var i = 0; i < character.gameSpeed && character.area; i++) {
                 character.time += delta / 1000;
                 adventureLoop(character, delta / 1000);
-                character.cameraX = (character.cameraX * 10 + character.adventurer.x - 10 ) / 11;
+                if (character.enemies.length) {
+                    character.cameraX = (character.cameraX * 10 + character.adventurer.x - 10) / 11;
+                } else if (character.cameraX < character.adventurer.x - 200) {
+                    character.cameraX = (character.cameraX * 10 + character.adventurer.x - 200) / 11;
+                }
             }
             if (character.area) {
                 drawAdventure(character);
@@ -258,7 +287,7 @@ function checkRemoveToolTip() {
             return;
         }
     }
-    if ($popupTarget && $popupTarget.closest('body').length) {
+    if ($popupTarget && $popupTarget.closest('body').length && isMouseOverElement($popupTarget)) {
         return;
     }
     removeToolTip();
@@ -345,15 +374,9 @@ $('body').on('click', '.js-retire', function (event) {
     }
     var $panel = $(this).closest('.js-playerPanel');
     var character = $panel.data('character');
-    gain('AP', Math.ceil(character.adventurer.level * character.adventurer.job.cost / 10));
+    gain('fame', Math.ceil(character.adventurer.level * character.adventurer.job.cost / 10));
     $panel.remove();
     updateRetireButtons();
-});
-
-$('.js-showAdventurePanel').on('click', function (event) {
-    showEquipment();
-    $('.js-infoPanel').hide();
-    $('.js-adventurePanel').show();
 });
 $('.js-showCraftingPanel').on('click', function (event) {
     showEquipment();
@@ -404,5 +427,5 @@ $('body').on('click', '.js-repeat', function (event) {
 $('body').on('click', '.js-fastforward', function (event) {
     var $panel = $(this).closest('.js-playerPanel');
     var character = $panel.data('character');
-    character.gameSpeed = $(this).is(':checked') ? 4 : 1;
+    character.gameSpeed = $(this).is(':checked') ? 3 : 1;
 });

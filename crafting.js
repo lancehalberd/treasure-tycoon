@@ -105,14 +105,14 @@ function drawCraftingViewCanvas() {
     var maxLevel = $('.js-levelSelect option').last().attr('value');
     context.fillStyle = '#000';
     context.fillRect(0, 2 + 11 * maxLevel, canvas.width, canvas.height - (2 + 11 * maxLevel));
-    context.drawImage(state.craftingCanvas, 0, 0, state.craftingCanvas.width, 2 + 11 * maxLevel,
-                      0, 0, state.craftingCanvas.width, 2 + 11 * maxLevel);
+    context.drawImage(state.craftingCanvas, 0, 0, state.craftingCanvas.width, Math.min(state.craftingCanvas.height, 2 + 11 * maxLevel),
+                      0, 0, state.craftingCanvas.width, Math.min(state.craftingCanvas.height, 2 + 11 * maxLevel));
 }
 
 $('.js-raritySelect').on('change', updateItemCrafting);
 $('.js-levelSelect').on('change', updateItemCrafting);
 $('.js-typeSelect').on('change', updateItemCrafting);
-var craftingPointsType = 'IP';
+var craftingPointsType = 'coins';
 var itemsFilteredByType = [];
 var selectedCraftingWeight = 0;
 var itemTotalCost = 5;
@@ -123,13 +123,13 @@ function updateItemCrafting() {
     craftingLevel = $('.js-levelSelect').val();
     craftingTypeFilter = $('.js-typeSelect').val();
     var playerCurrency = 0;
+    var rarityMultiplier = (rarity === 'imbued') ? 5 : 1;
     if (rarity == 'plain') {
-        craftingPointsType = 'IP'
-    } else if (rarity === 'enchanted') {
-        craftingPointsType = 'MP'
-    } else if (rarity === 'imbued') {
-        craftingPointsType = 'RP'
+        craftingPointsType = 'coins'
+    } else {
+        craftingPointsType = 'anima'
     }
+
     var itemsFilteredByLevel = [];
     itemsFilteredByType = [];
     for (var itemLevel = 0; itemLevel <= craftingLevel && itemLevel < items.length; itemLevel++) {
@@ -141,11 +141,11 @@ function updateItemCrafting() {
         });
     }
     var typeMultiplier = (itemsFilteredByLevel.length / itemsFilteredByType.length).toFixed(2);
-    $('.js-rarityCost').html(points(craftingPointsType, 5));
+    $('.js-rarityCost').html(points(craftingPointsType, 5 * rarityMultiplier));
     var levelMultiplier = craftingLevel * craftingLevel * craftingLevel;
     $('.js-levelMultiplier').text('x ' + levelMultiplier);
     $('.js-typeMultiplier').text('x ' + typeMultiplier);
-    itemTotalCost = Math.ceil(5 * levelMultiplier * typeMultiplier);
+    itemTotalCost = Math.ceil(5 * levelMultiplier * typeMultiplier * rarityMultiplier);
     $('.js-craftItem').html('Craft for ' + points(craftingPointsType, itemTotalCost));
     updateCraftButton();
     updateSelectedCraftingWeight();
@@ -178,9 +178,10 @@ $('.js-craftItem').on('click', function () {
     craftedItem.craftingWeight /= 2;
     updateSelectedCraftingWeight();
     var item = makeItem(craftedItem, craftingLevel);
-    if (craftingPointsType == 'MP') {
+    var rarity = $('.js-raritySelect').val();
+    if (rarity === 'enchanted') {
         enchantItemProper(item);
-    } else if (craftingPointsType == 'RP') {
+    } else if (rarity === 'imbued') {
         imbueItemProper(item);
     } else {
         // Rolling a plain item has a chance to create a unique if one exists for

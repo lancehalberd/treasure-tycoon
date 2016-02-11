@@ -29,10 +29,11 @@ function initializeBackground() {
     bgSources.grassC = backgroundSource(images['gfx/grass.png'], 10);
     // Cave sources
     bgSources.cave = backgroundSource(images['gfx/cave.png'], 1);
-    bgSources.rocks = backgroundSource(images['gfx/cave.png'], 3);
-    bgSources.spikesA = backgroundSource(images['gfx/cave.png'], 4);
-    bgSources.spikesB = backgroundSource(images['gfx/cave.png'], 5);
-    bgSources.spikesC = backgroundSource(images['gfx/cave.png'], 6);
+    bgSources.rocks = backgroundSource(images['gfx/cave.png'], 2);
+    bgSources.spikesA = backgroundSource(images['gfx/cave.png'], 3);
+    bgSources.spikesB = backgroundSource(images['gfx/cave.png'], 4);
+    bgSources.spikesC = backgroundSource(images['gfx/cave.png'], 5);
+    bgSources.tombstone = backgroundSource(images['gfx/cave.png'], 6);
     backgrounds.forest = [
         {'source': bgSources.forest},
         {'source': bgSources.treeTops, 'parallax': .2},
@@ -82,6 +83,7 @@ function initializeBackground() {
         {'source': bgSources.cave},
         {'source': bgSources.shortTrees, 'parallax': .3, 'spacing': 2.5},
         {'source': bgSources.tallTrees, 'parallax': .5, 'spacing': 3},
+        {'source': bgSources.tombstone, 'spacing': 7, 'y': 20},
         {'source': bgSources.stick, 'spacing': 4},
         {'source': bgSources.bedrock},
         {'source': bgSources.rootsA, 'spacing': 4},

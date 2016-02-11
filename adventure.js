@@ -88,12 +88,26 @@ function adventureLoop(character, delta) {
     });
     everybody.forEach(function (actor) {
         if (!actor.stunned && !actor.blocked && !actor.target && !actor.pull && !ifdefor(actor.stationary)) {
+            // Make sure the main character doesn't run in front of their allies.
+            if (actor.isMainCharacter) {
+                for (var i = 0; i < character.allies.length; i++) {
+                    if (character.allies[i] === actor) continue;
+                    if (character.allies[i].x < actor.x) return true;
+                }
+            }
             actor.x += actor.speed * actor.direction * Math.max(0, (1 - actor.slow)) * delta;
         }
+        return true;
     });
     everybody.forEach(function (actor) {
         actor.health = Math.min(actor.maxHealth, Math.max(0, actor.health));
     });
+    for (var i = 0; i < character.treasurePopups.length; i++) {
+        character.treasurePopups[i].update(character);
+    }
+    for (var i = 0; i < character.textPopups.length; i++) {
+        character.textPopups[i].y--;
+    }
 }
 function expireTimedEffects(character, actor) {
     var changed = false;
@@ -105,7 +119,6 @@ function expireTimedEffects(character, actor) {
     }
     if (changed) {
         updateActorStats(actor);
-        console.log('Buff off Armor: ' + actor.armor);
     }
 }
 function addTimedEffect(character, actor, effect) {
@@ -122,7 +135,8 @@ function startNextWave(character) {
     var wave = character.area.waves[character.waveIndex];
     var x = character.adventurer.x + 800;
     wave.monsters.forEach(function (entityData) {
-        var newMonster = makeMonster(entityData, character.area.level, ifdefor(character.area.enemySkills, []));
+        var extraSkills = ifdefor(character.area.enemySkills, []).concat({'bonuses' : wave.extraBonuses});
+        var newMonster = makeMonster(entityData, character.area.level, extraSkills);
         newMonster.x = x;
         newMonster.character = character;
         newMonster.direction = -1; // Monsters move right to left
@@ -255,11 +269,13 @@ function checkToAttackTarget(character, actor, target, distance) {
             actor.stunned = character.time + .3;
             return true;
         }
-        if (distance > attack.range * 32 || target.cloaked) {
-            continue;
+        if (attack.base.type === 'basic' || attack.base.type === 'hook') {
+            if (distance > attack.range * 32 || target.cloaked) {
+                continue;
+            }
+            performAttack(character, attack, actor, target, distance);
+            return true;
         }
-        performAttack(character, attack, actor, target, distance);
-        return true;
     }
     return false;
 }
@@ -276,13 +292,11 @@ function defeatedEnemy(character, enemy) {
     var reducedXP = Math.floor(enemy.xpValue * Math.max(0, 1 - .1 * Math.abs(character.adventurer.level - enemy.level)));
     gainXP(character.adventurer, reducedXP);
     var loot = [];
-    if (enemy.ip) loot.push(pointsLootDrop('IP', enemy.ip));
-    if (enemy.mp) loot.push(pointsLootDrop('MP', enemy.mp));
-    if (enemy.rp) loot.push(pointsLootDrop('RP', enemy.rp));
-    if (enemy.up) loot.push(pointsLootDrop('UP', enemy.up));
+    if (enemy.coins) loot.push(coinsLootDrop(enemy.coins));
+    if (enemy.anima) loot.push(animaLootDrop(enemy.anima));
     loot.forEach(function (loot, index) {
         loot.gainLoot(character);
-        loot.addTreasurePopup(character, enemy.x + index * 20, 240 - 140, 0, -1, index * 10);
+        loot.addTreasurePopup(character, enemy.x +enemy.base.source.width / 2 + index * 20, 240 - 140, 0, -1, index * 10);
     });
 }
 function drawAdventure(character) {
@@ -327,7 +341,6 @@ function drawAdventure(character) {
     context.fillStyle = 'red';
     for (var i = 0; i < character.treasurePopups.length; i++) {
         var treasurePopup = character.treasurePopups[i];
-        treasurePopup.update(character);
         treasurePopup.draw(character);
         if (treasurePopup.done) {
             character.treasurePopups.splice(i--, 1);
@@ -339,7 +352,6 @@ function drawAdventure(character) {
         context.font = ifdefor(textPopup.font, "20px sans-serif");
         context.textAlign = 'center'
         context.fillText(textPopup.value, textPopup.x - cameraX, textPopup.y);
-        textPopup.y--;
         if (textPopup.y < 60) {
             character.textPopups.splice(i--, 1);
         }
