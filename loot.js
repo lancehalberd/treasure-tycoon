@@ -40,41 +40,91 @@ function coinTreasurePopup(coin, x, y, vx, vy, delay) {
     return self;
 }
 
-function pointsLootDrop(type, amount) {
-    var index = ['coins', 'MP', 'RP'].indexOf(type);
-    var color = ['#fff', '#fc4', '#c4f'][index];
-    var font = (20 + 2* index) + 'px sans-serif';
+function coinsLootDrop(amount) {
     return {
         'gainLoot': function (character) {
-            gain(type, Math.round(amount * (1 + character.adventurer.increasedItems)));
+            gain('coins', Math.round(amount * (1 + character.adventurer.increasedDrops)));
         },
         'addTreasurePopup': function (character, x, y, vx, vy, delay) {
-            if (type === 'coins') {
-                var total = amount;
-                var nextDelay = delay;
-                var index = coins.length - 1;
-                while (total > 0 && index >= 0) {
-                    while (coins[index].value <= total) {
-                        total -= coins[index].value;
-                        character.treasurePopups.push(coinTreasurePopup(coins[index], x, y, Math.random() * 10 - 5, -10, nextDelay));
-                        nextDelay += 5;
-                    }
-                    index--;
+            var total = Math.round(amount * (1 + character.adventurer.increasedDrops));
+            var nextDelay = delay;
+            var index = coins.length - 1;
+            var drops = 0;
+            while (total > 0 && index >= 0) {
+                // Getting a single large coin drop feels underwhelming, so if no coins have dropped yet
+                // break single coins into smaller drops.
+                while (coins[index].value <= total && (drops || animaDrops[index].value < total || total < 5)) {
+                    total -= coins[index].value;
+                    character.treasurePopups.push(coinTreasurePopup(coins[index], x, y, Math.random() * 10 - 5, -10, nextDelay));
+                    nextDelay += 5;
+                    drops++;
                 }
-            } else {
-                character.treasurePopups.push(treasurePopup(x, y, vx, vy, delay, '+' + amount, color, font));
+                index--;
             }
         }
     }
 }
-
-function pointLoot(type, range) {
+function coinsLoot(range) {
     return {
-        'type': 'pointLoot',
-        'pointType': type,
+        'type': 'coinsLoot',
         'generateLootDrop': function () {
-        return pointsLootDrop(type, Random.range(range[0], range[1]));
+        return coinsLootDrop(Random.range(range[0], range[1]));
     }};
+}
+
+function animaTreasurePopup(coin, x, y, vx, vy, delay) {
+    var self = {
+        'x': x, 'y': y, 'vx': vx, 'vy': vy, 't': 0, 'done': false, 'delay': delay,
+        'update': function (character) {
+            if (delay-- > 0) return
+            self.x += self.vx;
+            self.y += self.vy;
+            if (self.y > 240 - 128) {
+                self.vy--;
+            } else {
+                self.vy++;
+            }
+            if (self.x > character.adventurer.x) {
+                self.vx--;
+            } else {
+                self.vx++;
+            }
+            self.t += 1;
+            self.done = self.t > 40;
+        },
+        'draw': function (character) {
+            if (delay > 0) return
+            character.context.globalAlpha = .5;
+            character.context.drawImage(coin.image, coin.x, coin.y, coin.width, coin.height,
+                self.x - coin.width / 2 - character.cameraX, self.y - coin.height / 2, coin.width, coin.height);
+            character.context.globalAlpha = 1;
+        }
+    };
+    return self;
+}
+function animaLootDrop(amount) {
+    return {
+        'gainLoot': function (character) {
+            gain('anima', Math.round(amount * (1 + character.adventurer.increasedDrops)));
+        },
+        'addTreasurePopup': function (character, x, y, vx, vy, delay) {
+            var total = Math.round(amount * (1 + character.adventurer.increasedDrops));
+            var nextDelay = delay;
+            var index = animaDrops.length - 1;
+            var drops = 0;
+            while (total > 0 && index >= 0) {
+                // Getting a single large anima drop feels underwhelming, so if no anima has dropped yet
+                // break single anima into smaller drops.
+                while (animaDrops[index].value <= total && (drops || animaDrops[index].value < total || total < 5)) {
+                    total -= animaDrops[index].value;
+                    character.treasurePopups.push(animaTreasurePopup(animaDrops[index], x, y, 10 + Math.random() * 5, Math.random() * 10 - 5, nextDelay));
+                    nextDelay += 5;
+                    drops++;
+                }
+                index--;
+            }
+        }
+    }
 }
 
 function jewelTreasurePopup(jewel, x, y, vx, vy, delay) {

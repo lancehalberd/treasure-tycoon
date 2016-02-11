@@ -198,7 +198,7 @@ function updateAdjacencyBonsues(jewel) {
             break;
         case 7:
             jewel.adjacencyBonuses['+increasedExperience'] = resonanceBonus / 100;
-            jewel.adjacencyBonuses['+increasedItems'] = contrastBonus / 100;
+            jewel.adjacencyBonuses['+increasedDrops'] = contrastBonus / 100;
             break;
     }
     jewel.helpText = jewelHelpText(jewel);

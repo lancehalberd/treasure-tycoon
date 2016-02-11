@@ -25,27 +25,21 @@ function instantiateLevel(levelData, completed) {
         if (Math.random() < eventsLeft.length / wavesLeft) {
             wave = eventsLeft.shift();
             isBossWave = !eventsLeft.length;
+        } else {
+            // Don't add random mobs to boss waves.
+            while (wave.length < waveSize) {
+                wave.push(Random.element(levelData.monsters));
+            }
         }
-        while (wave.length < waveSize) {
-            wave.push(Random.element(levelData.monsters));
-        }
+
         waves.push(isBossWave ? bossWave(wave) : monsterWave(wave));
     };
     var loot = [];
     var pointsFactor = completed ? 1 : 4;
-    // coins/MP/RP are granted at the end of each level
-    loot.push(pointLoot('coins', [pointsFactor * level * level * 10, pointsFactor * level * level * 15]));
-    if (level > 2) {
-        loot.push(pointLoot('MP', [pointsFactor * (level - 2) * (level - 2) * 10,
-                                    pointsFactor * (level - 2) * (level - 2) * 15]));
-    }
-    if (level > 4) {
-        loot.push(pointLoot('RP', [pointsFactor * (level - 4) * (level - 4) * 10,
-                                    pointsFactor * (level - 4) * (level - 4) * 15]));
-    }
-    // AP/Special Loot are given only the first time an adventurer complets an area.
+    // coins are granted at the end of each level, but diminished after the first completion.
+    loot.push(coinsLoot([pointsFactor * level * level * 10, pointsFactor * level * level * 15]));
+    // Special Loot drops are given only the first time an adventurer complets an area.
     if (!completed) {
-        loot.unshift(pointLoot('AP', [level, level]));
         loot = levelData.specialLoot.concat(loot);
         waves.push(chestWave(firstChest(loot)));
     } else {
@@ -253,10 +247,11 @@ function initializeLevels() {
              'monsters': ['butterfly', 'gnome'],
              'events': [['butterfly', 'butterfly'], ['gnome', 'gnome'],  ['dragon']]});
 }
-function basicWave(monsters, objects, letter) {
+function basicWave(monsters, objects, letter, extraBonuses) {
     return {
         'monsters': monsters,
         'objects': objects,
+        'extraBonuses': ifdefor(extraBonuses, {}),
         'draw': function (context, completed, x, y) {
             if (!completed) drawLetter(context, letter, x, y);
         }
@@ -266,7 +261,7 @@ function monsterWave(monsters) {
     return basicWave(monsters, [], 'M');
 }
 function bossWave(monsters) {
-    return basicWave(monsters, [], 'B');
+    return basicWave(monsters, [], 'B', bossMonsterBonuses);
 }
 function chestWave(chest) {
     var self =  basicWave([], [chest], 'T');

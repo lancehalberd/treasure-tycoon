@@ -11,10 +11,9 @@ function loadImage(source, callback) {
 }
 
 var pointsMap = {
-    'AP': 'adventurePoints',
-    'coins': 'coins',
-    'MP': 'magicPoints',
-    'RP': 'rarePoints'
+    'fame': 'Fame',
+    'coins': 'Coins',
+    'anima': 'Anima'
 }
 function points(type, value) {
     if (type === 'coins') {
@@ -29,19 +28,29 @@ var craftingCanvas = createCanvas(craftingViewCanvas.width, craftingViewCanvas.h
 var state = {
     characters: [],
     jewels: [],
-    AP: 0,
+    fame: 0,
     coins: 0,
-    MP: 0,
-    RP: 0,
+    anima: 0,
     craftingCanvas: craftingCanvas,
     craftingContext: craftingCanvas.getContext('2d'),
     craftingViewCanvas: craftingViewCanvas,
     craftingViewContext: craftingViewCanvas.getContext('2d')
 }
-var coins;
+var coins, animaDrops;
 function initializeCoins() {
     var coinImage = images['gfx/moneyIcon.png'];
     coins = [
+        {'value': 1, 'image': coinImage, 'x': 0, 'y': 0, 'width': 16, 'height': 16},
+        {'value': 5, 'image': coinImage, 'x': 0, 'y': 32, 'width': 20, 'height': 20},
+        {'value': 20, 'image': coinImage, 'x': 0, 'y': 64, 'width': 24, 'height': 24},
+        {'value': 100, 'image': coinImage, 'x': 32, 'y': 0, 'width': 16, 'height': 16},
+        {'value': 500, 'image': coinImage, 'x': 32, 'y': 32, 'width': 20, 'height': 20},
+        {'value': 2000, 'image': coinImage, 'x': 32, 'y': 64, 'width': 24, 'height': 24},
+        {'value': 10000, 'image': coinImage, 'x': 64, 'y': 0, 'width': 16, 'height': 16},
+        {'value': 50000, 'image': coinImage, 'x': 64, 'y': 32, 'width': 20, 'height': 20},
+        {'value': 200000, 'image': coinImage, 'x': 64, 'y': 64, 'width': 24, 'height': 24},
+    ];
+    animaDrops = [
         {'value': 1, 'image': coinImage, 'x': 0, 'y': 0, 'width': 16, 'height': 16},
         {'value': 5, 'image': coinImage, 'x': 0, 'y': 32, 'width': 20, 'height': 20},
         {'value': 20, 'image': coinImage, 'x': 0, 'y': 64, 'width': 24, 'height': 24},
@@ -77,10 +86,9 @@ async.mapSeries([
     gainJewel(makeJewel(1, 'diamond', [90, 5, 5], 1.1));
     gainJewel(makeJewel(1, 'diamond', [5, 90, 5], 1.1));
     gainJewel(makeJewel(1, 'diamond', [5, 5, 90], 1.1));
+    gain('fame', 20);
     gain('coins', 10);
-    gain('AP', 20);
-    gain('MP', 0);
-    gain('RP', 0);
+    gain('anima', 0);
     setInterval(mainLoop, 20);
     var $options = $('.js-toolbar').children();
     $options.detach();
@@ -114,6 +122,7 @@ function completeArea(character) {
     // If the character beat the last adventure open to them, unlock the next one
     var level = levels[character.currentLevelIndex];
     if (!character.levelsCompleted[character.currentLevelIndex]) {
+        gain('fame', level.level);
         if (level.skill) {
             $adventureDiv.append($tag('button','js-learnSkill learnSkill', '+' + level.skill.name));
         } else {
@@ -365,7 +374,7 @@ $('body').on('click', '.js-retire', function (event) {
     }
     var $panel = $(this).closest('.js-playerPanel');
     var character = $panel.data('character');
-    gain('AP', Math.ceil(character.adventurer.level * character.adventurer.job.cost / 10));
+    gain('fame', Math.ceil(character.adventurer.level * character.adventurer.job.cost / 10));
     $panel.remove();
     updateRetireButtons();
 });

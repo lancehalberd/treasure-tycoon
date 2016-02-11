@@ -1,6 +1,7 @@
 
-var enchantedMonsterBonuses = {'*maxHealth': 1.5, '*minDamge': 1.5, '*maxDamage': 1.5, '*xpValue': 3, '*ip': 3};
-var imbuedMonsterBonuses = {'*maxHealth': 5, '*minDamge': 5, '*maxDamage': 5, '*xpValue': 10, '*ip': 10};
+var enchantedMonsterBonuses = {'*maxHealth': 1.5, '*minDamge': 1.5, '*maxDamage': 1.5, '*xpValue': 3, '*coins': 2, '*anima': 3};
+var imbuedMonsterBonuses = {'*maxHealth': 5, '*minDamge': 5, '*maxDamage': 5, '*xpValue': 10, '*coins': 6, '*anima': 10};
+var bossMonsterBonuses = {'*maxHealth': 2, '*minDamge': 2, '*maxDamage': 2, '*xpValue': 4, '+coins': 2, '*coins': 4, '+anima': 1, '*anima': 4};
 var monsterPrefixes = [
     [
         {'name': 'Hawkeye', 'bonuses': {'+accuracy': [5, 10]}}
@@ -42,9 +43,8 @@ function makeMonster(monsterData, level, extraSkills) {
         'attackColldown': 0,
         'base': {
             'level': level,
-            'coins': Random.range(0, level * level * 4),
-            'mp': 0,
-            'rp': 0,
+            'coins': Random.range(1, level * level * 4),
+            'anima': Random.range(1, level * level),
             'xpValue': level * 2,
             'abilities': []
         },
@@ -97,14 +97,6 @@ function makeMonster(monsterData, level, extraSkills) {
     monster.timedEffects = [];
     updateMonster(monster);
     monster.health = monster.maxHealth;
-    if (monster.coins > 1) {
-        monster.mp = Random.range(0, monster.coins - 1);
-        monster.coins -= monster.mp;
-    }
-    if (rarity >= 1 && monster.mp > 1) {
-        monster.rp = Random.range(0, monster.mp - 1);
-        monster.mp -= monster.rp;
-    }
     return monster;
 }
 function addMonsterPrefix(monster) {
@@ -225,8 +217,8 @@ function setBaseMonsterStats(monster, level) {
     // Health scales linearly to level 10, then 10% a level.
     monster.base.maxHealth = (growth <= 10) ? (8 + 20 * growth) : 200 * Math.pow(1.1, growth - 10);
     monster.base.range = 1;
-    monster.base.minDamage = Math.round(.9 * (4 + 8 * growth));
-    monster.base.maxDamage = Math.round(1.1 * (4 + 8 * growth));
+    monster.base.minDamage = Math.round(.9 * (3 + 8 * growth));
+    monster.base.maxDamage = Math.round(1.1 * (3 + 8 * growth));
     monster.base.minMagicDamage = Math.round(.9 * (1 + 2 * growth));
     monster.base.maxMagicDamage = Math.round(1.1 * (1 + 2 * growth));
     monster.base.critChance = .05;

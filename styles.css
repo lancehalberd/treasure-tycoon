@@ -1,5 +1,5 @@
 .pointsBar {
-    background-color: #aaa;
+    background-color: #ccc;
     padding: 4px;
 }
 .pointsBar .points {
@@ -8,17 +8,14 @@
     margin-left: 10px;
     min-width: 150px;
 }
+.fame {
+    color: #D80;
+}
 .coins {
     color: white;
 }
-.magicPoints {
-    color: #fc4;
-}
-.rarePoints {
+.anima {
     color: #c4f;
-}
-.uniquePoints {
-    color: #4cf;
 }
 .controlColumn {
     width: 240px;
