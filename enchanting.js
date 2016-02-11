@@ -202,7 +202,6 @@ function affixMatchesItem(baseItem, affix) {
 $('.js-enchantmentOption.js-reset').on('click', resetItem);
 $('.js-enchantmentOption.js-enchant').on('click', enchantItem);
 $('.js-enchantmentOption.js-imbue').on('click', imbueItem);
-$('.js-enchantmentOption.js-gamble').on('click', gambleItem);
 $('.js-enchantmentOption.js-augment').on('click', augmentItem);
 $('.js-enchantmentOption.js-mutate').on('click', mutateItem);
 
@@ -224,21 +223,20 @@ function updateEnchantmentOptions() {
         return;
     }
     if (total == 0) {
-        $('.js-enchantmentOption.js-enchant').show().html('Enchant: ' + points('MP', (value * 10)));
-        $('.js-enchantmentOption.js-imbue').show().html('Imbue: ' + points('RP', (value * 10)));
-        $('.js-enchantmentOption.js-gamble').show().html('Gamble: ' + points('MP', (value * 2)) + ' ' + points('RP', (value * 2)));
+        $('.js-enchantmentOption.js-enchant').show().html('Enchant: ' + points('anima', (value * 10)));
+        $('.js-enchantmentOption.js-imbue').show().html('Imbue: ' + points('anima', (value * 50)));
     }
     if (total == 1) {
-        $('.js-enchantmentOption.js-augment').show().html('Augment: ' + points('MP', (value * 20)));
+        $('.js-enchantmentOption.js-augment').show().html('Augment: ' + points('anima', (value * 20)));
     }
     if (total == 2 || total == 3) {
-        $('.js-enchantmentOption.js-augment').show().html('Augment: ' + points('RP', (value * 20)));
+        $('.js-enchantmentOption.js-augment').show().html('Augment: ' + points('anima', (value * 100)));
     }
     if (total == 1 || total == 2) {
-        $('.js-enchantmentOption.js-mutate').show().html('Mutate: ' + points('MP', (value * 12)));
+        $('.js-enchantmentOption.js-mutate').show().html('Mutate: ' + points('anima', (value * 12)));
     }
     if (total == 3 || total == 4) {
-        $('.js-enchantmentOption.js-mutate').show().html('Mutate: ' + points('RP', (value * 12)));
+        $('.js-enchantmentOption.js-mutate').show().html('Mutate: ' + points('anima', (value * 60)));
     }
 }
 function resetItem() {
@@ -255,7 +253,7 @@ function resetItem() {
 }
 function enchantItem() {
     var item = $('.js-enchantmentSlot').find('.js-item').data('item');
-    if (!spend('MP', sellValue(item) * 10)) {
+    if (!spend('anima', sellValue(item) * 10)) {
         return;
     }
     enchantItemProper(item);
@@ -275,7 +273,7 @@ function enchantItemProper(item) {
 }
 function imbueItem() {
     var item = $('.js-enchantmentSlot').find('.js-item').data('item');
-    if (!spend('RP', sellValue(item) * 10)) {
+    if (!spend('anima', sellValue(item) * 50)) {
         return;
     }
     imbueItemProper(item);
@@ -295,32 +293,20 @@ function imbueItemProper(item) {
     updateItem(item);
     updateEnchantmentOptions();
 }
-function gambleItem() {
-    var item = $('.js-enchantmentSlot').find('.js-item').data('item');
-    var cost = sellValue(item) * 2;
-    if (cost > state.MP || cost > state.RP) {
-        return;
-    }
-    spend('MP', cost);
-    spend('RP', cost);
-    // TODO: Add chance of getting unique version of item here.
-    if (Math.random() > .25) enchantItemProper(item);
-    else imbueItemProper(item)
-}
 function augmentItem() {
     var item = $('.js-enchantmentSlot').find('.js-item').data('item');
     if (!item.prefixes.length) {
-        if (!spend('MP', sellValue(item) * 20)) {
+        if (!spend('anima', sellValue(item) * 20)) {
             return;
         }
         addPrefixToItem(item);
     } else if (!item.suffixes.length) {
-        if (!spend('MP', sellValue(item) * 20)) {
+        if (!spend('anima', sellValue(item) * 20)) {
             return;
         }
         addSuffixToItem(item);
     } else {
-        if (!spend('RP', sellValue(item) * 20)) {
+        if (!spend('anima', sellValue(item) * 100)) {
             return;
         }
         if (item.suffixes.length == 2) {
@@ -339,12 +325,12 @@ function augmentItem() {
 function mutateItem() {
     var item = $('.js-enchantmentSlot').find('.js-item').data('item');
     if (item.prefixes.length < 2 && item.suffixes.length < 2) {
-        if (!spend('MP', sellValue(item) * 12)) {
+        if (!spend('anima', sellValue(item) * 12)) {
             return;
         }
         enchantItemProper(item);
     } else {
-        if (!spend('RP', sellValue(item) * 12)) {
+        if (!spend('anima', sellValue(item) * 60)) {
             return;
         }
         imbueItemProper(item);
