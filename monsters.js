@@ -42,10 +42,9 @@ function makeMonster(monsterData, level, extraSkills) {
         'attackColldown': 0,
         'base': {
             'level': level,
-            'ip': Random.range(0, level * level * 4),
+            'coins': Random.range(0, level * level * 4),
             'mp': 0,
             'rp': 0,
-            'up': 0,
             'xpValue': level * 2,
             'abilities': []
         },
@@ -98,19 +97,13 @@ function makeMonster(monsterData, level, extraSkills) {
     monster.timedEffects = [];
     updateMonster(monster);
     monster.health = monster.maxHealth;
-    if (monster.ip > 1) {
-        monster.mp = Random.range(0, monster.ip - 1);
-        monster.ip -= monster.mp;
+    if (monster.coins > 1) {
+        monster.mp = Random.range(0, monster.coins - 1);
+        monster.coins -= monster.mp;
     }
     if (rarity >= 1 && monster.mp > 1) {
         monster.rp = Random.range(0, monster.mp - 1);
         monster.mp -= monster.rp;
-    }
-    if (Math.random() < .1 && monster.ip > 1 && monster.mp > 1 && monster.rp > 1) {
-        monster.up = Random.range(0, Math.min(monster.ip, monster.mp, monster.rp) - 1);
-        monster.ip -= monster.up;
-        monster.mp -= monster.mp;
-        monster.rp -= monster.rp;
     }
     return monster;
 }
@@ -139,6 +132,12 @@ function updateMonster(monster) {
     // Clear the character's bonuses and graphics.
     monster.bonuses = [monster.implicitBonuses];
     monster.attacks = [];
+    monster.tags = [];
+    if (monster.base.ranged > 5) {
+        monster.tags.push('ranged');
+    } else {
+        monster.tags.push('melee');
+    }
     var enchantments = monster.prefixes.length + monster.suffixes.length;
     if (enchantments > 2) {
         monster.bonuses.push(imbuedMonsterBonuses);
@@ -190,6 +189,8 @@ function updateMonster(monster) {
             addBonusesAndAttacks(monster, affix);
         })
     });
+
+    monster.attacks.push({'base': createAttack({})});
     updateMonsterStats(monster);
     //console.log(monster);
 }

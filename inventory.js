@@ -3,9 +3,16 @@ function equipItem(adventurer, item) {
         console.log("Tried to equip an item without first unequiping!");
         return;
     }
+    if (item.base.slot === 'offhand' && isTwoHandedWeapon(adventurer.equipment.weapon)) {
+        console.log("Tried to equip an offhand while wielding a two handed weapon!");
+        return;
+    }
     item.$item.detach();
     adventurer.equipment[item.base.slot] = item;
     updateAdventurer(adventurer);
+}
+function isTwoHandedWeapon(item) {
+    return item && ifdefor(item.base.tags, []).indexOf('twoHanded') >= 0;
 }
 function sellValue(item) {
     return item.itemLevel * item.itemLevel * item.itemLevel;
@@ -17,7 +24,8 @@ function makeItem(base, level) {
         'suffixes': [],
         // level is used to represent the required level, itemLevel is used
         // to calculate available enchantments and sell value.
-        'itemLevel': level
+        'itemLevel': level,
+        'unique': false
     };
     item.$item = $tag('div', 'js-item item', tag('div', 'icon ' + base.icon) + tag('div', 'itemLevel', base.level));
     updateItem(item);
@@ -31,31 +39,55 @@ function updateItem(item) {
     });
     item.level = levelRequirement;
     item.$item.attr('helpText', itemHelpText(item));
-    item.$item.removeClass('imbued').removeClass('enchanted');
+    item.$item.removeClass('imbued').removeClass('enchanted').removeClass('unique');
     var enchantments = item.prefixes.length + item.suffixes.length;
-    if (enchantments > 2) {
+    if (item.unique) {
+        item.$item.addClass('unique');
+    } else if (enchantments > 2) {
         item.$item.addClass('imbued');
     } else if (enchantments) {
         item.$item.addClass('enchanted');
     }
 }
+var tagToDisplayNameMap = {
+    'twoHanded': '2-handed',
+    'oneHanded': '1-handed',
+    'ranged': 'Ranged',
+    'melee': 'Melee',
+    'magic': 'Magic'
+};
+function tagToDisplayName(tag) {
+    return ifdefor(tagToDisplayNameMap[tag], tag);
+}
 function itemHelpText(item) {
-    var name = item.base.name;
-    var prefixNames = [];
-    item.prefixes.forEach(function (affix) {
-        prefixNames.unshift(affix.base.name);
-    });
-    if (prefixNames.length) {
-        name = prefixNames.join(', ') + ' ' + name;
+    // Unique items have a distinct display name that is used instead of the
+    // affix generated name.
+    var name;
+    if (ifdefor(item.displayName)) {
+        name = item.displayName;
+    } else {
+        name = item.base.name;
+        var prefixNames = [];
+        item.prefixes.forEach(function (affix) {
+            prefixNames.unshift(affix.base.name);
+        });
+        if (prefixNames.length) {
+            name = prefixNames.join(', ') + ' ' + name;
+        }
+        var suffixNames = [];
+        item.suffixes.forEach(function (affix) {
+            suffixNames.push(affix.base.name);
+        });
+        if (suffixNames.length) {
+            name = name + ' of ' + suffixNames.join(' and ');
+        }
     }
-    var suffixNames = [];
-    item.suffixes.forEach(function (affix) {
-        suffixNames.push(affix.base.name);
-    });
-    if (suffixNames.length) {
-        name = name + ' of ' + suffixNames.join(' and ');
+    var sections = [name];
+    if (item.base.tags) {
+        sections.push(item.base.tags.map(tagToDisplayName).join(', '));
     }
-    var sections = [name, 'Requires level ' + item.level, ''];
+    sections.push('Requires level ' + item.level);
+    sections.push('');
     sections.push(bonusHelpText(item.base.bonuses, true));
 
     if (item.prefixes.length || item.suffixes.length) {
@@ -69,7 +101,7 @@ function itemHelpText(item) {
     }
     sections.push('');
 
-    var points = [sellValue(item) + ' IP'];
+    var points = [sellValue(item) + ' Coins'];
     var total = item.prefixes.length + item.suffixes.length;
     if (total) {
         if (total <= 2) points.push(sellValue(item) * total + ' MP');
@@ -104,7 +136,16 @@ function evaluateForDisplay(value) {
 }
 function bonusHelpText(rawBonuses, implicit) {
     var bonuses = {};
+    var tagBonuses = {};
     $.each(rawBonuses, function (key, value) {
+        // Transform things like {'+bow:minDamage': 1} => 'bow': {'+minDamage': 1}
+        // so that we can display per tag bonuses.
+        if (key.indexOf(':') >= 0) {
+            var parts = key.split(':');
+            var tag = parts[0].substring(1);
+            tagBonuses[tag] = ifdefor(tagBonuses[tag], {});
+            tagBonuses[tag][parts[0].charAt(0) + parts[1]] = value;
+        }
         bonuses[key] = evaluateForDisplay(value);
     });
     var sections = [];
@@ -213,6 +254,10 @@ function bonusHelpText(rawBonuses, implicit) {
         sections.push('Gain ' + (100 * bonuses['+increasedExperience']).format(1) + '% more experience.');
     }
 
+    $.each(tagBonuses, function (tagName, bonuses) {
+        sections.push(tag('div', 'tagText', tagName + ':<br/>' + bonusHelpText(bonuses, false)));
+    });
+
     if (ifdefor(bonuses['duration'])) { // Buffs/debuffs only.
         sections.push('For ' + bonuses.duration + ' seconds');
         return tag('div', 'buffText', sections.join('<br/>'));
@@ -228,19 +273,38 @@ String.prototype.format = function (digits) {
     return this;
 }
 function sellItem(item) {
+    if ($dragHelper && (!$dragHelper.data('$source') || $dragHelper.data('$source').data('item') !== item)) {
+        return;
+    }
     var sourceCharacter = item.$item.closest('.js-playerPanel').data('character');
     if (sourceCharacter) {
         sourceCharacter.adventurer.equipment[item.base.slot] = null;
         updateAdventurer(sourceCharacter.adventurer);
     }
-    item.$item.remove();
-    item.$item = null;
-    gain('IP', sellValue(item));
+    gain('coins', sellValue(item));
+    destroyItem(item);
     var total = item.prefixes.length + item.suffixes.length;
     if (total) {
         if (total <= 2) gain('MP', sellValue(item) * total);
         else gain('RP', sellValue(item) * (total - 2));
     }
+}
+function destroyItem(item) {
+    if ($dragHelper) {
+        var $source = $dragHelper.data('$source');
+        if ($source && $source.data('item') === item) {
+            $source.data('item', null);
+            $dragHelper.data('$source', null);
+            $dragHelper.remove();
+            $dragHelper = null;
+            $('.js-itemSlot.active').removeClass('active');
+            $('.js-itemSlot.invalid').removeClass('invalid');
+        }
+    }
+    item.$item.data('item', null);
+    item.$item.remove();
+    item.$item = null;
+    updateEnchantmentOptions();
 }
 
 var $dragHelper = null;
@@ -294,7 +358,7 @@ function stopDrag() {
         var hit = false;
         if (collision($dragHelper, $('.js-sellItem'))) {
             sellItem(item);
-            hit = true;
+            return;
         }
         if (!hit && collision($dragHelper, $('.js-enchantmentSlot'))) {
             var $otherItem = $('.js-enchantmentSlot').find('.js-item');
@@ -321,22 +385,38 @@ function stopDrag() {
                     }
                     var sourceCharacter = $source.closest('.js-playerPanel').data('character');
                     hit = true
-                    var current = targetCharacter.adventurer.equipment[item.base.slot];
+                    var currentMain = targetCharacter.adventurer.equipment[item.base.slot];
+                    var currentSub = null;
+                    if (isTwoHandedWeapon(item)) {
+                        currentSub = targetCharacter.adventurer.equipment.offhand;
+                        targetCharacter.adventurer.equipment.offhand = null;
+                    }
                     targetCharacter.adventurer.equipment[item.base.slot] = null;
-                    if (sourceCharacter) {
+                   if (sourceCharacter && sourceCharacter !== targetCharacter) {
                         sourceCharacter.adventurer.equipment[item.base.slot] = null;
-                        if (!current) {
+                        if (!currentMain && !currentSub) {
                             updateAdventurer(sourceCharacter.adventurer);
-                        } else if (current.level <= sourceCharacter.adventurer.level) {
-                            // Swap the item back to the source character if they can equip it.
-                            equipItem(sourceCharacter.adventurer, current);
-                            current = null;
+                        } else {
+                            if (currentMain && currentMain.level <= sourceCharacter.adventurer.level) {
+                                // Swap the item back to the source character if they can equip it.
+                                equipItem(sourceCharacter.adventurer, currentMain);
+                                currentMain = null;
+                            }
+                            if (currentSub && currentSub.level <= sourceCharacter.adventurer.level) {
+                                // Swap the item back to the source character if they can equip it.
+                                equipItem(sourceCharacter.adventurer, currentSub);
+                                currentSub = null;
+                            }
                         }
                     }
                     //unequip the existing item if it hasn't already been swapped.
-                    if (current) {
-                        current.$item.detach();
-                        $('.js-inventory').append(current.$item);
+                    if (currentMain) {
+                        currentMain.$item.detach();
+                        $('.js-inventory').append(currentMain.$item);
+                    }
+                    if (currentSub) {
+                        currentSub.$item.detach();
+                        $('.js-inventory').append(currentSub.$item);
                     }
                     equipItem(targetCharacter.adventurer, item);
                     return false;
@@ -381,35 +461,39 @@ function stopDrag() {
     $('.js-itemSlot.invalid').removeClass('invalid');
 }
 var armorSlots = ['body', 'feet', 'head', 'offhand', 'arms', 'legs'];
+var smallArmorSlots = ['feet', 'head', 'offhand', 'arms', 'legs'];
 var equipmentSlots = ['weapon', 'body', 'feet', 'head', 'offhand', 'arms', 'legs', 'back', 'ring'];
 var accessorySlots = ['back', 'ring'];
+var nonWeapons = ['body', 'feet', 'head', 'offhand', 'arms', 'legs', 'back', 'ring'];
 var items = [[]];
 var itemsByKey = {};
 var itemsBySlotAndLevel = {};
-var maxItemsInSlot = {}
 equipmentSlots.forEach(function (slot) {
     itemsBySlotAndLevel[slot] = [];
-    maxItemsInSlot[slot] = 0;
 });
-var maxItemWidth = 0;
-// TODO: Add unique "Sticky, Sticky Bow of Aiming and Leeching and Leeching and Aiming"
+
 function addItem(level, data) {
+    data.tags = ifdefor(data.tags, []);
+    // Assume weapons are one handed melee if not specified
+    if (data.slot === 'weapon') {
+        if (data.tags.indexOf('ranged') < 0 && data.tags.indexOf('melee') < 0) {
+            data.tags.unshift('melee');
+        }
+        if (data.tags.indexOf('twoHanded') < 0 && data.tags.indexOf('oneHanded') < 0) {
+            data.tags.unshift('oneHanded');
+        }
+    }
     items[level] = ifdefor(items[level], []);
     itemsBySlotAndLevel[data.slot][level] = ifdefor(itemsBySlotAndLevel[data.slot][level], []);
     data.level = level;
-    data.craftingWeight = 5 * level;
+    data.craftingWeight = 5 * level * level;
     data.crafted = false;
     items[level].push(data);
     itemsBySlotAndLevel[data.slot][level].push(data);
     var key = data.name.replace(/\s*/g, '').toLowerCase();
     itemsByKey[key] = data;
-    maxItemsInSlot[data.slot] = Math.max(itemsBySlotAndLevel[data.slot][level].length, maxItemsInSlot[data.slot]);
-    maxItemWidth = 0;
-    $.each(maxItemsInSlot, function (key) {
-        maxItemWidth+=maxItemsInSlot[key];
-    });
 }
-addItem(1, {'slot': 'back', 'type': 'quiver', 'name': 'Quiver', 'bonuses': {'+minDamage': 1, '+maxDamage': 2}, icon: 'bag'});
+addItem(1, {'slot': 'back', 'type': 'quiver', 'name': 'Quiver', 'bonuses': {'+bow:minDamage': 1, '+bow:maxDamage': 2}, icon: 'bag'});
 addItem(1, {'slot': 'ring', 'type': 'ring', 'name': 'Ring', 'bonuses': {'+armor': 1}, icon: 'bag'});
 
 $(document).on('keydown', function(event) {
@@ -430,16 +514,11 @@ $(document).on('keydown', function(event) {
             });
         }
     }
-    if (event.which == 67) { // 'c'
-        $('.js-craftingCanvas').toggle();
-    }
     if (event.which == 68) { // 'd'
         gain('AP', 1000);
-        gain('IP', 1000);
+        gain('coins', 1000);
         gain('MP', 1000);
         gain('RP', 1000);
-        gain('UP', 1000);
-        $('.js-craftingCanvas').show();
         $.each(itemsByKey, function (key, item) {
             item.crafted = true;
         });

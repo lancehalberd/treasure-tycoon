@@ -20,16 +20,50 @@ function treasurePopup(x, y, vx, vy, delay, text, color, font) {
     return self;
 }
 
+function coinTreasurePopup(coin, x, y, vx, vy, delay) {
+    var self = {
+        'x': x, 'y': y, 'vx': vx, 'vy': vy, 't': 0, 'done': false, 'delay': delay,
+        'update': function (character) {
+            if (delay-- > 0) return
+            self.x += self.vx;
+            self.y += self.vy;
+            self.vy++;
+            self.t += 1;
+            self.done = self.t > 40;
+        },
+        'draw': function (character) {
+            if (delay > 0) return
+            character.context.drawImage(coin.image, coin.x, coin.y, coin.width, coin.height,
+                self.x - coin.width / 2 - character.cameraX, self.y - coin.height / 2, coin.width, coin.height);
+        }
+    };
+    return self;
+}
+
 function pointsLootDrop(type, amount) {
-    var index = ['IP', 'MP', 'RP', 'UP'].indexOf(type);
-    var color = ['#fff', '#fc4', '#c4f', '#4cf'][index];
+    var index = ['coins', 'MP', 'RP'].indexOf(type);
+    var color = ['#fff', '#fc4', '#c4f'][index];
     var font = (20 + 2* index) + 'px sans-serif';
     return {
         'gainLoot': function (character) {
             gain(type, Math.round(amount * (1 + character.adventurer.increasedItems)));
         },
         'addTreasurePopup': function (character, x, y, vx, vy, delay) {
-            character.treasurePopups.push(treasurePopup(x, y, vx, vy, delay, '+' + amount, color, font));
+            if (type === 'coins') {
+                var total = amount;
+                var nextDelay = delay;
+                var index = coins.length - 1;
+                while (total > 0 && index >= 0) {
+                    while (coins[index].value <= total) {
+                        total -= coins[index].value;
+                        character.treasurePopups.push(coinTreasurePopup(coins[index], x, y, Math.random() * 10 - 5, -10, nextDelay));
+                        nextDelay += 5;
+                    }
+                    index--;
+                }
+            } else {
+                character.treasurePopups.push(treasurePopup(x, y, vx, vy, delay, '+' + amount, color, font));
+            }
         }
     }
 }
@@ -123,7 +157,7 @@ function treasureChest(loot, closedImage, openImage) {
                 if (character.adventurer.stunned) {
                     character.adventurer.x = self.x - character.adventurer.width;
                 } else {
-                    character.adventurer.stunned = character.time + .5;
+                    character.adventurer.stunned = character.time + 1;
                     self.open = true;
                     // the loot array is an array of objects that can generate
                     // specific loot drops. Iterate over each one, generate a

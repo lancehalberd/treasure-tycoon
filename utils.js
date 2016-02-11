@@ -53,8 +53,11 @@ var Random = {
  * objects with prototypes.
  */
 function copy(object) {
-    if (typeof(object) == 'undefined' || object === null) {
+    if (typeof(object) === 'undefined' || object === null) {
         return null;
+    }
+    if (typeof(object) === 'string' || typeof(object) === 'number') {
+        return object;
     }
     if (object.constructor == Array) {
         return jQuery.extend(true, [], object);

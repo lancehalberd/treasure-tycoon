@@ -18,3 +18,8 @@ function relativeMousePosition(element) {
     return [mousePosition[0] - (elementOffset.left - containerOffset.left),
             mousePosition[1] - (elementOffset.top - containerOffset.top)];
 }
+function isMouseOverElement(element) {
+    var relativePosition = relativeMousePosition(element);
+    return relativePosition[0] >= 0 && relativePosition[0] <= $(element).outerWidth()
+        && relativePosition[1] >= 0 && relativePosition[1] <= $(element).outerHeight();
+}

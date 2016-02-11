@@ -81,10 +81,10 @@ function adventureLoop(character, delta) {
         }
     }
     character.allies.forEach(function (actor) {
-        performAction(character, actor, character.enemies.slice());
+        runActorLoop(character, actor, character.enemies.slice());
     });
     character.enemies.forEach(function (actor) {
-        performAction(character, actor, character.allies.slice());
+        runActorLoop(character, actor, character.allies.slice());
     });
     everybody.forEach(function (actor) {
         if (!actor.stunned && !actor.blocked && !actor.target && !actor.pull && !ifdefor(actor.stationary)) {
@@ -94,6 +94,12 @@ function adventureLoop(character, delta) {
     everybody.forEach(function (actor) {
         actor.health = Math.min(actor.maxHealth, Math.max(0, actor.health));
     });
+    for (var i = 0; i < character.treasurePopups.length; i++) {
+        character.treasurePopups[i].update(character);
+    }
+    for (var i = 0; i < character.textPopups.length; i++) {
+        character.textPopups[i].y--;
+    }
 }
 function expireTimedEffects(character, actor) {
     var changed = false;
@@ -113,8 +119,6 @@ function addTimedEffect(character, actor, effect) {
     effect.expirationTime = character.time + effect.duration;
     actor.timedEffects.push(effect);
     updateActorStats(actor);
-    console.log
-    console.log('Buff on Armor: ' + actor.armor);
 }
 function updateActorStats(actor) {
     if (actor.personCanvas) updateAdventurerStats(actor);
@@ -174,7 +178,7 @@ function processStatusEffects(character, target, delta) {
         target.stunned = null;
     }
 }
-function performAction(character, actor, targets) {
+function runActorLoop(character, actor, targets) {
     if (actor.stunned) return;
     actor.blocked = false; // Character is assumed to not be blocked each frame
     if (actor.target) {
@@ -188,214 +192,86 @@ function performAction(character, actor, targets) {
     targets.sort(function (A, B) {
         return actor.direction * (A.x - B.x);
     });
+    // Don't choose a new target until
+    if (ifdefor(actor.attackCooldown, 0) > character.time) {
+        return;
+    }
     actor.target = null;
-    targets.forEach(function (target) {
+    for (var i = 0; i < targets.length; i++) {
+        var target = targets[i];
         var distance = Math.abs(target.x - actor.x) - 64; // 64 is the width of the character
         actor.blocked = actor.blocked || distance <= 0; // block the actor if a target is too close
-        if (actor.pull) {
-            return;
+        // Don't check to attack if the character is disabled, already has a
+        if (actor.pull || actor.target) {
+            continue;
         }
-        if (actor.target) return;
-        ifdefor(actor.attacks, []).forEach(function (attack) {
-            if (ifdefor(actor.attackCooldown, 0) > character.time) { // Attack the target if possible.
-                return false;
-            }
-            if (attack.readyAt > character.time) {
-                return true;
-            }
-            if (attack.base.type == 'heal') {
-                // Don't use a heal ability unless none of it will be wasted or the
-                // actor is below half life.
-                if (actor.health + attack.amount > actor.maxHealth && actor.health > actor.maxHealth / 2) {
-                    return true;
-                }
-                attack.readyAt = character.time + attack.cooldown;
-                actor.health += attack.amount;
-                actor.stunned = character.time + .3;
-            }
-            if (attack.base.type == 'monster') {
-                var count = 0;
-                actor.allies.forEach(function (ally) {
-                    if (ally.source == attack) count++;
-                });
-                if (count >= attack.limit) {
-                    return true;
-                }
-                attack.readyAt = character.time + attack.cooldown;
-                var monsterData = {
-                    'key': attack.base.key,
-                    'bonuses': {'*maxHealth': ifdefor(attack.healthBonus, 1),
-                                '*minDamage': ifdefor(attack.damageBonus, 1),
-                                '*maxDamage': ifdefor(attack.damageBonus, 1),
-                                '*minMagicDamage': ifdefor(attack.damageBonus, 1),
-                                '*maxMagicDamage': ifdefor(attack.damageBonus, 1)}
-                }
-                actor.pull = {'x': actor.x - actor.direction * 64, 'time': character.time + .3, 'damage': 0};
-                var newMonster = makeMonster(monsterData, actor.level);
-                newMonster.x = actor.x + actor.direction * 32;
-                newMonster.character = character;
-                newMonster.direction = actor.direction; // Minios move left to right
-                newMonster.speed = Math.max(actor.speed + 5, newMonster.speed);
-                newMonster.source = attack;
-                actor.allies.push(newMonster);
-                actor.stunned = character.time + .3;
-            }
-            if (attack.base.type == 'hook') {
-                if (distance <= actor.range * 32 || distance > attack.abilityRange * 32 || target.cloaked) {
-                    return true;
-                }
-                performHookAttack(character, attack, actor, target);
-            }
-            if (attack.base.type == 'buff') {
-                attack.readyAt = character.time + attack.cooldown;
-                addTimedEffect(character, actor, attack.buff);
-                actor.stunned = character.time + .3;
-                return false;
-            }
-            return true;
-        });
-        if (distance > actor.range * 32 || target.cloaked) {
-            return;
+        // Returns true if the actor chose an action. May actually take an action
+        // that doesn't target an enemy, but that's okay, we set target anyway
+        // to indicate that he has acted this frame.
+        if (checkToAttackTarget(character, actor, target, distance)) {
+            actor.target = target;
         }
-        actor.target = target;
-        if (ifdefor(actor.attackCooldown, 0) > character.time) { // Attack the target if possible.
-            return;
-        }
-        actor.attackCooldown = character.time + 1 / (actor.attackSpeed * Math.max(.1, (1 - actor.slow)));
-        performAttack(character, actor, target);
-    });
+    }
     actor.cloaked = (actor.cloaking && !actor.blocked && !actor.target);
 }
-function applyArmorToDamage(damage, armor) {
-    if (damage <= 0) {
-        return 0;
-    }
-    //This equation looks a bit funny but is designed to have the following properties:
-    //100% when armor = 0, 50% when armor = damage, 25% when armor = 2 * damage
-    //1/(2^N) damage when armor is N times base damage
-    return Math.max(1, Math.round(damage / Math.pow(2, armor / damage)));
-}
-
-function performAttack(character, attacker, target) {
-    var damage = Random.range(attacker.minDamage, attacker.maxDamage);
-    var magicDamage = Random.range(attacker.minMagicDamage, attacker.maxMagicDamage);
-    var accuracyRoll = Random.range(0, attacker.accuracy);
-    var hitText = {x: target.x + 32, y: 240 - 128, color: 'red'};
-    if (Math.random() <= attacker.critChance) {
-        damage *= (1 + attacker.critDamage);
-        magicDamage *= (1 + attacker.critDamage);
-        accuracyRoll *= (1 + attacker.critAccuracy);
-        hitText.color = 'yellow';
-        hitText.font, "40px sans-serif"
-    }
-    var evasionRoll = Random.range(0, target.evasion);
-    if (accuracyRoll < evasionRoll) {
-        hitText.value = 'miss';
-        if (ifdefor(attacker.damageOnMiss)) {
-            target.health -= attacker.damageOnMiss;
-            hitText.value = 'miss (' + attacker.damageOnMiss + ')';
-        }
-        // Target has evaded the attack.
-        hitText.color = 'blue';
-        hitText.font, "15px sans-serif"
-        character.textPopups.push(hitText);
-        return;
-    }
-    var dodged = false;
-    ifdefor(target.attacks, []).forEach(function (attack) {
-        if (attack.readyAt > character.time) {
+function checkToAttackTarget(character, actor, target, distance) {
+    for(var i = 0; i < ifdefor(actor.attacks, []).length; i++) {
+        var attack = actor.attacks[i];
+        if (attack.readyAt > character.time) continue;
+        if (attack.base.type == 'heal') {
+            // Don't use a heal ability unless none of it will be wasted or the
+            // actor is below half life.
+            if (actor.health + attack.amount > actor.maxHealth && actor.health > actor.maxHealth / 2) {
+                continue;
+            }
+            attack.readyAt = character.time + attack.cooldown;
+            actor.health += attack.amount;
+            actor.stunned = character.time + .3;
             return true;
         }
-        if (attack.base.type == 'dodge') {
-            dodged = true;
+        if (attack.base.type == 'monster') {
+            var count = 0;
+            actor.allies.forEach(function (ally) {
+                if (ally.source == attack) count++;
+            });
+            if (count >= attack.limit) continue;
             attack.readyAt = character.time + attack.cooldown;
-            target.pull = {'x': target.x - target.direction * attack.distance, 'time': character.time + .3, 'damage': 0};
-            addTimedEffect(character, target, attack.buff);
-            return false;
+            var monsterData = {
+                'key': attack.base.key,
+                'bonuses': {'*maxHealth': ifdefor(attack.healthBonus, 1),
+                            '*minDamage': ifdefor(attack.damageBonus, 1),
+                            '*maxDamage': ifdefor(attack.damageBonus, 1),
+                            '*minMagicDamage': ifdefor(attack.damageBonus, 1),
+                            '*maxMagicDamage': ifdefor(attack.damageBonus, 1)}
+            }
+            actor.pull = {'x': actor.x - actor.direction * 64, 'time': character.time + .3, 'damage': 0};
+            var newMonster = makeMonster(monsterData, actor.level);
+            newMonster.x = actor.x + actor.direction * 32;
+            newMonster.character = character;
+            newMonster.direction = actor.direction; // Minios move left to right
+            newMonster.speed = Math.max(actor.speed + 5, newMonster.speed);
+            newMonster.source = attack;
+            actor.allies.push(newMonster);
+            actor.stunned = character.time + .3;
+            return true;
         }
-        return true;
-    });
-    if (dodged) {
-        // Target has evaded the attack using an ability like 'dodge'.
-        hitText.value = 'dodged';
-        hitText.color = 'blue';
-        hitText.font, "15px sans-serif"
-        character.textPopups.push(hitText);
-        return;
+        if (attack.base.type == 'buff') {
+            attack.readyAt = character.time + attack.cooldown;
+            addTimedEffect(character, actor, attack.buff);
+            actor.stunned = character.time + .3;
+            return true;
+        }
+        if (attack.base.type === 'basic' || attack.base.type === 'hook') {
+            if (distance > attack.range * 32 || target.cloaked) {
+                continue;
+            }
+            performAttack(character, attack, actor, target, distance);
+            return true;
+        }
     }
-    if (ifdefor(attacker.healthGainOnHit)) {
-        attacker.health += attacker.healthGainOnHit;
-    }
-    if (ifdefor(attacker.slowOnHit)) {
-        target.slow = Math.max(target.slow, attacker.slowOnHit);
-    }
-    // Apply block reduction
-    var blockRoll = Random.range(0, target.block);
-    var magicBlockRoll = Random.range(0, target.magicBlock);
-    damage = Math.max(0, damage - blockRoll);
-    magicDamage = Math.max(0, magicDamage - magicBlockRoll);
-    // Apply armor and magic resistance mitigation
-    // TODO: Implement armor penetration here.
-    damage = applyArmorToDamage(damage, target.armor);
-    magicDamage = Math.round(magicDamage * Math.max(0, (1 - target.magicResist)));
-    // TODO: Implement flat damage reduction here.
-    var totalDamage = (damage + magicDamage);
-    target.health -= totalDamage;
-    hitText.value = totalDamage;
-    if (totalDamage <= 0) {
-        hitText.value = 'blocked';
-        hitText.color = 'blue';
-        hitText.font, "15px sans-serif"
-    }
-    character.textPopups.push(hitText);
+    return false;
 }
-function performHookAttack(character, attack, attacker, target) {
-    var distance = getDistance(attacker, target);
-    attack.readyAt = character.time + attack.cooldown;
-    attacker.target = target;
-    // Pull them just into range of the normal attack, no closer.
-    var targetX = (attacker.x > target.x) ? (attacker.x - attacker.range * 32 - 64) : (attacker.x + 64 + attacker.range * 32);
-    var multiplier = (1 + ifdefor(attack.rangeDamage, 0) * distance / 32);
-    var damage = Random.range(attacker.minDamage, attacker.maxDamage);
-    var magicDamage = Random.range(attacker.minMagicDamage, attacker.maxMagicDamage);
-    var hitText = {x: target.x + 32, y: 240 - 128, color: 'red'};
-    if (Math.random() <= attacker.critChance) {
-        damage *= (1 + attacker.critDamage);
-        magicDamage *= (1 + attacker.critDamage);
-        hitText.color = 'yellow';
-        hitText.font, "40px sans-serif"
-    }
-    damage = Math.floor(damage * multiplier);
-    magicDamage = Math.floor(magicDamage * multiplier);
-    if (ifdefor(attacker.healthGainOnHit)) {
-        attacker.health += attacker.healthGainOnHit;
-    }
-    if (ifdefor(attacker.slowOnHit)) {
-        target.slow = Math.max(target.slow, attacker.slowOnHit);
-    }
-    // Apply block reduction
-    var blockRoll = Random.range(0, target.block);
-    var magicBlockRoll = Random.range(0, target.magicBlock);
-    damage = Math.max(0, damage - blockRoll);
-    magicDamage = Math.max(0, magicDamage - magicBlockRoll);
-    // Apply armor and magic resistance mitigation
-    // TODO: Implement armor penetration here.
-    damage = applyArmorToDamage(damage, target.armor);
-    magicDamage = Math.round(magicDamage * Math.max(0, (1 - target.magicResist)));
-    var totalDamage = damage + magicDamage;
-    if (totalDamage > 0) {
-        target.health -= totalDamage;
-        target.stunned = character.time + .3 + distance / 32 * ifdefor(attack.dragStun, 0);
-        target.pull = {'x': targetX, 'time': character.time + .3, 'damage': Math.floor(distance / 32 * damage * ifdefor(attack.dragDamage, 0))};
-        attacker.pull = {'x': attacker.x, 'time': character.time + .3, 'damage': 0};
-        hitText.value = totalDamage + ' hooked!';
-    } else {
-        hitText.value = 'blocked';
-        hitText.color = 'blue';
-        hitText.font, "15px sans-serif"
-    }
-    character.textPopups.push(hitText);
-}
+
 function getDistance(actorA, actorB) {
     return Math.max(0, (actorA.x > actorB.x) ? (actorA.x - actorB.x - 64) : (actorB.x - actorA.x - 64));
 }
@@ -408,13 +284,12 @@ function defeatedEnemy(character, enemy) {
     var reducedXP = Math.floor(enemy.xpValue * Math.max(0, 1 - .1 * Math.abs(character.adventurer.level - enemy.level)));
     gainXP(character.adventurer, reducedXP);
     var loot = [];
-    if (enemy.ip) loot.push(pointsLootDrop('IP', enemy.ip));
+    if (enemy.coins) loot.push(pointsLootDrop('coins', enemy.coins));
     if (enemy.mp) loot.push(pointsLootDrop('MP', enemy.mp));
     if (enemy.rp) loot.push(pointsLootDrop('RP', enemy.rp));
-    if (enemy.up) loot.push(pointsLootDrop('UP', enemy.up));
     loot.forEach(function (loot, index) {
         loot.gainLoot(character);
-        loot.addTreasurePopup(character, enemy.x + index * 20, 240 - 140, 0, -1, index * 10);
+        loot.addTreasurePopup(character, enemy.x +enemy.base.source.width / 2 + index * 20, 240 - 140, 0, -1, index * 10);
     });
 }
 function drawAdventure(character) {
@@ -459,7 +334,6 @@ function drawAdventure(character) {
     context.fillStyle = 'red';
     for (var i = 0; i < character.treasurePopups.length; i++) {
         var treasurePopup = character.treasurePopups[i];
-        treasurePopup.update(character);
         treasurePopup.draw(character);
         if (treasurePopup.done) {
             character.treasurePopups.splice(i--, 1);
@@ -471,7 +345,6 @@ function drawAdventure(character) {
         context.font = ifdefor(textPopup.font, "20px sans-serif");
         context.textAlign = 'center'
         context.fillText(textPopup.value, textPopup.x - cameraX, textPopup.y);
-        textPopup.y--;
         if (textPopup.y < 60) {
             character.textPopups.splice(i--, 1);
         }

@@ -39,14 +39,14 @@ function initializeCraftingImage() {
         });
         var items = ifdefor(ifdefor(itemsBySlotAndLevel[overSlot], [])[level], []);
         var index = tx - slotOffset;
-        if (index < items.length) {
+        var maxLevel = $('.js-levelSelect option').last().attr('value');
+        if (level <= maxLevel && index < items.length) {
             overCraftingItem = items[index];
         } else {
             overCraftingItem = null
         }
         if (mouseDown) {
-            $('.js-levelSelect').val(level);
-            updateItemCrafting();
+            setCraftingLevel(level);
         }
     });
     $(state.craftingViewCanvas).on('click', function () {
@@ -64,13 +64,17 @@ function initializeCraftingImage() {
         });
         var items = ifdefor(ifdefor(itemsBySlotAndLevel[overSlot], [])[level], []);
         var index = tx - slotOffset;
-        $('.js-levelSelect').val(level);
-        updateItemCrafting();
+        setCraftingLevel(level);
     });
     $(state.craftingViewCanvas).on('mouseout', function () {
         overCraftingItem = null
     });
     drawCraftingViewCanvas();
+}
+function setCraftingLevel(level) {
+    var maxLevel = $('.js-levelSelect option').last().attr('value');
+    $('.js-levelSelect').val(Math.min(maxLevel, level));
+    updateItemCrafting();
 }
 function drawCraftingViewCanvas() {
     var canvas = state.craftingViewCanvas;
@@ -96,16 +100,19 @@ function drawCraftingViewCanvas() {
             columns = 2;
     }
     context.clearRect(0, 0, canvas.width, canvas.height);
-    context.fillStyle = '#3DD';
+    context.fillStyle = '#8F8';
     context.fillRect(offset * 11, 0, 2 + columns * 11, 2 + 11 * craftingLevel);
-    context.drawImage(state.craftingCanvas, 0, 0, state.craftingCanvas.width, state.craftingCanvas.height,
-                      0, 0, state.craftingCanvas.width, state.craftingCanvas.height);
+    var maxLevel = $('.js-levelSelect option').last().attr('value');
+    context.fillStyle = '#000';
+    context.fillRect(0, 2 + 11 * maxLevel, canvas.width, canvas.height - (2 + 11 * maxLevel));
+    context.drawImage(state.craftingCanvas, 0, 0, state.craftingCanvas.width, Math.min(state.craftingCanvas.height, 2 + 11 * maxLevel),
+                      0, 0, state.craftingCanvas.width, Math.min(state.craftingCanvas.height, 2 + 11 * maxLevel));
 }
 
 $('.js-raritySelect').on('change', updateItemCrafting);
 $('.js-levelSelect').on('change', updateItemCrafting);
 $('.js-typeSelect').on('change', updateItemCrafting);
-var craftingPointsType = 'IP';
+var craftingPointsType = 'coins';
 var itemsFilteredByType = [];
 var selectedCraftingWeight = 0;
 var itemTotalCost = 5;
@@ -117,7 +124,7 @@ function updateItemCrafting() {
     craftingTypeFilter = $('.js-typeSelect').val();
     var playerCurrency = 0;
     if (rarity == 'plain') {
-        craftingPointsType = 'IP'
+        craftingPointsType = 'coins'
     } else if (rarity === 'enchanted') {
         craftingPointsType = 'MP'
     } else if (rarity === 'imbued') {
@@ -161,25 +168,32 @@ $('.js-craftItem').on('click', function () {
         index++;
     }
     if (lastCraftedItem) {
-        state.craftingContext.fillStyle = 'green';
+        state.craftingContext.fillStyle = ifdefor(lastCraftedItem.craftedUnique ? '#44ccff' : 'green');
         state.craftingContext.fillRect(lastCraftedItem.craftingX, lastCraftedItem.craftingY, 10, 10);
     }
     var craftedItem = itemsFilteredByType[index];
     itemsFilteredByType.forEach(function (item) {
-        item.craftingWeight += item.level * 5;
+        item.craftingWeight += item.level * item.level * 5;
     });
     craftedItem.craftingWeight /= 2;
-    craftedItem.crafted = true;
-    state.craftingContext.fillStyle = 'orange';
-    state.craftingContext.fillRect(craftedItem.craftingX, craftedItem.craftingY, 10, 10);
-    drawCraftingViewCanvas();
     updateSelectedCraftingWeight();
     var item = makeItem(craftedItem, craftingLevel);
     if (craftingPointsType == 'MP') {
         enchantItemProper(item);
     } else if (craftingPointsType == 'RP') {
         imbueItemProper(item);
+    } else {
+        // Rolling a plain item has a chance to create a unique if one exists for
+        // this base type.
+        checkToMakeItemUnique(item);
+        if (item.unique) {
+            craftedItem.craftedUnique = true;
+        }
     }
+    craftedItem.crafted = true;
+    state.craftingContext.fillStyle = ifdefor(craftedItem.craftedUnique) ? '#0088ff' : 'orange';
+    state.craftingContext.fillRect(craftedItem.craftingX, craftedItem.craftingY, 10, 10);
+    drawCraftingViewCanvas();
     updateItem(item);
     $('.js-inventory').prepend(item.$item);
     lastCraftedItem = craftedItem;
@@ -214,6 +228,9 @@ function checkToShowCraftingToopTip() {
     if (overCraftingItem.crafted) {
         sections = [overCraftingItem.name, 'Requires level ' + overCraftingItem.level, ''];
         sections.push(bonusHelpText(overCraftingItem.bonuses, true));
+        if (ifdefor(overCraftingItem.craftedUnique)) {
+            sections.push(tag('div', 'uniqueText', 'Unique Variant: </br>' + overCraftingItem.unique.displayName + '<br/>' + (100 * overCraftingItem.unique.chance).format(1) + '% chance'));
+        }
     } else {
         sections = ['??? ' + overCraftingItem.slot, 'Requires level ' + overCraftingItem.level, ''];
     }

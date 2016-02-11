@@ -4,16 +4,16 @@ var hair = [clothes[1] + 1, clothes[1] + 4];
 var names = ['Chris', 'Leon', 'Hillary', 'Michelle', 'Rob', 'Reuben', 'Kingston', 'Silver'];
 var walkLoop = [0, 1, 2, 3];
 var fightLoop = [4, 5, 6];
-var pointsTypes = ['IP', 'MP', 'RP', 'UP', 'AP'];
+var pointsTypes = ['coins', 'MP', 'RP', 'AP'];
 var allComputedStats = ['cloaking', 'dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
-     'ip', 'xpValue', 'mp', 'rp', 'up',
+     'coins', 'xpValue', 'mp', 'rp', 'up',
      'evasion', 'block', 'magicBlock', 'armor', 'magicResist', 'accuracy', 'range', 'attackSpeed',
      'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage',
      'critChance', 'critDamage', 'critAccuracy',
      'damageOnMiss', 'slowOnHit', 'healthRegen', 'healthGainOnHit',
      'increasedItems', 'increasedExperience'];
 var allRoundedStats = ['dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
-     'ip', 'xpValue', 'mp', 'rp', 'up',
+     'coins', 'xpValue', 'mp', 'rp', 'up',
      'evasion', 'block', 'magicBlock', 'armor', 'accuracy',
      'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage'];
 
@@ -62,7 +62,8 @@ function newCharacter(job) {
     personContext.imageSmoothingEnabled = false;
     var $newPlayerPanel = $('.js-playerPanelTemplate').clone()
         .removeClass('js-playerPanelTemplate').addClass('js-playerPanel').show();
-    $('.js-playerColumn').prepend($newPlayerPanel);
+    // The player template will be between the adventure panels and the hire adventure controls.
+    $('.js-playerColumn .js-playerPanelTemplate').before($newPlayerPanel);
     var character = {};
     character.adventurer = makeAdventurer(job, 1, ifdefor(job.startingEquipment, {}));
     character.adventurer.character = character;
@@ -149,7 +150,6 @@ function readBoardFromData(boardData, character, ability, confirmed) {
         'jewels': []
     };
 }
-$('.js-newPlayer').on('click', newCharacter);
 
 function xpToLevel(level) {
     return (level + 1) * (level + 2) * 5;
@@ -169,7 +169,7 @@ function spend(pointsType, amount) {
 function changedPoints(pointsType) {
     if (pointsType == 'AP') updateHireButton();
     else updateCraftButton();
-    $('.js-points' + pointsType).text(state[pointsType]);
+    $('.js-' + pointsType).text(state[pointsType]);
 }
 function addBonusesAndAttacks(actor, source) {
     if (ifdefor(source.bonuses)) {
@@ -177,14 +177,40 @@ function addBonusesAndAttacks(actor, source) {
     }
     if (ifdefor(source.attacks)) {
         source.attacks.forEach(function (baseAttack) {
-            actor.attacks.push({'base': baseAttack});
+            actor.attacks.push({'base': createAttack(baseAttack)});
         });
     }
+}
+var inheritedAttackStats = ['range', 'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage',
+    'accuracy', 'attackSpeed', 'critChance', 'critDamage', 'critAccuracy', 'damageOnMiss', 'slowOnHit', 'healthGainOnHit'];
+function createAttack(data) {
+    var stats = ifdefor(data.stats, {});
+    var attack =  {'type': 'basic', 'tags': [], 'helpText': 'A basic attack.', 'stats': {'cooldown': 0}};
+    $.each(data, function (key, value) {
+        attack[key] = copy(value);
+    });
+    // Inherit stats from the base character stats by default.
+    inheritedAttackStats.forEach(function (stat) {
+        attack.stats[stat] = ['{' + stat + '}'];
+    });
+    $.each(stats, function (stat, value) {
+        attack.stats[stat] = value;
+    });
+    return attack;
 }
 function updateAdventurer(adventurer) {
     // Clear the character's bonuses and graphics.
     adventurer.bonuses = [];
     adventurer.attacks = [];
+    adventurer.tags = [];
+    if (!adventurer.equipment.weapon) {
+        // Fighting unarmed is considered using a fist weapon.
+        adventurer.tags = ['unarmed', 'fist', 'melee'];
+    } else {
+        adventurer.tags.push(adventurer.equipment.weapon.base.type);
+        adventurer.tags = adventurer.tags.concat(ifdefor(adventurer.equipment.weapon.base.tags, []));
+    }
+
     var sectionWidth = personFrames * 32;
     var hat = adventurer.equipment.head;
     var hideHair = hat ? ifdefor(hat.base.hideHair, false) : false;
@@ -203,6 +229,8 @@ function updateAdventurer(adventurer) {
             adventurer.bonuses.push(jewel.bonuses);
             adventurer.bonuses.push(jewel.adjacencyBonuses);
         });
+        // Don't show the offhand slot if equipped with a two handed weapon.
+        adventurer.character.$panel.find('.js-offhand').toggle(!isTwoHandedWeapon(adventurer.equipment.weapon));
     }
     // Add the adventurer's current equipment to bonuses and graphics
     equipmentSlots.forEach(function (type) {
@@ -226,6 +254,7 @@ function updateAdventurer(adventurer) {
             adventurer.character.$panel.find('.js-infoMode .js-equipment .js-' + type).append(equipment.$item);
         }
     });
+    adventurer.attacks.push({'base': createAttack({})});
     updateAdventurerStats(adventurer);
 }
 function updateAdventurerStats(adventurer) {
@@ -268,7 +297,7 @@ function updateAdventurerStats(adventurer) {
 }
 function getStat(actor, stat) {
     var base = ifdefor(actor.base[stat], 0), plus = 0, percent = 1, multiplier = 1;
-    var keys = [stat];
+    var baseKeys = [stat];
     if (stat === 'evasion' || stat === 'attackSpeed') {
         percent += .002 * actor.dexterity;
     }
@@ -279,17 +308,29 @@ function getStat(actor, stat) {
         percent += .002 * actor.intelligence;
     }
     if (stat === 'minDamage' || stat === 'maxDamage') {
-        keys.push('damage');
+        baseKeys.push('damage');
         percent += .002 * actor.strength;
-        if (actor.range >= 5) {
+        if (actor.tags.indexOf('ranged') >= 0) {
             plus += Math.floor(actor.dexterity / 10);
         } else {
             plus += Math.floor(actor.strength / 10);
         }
     }
     if ((stat === 'minMagicDamage' || stat === 'maxMagicDamage')) {
-        keys.push('magicDamage');
+        baseKeys.push('magicDamage');
+        // Int boost to magic damage, but only for weapons/monsters tagged 'magic'.
+        if (actor.tags.indexOf('magic') >= 0) {
+            plus += Math.floor(actor.intelligence / 10);
+        }
     }
+    // For example, when calculating min magic damage for a wand user, we check for all the following:
+    // minMagicDamage, magicDamage, wand:minMagicDamage, wand:magicDamage, ranged:minMagicDamage, ranged:magicDamage, etc
+    var keys = baseKeys.slice();
+    ifdefor(actor.tags, []).forEach(function (tagPrefix) {
+        baseKeys.forEach(function(baseKey) {
+            keys.push(tagPrefix + ':' + baseKey);
+        });
+    });
     actor.bonuses.concat(ifdefor(actor.timedEffects, [])).forEach(function (bonus) {
         keys.forEach(function (key) {
             plus += evaluateValue(actor, ifdefor(bonus['+' + key], 0));
@@ -297,9 +338,6 @@ function getStat(actor, stat) {
             multiplier *= evaluateValue(actor, ifdefor(bonus['*' + key], 1));
         });
     });
-    if ((stat === 'minMagicDamage' || stat === 'maxMagicDamage') && plus > 0) {
-        plus += Math.floor(actor.intelligence / 10);
-    }
     //console.log(stat +": " + ['(',base, '+', plus,') *', percent, '*', multiplier]);
     return (base + plus) * percent * multiplier;
 }
@@ -312,7 +350,11 @@ function getStatForAttack(actor, dataObject, stat) {
         });
         return subObject;
     }
-    var keys = [stat];
+    // stats from skills are prefixed with 'skill:' always so they won't be effected
+    // by bonuses to global characters stats. For instance, skill.attackSpeed: ['attackSpeed']
+    // inherits the attackSpeed value from the skill user, so we don't want to apply
+    // '*attackSpeed': 2 to it as this has already been applied to the base attackSpeed.
+    var keys = ['skill:' + stat];
     ifdefor(dataObject.tags, []).concat([dataObject.type]).forEach(function (prefix) {
         keys.push(prefix + ':' + stat);
     });
@@ -414,9 +456,9 @@ var squareBoard = {
 var characterClasses = {};
 addCharacterClass('Fool', 0, 0, 0);
 
-addCharacterClass('Archer', 2, 1, 0, {'weapon': itemsByKey.boomerang, 'body': itemsByKey.lamellar}, triangleBoard,
+addCharacterClass('Archer', 2, 1, 0, {'weapon': itemsByKey.primitivebow, 'body': itemsByKey.lamellar}, triangleBoard,
     [jewelLoot(['trapezoid'], [1, 1], [[10,15], [90, 100], [5, 10]], false), simpleJewelLoot, simpleJewelLoot], 'grove');
-addCharacterClass('Black Belt', 0, 2, 1, {'weapon': itemsByKey.rock, 'body': itemsByKey.lamellar}, diamondBoard2,
+addCharacterClass('Fighter', 0, 2, 1, {'weapon': itemsByKey.rock, 'body': itemsByKey.lamellar}, diamondBoard2,
     [jewelLoot(['trapezoid'], [1, 1], [[90, 100], [10,15], [5, 10]], false), simpleJewelLoot, simpleJewelLoot], 'meadow');
 addCharacterClass('Priest', 1, 0, 2, {'weapon': itemsByKey.stick, 'body': itemsByKey.lamellar}, hexBoard,
     [jewelLoot(['trapezoid'], [1, 1], [[10,15], [5, 10], [90, 100]], false), simpleJewelLoot, simpleJewelLoot], 'cave');
@@ -444,7 +486,7 @@ addCharacterClass('Sage', 4, 2, 4);
 addCharacterClass('Master', 4, 4, 4);
 
 var ranks = [
-    ['archer', 'blackbelt', 'priest'],
+    ['archer', 'fighter', 'priest'],
     ['corsair', 'paladin', 'dancer'],
     ['marksman', 'warrior', 'wizard'],
     ['assassin', 'darkknight', 'bard'],
@@ -471,7 +513,7 @@ function updateHireButton() {
     var $jobOption = $('.js-jobSelect').find(':selected');
     var cost = $jobOption.data('cost');
     $('.js-hire').text('Hire for ' + $jobOption.data('cost') + ' AP!');
-    $('.js-hire').prop('disabled', (cost > state.AP));
+    $('.js-hire').toggleClass('disabled', (cost > state.AP));
 }
 $('.js-hire').on('click', function () {
     var $jobOption = $('.js-jobSelect').find(':selected');
