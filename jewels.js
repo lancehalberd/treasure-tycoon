@@ -165,7 +165,7 @@ function updateAdjacencyBonsues(jewel) {
         // Dual gems qualifier bonus is applied to adjacent gems' adjacency bonuses
         if (adjacent.jewelType === 3 || adjacent.jewelType === 5 || adjacent.jewelType === 6) {
             // These are additive, otherwise they could result in 3x multiplier on hexagons.
-            adjacentQualifierBonus += (jewel.qualifierBonus - 1);
+            adjacentQualifierBonus += (adjacent.qualifierBonus - 1);
         }
     }
     coefficient *= adjacentQualifierBonus;
