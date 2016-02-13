@@ -15,7 +15,7 @@ function isTwoHandedWeapon(item) {
     return item && ifdefor(item.base.tags, []).indexOf('twoHanded') >= 0;
 }
 function sellValue(item) {
-    return item.itemLevel * item.itemLevel * item.itemLevel;
+    return 4 * item.itemLevel * item.itemLevel * item.itemLevel;
 }
 function makeItem(base, level) {
     var item = {
@@ -101,13 +101,13 @@ function itemHelpText(item) {
     }
     sections.push('');
 
-    var points = [sellValue(item) + ' Coins'];
+    var sellValues = [points('coins', sellValue(item))];
     var total = item.prefixes.length + item.suffixes.length;
     if (total) {
-        if (total <= 2) points.push(sellValue(item) * total + ' Anima');
-        else points.push(sellValue(item) * (total - 2) * 5 + ' Anima');
+        if (total <= 2) sellValues.push(points('anima', sellValue(item) * total));
+        else sellValues.push(points('anima', sellValue(item) * (total - 2) * 5));
     }
-    sections.push('Sell for ' + points.join(' '));
+    sections.push('Sell for ' + sellValues.join(' '));
     return sections.join('<br/>');
 }
 function evaluateForDisplay(value) {

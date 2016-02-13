@@ -93,11 +93,9 @@ function animaTreasurePopup(coin, x, y, vx, vy, delay) {
             self.done = self.t > 40;
         },
         'draw': function (character) {
-            if (delay > 0) return
-            character.context.globalAlpha = .5;
+            if (delay > 0 || self.x < character.adventurer.x + 16) return
             character.context.drawImage(coin.image, coin.x, coin.y, coin.width, coin.height,
                 self.x - coin.width / 2 - character.cameraX, self.y - coin.height / 2, coin.width, coin.height);
-            character.context.globalAlpha = 1;
         }
     };
     return self;

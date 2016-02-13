@@ -37,8 +37,8 @@ function jewelHelpText(jewel) {
         sections.push(adjacencyBonusText);
         sections.push('');
     }
-    var points = [jewel.price + ' Coins', jewel.price + ' Anima'];
-    sections.push('Sell for ' + points.join(' '));
+    var sellValues = [points('coins',jewel.price), points('anima', jewel.price)];
+    sections.push('Sell for ' + sellValues.join(' '));
     return sections.join('<br/>');
 }
 function sellJewel(jewel) {

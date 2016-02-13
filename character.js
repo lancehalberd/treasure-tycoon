@@ -134,8 +134,11 @@ function makeAdventurer(job, level, equipment) {
     });
     $.each(equipment, function (key, item) {
         item.crafted = true;
+        state.craftingContext.fillStyle = 'green';
+        state.craftingContext.fillRect(item.craftingX, item.craftingY, craftingSlotSize, craftingSlotSize);
         equipItem(adventurer, makeItem(item, 1));
     });
+    drawCraftingViewCanvas();
     return adventurer;
 }
 function readBoardFromData(boardData, character, ability, confirmed) {

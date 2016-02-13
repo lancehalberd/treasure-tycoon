@@ -288,9 +288,10 @@ function defeatedEnemy(character, enemy) {
     if (character.adventurer.health <= 0) {
         return;
     }
-    // Character receives 10% penalty per level difference between them and the monster.
-    var reducedXP = Math.floor(enemy.xpValue * Math.max(0, 1 - .1 * Math.abs(character.adventurer.level - enemy.level)));
-    gainXP(character.adventurer, reducedXP);
+    // Character only gains experience from equal or higher level monsters.
+    if (enemy.level >= character.adventurer.level) {
+        gainXP(character.adventurer, enemy.xpValue);
+    }
     var loot = [];
     if (enemy.coins) loot.push(coinsLootDrop(enemy.coins));
     if (enemy.anima) loot.push(animaLootDrop(enemy.anima));

@@ -263,6 +263,10 @@ button {
     top: 145px;
 }
 
+.value {
+    vertical-align: middle;
+}
+
 .icon {
     background-image: url('gfx/iconSet.png');
     background-size: 620px 140px;
@@ -287,6 +291,13 @@ button {
     width: 16px;
     height: 16px;
     background-position: -64px -0;
+}
+.icon.anima {
+    background-image: url('gfx/moneyIcon.png');
+    background-size: auto;
+    width: 16px;
+    height: 16px;
+    background-position: -128px -0;
 }
 .icon.crafting {
     background-image: url('gfx/moneyIcon.png');
