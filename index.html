@@ -71,7 +71,6 @@
             <div class="js-craftingPanel js-infoPanel infoPanel">
                 <div class="panelTitle">Crafting</div>
                 <div>
-                    <canvas class="js-craftingCanvas" width="210" height="810" style="background-color: white; position: absolute; left: -220px; top: 10px;"></canvas>
                     <select class="js-raritySelect itemCraftingSelect">
                         <option value="plain">Plain</option>
                         <option value="enchanted">Enchanted</option>
@@ -131,6 +130,9 @@
             <div class="js-inventory inventory"></div>
             <div class="js-jewel-inventory jewel-inventory" style="display: none;"></div>
         </div><div class="js-playerColumn playerColumn">
+            <div class="js-craftingBar craftingBar">
+                <canvas class="js-craftingCanvas" height="210" width="1100" style="background-color: white;"></canvas>
+            </div>
             <div class="js-playerPanelTemplate playerPanel" style="display: none;">
                 <div class="playerControlBar">
                     Level <span class="js-level">X</span> <span class="js-name controlBarEntry">X</span>

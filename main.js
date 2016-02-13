@@ -382,11 +382,13 @@ $('.js-showCraftingPanel').on('click', function (event) {
     showEquipment();
     $('.js-infoPanel').hide();
     $('.js-craftingPanel').show();
+    $('.js-craftingBar').show('fast');
 });
 $('.js-showEnchantingPanel').on('click', function (event) {
     showEquipment();
     $('.js-infoPanel').hide();
     $('.js-enchantingPanel').show();
+    $('.js-craftingBar').hide('fast');
 });
 $('.js-showJewelsPanel').on('click', function (event) {
     showJewels();
@@ -398,6 +400,7 @@ function showJewels() {
     $('.js-jewel-inventory').show();
     $('.js-infoPanel').hide();
     $('.js-jewelPanel').show();
+    $('.js-craftingBar').hide('fast');
 }
 function showEquipment() {
     $('.js-equipment').show();

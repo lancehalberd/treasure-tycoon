@@ -8,6 +8,9 @@
     margin-left: 10px;
     min-width: 150px;
 }
+.craftingBar {
+    overflow-x: scroll;
+}
 .fame {
     color: #D80;
 }
