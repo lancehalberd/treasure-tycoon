@@ -187,8 +187,20 @@ $('.js-craftItem').on('click', function () {
         state.craftingContext.fillRect(lastCraftedItem.craftingX, lastCraftedItem.craftingY, craftingSlotSize, craftingSlotSize);
     }
     var craftedItem = itemsFilteredByType[index];
+    // This is used to determine what proportion of the crafting weight goes to which item.
+    var totalCraftingWeight = 0;
     itemsFilteredByType.forEach(function (item) {
-        item.craftingWeight += item.level * item.level * 5;
+        if (item === craftedItem) return;
+        totalCraftingWeight += item.level * item.level * 5;
+    });
+    // Remove crafting weight from the crafted item and distribute it out proportionally
+    // to other items that could have been crafted. This leaves the crafting weight of
+    // the selected group the same while decreasing the odds of crafting the same item
+    // again and increasing the odds of the highest level items the most.
+    var distributedCraftingWeight = craftedItem.craftingWeight / 2;
+    craftedItem.craftingWeight -= distributedCraftingWeight;
+    itemsFilteredByType.forEach(function (item) {
+        item.craftingWeight += distributedCraftingWeight * item.level * item.level * 5 / totalCraftingWeight;
     });
     craftedItem.craftingWeight /= 2;
     updateSelectedCraftingWeight();
