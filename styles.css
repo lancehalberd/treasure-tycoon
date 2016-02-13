@@ -376,7 +376,7 @@ button {
     font-size: 16px;
     border: 1px solid #204070;
     box-sizing: border-box;
-    background-color: rgba(100, 200, 100, .9);
+    background-color: rgba(140, 220, 140, .9);
     border-radius: 4px;
     z-index: 100;
 }
