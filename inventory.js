@@ -235,6 +235,9 @@ function bonusHelpText(rawBonuses, implicit) {
     if (ifdefor(bonuses['+critAccuracy'])) {
         sections.push((100 * bonuses['+critAccuracy']).format(1) + '% increased critical accuracy');
     }
+    if (ifdefor(bonuses['+magicResist'])) {
+        sections.push('Reduces magic damage received by ' + (100 * bonuses['+magicResist']).format(0) + '%');
+    }
     if (ifdefor(bonuses['+slowOnHit'])) {
         sections.push('Slow target by ' + (100 * bonuses['+slowOnHit']).format(0) + '%');
     }
