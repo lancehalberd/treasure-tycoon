@@ -75,7 +75,7 @@ function makeJewel(tier, shapeType, components, quality) {
         'quality': quality,
         'shape': makeShape(0, 0, 0, shapeDefinition).scale(30),
         'area': area,
-        'price': Math.round(Math.pow(10, tier) * quality * quality * (5 - qualifierIndex) * area),
+        'price': Math.round(10 * Math.pow(quality, 6) * (5 - qualifierIndex) * area),
         'adjacentJewels': [],
         'adjacencyBonuses': {}
     };

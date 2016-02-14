@@ -119,7 +119,7 @@ function drawCraftingViewCanvas() {
     }
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.fillStyle = '#8F8';
-    context.fillRect(0, offset * craftingSlotTotal, 4 + craftingSlotTotal * craftingLevel, 4 + rows * craftingSlotTotal);
+    context.fillRect(0, offset * craftingSlotTotal, 4 + craftingSlotTotal * craftingLevel, 3 + rows * craftingSlotTotal);
     context.drawImage(state.craftingCanvas, 0, 0, Math.min(state.craftingCanvas.width, 2 + craftingSlotTotal * maxLevel), state.craftingCanvas.height,
                       0, 0, Math.min(state.craftingCanvas.width, 2 + craftingSlotTotal * maxLevel), state.craftingCanvas.height);
 }

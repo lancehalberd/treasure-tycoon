@@ -8,9 +8,6 @@
     margin-left: 10px;
     min-width: 150px;
 }
-.craftingBar {
-    overflow-x: scroll;
-}
 .fame {
     color: #D80;
 }
@@ -51,10 +48,15 @@
 .recallButton {
     font-size: .6em;
 }
-.playerPanel {
+.playerPanel  {
     height: 270px;
     background-color: white;
-    margin: 5px;
+    margin-bottom: 5px;
+}
+.craftingBar {
+    overflow-x: auto;
+    background-color: #CCC;
+    margin-bottom: 5px;
 }
 .playerPanel .infoMode {
     position: relative;
