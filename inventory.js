@@ -59,7 +59,21 @@ var tagToDisplayNameMap = {
     'skill': 'Skills'
 };
 function tagToDisplayName(tag) {
-    return ifdefor(tagToDisplayNameMap[tag], tag);
+    return ifdefor(tagToDisplayNameMap[tag], properCase(tag));
+}
+var tagToCategoryMap = {
+    'twoHanded': '2-handed Weapons',
+    'oneHanded': '1-handed Weapons',
+    'ranged': 'Ranged Attacks',
+    'melee': 'Melee Attacks',
+    'magic': 'Magic Attacks',
+    'throwing': 'Throwing Weapons',
+    'skill': 'Skills',
+    'unarmed': 'While Unarmed',
+    'fist': 'Fist Weapons',
+};
+function tagToCategoryDisplayName(tag) {
+    return ifdefor(tagToCategoryMap[tag], properCase(tag));
 }
 function itemHelpText(item) {
     // Unique items have a distinct display name that is used instead of the
@@ -296,7 +310,7 @@ function bonusHelpText(rawBonuses, implicit) {
     });
 
     $.each(tagBonuses, function (tagName, bonuses) {
-        sections.push(tag('div', 'tagText', tagName + ':<br/>' + bonusHelpText(bonuses, false)));
+        sections.push(tag('div', 'tagText', tagToCategoryDisplayName(tagName) + ':<br/>' + bonusHelpText(bonuses, false)));
     });
 
     if (ifdefor(bonuses['duration'])) { // Buffs/debuffs only.
