@@ -124,27 +124,17 @@ function drawCraftingViewCanvas() {
                       0, 0, Math.min(state.craftingCanvas.width, 2 + craftingSlotTotal * maxLevel), state.craftingCanvas.height);
 }
 
-$('.js-raritySelect').on('change', updateItemCrafting);
 $('.js-levelSelect').on('change', updateItemCrafting);
 $('.js-typeSelect').on('change', updateItemCrafting);
-var craftingPointsType = 'coins';
 var itemsFilteredByType = [];
 var selectedCraftingWeight = 0;
 var itemTotalCost = 5;
 var craftingLevel = 1;
 var craftingTypeFilter = 'all';
 function updateItemCrafting() {
-    var rarity = $('.js-raritySelect').val();
     craftingLevel = $('.js-levelSelect').val();
     craftingTypeFilter = $('.js-typeSelect').val();
     var playerCurrency = 0;
-    var rarityMultiplier = (rarity === 'imbued') ? 5 : 1;
-    if (rarity == 'plain') {
-        craftingPointsType = 'coins'
-    } else {
-        craftingPointsType = 'anima'
-    }
-
     var itemsFilteredByLevel = [];
     itemsFilteredByType = [];
     for (var itemLevel = 0; itemLevel <= craftingLevel && itemLevel < items.length; itemLevel++) {
@@ -156,12 +146,11 @@ function updateItemCrafting() {
         });
     }
     var typeMultiplier = (itemsFilteredByLevel.length / itemsFilteredByType.length).toFixed(2);
-    $('.js-rarityCost').html(points(craftingPointsType, 5 * rarityMultiplier));
     var levelMultiplier = craftingLevel * craftingLevel * craftingLevel;
-    $('.js-levelMultiplier').text('x ' + levelMultiplier);
-    $('.js-typeMultiplier').text('x ' + typeMultiplier);
-    itemTotalCost = Math.ceil(5 * levelMultiplier * typeMultiplier * rarityMultiplier);
-    $('.js-craftItem').html('Craft for ' + points(craftingPointsType, itemTotalCost));
+    $('.js-levelMultiplier').html((levelMultiplier * 5).coins());
+    $('.js-typeMultiplier').html('<span class="value coins">x' + typeMultiplier +'</span>');
+    itemTotalCost = Math.floor(5 * levelMultiplier * typeMultiplier);
+    $('.js-craftItem').html('Craft for ' + itemTotalCost.coins());
     updateCraftButton();
     updateSelectedCraftingWeight();
     drawCraftingViewCanvas();
@@ -173,7 +162,7 @@ function updateSelectedCraftingWeight() {
     });
 }
 $('.js-craftItem').on('click', function () {
-    if (!spend(craftingPointsType, itemTotalCost)) {
+    if (!spend('coins', itemTotalCost)) {
         return;
     }
     var craftingRoll = Math.floor(Math.random() * selectedCraftingWeight);
@@ -205,17 +194,22 @@ $('.js-craftItem').on('click', function () {
     craftedItem.craftingWeight /= 2;
     updateSelectedCraftingWeight();
     var item = makeItem(craftedItem, craftingLevel);
-    var rarity = $('.js-raritySelect').val();
-    if (rarity === 'enchanted') {
-        enchantItemProper(item);
-    } else if (rarity === 'imbued') {
-        imbueItemProper(item);
+    // Rolling a plain item has a chance to create a unique if one exists for
+    // this base type.
+    checkToMakeItemUnique(item);
+    if (item.unique) {
+        craftedItem.craftedUnique = true;
     } else {
-        // Rolling a plain item has a chance to create a unique if one exists for
-        // this base type.
-        checkToMakeItemUnique(item);
-        if (item.unique) {
-            craftedItem.craftedUnique = true;
+        // Items created below the specified crafting level are automatically enchanted.
+        // This way getting low level items is less disappointing.
+        if (craftedItem.level < craftingLevel) {
+            // Always get at least 1 enchantment.
+            augmentItemProper(item);
+            // Get up to 4 enchantments with higher chance the greater the disparity is.
+            var buffChance = .1 * (craftingLevel - craftedItem.level);
+            while (Math.random() < buffChance && item.prefixes.length + item.suffixes.length < 4){
+                augmentItemProper(item);
+            }
         }
     }
     craftedItem.crafted = true;
@@ -227,7 +221,7 @@ $('.js-craftItem').on('click', function () {
     lastCraftedItem = craftedItem;
 });
 function updateCraftButton() {
-    $('.js-craftItem').prop('disabled', itemTotalCost > state[craftingPointsType]);
+    $('.js-craftItem').prop('disabled', itemTotalCost > state.coins);
 }
 
 function itemMatchesFilter(item, typeFilter) {

@@ -167,12 +167,14 @@ function makeAffix(baseAffix) {
 function addPrefixToItem(item) {
     var alreadyUsed = [];
     item.prefixes.forEach(function (affix) {alreadyUsed.push(affix.base);});
-    item.prefixes.push(makeAffix(Random.element(matchingAffixes(prefixes, item, alreadyUsed))));
+    var newAffix = makeAffix(Random.element(matchingAffixes(prefixes, item, alreadyUsed)));
+    item.prefixes.push(newAffix);
 }
 function addSuffixToItem(item) {
     var alreadyUsed = [];
     item.suffixes.forEach(function (affix) {alreadyUsed.push(affix.base);});
-    item.suffixes.push(makeAffix(Random.element(matchingAffixes(suffixes, item, alreadyUsed))));
+    var newAffix = makeAffix(Random.element(matchingAffixes(suffixes, item, alreadyUsed)));
+    item.suffixes.push(newAffix);
 }
 function matchingAffixes(list, item, alreadyUsed) {
     var choices = [];
@@ -295,20 +297,33 @@ function imbueItemProper(item) {
 }
 function augmentItem() {
     var item = $('.js-enchantmentSlot').find('.js-item').data('item');
-    if (!item.prefixes.length) {
-        if (!spend('anima', sellValue(item) * 20)) {
-            return;
+    if (item.prefixes.length + item.suffixes.length >= 4) {
+        return;
+    }
+    if (!item.prefixes.length || !item.suffixes.length) {
+        if (spend('anima', sellValue(item) * 20)) {
+            augmentItemProper(item);
+            updateEnchantmentOptions();
         }
+        return;
+    }
+    if (spend('anima', sellValue(item) * 100)) {
+        augmentItemProper(item);
+        updateEnchantmentOptions();
+    }
+}
+function augmentItemProper(item) {
+    if (!item.prefixes.length && !item.suffixes.length) {
+        if (Math.random() > .5) {
+            addPrefixToItem(item);
+        } else {
+            addSuffixToItem(item);
+        }
+    } else if (!item.prefixes.length) {
         addPrefixToItem(item);
     } else if (!item.suffixes.length) {
-        if (!spend('anima', sellValue(item) * 20)) {
-            return;
-        }
         addSuffixToItem(item);
     } else {
-        if (!spend('anima', sellValue(item) * 100)) {
-            return;
-        }
         if (item.suffixes.length == 2) {
             addPrefixToItem(item);
         } else if (item.prefixes.length == 2) {
@@ -320,7 +335,6 @@ function augmentItem() {
         }
     }
     updateItem(item);
-    updateEnchantmentOptions();
 }
 function mutateItem() {
     var item = $('.js-enchantmentSlot').find('.js-item').data('item');

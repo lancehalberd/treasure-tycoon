@@ -120,8 +120,9 @@ function itemHelpText(item) {
     var sellValues = [points('coins', sellValue(item))];
     var total = item.prefixes.length + item.suffixes.length;
     if (total) {
-        if (total <= 2) sellValues.push(points('anima', sellValue(item) * total));
-        else sellValues.push(points('anima', sellValue(item) * (total - 2) * 5));
+        var animaValue = item.base.level * item.base.level * item.base.level;
+        if (total <= 2) sellValues.push(points('anima', animaValue * total));
+        else sellValues.push(points('anima', animaValue * total));
     }
     sections.push('Sell for ' + sellValues.join(' '));
     return sections.join('<br/>');
@@ -198,24 +199,33 @@ function bonusHelpText(rawBonuses, implicit) {
         if (implicit) sections.push('Block: ' + bonuses['+block'].format(1));
         else sections.push(bonuses['+block'].format(1) + ' increased block');
     }
-    if (ifdefor(bonuses['%block'])) {
-        sections.push((100 * bonuses['%block']).format(1) + '% increased block');
-    }
     if (ifdefor(bonuses['+magicBlock'])) {
         if (implicit) sections.push('Magic Block: ' + bonuses['+magicBlock'].format(1));
         else sections.push(bonuses['+magicBlock'].format(1) + ' increased magic block');
     }
+    if (ifdefor(bonuses['%armor'])) {
+        sections.push(bonuses['%armor'].percent(1) + ' increased armor');
+    }
+    if (ifdefor(bonuses['%evasion'])) {
+        sections.push(bonuses['%evasion'].percent(1) + ' increased evasion');
+    }
+    if (ifdefor(bonuses['%block'])) {
+        sections.push(bonuses['%block'].percent(1) + ' increased block');
+    }
+    if (ifdefor(bonuses['%magicBlock'])) {
+        sections.push(bonuses['%magicBlock'].percent(1) + ' increased magic block');
+    }
     if (ifdefor(bonuses['+damageOnMiss'])) {
-        sections.push('Deals ' + bonuses['+damageOnMiss'] + ' to enemy on miss');
+        sections.push('Deals ' + bonuses['+damageOnMiss'] + ' true damage to enemy on miss');
     }
     if (ifdefor(bonuses['%damage'])) {
-        sections.push((100 * bonuses['%damage']).format(1) + '% increased physical damage');
+        sections.push(bonuses['%damage'].percent(1) + ' increased physical damage');
     }
     if (ifdefor(bonuses['*damage'])) {
         sections.push(bonuses['*damage'].format(1) + 'x more physical damage.');
     }
     if (ifdefor(bonuses['%magicDamage'])) {
-        sections.push((100 * bonuses['%magicDamage']).format(1) + '% increased magic damage');
+        sections.push(bonuses['%magicDamage'].percent(1) + ' increased magic damage');
     }
     if (ifdefor(bonuses['+dexterity'])) {
         sections.push('+' + bonuses['+dexterity'].format(1) + ' Dexterity');
@@ -225,12 +235,6 @@ function bonusHelpText(rawBonuses, implicit) {
     }
     if (ifdefor(bonuses['+intelligence'])) {
         sections.push('+' + bonuses['+intelligence'].format(1) + ' Intelligence');
-    }
-    if (ifdefor(bonuses['%evasion'])) {
-        sections.push((100 * bonuses['%evasion']).format(1) + '% increased evasion');
-    }
-    if (ifdefor(bonuses['%magicBlock'])) {
-        sections.push((100 * bonuses['%magicBlock']).format(1) + '% increased magic block');
     }
     if (ifdefor(bonuses['+maxHealth'])) {
         sections.push('+' + bonuses['+maxHealth'].format(1) + ' health');
@@ -248,41 +252,41 @@ function bonusHelpText(rawBonuses, implicit) {
         sections.push('Regenerate ' + bonuses['*healthRegen'].format(1) + 'x more health per second');
     }
     if (ifdefor(bonuses['%maxHealth'])) {
-        sections.push((100 * bonuses['%maxHealth']).format(1) + '% increased health');
+        sections.push(bonuses['%maxHealth'].percent(1) + ' increased health');
     }
     if (ifdefor(bonuses['%attackSpeed'])) {
-        sections.push((100 * bonuses['%attackSpeed']).format(1) + '% increased attack speed');
+        sections.push(bonuses['%attackSpeed'].percent(1) + ' increased attack speed');
     }
     if (ifdefor(bonuses['*attackSpeed'])) {
         sections.push(bonuses['*attackSpeed'].format(1) + 'x attack speed');
     }
     if (ifdefor(bonuses['+critChance'])) {
-        if (implicit) sections.push((100 * bonuses['+critChance']).format(0) + '% critical strike chance');
-        else sections.push('Additional ' + (100 * bonuses['+critChance']).format(0) + '% chance to critical strike');
+        if (implicit) sections.push(bonuses['+critChance'].percent(0) + ' critical strike chance');
+        else sections.push('Additional ' + bonuses['+critChance'].percent(0) + ' chance to critical strike');
     }
     if (ifdefor(bonuses['%critChance'])) {
-        sections.push((100 * bonuses['%critChance']).format(1) + '% increased critical chance');
+        sections.push(bonuses['%critChance'].percent(1) + ' increased critical chance');
     }
     if (ifdefor(bonuses['*critDamage'])) {
         sections.push(bonuses['*critDamage'].format(1) + 'x critical chance');
     }
     if (ifdefor(bonuses['+critDamage'])) {
-        sections.push((100 * bonuses['+critDamage']).format(1) + '% increased critical damage');
+        sections.push(bonuses['+critDamage'].percent(1) + ' increased critical damage');
     }
     if (ifdefor(bonuses['*critDamage'])) {
         sections.push(bonuses['*critDamage'].format(1) + 'x critical damage');
     }
     if (ifdefor(bonuses['+critAccuracy'])) {
-        sections.push((100 * bonuses['+critAccuracy']).format(1) + '% increased critical accuracy');
+        sections.push(bonuses['+critAccuracy'].percent(1) + ' increased critical accuracy');
     }
     if (ifdefor(bonuses['*critAccuracy'])) {
         sections.push(bonuses['*critAccuracy'].format(1) + 'x critical accuracy');
     }
     if (ifdefor(bonuses['+magicResist'])) {
-        sections.push('Reduces magic damage received by ' + (100 * bonuses['+magicResist']).format(0) + '%');
+        sections.push('Reduces magic damage received by ' + bonuses['+magicResist'].percent(0));
     }
     if (ifdefor(bonuses['+slowOnHit'])) {
-        sections.push('Slow target by ' + (100 * bonuses['+slowOnHit']).format(0) + '%');
+        sections.push('Slow target by ' + bonuses['+slowOnHit'].percent(0));
     }
     if (ifdefor(bonuses['+accuracy'])) {
         sections.push((bonuses['+accuracy'] > 0 ? '+' : '') + bonuses['+accuracy'].format(1) + ' accuracy');
@@ -332,6 +336,18 @@ Number.prototype.percent = function (digits) {
 }
 String.prototype.percent = function (digits) {
     return this + '%';
+}
+Number.prototype.coins = function () {
+    return tag('span', 'icon coin') + ' ' + tag('span', 'value coins', this);
+}
+String.prototype.coins = function () {
+    return tag('span', 'icon coin') + ' ' + tag('span', 'value coins', this);
+}
+Number.prototype.anima = function () {
+    return tag('span', 'icon anima') + ' ' + tag('span', 'value anima', this);
+}
+String.prototype.anima = function () {
+    return tag('span', 'icon anima') + ' ' + tag('span', 'value anima', this);
 }
 function sellItem(item) {
     if ($dragHelper && (!$dragHelper.data('$source') || $dragHelper.data('$source').data('item') !== item)) {
@@ -612,5 +628,5 @@ $(document).on('keydown', function(event) {
             });
         });
     }
-    console.log(event.which);
+    //console.log(event.which);
 });
