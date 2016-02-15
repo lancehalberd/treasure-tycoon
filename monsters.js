@@ -35,7 +35,7 @@ var monsterSuffixes = [
     ]
 ];
 
-function makeMonster(monsterData, level, extraSkills) {
+function makeMonster(monsterData, level, extraSkills, noRarity) {
     var monster = {
         'level': level,
         'slow': 0,
@@ -73,25 +73,27 @@ function makeMonster(monsterData, level, extraSkills) {
 
     setBaseMonsterStats(monster, level);
 
-    var rarity = (Math.random() < .25) ? (Math.random() * level * .6) : 0;
-    if (rarity < 1) {
+    if (!ifdefor(noRarity)) {
+        var rarity = (Math.random() < .25) ? (Math.random() * level * .6) : 0;
+        if (rarity < 1) {
 
-    } else if (rarity < 3) {
-        if (Math.random() > .5) addMonsterPrefix(monster);
-        else addMonsterSuffix(monster);
-    } else if (rarity < 10) {
-        addMonsterPrefix(monster);
-        addMonsterSuffix(monster);
-    } else if (rarity < 20) {
-        addMonsterPrefix(monster);
-        addMonsterSuffix(monster);
-        if (Math.random() > .5) addMonsterPrefix(monster);
-        else addMonsterSuffix(monster);
-    } else {
-        addMonsterPrefix(monster);
-        addMonsterSuffix(monster);
-        addMonsterPrefix(monster);
-        addMonsterSuffix(monster);
+        } else if (rarity < 3) {
+            if (Math.random() > .5) addMonsterPrefix(monster);
+            else addMonsterSuffix(monster);
+        } else if (rarity < 10) {
+            addMonsterPrefix(monster);
+            addMonsterSuffix(monster);
+        } else if (rarity < 20) {
+            addMonsterPrefix(monster);
+            addMonsterSuffix(monster);
+            if (Math.random() > .5) addMonsterPrefix(monster);
+            else addMonsterSuffix(monster);
+        } else {
+            addMonsterPrefix(monster);
+            addMonsterSuffix(monster);
+            addMonsterPrefix(monster);
+            addMonsterSuffix(monster);
+        }
     }
     monster.base.health = monster.base.maxHealth;
     monster.timedEffects = [];
@@ -243,6 +245,10 @@ function initalizeMonsters() {
     var butterflySource = {'image': enemySheet('gfx/caterpillar.png'), 'offset': 4 * 48, 'width': 48, 'flipped': true, frames: 4};
     var skeletonGiantSource = {'image': enemySheet('gfx/skeletonGiant.png'), 'offset': 0, 'width': 48, 'flipped': true, frames: 7};
     var dragonSource = {'image': enemySheet('gfx/dragonEastern.png'), 'offset': 0, 'width': 48, 'flipped': false, frames: 5};
+    addMonster('dummy', {
+        'name': 'Dummy', 'source': caterpillarSource,
+        'implicitBonuses': {'+magicDamage': 2}
+    });
     addMonster('caterpillar', {
         'name': 'Caterpillar', 'source': caterpillarSource,
         'implicitBonuses': {'*magicDamage': 0,

@@ -253,7 +253,7 @@ function checkToAttackTarget(character, actor, target, distance) {
                             '*maxMagicDamage': ifdefor(attack.damageBonus, 1)}
             }
             actor.pull = {'x': actor.x - actor.direction * 64, 'time': character.time + .3, 'damage': 0};
-            var newMonster = makeMonster(monsterData, actor.level);
+            var newMonster = makeMonster(monsterData, actor.level, [], true);
             newMonster.x = actor.x + actor.direction * 32;
             newMonster.character = character;
             newMonster.direction = actor.direction; // Minios move left to right

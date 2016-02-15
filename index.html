@@ -142,51 +142,39 @@
                 </div>
                 <div class="js-infoMode infoMode">
                     <canvas class="js-canvas" width="64" height="128" style="background-color: white; position: absolute; left: 0px"></canvas>
-                    <div class="triStatBox">
-                        <div class="js-dexterity dexterity">X</div>
-                        <div class="js-strength strength">X</div>
-                        <div class="js-intelligence intelligence">X</div>
-                    </div>
                     <div class="js-stats stats playerBox">
-                        <div>
+                        <div helptext="Experience required before you can learn another skill and level up. <br/><br/>Completing adventures unlocks new skills. <br/><br/> Leveling increases health and basic stats slightly.">
                             Next Lvl: <span class="js-toLevel">X</span> xp
                         </div>
-                        <div>
+                        <div helptext="Starting health for each adventure.">
                             Health: <span class="js-maxHealth">X</span>
                         </div>
                         <div>
                             Damage: <span class="js-damage">X</span>
                         </div>
-                        <div>
-                            Magic Damage: <span class="js-magicDamage">X</span>
-                        </div>
-                        <div>
+                        <div helptext="Higher range will let you attack enemies safely from afar.">
                             Range: <span class="js-range">X</span>
-                        </div>
-                        <div>
-                            Atk Speed: <span class="js-attackSpeed">X</span>
-                        </div>
-                        <div>
-                            Accuracy: <span class="js-accuracy">X</span>
-                        </div>
-                        <div>
-                            Armor: <span class="js-armor">X</span>
                         </div>
                         <div>
                             Evasion: <span class="js-evasion">X</span>
                         </div>
                         <div>
-                            Block: <span class="js-block">X</span>
+                            Protection: <span class="js-protection">X</span>
                         </div>
                         <div>
-                            Magic Block: <span class="js-magicBlock">X</span>
+                            Resistance: <span class="js-resistance">X</span>
                         </div>
-                        <div>
+                        <div helptext="How fast your adventurer moves">
                             Speed: <span class="js-speed">X</span>
                         </div>
                         <div>
                             <button class="js-retire" style="display: none;">Retire</button>
                         </div>
+                    <div class="triStatBox">
+                        <div class="js-dexterity dexterity" helptext="Dexterity increases attack speed, evasion and damage with ranged weapons.">X</div>
+                        <div class="js-strength strength" helptext="Strength increases physical damage, health and damage with melee weapons.">X</div>
+                        <div class="js-intelligence intelligence" helptext="Intelligence increases accuracy, block and magic block and damage with magic weapons.">X</div>
+                    </div>
                     </div><div class="js-equipment equipment playerBox">
                         <div class="js-head js-itemSlot itemSlot head"></div>
                         <div class="js-body js-itemSlot itemSlot body"></div>

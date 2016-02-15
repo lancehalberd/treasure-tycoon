@@ -45,16 +45,9 @@ function refreshStatsPanel(character) {
     character.$panel.find('.js-infoMode .js-intelligence').text(adventurer.intelligence);
     $statsPanel.find('.js-toLevel').text(adventurer.xpToLevel - adventurer.xp);
     $statsPanel.find('.js-maxHealth').text(adventurer.maxHealth);
-    $statsPanel.find('.js-damage').text(adventurer.minDamage + ' to ' + adventurer.maxDamage);
-    $statsPanel.find('.js-magicDamage').text(adventurer.minMagicDamage + ' to ' + adventurer.maxMagicDamage);
     $statsPanel.find('.js-range').text(adventurer.range.format(2));
-    $statsPanel.find('.js-attackSpeed').text(adventurer.attackSpeed.format(2));
-    $statsPanel.find('.js-accuracy').text(adventurer.accuracy);
-    $statsPanel.find('.js-armor').text(adventurer.armor);
-    $statsPanel.find('.js-evasion').text(adventurer.evasion);
-    $statsPanel.find('.js-block').text(adventurer.block);
-    $statsPanel.find('.js-magicBlock').text(adventurer.magicBlock);
     $statsPanel.find('.js-speed').text(adventurer.speed);
+    updateDamageInfo(character);
 }
 function newCharacter(job) {
     var personCanvas = createCanvas(personFrames * 32, 64);

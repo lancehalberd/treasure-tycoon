@@ -275,6 +275,12 @@ Number.prototype.format = function (digits) {
 String.prototype.format = function (digits) {
     return this;
 }
+Number.prototype.percent = function (digits) {
+    return parseFloat((100 * this).toFixed(digits)) + '%';
+}
+String.prototype.percent = function (digits) {
+    return this + '%';
+}
 function sellItem(item) {
     if ($dragHelper && (!$dragHelper.data('$source') || $dragHelper.data('$source').data('item') !== item)) {
         return;
