@@ -83,9 +83,9 @@ async.mapSeries([
     updateItemCrafting();
     var jobKey = Random.element(ranks[0]);
     newCharacter(characterClasses[jobKey]);
-    gainJewel(makeJewel(1, 'diamond', [90, 5, 5], 1.1));
-    gainJewel(makeJewel(1, 'diamond', [5, 90, 5], 1.1));
-    gainJewel(makeJewel(1, 'diamond', [5, 5, 90], 1.1));
+    gainJewel(makeJewel(1, 'triangle', [90, 5, 5], 1.1));
+    gainJewel(makeJewel(1, 'triangle', [5, 90, 5], 1.1));
+    gainJewel(makeJewel(1, 'triangle', [5, 5, 90], 1.1));
     gain('fame', 20);
     gain('coins', 10);
     gain('anima', 0);
