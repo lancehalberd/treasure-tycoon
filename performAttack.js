@@ -142,7 +142,7 @@ function performAttack(character, attack, attacker, target, distance) {
         damage *= (1 + attack.critDamage);
         magicDamage *= (1 + attack.critDamage);
         hitText.color = 'yellow';
-        hitText.font, "40px sans-serif"
+        hitText.font = "30px sans-serif"
     }
     damage = Math.floor(damage * multiplier);
     magicDamage = Math.floor(magicDamage * multiplier);
@@ -151,7 +151,6 @@ function performAttack(character, attack, attacker, target, distance) {
         if (isCritical) {
             accuracyRoll = accuracyRoll * (1 + attack.critAccuracy);
         }
-        var hitText = {x: target.x + 32, y: 240 - 128, color: 'red'};
         var evasionRoll = Math.random() * target.evasion;
         if (accuracyRoll < evasionRoll) {
             hitText.value = 'miss';

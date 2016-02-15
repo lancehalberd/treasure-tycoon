@@ -237,7 +237,7 @@ function checkToAttackTarget(character, actor, target, distance) {
             actor.stunned = character.time + .3;
             return true;
         }
-        if (attack.base.type == 'monster') {
+        if (attack.base.type == 'minion') {
             var count = 0;
             actor.allies.forEach(function (ally) {
                 if (ally.source == attack) count++;

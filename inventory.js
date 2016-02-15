@@ -54,7 +54,9 @@ var tagToDisplayNameMap = {
     'oneHanded': '1-handed',
     'ranged': 'Ranged',
     'melee': 'Melee',
-    'magic': 'Magic'
+    'magic': 'Magic',
+    'throwing': 'Throwing',
+    'skill': 'Skills'
 };
 function tagToDisplayName(tag) {
     return ifdefor(tagToDisplayNameMap[tag], tag);
@@ -142,6 +144,12 @@ function bonusHelpText(rawBonuses, implicit) {
         // so that we can display per tag bonuses.
         if (key.indexOf(':') >= 0) {
             var parts = key.split(':');
+            // skill is a required key word for anything that targets a tagged ability
+            // but shouldn't be considered a seperate tag.
+            if (parts[1] === 'skill' && parts.length > 2) {
+                parts.splice(1, 1);
+                parts[0] += ' skills';
+            }
             var tag = parts[0].substring(1);
             tagBonuses[tag] = ifdefor(tagBonuses[tag], {});
             tagBonuses[tag][parts[0].charAt(0) + parts[1]] = value;
@@ -189,6 +197,9 @@ function bonusHelpText(rawBonuses, implicit) {
     if (ifdefor(bonuses['%damage'])) {
         sections.push((100 * bonuses['%damage']).format(1) + '% increased physical damage');
     }
+    if (ifdefor(bonuses['*damage'])) {
+        sections.push(bonuses['*damage'].format(1) + 'x more physical damage.');
+    }
     if (ifdefor(bonuses['%magicDamage'])) {
         sections.push((100 * bonuses['%magicDamage']).format(1) + '% increased magic damage');
     }
@@ -213,14 +224,23 @@ function bonusHelpText(rawBonuses, implicit) {
     if (ifdefor(bonuses['+healthGainOnHit'])) {
         sections.push('Gain ' + bonuses['+healthGainOnHit'].format(1) + ' health on hit');
     }
+    if (ifdefor(bonuses['*healthGainOnHit'])) {
+        sections.push('Gain ' + bonuses['*healthGainOnHit'].format(1) + 'x more health on hit');
+    }
     if (ifdefor(bonuses['+healthRegen'])) {
         sections.push('Regenerate ' + bonuses['+healthRegen'].format(1) + ' health per second');
+    }
+    if (ifdefor(bonuses['*healthRegen'])) {
+        sections.push('Regenerate ' + bonuses['*healthRegen'].format(1) + 'x more health per second');
     }
     if (ifdefor(bonuses['%maxHealth'])) {
         sections.push((100 * bonuses['%maxHealth']).format(1) + '% increased health');
     }
     if (ifdefor(bonuses['%attackSpeed'])) {
         sections.push((100 * bonuses['%attackSpeed']).format(1) + '% increased attack speed');
+    }
+    if (ifdefor(bonuses['*attackSpeed'])) {
+        sections.push(bonuses['*attackSpeed'].format(1) + 'x attack speed');
     }
     if (ifdefor(bonuses['+critChance'])) {
         if (implicit) sections.push((100 * bonuses['+critChance']).format(0) + '% critical strike chance');
@@ -229,11 +249,20 @@ function bonusHelpText(rawBonuses, implicit) {
     if (ifdefor(bonuses['%critChance'])) {
         sections.push((100 * bonuses['%critChance']).format(1) + '% increased critical chance');
     }
+    if (ifdefor(bonuses['*critDamage'])) {
+        sections.push(bonuses['*critDamage'].format(1) + 'x critical chance');
+    }
     if (ifdefor(bonuses['+critDamage'])) {
         sections.push((100 * bonuses['+critDamage']).format(1) + '% increased critical damage');
     }
+    if (ifdefor(bonuses['*critDamage'])) {
+        sections.push(bonuses['*critDamage'].format(1) + 'x critical damage');
+    }
     if (ifdefor(bonuses['+critAccuracy'])) {
         sections.push((100 * bonuses['+critAccuracy']).format(1) + '% increased critical accuracy');
+    }
+    if (ifdefor(bonuses['*critAccuracy'])) {
+        sections.push(bonuses['*critAccuracy'].format(1) + 'x critical accuracy');
     }
     if (ifdefor(bonuses['+magicResist'])) {
         sections.push('Reduces magic damage received by ' + (100 * bonuses['+magicResist']).format(0) + '%');
@@ -245,17 +274,26 @@ function bonusHelpText(rawBonuses, implicit) {
         sections.push((bonuses['+accuracy'] > 0 ? '+' : '') + bonuses['+accuracy'].format(1) + ' accuracy');
     }
     if (ifdefor(bonuses['%accuracy'])) {
-        sections.push((100 * bonuses['%accuracy']).format(1) + '% increased accuracy');
+        sections.push(bonuses['%accuracy'].percent(1) + ' increased accuracy');
     }
     if (ifdefor(bonuses['+speed'])) {
         sections.push((bonuses['+speed'] > 0 ? '+' : '') + bonuses['+speed'].format(1) + ' speed');
     }
     if (ifdefor(bonuses['+increasedDrops'])) {
-        sections.push('Gain ' + (100 * bonuses['+increasedDrops']).format(1) + '% more coins and anima.');
+        sections.push('Gain ' + bonuses['+increasedDrops'].percent(1) + ' more coins and anima.');
     }
     if (ifdefor(bonuses['+increasedExperience'])) {
-        sections.push('Gain ' + (100 * bonuses['+increasedExperience']).format(1) + '% more experience.');
+        sections.push('Gain ' + bonuses['+increasedExperience'].percent(1) + ' more experience.');
     }
+    if (ifdefor(bonuses['*amount'])) {
+        sections.push(bonuses['*amount'].format(1) + 'x more effective.');
+    }
+    // Some unique abilities just map 'key' => 'help text' directly.
+    $.each(rawBonuses, function (key, value) {
+        if (key.indexOf(':') < 0 && typeof(value) === 'string') {
+            sections.push(value);
+        }
+    });
 
     $.each(tagBonuses, function (tagName, bonuses) {
         sections.push(tag('div', 'tagText', tagName + ':<br/>' + bonusHelpText(bonuses, false)));
