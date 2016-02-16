@@ -203,6 +203,7 @@ function updateAdventurer(adventurer) {
     if (!adventurer.equipment.weapon) {
         // Fighting unarmed is considered using a fist weapon.
         adventurer.tags = ['fist', 'melee'];
+
         // You gain the unarmed tag if both hands are free.
         if (!adventurer.equipment.offhand) {
             adventurer.tags.push('unarmed');
@@ -255,7 +256,7 @@ function updateAdventurer(adventurer) {
             adventurer.character.$panel.find('.js-infoMode .js-equipment .js-' + type).append(equipment.$item);
         }
     });
-    adventurer.attacks.push({'base': createAttack({})});
+    adventurer.attacks.push({'base': createAttack({'tags': adventurer.tags})});
     updateAdventurerStats(adventurer);
 }
 function updateAdventurerStats(adventurer) {
@@ -290,7 +291,10 @@ function updateAdventurerStats(adventurer) {
     adventurer.attacks.forEach(function (attack) {
         $.each(attack.base.stats, function (stat) {
             attack[stat] = getStatForAttack(adventurer, attack.base, stat);
-        })
+        });
+        $.each(specialTraits, function (stat) {
+            attack[stat] = getStatForAttack(adventurer, attack.base, stat);
+        });
     });
     if (ifdefor(adventurer.isMainCharacter)) {
         refreshStatsPanel(adventurer.character);
@@ -346,7 +350,7 @@ function getStat(actor, stat) {
     return (base + plus) * percent * multiplier;
 }
 function getStatForAttack(actor, dataObject, stat) {
-    var base = evaluateValue(actor, ifdefor(dataObject.stats[stat], 0)), plus = 0, percent = 1, multiplier = 1;
+    var base = evaluateValue(actor, ifdefor(dataObject.stats[stat], 0)), plus = 0, percent = 1, multiplier = 1, found = false;
     if (typeof base === 'object' && base.constructor != Array) {
         var subObject = {};
         $.each(base.stats, function (key, value) {
@@ -367,8 +371,14 @@ function getStatForAttack(actor, dataObject, stat) {
             plus += evaluateValue(actor, ifdefor(bonus['+' + key], 0));
             percent += evaluateValue(actor, ifdefor(bonus['%' + key], 0));
             multiplier *= evaluateValue(actor, ifdefor(bonus['*' + key], 1));
+            if (ifdefor(bonus['$' + key])) {
+                found = true;
+            }
         });
     });
+    if (found) {
+        return true;
+    }
     return (base + plus) * percent * multiplier;
 }
 function evaluateValue(actor, value) {

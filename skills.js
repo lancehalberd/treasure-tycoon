@@ -1,7 +1,7 @@
 var abilities = {
-    'juggler': {'name': 'Juggling', 'bonuses': {'*throwing:attackSpeed': 2}},
+    'juggler': {'name': 'Juggling', 'bonuses': {'*throwing:attackSpeed': 2, '$throwing:chaining': 'Projectiles ricochet between targets until they miss.'}},
     'ranger': {'name': 'Taming', 'bonuses': {'*minion:health': 2, '*minion:attackSpeed': 1.5, '*minion:speed': 1.5}},
-    'sniper': {'name': 'Sharp Shooter', 'bonuses': {'*bow:critChance': 1.5, '*bow:critMultiplier': 1.5, 'criticalPiercing': 'Critical strikes hit multiple enemies.'}},
+    'sniper': {'name': 'Sharp Shooter', 'bonuses': {'*bow:critChance': 1.5, '*bow:critMultiplier': 1.5, '$criticalPiercing': 'Critical strikes hit multiple enemies.'}},
     'blackbelt': {'name': 'Martial Arts', 'bonuses': {'*fist:damage': 1.5, '*unarmed:damage': 3, '*unarmed:attackSpeed': 2, '+unarmed:critChance': .15, '*unarmed:critDamage': 2, '*unarmed:critAccuracy': 2}},
     'priest': {'name': 'Divine Blessing', 'bonuses': {'*heal:skill:amount': 2, '*healthRegen': 2, '*healthGainOnHit': 2}},
 
@@ -41,6 +41,14 @@ var abilities = {
     'protect': {'name': 'Protect', 'bonuses': {'+intelligence': 5}, 'attacks': [
             {'type': 'buff', 'stats': {'cooldown': 30, 'buff': {'stats': {'+armor': ['{intelligence}'], 'duration': 20}}}, 'helpText': 'Create a magic barrier that grants: {buff}'}]},
 };
+var specialTraits = {};
+function findSpecialTraits(object) {
+    $.each(object, function (key, value) {
+        if (typeof(key) === 'string' && key.indexOf('$') >= 0) specialTraits[key.substring(1).split(':').pop()] = true;
+        if (typeof(value) === 'object') findSpecialTraits(value);
+    })
+}
+findSpecialTraits(abilities);
 
 function abilityHelpText(ability) {
     var sections = [ability.name, ''];

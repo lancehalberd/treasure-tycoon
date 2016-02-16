@@ -129,30 +129,110 @@ function updateDamageInfo(character) {
     $evasion.parent().attr('helptext', (1 - hitPercent).percent(1) + ' estimated chance to evade attacks.');
 }
 
-function performAttack(character, attack, attacker, target, distance) {
-    attack.readyAt = character.time + ifdefor(attack.cooldown, 0);
-    attacker.attackCooldown = character.time + 1 / (attack.attackSpeed * Math.max(.1, (1 - attacker.slow)));
-    attacker.target = target;
+function createAttackStats(character, attack, attacker) {
     var isCritical = Math.random() <= attack.critChance;
-    var multiplier = ifdefor(attack.rangeDamage) ? (1 + attack.rangeDamage * distance / 32) : 1;
     var damage = Random.range(attack.minDamage, attack.maxDamage);
     var magicDamage = Random.range(attack.minMagicDamage, attack.maxMagicDamage);
-    var hitText = {x: target.x + 32, y: 240 - 128, color: 'red'};
+    var accuracy = Math.random() * attack.accuracy;
     if (isCritical) {
         damage *= (1 + attack.critDamage);
         magicDamage *= (1 + attack.critDamage);
+        accuracy *= (1 + attack.critAccuracy);
+    }
+    return {
+        'character': character,
+        'source': attacker,
+        'attack': attack,
+        'isCritical': isCritical,
+        'damage': damage,
+        'magicDamage': magicDamage,
+        'accuracy': accuracy,
+    };
+}
+
+function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
+    var distance = 0;
+    size = ifdefor(size, 10);
+    var self = {
+        'x': x, 'y': y, 'vx': vx, 'vy': vy, 't': 0, 'done': false, 'delay': delay, 'hit': false,
+        'update': function (character) {
+            if (self.done || self.delay-- > 0) return
+            self.x += self.vx;
+            self.y += self.vy;
+            self.vy+=.1;
+            self.t += 1;
+            distance += Math.sqrt(self.vx * self.vx + self.vy * self.vy);
+            if (Math.abs(target.x + 32 - self.x) < 10 && target.health > 0 && !self.hit) {
+                self.hit = true;
+                self.done = true;
+                if (applyAttackToTarget(attackStats, target, distance) && ifdefor(attackStats.attack.chaining)) {
+                    self.vx = -self.vx;
+                    var targets = attackStats.source.enemies.slice();
+                    while (targets.length) {
+                        var index = Math.floor(Math.random() * targets.length);
+                        var newTarget = targets[index];
+                        if (newTarget.health <= 0 || newTarget === target) {
+                            targets.splice(index--, 1);
+                            continue;
+                        }
+                        self.hit = false;
+                        target = newTarget;
+                        var distance = Math.abs(self.x - newTarget.x);
+                        if (self.vx * (newTarget.x - self.x) < 0) {
+                            self.vx = -self.vx;
+                        }
+                        self.vy = -distance / 200;
+                        attackStats.accuracy *= .95;
+                        break;
+                    }
+                    self.done = false;
+                }
+            }
+            // Put an absolute cap on how far a projectile can travel
+            if (distance > 2000) {
+                self.done = true;
+            }
+        },
+        'draw': function (character) {
+            if (self.done || self.delay > 0) return
+            attackStats.character.context.fillStyle = ifdefor(color, '#000');
+            attackStats.character.context.fillRect(self.x - character.cameraX - size / 2, self.y - size / 2, size, size);
+        }
+    };
+    return self;
+}
+function performAttack(character, attack, attacker, target, distance) {
+    var attackStats = createAttackStats(character, attack, attacker);
+
+    attack.readyAt = character.time + ifdefor(attack.cooldown, 0);
+    attacker.attackCooldown = character.time + 1 / (attack.attackSpeed * Math.max(.1, (1 - attacker.slow)));
+    attacker.target = target;
+
+    if (attack.base.tags.indexOf('ranged') >= 0) {
+        character.projectiles.push(projectile(
+            attackStats, attacker.x + attacker.direction * 32, 240 - 128,
+            attacker.direction * 15, -distance / 200, target, 0,
+            attackStats.isCritical ? 'yellow' : 'red', attackStats.isCritical ? 15 : 10));
+    } else {
+        // apply melee attacks immediately
+        applyAttackToTarget(attackStats, target, distance);
+    }
+}
+function applyAttackToTarget(attackStats, target, distance) {
+    var attack = attackStats.attack;
+    var attacker = attackStats.source;
+    var character = attackStats.character;
+    var multiplier = ifdefor(attack.rangeDamage) ? (1 + attack.rangeDamage * distance / 32) : 1;
+    var hitText = {x: target.x + 32, y: 240 - 128, color: 'red'};
+    if (attackStats.isCritical) {
         hitText.color = 'yellow';
         hitText.font = "30px sans-serif"
     }
-    damage = Math.floor(damage * multiplier);
-    magicDamage = Math.floor(magicDamage * multiplier);
+    var damage = Math.floor(attackStats.damage * multiplier);
+    var magicDamage = Math.floor(attackStats.magicDamage * multiplier);
     if (!ifdefor(attack.base.alwaysHits)) {
-        var accuracyRoll = Math.random() * attack.accuracy;
-        if (isCritical) {
-            accuracyRoll = accuracyRoll * (1 + attack.critAccuracy);
-        }
         var evasionRoll = Math.random() * target.evasion;
-        if (accuracyRoll < evasionRoll) {
+        if (attackStats.accuracy < evasionRoll) {
             hitText.value = 'miss';
             if (ifdefor(attack.damageOnMiss)) {
                 target.health -= attack.damageOnMiss;
@@ -162,7 +242,7 @@ function performAttack(character, attack, attacker, target, distance) {
             hitText.color = 'blue';
             hitText.font, "15px sans-serif"
             character.textPopups.push(hitText);
-            return;
+            return false;
         }
     }
     // Attacks that always hit can still be avoided by a 'dodge' skill.
@@ -186,7 +266,7 @@ function performAttack(character, attack, attacker, target, distance) {
         hitText.color = 'blue';
         hitText.font, "15px sans-serif"
         character.textPopups.push(hitText);
-        return;
+        return false;
     }
     attacker.health += ifdefor(attack.healthGainOnHit, 0);
     target.slow = Math.max(target.slow, ifdefor(attack.slowOnHit, 0));
@@ -217,6 +297,7 @@ function performAttack(character, attack, attacker, target, distance) {
         hitText.font, "15px sans-serif"
     }
     character.textPopups.push(hitText);
+    return true;
 }
 
 function applyArmorToDamage(damage, armor) {

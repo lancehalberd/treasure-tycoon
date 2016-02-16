@@ -134,6 +134,9 @@ function evaluateForDisplay(value) {
     if (typeof value === 'string' && value.charAt(0) === '{') {
         return tag('span', 'formulaStat', value.substring(1, value.length - 1));
     }
+    if (typeof value === 'string') {
+        return value;
+    }
     if (value.constructor !== Array && value.stats) {
         return bonusHelpText(value.stats);
     }
