@@ -66,7 +66,7 @@ function copy(object) {
 }
 
 function properCase(string) {
-    return string.charAt(0).toUpperCase() + string.substring(1);
+    return string.split(' ').map(function (word) {return word.charAt(0).toUpperCase() + word.substring(1)}).join(' ');
 }
 
 /**

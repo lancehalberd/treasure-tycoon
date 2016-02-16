@@ -75,7 +75,7 @@ function makeJewel(tier, shapeType, components, quality) {
         'quality': quality,
         'shape': makeShape(0, 0, 0, shapeDefinition).scale(30),
         'area': area,
-        'price': Math.round(Math.pow(10, tier) * quality * quality * (5 - qualifierIndex) * area),
+        'price': Math.round(10 * Math.pow(quality, 6) * (5 - qualifierIndex) * area),
         'adjacentJewels': [],
         'adjacencyBonuses': {}
     };
@@ -103,7 +103,7 @@ function clearAdjacentJewels(jewel) {
         if (jewelIndex >= 0) {
             adjacentJewel.adjacentJewels.splice(jewelIndex, 1);
         }
-        updateAdjacencyBonsues(adjacentJewel);
+        updateAdjacencyBonuses(adjacentJewel);
     }
 }
 function updateAdjacentJewels(jewel) {
@@ -131,13 +131,13 @@ function updateAdjacentJewels(jewel) {
         if (count == 2) {
             jewel.adjacentJewels.push(jewels[i]);
             jewels[i].adjacentJewels.push(jewel);
-            updateAdjacencyBonsues(jewels[i]);
+            updateAdjacencyBonuses(jewels[i]);
         }
     }
-    updateAdjacencyBonsues(jewel);
+    updateAdjacencyBonuses(jewel);
     removeToolTip();
 }
-function updateAdjacencyBonsues(jewel) {
+function updateAdjacencyBonuses(jewel) {
     jewel.adjacencyBonuses = {};
     if (jewel.fixed) {
         return;
@@ -165,7 +165,7 @@ function updateAdjacencyBonsues(jewel) {
         // Dual gems qualifier bonus is applied to adjacent gems' adjacency bonuses
         if (adjacent.jewelType === 3 || adjacent.jewelType === 5 || adjacent.jewelType === 6) {
             // These are additive, otherwise they could result in 3x multiplier on hexagons.
-            adjacentQualifierBonus += (jewel.qualifierBonus - 1);
+            adjacentQualifierBonus += (adjacent.qualifierBonus - 1);
         }
     }
     coefficient *= adjacentQualifierBonus;

@@ -120,33 +120,6 @@ function createEndlessLevel(key, level) {
     addLevel({'name': name, 'level': level, 'background': background, 'specialLoot': [jewelLoot(basicShapeTypes, [tier, tier], components, false)], 'next': [key + (level + 1)],
              'enemySkills': [], 'monsters': monsters, 'events': events, 'key' : key + level});
 }
-function board(shapes) {
-    return {'fixed': [shapes.shift()], 'spaces': shapes};
-}
-// 3 triangle boards
-var triforceBoard = {
-    'fixed' : [{"k":"triangle","p":[136,79],"t":0}], 'spaces' : [{"k":"triangle","p":[151,104.98076211353316],"t":-60},{"k":"triangle","p":[121,104.98076211353316],"t":-60},{"k":"triangle","p":[136,79],"t":-60}]
-};
-var halfHexBoard = {
-    'fixed' : [{"k":"trapezoid","p":[383,172.96152422706632],"t":-180}], 'spaces': [{"k":"trapezoid","p":[353,121],"t":0}]
-};
-var spikeBoard = {
-    'fixed': [{"k":"trapezoid","p":[295,236.96152422706632],"t":0}],
-    'spaces': [{"k":"triangle","p":[295,236.96152422706632],"t":-60},{"k":"triangle","p":[280,262.9422863405995],"t":-120},{"k":"triangle","p":[340,262.9422863405995],"t":-120}]
-};
-// 4 triangle boards
-var thirdHexBoard = {
-    'fixed': [{"k":"diamond","p":[197.5048094716167,130.22114317029974],"t":-120}], 'spaces': [{"k":"diamond","p":[212.5048094716167,104.24038105676658],"t":-60},{"k":"diamond","p":[197.5048094716167,78.2596189432334],"t":0}]
-}
-var hourGlassBoard = {
-    'fixed': [{"k":"diamond","p":[232.5,212.99038105676658],"t":-60}], 'spaces': [{"k":"triangle","p":[232.5,212.99038105676658],"t":60},{"k":"triangle","p":[262.5,212.99038105676658],"t":60},{"k":"triangle","p":[217.5,187.00961894323342],"t":0},{"k":"triangle","p":[247.5,187.00961894323342],"t":0}]
-}
-var fangBoard = {'fixed': [{"k":"triangle","p":[414.00000000000006,103.78729582162231],"t":-120}], 'spaces': [{"k":"diamond","p":[444.00000000000006,103.78729582162231],"t":-240},{"k":"diamond","p":[414.00000000000006,103.78729582162231],"t":-240}]};
-var petalBoard = {'fixed': [{"k":"diamond","p":[270.5,77.99038105676658],"t":-60}], 'spaces': [{"k":"diamond","p":[255.5,103.97114317029974],"t":-120},{"k":"diamond","p":[315.5,103.97114317029974],"t":-180}]};
-// 5 triangle board
-var pieBoard = board([{"k":"triangle","p":[90,148.03847577293365],"t":60}, {"k":"triangle","p":[60,148.03847577293365],"t":0},{"k":"trapezoid","p":[90,200],"t":180},{"k":"triangle","p":[60,148.03847577293365],"t":60}]);
-var helmBoard = board([{"k":"trapezoid","p":[151,87],"t":0},{"k":"diamond","p":[151,87],"t":-240},{"k":"diamond","p":[181,87],"t":-60},{"k":"triangle","p":[166,61.01923788646684],"t":60}]);
-var crownBoard = board([{"k":"triangle","p":[443,326.1346123343714],"t":-60},{"k":"diamond","p":[488,352.11537444790457],"t":-540},{"k":"triangle","p":[458,352.11537444790457],"t":-120},{"k":"diamond","p":[428,352.11537444790457],"t":-120}]);
 function initializeLevels() {
     closedChestSource = {'image': images['gfx/chest-closed.png'], 'xOffset': 0, 'width': 32, 'height': 32};
     openChestSource = {'image': images['gfx/chest-open.png'], 'xOffset': 0, 'width': 32, 'height': 32};

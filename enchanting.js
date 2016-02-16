@@ -88,12 +88,12 @@ addPrefix(36, 'Restoring', smallArmorSlots.concat(accessorySlots), {'+healthRege
 addPrefix(48, 'Healing', smallArmorSlots.concat(accessorySlots), {'+healthRegen': [120, 160, 10]});
 addPrefix(60, 'Reviving', smallArmorSlots.concat(accessorySlots), {'+healthRegen': [160, 200, 10]});
 
-addPrefix(1, 'Warding', accessorySlots, {'+magicResist': [10, 20, 100]});
-addPrefix(8, 'Charmed', accessorySlots, {'+magicResist': [20, 50, 100]});
-addPrefix(18, 'Cloaking', accessorySlots, {'+magicResist': [50, 80, 100]});
-addPrefix(38, 'Enchanted', accessorySlots, {'+magicResist': [80, 120, 100]});
-addPrefix(48, 'Shielding', accessorySlots, {'+magicResist': [120, 160, 100]});
-addPrefix(68, 'Blessed', accessorySlots, {'+magicResist': [160, 200, 100]});
+addPrefix(1, 'Warding', accessorySlots, {'+magicResist': [10, 20, 1000]});
+addPrefix(8, 'Charmed', accessorySlots, {'+magicResist': [20, 50, 1000]});
+addPrefix(18, 'Cloaking', accessorySlots, {'+magicResist': [50, 80, 1000]});
+addPrefix(38, 'Enchanted', accessorySlots, {'+magicResist': [80, 120, 1000]});
+addPrefix(48, 'Shielding', accessorySlots, {'+magicResist': [120, 160, 1000]});
+addPrefix(68, 'Blessed', accessorySlots, {'+magicResist': [160, 200, 1000]});
 
 addSuffix(3, 'Range', 'ranged', {'+range': [5, 10, 10]});
 addSuffix(13, 'The Owl', 'ranged', {'+range': [11, 15, 10]});
@@ -120,18 +120,18 @@ addSuffix(1, 'Toughness', armorSlots, {'+armor': [3, 5]});
 addSuffix(1, 'Deflecting', armorSlots, {'+block': [3, 5]});
 addSuffix(1, 'Evasion', armorSlots, {'+evasion': [3, 6]});
 
-addSuffix(1, 'Minor Strength', accessorySlots, {'+strength': [5, 10]});
-addSuffix(1, 'Minor Dexterity', accessorySlots, {'+dexterity': [5, 10]});
-addSuffix(1, 'Minor Intelligence', accessorySlots, {'+intelligence': [5, 10]});
-addSuffix(11, 'Strength', accessorySlots, {'+strength': [11, 20]});
-addSuffix(11, 'Dexterity', accessorySlots, {'+dexterity': [11, 20]});
-addSuffix(11, 'Intelligence', accessorySlots, {'+intelligence': [11, 20]});
-addSuffix(31, 'Major Strength', accessorySlots, {'+strength': [21, 30]});
-addSuffix(31, 'Major Dexterity', accessorySlots, {'+dexterity': [21, 30]});
-addSuffix(31, 'Major Intelligence', accessorySlots, {'+intelligence': [21, 30]});
-addSuffix(61, 'Unsurpassed Strength', accessorySlots, {'+strength': [31, 60]});
-addSuffix(61, 'Unsurpassed  Dexterity', accessorySlots, {'+dexterity': [31, 60]});
-addSuffix(61, 'Unsurpassed  Intelligence', accessorySlots, {'+intelligence': [31, 60]});
+addSuffix(1, 'Minor Strength', accessorySlots, {'+strength': [3, 6]});
+addSuffix(1, 'Minor Dexterity', accessorySlots, {'+dexterity': [3, 6]});
+addSuffix(1, 'Minor Intelligence', accessorySlots, {'+intelligence': [3, 6]});
+addSuffix(11, 'Strength', accessorySlots, {'+strength': [7, 15]});
+addSuffix(11, 'Dexterity', accessorySlots, {'+dexterity': [7, 15]});
+addSuffix(11, 'Intelligence', accessorySlots, {'+intelligence': [7, 15]});
+addSuffix(31, 'Major Strength', accessorySlots, {'+strength': [16, 30]});
+addSuffix(31, 'Major Dexterity', accessorySlots, {'+dexterity': [16, 30]});
+addSuffix(31, 'Major Intelligence', accessorySlots, {'+intelligence': [16, 30]});
+addSuffix(61, 'Unsurpassed Strength', accessorySlots, {'+strength': [31, 50]});
+addSuffix(61, 'Unsurpassed  Dexterity', accessorySlots, {'+dexterity': [31, 50]});
+addSuffix(61, 'Unsurpassed  Intelligence', accessorySlots, {'+intelligence': [31, 50]});
 
 var affixesByKey = {};
 $.each(prefixes, function (level, levelAffixes) {
@@ -167,12 +167,14 @@ function makeAffix(baseAffix) {
 function addPrefixToItem(item) {
     var alreadyUsed = [];
     item.prefixes.forEach(function (affix) {alreadyUsed.push(affix.base);});
-    item.prefixes.push(makeAffix(Random.element(matchingAffixes(prefixes, item, alreadyUsed))));
+    var newAffix = makeAffix(Random.element(matchingAffixes(prefixes, item, alreadyUsed)));
+    item.prefixes.push(newAffix);
 }
 function addSuffixToItem(item) {
     var alreadyUsed = [];
     item.suffixes.forEach(function (affix) {alreadyUsed.push(affix.base);});
-    item.suffixes.push(makeAffix(Random.element(matchingAffixes(suffixes, item, alreadyUsed))));
+    var newAffix = makeAffix(Random.element(matchingAffixes(suffixes, item, alreadyUsed)));
+    item.suffixes.push(newAffix);
 }
 function matchingAffixes(list, item, alreadyUsed) {
     var choices = [];
@@ -295,20 +297,33 @@ function imbueItemProper(item) {
 }
 function augmentItem() {
     var item = $('.js-enchantmentSlot').find('.js-item').data('item');
-    if (!item.prefixes.length) {
-        if (!spend('anima', sellValue(item) * 20)) {
-            return;
+    if (item.prefixes.length + item.suffixes.length >= 4) {
+        return;
+    }
+    if (!item.prefixes.length || !item.suffixes.length) {
+        if (spend('anima', sellValue(item) * 20)) {
+            augmentItemProper(item);
+            updateEnchantmentOptions();
         }
+        return;
+    }
+    if (spend('anima', sellValue(item) * 100)) {
+        augmentItemProper(item);
+        updateEnchantmentOptions();
+    }
+}
+function augmentItemProper(item) {
+    if (!item.prefixes.length && !item.suffixes.length) {
+        if (Math.random() > .5) {
+            addPrefixToItem(item);
+        } else {
+            addSuffixToItem(item);
+        }
+    } else if (!item.prefixes.length) {
         addPrefixToItem(item);
     } else if (!item.suffixes.length) {
-        if (!spend('anima', sellValue(item) * 20)) {
-            return;
-        }
         addSuffixToItem(item);
     } else {
-        if (!spend('anima', sellValue(item) * 100)) {
-            return;
-        }
         if (item.suffixes.length == 2) {
             addPrefixToItem(item);
         } else if (item.prefixes.length == 2) {
@@ -320,7 +335,6 @@ function augmentItem() {
         }
     }
     updateItem(item);
-    updateEnchantmentOptions();
 }
 function mutateItem() {
     var item = $('.js-enchantmentSlot').find('.js-item').data('item');
