@@ -365,8 +365,9 @@ function sellItem(item) {
     destroyItem(item);
     var total = item.prefixes.length + item.suffixes.length;
     if (total) {
-        if (total <= 2) gain('anima', sellValue(item) * total);
-        else gain('anima', sellValue(item) * (total - 2) * 5);
+        var animaValue = item.base.level * item.base.level * item.base.level;
+        if (total <= 2) gain('anima', animaValue * total);
+        else gain('anima', animaValue * total);
     }
 }
 function destroyItem(item) {

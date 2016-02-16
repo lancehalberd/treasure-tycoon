@@ -173,7 +173,7 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                         while (targets.length) {
                             var index = Math.floor(Math.random() * targets.length);
                             var newTarget = targets[index];
-                            if (newTarget.health <= 0 || newTarget === target) {
+                            if (newTarget.health <= 0 || newTarget === target || newTarget.cloaked) {
                                 targets.splice(index--, 1);
                                 continue;
                             }

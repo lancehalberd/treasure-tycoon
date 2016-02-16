@@ -1,8 +1,8 @@
 var abilities = {
-    'juggler': {'name': 'Juggling', 'bonuses': {'*throwing:attackSpeed': 2, '$throwing:chaining': 'Projectiles ricochet between targets until they miss.'}},
+    'juggler': {'name': 'Juggling', 'bonuses': {'*throwing:attackSpeed': 1.5, '$throwing:chaining': 'Projectiles ricochet between targets until they miss.'}},
     'ranger': {'name': 'Taming', 'bonuses': {'*minion:health': 2, '*minion:attackSpeed': 1.5, '*minion:speed': 1.5}},
     'sniper': {'name': 'Sharp Shooter', 'bonuses': {'*bow:critChance': 1.5, '*bow:critMultiplier': 1.5, '$criticalPiercing': 'Critical strikes hit multiple enemies.'}},
-    'blackbelt': {'name': 'Martial Arts', 'bonuses': {'*fist:damage': 1.5, '*unarmed:damage': 3, '*unarmed:attackSpeed': 2, '+unarmed:critChance': .15, '*unarmed:critDamage': 2, '*unarmed:critAccuracy': 2}},
+    'blackbelt': {'name': 'Martial Arts', 'bonuses': {'*fist:damage': 1.5, '*unarmed:damage': 3, '*unarmed:attackSpeed': 1.5, '+unarmed:critChance': .15, '*unarmed:critDamage': 2, '*unarmed:critAccuracy': 2}},
     'priest': {'name': 'Divine Blessing', 'bonuses': {'*heal:skill:amount': 2, '*healthRegen': 2, '*healthGainOnHit': 2}},
 
     'pet': {'name': 'Pet', 'attacks': [
