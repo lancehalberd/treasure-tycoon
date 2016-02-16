@@ -264,7 +264,7 @@ function initalizeMonsters() {
         'implicitBonuses': {'+range': .5, '*attackSpeed': 1.5, '+magicDamage': 2,
                             '*block': .5, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': .3},
-        'abilities': [{'name': 'raiseDead', 'attacks': [{'type': 'monster', 'tags': ['skeleton'], 'key': 'skeleton', 'stats': {'limit': 2, 'cooldown': 5, 'healthBonus': 1, 'damageBonus': 2}}]}]
+        'abilities': [abilities.raiseDead, {'bonuses': {'+raisedead:limit': 1, '*raisedead:cooldown': .5, '+raisedead:healthBonus': .5, '+raisedead:damageBonus': 1}}]
     });
     addMonster('skeleton', {'name': 'Skeleton', 'source': skeletonSource,
         // Fast to counter ranged heroes, low range+damage + fast attacks to be weak to armored heroes.
@@ -284,7 +284,7 @@ function initalizeMonsters() {
                             '*minDamage': .5, '*maxDamage': .5, '*attackSpeed': .5, '*magicDamage': 0,
                             '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
                             '*speed': .6},
-        'abilities': [{'name': 'Pet', 'attacks': [{'type': 'monster', 'tags': ['pet'], 'key': 'caterpillar', 'stats': {'limit': 2, 'cooldown': 10, 'healthBonus': 2, 'damageBonus': 1}}]}]
+            'abilities': [abilities.pet, {'bonuses': {'+pet:limit': 1, '*pet:cooldown': 1/3, '+pet:healthBonus': 1}}]
     });
     addMonster('giantSkeleton', {'name': 'Skelegiant', 'source': skeletonGiantSource,
         'implicitBonuses': {'*maxHealth': 2, '+critDamage': .5, '*magicDamage': 0, '*accuracy': 2,

@@ -164,28 +164,30 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
             distance += Math.sqrt(self.vx * self.vx + self.vy * self.vy);
             if (Math.abs(target.x + 32 - self.x) < 10 && target.health > 0 && !self.hit) {
                 self.hit = true;
-                self.done = true;
-                if (applyAttackToTarget(attackStats, target, distance) && ifdefor(attackStats.attack.chaining)) {
-                    self.vx = -self.vx;
-                    var targets = attackStats.source.enemies.slice();
-                    while (targets.length) {
-                        var index = Math.floor(Math.random() * targets.length);
-                        var newTarget = targets[index];
-                        if (newTarget.health <= 0 || newTarget === target) {
-                            targets.splice(index--, 1);
-                            continue;
+                if (applyAttackToTarget(attackStats, target, distance)) {
+                    self.done = true;
+                    if (ifdefor(attackStats.attack.chaining)) {
+                        self.done = false;
+                        self.vx = -self.vx;
+                        var targets = attackStats.source.enemies.slice();
+                        while (targets.length) {
+                            var index = Math.floor(Math.random() * targets.length);
+                            var newTarget = targets[index];
+                            if (newTarget.health <= 0 || newTarget === target) {
+                                targets.splice(index--, 1);
+                                continue;
+                            }
+                            self.hit = false;
+                            target = newTarget;
+                            var distance = Math.abs(self.x - newTarget.x);
+                            if (self.vx * (newTarget.x - self.x) < 0) {
+                                self.vx = -self.vx;
+                            }
+                            self.vy = -distance / 200;
+                            attackStats.accuracy *= .95;
+                            break;
                         }
-                        self.hit = false;
-                        target = newTarget;
-                        var distance = Math.abs(self.x - newTarget.x);
-                        if (self.vx * (newTarget.x - self.x) < 0) {
-                            self.vx = -self.vx;
-                        }
-                        self.vy = -distance / 200;
-                        attackStats.accuracy *= .95;
-                        break;
                     }
-                    self.done = false;
                 }
             }
             // Put an absolute cap on how far a projectile can travel
