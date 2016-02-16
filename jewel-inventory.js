@@ -77,8 +77,10 @@ $('body').on('mousedown', function (event) {
     draggedJewel = overJewel;
     clearAdjacentJewels(draggedJewel);
     updateAdjacencyBonuses(draggedJewel);
-    $popup.remove();
-    checkToShowJewelToolTip();
+    if ($popup) {
+        $popup.remove();
+        checkToShowJewelToolTip();
+    }
     if (overVertex) {
         return;
     }
