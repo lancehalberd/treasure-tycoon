@@ -44,7 +44,7 @@ addItem(57, {'slot': 'head', 'type': 'clothArmor', 'name': 'Blessed Cowl', 'bonu
 addItem(67, {'slot': 'head', 'type': 'clothArmor', 'name': 'Divine Cowl', 'bonuses': {'+block': 100, '+magicBlock': 60, '+armor': 10, '+evasion': 10, '+maxHealth': 50}, 'offset': 10, icon: 'hat'});
 
 //Heavy Armor gives armor + health
-addItem(3, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Lamellar', 'bonuses': {'+armor': 2, '+maxHealth': 10}, 'offset': 3, icon: 'armor'});
+addItem(3, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Lamellar', 'bonuses': {'+armor': 3, '+maxHealth': 15}, 'offset': 3, icon: 'armor'});
 addItem(8, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Bamboo Armor', 'bonuses': {'+armor': 13, '+maxHealth': 65}, 'offset': 3, icon: 'armor'});
 addItem(13, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Panoply', 'bonuses': {'+armor': 23, '+maxHealth': 115}, 'offset': 3, icon: 'armor'});
 addItem(18, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Plated Coat', 'bonuses': {'+armor': 33, '+maxHealth': 165}, 'offset': 3, icon: 'armor'});

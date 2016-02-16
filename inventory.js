@@ -309,6 +309,18 @@ function bonusHelpText(rawBonuses, implicit) {
     if (ifdefor(bonuses['*amount'])) {
         sections.push(bonuses['*amount'].format(1) + 'x more effective.');
     }
+    if (ifdefor(bonuses['+healthBonus'])) {
+        sections.push(bonuses['+healthBonus'].percent(1) + ' increased health.');
+    }
+    if (ifdefor(bonuses['+damageBonus'])) {
+        sections.push(bonuses['+damageBonus'].percent(1) + ' increased damage.');
+    }
+    if (ifdefor(bonuses['+attackSpeedBonus'])) {
+        sections.push(bonuses['+attackSpeedBonus'].percent(1) + ' increased attack speed.');
+    }
+    if (ifdefor(bonuses['+speedBonus'])) {
+        sections.push(bonuses['+speedBonus'].percent(1) + ' increased movement speed.');
+    }
     // Some unique abilities just map 'key' => 'help text' directly.
     $.each(rawBonuses, function (key, value) {
         if (key.indexOf(':') < 0 && typeof(value) === 'string') {

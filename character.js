@@ -445,11 +445,11 @@ function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonu
 var characterClasses = {};
 addCharacterClass('Fool', 0, 0, 0);
 
-addCharacterClass('Juggler', 2, 1, 0, {'weapon': itemsByKey.ball, 'body': itemsByKey.lamellar},
+addCharacterClass('Juggler', 2, 1, 0, {'weapon': itemsByKey.ball, 'body': itemsByKey.woolshirt},
     [jewelLoot(['triangle'], [1, 1], [[10,15], [90, 100], [5, 10]], false), smallJewelLoot, smallJewelLoot], 'grove');
-addCharacterClass('Black Belt', 0, 2, 1, {'body': itemsByKey.lamellar},
+addCharacterClass('Black Belt', 0, 2, 1, {'body': itemsByKey.woolshirt},
     [jewelLoot(['triangle'], [1, 1], [[90, 100], [10,15], [5, 10]], false), smallJewelLoot, smallJewelLoot], 'meadow');
-addCharacterClass('Priest', 1, 0, 2, {'weapon': itemsByKey.stick, 'body': itemsByKey.lamellar},
+addCharacterClass('Priest', 1, 0, 2, {'weapon': itemsByKey.stick, 'body': itemsByKey.woolshirt},
     [jewelLoot(['triangle'], [1, 1], [[10,15], [5, 10], [90, 100]], false), smallJewelLoot, smallJewelLoot], 'cave');
 
 addCharacterClass('Corsair', 2, 2, 1);

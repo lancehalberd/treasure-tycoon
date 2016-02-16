@@ -1,12 +1,12 @@
 var abilities = {
     'juggler': {'name': 'Juggling', 'bonuses': {'*throwing:attackSpeed': 1.5, '$throwing:chaining': 'Projectiles ricochet between targets until they miss.'}},
-    'ranger': {'name': 'Taming', 'bonuses': {'*minion:health': 2, '*minion:attackSpeed': 1.5, '*minion:speed': 1.5}},
+    'ranger': {'name': 'Taming', 'bonuses': {'+minion:healthBonus': 1, '+minion:attackSpeedBonus': 1.5, '+minion:speedBonus': 1.5}},
     'sniper': {'name': 'Sharp Shooter', 'bonuses': {'*bow:critChance': 1.5, '*bow:critMultiplier': 1.5, '$criticalPiercing': 'Critical strikes hit multiple enemies.'}},
     'blackbelt': {'name': 'Martial Arts', 'bonuses': {'*fist:damage': 1.5, '*unarmed:damage': 3, '*unarmed:attackSpeed': 1.5, '+unarmed:critChance': .15, '*unarmed:critDamage': 2, '*unarmed:critAccuracy': 2}},
     'priest': {'name': 'Divine Blessing', 'bonuses': {'*heal:skill:amount': 2, '*healthRegen': 2, '*healthGainOnHit': 2}},
 
     'pet': {'name': 'Pet', 'attacks': [
-            {'type': 'minion', 'tags': ['pet'], 'key': 'caterpillar', 'stats': {'limit': 1, 'cooldown': 30, 'healthBonus': 1, 'damageBonus': 1}, 'helpText': 'Call up to 1 pet to fight with you.'}]},
+            {'type': 'minion', 'tags': ['pet'], 'key': 'caterpillar', 'stats': {'limit': 1, 'cooldown': 30, 'healthBonus': 1, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1}, 'helpText': 'Call up to 1 pet to fight with you.'}]},
     'petFood': {'name': 'Pet Food', 'bonuses': {'+pet:skill:cooldown': -3, '+pet:skill:healthBonus': 1}, 'helpText': 'Pet has 50% more health and can be called more frequently.'},
     'petTraining': {'name': 'Pet Training', 'next': ['whistle'], 'bonuses': {'+pet:skill:cooldown': -3, '+pet:skill:damageBonus': .5}, 'helpText': 'Pet deals 50% more damage and can be called more frequently.'},
     'whistle': {'name': 'Whistle', 'bonuses': {'+pet:skill:cooldown': -10}, 'helpText': 'Greatly reduces the cooldown for calling your pet.'},
@@ -36,7 +36,7 @@ var abilities = {
             {'type': 'heal', 'stats': {'amount': ['{intelligence}'], 'cooldown': 10}, 'helpText': 'Cast a spell to restore {amount} health.'}]},
 
     'raiseDead': {'name': 'Raise Dead', 'attacks': [
-            {'type': 'minion',  'tags': ['skeleton'], 'key': 'skeleton', 'stats': {'limit': 1, 'cooldown': 10, 'healthBonus': .5}, 'helpText': 'Raise a skeleton to fight for you.'}]},
+            {'type': 'minion',  'tags': ['skeleton'], 'key': 'skeleton', 'stats': {'limit': 1, 'cooldown': 10, 'healthBonus': .5, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1}, 'helpText': 'Raise a skeleton to fight for you.'}]},
 
     'protect': {'name': 'Protect', 'bonuses': {'+intelligence': 5}, 'attacks': [
             {'type': 'buff', 'stats': {'cooldown': 30, 'buff': {'stats': {'+armor': ['{intelligence}'], 'duration': 20}}}, 'helpText': 'Create a magic barrier that grants: {buff}'}]},

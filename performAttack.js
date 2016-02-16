@@ -271,7 +271,7 @@ function applyAttackToTarget(attackStats, target, distance) {
         return false;
     }
     attacker.health += ifdefor(attack.healthGainOnHit, 0);
-    target.slow = Math.max(target.slow, ifdefor(attack.slowOnHit, 0));
+    target.slow += Math.max(target.slow, ifdefor(attack.slowOnHit, 0));
     // Apply block reduction
     var blockRoll = Random.range(0, target.block);
     var magicBlockRoll = Random.range(0, target.magicBlock);
