@@ -103,7 +103,7 @@ function clearAdjacentJewels(jewel) {
         if (jewelIndex >= 0) {
             adjacentJewel.adjacentJewels.splice(jewelIndex, 1);
         }
-        updateAdjacencyBonsues(adjacentJewel);
+        updateAdjacencyBonuses(adjacentJewel);
     }
 }
 function updateAdjacentJewels(jewel) {
@@ -131,13 +131,13 @@ function updateAdjacentJewels(jewel) {
         if (count == 2) {
             jewel.adjacentJewels.push(jewels[i]);
             jewels[i].adjacentJewels.push(jewel);
-            updateAdjacencyBonsues(jewels[i]);
+            updateAdjacencyBonuses(jewels[i]);
         }
     }
-    updateAdjacencyBonsues(jewel);
+    updateAdjacencyBonuses(jewel);
     removeToolTip();
 }
-function updateAdjacencyBonsues(jewel) {
+function updateAdjacencyBonuses(jewel) {
     jewel.adjacencyBonuses = {};
     if (jewel.fixed) {
         return;
