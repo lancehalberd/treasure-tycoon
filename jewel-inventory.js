@@ -483,11 +483,17 @@ function snapToBoard(shape, board) {
     var vectors = [];
     var checkedPoints = shape.points;
     var otherPoints = allPoints(otherShapes);
-    for (var i = 0; i < checkedPoints.length; i++) {
-        for (var j = 0; j < otherPoints.length; j++) {
-            var d2 = distanceSquared(checkedPoints[i], otherPoints[j]);
-            vectors.push({d2: d2, vector: vector(checkedPoints[i], otherPoints[j])});
+    for (var rotation = 0; rotation < 360; rotation += 30) {
+        shape.rotate(rotation);
+        for (var i = 0; i < checkedPoints.length; i++) {
+            for (var j = 0; j < otherPoints.length; j++) {
+                var d2 = distanceSquared(checkedPoints[i], otherPoints[j]);
+                if (rotation) d2 += 100;
+                if (rotation % 60) d2 += 200;
+                vectors.push({d2: d2, vector: vector(checkedPoints[i], otherPoints[j]), rotation: rotation});
+            }
         }
+        shape.rotate(-rotation);
     }
     if (!vectors.length) {
         return false;
@@ -499,9 +505,11 @@ function snapToBoard(shape, board) {
         return false;
     }
     for (var i = 0; i < vectors.length; i++) {
+        shape.rotate(vectors[i].rotation);
         shape.translate(vectors[i].vector[0], vectors[i].vector[1]);
         if (checkForCollision([shape], otherShapes) || !isOnBoard(shape, board)) {
             shape.translate(-vectors[i].vector[0], -vectors[i].vector[1]);
+            shape.rotate(-vectors[i].rotation);
         } else {
             return true;
         }

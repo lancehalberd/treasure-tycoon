@@ -88,9 +88,14 @@ function newCharacter(job) {
     centerShapesInRectangle(character.board.fixed.map(jewelToShape).concat(character.board.spaces), rectangle(0, 0, character.boardCanvas.width, character.boardCanvas.height));
     drawBoardBackground(character.boardContext, character.board);
     updateAdventurer(character.adventurer);
-    ifdefor(job.loot, [simpleJewelLoot, simpleJewelLoot, simpleJewelLoot]).forEach(function (loot) {
-        loot.generateLootDrop().gainLoot(character);
+    ifdefor(job.jewelLoot, [smallJewelLoot, smallJewelLoot, smallJewelLoot]).forEach(function (loot) {
+        draggedJewel = loot.generateLootDrop().gainLoot(character);
+        draggedJewel.shape.setCenterPosition(character.jewelsCanvas.width / 2, character.jewelsCanvas.width / 2);
+        if (!equipJewel(character)) {
+            consol.log("Failed to place jewel on starting board.");
+        }
     });
+    draggedJewel = null;
 }
 function convertShapeDataToShape(shapeData) {
     return makeShape(shapeData.p[0], shapeData.p[1], (shapeData.t % 360 + 360) % 360, shapeDefinitions[shapeData.k][0], 30);
@@ -426,17 +431,19 @@ function gainLevel(adventurer) {
     adventurer.xpToLevel = xpToLevel(adventurer.level);
     updateAdventurerStats(adventurer);
 }
-function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonus, startingEquipment, loot, areaKey) {
+function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonus, startingEquipment, jewelLoot, areaKey) {
     var key = name.replace(/\s*/g, '').toLowerCase();
+    startingEquipment = ifdefor(startingEquipment, {});
+    startingEquipment.body = ifdefor(startingEquipment.body, itemsByKey.woolshirt);
     characterClasses[key] = {
         'key': key,
         'name': name,
         'dexterityBonus': dexterityBonus,
         'strengthBonus': strengthBonus,
         'intelligenceBonus': intelligenceBonus,
-        'startingEquipment': ifdefor(startingEquipment, {'weapon': itemsByKey.rock}),
+        'startingEquipment': startingEquipment,
         'startingBoard': ifdefor(classBoards[key], squareBoard),
-        'loot': loot,
+        'jewelLoot': jewelLoot,
         'areaKey': ifdefor(areaKey, 'meadow')
     };
 }
@@ -445,18 +452,19 @@ function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonu
 var characterClasses = {};
 addCharacterClass('Fool', 0, 0, 0);
 
-addCharacterClass('Juggler', 2, 1, 0, {'weapon': itemsByKey.ball, 'body': itemsByKey.woolshirt},
+addCharacterClass('Juggler', 2, 1, 0, {'weapon': itemsByKey.ball},
     [jewelLoot(['triangle'], [1, 1], [[10,15], [90, 100], [5, 10]], false), smallJewelLoot, smallJewelLoot], 'grove');
-addCharacterClass('Black Belt', 0, 2, 1, {'body': itemsByKey.woolshirt},
+addCharacterClass('Black Belt', 0, 2, 1, {},
     [jewelLoot(['triangle'], [1, 1], [[90, 100], [10,15], [5, 10]], false), smallJewelLoot, smallJewelLoot], 'meadow');
-addCharacterClass('Priest', 1, 0, 2, {'weapon': itemsByKey.stick, 'body': itemsByKey.woolshirt},
+addCharacterClass('Priest', 1, 0, 2, {'weapon': itemsByKey.stick},
     [jewelLoot(['triangle'], [1, 1], [[10,15], [5, 10], [90, 100]], false), smallJewelLoot, smallJewelLoot], 'cave');
 
 addCharacterClass('Corsair', 2, 2, 1);
 addCharacterClass('Paladin', 1, 2, 2);
 addCharacterClass('Dancer', 2, 1, 2);
 
-addCharacterClass('Ranger', 3, 1, 1);
+addCharacterClass('Ranger', 3, 1, 1, {'weapon': itemsByKey.ball},
+    [jewelLoot(['diamond'], [1, 1], [[10,15], [5, 10], [90, 100]], false), simpleJewelLoot, simpleJewelLoot], 'savannah');
 addCharacterClass('Warrior', 1, 3, 1);
 addCharacterClass('Wizard', 1, 1, 3);
 

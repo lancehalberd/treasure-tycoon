@@ -153,6 +153,7 @@ function jewelLootDrop(jewel) {
     return {
         'gainLoot': function (character) {
             gainJewel(jewel);
+            return jewel;
         },
         'addTreasurePopup': function (character, x, y, vx, vy, delay) {
             character.treasurePopups.push(jewelTreasurePopup(jewel, x, y, vx, vy, delay));
