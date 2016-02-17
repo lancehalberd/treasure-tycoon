@@ -63,21 +63,13 @@
             <div class="points" helptext="Coins are used to create brand new items.<br/>Coins are found in chests and dropped from defeated enemies.">
                 <span class="icon coin"></span> <span class="js-coins coins"></span>
             </div>
-            <div class="points" helptext="Anima used to enchant items with special powers.<br/>Anima is absorbed from defeated enemies.">
-                Anima: <span class="js-anima anima"></span>
+            <div class="points" helptext="Anima is used to enchant items with special powers.<br/>Anima is absorbed from defeated enemies and salvaged from gems.">
+                <span class="icon anima"></span> <span class="js-anima anima"></span>
             </div>
         </div>
         <div class="controlColumn">
             <div class="js-craftingPanel js-infoPanel infoPanel">
                 <div class="panelTitle">Crafting</div>
-                <div>
-                    <canvas class="js-craftingCanvas" width="210" height="810" style="background-color: white; position: absolute; left: -220px; top: 10px;"></canvas>
-                    <select class="js-raritySelect itemCraftingSelect">
-                        <option value="plain">Plain</option>
-                        <option value="enchanted">Enchanted</option>
-                        <option value="imbued">Imbued</option>
-                    </select> <span class="js-rarityCost">5 Coins</span>
-                </div>
                 <div>
                     <select class="js-levelSelect itemCraftingSelect">
                         <option value='1'>Level 1</option>
@@ -101,18 +93,17 @@
                 </div>
                 <hr>
                 <div>
-                    <button class="js-craftItem centered" helptext="Click here to craft a random item. The above settings can be used to control the quality and type of items that can be created.">Craft for 5 Coins</button>
+                    <button class="js-craftItem centered" helptext="Click here to craft a random item. The above settings can be used to control the quality and type of items that can be created.">Craft for 5 <span class="icon coin"></span></button>
                 </div>
             </div>
             <div class="js-enchantingPanel js-infoPanel infoPanel" style="display: none;">
                 <div class="panelTitle">Enchanting</div>
-                <button class="js-enchantmentOption js-enchant" helptext="You can spend Magic Points to add one to two magical properties to an unenchanted item." style="display: none;">Enchant</button></span>
-                <button class="js-enchantmentOption js-imbue" helptext="You can spend Rare Points to add three to four magical properties to an unenchanted item." style="display: none;">Imbue</button></span>
-                <button class="js-enchantmentOption js-gamble" helptext="Spend both Magic and Rare Points for unpredictable results." style="display: none;">Gamble</button>
+                <button class="js-enchantmentOption js-enchant" helptext="You can spend Anima to add one to two magical properties to an unenchanted item." style="display: none;">Enchant</button></span>
+                <button class="js-enchantmentOption js-imbue" helptext="You can spend Anima to add three to four magical properties to an unenchanted item." style="display: none;">Imbue</button></span>
                 <div class="js-enchantmentSlot js-itemSlot itemSlot enchantmentSlot" helptext="Drag an item here to see enchanting options."></div>
-                <button class="js-enchantmentOption js-augment" helptext="Spend Magic or Rare Points to add up to four magical properties to an enchanted item." style="display: none;">Augment</button>
-                <button class="js-enchantmentOption js-mutate" helptext="Spend Magic or Rare Points to randomize the magical properties on an item." style="display: none;">Mutate</button>
-                <button class="js-enchantmentOption js-reset" helptext="You can spend Item Points to remove all enchantments from an item.<br/>This will allow you to enchant it again differently." style="display: none;">Reset</button>
+                <button class="js-enchantmentOption js-augment" helptext="Spend Anima to add up to four magical properties to an enchanted item." style="display: none;">Augment</button>
+                <button class="js-enchantmentOption js-mutate" helptext="Spend Anima to randomize the magical properties on an item." style="display: none;">Mutate</button>
+                <button class="js-enchantmentOption js-reset" helptext="You can spend Coins to remove all enchantments from an item.<br/>This will allow you to enchant it again differently." style="display: none;">Reset</button>
             </div>
             <div class="js-jewelPanel js-infoPanel infoPanel" style="display: none;">
                 <div class="panelTitle">Gem Cutting</div>
@@ -124,13 +115,16 @@
             </div>
             <div class="toolbar js-toolbar">
                 <button class="js-sellItem sellItem item" helptext="Drag items here to sell them. <br/> You can also hover over an item and type 'S' to sell quickly."><div class="icon money"></div></button>
-                <button class="js-showCraftingPanel item" helptext="Click here to open the crafting tab."><div class="icon bag"></div></button>
+                <button class="js-showCraftingPanel item" helptext="Click here to open the crafting tab."><div class="icon crafting"></div></button>
                 <button class="js-showEnchantingPanel item" helptext="Click here to open the enchanting tab."><div class="icon wand"></div></button>
                 <button class="js-showJewelsPanel item" helptext="Click here to open the jewels tab."><canvas class="js-jewelButtonCanvas" width="40" height="40"></canvas></button>
             </div>
             <div class="js-inventory inventory"></div>
             <div class="js-jewel-inventory jewel-inventory" style="display: none;"></div>
         </div><div class="js-playerColumn playerColumn">
+            <div class="js-craftingBar craftingBar">
+                <canvas class="js-craftingCanvas" height="210" width="1100" style="background-color: white;"></canvas>
+            </div>
             <div class="js-playerPanelTemplate playerPanel" style="display: none;">
                 <div class="playerControlBar">
                     Level <span class="js-level">X</span> <span class="js-name controlBarEntry">X</span>
@@ -140,51 +134,42 @@
                 </div>
                 <div class="js-infoMode infoMode">
                     <canvas class="js-canvas" width="64" height="128" style="background-color: white; position: absolute; left: 0px"></canvas>
-                    <div class="triStatBox">
-                        <div class="js-dexterity dexterity">X</div>
-                        <div class="js-strength strength">X</div>
-                        <div class="js-intelligence intelligence">X</div>
-                    </div>
                     <div class="js-stats stats playerBox">
-                        <div>
+                        <div helptext="Experience required before you can learn another skill and level up. <br/><br/>Completing adventures unlocks new skills. <br/><br/> Leveling increases health and basic stats slightly.">
                             Next Lvl: <span class="js-toLevel">X</span> xp
                         </div>
-                        <div>
+                        <div helptext="Starting health for each adventure.">
                             Health: <span class="js-maxHealth">X</span>
+                        </div>
+                        <div helptext="How fast your adventurer regenerates health.">
+                            Regen: <span class="js-healthRegen">X</span>
                         </div>
                         <div>
                             Damage: <span class="js-damage">X</span>
                         </div>
-                        <div>
-                            Magic Damage: <span class="js-magicDamage">X</span>
-                        </div>
-                        <div>
+                        <div helptext="Higher range will let you attack enemies safely from afar.">
                             Range: <span class="js-range">X</span>
-                        </div>
-                        <div>
-                            Atk Speed: <span class="js-attackSpeed">X</span>
-                        </div>
-                        <div>
-                            Accuracy: <span class="js-accuracy">X</span>
-                        </div>
-                        <div>
-                            Armor: <span class="js-armor">X</span>
                         </div>
                         <div>
                             Evasion: <span class="js-evasion">X</span>
                         </div>
                         <div>
-                            Block: <span class="js-block">X</span>
+                            Protection: <span class="js-protection">X</span>
                         </div>
                         <div>
-                            Magic Block: <span class="js-magicBlock">X</span>
+                            Resistance: <span class="js-resistance">X</span>
                         </div>
-                        <div>
+                        <div helptext="How fast your adventurer moves">
                             Speed: <span class="js-speed">X</span>
                         </div>
                         <div>
                             <button class="js-retire" style="display: none;">Retire</button>
                         </div>
+                    <div class="triStatBox">
+                        <div class="js-dexterity dexterity" helptext="Dexterity increases attack speed, evasion and damage with ranged weapons.">X</div>
+                        <div class="js-strength strength" helptext="Strength increases physical damage, health and damage with melee weapons.">X</div>
+                        <div class="js-intelligence intelligence" helptext="Intelligence increases accuracy, block and magic block and damage with magic weapons.">X</div>
+                    </div>
                     </div><div class="js-equipment equipment playerBox">
                         <div class="js-head js-itemSlot itemSlot head"></div>
                         <div class="js-body js-itemSlot itemSlot body"></div>
@@ -203,7 +188,7 @@
                     </div>
                 </div>
                 <div class="js-adventureMode">
-                    <canvas class="js-canvas" width="685" height="240" style="background-color: blue;">
+                    <canvas class="js-canvas" width="695" height="240" style="background-color: blue;">
                     </canvas>
                 </div>
             </div>
@@ -212,9 +197,6 @@
             </div>
         </div>
     </div>
-</div>
-<div style="padding: 10px; color: white; font-size: .8em; font-family: sans-serif;">
-Feeling generous? Send me a tip using <a href="http://paypal.me/ChrisFlash" target="_blank" style="color: tan;">PayPal</a>
 </div>
 </body>
 <script src="mouse.js"></script>
@@ -232,6 +214,7 @@ Feeling generous? Send me a tip using <a href="http://paypal.me/ChrisFlash" targ
 <script src="enchanting.js"></script>
 <script src="skills.js"></script>
 <script src="loot.js"></script>
+<script src="boards.js"></script>
 <script src="character.js"></script>
 <script src="adventure.js"></script>
 <script src="performAttack.js"></script>

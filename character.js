@@ -40,21 +40,15 @@ function refreshStatsPanel(character) {
     var $statsPanel = character.$panel.find('.js-infoMode .js-stats');
     character.$panel.find('.js-name').text(adventurer.job.name + ' ' + adventurer.name);
     character.$panel.find('.js-level').text(adventurer.level);
-    character.$panel.find('.js-infoMode .js-dexterity').text(adventurer.dexterity);
-    character.$panel.find('.js-infoMode .js-strength').text(adventurer.strength);
-    character.$panel.find('.js-infoMode .js-intelligence').text(adventurer.intelligence);
+    character.$panel.find('.js-infoMode .js-dexterity').text(adventurer.dexterity.format(0));
+    character.$panel.find('.js-infoMode .js-strength').text(adventurer.strength.format(0));
+    character.$panel.find('.js-infoMode .js-intelligence').text(adventurer.intelligence.format(0));
     $statsPanel.find('.js-toLevel').text(adventurer.xpToLevel - adventurer.xp);
-    $statsPanel.find('.js-maxHealth').text(adventurer.maxHealth);
-    $statsPanel.find('.js-damage').text(adventurer.minDamage + ' to ' + adventurer.maxDamage);
-    $statsPanel.find('.js-magicDamage').text(adventurer.minMagicDamage + ' to ' + adventurer.maxMagicDamage);
+    $statsPanel.find('.js-maxHealth').text(adventurer.maxHealth.format(0));
     $statsPanel.find('.js-range').text(adventurer.range.format(2));
-    $statsPanel.find('.js-attackSpeed').text(adventurer.attackSpeed.format(2));
-    $statsPanel.find('.js-accuracy').text(adventurer.accuracy);
-    $statsPanel.find('.js-armor').text(adventurer.armor);
-    $statsPanel.find('.js-evasion').text(adventurer.evasion);
-    $statsPanel.find('.js-block').text(adventurer.block);
-    $statsPanel.find('.js-magicBlock').text(adventurer.magicBlock);
-    $statsPanel.find('.js-speed').text(adventurer.speed);
+    $statsPanel.find('.js-speed').text(adventurer.speed.format(1));
+    $statsPanel.find('.js-healthRegen').text(adventurer.healthRegen.format(1));
+    updateDamageInfo(character);
 }
 function newCharacter(job) {
     var personCanvas = createCanvas(personFrames * 32, 64);
@@ -134,8 +128,11 @@ function makeAdventurer(job, level, equipment) {
     });
     $.each(equipment, function (key, item) {
         item.crafted = true;
+        state.craftingContext.fillStyle = 'green';
+        state.craftingContext.fillRect(item.craftingX, item.craftingY, craftingSlotSize, craftingSlotSize);
         equipItem(adventurer, makeItem(item, 1));
     });
+    drawCraftingViewCanvas();
     return adventurer;
 }
 function readBoardFromData(boardData, character, ability, confirmed) {
@@ -205,7 +202,12 @@ function updateAdventurer(adventurer) {
     adventurer.tags = [];
     if (!adventurer.equipment.weapon) {
         // Fighting unarmed is considered using a fist weapon.
-        adventurer.tags = ['unarmed', 'fist', 'melee'];
+        adventurer.tags = ['fist', 'melee'];
+
+        // You gain the unarmed tag if both hands are free.
+        if (!adventurer.equipment.offhand) {
+            adventurer.tags.push('unarmed');
+        }
     } else {
         adventurer.tags.push(adventurer.equipment.weapon.base.type);
         adventurer.tags = adventurer.tags.concat(ifdefor(adventurer.equipment.weapon.base.tags, []));
@@ -254,7 +256,7 @@ function updateAdventurer(adventurer) {
             adventurer.character.$panel.find('.js-infoMode .js-equipment .js-' + type).append(equipment.$item);
         }
     });
-    adventurer.attacks.push({'base': createAttack({})});
+    adventurer.attacks.push({'base': createAttack({'tags': adventurer.tags})});
     updateAdventurerStats(adventurer);
 }
 function updateAdventurerStats(adventurer) {
@@ -289,7 +291,10 @@ function updateAdventurerStats(adventurer) {
     adventurer.attacks.forEach(function (attack) {
         $.each(attack.base.stats, function (stat) {
             attack[stat] = getStatForAttack(adventurer, attack.base, stat);
-        })
+        });
+        $.each(specialTraits, function (stat) {
+            attack[stat] = getStatForAttack(adventurer, attack.base, stat);
+        });
     });
     if (ifdefor(adventurer.isMainCharacter)) {
         refreshStatsPanel(adventurer.character);
@@ -311,16 +316,19 @@ function getStat(actor, stat) {
         baseKeys.push('damage');
         percent += .002 * actor.strength;
         if (actor.tags.indexOf('ranged') >= 0) {
-            plus += Math.floor(actor.dexterity / 10);
+            plus += actor.dexterity / 10;
         } else {
-            plus += Math.floor(actor.strength / 10);
+            plus += actor.strength / 10;
         }
+    }
+    if (stat === 'healthRegen') {
+        plus += .01 * actor.maxHealth;
     }
     if ((stat === 'minMagicDamage' || stat === 'maxMagicDamage')) {
         baseKeys.push('magicDamage');
         // Int boost to magic damage, but only for weapons/monsters tagged 'magic'.
         if (actor.tags.indexOf('magic') >= 0) {
-            plus += Math.floor(actor.intelligence / 10);
+            plus += actor.intelligence / 10;
         }
     }
     // For example, when calculating min magic damage for a wand user, we check for all the following:
@@ -342,7 +350,7 @@ function getStat(actor, stat) {
     return (base + plus) * percent * multiplier;
 }
 function getStatForAttack(actor, dataObject, stat) {
-    var base = evaluateValue(actor, ifdefor(dataObject.stats[stat], 0)), plus = 0, percent = 1, multiplier = 1;
+    var base = evaluateValue(actor, ifdefor(dataObject.stats[stat], 0)), plus = 0, percent = 1, multiplier = 1, found = false;
     if (typeof base === 'object' && base.constructor != Array) {
         var subObject = {};
         $.each(base.stats, function (key, value) {
@@ -363,8 +371,14 @@ function getStatForAttack(actor, dataObject, stat) {
             plus += evaluateValue(actor, ifdefor(bonus['+' + key], 0));
             percent += evaluateValue(actor, ifdefor(bonus['%' + key], 0));
             multiplier *= evaluateValue(actor, ifdefor(bonus['*' + key], 1));
+            if (ifdefor(bonus['$' + key])) {
+                found = true;
+            }
         });
     });
+    if (found) {
+        return true;
+    }
     return (base + plus) * percent * multiplier;
 }
 function evaluateValue(actor, value) {
@@ -412,7 +426,7 @@ function gainLevel(adventurer) {
     adventurer.xpToLevel = xpToLevel(adventurer.level);
     updateAdventurerStats(adventurer);
 }
-function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonus, startingEquipment, startingBoard, loot, areaKey) {
+function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonus, startingEquipment, loot, areaKey) {
     var key = name.replace(/\s*/g, '').toLowerCase();
     characterClasses[key] = {
         'key': key,
@@ -421,53 +435,28 @@ function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonu
         'strengthBonus': strengthBonus,
         'intelligenceBonus': intelligenceBonus,
         'startingEquipment': ifdefor(startingEquipment, {'weapon': itemsByKey.rock}),
-        'startingBoard': ifdefor(startingBoard, squareBoard),
+        'startingBoard': ifdefor(classBoards[key], squareBoard),
         'loot': loot,
         'areaKey': ifdefor(areaKey, 'meadow')
     };
 }
 
-var triangleBoard = {
-    'fixed': [{"k":"triangle","p":[187,106],"t":0}],
-    'spaces': [{"k":"hexagon","p":[217,106],"t":0},{"k":"hexagon","p":[157,106],"t":0},{"k":"hexagon","p":[187,54.03847577293368],"t":0}]
-};
-var diamondBoard = {
-    'fixed': [{"k":"diamond","p":[206.5,107.99038105676658],"t":-60}],
-    'spaces': [{"k":"hexagon","p":[236.5,107.99038105676658],"t":0},{"k":"trapezoid","p":[236.5,107.99038105676658],"t":-120},{"k":"trapezoid","p":[206.5,107.99038105676658],"t":60},{"k":"hexagon","p":[176.5,56.02885682970026],"t":0}]
-};
-var diamondBoard2 = {
-    'fixed': [{"k":"diamond","p":[442.51923788646684,283.9519052838329],"t":-240}],
-    'spaces': [{"k":"hexagon","p":[382.51923788646684,231.99038105676658],"t":0},{"k":"hexagon","p":[442.51923788646684,283.9519052838329],"t":0},{"k":"trapezoid","p":[472.51923788646684,283.9519052838329],"t":-180},{"k":"trapezoid","p":[382.51923788646684,283.9519052838329],"t":-360}]
-};
-var hexBoard = {
-    'fixed': [{"k":"hexagon","p":[195,80],"t":0}],
-    'spaces': [{"k":"trapezoid","p":[195,131.96152422706632],"t":0},{"k":"trapezoid","p":[225,80],"t":180},
-               {"k":"trapezoid","p":[240,105.98076211353316],"t":240},{"k":"trapezoid","p":[225,131.96152422706632],"t":300},
-               {"k":"trapezoid","p":[195,80],"t": 120},{"k":"trapezoid","p":[180,105.98076211353316],"t":60}]
-};
-var squareBoard = {
-    'fixed': [{"k":"square","p":[89,76],"t":0}],
-    'spaces': [{"k":"hexagon","p":[89,106],"t":0},{"k":"hexagon","p":[89,24.03847577293368],"t":0},
-        {"k":"hexagon","p":[144.98076211353316,61],"t":30},{"k":"hexagon","p":[63.01923788646684,61],"t":30},
-        {"k":"rhombus","p":[134,50.01923788646684],"t":-30},{"k":"rhombus","p":[63.019237886466826,121],"t":-30},
-        {"k":"rhombus","p":[144.98076211353316,121],"t":60},{"k":"rhombus","p":[73.99999999999999,50.01923788646685],"t":60}]
-};
 
 var characterClasses = {};
 addCharacterClass('Fool', 0, 0, 0);
 
-addCharacterClass('Archer', 2, 1, 0, {'weapon': itemsByKey.primitivebow, 'body': itemsByKey.lamellar}, triangleBoard,
-    [jewelLoot(['trapezoid'], [1, 1], [[10,15], [90, 100], [5, 10]], false), simpleJewelLoot, simpleJewelLoot], 'grove');
-addCharacterClass('Fighter', 0, 2, 1, {'weapon': itemsByKey.rock, 'body': itemsByKey.lamellar}, diamondBoard2,
-    [jewelLoot(['trapezoid'], [1, 1], [[90, 100], [10,15], [5, 10]], false), simpleJewelLoot, simpleJewelLoot], 'meadow');
-addCharacterClass('Priest', 1, 0, 2, {'weapon': itemsByKey.stick, 'body': itemsByKey.lamellar}, hexBoard,
-    [jewelLoot(['trapezoid'], [1, 1], [[10,15], [5, 10], [90, 100]], false), simpleJewelLoot, simpleJewelLoot], 'cave');
+addCharacterClass('Juggler', 2, 1, 0, {'weapon': itemsByKey.ball, 'body': itemsByKey.woolshirt},
+    [jewelLoot(['triangle'], [1, 1], [[10,15], [90, 100], [5, 10]], false), smallJewelLoot, smallJewelLoot], 'grove');
+addCharacterClass('Black Belt', 0, 2, 1, {'body': itemsByKey.woolshirt},
+    [jewelLoot(['triangle'], [1, 1], [[90, 100], [10,15], [5, 10]], false), smallJewelLoot, smallJewelLoot], 'meadow');
+addCharacterClass('Priest', 1, 0, 2, {'weapon': itemsByKey.stick, 'body': itemsByKey.woolshirt},
+    [jewelLoot(['triangle'], [1, 1], [[10,15], [5, 10], [90, 100]], false), smallJewelLoot, smallJewelLoot], 'cave');
 
 addCharacterClass('Corsair', 2, 2, 1);
 addCharacterClass('Paladin', 1, 2, 2);
 addCharacterClass('Dancer', 2, 1, 2);
 
-addCharacterClass('Marksman', 3, 1, 1);
+addCharacterClass('Ranger', 3, 1, 1);
 addCharacterClass('Warrior', 1, 3, 1);
 addCharacterClass('Wizard', 1, 1, 3);
 
@@ -486,9 +475,9 @@ addCharacterClass('Sage', 4, 2, 4);
 addCharacterClass('Master', 4, 4, 4);
 
 var ranks = [
-    ['archer', 'fighter', 'priest'],
+    ['juggler', 'blackbelt', 'priest'],
     ['corsair', 'paladin', 'dancer'],
-    ['marksman', 'warrior', 'wizard'],
+    ['ranger', 'warrior', 'wizard'],
     ['assassin', 'darkknight', 'bard'],
     ['sniper', 'samurai', 'sorcerer'],
     ['ninja', 'enhancer', 'sage'],

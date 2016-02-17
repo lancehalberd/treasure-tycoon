@@ -35,7 +35,7 @@ var monsterSuffixes = [
     ]
 ];
 
-function makeMonster(monsterData, level, extraSkills) {
+function makeMonster(monsterData, level, extraSkills, noRarity) {
     var monster = {
         'level': level,
         'slow': 0,
@@ -73,25 +73,27 @@ function makeMonster(monsterData, level, extraSkills) {
 
     setBaseMonsterStats(monster, level);
 
-    var rarity = (Math.random() < .25) ? (Math.random() * level * .6) : 0;
-    if (rarity < 1) {
+    if (!ifdefor(noRarity)) {
+        var rarity = (Math.random() < .25) ? (Math.random() * level * .6) : 0;
+        if (rarity < 1) {
 
-    } else if (rarity < 3) {
-        if (Math.random() > .5) addMonsterPrefix(monster);
-        else addMonsterSuffix(monster);
-    } else if (rarity < 10) {
-        addMonsterPrefix(monster);
-        addMonsterSuffix(monster);
-    } else if (rarity < 20) {
-        addMonsterPrefix(monster);
-        addMonsterSuffix(monster);
-        if (Math.random() > .5) addMonsterPrefix(monster);
-        else addMonsterSuffix(monster);
-    } else {
-        addMonsterPrefix(monster);
-        addMonsterSuffix(monster);
-        addMonsterPrefix(monster);
-        addMonsterSuffix(monster);
+        } else if (rarity < 3) {
+            if (Math.random() > .5) addMonsterPrefix(monster);
+            else addMonsterSuffix(monster);
+        } else if (rarity < 10) {
+            addMonsterPrefix(monster);
+            addMonsterSuffix(monster);
+        } else if (rarity < 20) {
+            addMonsterPrefix(monster);
+            addMonsterSuffix(monster);
+            if (Math.random() > .5) addMonsterPrefix(monster);
+            else addMonsterSuffix(monster);
+        } else {
+            addMonsterPrefix(monster);
+            addMonsterSuffix(monster);
+            addMonsterPrefix(monster);
+            addMonsterSuffix(monster);
+        }
     }
     monster.base.health = monster.base.maxHealth;
     monster.timedEffects = [];
@@ -243,6 +245,10 @@ function initalizeMonsters() {
     var butterflySource = {'image': enemySheet('gfx/caterpillar.png'), 'offset': 4 * 48, 'width': 48, 'flipped': true, frames: 4};
     var skeletonGiantSource = {'image': enemySheet('gfx/skeletonGiant.png'), 'offset': 0, 'width': 48, 'flipped': true, frames: 7};
     var dragonSource = {'image': enemySheet('gfx/dragonEastern.png'), 'offset': 0, 'width': 48, 'flipped': false, frames: 5};
+    addMonster('dummy', {
+        'name': 'Dummy', 'source': caterpillarSource,
+        'implicitBonuses': {'+magicDamage': 2}
+    });
     addMonster('caterpillar', {
         'name': 'Caterpillar', 'source': caterpillarSource,
         'implicitBonuses': {'*magicDamage': 0,
@@ -258,7 +264,7 @@ function initalizeMonsters() {
         'implicitBonuses': {'+range': .5, '*attackSpeed': 1.5, '+magicDamage': 2,
                             '*block': .5, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': .3},
-        'abilities': [{'name': 'raiseDead', 'attacks': [{'type': 'monster', 'tags': ['skeleton'], 'key': 'skeleton', 'stats': {'limit': 2, 'cooldown': 5, 'healthBonus': 1, 'damageBonus': 2}}]}]
+        'abilities': [abilities.raiseDead, {'bonuses': {'+raisedead:limit': 1, '*raisedead:cooldown': .5, '+raisedead:healthBonus': .5, '+raisedead:damageBonus': 1}}]
     });
     addMonster('skeleton', {'name': 'Skeleton', 'source': skeletonSource,
         // Fast to counter ranged heroes, low range+damage + fast attacks to be weak to armored heroes.
@@ -278,7 +284,7 @@ function initalizeMonsters() {
                             '*minDamage': .5, '*maxDamage': .5, '*attackSpeed': .5, '*magicDamage': 0,
                             '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
                             '*speed': .6},
-        'abilities': [{'name': 'Pet', 'attacks': [{'type': 'monster', 'tags': ['pet'], 'key': 'caterpillar', 'stats': {'limit': 2, 'cooldown': 10, 'healthBonus': 2, 'damageBonus': 1}}]}]
+            'abilities': [abilities.pet, {'bonuses': {'+pet:limit': 1, '*pet:cooldown': 1/3, '+pet:healthBonus': 1}}]
     });
     addMonster('giantSkeleton', {'name': 'Skelegiant', 'source': skeletonGiantSource,
         'implicitBonuses': {'*maxHealth': 2, '+critDamage': .5, '*magicDamage': 0, '*accuracy': 2,

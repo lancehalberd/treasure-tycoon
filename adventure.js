@@ -14,8 +14,10 @@ function startArea(character, index) {
     character.cameraX = -30;
     character.enemies = [];
     character.objects = [];
+    character.projectiles = [];
     character.allies = [character.adventurer];
     character.adventurer.allies = character.allies;
+    character.adventurer.enemies = character.enemies;
     character.adventurer.isAlly = true;
     character.treasurePopups = [];
     character.textPopups = [];
@@ -27,6 +29,7 @@ function startArea(character, index) {
     character.$panel.find('.js-infoMode').hide();
     character.$panel.find('.js-adventureMode').show();
 }
+
 function adventureLoop(character, delta) {
     var adventurer = character.adventurer;
     var everybody = character.allies.concat(character.enemies);
@@ -81,10 +84,10 @@ function adventureLoop(character, delta) {
         }
     }
     character.allies.forEach(function (actor) {
-        runActorLoop(character, actor, character.enemies.slice());
+        runActorLoop(character, actor);
     });
     character.enemies.forEach(function (actor) {
-        runActorLoop(character, actor, character.allies.slice());
+        runActorLoop(character, actor);
     });
     everybody.forEach(function (actor) {
         if (!actor.stunned && !actor.blocked && !actor.target && !actor.pull && !ifdefor(actor.stationary)) {
@@ -102,6 +105,9 @@ function adventureLoop(character, delta) {
     everybody.forEach(function (actor) {
         actor.health = Math.min(actor.maxHealth, Math.max(0, actor.health));
     });
+    for (var i = 0; i < character.projectiles.length; i++) {
+        character.projectiles[i].update(character);
+    }
     for (var i = 0; i < character.treasurePopups.length; i++) {
         character.treasurePopups[i].update(character);
     }
@@ -141,6 +147,7 @@ function startNextWave(character) {
         newMonster.character = character;
         newMonster.direction = -1; // Monsters move right to left
         newMonster.allies = character.enemies;
+        newMonster.enemies = character.allies;
         character.enemies.push(newMonster);
         newMonster.timeOffset = character.time + newMonster.x;
         x += 120 + Math.floor(Math.random() * 50);
@@ -186,8 +193,9 @@ function processStatusEffects(character, target, delta) {
         target.stunned = null;
     }
 }
-function runActorLoop(character, actor, targets) {
+function runActorLoop(character, actor) {
     if (actor.stunned) return;
+    var targets = actor.enemies.slice();
     actor.blocked = false; // Character is assumed to not be blocked each frame
     if (actor.target) {
         var index = targets.indexOf(actor.target);
@@ -237,7 +245,7 @@ function checkToAttackTarget(character, actor, target, distance) {
             actor.stunned = character.time + .3;
             return true;
         }
-        if (attack.base.type == 'monster') {
+        if (attack.base.type == 'minion') {
             var count = 0;
             actor.allies.forEach(function (ally) {
                 if (ally.source == attack) count++;
@@ -253,12 +261,14 @@ function checkToAttackTarget(character, actor, target, distance) {
                             '*maxMagicDamage': ifdefor(attack.damageBonus, 1)}
             }
             actor.pull = {'x': actor.x - actor.direction * 64, 'time': character.time + .3, 'damage': 0};
-            var newMonster = makeMonster(monsterData, actor.level);
+            var newMonster = makeMonster(monsterData, actor.level, [], true);
             newMonster.x = actor.x + actor.direction * 32;
             newMonster.character = character;
             newMonster.direction = actor.direction; // Minios move left to right
             newMonster.speed = Math.max(actor.speed + 5, newMonster.speed);
             newMonster.source = attack;
+            newMonster.allies = actor.allies;
+            newMonster.enemies = actor.enemies;
             actor.allies.push(newMonster);
             actor.stunned = character.time + .3;
             return true;
@@ -288,9 +298,10 @@ function defeatedEnemy(character, enemy) {
     if (character.adventurer.health <= 0) {
         return;
     }
-    // Character receives 10% penalty per level difference between them and the monster.
-    var reducedXP = Math.floor(enemy.xpValue * Math.max(0, 1 - .1 * Math.abs(character.adventurer.level - enemy.level)));
-    gainXP(character.adventurer, reducedXP);
+    // Character only gains experience from equal or higher level monsters.
+    if (enemy.level >= character.adventurer.level) {
+        gainXP(character.adventurer, enemy.xpValue);
+    }
     var loot = [];
     if (enemy.coins) loot.push(coinsLootDrop(enemy.coins));
     if (enemy.anima) loot.push(animaLootDrop(enemy.anima));
@@ -344,6 +355,13 @@ function drawAdventure(character) {
         treasurePopup.draw(character);
         if (treasurePopup.done) {
             character.treasurePopups.splice(i--, 1);
+        }
+    }
+    for (var i = 0; i < character.projectiles.length; i++) {
+        var projectile = character.projectiles[i];
+        projectile.draw(character);
+        if (projectile.done) {
+            character.projectiles.splice(i--, 1);
         }
     }
     for (var i = 0; i < character.textPopups.length; i++) {
@@ -403,7 +421,8 @@ function drawAdventurer(character, adventurer, index) {
     var context = character.context;
     //draw character
     if (adventurer.target) { // attacking loop
-        var attackFps = 1 / ((1 / adventurer.attackSpeed) / fightLoop.length);
+        var attackSpeed = adventurer.attacks[adventurer.attacks.length - 1].attackSpeed;
+        var attackFps = 1 / ((1 / attackSpeed) / fightLoop.length);
         var frame = Math.floor(Math.abs(character.time - adventurer.attackCooldown) * attackFps) % fightLoop.length;
         context.drawImage(adventurer.personCanvas, fightLoop[frame] * 32, 0 , 32, 64,
                         adventurer.x - cameraX, 240 - 128 - 72, 64, 128);

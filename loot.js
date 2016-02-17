@@ -93,11 +93,9 @@ function animaTreasurePopup(coin, x, y, vx, vy, delay) {
             self.done = self.t > 40;
         },
         'draw': function (character) {
-            if (delay > 0) return
-            character.context.globalAlpha = .5;
+            if (delay > 0 || self.x < character.adventurer.x + 16) return
             character.context.drawImage(coin.image, coin.x, coin.y, coin.width, coin.height,
                 self.x - coin.width / 2 - character.cameraX, self.y - coin.height / 2, coin.width, coin.height);
-            character.context.globalAlpha = 1;
         }
     };
     return self;
@@ -180,6 +178,7 @@ function createRandomJewel(shapes, tiers, components, permute) {
     components = components.map(function (component) { return Random.range(component[0], component[1]);});
     return makeJewel(tier, shapeType, permute ? Random.shuffle(components) : components, quality);
 }
+var smallJewelLoot = jewelLoot(['triangle'], [1, 1], [[90, 90], [16, 20], [7, 10]], true);
 var simpleJewelLoot = jewelLoot(basicShapeTypes, [1, 1], [[90, 90], [16, 20], [7, 10]], true);
 var simpleRubyLoot = jewelLoot(basicShapeTypes, [1, 1], [[90, 100], [5, 10], [5, 10]], false);
 var simpleEmeraldLoot = jewelLoot(basicShapeTypes, [1, 1], [[5, 10], [90,100], [5, 10]], false);

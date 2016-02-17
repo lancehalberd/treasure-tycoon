@@ -48,10 +48,15 @@
 .recallButton {
     font-size: .6em;
 }
-.playerPanel {
+.playerPanel  {
     height: 270px;
     background-color: white;
-    margin: 5px;
+    margin-bottom: 5px;
+}
+.craftingBar {
+    overflow-x: auto;
+    background-color: #CCC;
+    margin-bottom: 5px;
 }
 .playerPanel .infoMode {
     position: relative;
@@ -71,6 +76,7 @@
 .toolbar .item {
     margin-right: 5px;
     vertical-align: top;
+    background-color: #CCC;
 }
 .toolbar .item.sellItem {
     margin-right: 25px;
@@ -259,6 +265,10 @@ button {
     top: 145px;
 }
 
+.value {
+    vertical-align: middle;
+}
+
 .icon {
     background-image: url('gfx/iconSet.png');
     background-size: 620px 140px;
@@ -274,7 +284,7 @@ button {
     background-size: auto;
     width: 32px;
     height: 32px;
-    background-position: -96px -0px;
+    background-position: -192px -0px;
 }
 
 .icon.coin {
@@ -283,6 +293,27 @@ button {
     width: 16px;
     height: 16px;
     background-position: -64px -0;
+}
+.icon.anima {
+    background-image: url('gfx/moneyIcon.png');
+    background-size: auto;
+    width: 16px;
+    height: 16px;
+    background-position: -128px -0;
+}
+.icon.crafting {
+    background-image: url('gfx/moneyIcon.png');
+    background-size: auto;
+    width: 32px;
+    height: 32px;
+    background-position: -192px -32px;
+}
+.icon.enchanting {
+    background-image: url('gfx/moneyIcon.png');
+    background-size: auto;
+    width: 32px;
+    height: 32px;
+    background-position: -192px -64px;
 }
 
 .itemSlot {
@@ -347,7 +378,7 @@ button {
     font-size: 16px;
     border: 1px solid #204070;
     box-sizing: border-box;
-    background-color: rgba(100, 200, 100, .9);
+    background-color: rgba(140, 220, 140, .9);
     border-radius: 4px;
     z-index: 100;
 }
