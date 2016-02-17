@@ -258,13 +258,15 @@ function checkToAttackTarget(character, actor, target, distance) {
                             '*minDamage': ifdefor(attack.damageBonus, 1),
                             '*maxDamage': ifdefor(attack.damageBonus, 1),
                             '*minMagicDamage': ifdefor(attack.damageBonus, 1),
-                            '*maxMagicDamage': ifdefor(attack.damageBonus, 1)}
+                            '*maxMagicDamage': ifdefor(attack.damageBonus, 1),
+                            '*attackSpeed': ifdefor(attack.attackSpeedBonus, 1),
+                            '*speed': ifdefor(attack.speedBonus, 1)}
             }
             actor.pull = {'x': actor.x - actor.direction * 64, 'time': character.time + .3, 'damage': 0};
             var newMonster = makeMonster(monsterData, actor.level, [], true);
             newMonster.x = actor.x + actor.direction * 32;
             newMonster.character = character;
-            newMonster.direction = actor.direction; // Minios move left to right
+            newMonster.direction = actor.direction; // Minions move left to right
             newMonster.speed = Math.max(actor.speed + 5, newMonster.speed);
             newMonster.source = attack;
             newMonster.allies = actor.allies;

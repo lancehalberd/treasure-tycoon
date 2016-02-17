@@ -71,6 +71,7 @@ var tagToCategoryMap = {
     'skill': 'Skills',
     'unarmed': 'While Unarmed',
     'fist': 'Fist Weapons',
+    'minion': 'Minions'
 };
 function tagToCategoryDisplayName(tag) {
     return ifdefor(tagToCategoryMap[tag], properCase(tag));
@@ -225,7 +226,7 @@ function bonusHelpText(rawBonuses, implicit) {
         sections.push(bonuses['%damage'].percent(1) + ' increased physical damage');
     }
     if (ifdefor(bonuses['*damage'])) {
-        sections.push(bonuses['*damage'].format(1) + 'x more physical damage.');
+        sections.push(bonuses['*damage'].format(1) + 'x more physical damage');
     }
     if (ifdefor(bonuses['%magicDamage'])) {
         sections.push(bonuses['%magicDamage'].percent(1) + ' increased magic damage');
@@ -301,25 +302,25 @@ function bonusHelpText(rawBonuses, implicit) {
         sections.push((bonuses['+speed'] > 0 ? '+' : '') + bonuses['+speed'].format(1) + ' speed');
     }
     if (ifdefor(bonuses['+increasedDrops'])) {
-        sections.push('Gain ' + bonuses['+increasedDrops'].percent(1) + ' more coins and anima.');
+        sections.push('Gain ' + bonuses['+increasedDrops'].percent(1) + ' more coins and anima');
     }
     if (ifdefor(bonuses['+increasedExperience'])) {
-        sections.push('Gain ' + bonuses['+increasedExperience'].percent(1) + ' more experience.');
+        sections.push('Gain ' + bonuses['+increasedExperience'].percent(1) + ' more experience');
     }
     if (ifdefor(bonuses['*amount'])) {
-        sections.push(bonuses['*amount'].format(1) + 'x more effective.');
+        sections.push(bonuses['*amount'].format(1) + 'x more effective');
     }
-    if (ifdefor(bonuses['+healthBonus'])) {
-        sections.push(bonuses['+healthBonus'].percent(1) + ' increased health.');
+    if (ifdefor(bonuses['*healthBonus'])) {
+        sections.push(bonuses['*healthBonus'].format(1) + 'x health');
     }
-    if (ifdefor(bonuses['+damageBonus'])) {
-        sections.push(bonuses['+damageBonus'].percent(1) + ' increased damage.');
+    if (ifdefor(bonuses['*damageBonus'])) {
+        sections.push(bonuses['*damageBonus'].format(1) + 'x damage');
     }
-    if (ifdefor(bonuses['+attackSpeedBonus'])) {
-        sections.push(bonuses['+attackSpeedBonus'].percent(1) + ' increased attack speed.');
+    if (ifdefor(bonuses['*attackSpeedBonus'])) {
+        sections.push(bonuses['*attackSpeedBonus'].format(1) + 'x attack speed');
     }
-    if (ifdefor(bonuses['+speedBonus'])) {
-        sections.push(bonuses['+speedBonus'].percent(1) + ' increased movement speed.');
+    if (ifdefor(bonuses['*speedBonus'])) {
+        sections.push(bonuses['*speedBonus'].format(1) + 'x movement speed');
     }
     // Some unique abilities just map 'key' => 'help text' directly.
     $.each(rawBonuses, function (key, value) {
