@@ -180,15 +180,17 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                             self.hit = false;
                             target = newTarget;
                             var distance = Math.abs(self.x - newTarget.x);
-                            if (self.vx * (newTarget.x - self.x) < 0) {
+                            if (self.vx * (target.x + 32 - self.x) <= 0) {
                                 self.vx = -self.vx;
                             }
-                            self.vy = -distance / 200;
+                            if (self.y > 120) self.vy = -distance / 200;
                             attackStats.accuracy *= .95;
                             break;
                         }
                     }
                 }
+            } else if (target.health > 0 && !self.hit && self.vx * (target.x + 32 - self.x) <= 0) {
+                self.vx = -self.vx;
             }
             // Put an absolute cap on how far a projectile can travel
             if (distance > 2000) {
@@ -271,7 +273,7 @@ function applyAttackToTarget(attackStats, target, distance) {
         return false;
     }
     attacker.health += ifdefor(attack.healthGainOnHit, 0);
-    target.slow += Math.max(target.slow, ifdefor(attack.slowOnHit, 0));
+    target.slow += ifdefor(attack.slowOnHit, 0);
     // Apply block reduction
     var blockRoll = Random.range(0, target.block);
     var magicBlockRoll = Random.range(0, target.magicBlock);

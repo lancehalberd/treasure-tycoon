@@ -167,7 +167,10 @@ function processStatusEffects(character, target, delta) {
         return;
     }
     // Apply DOT, movement effects and other things that happen to targets here.
-    target.slow = Math.max(0, target.slow - .1 * delta);
+    // Target becomes 50% less slow over 1 second, or loses .1 slow over one second, whichever is faster.
+    if (target.slow) {
+        target.slow = Math.max(0, Math.min(target.slow - .5 * target.slow * delta, target.slow - .1 * delta));
+    }
     if (ifdefor(target.healthRegen)) {
         target.health += target.healthRegen * delta;
     }
