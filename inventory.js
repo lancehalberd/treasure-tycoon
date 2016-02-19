@@ -128,7 +128,7 @@ function itemHelpText(item) {
     sections.push('Sell for ' + sellValues.join(' '));
     return sections.join('<br/>');
 }
-function evaluateForDisplay(value) {
+function evaluateForDisplay(value, actor) {
     if (typeof value === 'number') {
         return value;
     }
@@ -138,14 +138,17 @@ function evaluateForDisplay(value) {
     if (typeof value === 'string' || typeof value === 'boolean') {
         return value;
     }
-    if (value.constructor !== Array && value.stats) {
-        return bonusHelpText(value.stats);
+    if (value.constructor !== Array) {
+        if (value.stats) {
+            return bonusHelpText(value.stats, false, actor);
+        }
+        return value;
     }
-    var formula = value;
-    if (!formula || !formula.length) {
-        throw new Error('Expected "formula" to be an array, but value is: ' + formula);
+    var fullFormula = value;
+    if (!fullFormula || !fullFormula.length) {
+        throw new Error('Expected "formula" to be an array, but value is: ' + JSON.stringify(fullFormula));
     }
-    formula = formula.slice();
+    formula = fullFormula.slice();
     value = evaluateForDisplay(formula.shift());
     while (formula.length > 1) {
         value += ' ' + formula.shift() + ' ' + evaluateForDisplay(formula.shift());
@@ -153,9 +156,12 @@ function evaluateForDisplay(value) {
             value = '(' + value + ')';
         }
     }
+    if (actor) {
+        value += ' ' + tag('span', 'formulaStat', '[' +  evaluateValue(actor, fullFormula) +  ']');
+    }
     return value;
 }
-function bonusHelpText(rawBonuses, implicit) {
+function bonusHelpText(rawBonuses, implicit, actor) {
     var bonuses = {};
     var tagBonuses = {};
     $.each(rawBonuses, function (key, value) {
@@ -173,7 +179,7 @@ function bonusHelpText(rawBonuses, implicit) {
             tagBonuses[tag] = ifdefor(tagBonuses[tag], {});
             tagBonuses[tag][parts[0].charAt(0) + parts[1]] = value;
         }
-        bonuses[key] = evaluateForDisplay(value);
+        bonuses[key] = evaluateForDisplay(value, actor);
     });
     var sections = [];
     if (ifdefor(bonuses['+minDamage'])) {
@@ -271,8 +277,8 @@ function bonusHelpText(rawBonuses, implicit) {
     if (ifdefor(bonuses['%critChance'])) {
         sections.push(bonuses['%critChance'].percent(1) + ' increased critical chance');
     }
-    if (ifdefor(bonuses['*critDamage'])) {
-        sections.push(bonuses['*critDamage'].format(1) + 'x critical chance');
+    if (ifdefor(bonuses['*critChance'])) {
+        sections.push(bonuses['*critChance'].format(1) + 'x critical chance');
     }
     if (ifdefor(bonuses['+critDamage'])) {
         sections.push(bonuses['+critDamage'].percent(1) + ' increased critical damage');
@@ -330,9 +336,23 @@ function bonusHelpText(rawBonuses, implicit) {
     });
 
     $.each(tagBonuses, function (tagName, bonuses) {
-        sections.push(tag('div', 'tagText', tagToCategoryDisplayName(tagName) + ':<br/>' + bonusHelpText(bonuses, false)));
+        sections.push(tag('div', 'tagText', tagToCategoryDisplayName(tagName) + ':<br/>' + bonusHelpText(bonuses, false, actor)));
     });
 
+    // Special effects
+    if (ifdefor(bonuses['$invulnerable'])) {
+        sections.push('Invulnerability');
+    }
+    if (ifdefor(bonuses['$instantCooldown'])) {
+        sections.push('Reset cooldowns of other abilities');
+    }
+    if (ifdefor(bonuses['$cloaking'])) {
+        sections.push('Invisible while moving');
+    }
+    if (ifdefor(bonuses['$buff'])) { // Buffs/debuffs only.
+        sections.push('Gain:');
+        sections.push(bonusHelpText(bonuses['$buff'], false, actor));
+    }
     if (ifdefor(bonuses['duration'])) { // Buffs/debuffs only.
         sections.push('For ' + bonuses.duration + ' seconds');
         return tag('div', 'buffText', sections.join('<br/>'));
@@ -621,10 +641,8 @@ $(document).on('keydown', function(event) {
                 if (!character.$panel.find('.js-area-' + key).length) {
                     var $div = $levelDiv(key);
                     character.$panel.find('.js-map').append($div);
-                    //$div.append($tag('button','js-learnSkill', '+skill'));
                 }
             });
-            //updateSkillButtons(character);
         });
     }
     if (event.which == 76) { // 'l'

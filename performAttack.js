@@ -58,7 +58,7 @@ function updateDamageInfo(character) {
         var overRollChance = (accuracy - evasion) / accuracy;
         hitPercent = overRollChance + (1 - overRollChance) / 2;
     }
-    if (ifdefor(attack.base.alwaysHits)) {
+    if (ifdefor(attack.alwaysHits)) {
         hitPercent = 1;
     }
     var expectedPhysical = Math.max(0, damageMultiplier *physical - dummy.block / 2);
@@ -223,18 +223,25 @@ function performAttack(character, attack, attacker, target, distance) {
     }
 }
 function applyAttackToTarget(attackStats, target, distance) {
+    var character = attackStats.character;
+    var hitText = {x: target.x + 32, y: 240 - 128, color: 'red'};
+    if (target.invulnerable) {
+        hitText.value = 'invulnerable';
+        hitText.color = 'blue';
+        hitText.font, "15px sans-serif"
+        character.textPopups.push(hitText);
+        return false;
+    }
     var attack = attackStats.attack;
     var attacker = attackStats.source;
-    var character = attackStats.character;
     var multiplier = ifdefor(attack.rangeDamage) ? (1 + attack.rangeDamage * distance / 32) : 1;
-    var hitText = {x: target.x + 32, y: 240 - 128, color: 'red'};
     if (attackStats.isCritical) {
         hitText.color = 'yellow';
         hitText.font = "30px sans-serif"
     }
     var damage = Math.floor(attackStats.damage * multiplier);
     var magicDamage = Math.floor(attackStats.magicDamage * multiplier);
-    if (!ifdefor(attack.base.alwaysHits)) {
+    if (!ifdefor(attack.alwaysHits)) {
         var evasionRoll = Math.random() * target.evasion;
         if (attackStats.accuracy < evasionRoll) {
             hitText.value = 'miss';
@@ -250,22 +257,11 @@ function applyAttackToTarget(attackStats, target, distance) {
         }
     }
     // Attacks that always hit can still be avoided by a 'dodge' skill.
-    var dodged = false;
-    ifdefor(target.attacks, []).forEach(function (attack) {
-        if (attack.readyAt > character.time) {
-            return true;
-        }
-        if (attack.base.type == 'dodge') {
-            dodged = true;
-            attack.readyAt = character.time + attack.cooldown;
-            target.pull = {'x': target.x - target.direction * attack.distance, 'time': character.time + .3, 'damage': 0};
-            addTimedEffect(character, target, attack.buff);
-            return false;
-        }
-        return true;
-    });
-    if (dodged) {
-        // Target has evaded the attack using an ability like 'dodge'.
+    var dodge = getFirstAbilityByType(target, 'dodge');
+    if (dodge) {
+        dodge.readyAt = character.time + dodge.cooldown;
+        target.pull = {'x': target.x - target.direction * dodge.distance, 'time': character.time + .3, 'damage': 0};
+        addTimedEffect(character, target, dodge.buff);
         hitText.value = 'dodged';
         hitText.color = 'blue';
         hitText.font, "15px sans-serif"

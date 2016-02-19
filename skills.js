@@ -7,8 +7,8 @@ var abilities = {
     'dodge': {'name': 'Dodge', 'bonuses': {'+evasion': 2}, 'attacks': [
              {'type': 'dodge', 'stats': {'cooldown': 10, 'distance': 128, 'buff': {'stats': {'%evasion': .5, 'duration': 5}}}, 'helpText': 'Leap back to dodge an attack and gain: {buff}'}]},
     'throwingMastery': {'name': 'Throwing Mastery', 'bonuses': {'*throwing:attackSpeed': 1.5}},
-    'bullsEye': {'name': 'Bullseye', 'attack': [{'type': 'basic', 'stats': {'cooldown': 15, 'alwaysHits': true, 'undodgeable': true}, 'helpText': 'Perform an attack that always hits.'}]},
-    'bullsEyeCritical': {'name': 'Dead On', 'bonuses': {'+bullseye:skill:critChance': 1}, 'helpText': 'Bullseye always strikes critically.'},
+    //'bullsEye': {'name': 'Bullseye', 'attack': [{'type': 'basic', 'stats': {'cooldown': 15, 'alwaysHits': true, 'undodgeable': true}, 'helpText': 'Perform an attack that always hits.'}]},
+    //'bullsEyeCritical': {'name': 'Dead On', 'bonuses': {'+bullseye:skill:critChance': 1}, 'helpText': 'Bullseye always strikes critically.'},
     // Black Belt
     'blackbelt': {'name': 'Martial Arts', 'bonuses': {'*unarmed:damage': 3, '*unarmed:attackSpeed': 1.5,
                                                         '+unarmed:critChance': .15, '*unarmed:critDamage': 2, '*unarmed:critAccuracy': 2}},
@@ -19,15 +19,23 @@ var abilities = {
     'minorIntelligence': {'name': 'Minor Intelligence', 'bonuses': {'+intelligence': 5}},
     'heal': {'name': 'Heal', 'bonuses': {'+intelligence': 5}, 'attacks': [
             {'type': 'heal', 'stats': {'amount': ['{intelligence}'], 'cooldown': 10}, 'helpText': 'Cast a spell to restore {amount} health.'}]},
+    //'reflect': {'name': 'Reflect Magic', 'bonuses': {'+intelligence': 10}, 'attacks': [
+    //        {'type': 'reflect', 'stats': {'amount': ['{intelligence}', '*', 10], 'cooldown': 20},
+    //        'helpText': 'Create a magical barrier that will reflect spell damage until it breaks after taking {amount} damage. Further casting strengthens the barrier.'}]},
+    'revive': {'name': 'Revive', 'bonuses': {'+intelligence': 20}, 'attacks': [
+            {'type': 'revive', 'stats': {'amount': ['{intelligence}'], 'cooldown': 120},
+            'helpText': 'Upon receiving mortal damage, cast a spell that brings you back to life with {amount} health.'}]},
+    'reviveInstantCooldown': {'name': 'Miracle', 'bonuses': {'$revive:skill:instantCooldown': true}},
+    'reviveInvulnerability': {'name': 'Halo', 'bonuses': {'$revive:skill:buff': {'duration': 2, '$invulnerable': true}}},
     // Tier 2 classes
     // Corsair
     'hook': {'name': 'Grappling Hook', 'attacks': [
             {'type': 'hook', 'stats': {'cooldown': 5, 'range': 10, 'dragDamage': 0, 'dragStun': 0, 'rangeDamage': 0, 'alwaysHits': true}, 'helpText': 'Throw a hook to damage and pull enemies closer.'}]},
-    'hookRange1': {'name': 'Long Shot', 'bonuses': {'+hook:skill:range': 2, '+hook:skill:cooldown': -1}, 'helpText': 'Increase the range of the hook and reduce the cooldown time.'},
-    'hookRange2': {'name': 'Longer Shot', 'bonuses': {'+hook:skill:range': 3, '+hook:skill:cooldown': -2}, 'helpText': 'Further improve the range of the hook and cooldown time.'},
-    'hookDrag1': {'name': 'Barbed Wire', 'bonuses': {'+hook:skill:dragDamage': .05}, 'helpText': 'Damage hooked enemies the further you drag them.'},
-    'hookDrag2': {'name': 'Tazer Wire', 'bonuses': {'+hook:skill:dragDamage': .05, '+hook:skill:dragStun': .1}, 'helpText': 'Damage hooked enemies more and stun them based on how far you dragged them.'},
-    'hookPower': {'name': 'Power Shot', 'bonuses': {'+hook:skill:rangeDamage': .1}, 'helpText': 'The hook deals more damage the further away the enemy is.'},
+    //'hookRange1': {'name': 'Long Shot', 'bonuses': {'+hook:skill:range': 2, '+hook:skill:cooldown': -1}, 'helpText': 'Increase the range of the hook and reduce the cooldown time.'},
+    //'hookRange2': {'name': 'Longer Shot', 'bonuses': {'+hook:skill:range': 3, '+hook:skill:cooldown': -2}, 'helpText': 'Further improve the range of the hook and cooldown time.'},
+    //'hookDrag1': {'name': 'Barbed Wire', 'bonuses': {'+hook:skill:dragDamage': .05}, 'helpText': 'Damage hooked enemies the further you drag them.'},
+    //'hookDrag2': {'name': 'Tazer Wire', 'bonuses': {'+hook:skill:dragDamage': .05, '+hook:skill:dragStun': .1}, 'helpText': 'Damage hooked enemies more and stun them based on how far you dragged them.'},
+    //'hookPower': {'name': 'Power Shot', 'bonuses': {'+hook:skill:rangeDamage': .1}, 'helpText': 'The hook deals more damage the further away the enemy is.'},
     // Paladin
     'protect': {'name': 'Protect', 'bonuses': {'+intelligence': 5}, 'attacks': [
             {'type': 'buff', 'stats': {'cooldown': 30, 'buff': {'stats': {'+armor': ['{intelligence}'], 'duration': 20}}}, 'helpText': 'Create a magic barrier that grants: {buff}'}]},
@@ -38,9 +46,9 @@ var abilities = {
     'finesse':  {'name': 'Finesse', 'bonuses': {'%attackSpeed': .2}},
     'pet': {'name': 'Pet', 'attacks': [
             {'type': 'minion', 'tags': ['pet'], 'key': 'caterpillar', 'stats': {'limit': 1, 'cooldown': 30, 'healthBonus': 1, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1.5}, 'helpText': 'Call up to 1 pet to fight with you.'}]},
-    'petFood': {'name': 'Pet Food', 'bonuses': {'+pet:skill:cooldown': -3, '+pet:skill:healthBonus': 1}, 'helpText': 'Pet has 50% more health and can be called more frequently.'},
-    'petTraining': {'name': 'Pet Training', 'next': ['whistle'], 'bonuses': {'+pet:skill:cooldown': -3, '+pet:skill:damageBonus': .5}, 'helpText': 'Pet deals 50% more damage and can be called more frequently.'},
-    'whistle': {'name': 'Whistle', 'bonuses': {'+pet:skill:cooldown': -10}, 'helpText': 'Greatly reduces the cooldown for calling your pet.'},
+    //'petFood': {'name': 'Pet Food', 'bonuses': {'+pet:skill:cooldown': -3, '+pet:skill:healthBonus': 1}, 'helpText': 'Pet has 50% more health and can be called more frequently.'},
+    //'petTraining': {'name': 'Pet Training', 'next': ['whistle'], 'bonuses': {'+pet:skill:cooldown': -3, '+pet:skill:damageBonus': .5}, 'helpText': 'Pet deals 50% more damage and can be called more frequently.'},
+    //'whistle': {'name': 'Whistle', 'bonuses': {'+pet:skill:cooldown': -10}, 'helpText': 'Greatly reduces the cooldown for calling your pet.'},
     // Warrior
     'ferocity': {'name': 'Ferocity', 'bonuses': {'%damage': .2}},
     // Wizard
@@ -66,6 +74,9 @@ var abilities = {
     // Enhancer
     // Sage
 };
+$.each(abilities, function (key, ability) {
+    ability.key = key;
+});
 var specialTraits = {};
 function findSpecialTraits(object) {
     $.each(object, function (key, value) {
@@ -75,11 +86,11 @@ function findSpecialTraits(object) {
 }
 findSpecialTraits(abilities);
 
-function abilityHelpText(ability) {
+function abilityHelpText(ability, character) {
     var sections = [ability.name, ''];
     if (ifdefor(ability.helpText)) {
         sections.push(ability.helpText.replace(/\{(\w+)\}/, function (match, key) {
-            return evaluteForDisplay(ability.bonuses[key]);
+            return evaluateForDisplay(ability.bonuses[key], character.adventurer);
         }));
         sections.push('');
     }
@@ -88,7 +99,7 @@ function abilityHelpText(ability) {
         var attack = ability.attacks[i];
         if (ifdefor(attack.helpText)) {
             attackSections.push(attack.helpText.replace(/\{(\w+)\}/, function (match, key) {
-                return evaluateForDisplay(attack.stats[key]);
+                return evaluateForDisplay(attack.stats[key], character.adventurer);
             }));
         }
         if (ifdefor(attack.stats.cooldown)) {
@@ -96,7 +107,7 @@ function abilityHelpText(ability) {
         }
         sections.push(tag('div', 'abilityText', attackSections.join('<br/>')));
     }
-    var helpText = bonusHelpText(ifdefor(ability.bonuses, {}), false);
+    var helpText = bonusHelpText(ifdefor(ability.bonuses, {}), false, character.adventurer);
     if (helpText) {
         sections.push(helpText);
     }

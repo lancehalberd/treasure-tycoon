@@ -30,7 +30,6 @@ function displayInfoMode(character) {
     character.currentLevelIndex = null;
     refreshStatsPanel(character);
     character.$panel.find('.js-recall').prop('disabled', true);
-    updateSkillButtons(character);
     if (character.replay) {
         startArea(character, currentLevelIndex);
     }
@@ -49,6 +48,13 @@ function refreshStatsPanel(character) {
     $statsPanel.find('.js-speed').text(adventurer.speed.format(1));
     $statsPanel.find('.js-healthRegen').text(adventurer.healthRegen.format(1));
     updateDamageInfo(character);
+    if (character.board) {
+        for (var i = 0; i < character.board.fixed.length; i++) {
+            var jewel = character.board.fixed[i];
+            jewel.helpText =  abilityHelpText(jewel.ability, character);
+        }
+    }
+    updateSkillButtons(character);
 }
 function newCharacter(job) {
     var personCanvas = createCanvas(personFrames * 32, 64);
@@ -309,7 +315,7 @@ function updateAdventurerStats(adventurer) {
     }
 }
 function getStat(actor, stat) {
-    var base = ifdefor(actor.base[stat], 0), plus = 0, percent = 1, multiplier = 1, found = false;
+    var base = ifdefor(actor.base[stat], 0), plus = 0, percent = 1, multiplier = 1, specialValue = null;
     var baseKeys = [stat];
     if (stat === 'evasion' || stat === 'attackSpeed') {
         percent += .002 * actor.dexterity;
@@ -353,18 +359,18 @@ function getStat(actor, stat) {
             percent += evaluateValue(actor, ifdefor(bonus['%' + key], 0));
             multiplier *= evaluateValue(actor, ifdefor(bonus['*' + key], 1));
             if (ifdefor(bonus['$' + key])) {
-                found = true;
+                specialValue = evaluateValue(actor, bonus['$' + key]);
             }
         });
     });
-    if (found) {
-        return true;
+    if (specialValue) {
+        return specialValue;
     }
     //console.log(stat +": " + ['(',base, '+', plus,') *', percent, '*', multiplier]);
     return (base + plus) * percent * multiplier;
 }
 function getStatForAttack(actor, dataObject, stat) {
-    var base = evaluateValue(actor, ifdefor(dataObject.stats[stat], 0)), plus = 0, percent = 1, multiplier = 1, found = false;
+    var base = evaluateValue(actor, ifdefor(dataObject.stats[stat], 0)), plus = 0, percent = 1, multiplier = 1, specialValue = false;
     if (typeof base === 'object' && base.constructor != Array) {
         var subObject = {};
         $.each(base.stats, function (key, value) {
@@ -378,7 +384,7 @@ function getStatForAttack(actor, dataObject, stat) {
     // '*attackSpeed': 2 to it as this has already been applied to the base attackSpeed.
     var keys = ['skill:' + stat];
     ifdefor(dataObject.tags, []).concat([dataObject.type]).forEach(function (prefix) {
-        keys.push(prefix + ':' + stat);
+        keys.push(prefix + ':skill:' + stat);
     });
     actor.bonuses.forEach(function (bonus) {
         keys.forEach(function (key) {
@@ -386,12 +392,12 @@ function getStatForAttack(actor, dataObject, stat) {
             percent += evaluateValue(actor, ifdefor(bonus['%' + key], 0));
             multiplier *= evaluateValue(actor, ifdefor(bonus['*' + key], 1));
             if (ifdefor(bonus['$' + key])) {
-                found = true;
+                specialValue = evaluateValue(actor, bonus['$' + key]);
             }
         });
     });
-    if (found) {
-        return true;
+    if (specialValue) {
+        return specialValue;
     }
     return (base + plus) * percent * multiplier;
 }

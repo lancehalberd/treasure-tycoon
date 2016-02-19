@@ -210,7 +210,7 @@ function makeFixedJewel(shape, character, ability) {
         'jewelType': 0,
         'fixed': true,
         'character': character,
-        'helpText': abilityHelpText(ability),
+        'ability': ability,
         'adjacentJewels': [],
         'adjacencyBonuses': {}
     };

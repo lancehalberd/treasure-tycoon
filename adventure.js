@@ -29,7 +29,37 @@ function startArea(character, index) {
     character.$panel.find('.js-infoMode').hide();
     character.$panel.find('.js-adventureMode').show();
 }
+function isActorDead(actor, character) {
+    if (actor.health > 0 || actor.invulnerable) return false;
+    var revive = getFirstAbilityByType(actor, 'revive');
+    if (!revive) return true;
+    revive.readyAt = character.time + revive.cooldown;
+    actor.health += revive.amount;
+    actor.stunned = character.time + .3;
+    if (revive.buff) {
+        addTimedEffect(character, actor, revive.buff);
+    }
+    if (revive.instantCooldown) {
+        console.log("Instant cooldown");
+        for(var i = 0; i < ifdefor(actor.attacks, []).length; i++) {
+            var attack = actor.attacks[i];
+            if (attack !== revive) {
+                attack.readyAt = actor.character.time;
+            }
+        }
+    }
+    return false;
+}
 
+function getFirstAbilityByType(actor, type) {
+    for(var i = 0; i < ifdefor(actor.attacks, []).length; i++) {
+        var attack = actor.attacks[i];
+        if (attack.base.type !== type) continue;
+        if (attack.readyAt > actor.character.time) continue;
+        return attack;
+    }
+    return null;
+}
 function adventureLoop(character, delta) {
     var adventurer = character.adventurer;
     var everybody = character.allies.concat(character.enemies);
@@ -37,13 +67,13 @@ function adventureLoop(character, delta) {
         processStatusEffects(character, actor, delta);
     });
     // Check for defeated player/enemies.
-    if (adventurer.health <= 0) {
+    if (isActorDead(adventurer, character)) {
         displayInfoMode(character);
         return;
     }
     for (var i = 0; i < character.enemies.length; i++) {
         var enemy = character.enemies[i];
-        if (enemy.health <= 0) {
+        if (isActorDead(enemy, character)) {
             character.enemies.splice(i--, 1);
             defeatedEnemy(character, enemy);
             continue;
@@ -52,7 +82,7 @@ function adventureLoop(character, delta) {
     }
     for (var i = 0; i < character.allies.length; i++) {
         var ally = character.allies[i];
-        if (ally.health <= 0) {
+        if (isActorDead(ally, character)) {
             character.allies.splice(i--, 1);
             continue;
         }

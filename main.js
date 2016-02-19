@@ -330,7 +330,6 @@ $('body').on('click', '.js-learnSkill', function (event) {
     }
     var areaKey = $(this).closest('.js-adventure').data('levelIndex');
     var level = levels[areaKey];
-    //$('body').append(abilityHelpText(level.skill));
     var board = readBoardFromData(level.board, character, level.skill);
     $(this).closest('.js-adventure').find('.js-confirmSkill, .js-cancelSkill').show();
     character.$panel.find('.js-learnSkill').hide();
@@ -353,7 +352,6 @@ $('body').on('click', '.js-confirmSkill', function (event) {
     drawBoardBackground(character.boardContext, character.board);
     showJewels();
     gainLevel(character.adventurer);
-    updateSkillButtons(character);
     updateAdventurer(character.adventurer);
     // Replace the skill buttons with a checkmark, they aren't used any more.
     $(this).closest('.js-adventure').append($tag('span','', '&#10003;'));

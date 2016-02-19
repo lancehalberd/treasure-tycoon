@@ -1,9 +1,12 @@
 
 var levels = {};
-
+var abilitiesUsed = {};
 function addLevel(levelData) {
     var key = ifdefor(levelData.key, levelData.name.replace(/\s*/g, '').toLowerCase());
     levels[key] = levelData;
+    if (levelData.skill) {
+        abilitiesUsed[levelData.skill.key] = true;
+    }
 }
 function instantiateLevel(levelData, completed) {
     var waves = [];
@@ -83,7 +86,7 @@ function updateSkillButtons(character) {
         } else {
             $(element).removeClass('disabled');
         }
-        sections.push(abilityHelpText(level.skill));
+        sections.push(abilityHelpText(level.skill, character));
         $(element).attr('helptext', sections.join('<br/>'));
     });
 }
@@ -219,6 +222,17 @@ function initializeLevels() {
              'enemySkills': [abilities.heal, abilities.protect, abilities.majorIntelligence],
              'monsters': ['butterfly', 'gnomecromancer'],
              'events': [['butterfly', 'butterfly'], ['gnomecromancer', 'gnomecromancer'],  ['gnomecromancer', 'dragon', 'gnomecromancer']]});
+
+    var index = 0;
+    $.each(abilities, function (key, ability) {
+        if (!abilitiesUsed[key]) {
+            addLevel({'name': 'test-' + (index++), 'level': 10, 'background': backgrounds.forest, 'specialLoot': [simpleJewelLoot], 'next': [],
+                     'skill':  ability, 'board': { 'fixed' : [{"k":"triangle","p":[105,68],"t":60}], 'spaces' : [] },
+                     'enemySkills': [ability],
+                     'monsters': ['butterfly', 'skeleton', 'gnome', 'gnomecromancer', 'caterpillar', 'dragon'],
+                     'events': [['motherfly'], ['butcher']]});
+        }
+    });
 }
 function basicWave(monsters, objects, letter, extraBonuses) {
     return {
