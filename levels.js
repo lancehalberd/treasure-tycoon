@@ -126,99 +126,99 @@ function initializeLevels() {
     // monsters are random monsters that can be added to any waves or present in random waves.
     // events are predefined sets of monsters that will appear in order throughout the level.
     // Initial levels
-    addLevel({'name': 'Meadow', 'level': 1, 'background': backgrounds.field, 'specialLoot': [simpleRubyLoot],'next': ['cave', 'garden', 'road'],'skill': {'name': 'Minor Strength', 'bonuses': {'+strength': 5}},
+    addLevel({'name': 'Meadow', 'level': 1, 'background': backgrounds.field, 'specialLoot': [simpleRubyLoot],'next': ['cave', 'garden', 'road'],'skill': abilities.minorStrength,
              'board': {'fixed' : [{"k":"diamond","p":[134.75,120.47595264191645],"t":-120}],'spaces' : [{"k":"triangle","p":[104.75,120.47595264191645],"t":-60},{"k":"triangle","p":[134.75,120.47595264191645],"t":0}]},
              'enemySkills': [{'bonuses': {'+strength': 5}}],
              'monsters': ['caterpillar', 'skeleton'],
              'events': [['skeleton', 'caterpillar'], ['caterpillar', 'caterpillar'], ['skeleton', 'skeleton'], ['dragon']]});
-    addLevel({'name': 'Cave', 'level': 1, 'background': backgrounds.cave, 'specialLoot': [simpleSaphireLoot], 'next': ['grove', 'cemetery', 'temple'],'skill': {'name': 'Minor Intelligence', 'bonuses': {'+intelligence': 5}},
+    addLevel({'name': 'Cave', 'level': 1, 'background': backgrounds.cave, 'specialLoot': [simpleSaphireLoot], 'next': ['grove', 'cemetery', 'temple'],'skill': abilities.minorIntelligence,
              'board': { 'fixed' : [{"k":"triangle","p":[105,68],"t":60}],'spaces' : [{"k":"triangle","p":[75,68],"t":0},{"k":"triangle","p":[120,93.98076211353316],"t":120}] },
              'enemySkills': [{'bonuses': {'+intelligence': 5}}],
              'monsters': ['gnome', 'skeleton'],
              'events': [['skeleton', 'gnome'], ['skeleton', 'skeleton'], ['gnome', 'gnome'], ['giantSkeleton']]});
-    addLevel({'name': 'Grove', 'level': 1, 'background': backgrounds.forest, 'specialLoot': [simpleEmeraldLoot], 'next': ['meadow', 'savannah', 'orchard'],'skill': {'name': 'Minor Dexterity', 'bonuses': {'+dexterity': 5}},
+    addLevel({'name': 'Grove', 'level': 1, 'background': backgrounds.forest, 'specialLoot': [simpleEmeraldLoot], 'next': ['meadow', 'savannah', 'orchard'], 'skill': abilities.minorDexterity,
              'board': {'fixed' : [{"k":"diamond","p":[161,75],"t":0}],'spaces' : [{"k":"diamond","p":[131,75],"t":-60}]},
              'enemySkills': [{'bonuses': {'+dexterity': 5}}],
              'monsters': ['caterpillar', 'gnome'],
              'events': [['caterpillar', 'gnome'], ['gnome', 'gnome'], ['caterpillar', 'caterpillar'], ['butterfly']]});
     // Level 1 Utility
-    addLevel({'name': 'Cemetery', 'level': 1, 'background': backgrounds.cemetery, 'specialLoot': [simpleRubyLoot], 'next': ['crypt'], 'skill': abilities['raiseDead'],
+    addLevel({'name': 'Cemetery', 'level': 1, 'background': backgrounds.cemetery, 'specialLoot': [simpleRubyLoot], 'next': ['crypt'], 'skill': abilities.raiseDead,
              'board': {'fixed' : [{"k":"diamond","p":[134.75,120.47595264191645],"t":-120}], 'spaces' : [{"k":"triangle","p":[104.75,120.47595264191645],"t":-60},{"k":"triangle","p":[134.75,120.47595264191645],"t":0}]},
              'monsters': ['skeleton'],
              'events': [['skeleton', 'skeleton'], ['gnomecromancer'], ['skeleton', 'skeleton', 'skeleton', 'skeleton'], ['gnomecromancer', 'gnomecromancer']]});
-    addLevel({'name': 'Savannah', 'level': 1, 'background': backgrounds.field, 'specialLoot': [simpleRubyLoot], 'next': ['range'], 'skill': abilities['pet'],
+    addLevel({'name': 'Savannah', 'level': 1, 'background': backgrounds.field, 'specialLoot': [simpleRubyLoot], 'next': ['range'], 'skill': abilities.pet,
              'board': {'fixed' : [{"k":"diamond","p":[134.75,120.47595264191645],"t":-120}],'spaces' : [{"k":"triangle","p":[104.75,120.47595264191645],"t":-60},{"k":"triangle","p":[134.75,120.47595264191645],"t":0}]},
              'monsters': ['butterfly'],
              'events': [['caterpillar', 'caterpillar', 'caterpillar'], ['caterpillar', 'caterpillar', 'motherfly']]});
-    addLevel({'name': 'Garden', 'level': 1, 'background': backgrounds.garden, 'specialLoot': [simpleEmeraldLoot], 'next': ['trail'], 'skill': abilities['stealth'],
+    addLevel({'name': 'Garden', 'level': 1, 'background': backgrounds.garden, 'specialLoot': [simpleEmeraldLoot], 'next': ['trail'], 'skill': abilities.stealth,
              'board': {'fixed' : [{"k":"diamond","p":[161,75],"t":0}],'spaces' : [{"k":"diamond","p":[131,75],"t":-60}]},
-             'enemySkills': [abilities['stealth'], {'bonuses': {'+evasion': 3}}],
+             'enemySkills': [abilities.stealth, {'bonuses': {'+evasion': 3}}],
              'monsters': ['caterpillar', 'gnome', 'butterfly', 'skeleton'],
              'events': [['butterfly'], ['giantSkeleton'], ['dragon']]});
     // Level 2 Healing
     addLevel({'name': 'Temple', 'level': 2, 'background': backgrounds.cave, 'specialLoot': [simpleSaphireLoot], 'next': ['bayou'],
-             'skill': abilities['heal'], 'board': triforceBoard,
-             'enemySkills': [abilities['heal']],
+             'skill': abilities.heal, 'board': triforceBoard,
+             'enemySkills': [abilities.heal],
              'monsters': ['gnome', 'butterfly'],
              'events': [['dragon']]});
     addLevel({'name': 'Orchard', 'level': 2, 'background': backgrounds.orchard, 'specialLoot': [simpleEmeraldLoot], 'next': ['crevice'],
-             'skill': abilities['sap'],'board': spikeBoard,
-             'enemySkills': [abilities['sap'], {'bonuses': {'+range': 2, '+attackSpeed': .5}}],
+             'skill': abilities.sap,'board': spikeBoard,
+             'enemySkills': [abilities.sap, {'bonuses': {'+range': 2, '+attackSpeed': .5}}],
              'monsters': ['butterfly', 'gnome'],
              'events': [['butterfly', 'butterfly'], ['gnome', 'gnome'],  ['dragon']]});
     addLevel({'name': 'Road', 'level': 2, 'background': backgrounds.field, 'specialLoot': [simpleRubyLoot], 'next': ['tunnel'],
-             'skill': abilities['vitality'],'board': halfHexBoard,
-             'enemySkills': [abilities['vitality']],
+             'skill': abilities.vitality,'board': halfHexBoard,
+             'enemySkills': [abilities.vitality],
              'monsters': ['skeleton'],
              'events': [['skeleton', 'skeleton'], ['dragon'], ['skeleton', 'skeleton', 'skeleton', 'skeleton'], ['gnomecromancer']]});
     // Level 3 Offense
     addLevel({'name': 'Crypt', 'level': 3, 'background': backgrounds.cave, 'specialLoot': [simpleSaphireLoot],'next': ['dungeon'],
-             'skill': {'name': 'Resonance', 'bonuses': {'%magicDamage': .2}}, 'board': triforceBoard,
+             'skill': abilities.resonance, 'board': triforceBoard,
              'enemySkills': [{'name': 'Resonance', 'bonuses': {'%magicDamage': .2}}],
              'monsters': ['gnome', 'butterfly'],
              'events': [['dragon']]});
     addLevel({'name': 'Range', 'level': 3, 'background': backgrounds.forest, 'specialLoot': [simpleEmeraldLoot], 'next': ['valley'],
-             'skill':  {'name': 'Finesse', 'bonuses': {'%attackSpeed': .2}},'board': spikeBoard,
-             'enemySkills': [{'name': 'Finesse', 'bonuses': {'%attackSpeed': .2}}],
+             'skill': abilities.finesse,'board': spikeBoard,
+             'enemySkills': [abilities.finesse],
              'monsters': ['butterfly', 'gnome'],
              'events': [['butterfly', 'butterfly'], ['gnome', 'gnome'],  ['dragon']]});
     addLevel({'name': 'Trail', 'level': 3, 'background': backgrounds.field, 'specialLoot': [simpleRubyLoot],'next': ['mountain'],
-             'skill':  {'name': 'Ferocity', 'bonuses': {'%damage': .2}},'board': halfHexBoard,
-             'enemySkills': [{'name': 'Ferocity', 'bonuses': {'%damage': .2}}],
+             'skill': abilities.ferocity,'board': halfHexBoard,
+             'enemySkills': [abilities.ferocity],
              'monsters': ['skeleton'],
              'events': [['skeleton', 'skeleton'], ['gnomecromancer'], ['skeleton', 'skeleton', 'skeleton', 'skeleton'], ['gnomecromancer', 'gnomecromancer']]});
     // Level 4 Utility
     addLevel({'name': 'Tunnel', 'level': 4, 'background': backgrounds.cave, 'specialLoot': [simpleSaphireLoot],'next': ['mountain'],
-             'skill': abilities['hook'],'board': thirdHexBoard,
+             'skill': abilities.hook,'board': thirdHexBoard,
              'enemySkills': [],
              'monsters': ['dragon', 'skeleton'],
              'events': [['skeleton', 'skeleton'],['butcher'], ['skeleton', 'skeleton', 'dragon'], ['butcher', 'dragon']]});
     addLevel({'name': 'Crevice', 'level': 4, 'background': backgrounds.cave, 'specialLoot': [simpleSaphireLoot],'next': ['valley'],
-             'skill': abilities['dodge'],'board': fangBoard,
-             'enemySkills': [abilities['dodge']],
+             'skill': abilities.dodge,'board': fangBoard,
+             'enemySkills': [abilities.dodge],
              'monsters': ['gnome', 'butterfly'],
              'events': [['dragon']]});
     addLevel({'name': 'Bayou', 'level': 4, 'background': backgrounds.forest, 'specialLoot': [simpleEmeraldLoot], 'next': ['dungeon'],
-             'skill':  abilities['protect'],'board': petalBoard,
-             'enemySkills': [abilities['protect'], {'bonuses': {'+magicResist': .2, '+intelligence': 10}}],
+             'skill':  abilities.protect,'board': petalBoard,
+             'enemySkills': [abilities.protect, abilities.majorIntelligence],
              'monsters': ['butterfly', 'gnome'],
              'events': [['butterfly', 'butterfly'], ['gnome', 'gnome'],  ['dragon']]});
     // Level 5 Core Stat Boost
     addLevel({'name': 'Mountain', 'level': 5, 'background': backgrounds.field, 'specialLoot': [simpleRubyLoot],'next': ['eternalfields6'],
-             'skill': {'name': 'Major Strength', 'bonuses': {'+strength': 20}}, 'board': pieBoard,
-             'enemySkills': [],
+             'skill': abilities.majorStrength, 'board': pieBoard,
+             'enemySkills': [abilities.majorStrength],
              'monsters': ['dragon', 'skeleton'],
              'events': [['skeleton', 'skeleton'],['butcher'], ['skeleton', 'skeleton', 'dragon'], ['butcher', 'dragon']]});
     addLevel({'name': 'Dungeon', 'level': 5, 'background': backgrounds.cave, 'specialLoot': [simpleSaphireLoot],'next': ['bottomlessdepths6'],
-             'skill': {'name': 'Major Dexterity', 'bonuses': {'+dexterity': 20}}, 'board': helmBoard,
-             'enemySkills': [abilities['dodge']],
+             'skill': abilities.majorDexterity, 'board': helmBoard,
+             'enemySkills': [abilities.majorDexterity],
              'monsters': ['gnome', 'butterfly'],
              'events': [['dragon']]});
     addLevel({'name': 'Valley', 'level': 5, 'background': backgrounds.forest, 'specialLoot': [simpleEmeraldLoot], 'next': ['oceanoftrees6'],
-             'skill':  {'name': 'Major Intelligence', 'bonuses': {'+intelligence': 20}}, 'board': crownBoard,
-             'enemySkills': [abilities['protect'], {'bonuses': {'+magicResist': .2, '+intelligence': 10}}],
-             'monsters': ['butterfly', 'gnome'],
-             'events': [['butterfly', 'butterfly'], ['gnome', 'gnome'],  ['dragon']]});
+             'skill':  abilities.majorIntelligence, 'board': crownBoard,
+             'enemySkills': [abilities.heal, abilities.protect, abilities.majorIntelligence],
+             'monsters': ['butterfly', 'gnomecromancer'],
+             'events': [['butterfly', 'butterfly'], ['gnomecromancer', 'gnomecromancer'],  ['gnomecromancer', 'dragon', 'gnomecromancer']]});
 }
 function basicWave(monsters, objects, letter, extraBonuses) {
     return {

@@ -5,7 +5,7 @@ var names = ['Chris', 'Leon', 'Hillary', 'Michelle', 'Rob', 'Reuben', 'Kingston'
 var walkLoop = [0, 1, 2, 3];
 var fightLoop = [4, 5, 6];
 var pointsTypes = ['coins', 'anima', 'fame'];
-var allComputedStats = ['cloaking', 'dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
+var allComputedStats = ['dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
      'coins', 'xpValue', 'anima',
      'evasion', 'block', 'magicBlock', 'armor', 'magicResist', 'accuracy', 'range', 'attackSpeed',
      'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage',
@@ -290,6 +290,9 @@ function updateAdventurerStats(adventurer) {
     allComputedStats.forEach(function (stat) {
         adventurer[stat] = getStat(adventurer, stat);
     });
+    $.each(specialTraits, function (stat) {
+        adventurer[stat] = getStat(adventurer, stat);
+    });
     allRoundedStats.forEach(function (stat) {
         adventurer[stat] = Math.round(adventurer[stat]);
     });
@@ -306,7 +309,7 @@ function updateAdventurerStats(adventurer) {
     }
 }
 function getStat(actor, stat) {
-    var base = ifdefor(actor.base[stat], 0), plus = 0, percent = 1, multiplier = 1;
+    var base = ifdefor(actor.base[stat], 0), plus = 0, percent = 1, multiplier = 1, found = false;
     var baseKeys = [stat];
     if (stat === 'evasion' || stat === 'attackSpeed') {
         percent += .002 * actor.dexterity;
@@ -349,8 +352,14 @@ function getStat(actor, stat) {
             plus += evaluateValue(actor, ifdefor(bonus['+' + key], 0));
             percent += evaluateValue(actor, ifdefor(bonus['%' + key], 0));
             multiplier *= evaluateValue(actor, ifdefor(bonus['*' + key], 1));
+            if (ifdefor(bonus['$' + key])) {
+                found = true;
+            }
         });
     });
+    if (found) {
+        return true;
+    }
     //console.log(stat +": " + ['(',base, '+', plus,') *', percent, '*', multiplier]);
     return (base + plus) * percent * multiplier;
 }
