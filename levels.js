@@ -128,17 +128,17 @@ function initializeLevels() {
     // Initial levels
     addLevel({'name': 'Meadow', 'level': 1, 'background': backgrounds.field, 'specialLoot': [simpleRubyLoot],'next': ['cave', 'garden', 'road'],'skill': abilities.minorStrength,
              'board': {'fixed' : [{"k":"diamond","p":[134.75,120.47595264191645],"t":-120}],'spaces' : [{"k":"triangle","p":[104.75,120.47595264191645],"t":-60},{"k":"triangle","p":[134.75,120.47595264191645],"t":0}]},
-             'enemySkills': [{'bonuses': {'+strength': 5}}],
+             'enemySkills': [abilities.minorStrength],
              'monsters': ['caterpillar', 'skeleton'],
              'events': [['skeleton', 'caterpillar'], ['caterpillar', 'caterpillar'], ['skeleton', 'skeleton'], ['dragon']]});
     addLevel({'name': 'Cave', 'level': 1, 'background': backgrounds.cave, 'specialLoot': [simpleSaphireLoot], 'next': ['grove', 'cemetery', 'temple'],'skill': abilities.minorIntelligence,
              'board': { 'fixed' : [{"k":"triangle","p":[105,68],"t":60}],'spaces' : [{"k":"triangle","p":[75,68],"t":0},{"k":"triangle","p":[120,93.98076211353316],"t":120}] },
-             'enemySkills': [{'bonuses': {'+intelligence': 5}}],
+             'enemySkills': [abilities.minorIntelligence],
              'monsters': ['gnome', 'skeleton'],
              'events': [['skeleton', 'gnome'], ['skeleton', 'skeleton'], ['gnome', 'gnome'], ['giantSkeleton']]});
     addLevel({'name': 'Grove', 'level': 1, 'background': backgrounds.forest, 'specialLoot': [simpleEmeraldLoot], 'next': ['meadow', 'savannah', 'orchard'], 'skill': abilities.minorDexterity,
              'board': {'fixed' : [{"k":"diamond","p":[161,75],"t":0}],'spaces' : [{"k":"diamond","p":[131,75],"t":-60}]},
-             'enemySkills': [{'bonuses': {'+dexterity': 5}}],
+             'enemySkills': [abilities.minorDexterity],
              'monsters': ['caterpillar', 'gnome'],
              'events': [['caterpillar', 'gnome'], ['gnome', 'gnome'], ['caterpillar', 'caterpillar'], ['butterfly']]});
     // Level 1 Utility
@@ -174,7 +174,7 @@ function initializeLevels() {
     // Level 3 Offense
     addLevel({'name': 'Crypt', 'level': 3, 'background': backgrounds.cave, 'specialLoot': [simpleSaphireLoot],'next': ['dungeon'],
              'skill': abilities.resonance, 'board': triforceBoard,
-             'enemySkills': [{'name': 'Resonance', 'bonuses': {'%magicDamage': .2}}],
+             'enemySkills': [abilities.resonance],
              'monsters': ['gnome', 'butterfly'],
              'events': [['dragon']]});
     addLevel({'name': 'Range', 'level': 3, 'background': backgrounds.forest, 'specialLoot': [simpleEmeraldLoot], 'next': ['valley'],
