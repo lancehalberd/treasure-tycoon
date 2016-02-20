@@ -340,18 +340,34 @@ function bonusHelpText(rawBonuses, implicit, actor) {
     });
 
     // Special effects
-    if (ifdefor(bonuses['$invulnerable'])) {
-        sections.push('Invulnerability');
-    }
-    if (ifdefor(bonuses['$instantCooldown'])) {
-        sections.push('Reset cooldowns of other abilities');
-    }
-    if (ifdefor(bonuses['$cloaking'])) {
-        sections.push('Invisible while moving');
-    }
     if (ifdefor(bonuses['$buff'])) { // Buffs/debuffs only.
         sections.push('Gain:');
         sections.push(bonusHelpText(bonuses['$buff'], false, actor));
+    }
+    if (ifdefor(bonuses['+dragDamage'])) { // Buffs/debuffs only.
+        sections.push(bonuses['+dragDamage'].percent(1) + ' of initial damage is dealt per distance dragged');
+    }
+    if (ifdefor(bonuses['+dragStun'])) { // Buffs/debuffs only.
+        sections.push('Target is stunned for ' + bonuses['+dragStun'].format(1) + ' seconds per distance dragged');
+    }
+    if (ifdefor(bonuses['+rangeDamage'])) { // Buffs/debuffs only.
+        sections.push(bonuses['+rangeDamage'].percent(1) + ' increased damage the further the attack travels');
+    }
+    if (ifdefor(bonuses['+cooldown'])) { // Buffs/debuffs only.
+        if (bonuses['+cooldown'] > 0) {
+            sections.push('Cooldown increased by ' + bonuses['+cooldown'] + ' seconds');
+        }
+        if (bonuses['+cooldown'] < 0) {
+            sections.push('Cooldown reduced by ' + -bonuses['+cooldown'] + ' seconds');
+        }
+    }
+    if (ifdefor(bonuses['+distance'])) { // Buffs/debuffs only.
+        if (bonuses['+distance'] > 0) {
+            sections.push('Distance increased by ' + (bonuses['+distance'] / 32).format(1));
+        }
+        if (bonuses['+distance'] < 0) {
+            sections.push('Distance reduced by ' + (-bonuses['+distance'] / 32).format(1));
+        }
     }
     if (ifdefor(bonuses['duration'])) { // Buffs/debuffs only.
         sections.push('For ' + bonuses.duration + ' seconds');
