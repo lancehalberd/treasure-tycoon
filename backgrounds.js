@@ -70,9 +70,9 @@ function initializeBackground() {
     ];
     backgrounds.field = [
         {'source': bgSources.field},
-        {'source': bgSources.skinnyCloud, 'parallax': .2, 'spacing': 3, 'velocity': -50},
-        {'source': bgSources.tinyCloud, 'parallax': .3, 'spacing': 2, 'velocity': -50},
-        {'source': bgSources.mediumCloud, 'parallax': .5, 'spacing': 3, 'velocity': -50},
+        {'source': bgSources.skinnyCloud, 'parallax': .2, 'spacing': 3, 'velocity': -50, 'alpha': .4},
+        {'source': bgSources.tinyCloud, 'parallax': .3, 'spacing': 2, 'velocity': -50, 'alpha': .4},
+        {'source': bgSources.mediumCloud, 'parallax': .5, 'spacing': 3, 'velocity': -50, 'alpha': .4},
         {'source': bgSources.dirtCracks},
         {'source': bgSources.grassEdge},
         {'source': bgSources.grassA},

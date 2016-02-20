@@ -276,11 +276,14 @@ function drawAdventure(character) {
         var parallax = ifdefor(section.parallax, 1);
         var spacing = ifdefor(section.spacing, 1);
         var velocity = ifdefor(section.velocity, 0);
+        var alpha = ifdefor(section.alpha, 1);
+        context.globalAlpha = alpha;
         for (var i = 0; i <= 704; i += 64 * spacing) {
             var x = (768 + (i - (cameraX - character.time * velocity) * parallax) % 768) % 768 - 64;
             context.drawImage(source.image, source.x, source.y, source.width, source.height,
                                   x, y, width, height);
         }
+        context.globalAlpha = 1;
     });
     character.objects.forEach(function (object, index) {
         object.draw(character.context, object.x - cameraX, 240 - 128);
