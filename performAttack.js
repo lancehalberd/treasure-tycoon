@@ -1,8 +1,8 @@
 
 function updateDamageInfo(character) {
     var adventurer = character.adventurer;
-    if (!adventurer || !adventurer.attacks) return;
-    var attack = adventurer.attacks[adventurer.attacks.length - 1];
+    if (!adventurer || !adventurer.actions) return;
+    var attack = adventurer.actions[adventurer.actions.length - 1];
     // Raw damage numbers.
     var damageMultiplier =  (1 - attack.critChance) + (1 + attack.critDamage) * attack.critChance;
     var accuracyMultiplier = (1 - attack.critChance) + (1 + attack.critAccuracy) * attack.critChance;
@@ -80,7 +80,7 @@ function updateDamageInfo(character) {
     $damage.text( (rawPhysicalDPS + rawMagicDPS).format(1) + ' (' + (expectedPhysicalDPS + expectedMagicDPS).format(1) + ')');
     $damage.parent().attr('helptext', sections.join('<br/>'));
 
-    attack = dummy.attacks[dummy.attacks.length - 1];
+    attack = dummy.actions[dummy.actions.length - 1];
 
     var $protection =  $statsPanel.find('.js-protection');
     physical = Math.max(0, attack.maxDamage - adventurer.block / 2);
@@ -256,20 +256,6 @@ function applyAttackToTarget(attackStats, target, distance) {
             return false;
         }
     }
-    // Attacks that always hit can still be avoided by a 'dodge' skill.
-    var dodge = getFirstAbilityByType(target, 'dodge');
-    if (dodge) {
-        dodge.readyAt = character.time + dodge.cooldown;
-        target.pull = {'x': target.x - target.direction * dodge.distance, 'time': character.time + .3, 'damage': 0};
-        addTimedEffect(character, target, dodge.buff);
-        hitText.value = 'dodged';
-        hitText.color = 'blue';
-        hitText.font, "15px sans-serif"
-        character.textPopups.push(hitText);
-        return false;
-    }
-    attacker.health += ifdefor(attack.healthGainOnHit, 0);
-    target.slow += ifdefor(attack.slowOnHit, 0);
     // Apply block reduction
     var blockRoll = Random.range(0, target.block);
     var magicBlockRoll = Random.range(0, target.magicBlock);
@@ -280,11 +266,38 @@ function applyAttackToTarget(attackStats, target, distance) {
     damage = Math.round(applyArmorToDamage(damage, target.armor));
     magicDamage = Math.round(magicDamage * Math.max(0, (1 - target.magicResist)));
     var totalDamage = damage + magicDamage;
+    target.incomingDamage = totalDamage;
+    for (var i = 0; i < ifdefor(target.reactions, []).length; i++) {
+        if (useSkill(target, target.reactions[i], attacker)) {
+            break;
+        }
+    }
+    target.incomingDamage = 0;
+    // Attacks that always hit can still be avoided by a 'dodge' skill.
+    if (target.dodged) {
+        target.dodged = false;
+        hitText.value = 'dodged';
+        hitText.color = 'blue';
+        hitText.font, "15px sans-serif"
+        character.textPopups.push(hitText);
+        return false;
+    }
+    attacker.health += ifdefor(attack.healthGainOnHit, 0);
+    target.slow += ifdefor(attack.slowOnHit, 0);
+    // Attacks that always hit can still be avoided by a 'dodge' skill.
+    if (target.revived) {
+        target.revived = false;
+        hitText.value = 'revived';
+        hitText.color = 'blue';
+        hitText.font, "15px sans-serif"
+        character.textPopups.push(hitText);
+        return false;
+    }
     if (totalDamage > 0) {
         target.health -= totalDamage;
         hitText.value = totalDamage;
-        // Hook attacks pull the target in if it lands.
-        if (attack.base.type === 'hook') {
+        // Some attacks pull the target towards the attacker
+        if (attack.pullsTarget) {
             target.stunned = character.time + .3 + distance / 32 * ifdefor(attack.dragStun, 0);
             var targetX = (attacker.x > target.x) ? (attacker.x - 64) : (attacker.x + 64);
             target.pull = {'x': targetX, 'time': character.time + .3, 'damage': Math.floor(distance / 32 * damage * ifdefor(attack.dragDamage, 0))};

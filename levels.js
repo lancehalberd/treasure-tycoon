@@ -153,9 +153,9 @@ function initializeLevels() {
              'board': {'fixed' : [{"k":"diamond","p":[134.75,120.47595264191645],"t":-120}],'spaces' : [{"k":"triangle","p":[104.75,120.47595264191645],"t":-60},{"k":"triangle","p":[134.75,120.47595264191645],"t":0}]},
              'monsters': ['butterfly'],
              'events': [['caterpillar', 'caterpillar', 'caterpillar'], ['caterpillar', 'caterpillar', 'motherfly']]});
-    addLevel({'name': 'Garden', 'level': 1, 'background': backgrounds.garden, 'specialLoot': [simpleEmeraldLoot], 'next': ['trail'], 'skill': abilities.stealth,
+    addLevel({'name': 'Garden', 'level': 1, 'background': backgrounds.garden, 'specialLoot': [simpleEmeraldLoot], 'next': ['trail'], 'skill': abilities.fistMastery,
              'board': {'fixed' : [{"k":"diamond","p":[161,75],"t":0}],'spaces' : [{"k":"diamond","p":[131,75],"t":-60}]},
-             'enemySkills': [abilities.stealth, {'bonuses': {'+evasion': 3}}],
+             'enemySkills': [abilities.ninja],
              'monsters': ['caterpillar', 'gnome', 'butterfly', 'skeleton'],
              'events': [['butterfly'], ['giantSkeleton'], ['dragon']]});
     // Level 2 Healing

@@ -11,7 +11,7 @@ var allComputedStats = ['dexterity', 'strength', 'intelligence', 'maxHealth', 's
      'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage',
      'critChance', 'critDamage', 'critAccuracy',
      'damageOnMiss', 'slowOnHit', 'healthRegen', 'healthGainOnHit',
-     'increasedDrops', 'increasedExperience'];
+     'increasedDrops', 'increasedExperience', 'cooldownReduction'];
 var allRoundedStats = ['dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
      'coins', 'xpValue', 'anima',
      'evasion', 'block', 'magicBlock', 'armor', 'accuracy',
@@ -179,37 +179,36 @@ function changedPoints(pointsType) {
     else updateCraftButton();
     $('.js-' + pointsType).text(state[pointsType]);
 }
-function addBonusesAndAttacks(actor, source) {
+function addBonusesAndAction(actor, source) {
     if (ifdefor(source.bonuses)) {
         actor.bonuses.push(source.bonuses);
     }
-    if (ifdefor(source.attacks)) {
-        source.attacks.forEach(function (baseAttack) {
-            actor.attacks.push({'base': createAttack(baseAttack)});
-        });
+    if (ifdefor(source.action)) {
+        actor.actions.push({'base': createAction(source.action)});
     }
 }
-var inheritedAttackStats = ['range', 'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage',
+var inheritedActionStats = ['range', 'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage',
     'accuracy', 'attackSpeed', 'critChance', 'critDamage', 'critAccuracy', 'damageOnMiss', 'slowOnHit', 'healthGainOnHit'];
-function createAttack(data) {
+function createAction(data) {
     var stats = ifdefor(data.stats, {});
-    var attack =  {'type': 'basic', 'tags': [], 'helpText': 'A basic attack.', 'stats': {'cooldown': 0}};
+    var action =  {'type': 'attack', 'tags': [], 'helpText': 'A basic attack.', 'stats': {'cooldown': 0}};
     $.each(data, function (key, value) {
-        attack[key] = copy(value);
+        action[key] = copy(value);
     });
     // Inherit stats from the base character stats by default.
-    inheritedAttackStats.forEach(function (stat) {
-        attack.stats[stat] = ['{' + stat + '}'];
+    inheritedActionStats.forEach(function (stat) {
+        action.stats[stat] = ['{' + stat + '}'];
     });
     $.each(stats, function (stat, value) {
-        attack.stats[stat] = value;
+        action.stats[stat] = value;
     });
-    return attack;
+    return action;
 }
 function updateAdventurer(adventurer) {
     // Clear the character's bonuses and graphics.
     adventurer.bonuses = [];
-    adventurer.attacks = [];
+    adventurer.actions = [];
+    adventurer.reactions = [];
     adventurer.tags = [];
     if (!adventurer.equipment.weapon) {
         // Fighting unarmed is considered using a fist weapon.
@@ -235,7 +234,7 @@ function updateAdventurer(adventurer) {
         }
     }
     adventurer.abilities.forEach(function (ability) {
-        addBonusesAndAttacks(adventurer, ability);
+        addBonusesAndAction(adventurer, ability);
     });
     if (adventurer.character) {
         adventurer.character.board.jewels.forEach(function (jewel) {
@@ -251,12 +250,12 @@ function updateAdventurer(adventurer) {
         if (!equipment) {
             return;
         }
-        addBonusesAndAttacks(adventurer, equipment.base);
+        addBonusesAndAction(adventurer, equipment.base);
         equipment.prefixes.forEach(function (affix) {
-            addBonusesAndAttacks(adventurer, affix);
+            addBonusesAndAction(adventurer, affix);
         })
         equipment.suffixes.forEach(function (affix) {
-            addBonusesAndAttacks(adventurer, affix);
+            addBonusesAndAction(adventurer, affix);
         })
         if (equipment.base.offset) {
             for (var i = 0; i < personFrames; i++) {
@@ -267,51 +266,53 @@ function updateAdventurer(adventurer) {
             adventurer.character.$panel.find('.js-infoMode .js-equipment .js-' + type).append(equipment.$item);
         }
     });
-    adventurer.attacks.push({'base': createAttack({'tags': adventurer.tags})});
-    updateAdventurerStats(adventurer);
+    adventurer.actions.push({'base': createAction({'tags': adventurer.tags})});
+    updateActorStats(adventurer);
 }
-function updateAdventurerStats(adventurer) {
-    adventurer.base.maxHealth = 10 * (adventurer.level + adventurer.job.dexterityBonus + adventurer.job.strengthBonus + adventurer.job.intelligenceBonus);
-    adventurer.base.accuracy = 2 * adventurer.level;
-    adventurer.base.evasion = adventurer.level;
-    adventurer.base.block = adventurer.level;
-    adventurer.base.magicBlock = adventurer.level / 2;
-    adventurer.base.dexterity = adventurer.level * adventurer.job.dexterityBonus;
-    adventurer.base.strength = adventurer.level * adventurer.job.strengthBonus;
-    adventurer.base.intelligence = adventurer.level * adventurer.job.intelligenceBonus;
-    adventurer.base.minDamage = 0;
-    adventurer.base.maxDamage = 0;
-    adventurer.base.range = 0;
-    adventurer.base.attackSpeed = 0;
-    adventurer.base.critChance = 0;
-    adventurer.base.critDamage = .5;
-    adventurer.base.critAccuracy = .5;
-    if (!adventurer.equipment.weapon) {
-        adventurer.base.minDamage = adventurer.level;
-        adventurer.base.maxDamage = adventurer.level;
-        adventurer.base.range = .5;
-        adventurer.base.attackSpeed = 1;
-        adventurer.base.critChance = .01;
+function updateActorStats(actor) {
+    if (actor.personCanvas) {
+        actor.base.maxHealth = 10 * (actor.level + actor.job.dexterityBonus + actor.job.strengthBonus + actor.job.intelligenceBonus);
+        actor.base.accuracy = 2 * actor.level;
+        actor.base.evasion = actor.level;
+        actor.base.block = actor.level;
+        actor.base.magicBlock = actor.level / 2;
+        actor.base.dexterity = actor.level * actor.job.dexterityBonus;
+        actor.base.strength = actor.level * actor.job.strengthBonus;
+        actor.base.intelligence = actor.level * actor.job.intelligenceBonus;
+        actor.base.minDamage = 0;
+        actor.base.maxDamage = 0;
+        actor.base.range = 0;
+        actor.base.attackSpeed = 0;
+        actor.base.critChance = 0;
+        actor.base.critDamage = .5;
+        actor.base.critAccuracy = .5;
+        if (!actor.equipment.weapon) {
+            actor.base.minDamage = actor.level;
+            actor.base.maxDamage = actor.level;
+            actor.base.range = .5;
+            actor.base.attackSpeed = 1;
+            actor.base.critChance = .01;
+        }
     }
     allComputedStats.forEach(function (stat) {
-        adventurer[stat] = getStat(adventurer, stat);
+        actor[stat] = getStat(actor, stat);
     });
     $.each(specialTraits, function (stat) {
-        adventurer[stat] = getStat(adventurer, stat);
+        actor[stat] = getStat(actor, stat);
     });
     allRoundedStats.forEach(function (stat) {
-        adventurer[stat] = Math.round(adventurer[stat]);
+        actor[stat] = Math.round(actor[stat]);
     });
-    adventurer.attacks.forEach(function (attack) {
-        $.each(attack.base.stats, function (stat) {
-            attack[stat] = getStatForAttack(adventurer, attack.base, stat);
-        });
+    actor.actions.concat(actor.reactions).forEach(function (action) {
+        $.each(action.base.stats, function (stat) {
+            action[stat] = getStatForAction(actor, action.base, stat);
+        })
         $.each(specialTraits, function (stat) {
-            attack[stat] = getStatForAttack(adventurer, attack.base, stat);
+            action[stat] = getStatForAction(actor, action.base, stat);
         });
     });
-    if (ifdefor(adventurer.isMainCharacter)) {
-        refreshStatsPanel(adventurer.character);
+    if (ifdefor(actor.isMainCharacter)) {
+        refreshStatsPanel(actor.character);
     }
 }
 function getStat(actor, stat) {
@@ -369,12 +370,12 @@ function getStat(actor, stat) {
     //console.log(stat +": " + ['(',base, '+', plus,') *', percent, '*', multiplier]);
     return (base + plus) * percent * multiplier;
 }
-function getStatForAttack(actor, dataObject, stat) {
+function getStatForAction(actor, dataObject, stat) {
     var base = evaluateValue(actor, ifdefor(dataObject.stats[stat], 0)), plus = 0, percent = 1, multiplier = 1, specialValue = false;
     if (typeof base === 'object' && base.constructor != Array) {
         var subObject = {};
         $.each(base.stats, function (key, value) {
-            subObject[key] = getStatForAttack(actor, base, key);
+            subObject[key] = getStatForAction(actor, base, key);
         });
         return subObject;
     }
@@ -444,7 +445,7 @@ function gainLevel(adventurer) {
     adventurer.health = adventurer.maxHealth;
     adventurer.xp = 0;
     adventurer.xpToLevel = xpToLevel(adventurer.level);
-    updateAdventurerStats(adventurer);
+    updateActorStats(adventurer);
 }
 function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonus, startingEquipment, jewelLoot, areaKey) {
     var key = name.replace(/\s*/g, '').toLowerCase();

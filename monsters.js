@@ -125,7 +125,8 @@ function matchingMonsterAffixes(list, monster, alreadyUsed) {
 function updateMonster(monster) {
     // Clear the character's bonuses and graphics.
     monster.bonuses = [monster.implicitBonuses];
-    monster.attacks = [];
+    monster.actions = [];
+    monster.reactions = [];
     monster.tags = [];
     if (monster.base.ranged > 5) {
         monster.tags.push('ranged');
@@ -148,14 +149,14 @@ function updateMonster(monster) {
     var name = monster.base.name;
     var prefixNames = [];
     monster.extraSkills.forEach(function (ability) {
-        addBonusesAndAttacks(monster, ability);
+        addBonusesAndAction(monster, ability);
     });
     monster.base.abilities.forEach(function (ability) {
-        addBonusesAndAttacks(monster, ability);
+        addBonusesAndAction(monster, ability);
     });
     monster.prefixes.forEach(function (affix) {
         prefixNames.push(affix.base.name);
-        addBonusesAndAttacks(monster, affix);
+        addBonusesAndAction(monster, affix);
     });
     if (prefixNames.length) {
         name = prefixNames.join(', ') + ' ' + name;
@@ -163,7 +164,7 @@ function updateMonster(monster) {
     var suffixNames = []
     monster.suffixes.forEach(function (affix) {
         suffixNames.push(affix.base.name);
-        addBonusesAndAttacks(monster, affix);
+        addBonusesAndAction(monster, affix);
     });
     if (suffixNames.length) {
         name = name + ' of ' + suffixNames.join(' and ');
@@ -175,33 +176,18 @@ function updateMonster(monster) {
         if (!equipment) {
             return;
         }
-        addBonusesAndAttacks(monster, equipment.base);
+        addBonusesAndAction(monster, equipment.base);
         equipment.prefixes.forEach(function (affix) {
-            addBonusesAndAttacks(monster, affix);
+            addBonusesAndAction(monster, affix);
         })
         equipment.suffixes.forEach(function (affix) {
-            addBonusesAndAttacks(monster, affix);
+            addBonusesAndAction(monster, affix);
         })
     });
 
-    monster.attacks.push({'base': createAttack({})});
-    updateMonsterStats(monster);
+    monster.actions.push({'base': createAction({})});
+    updateActorStats(monster);
     //console.log(monster);
-}
-function updateMonsterStats(monster) {
-    allComputedStats.forEach(function (stat) {
-        monster[stat] = getStat(monster, stat);
-    });
-    allRoundedStats.forEach(function (stat) {
-        monster[stat] = Math.round(monster[stat]);
-    });
-    monster.maxDamage = Math.max(monster.minDamage, monster.maxDamage);
-    monster.minMagicDamage = Math.max(monster.minMagicDamage, monster.maxMagicDamage);
-    monster.attacks.forEach(function (attack) {
-        $.each(attack.base.stats, function (stat) {
-            attack[stat] = getStatForAttack(monster, attack.base, stat);
-        })
-    });
 }
 var monsters = {};
 function addMonster(key, data) {

@@ -22,44 +22,17 @@ function startArea(character, index) {
     character.treasurePopups = [];
     character.textPopups = [];
     character.$panel.find('.js-recall').prop('disabled', false);
-    character.adventurer.attacks.forEach(function (attack) {
-        attack.readyAt = 0;
+    character.adventurer.actions.concat(character.adventurer.reactions).forEach(function (action) {
+        action.readyAt = 0;
     });
     drawAdventure(character);
     character.$panel.find('.js-infoMode').hide();
     character.$panel.find('.js-adventureMode').show();
 }
 function isActorDead(actor, character) {
-    if (actor.health > 0 || actor.invulnerable) return false;
-    var revive = getFirstAbilityByType(actor, 'revive');
-    if (!revive) return true;
-    revive.readyAt = character.time + revive.cooldown;
-    actor.health += revive.amount;
-    actor.stunned = character.time + .3;
-    if (revive.buff) {
-        addTimedEffect(character, actor, revive.buff);
-    }
-    if (revive.instantCooldown) {
-        console.log("Instant cooldown");
-        for(var i = 0; i < ifdefor(actor.attacks, []).length; i++) {
-            var attack = actor.attacks[i];
-            if (attack !== revive) {
-                attack.readyAt = actor.character.time;
-            }
-        }
-    }
-    return false;
+    return actor.health <= 0 && !actor.undying;
 }
 
-function getFirstAbilityByType(actor, type) {
-    for(var i = 0; i < ifdefor(actor.attacks, []).length; i++) {
-        var attack = actor.attacks[i];
-        if (attack.base.type !== type) continue;
-        if (attack.readyAt > actor.character.time) continue;
-        return attack;
-    }
-    return null;
-}
 function adventureLoop(character, delta) {
     var adventurer = character.adventurer;
     var everybody = character.allies.concat(character.enemies);
@@ -163,10 +136,6 @@ function addTimedEffect(character, actor, effect) {
     actor.timedEffects.push(effect);
     updateActorStats(actor);
 }
-function updateActorStats(actor) {
-    if (actor.personCanvas) updateAdventurerStats(actor);
-    else updateMonsterStats(actor);
-}
 function startNextWave(character) {
     var wave = character.area.waves[character.waveIndex];
     var x = character.adventurer.x + 800;
@@ -264,61 +233,8 @@ function runActorLoop(character, actor) {
     actor.cloaked = (actor.cloaking && !actor.blocked && !actor.target);
 }
 function checkToAttackTarget(character, actor, target, distance) {
-    for(var i = 0; i < ifdefor(actor.attacks, []).length; i++) {
-        var attack = actor.attacks[i];
-        if (attack.readyAt > character.time) continue;
-        if (attack.base.type == 'heal') {
-            // Don't use a heal ability unless none of it will be wasted or the
-            // actor is below half life.
-            if (actor.health + attack.amount > actor.maxHealth && actor.health > actor.maxHealth / 2) {
-                continue;
-            }
-            attack.readyAt = character.time + attack.cooldown;
-            actor.health += attack.amount;
-            actor.stunned = character.time + .3;
-            return true;
-        }
-        if (attack.base.type == 'minion') {
-            var count = 0;
-            actor.allies.forEach(function (ally) {
-                if (ally.source == attack) count++;
-            });
-            if (count >= attack.limit) continue;
-            attack.readyAt = character.time + attack.cooldown;
-            var monsterData = {
-                'key': attack.base.key,
-                'bonuses': {'*maxHealth': ifdefor(attack.healthBonus, 1),
-                            '*minDamage': ifdefor(attack.damageBonus, 1),
-                            '*maxDamage': ifdefor(attack.damageBonus, 1),
-                            '*minMagicDamage': ifdefor(attack.damageBonus, 1),
-                            '*maxMagicDamage': ifdefor(attack.damageBonus, 1),
-                            '*attackSpeed': ifdefor(attack.attackSpeedBonus, 1),
-                            '*speed': ifdefor(attack.speedBonus, 1)}
-            }
-            actor.pull = {'x': actor.x - actor.direction * 64, 'time': character.time + .3, 'damage': 0};
-            var newMonster = makeMonster(monsterData, actor.level, [], true);
-            newMonster.x = actor.x + actor.direction * 32;
-            newMonster.character = character;
-            newMonster.direction = actor.direction; // Minions move left to right
-            newMonster.speed = Math.max(actor.speed + 5, newMonster.speed);
-            newMonster.source = attack;
-            newMonster.allies = actor.allies;
-            newMonster.enemies = actor.enemies;
-            actor.allies.push(newMonster);
-            actor.stunned = character.time + .3;
-            return true;
-        }
-        if (attack.base.type == 'buff') {
-            attack.readyAt = character.time + attack.cooldown;
-            addTimedEffect(character, actor, attack.buff);
-            actor.stunned = character.time + .3;
-            return true;
-        }
-        if (attack.base.type === 'basic' || attack.base.type === 'hook') {
-            if (distance > attack.range * 32 || target.cloaked) {
-                continue;
-            }
-            performAttack(character, attack, actor, target, distance);
+    for(var i = 0; i < ifdefor(actor.actions, []).length; i++) {
+        if (useSkill(actor, actor.actions[i], target, false)) {
             return true;
         }
     }
@@ -455,8 +371,8 @@ function drawAdventurer(character, adventurer, index) {
     var cameraX = character.cameraX;
     var context = character.context;
     //draw character
-    if (adventurer.target) { // attacking loop
-        var attackSpeed = adventurer.attacks[adventurer.attacks.length - 1].attackSpeed;
+    if (adventurer.target && adventurer.lastAction && adventurer.lastAction.attackSpeed) { // attacking loop
+        var attackSpeed = adventurer.lastAction.attackSpeed;
         var attackFps = 1 / ((1 / attackSpeed) / fightLoop.length);
         var frame = Math.floor(Math.abs(character.time - adventurer.attackCooldown) * attackFps) % fightLoop.length;
         context.drawImage(adventurer.personCanvas, fightLoop[frame] * 32, 0 , 32, 64,
