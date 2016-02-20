@@ -90,6 +90,9 @@ function newCharacter(job) {
     displayInfoMode(character);
     var abilityKey = ifdefor(abilities[job.key]) ? job.key : 'heal';
     character.adventurer.abilities.push(abilities[abilityKey]);
+    for (var i = 0; i < ifdefor(testAbilities, []).length; i++) {
+        character.adventurer.abilities.push(testAbilities[i]);
+    }
     character.board = readBoardFromData(job.startingBoard, character, abilities[abilityKey], true);
     centerShapesInRectangle(character.board.fixed.map(jewelToShape).concat(character.board.spaces), rectangle(0, 0, character.boardCanvas.width, character.boardCanvas.height));
     drawBoardBackground(character.boardContext, character.board);

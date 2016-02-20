@@ -79,6 +79,7 @@ var abilities = {
     // Enhancer
     // Sage
 };
+//var testAbilities = [abilities.ninja];
 $.each(abilities, function (key, ability) {
     ability.key = key;
     if (ability.action) {
