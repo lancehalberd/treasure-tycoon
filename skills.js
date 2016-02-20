@@ -8,8 +8,8 @@ var abilities = {
     'dodge': {'name': 'Dodge', 'bonuses': {'+evasion': 2}, 'reaction':
              {'type': 'dodge', 'stats': {'cooldown': 10, 'distance': 128, 'buff': {'stats': {'%evasion': .5, 'duration': 5}}}, 'helpText': 'Leap back to dodge an attack and gain: {buff}'}},
     'throwingMastery': {'name': 'Throwing Mastery', 'bonuses': {'*throwing:attackSpeed': 1.5}},
-    //'bullsEye': {'name': 'Bullseye', 'attack': [{'type': 'basic', 'stats': {'cooldown': 15, 'alwaysHits': true, 'undodgeable': true}, 'helpText': 'Perform an attack that always hits.'}]},
-    //'bullsEyeCritical': {'name': 'Dead On', 'bonuses': {'+bullseye:skill:critChance': 1}, 'helpText': 'Bullseye always strikes critically.'},
+    'bullsEye': {'name': 'Bullseye', 'action': {'type': 'attack', 'stats': {'cooldown': 15, 'alwaysHits': true, 'undodgeable': true}, 'helpText': 'Perform an attack that always hits.'}},
+    'bullsEyeCritical': {'name': 'Dead On', 'bonuses': {'+bullsEye:skill:critChance': 1}, 'helpText': 'Bullseye always strikes critically.'},
     // Black Belt
     'blackbelt': {'name': 'Martial Arts', 'bonuses': {'*unarmed:damage': 3, '*unarmed:attackSpeed': 1.5,
                                                         '+unarmed:critChance': .15, '*unarmed:critDamage': 2, '*unarmed:critAccuracy': 2}},
@@ -47,7 +47,7 @@ var abilities = {
     'ranger': {'name': 'Taming', 'bonuses': {'*minion:healthBonus': 2, '*minion:attackSpeedBonus': 1.5, '*minion:speedBonus': 1.5}},
     'finesse':  {'name': 'Finesse', 'bonuses': {'%attackSpeed': .2}},
     'pet': {'name': 'Pet', 'action':
-            {'type': 'minion', 'tags': ['pet'], 'key': 'caterpillar', 'stats': {'limit': 1, 'cooldown': 30, 'healthBonus': 1, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1.5},
+            {'type': 'minion', 'tags': ['pet'], 'monsterKey': 'caterpillar', 'stats': {'limit': 1, 'cooldown': 30, 'healthBonus': 1, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1.5},
             'helpText': 'Call up to 1 pet to fight with you.'}},
     //'petFood': {'name': 'Pet Food', 'bonuses': {'+pet:skill:cooldown': -3, '+pet:skill:healthBonus': 1}, 'helpText': 'Pet has 50% more health and can be called more frequently.'},
     //'petTraining': {'name': 'Pet Training', 'next': ['whistle'], 'bonuses': {'+pet:skill:cooldown': -3, '+pet:skill:damageBonus': .5}, 'helpText': 'Pet deals 50% more damage and can be called more frequently.'},
@@ -69,7 +69,7 @@ var abilities = {
     // Sorcerer
     'majorIntelligence': {'name': 'Major Intelligence', 'bonuses': {'+intelligence': 20}},
     'raiseDead': {'name': 'Raise Dead', 'action':
-            {'type': 'minion',  'tags': ['skeleton'], 'key': 'skeleton', 'stats': {'limit': 1, 'cooldown': 10, 'healthBonus': .5, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1},
+            {'type': 'minion',  'tags': ['skeleton'], 'monsterKey': 'skeleton', 'stats': {'limit': 1, 'cooldown': 10, 'healthBonus': .5, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1},
             'helpText': 'Raise a skeleton to fight for you.'}},
     // Tier 6 classes
     // Ninja
@@ -79,6 +79,14 @@ var abilities = {
 };
 $.each(abilities, function (key, ability) {
     ability.key = key;
+    if (ability.action) {
+        ability.action.name = ability.name;
+        ability.action.key = key;
+    }
+    if (ability.reaction) {
+        ability.reaction.name = ability.name;
+        ability.reaction.key = key;
+    }
 });
 var specialTraits = {};
 function findSpecialTraits(object) {

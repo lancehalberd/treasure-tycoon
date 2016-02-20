@@ -317,11 +317,12 @@ function drawAdventure(character) {
     }
     for (var i = 0; i < character.textPopups.length; i++) {
         var textPopup = character.textPopups[i];
+        textPopup.duration = ifdefor(textPopup.duration, 30);
         context.fillStyle = ifdefor(textPopup.color, "red");
         context.font = ifdefor(textPopup.font, "20px sans-serif");
         context.textAlign = 'center'
         context.fillText(textPopup.value, textPopup.x - cameraX, textPopup.y);
-        if (textPopup.y < 60) {
+        if (textPopup.duration-- < 0) {
             character.textPopups.splice(i--, 1);
         }
     }

@@ -149,14 +149,14 @@ function updateMonster(monster) {
     var name = monster.base.name;
     var prefixNames = [];
     monster.extraSkills.forEach(function (ability) {
-        addBonusesAndAction(monster, ability);
+        addBonusesAndActions(monster, ability);
     });
     monster.base.abilities.forEach(function (ability) {
-        addBonusesAndAction(monster, ability);
+        addBonusesAndActions(monster, ability);
     });
     monster.prefixes.forEach(function (affix) {
         prefixNames.push(affix.base.name);
-        addBonusesAndAction(monster, affix);
+        addBonusesAndActions(monster, affix);
     });
     if (prefixNames.length) {
         name = prefixNames.join(', ') + ' ' + name;
@@ -164,7 +164,7 @@ function updateMonster(monster) {
     var suffixNames = []
     monster.suffixes.forEach(function (affix) {
         suffixNames.push(affix.base.name);
-        addBonusesAndAction(monster, affix);
+        addBonusesAndActions(monster, affix);
     });
     if (suffixNames.length) {
         name = name + ' of ' + suffixNames.join(' and ');
@@ -176,16 +176,16 @@ function updateMonster(monster) {
         if (!equipment) {
             return;
         }
-        addBonusesAndAction(monster, equipment.base);
+        addBonusesAndActions(monster, equipment.base);
         equipment.prefixes.forEach(function (affix) {
-            addBonusesAndAction(monster, affix);
+            addBonusesAndActions(monster, affix);
         })
         equipment.suffixes.forEach(function (affix) {
-            addBonusesAndAction(monster, affix);
+            addBonusesAndActions(monster, affix);
         })
     });
 
-    monster.actions.push({'base': createAction({})});
+    monster.actions.push({'base': createAction({'tags': ['basic']})});
     updateActorStats(monster);
     //console.log(monster);
 }

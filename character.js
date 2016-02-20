@@ -179,12 +179,23 @@ function changedPoints(pointsType) {
     else updateCraftButton();
     $('.js-' + pointsType).text(state[pointsType]);
 }
-function addBonusesAndAction(actor, source) {
+function addBonusesAndActions(actor, source) {
     if (ifdefor(source.bonuses)) {
         actor.bonuses.push(source.bonuses);
     }
     if (ifdefor(source.action)) {
-        actor.actions.push({'base': createAction(source.action)});
+        var action = {'base': createAction(source.action)}
+        if (source.action.type === 'attack') {
+            action.base.tags = action.base.tags.concat(actor.tags);
+        }
+        actor.actions.push(action);
+    }
+    if (ifdefor(source.reaction)) {
+        var action = {'base': createAction(source.reaction)}
+        if (source.reaction.type === 'attack') {
+            action.base.tags = action.base.tags.concat(actor.tags);
+        }
+        actor.reactions.push(action);
     }
 }
 var inheritedActionStats = ['range', 'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage',
@@ -234,7 +245,7 @@ function updateAdventurer(adventurer) {
         }
     }
     adventurer.abilities.forEach(function (ability) {
-        addBonusesAndAction(adventurer, ability);
+        addBonusesAndActions(adventurer, ability);
     });
     if (adventurer.character) {
         adventurer.character.board.jewels.forEach(function (jewel) {
@@ -250,12 +261,12 @@ function updateAdventurer(adventurer) {
         if (!equipment) {
             return;
         }
-        addBonusesAndAction(adventurer, equipment.base);
+        addBonusesAndActions(adventurer, equipment.base);
         equipment.prefixes.forEach(function (affix) {
-            addBonusesAndAction(adventurer, affix);
+            addBonusesAndActions(adventurer, affix);
         })
         equipment.suffixes.forEach(function (affix) {
-            addBonusesAndAction(adventurer, affix);
+            addBonusesAndActions(adventurer, affix);
         })
         if (equipment.base.offset) {
             for (var i = 0; i < personFrames; i++) {
@@ -266,7 +277,7 @@ function updateAdventurer(adventurer) {
             adventurer.character.$panel.find('.js-infoMode .js-equipment .js-' + type).append(equipment.$item);
         }
     });
-    adventurer.actions.push({'base': createAction({'tags': adventurer.tags})});
+    adventurer.actions.push({'base': createAction({'tags': adventurer.tags.concat(['basic'])})});
     updateActorStats(adventurer);
 }
 function updateActorStats(actor) {
@@ -383,7 +394,7 @@ function getStatForAction(actor, dataObject, stat) {
     // by bonuses to global characters stats. For instance, skill.attackSpeed: ['attackSpeed']
     // inherits the attackSpeed value from the skill user, so we don't want to apply
     // '*attackSpeed': 2 to it as this has already been applied to the base attackSpeed.
-    var keys = ['skill:' + stat];
+    var keys = ['skill:' + stat, dataObject.key + ':skill:' + stat];
     ifdefor(dataObject.tags, []).concat([dataObject.type]).forEach(function (prefix) {
         keys.push(prefix + ':skill:' + stat);
     });

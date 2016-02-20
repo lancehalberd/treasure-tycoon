@@ -274,12 +274,8 @@ function applyAttackToTarget(attackStats, target, distance) {
     }
     target.incomingDamage = 0;
     // Attacks that always hit can still be avoided by a 'dodge' skill.
-    if (target.dodged) {
+    if (target.dodged && !ifdefor(attack.undodgeable)) {
         target.dodged = false;
-        hitText.value = 'dodged';
-        hitText.color = 'blue';
-        hitText.font, "15px sans-serif"
-        character.textPopups.push(hitText);
         return false;
     }
     attacker.health += ifdefor(attack.healthGainOnHit, 0);
