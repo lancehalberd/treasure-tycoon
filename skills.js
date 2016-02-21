@@ -8,8 +8,8 @@ var abilities = {
     'throwingMastery': {'name': 'Throwing Mastery', 'bonuses': {'*throwing:attackSpeed': 1.5}},
     'sap': {'name': 'Sap', 'bonuses': {'+slowOnHit': .1, '+healthGainOnHit': 1}},
     'dodge': {'name': 'Dodge', 'bonuses': {'+evasion': 2}, 'reaction':
-             {'type': 'dodge', 'stats': {'cooldown': 10, 'distance': 128, 'buff': {'stats': {'%evasion': .5, 'duration': 5}}}, 'helpText': 'Leap back to dodge an attack and gain: {buff}'}},
-    'acrobatics': {'name': 'Acrobatics', 'bonuses': {'+evasion': 2, '+dodge:skill:cooldown': -2, '+dodge:skill:distance': 128}},
+             {'type': 'dodge', 'stats': {'cooldown': 10, 'distance': -128, 'buff': {'stats': {'%evasion': .5, 'duration': 5}}}, 'helpText': 'Leap back to dodge an attack and gain: {buff}'}},
+    'acrobatics': {'name': 'Acrobatics', 'bonuses': {'+evasion': 2, '+dodge:skill:cooldown': -2, '*dodge:skill:distance': 2}},
     'bullseye': {'name': 'Bullseye', 'action': {'type': 'attack', 'stats': {'cooldown': 15, 'alwaysHits': true, 'undodgeable': true}}},
     'bullseyeCritical': {'name': 'Dead On', 'bonuses': {'+bullseye:skill:critChance': 1}, 'helpText': 'Bullseye always strikes critically.'},
     // Black Belt
@@ -78,6 +78,8 @@ var abilities = {
     'majorDexterity': {'name': 'Major Dexterity', 'bonuses': {'+dexterity': 20}},
     // Samurai
     'majorStrength': {'name': 'Major Strength', 'bonuses': {'+strength': 20}},
+    'sideStep': {'name': 'Side Step', 'bonuses': {'+evasion': 2}, 'reaction':
+             {'type': 'dodge', 'stats': {'cooldown': 10, 'rangedOnly': true, 'moveDuration': .05, 'distance': 64, 'buff': {'stats': {'+critChance': .2, 'duration': 2}}}, 'helpText': 'Side step a ranged attack and advance toward enemis gaining: {buff}'}},
     // Sorcerer
     'majorIntelligence': {'name': 'Major Intelligence', 'bonuses': {'+intelligence': 20}},
     'raiseDead': {'name': 'Raise Dead', 'action':

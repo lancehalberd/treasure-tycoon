@@ -198,6 +198,7 @@ function processStatusEffects(character, target, delta) {
 function runActorLoop(character, actor) {
     if (actor.stunned) return;
     var targets = actor.enemies.slice();
+    // The main purpose of this is to prevent pulled actors from passing through their enemies.
     actor.blocked = false; // Character is assumed to not be blocked each frame
     if (actor.target) {
         var index = targets.indexOf(actor.target);
@@ -217,10 +218,8 @@ function runActorLoop(character, actor) {
     actor.target = null;
     for (var i = 0; i < targets.length; i++) {
         var target = targets[i];
-        // I think this code doesn't server any purpose now, but I'm going to leave it commented until
-        // I'm more certain and then remove it all in a single commit to get it back if necessary.
-        //var distance = Math.abs(target.x - actor.x) - 64; // 64 is the width of the character
-        //actor.blocked = actor.blocked || distance <= 0; // block the actor if a target is too close
+        var distance = Math.abs(target.x - actor.x) - 64; // 64 is the width of the character
+        actor.blocked = actor.blocked || distance <= 0; // block the actor if a target is too close
         // Don't check to attack if the character is disabled, already has a
         if (actor.pull || actor.target) {
             continue;

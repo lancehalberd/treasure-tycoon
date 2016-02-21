@@ -361,13 +361,8 @@ function bonusHelpText(rawBonuses, implicit, actor) {
             sections.push('Cooldown reduced by ' + -bonuses['+cooldown'] + ' seconds');
         }
     }
-    if (ifdefor(bonuses['+distance'])) {
-        if (bonuses['+distance'] > 0) {
-            sections.push('Distance increased by ' + (bonuses['+distance'] / 32).format(1));
-        }
-        if (bonuses['+distance'] < 0) {
-            sections.push('Distance reduced by ' + (-bonuses['+distance'] / 32).format(1));
-        }
+    if (ifdefor(bonuses['*distance'])) {
+        sections.push((bonuses['*distance']).format(1) + 'x distance');
     }
     if (ifdefor(bonuses['+attackPower'])) {
         sections.push(bonuses['+attackPower'].format(2) + 'x increased attack power');
