@@ -159,19 +159,25 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
         'x': x, 'y': y, 'vx': vx, 'vy': vy, 't': 0, 'done': false, 'delay': delay,
         'hit': false, 'target': target,
         'update': function (character) {
+            // Put an absolute cap on how far a projectile can travel
+            if (self.y > 240 || attackStats.distance > 2000) self.done = true;
             if (self.done || self.delay-- > 0) return
             self.x += self.vx;
             self.y += self.vy;
-            self.vy+=.1;
+            self.vy+= .1 * 15 / Math.abs(self.vx);
             self.t += 1;
+            // Don't do any collision detection once the projectile is spent.
+            if (self.hit) return;
             attackStats.distance += Math.sqrt(self.vx * self.vx + self.vy * self.vy);
-            if (Math.abs(self.target.x + 32 - self.x) < 10 && self.target.health > 0 && !self.hit) {
+            if (Math.abs(self.target.x + 32 - self.x) < 10 && self.target.health > 0) {
                 self.hit = true;
                 if (applyAttackToTarget(attackStats, self.target)) {
                     self.done = true;
                     if (ifdefor(attackStats.attack.chaining)) {
                         self.done = false;
-                        self.vx = -self.vx;
+                        // reduce the speed. This seems realistic and make it easier to
+                        // distinguish bounced attacks from new attacks.
+                        self.vx = -self.vx / 5;
                         var targets = attackStats.source.enemies.slice();
                         while (targets.length) {
                             var index = Math.floor(Math.random() * targets.length);
@@ -180,6 +186,8 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                                 targets.splice(index--, 1);
                                 continue;
                             }
+                            // increase the speed back to normal if the ricochete succeeds.
+                            self.vx *= 5;
                             self.hit = false;
                             self.target = newTarget;
                             var distance = Math.abs(self.x - newTarget.x);
@@ -192,12 +200,8 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                         }
                     }
                 }
-            } else if (self.target.health > 0 && !self.hit && self.vx * (self.target.x + 32 - self.x) <= 0) {
+            } else if (self.target.health > 0 && self.vx * (self.target.x + 32 - self.x) <= 0) {
                 self.vx = -self.vx;
-            }
-            // Put an absolute cap on how far a projectile can travel
-            if (attackStats.distance > 2000) {
-                self.done = true;
             }
         },
         'draw': function (character) {
