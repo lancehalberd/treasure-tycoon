@@ -251,6 +251,7 @@ function applyAttackToTarget(attackStats, target) {
     }
     var damage = Math.floor(attackStats.damage * multiplier);
     var magicDamage = Math.floor(attackStats.magicDamage * multiplier);
+    attackStats.evaded = false;
     if (!ifdefor(attack.alwaysHits)) {
         var evasionRoll = Math.random() * target.evasion;
         if (attackStats.accuracy < evasionRoll) {
@@ -263,7 +264,7 @@ function applyAttackToTarget(attackStats, target) {
             hitText.color = 'blue';
             hitText.font, "15px sans-serif"
             character.textPopups.push(hitText);
-            return false;
+            attackStats.evaded = true;
         }
     }
     // Apply block reduction
@@ -284,7 +285,7 @@ function applyAttackToTarget(attackStats, target) {
             break;
         }
     }
-    if (attackStats.deflected) {
+    if (attackStats.deflected || attackStats.evaded) {
         return false;
     }
     // Attacks that always hit can still be avoided by a 'dodge' skill.

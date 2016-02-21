@@ -105,6 +105,7 @@ function newCharacter(job) {
         }
     });
     draggedJewel = null;
+    overJewel = null;
 }
 function convertShapeDataToShape(shapeData) {
     return makeShape(shapeData.p[0], shapeData.p[1], (shapeData.t % 360 + 360) % 360, shapeDefinitions[shapeData.k][0], 30);
