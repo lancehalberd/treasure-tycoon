@@ -301,6 +301,9 @@ function bonusHelpText(rawBonuses, implicit, actor) {
     if (ifdefor(bonuses['%accuracy'])) {
         sections.push(bonuses['%accuracy'].percent(1) + ' increased accuracy');
     }
+    if (ifdefor(bonuses['*accuracy'])) {
+        sections.push(bonuses['*accuracy'].format(1) + 'x accuracy');
+    }
     if (ifdefor(bonuses['+speed'])) {
         sections.push((bonuses['+speed'] > 0 ? '+' : '') + bonuses['+speed'].format(1) + ' speed');
     }

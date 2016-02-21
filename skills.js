@@ -51,7 +51,9 @@ var abilities = {
             {'type': 'buff', 'stats': {'cooldown': 30, 'buff': {'stats': {'+armor': ['{intelligence}'], 'duration': 20}}}, 'helpText': 'Create a magic barrier that grants: {buff}'}},
     // Dancer
     'dancer': {'name': 'Dancing', 'bonuses': {'+evasion': 3}, 'reaction':
-            {'type': 'evadeAndCounter', 'stats': {'alwaysHits': true}, 'helpText': 'Counter whenever you successfully evade an attack.'}},
+            {'type': 'evadeAndCounter', 'stats': {'alwaysHits': true, 'range': 1}, 'helpText': 'Counter whenever you successfully evade an attack.'}},
+    'distract': {'name': 'Distract', 'bonuses': {'+evasion': 3}, 'reaction':
+            {'type': 'dodge', 'stats': {'globalDebuff': {'stats': {'*accuracy': .5, 'duration': 2}}, 'cooldown': 10}, 'helpText': 'Dodge an attack with a distracting flourish that inflicts: {globalDebuff} on all enemies.'}},
     // Tier 3 classes
     // Ranger
     'ranger': {'name': 'Taming', 'bonuses': {'*minion:healthBonus': 2, '*minion:attackSpeedBonus': 1.5, '*minion:speedBonus': 1.5}},
@@ -143,6 +145,9 @@ function abilityHelpText(ability, character) {
         }
         if (ifdefor(action.stats.attackPower)) {
             actionSections.push(evaluateForDisplay(action.stats.attackPower, character.adventurer).format(2) + 'x power');
+        }
+        if (ifdefor(action.stats.range)) {
+            actionSections.push('Range ' + evaluateForDisplay(action.stats.range, character.adventurer).format(1));
         }
         if (ifdefor(action.stats.chance)) {
             actionSections.push(action.stats.chance.percent() + ' chance');
