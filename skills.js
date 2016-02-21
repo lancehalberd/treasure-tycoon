@@ -74,7 +74,7 @@ var abilities = {
     // Bard
     // Tier 5 classes
     // Sniper
-    'sniper': {'name': 'Sharp Shooter', 'bonuses': {'*bow:critChance': 1.5, '*bow:critMultiplier': 1.5, '$bow:criticalPiercing': 'Critical strikes hit multiple enemies.'}},
+    //'sniper': {'name': 'Sharp Shooter', 'bonuses': {'*bow:critChance': 1.5, '*bow:critMultiplier': 1.5, '$bow:criticalPiercing': 'Critical strikes hit multiple enemies.'}},
     'majorDexterity': {'name': 'Major Dexterity', 'bonuses': {'+dexterity': 20}},
     // Samurai
     'majorStrength': {'name': 'Major Strength', 'bonuses': {'+strength': 20}},
