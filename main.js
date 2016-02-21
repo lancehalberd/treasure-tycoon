@@ -370,6 +370,7 @@ $('body').on('click', '.js-retire', function (event) {
     gain('fame', Math.ceil(character.adventurer.level * character.adventurer.job.cost / 10));
     $panel.remove();
     updateRetireButtons();
+    state.characters.splice(state.characters.indexOf(character), 1);
 });
 $('.js-showCraftingPanel').on('click', function (event) {
     showEquipment();
