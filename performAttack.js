@@ -216,13 +216,12 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
 function performAttack(character, attack, attacker, target) {
     var attackStats = createAttackStats(character, attack, attacker);
 
-    attack.readyAt = character.time + ifdefor(attack.cooldown, 0);
-    attacker.attackCooldown = character.time + 1 / (attack.attackSpeed * Math.max(.1, (1 - attacker.slow)));
+    attacker.attackCooldown = attacker.time + 1 / (attack.attackSpeed * Math.max(.1, (1 - attacker.slow)));
     attacker.target = target;
 
     if (attack.base.tags.indexOf('ranged') >= 0) {
         character.projectiles.push(projectile(
-            attackStats, attacker.x + attacker.direction * 32, 240 - 128,
+            attackStats, attacker.x + attacker.direction * 64, 240 - 128,
             attacker.direction * 15, -getDistance(attacker, target) / 200, target, 0,
             attackStats.isCritical ? 'yellow' : 'red', attackStats.isCritical ? 15 : 10));
     } else {
@@ -280,12 +279,13 @@ function applyAttackToTarget(attackStats, target) {
     attackStats.totalDamage = totalDamage;
     attackStats.deflected = false;
     attackStats.dodged = false;
+    attackStats.stopped = false;
     for (var i = 0; i < ifdefor(target.reactions, []).length; i++) {
         if (useSkill(target, target.reactions[i], attackStats)) {
             break;
         }
     }
-    if (attackStats.deflected || attackStats.evaded) {
+    if (attackStats.deflected || attackStats.evaded || attackStats.stopped) {
         return false;
     }
     // Attacks that always hit can still be avoided by a 'dodge' skill.
@@ -294,24 +294,15 @@ function applyAttackToTarget(attackStats, target) {
     }
     attacker.health += ifdefor(attack.healthGainOnHit, 0);
     target.slow += ifdefor(attack.slowOnHit, 0);
-    // Attacks that always hit can still be avoided by a 'dodge' skill.
-    if (target.revived) {
-        target.revived = false;
-        hitText.value = 'revived';
-        hitText.color = 'blue';
-        hitText.font, "15px sans-serif"
-        character.textPopups.push(hitText);
-        return false;
-    }
     if (totalDamage > 0) {
         target.health -= totalDamage;
         hitText.value = totalDamage;
         // Some attacks pull the target towards the attacker
         if (attack.pullsTarget) {
-            target.stunned = character.time + .3 + distance / 32 * ifdefor(attack.dragStun, 0);
+            target.stunned = target.time + .3 + distance / 32 * ifdefor(attack.dragStun, 0);
             var targetX = (attacker.x > target.x) ? (attacker.x - 64) : (attacker.x + 64);
-            target.pull = {'x': targetX, 'time': character.time + .3, 'damage': Math.floor(distance / 32 * damage * ifdefor(attack.dragDamage, 0))};
-            attacker.pull = {'x': attacker.x, 'time': character.time + .3, 'damage': 0};
+            target.pull = {'x': targetX, 'time': target.time + .3, 'damage': Math.floor(distance / 32 * damage * ifdefor(attack.dragDamage, 0))};
+            attacker.pull = {'x': attacker.x, 'time': attacker.time + .3, 'damage': 0};
             hitText.value += ' hooked!';
         }
     } else {

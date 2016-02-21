@@ -79,7 +79,7 @@ function newCharacter(job) {
     character.jewelsContext = character.jewelsCanvas.getContext("2d");
     character.boardCanvas = createCanvas(character.jewelsCanvas.width, character.jewelsCanvas.height);
     character.boardContext = character.boardCanvas.getContext("2d");
-    character.lastTime = character.time = now();
+    character.time = now();
     character.gameSpeed = 1;
     character.replay = false;
     character.levelsCompleted = {};

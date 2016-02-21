@@ -10,6 +10,7 @@ function startArea(character, index) {
     character.adventurer.pull = null;
     character.adventurer.timedEffects = [];
     character.adventurer.health = character.adventurer.maxHealth;
+    character.adventurer.time = 0;
     character.finishTime = false;
     character.cameraX = -30;
     character.enemies = [];
@@ -21,6 +22,7 @@ function startArea(character, index) {
     character.adventurer.slow = 0;
     character.treasurePopups = [];
     character.textPopups = [];
+    character.timeStopEffect = null;
     character.$panel.find('.js-recall').prop('disabled', false);
     character.adventurer.actions.concat(character.adventurer.reactions).forEach(function (action) {
         action.readyAt = 0;
@@ -29,24 +31,82 @@ function startArea(character, index) {
     character.$panel.find('.js-infoMode').hide();
     character.$panel.find('.js-adventureMode').show();
 }
-function isActorDead(actor, character) {
+function isActorDead(actor) {
     return actor.health <= 0 && !actor.undying;
 }
 
+function timeStopLoop(character, delta) {
+    if (!character.timeStopEffect) return false;
+    var actor = character.timeStopEffect.actor;
+    actor.time += delta;
+    if (actor.time >= character.timeStopEffect.endAt) {
+        character.timeStopEffect = null;
+        return false;
+    }
+    processStatusEffects(character, actor, delta);
+    if (isActorDead(actor)) {
+        character.timeStopEffect = null;
+        return false;
+    }
+    // The enemies of the time stopper can still die. This wil stop their life
+    // bars from going negative.
+    for (var i = 0; i < actor.enemies.length; i++) {
+        var enemy = actor.enemies[i];
+        if (isActorDead(enemy)) {
+            if (character.enemies.indexOf(enemy) >= 0) {
+                defeatedEnemy(character, enemy);
+            }
+            if (enemy.isMainCharacter) {
+                displayInfoMode(character);
+                return true;
+            }
+            actor.enemies.splice(i--, 1);
+        }
+    }
+    checkToStartNextWave(character);
+    expireTimedEffects(character, actor);
+    runActorLoop(character, actor);
+    moveActor(actor, delta);
+    actor.health = Math.min(actor.maxHealth, Math.max(0, actor.health));
+    return true;
+}
+function checkToStartNextWave(character) {
+    // Check to start next wave/complete level.
+    if (character.enemies.length + character.objects.length == 0) {
+        if (character.waveIndex >= character.area.waves.length) {
+            if (!character.finishTime) {
+                character.finishTime = character.time + 2;
+            } else if (character.finishTime <= character.time) {
+                completeArea(character);
+                return;
+            }
+        } else {
+            startNextWave(character);
+            if (character.waveIndex >= character.area.waves.length) {
+                character.$panel.find('.js-recall').prop('disabled', true);
+            }
+        }
+    }
+}
 function adventureLoop(character, delta) {
+    if (timeStopLoop(character, delta)) {
+        return;
+    }
     var adventurer = character.adventurer;
     var everybody = character.allies.concat(character.enemies);
+    // Advance subjective time for each actor.
     everybody.forEach(function (actor) {
+        actor.time += delta;
         processStatusEffects(character, actor, delta);
     });
     // Check for defeated player/enemies.
-    if (isActorDead(adventurer, character)) {
+    if (isActorDead(adventurer)) {
         displayInfoMode(character);
         return;
     }
     for (var i = 0; i < character.enemies.length; i++) {
         var enemy = character.enemies[i];
-        if (isActorDead(enemy, character)) {
+        if (isActorDead(enemy)) {
             character.enemies.splice(i--, 1);
             defeatedEnemy(character, enemy);
             continue;
@@ -70,22 +130,7 @@ function adventureLoop(character, delta) {
             object.update(character);
         }
     }
-    // Check to start next wave/complete level.
-    if (character.enemies.length + character.objects.length == 0) {
-        if (character.waveIndex >= character.area.waves.length) {
-            if (!character.finishTime) {
-                character.finishTime = character.time + 2;
-            } else if (character.finishTime <= character.time) {
-                completeArea(character);
-                return;
-            }
-        } else {
-            startNextWave(character);
-            if (character.waveIndex >= character.area.waves.length) {
-                character.$panel.find('.js-recall').prop('disabled', true);
-            }
-        }
-    }
+    checkToStartNextWave(character);
     character.allies.forEach(function (actor) {
         runActorLoop(character, actor);
     });
@@ -93,17 +138,7 @@ function adventureLoop(character, delta) {
         runActorLoop(character, actor);
     });
     everybody.forEach(function (actor) {
-        if (!actor.stunned && !actor.blocked && !actor.target && !actor.pull && !ifdefor(actor.stationary)) {
-            // Make sure the main character doesn't run in front of their allies.
-            if (actor.isMainCharacter) {
-                for (var i = 0; i < character.allies.length; i++) {
-                    if (character.allies[i] === actor) continue;
-                    if (character.allies[i].x < actor.x) return true;
-                }
-            }
-            actor.x += actor.speed * actor.direction * Math.max(0, (1 - ifdefor(actor.slow, 0))) * delta;
-        }
-        return true;
+        moveActor(actor, delta);
     });
     everybody.forEach(function (actor) {
         actor.health = Math.min(actor.maxHealth, Math.max(0, actor.health));
@@ -118,10 +153,24 @@ function adventureLoop(character, delta) {
         character.textPopups[i].y--;
     }
 }
+function moveActor(actor, delta) {
+    if (actor.stunned || actor.blocked || actor.target || actor.pull || ifdefor(actor.stationary)) {
+        return;
+    }
+    // Make sure the main character doesn't run in front of their allies.
+    // If the allies are fast enough, this shouldn't be an isse.
+    /*if (actor.isMainCharacter) {
+        for (var i = 0; i < actor.allies.length; i++) {
+            if (actor.allies[i] === actor) continue;
+            if (actor.allies[i].x < actor.x) return;
+        }
+    }*/
+    actor.x += actor.speed * actor.direction * Math.max(0, (1 - ifdefor(actor.slow, 0))) * delta;
+}
 function expireTimedEffects(character, actor) {
     var changed = false;
     for (var i = 0; i < actor.timedEffects.length; i++) {
-        if (actor.timedEffects[i].expirationTime < character.time) {
+        if (actor.timedEffects[i].expirationTime < actor.time) {
             actor.timedEffects.splice(i--);
             changed = true;
         }
@@ -132,7 +181,7 @@ function expireTimedEffects(character, actor) {
 }
 function addTimedEffect(character, actor, effect) {
     effect = copy(effect);
-    effect.expirationTime = character.time + effect.duration;
+    effect.expirationTime = actor.time + effect.duration;
     actor.timedEffects.push(effect);
     updateActorStats(actor);
 }
@@ -143,12 +192,12 @@ function startNextWave(character) {
         var extraSkills = ifdefor(character.area.enemySkills, []).concat({'bonuses' : wave.extraBonuses});
         var newMonster = makeMonster(entityData, character.area.level, extraSkills);
         newMonster.x = x;
+        newMonster.time = newMonster.x;
         newMonster.character = character;
         newMonster.direction = -1; // Monsters move right to left
         newMonster.allies = character.enemies;
         newMonster.enemies = character.allies;
         character.enemies.push(newMonster);
-        newMonster.timeOffset = character.time + newMonster.x;
         x += 120 + Math.floor(Math.random() * 50);
     });
     wave.objects.forEach(function (entityData) {
@@ -174,7 +223,7 @@ function processStatusEffects(character, target, delta) {
         target.health += target.healthRegen * delta;
     }
     if (ifdefor(target.pull)) {
-        var timeLeft = (target.pull.time - character.time);
+        var timeLeft = (target.pull.time - actor.time);
         if (timeLeft > 0) {
             var dx = (target.pull.x - target.x) * Math.min(1, delta / timeLeft);
             var damage = target.pull.damage * Math.min(1, delta / timeLeft);
@@ -191,7 +240,7 @@ function processStatusEffects(character, target, delta) {
             target.pull = null;
         }
     }
-    if (target.stunned && target.stunned <= character.time) {
+    if (target.stunned && target.stunned <= target.time) {
         target.stunned = null;
     }
 }
@@ -212,7 +261,7 @@ function runActorLoop(character, actor) {
         return actor.direction * (A.x - B.x);
     });
     // Don't choose a new target until
-    if (ifdefor(actor.attackCooldown, 0) > character.time) {
+    if (ifdefor(actor.attackCooldown, 0) > actor.time) {
         return;
     }
     actor.target = null;
@@ -341,7 +390,7 @@ function drawMonster(character, monster, index) {
     var context = character.context;
     var fps = ifdefor(monster.base.fpsMultiplier, 1) * 3 * monster.speed / 100;
     var source = monster.base.source;
-    var frame = Math.floor(character.time * fps) % source.frames;
+    var frame = Math.floor(monster.time * fps) % source.frames;
     if (monster.pull) {
         frame = 0;
     }
@@ -383,7 +432,7 @@ function drawAdventurer(character, adventurer, index) {
     if (adventurer.target && adventurer.lastAction && adventurer.lastAction.attackSpeed) { // attacking loop
         var attackSpeed = adventurer.lastAction.attackSpeed;
         var attackFps = 1 / ((1 / attackSpeed) / fightLoop.length);
-        var frame = Math.floor(Math.abs(character.time - adventurer.attackCooldown) * attackFps) % fightLoop.length;
+        var frame = Math.floor(Math.abs(adventurer.time - adventurer.attackCooldown) * attackFps) % fightLoop.length;
         context.drawImage(adventurer.personCanvas, fightLoop[frame] * 32, 0 , 32, 64,
                         adventurer.x - cameraX, 240 - 128 - 72, 64, 128);
     } else { // walking loop
@@ -391,7 +440,7 @@ function drawAdventurer(character, adventurer, index) {
             context.globalAlpha = .2;
         }
         var fps = Math.floor(3 * adventurer.speed / 100);
-        var frame = Math.floor(character.time * fps) % walkLoop.length;
+        var frame = Math.floor(adventurer.time * fps) % walkLoop.length;
         if (adventurer.pull || adventurer.stunned) {
             frame = 0;
         }

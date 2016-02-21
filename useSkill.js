@@ -14,19 +14,19 @@ function useSkill(actor, skill, target) {
     var actionIndex = actor.actions.indexOf(skill);
     var reactionIndex = actor.reactions.indexOf(skill);
     if (actionIndex < 0 && reactionIndex < 0) return false;
-    if (skill.readyAt > actor.character.time) return false;
+    if (skill.readyAt > actor.time) return false;
     var skillDefinition = skillDefinitions[skill.base.type];
     if (!skillDefinition) {
         console.log("Attempted to use skill " + skill.base.type + " with no definition.");
         console.log(skill);
-        skill.readyAt = actor.character.time + 1000;
+        skill.readyAt = actor.time + 1000;
         return false;
     }
     if (!skillDefinition.isValid(actor, skill, target)) {
         return false;
     }
     var cdr = Math.min(.9, ifdefor(actor.cooldownReduction, 0));
-    skill.readyAt = actor.character.time + ifdefor(skill.cooldown, 0) * (1 - cdr);
+    skill.readyAt = actor.time + ifdefor(skill.cooldown, 0) * (1 - cdr);
     // Show the name of the skill used if it isn't a basic attack. When skills have distinct
     // visible animations, we should probably remove this.
     if (skill.base.tags.indexOf('basic') < 0) {
@@ -87,9 +87,9 @@ skillDefinitions.revive = {
         return actor.health - ifdefor(attackStats.totalDamage, 0) <= 0;
     },
     use: function (actor, reviveSkill, attackStats) {
-        actor.revived = true;
+        attackStats.stopped = true;
         actor.health = reviveSkill.amount;
-        actor.stunned = actor.character.time + .3;
+        actor.stunned = actor.time + .3;
         if (reviveSkill.buff) {
             addTimedEffect(actor.character, actor, reviveSkill.buff);
         }
@@ -97,10 +97,23 @@ skillDefinitions.revive = {
             for(var i = 0; i < ifdefor(actor.attacks, []).length; i++) {
                 var skill = actor.attacks[i];
                 if (skill !== reviveSkill) {
-                    skill.readyAt = actor.character.time;
+                    skill.readyAt = actor.time;
                 }
             }
         }
+    }
+};
+
+skillDefinitions.stop = {
+    isValid: function (actor, stopSkill, attackStats) {
+        if (attackStats.evaded) return false;
+        // Cast stop only when the incoming hit would kill the character.
+        return actor.health - ifdefor(attackStats.totalDamage, 0) <= 0;
+    },
+    use: function (actor, stopSkill, attackStats) {
+        attackStats.stopped = true;
+        actor.stunned = actor.time + .3;
+        actor.character.timeStopEffect = {'actor': actor, 'endAt': actor.time + stopSkill.duration}
     }
 };
 
@@ -123,7 +136,7 @@ skillDefinitions.minion = {
                         '*attackSpeed': ifdefor(minionSkill.attackSpeedBonus, 1),
                         '*speed': ifdefor(minionSkill.speedBonus, 1)}
         }
-        actor.pull = {'x': actor.x - actor.direction * 64, 'time': actor.character.time + .3, 'damage': 0};
+        actor.pull = {'x': actor.x - actor.direction * 64, 'time': actor.time + .3, 'damage': 0};
         var newMonster = makeMonster(monsterData, actor.level, [], true);
         newMonster.x = actor.x + actor.direction * 32;
         newMonster.character = actor.character;
@@ -132,8 +145,9 @@ skillDefinitions.minion = {
         newMonster.source = minionSkill;
         newMonster.allies = actor.allies;
         newMonster.enemies = actor.enemies;
+        newMonster.time = 0;
         actor.allies.push(newMonster);
-        actor.stunned = actor.character.time + .3;
+        actor.stunned = actor.time + .3;
     }
 };
 
@@ -158,7 +172,7 @@ skillDefinitions.clone = {
             clone = makeMonster(monsterData, actor.level, [], true);
         }
         clone.bonuses = actor.bonuses.slice();
-        actor.pull = {'x': actor.x - actor.direction * 64, 'time': actor.character.time + .3, 'damage': 0};
+        actor.pull = {'x': actor.x - actor.direction * 64, 'time': actor.time + .3, 'damage': 0};
         clone.x = actor.x + actor.direction * 32;
         clone.character = actor.character;
         clone.direction = actor.direction;
@@ -169,6 +183,7 @@ skillDefinitions.clone = {
         clone.stunned = 0;
         clone.slow = 0;
         clone.pull = null;
+        clone.time = 0;
         clone.timedEffects = [];
         clone.bonuses.push({'*maxHealth': ifdefor(cloneSkill.healthBonus, 1),
             '*minDamage': ifdefor(cloneSkill.damageBonus, 1),
@@ -179,7 +194,7 @@ skillDefinitions.clone = {
             '*speed': ifdefor(cloneSkill.speedBonus, 1)});
         updateActorStats(clone);
         actor.allies.push(clone);
-        actor.stunned = actor.character.time + .3;
+        actor.stunned = actor.time + .3;
         // Clone has same percent health as creator.
         clone.health = Math.max(1, clone.maxHealth * actor.health / actor.maxHealth);
     }
@@ -192,7 +207,7 @@ skillDefinitions.heal = {
     },
     use: function (actor, healSkill, attackStats) {
         actor.health += healSkill.amount;
-        actor.stunned = actor.character.time + .3;
+        actor.stunned = actor.time + .3;
     }
 };
 
@@ -202,7 +217,7 @@ skillDefinitions.buff = {
     },
     use: function (actor, buffSkill, target) {
         addTimedEffect(actor.character, actor, buffSkill.buff);
-        actor.stunned = actor.character.time + .3;
+        actor.stunned = actor.time + .3;
     }
 };
 
@@ -217,7 +232,7 @@ skillDefinitions.dodge = {
     use: function (actor, dodgeSkill, attackStats) {
         attackStats.dodged = true;
         if (ifdefor(dodgeSkill.distance)) {
-            actor.pull = {'x': actor.x + actor.direction * dodgeSkill.distance, 'time': actor.character.time + ifdefor(dodgeSkill.moveDuration, .3), 'damage': 0};
+            actor.pull = {'x': actor.x + actor.direction * dodgeSkill.distance, 'time': actor.time + ifdefor(dodgeSkill.moveDuration, .3), 'damage': 0};
         }
         if (ifdefor(dodgeSkill.buff)) {
             addTimedEffect(actor.character, actor, dodgeSkill.buff);
@@ -274,14 +289,4 @@ skillDefinitions.evadeAndCounter = {
     use: function (actor, evadeAndCounterSkill, attackStats) {
         performAttack(actor.character, evadeAndCounterSkill, actor, attackStats.source);
     }
-}
-
-function getFirstAbilityByType(actor, type) {
-    for(var i = 0; i < ifdefor(actor.attacks, []).length; i++) {
-        var attack = actor.attacks[i];
-        if (attack.base.type !== type) continue;
-        if (attack.readyAt > actor.character.time) continue;
-        return attack;
-    }
-    return null;
 }

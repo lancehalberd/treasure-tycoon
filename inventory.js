@@ -105,15 +105,15 @@ function itemHelpText(item) {
     }
     sections.push('Requires level ' + item.level);
     sections.push('');
-    sections.push(bonusHelpText(item.base.bonuses, true));
+    sections.push(bonusHelpText(item.base.bonuses, true, null));
 
     if (item.prefixes.length || item.suffixes.length) {
         sections.push('');
         item.prefixes.forEach(function (affix) {
-            sections.push(bonusHelpText(affix.bonuses, false));
+            sections.push(bonusHelpText(affix.bonuses, false, null));
         });
         item.suffixes.forEach(function (affix) {
-            sections.push(bonusHelpText(affix.bonuses, false));
+            sections.push(bonusHelpText(affix.bonuses, false, null));
         });
     }
     sections.push('');
@@ -129,6 +129,9 @@ function itemHelpText(item) {
     return sections.join('<br/>');
 }
 function evaluateForDisplay(value, actor) {
+    if (!actor && actor !== null) {
+        throw new Error('Forgot to pass actor to evaluateForDisplay.');
+    }
     if (typeof value === 'number') {
         return value;
     }
@@ -149,9 +152,9 @@ function evaluateForDisplay(value, actor) {
         throw new Error('Expected "formula" to be an array, but value is: ' + JSON.stringify(fullFormula));
     }
     formula = fullFormula.slice();
-    value = evaluateForDisplay(formula.shift());
+    value = evaluateForDisplay(formula.shift(), null);
     if (formula.length > 1) {
-        value = '(' + value + ' '+ formula.shift() + ' ' + evaluateForDisplay(formula.shift()) +')';
+        value = '(' + value + ' '+ formula.shift() + ' ' + evaluateForDisplay(formula.shift(), null) +')';
     }
     if (actor) {
         value += ' ' + tag('span', 'formulaStat', '[=' +  evaluateValue(actor, fullFormula).format(2) +  ']');
@@ -159,6 +162,9 @@ function evaluateForDisplay(value, actor) {
     return value;
 }
 function bonusHelpText(rawBonuses, implicit, actor) {
+    if (!actor && actor !== null) {
+        throw new Error('Forgot to pass actor to bonusHelpText.');
+    }
     var bonuses = {};
     var tagBonuses = {};
     $.each(rawBonuses, function (key, value) {

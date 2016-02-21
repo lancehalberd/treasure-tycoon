@@ -207,7 +207,7 @@ function treasureChest(loot, closedImage, openImage) {
                 if (character.adventurer.stunned) {
                     character.adventurer.x = self.x - character.adventurer.width;
                 } else {
-                    character.adventurer.stunned = character.time + 1;
+                    character.adventurer.stunned = character.adventurer.time + 1;
                     self.open = true;
                     // the loot array is an array of objects that can generate
                     // specific loot drops. Iterate over each one, generate a

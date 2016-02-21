@@ -26,12 +26,12 @@ var abilities = {
     'priest': {'name': 'Divine Blessing', 'bonuses': {'*heal:amount': 2, '*healthRegen': 2, '*healthGainOnHit': 2}},
     'minorIntelligence': {'name': 'Minor Intelligence', 'bonuses': {'+intelligence': 5}},
     'heal': {'name': 'Heal', 'bonuses': {'+intelligence': 5}, 'action':
-            {'type': 'heal', 'stats': {'amount': ['{intelligence}'], 'cooldown': 10}, 'helpText': 'Cast a spell to restore {amount} health.'}},
+            {'type': 'heal', 'tags': ['spell'], 'stats': {'amount': ['{intelligence}'], 'cooldown': 10}, 'helpText': 'Cast a spell to restore {amount} health.'}},
     //'reflect': {'name': 'Reflect Magic', 'bonuses': {'+intelligence': 10}, 'attacks': [
-    //        {'type': 'reflect', 'stats': {'amount': ['{intelligence}', '*', 10], 'cooldown': 20},
+    //        {'type': 'reflect', 'tags': ['spell'], 'stats': {'amount': ['{intelligence}', '*', 10], 'cooldown': 20},
     //        'helpText': 'Create a magical barrier that will reflect spell damage until it breaks after taking {amount} damage. Further casting strengthens the barrier.'}]},
-    'revive': {'name': 'Revive', 'bonuses': {'+intelligence': 20}, 'reaction':
-            {'type': 'revive', 'stats': {'amount': ['{intelligence}'], 'cooldown': 120},
+    'revive': {'name': 'Revive', 'bonuses': {'+intelligence': 10}, 'reaction':
+            {'type': 'revive', 'tags': ['spell'], 'stats': {'amount': ['{intelligence}'], 'cooldown': 120},
             'helpText': 'Upon receiving a lethal blow, cast a spell that brings you back to life with {amount} health.'}},
     'reviveInstantCooldown': {'name': 'Miracle', 'bonuses': {'$revive:instantCooldown': 'Reset cooldowns of other abilities'}},
     'reviveInvulnerability': {'name': 'Halo', 'bonuses': {'$revive:buff': {'duration': 2, '$invulnerable': 'Invulnerability'}}},
@@ -83,7 +83,7 @@ var abilities = {
     // Sorcerer
     'majorIntelligence': {'name': 'Major Intelligence', 'bonuses': {'+intelligence': 20}},
     'raiseDead': {'name': 'Raise Dead', 'action':
-            {'type': 'minion',  'tags': ['skeleton'], 'monsterKey': 'skeleton', 'stats': {'limit': 1, 'cooldown': 10, 'healthBonus': .5, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1},
+            {'type': 'minion', 'tags': ['spell', 'skeleton'], 'monsterKey': 'skeleton', 'stats': {'limit': 1, 'cooldown': 10, 'healthBonus': .5, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1},
             'helpText': 'Raise a skeleton to fight for you.'}},
     // Tier 6 classes
     // Ninja
@@ -93,6 +93,9 @@ var abilities = {
             'helpText': 'Chance to summon a weak clone of yourself on taking damage'}},
     // Enhancer
     // Sage
+    'stopTime': {'name': 'Stop Time', 'bonuses': {'+intelligence': 10}, 'reaction':
+            {'type': 'stop', 'tags': ['spell'], 'stats': {'duration': ['{intelligence}' , '/', '50'], 'cooldown': 120},
+            'helpText': 'If you would receiving a lethal blow, cast a spell that stops time for everyone else.'}},
 
     // Monster abilities
     'summoner': {'bonuses': {'*minion:skill:limit': 2, '*minion:skill:cooldown': .5, '*minion:skill:healthBonus': 2, '*minion:skill:damageBonus': 2}}
@@ -149,16 +152,16 @@ function abilityHelpText(ability, character) {
             actionSections.push('Summons a ' + monsters[action.monsterKey].name);
         }
         if (ifdefor(action.stats.healthBonus, 1) !== 1) {
-            actionSections.push(evaluateForDisplay(action.stats.healthBonus).format(1) + 'x health');
+            actionSections.push(evaluateForDisplay(action.stats.healthBonus, character.adventurer).format(1) + 'x health');
         }
         if (ifdefor(action.stats.damageBonus, 1) !== 1) {
-            actionSections.push(evaluateForDisplay(action.stats.damageBonus).format(1) + 'x damage');
+            actionSections.push(evaluateForDisplay(action.stats.damageBonus, character.adventurer).format(1) + 'x damage');
         }
         if (ifdefor(action.stats.attackSpeedBonus, 1) !== 1) {
-            actionSections.push(evaluateForDisplay(action.stats.attackSpeedBonus).format(1) + 'x attack speed');
+            actionSections.push(evaluateForDisplay(action.stats.attackSpeedBonus, character.adventurer).format(1) + 'x attack speed');
         }
         if (ifdefor(action.stats.speedBonus, 1) !== 1) {
-            actionSections.push(evaluateForDisplay(action.stats.speedBonus).format(1) + 'x movement speed');
+            actionSections.push(evaluateForDisplay(action.stats.speedBonus, character.adventurer).format(1) + 'x movement speed');
         }
         if (ifdefor(action.stats.attackPower)) {
             actionSections.push(evaluateForDisplay(action.stats.attackPower, character.adventurer).format(2) + 'x power');
@@ -167,7 +170,10 @@ function abilityHelpText(ability, character) {
             actionSections.push('Range ' + evaluateForDisplay(action.stats.range, character.adventurer).format(1));
         }
         if (ifdefor(action.stats.chance)) {
-            actionSections.push(action.stats.chance.percent() + ' chance');
+            actionSections.push(evaluateForDisplay(action.stats.chance, character.adventurer).percent() + ' chance');
+        }
+        if (ifdefor(action.stats.duration)) {
+            actionSections.push('lasts ' + evaluateForDisplay(action.stats.duration, character.adventurer).format(1) + ' seconds');
         }
         if (ifdefor(action.stats.cooldown)) {
             actionSections.push('Cooldown: ' + evaluateForDisplay(action.stats.cooldown, character.adventurer).format(1) + ' seconds');

@@ -149,11 +149,9 @@ function unlockItemLevel(level) {
     }
     updateItemCrafting();
 }
-var lastTime = now();
 function mainLoop() {
     var time = now();
     var delta = 20;
-    lastTime = time;
     if ($('.js-jewel-inventory').is(":visible")) {
         redrawInventoryJewels();
     }
