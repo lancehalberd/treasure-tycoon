@@ -50,7 +50,7 @@ var abilities = {
     'protect': {'name': 'Protect', 'bonuses': {'+intelligence': 5}, 'action':
             {'type': 'buff', 'stats': {'cooldown': 30, 'buff': {'stats': {'+armor': ['{intelligence}'], 'duration': 20}}}, 'helpText': 'Create a magic barrier that grants: {buff}'}},
     // Dancer
-    'dancing': {'name': 'Dancing', 'bonuses': {'+evasion': 3}, 'reaction':
+    'dancer': {'name': 'Dancing', 'bonuses': {'+evasion': 3}, 'reaction':
             {'type': 'evadeAndCounter', 'stats': {'alwaysHits': true}, 'helpText': 'Counter whenever you successfully evade an attack.'}},
     // Tier 3 classes
     // Ranger
