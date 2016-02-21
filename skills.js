@@ -33,8 +33,8 @@ var abilities = {
     'revive': {'name': 'Revive', 'bonuses': {'+intelligence': 10}, 'reaction':
             {'type': 'revive', 'tags': ['spell'], 'stats': {'amount': ['{intelligence}'], 'cooldown': 120},
             'helpText': 'Upon receiving a lethal blow, cast a spell that brings you back to life with {amount} health.'}},
-    'reviveInstantCooldown': {'name': 'Miracle', 'bonuses': {'$revive:instantCooldown': 'Reset cooldowns of other abilities'}},
-    'reviveInvulnerability': {'name': 'Halo', 'bonuses': {'$revive:buff': {'duration': 2, '$invulnerable': 'Invulnerability'}}},
+    'reviveInstantCooldown': {'name': 'Miracle', 'bonuses': {'$revive:skill:instantCooldown': 'Reset cooldowns of other abilities'}},
+    'reviveInvulnerability': {'name': 'Halo', 'bonuses': {'$revive:skill:buff': {'duration': 2, '$invulnerable': 'Invulnerability'}}},
     // Tier 2 classes
     // Corsair
     'hook': {'name': 'Grappling Hook', 'action': {'type': 'attack',

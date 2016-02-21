@@ -94,8 +94,14 @@ skillDefinitions.revive = {
             addTimedEffect(actor.character, actor, reviveSkill.buff);
         }
         if (reviveSkill.instantCooldown) {
-            for(var i = 0; i < ifdefor(actor.attacks, []).length; i++) {
-                var skill = actor.attacks[i];
+            for(var i = 0; i < ifdefor(actor.actions, []).length; i++) {
+                var skill = actor.actions[i];
+                if (skill !== reviveSkill) {
+                    skill.readyAt = actor.time;
+                }
+            }
+            for(var i = 0; i < ifdefor(actor.reactions, []).length; i++) {
+                var skill = actor.reactions[i];
                 if (skill !== reviveSkill) {
                     skill.readyAt = actor.time;
                 }
