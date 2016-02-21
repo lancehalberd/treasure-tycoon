@@ -223,7 +223,7 @@ function processStatusEffects(character, target, delta) {
         target.health += target.healthRegen * delta;
     }
     if (ifdefor(target.pull)) {
-        var timeLeft = (target.pull.time - actor.time);
+        var timeLeft = (target.pull.time - target.time);
         if (timeLeft > 0) {
             var dx = (target.pull.x - target.x) * Math.min(1, delta / timeLeft);
             var damage = target.pull.damage * Math.min(1, delta / timeLeft);
