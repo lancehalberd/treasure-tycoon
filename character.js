@@ -90,7 +90,7 @@ function newCharacter(job) {
     displayInfoMode(character);
     var abilityKey = ifdefor(abilities[job.key]) ? job.key : 'heal';
     character.adventurer.abilities.push(abilities[abilityKey]);
-    for (var i = 0; i < ifdefor(testAbilities, []).length; i++) {
+    for (var i = 0; i < ifdefor(window.testAbilities, []).length; i++) {
         character.adventurer.abilities.push(testAbilities[i]);
     }
     character.board = readBoardFromData(job.startingBoard, character, abilities[abilityKey], true);
@@ -397,8 +397,12 @@ function getStatForAction(actor, dataObject, stat) {
     // by bonuses to global characters stats. For instance, skill.attackSpeed: ['attackSpeed']
     // inherits the attackSpeed value from the skill user, so we don't want to apply
     // '*attackSpeed': 2 to it as this has already been applied to the base attackSpeed.
-    var keys = ['skill:' + stat, dataObject.key + ':skill:' + stat];
-    ifdefor(dataObject.tags, []).concat([dataObject.type]).forEach(function (prefix) {
+    var keys = ['skill:' + stat];
+    var extraTags = [dataObject.type];
+    if (dataObject.type !== dataObject.key) {
+        extraTags.push(dataObject.key)
+    }
+    ifdefor(dataObject.tags, []).concat(extraTags).forEach(function (prefix) {
         keys.push(prefix + ':skill:' + stat);
     });
     actor.bonuses.forEach(function (bonus) {

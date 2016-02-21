@@ -217,8 +217,10 @@ function runActorLoop(character, actor) {
     actor.target = null;
     for (var i = 0; i < targets.length; i++) {
         var target = targets[i];
-        var distance = Math.abs(target.x - actor.x) - 64; // 64 is the width of the character
-        actor.blocked = actor.blocked || distance <= 0; // block the actor if a target is too close
+        // I think this code doesn't server any purpose now, but I'm going to leave it commented until
+        // I'm more certain and then remove it all in a single commit to get it back if necessary.
+        //var distance = Math.abs(target.x - actor.x) - 64; // 64 is the width of the character
+        //actor.blocked = actor.blocked || distance <= 0; // block the actor if a target is too close
         // Don't check to attack if the character is disabled, already has a
         if (actor.pull || actor.target) {
             continue;
@@ -226,13 +228,13 @@ function runActorLoop(character, actor) {
         // Returns true if the actor chose an action. May actually take an action
         // that doesn't target an enemy, but that's okay, we set target anyway
         // to indicate that he has acted this frame.
-        if (checkToAttackTarget(character, actor, target, distance)) {
+        if (checkToAttackTarget(character, actor, target)) {
             actor.target = target;
         }
     }
     actor.cloaked = (actor.cloaking && !actor.blocked && !actor.target);
 }
-function checkToAttackTarget(character, actor, target, distance) {
+function checkToAttackTarget(character, actor, target) {
     for(var i = 0; i < ifdefor(actor.actions, []).length; i++) {
         if (useSkill(actor, actor.actions[i], target, false)) {
             return true;

@@ -134,6 +134,8 @@ function createAttackStats(character, attack, attacker) {
     var damage = Random.range(attack.minDamage, attack.maxDamage);
     var magicDamage = Random.range(attack.minMagicDamage, attack.maxMagicDamage);
     var accuracy = Math.random() * attack.accuracy;
+    damage *= ifdefor(attack.attackPower, 1);
+    magicDamage *= ifdefor(attack.attackPower, 1);
     if (isCritical) {
         damage *= (1 + attack.critDamage);
         magicDamage *= (1 + attack.critDamage);
@@ -141,6 +143,7 @@ function createAttackStats(character, attack, attacker) {
     }
     return {
         'character': character,
+        'distance': 0,
         'source': attacker,
         'attack': attack,
         'isCritical': isCritical,
@@ -151,7 +154,6 @@ function createAttackStats(character, attack, attacker) {
 }
 
 function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
-    var distance = 0;
     size = ifdefor(size, 10);
     var self = {
         'x': x, 'y': y, 'vx': vx, 'vy': vy, 't': 0, 'done': false, 'delay': delay, 'hit': false,
@@ -161,10 +163,10 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
             self.y += self.vy;
             self.vy+=.1;
             self.t += 1;
-            distance += Math.sqrt(self.vx * self.vx + self.vy * self.vy);
+            attackStats.distance += Math.sqrt(self.vx * self.vx + self.vy * self.vy);
             if (Math.abs(target.x + 32 - self.x) < 10 && target.health > 0 && !self.hit) {
                 self.hit = true;
-                if (applyAttackToTarget(attackStats, target, distance)) {
+                if (applyAttackToTarget(attackStats, target)) {
                     self.done = true;
                     if (ifdefor(attackStats.attack.chaining)) {
                         self.done = false;
@@ -193,7 +195,7 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                 self.vx = -self.vx;
             }
             // Put an absolute cap on how far a projectile can travel
-            if (distance > 2000) {
+            if (attackStats.distance > 2000) {
                 self.done = true;
             }
         },
@@ -205,7 +207,7 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
     };
     return self;
 }
-function performAttack(character, attack, attacker, target, distance) {
+function performAttack(character, attack, attacker, target) {
     var attackStats = createAttackStats(character, attack, attacker);
 
     attack.readyAt = character.time + ifdefor(attack.cooldown, 0);
@@ -215,14 +217,16 @@ function performAttack(character, attack, attacker, target, distance) {
     if (attack.base.tags.indexOf('ranged') >= 0) {
         character.projectiles.push(projectile(
             attackStats, attacker.x + attacker.direction * 32, 240 - 128,
-            attacker.direction * 15, -distance / 200, target, 0,
+            attacker.direction * 15, -getDistance(attacker, target) / 200, target, 0,
             attackStats.isCritical ? 'yellow' : 'red', attackStats.isCritical ? 15 : 10));
     } else {
+        attackStats.distance = getDistance(attacker, target);
         // apply melee attacks immediately
-        applyAttackToTarget(attackStats, target, distance);
+        applyAttackToTarget(attackStats, target);
     }
 }
-function applyAttackToTarget(attackStats, target, distance) {
+function applyAttackToTarget(attackStats, target) {
+    var distance = attackStats.distance;
     var character = attackStats.character;
     var hitText = {x: target.x + 32, y: 240 - 128, color: 'red'};
     if (target.invulnerable) {

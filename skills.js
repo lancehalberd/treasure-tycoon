@@ -18,6 +18,10 @@ var abilities = {
     'fistMastery': {'name': 'Fist Mastery', 'bonuses': {'*fist:damage': 1.5}},
     'minorStrength': {'name': 'Minor Strength', 'bonuses': {'+strength': 5}},
     'vitality': {'name': 'Vitality', 'bonuses': {'+healthRegen': ['{strength}', '/', 10], '+strength': 5}},
+    'counterAttack': {'name': 'Counter Attack', 'bonuses': {'+strength': 5}, 'reaction':
+            {'type': 'counterAttack', 'stats': {'attackPower': 1.5, 'chance': .1}, 'helpText': 'Perform a powerful counter attack.<br/>The chance to counter is lower the further away the attacker is.'}},
+    'counterPower': {'name': 'Improved Counter', 'bonuses': {'+strength': 5, '+counterAttack:skill:attackPower': .5, '*counterAttack:skill:accuracy': 1.5}},
+    'counterChance': {'name': 'Heightened Reflexes', 'bonuses': {'+dexterity': 5, '+counterAttack:skill:chance': .1}},
     // Priest
     'priest': {'name': 'Divine Blessing', 'bonuses': {'*heal:amount': 2, '*healthRegen': 2, '*healthGainOnHit': 2}},
     'minorIntelligence': {'name': 'Minor Intelligence', 'bonuses': {'+intelligence': 5}},
@@ -129,6 +133,12 @@ function abilityHelpText(ability, character) {
         }
         if (ifdefor(action.monsterKey)) {
             actionSections.push('Summons a ' + monsters[action.monsterKey].name);
+        }
+        if (ifdefor(action.stats.attackPower)) {
+            actionSections.push(action.stats.attackPower.percent() + ' power');
+        }
+        if (ifdefor(action.stats.chance)) {
+            actionSections.push(action.stats.chance.percent() + ' chance');
         }
         if (ifdefor(action.stats.cooldown)) {
             actionSections.push('Cooldown: ' + action.stats.cooldown + 's');
