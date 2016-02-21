@@ -157,6 +157,10 @@ function mainLoop() {
     }
     state.characters.forEach(function (character) {
         if (character.area) {
+            character.loopCount = ifdefor(character.loopCount) + 1;
+            if (character.loopCount % ifdefor(character.loopSkip)) {
+                return;
+            }
             for (var i = 0; i < character.gameSpeed && character.area; i++) {
                 character.time += delta / 1000;
                 adventureLoop(character, delta / 1000);
@@ -425,4 +429,9 @@ $('body').on('click', '.js-fastforward', function (event) {
     var $panel = $(this).closest('.js-playerPanel');
     var character = $panel.data('character');
     character.gameSpeed = $(this).is(':checked') ? 3 : 1;
+});
+$('body').on('click', '.js-slowMotion', function (event) {
+    var $panel = $(this).closest('.js-playerPanel');
+    var character = $panel.data('character');
+    character.loopSkip = $(this).is(':checked') ? 5 : 1;
 });

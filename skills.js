@@ -38,7 +38,7 @@ var abilities = {
     // Tier 2 classes
     // Corsair
     'hook': {'name': 'Grappling Hook', 'action': {'type': 'attack',
-                    'stats': {'cooldown': 5, 'range': 10, 'dragDamage': 0, 'dragStun': 0, 'rangeDamage': 0, 'alwaysHits': true, 'pullsTarget': true},
+                    'stats': {'cooldown': 10, 'range': 10, 'dragDamage': 0, 'dragStun': 0, 'rangeDamage': 0, 'alwaysHits': true, 'pullsTarget': true},
                     'helpText': 'Throw a hook to damage and pull enemies closer.'}},
     'hookRange': {'name': 'Long Shot', 'bonuses': {'+hook:skill:range': 5, '+hook:skill:cooldown': -3}},
     'hookDrag': {'name': 'Barbed Wire', 'bonuses': {'+hook:skill:dragDamage': .1}},
