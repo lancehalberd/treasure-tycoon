@@ -225,7 +225,7 @@ function initializeLevels() {
 
     var index = 0;
     $.each(abilities, function (key, ability) {
-        if (!abilitiesUsed[key]) {
+        if (!abilitiesUsed[key] && ability.name) {
             addLevel({'name': 'test-' + (index++), 'level': 10, 'background': backgrounds.forest, 'specialLoot': [simpleJewelLoot], 'next': [],
                      'skill':  ability, 'board': { 'fixed' : [{"k":"triangle","p":[105,68],"t":60}], 'spaces' : [] },
                      'enemySkills': [ability],

@@ -10,8 +10,8 @@ var abilities = {
     'dodge': {'name': 'Dodge', 'bonuses': {'+evasion': 2}, 'reaction':
              {'type': 'dodge', 'stats': {'cooldown': 10, 'distance': 128, 'buff': {'stats': {'%evasion': .5, 'duration': 5}}}, 'helpText': 'Leap back to dodge an attack and gain: {buff}'}},
     'acrobatics': {'name': 'Acrobatics', 'bonuses': {'+evasion': 2, '+dodge:skill:cooldown': -2, '+dodge:skill:distance': 128}},
-    'bullsEye': {'name': 'Bullseye', 'action': {'type': 'attack', 'stats': {'cooldown': 15, 'alwaysHits': true, 'undodgeable': true}}},
-    'bullsEyeCritical': {'name': 'Dead On', 'bonuses': {'+bullsEye:skill:critChance': 1}, 'helpText': 'Bullseye always strikes critically.'},
+    'bullseye': {'name': 'Bullseye', 'action': {'type': 'attack', 'stats': {'cooldown': 15, 'alwaysHits': true, 'undodgeable': true}}},
+    'bullseyeCritical': {'name': 'Dead On', 'bonuses': {'+bullseye:skill:critChance': 1}, 'helpText': 'Bullseye always strikes critically.'},
     // Black Belt
     'blackbelt': {'name': 'Martial Arts', 'bonuses': {'*unarmed:damage': 3, '*unarmed:attackSpeed': 1.5,
                                                         '+unarmed:critChance': .15, '*unarmed:critDamage': 2, '*unarmed:critAccuracy': 2}},
@@ -44,6 +44,8 @@ var abilities = {
     'hookDrag': {'name': 'Barbed Wire', 'bonuses': {'+hook:skill:dragDamage': .1}},
     'hookStun': {'name': 'Tazer Wire', 'bonuses': {'+hook:skill:dragStun': .1}},
     'hookPower': {'name': 'Power Shot', 'bonuses': {'+hook:skill:rangeDamage': .1}},
+    'deflect': {'name': 'Deflect', 'bonuses': {'+dexterity': 5, '+strength': 5}, 'reaction':
+            {'type': 'deflect', 'stats': {'attackPower': [.5, '+', ['{strength}', '/', 100]], 'cooldown': ['20', '*', [100, '/', [100, '+', '{dexterity}']]], 'chance': 1}, 'helpText': 'Deflect ranged attacks back at enemies.'}},
     // Paladin
     'protect': {'name': 'Protect', 'bonuses': {'+intelligence': 5}, 'action':
             {'type': 'buff', 'stats': {'cooldown': 30, 'buff': {'stats': {'+armor': ['{intelligence}'], 'duration': 20}}}, 'helpText': 'Create a magic barrier that grants: {buff}'}},
@@ -79,9 +81,12 @@ var abilities = {
             'helpText': 'Raise a skeleton to fight for you.'}},
     // Tier 6 classes
     // Ninja
-    'ninja': {'name': 'Ninjutsu', 'bonuses':{'$cloaking': 'Invisible while moving', '$oneHanded:skill:doubleStrike': 'Attacks hit twice'}}
+    'ninja': {'name': 'Ninjutsu', 'bonuses':{'$cloaking': 'Invisible while moving', '$oneHanded:skill:doubleStrike': 'Attacks hit twice'}},
     // Enhancer
     // Sage
+
+    // Monster abilities
+    'summoner': {'bonuses': {'*minion:skill:limit': 2, '*minion:skill:cooldown': .5, '*minion:skill:healthBonus': 2, '*minion:skill:damageBonus': 2}}
 };
 //var testAbilities = [abilities.ninja];
 $.each(abilities, function (key, ability) {
@@ -135,13 +140,13 @@ function abilityHelpText(ability, character) {
             actionSections.push('Summons a ' + monsters[action.monsterKey].name);
         }
         if (ifdefor(action.stats.attackPower)) {
-            actionSections.push(action.stats.attackPower.percent() + ' power');
+            actionSections.push(evaluateForDisplay(action.stats.attackPower, character.adventurer).format(2) + 'x power');
         }
         if (ifdefor(action.stats.chance)) {
             actionSections.push(action.stats.chance.percent() + ' chance');
         }
         if (ifdefor(action.stats.cooldown)) {
-            actionSections.push('Cooldown: ' + action.stats.cooldown + 's');
+            actionSections.push('Cooldown: ' + evaluateForDisplay(action.stats.cooldown, character.adventurer).format(1) + ' seconds');
         }
         sections.push(tag('div', 'abilityText', actionSections.join('<br/>')));
     }

@@ -156,7 +156,8 @@ function createAttackStats(character, attack, attacker) {
 function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
     size = ifdefor(size, 10);
     var self = {
-        'x': x, 'y': y, 'vx': vx, 'vy': vy, 't': 0, 'done': false, 'delay': delay, 'hit': false,
+        'x': x, 'y': y, 'vx': vx, 'vy': vy, 't': 0, 'done': false, 'delay': delay,
+        'hit': false, 'target': target,
         'update': function (character) {
             if (self.done || self.delay-- > 0) return
             self.x += self.vx;
@@ -164,9 +165,9 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
             self.vy+=.1;
             self.t += 1;
             attackStats.distance += Math.sqrt(self.vx * self.vx + self.vy * self.vy);
-            if (Math.abs(target.x + 32 - self.x) < 10 && target.health > 0 && !self.hit) {
+            if (Math.abs(self.target.x + 32 - self.x) < 10 && self.target.health > 0 && !self.hit) {
                 self.hit = true;
-                if (applyAttackToTarget(attackStats, target)) {
+                if (applyAttackToTarget(attackStats, self.target)) {
                     self.done = true;
                     if (ifdefor(attackStats.attack.chaining)) {
                         self.done = false;
@@ -175,14 +176,14 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                         while (targets.length) {
                             var index = Math.floor(Math.random() * targets.length);
                             var newTarget = targets[index];
-                            if (newTarget.health <= 0 || newTarget === target || newTarget.cloaked) {
+                            if (newTarget.health <= 0 || newTarget === self.target || newTarget.cloaked) {
                                 targets.splice(index--, 1);
                                 continue;
                             }
                             self.hit = false;
-                            target = newTarget;
+                            self.target = newTarget;
                             var distance = Math.abs(self.x - newTarget.x);
-                            if (self.vx * (target.x + 32 - self.x) <= 0) {
+                            if (self.vx * (self.target.x + 32 - self.x) <= 0) {
                                 self.vx = -self.vx;
                             }
                             if (self.y > 120) self.vy = -distance / 200;
@@ -191,7 +192,7 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                         }
                     }
                 }
-            } else if (target.health > 0 && !self.hit && self.vx * (target.x + 32 - self.x) <= 0) {
+            } else if (self.target.health > 0 && !self.hit && self.vx * (self.target.x + 32 - self.x) <= 0) {
                 self.vx = -self.vx;
             }
             // Put an absolute cap on how far a projectile can travel
@@ -205,6 +206,7 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
             attackStats.character.context.fillRect(self.x - character.cameraX - size / 2, self.y - size / 2, size, size);
         }
     };
+    attackStats.projectile = self;
     return self;
 }
 function performAttack(character, attack, attacker, target) {
@@ -270,16 +272,19 @@ function applyAttackToTarget(attackStats, target) {
     damage = Math.round(applyArmorToDamage(damage, target.armor));
     magicDamage = Math.round(magicDamage * Math.max(0, (1 - target.magicResist)));
     var totalDamage = damage + magicDamage;
-    target.incomingDamage = totalDamage;
+    attackStats.totalDamage = totalDamage;
+    attackStats.deflected = false;
+    attackStats.dodged = false;
     for (var i = 0; i < ifdefor(target.reactions, []).length; i++) {
-        if (useSkill(target, target.reactions[i], attacker)) {
+        if (useSkill(target, target.reactions[i], attackStats)) {
             break;
         }
     }
-    target.incomingDamage = 0;
+    if (attackStats.deflected) {
+        return false;
+    }
     // Attacks that always hit can still be avoided by a 'dodge' skill.
-    if (target.dodged && !ifdefor(attack.undodgeable)) {
-        target.dodged = false;
+    if (attackStats.dodged && !ifdefor(attack.undodgeable)) {
         return false;
     }
     attacker.health += ifdefor(attack.healthGainOnHit, 0);

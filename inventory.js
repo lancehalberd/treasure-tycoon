@@ -150,14 +150,11 @@ function evaluateForDisplay(value, actor) {
     }
     formula = fullFormula.slice();
     value = evaluateForDisplay(formula.shift());
-    while (formula.length > 1) {
-        value += ' ' + formula.shift() + ' ' + evaluateForDisplay(formula.shift());
-        if (formula.length > 1) {
-            value = '(' + value + ')';
-        }
+    if (formula.length > 1) {
+        value = '(' + value + ' '+ formula.shift() + ' ' + evaluateForDisplay(formula.shift()) +')';
     }
     if (actor) {
-        value += ' ' + tag('span', 'formulaStat', '[' +  evaluateValue(actor, fullFormula) +  ']');
+        value += ' ' + tag('span', 'formulaStat', '[=' +  evaluateValue(actor, fullFormula).format(2) +  ']');
     }
     return value;
 }
@@ -370,7 +367,7 @@ function bonusHelpText(rawBonuses, implicit, actor) {
         }
     }
     if (ifdefor(bonuses['+attackPower'])) {
-        sections.push(bonuses['+attackPower'].percent() + ' increased attack power');
+        sections.push(bonuses['+attackPower'].format(2) + 'x increased attack power');
     }
     if (ifdefor(bonuses['+chance'])) {
         sections.push(bonuses['+chance'].percent() + ' increased chance');
@@ -393,6 +390,9 @@ Number.prototype.percent = function (digits) {
     return parseFloat((100 * this).toFixed(digits)) + '%';
 }
 String.prototype.percent = function (digits) {
+    if (parseFloat(this) == this) {
+        return parseFloat(this).percent(digits);
+    }
     return this + '%';
 }
 Number.prototype.coins = function () {

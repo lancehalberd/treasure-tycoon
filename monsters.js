@@ -127,10 +127,8 @@ function updateMonster(monster) {
     monster.bonuses = [monster.implicitBonuses];
     monster.actions = [];
     monster.reactions = [];
-    monster.tags = [];
-    if (monster.base.ranged > 5) {
-        monster.tags.push('ranged');
-    } else {
+    monster.tags = ifdefor(monster.base.tags, []);
+    if (monster.tags.indexOf('ranged') < 0) {
         monster.tags.push('melee');
     }
     var enchantments = monster.prefixes.length + monster.suffixes.length;
@@ -184,8 +182,7 @@ function updateMonster(monster) {
             addBonusesAndActions(monster, affix);
         })
     });
-
-    monster.actions.push({'base': createAction({'tags': ['basic']})});
+    monster.actions.push({'base': createAction({'tags': monster.tags.concat(['basic'])})});
     updateActorStats(monster);
     //console.log(monster);
 }
@@ -242,15 +239,15 @@ function initalizeMonsters() {
                             '*speed': .5}
     });
     addMonster('gnome', {'name': 'Gnome', 'source': gnomeSource, 'fpsMultiplier': 1.5,
-        'implicitBonuses': {'+range': .5, '*attackSpeed': 1.5, '+magicDamage': 2,
+        'implicitBonuses': {'+range': 2, '*attackSpeed': 1.5, '+magicDamage': 2,
                             '*block': .5, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
-                            '*speed': .3}
+                            '*speed': .3}, 'tags': ['ranged']
     });
     addMonster('gnomecromancer', {'name': 'Gnomecromancer', 'source': gnomeSource, 'fpsMultiplier': 1.5,
-        'implicitBonuses': {'+range': .5, '*attackSpeed': 1.5, '+magicDamage': 2,
+        'implicitBonuses': {'+range': 2, '*attackSpeed': 1.5, '+magicDamage': 2,
                             '*block': .5, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': .3},
-        'abilities': [abilities.raiseDead, abilities.summoner]
+        'abilities': [abilities.raiseDead, abilities.summoner], 'tags': ['ranged']
     });
     addMonster('skeleton', {'name': 'Skeleton', 'source': skeletonSource,
         // Fast to counter ranged heroes, low range+damage + fast attacks to be weak to armored heroes.
@@ -261,16 +258,16 @@ function initalizeMonsters() {
     //console.log(JSON.stringify(makeMonster('skeleton', 1)));
     addMonster('butterfly', {'name': 'Butterfly', 'source': butterflySource,
         'implicitBonuses': {'*maxHealth': 1.5, '+range': 4, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5, '*accuracy': 2,
-                            '*minDamage': .5, '*maxDamage': .5, '*attackSpeed': .5, '*magicDamage': 0,
+                            '*minDamage': .8, '*maxDamage': .8, '*attackSpeed': .5, '*magicDamage': .5,
                             '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
-                            '*speed': .6}
+                            '*speed': .6}, 'tags': ['ranged']
     });
     addMonster('motherfly', {'name': 'Motherfly', 'source': butterflySource,
         'implicitBonuses': {'+maxHealth': 20, '*maxHealth': 3, '+range': 5, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5, '*accuracy': 2,
-                            '*minDamage': .5, '*maxDamage': .5, '*attackSpeed': .5, '*magicDamage': 0,
+                            '*minDamage': .8, '*maxDamage': .8, '*attackSpeed': .5, '*magicDamage': .5,
                             '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
                             '*speed': .6},
-            'abilities': [abilities.pet, abilities.summoner]
+            'abilities': [abilities.pet, abilities.summoner], 'tags': ['ranged']
     });
     addMonster('giantSkeleton', {'name': 'Skelegiant', 'source': skeletonGiantSource,
         'implicitBonuses': {'*maxHealth': 2, '+critDamage': .5, '*magicDamage': 0, '*accuracy': 2,
@@ -284,6 +281,6 @@ function initalizeMonsters() {
     addMonster('dragon', {'name': 'Dragon', 'source': dragonSource, 'stationary': true, // speed still effects animation
         'implicitBonuses': {'*maxHealth': 1.6, '+range': 8, '+critChance': .15, '*accuracy': 2,
                             '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 2, '+magicResist': .5,
-                            '*speed': 2}
+                            '*speed': 2}, 'tags': ['ranged']
     });
 }
