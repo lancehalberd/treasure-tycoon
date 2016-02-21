@@ -221,7 +221,7 @@ function performAttack(character, attack, attacker, target) {
 
     if (attack.base.tags.indexOf('ranged') >= 0) {
         character.projectiles.push(projectile(
-            attackStats, attacker.x + attacker.direction * 64, 240 - 128,
+            attackStats, attacker.x + attacker.width / 2 + attacker.direction * attacker.width / 4, 240 - 128,
             attacker.direction * 15, -getDistance(attacker, target) / 200, target, 0,
             attackStats.isCritical ? 'yellow' : 'red', attackStats.isCritical ? 15 : 10));
     } else {
