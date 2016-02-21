@@ -437,7 +437,7 @@ function evaluateValue(actor, value) {
     }
     formula = formula.slice();
     value = evaluateValue(actor, formula.shift());
-    while (formula.length > 1) {
+    if (formula.length > 1) {
         var operator = formula.shift();
         var operand = evaluateValue(actor, formula.shift());
         if (operator == '+') {
