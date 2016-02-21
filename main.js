@@ -226,9 +226,6 @@ $('.js-mouseContainer').on('mouseover mousemove', '.js-adventureMode .js-canvas'
     }
     var sourceCharacter = $(this).closest('.js-playerPanel').data('character');
     sourceCharacter.allies.concat(sourceCharacter.enemies).forEach(function (actor) {
-        if (actor == sourceCharacter.adventurer) {
-            return true; // not implemented yet
-        }
         if (isPointInRect(x, y, actor.left, actor.top, actor.width, actor.height)) {
             canvasPopupTarget = actor;
             return false;
@@ -282,7 +279,7 @@ function checkRemoveToolTip() {
     if (overJewel || draggedJewel || overCraftingItem) {
         return;
     }
-    if (canvasPopupTarget && canvasPopupTarget.health > 0 && canvasPopupTarget.character.area) {
+    if (canvasPopupTarget && !isActorDead(canvasPopupTarget) && canvasPopupTarget.character.area) {
         if (isPointInRect(canvasCoords[0], canvasCoords[1], canvasPopupTarget.left, canvasPopupTarget.top, canvasPopupTarget.width, canvasPopupTarget.height)) {
             return;
         }

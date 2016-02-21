@@ -18,7 +18,7 @@ function startArea(character, index) {
     character.allies = [character.adventurer];
     character.adventurer.allies = character.allies;
     character.adventurer.enemies = character.enemies;
-    character.adventurer.isAlly = true;
+    character.adventurer.slow = 0;
     character.treasurePopups = [];
     character.textPopups = [];
     character.$panel.find('.js-recall').prop('disabled', false);
@@ -101,7 +101,7 @@ function adventureLoop(character, delta) {
                     if (character.allies[i].x < actor.x) return true;
                 }
             }
-            actor.x += actor.speed * actor.direction * Math.max(0, (1 - actor.slow)) * delta;
+            actor.x += actor.speed * actor.direction * Math.max(0, (1 - ifdefor(actor.slow, 0))) * delta;
         }
         return true;
     });
@@ -375,6 +375,10 @@ function drawMonster(character, monster, index) {
 function drawAdventurer(character, adventurer, index) {
     var cameraX = character.cameraX;
     var context = character.context;
+    adventurer.left = adventurer.x - cameraX;
+    adventurer.top = 240 - 128 - 72;
+    adventurer.width = 64;
+    adventurer.height = 128;
     //draw character
     if (adventurer.target && adventurer.lastAction && adventurer.lastAction.attackSpeed) { // attacking loop
         var attackSpeed = adventurer.lastAction.attackSpeed;

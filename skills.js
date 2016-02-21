@@ -88,6 +88,9 @@ var abilities = {
     // Tier 6 classes
     // Ninja
     'ninja': {'name': 'Ninjutsu', 'bonuses':{'$cloaking': 'Invisible while moving', '$oneHanded:skill:doubleStrike': 'Attacks hit twice'}},
+    'shadowClone': {'name': 'Shadow Clone', 'reaction':
+            {'type': 'clone',  'tags': ['minion'], 'stats': {'limit': 10, 'chance': .1, 'healthBonus': .1, 'damageBonus': .1, 'speedBonus': 1.2},
+            'helpText': 'Chance to summon a weak clone of yourself on taking damage'}},
     // Enhancer
     // Sage
 
@@ -144,6 +147,18 @@ function abilityHelpText(ability, character) {
         }
         if (ifdefor(action.monsterKey)) {
             actionSections.push('Summons a ' + monsters[action.monsterKey].name);
+        }
+        if (ifdefor(action.stats.healthBonus, 1) !== 1) {
+            actionSections.push(evaluateForDisplay(action.stats.healthBonus).format(1) + 'x health');
+        }
+        if (ifdefor(action.stats.damageBonus, 1) !== 1) {
+            actionSections.push(evaluateForDisplay(action.stats.damageBonus).format(1) + 'x damage');
+        }
+        if (ifdefor(action.stats.attackSpeedBonus, 1) !== 1) {
+            actionSections.push(evaluateForDisplay(action.stats.attackSpeedBonus).format(1) + 'x attack speed');
+        }
+        if (ifdefor(action.stats.speedBonus, 1) !== 1) {
+            actionSections.push(evaluateForDisplay(action.stats.speedBonus).format(1) + 'x movement speed');
         }
         if (ifdefor(action.stats.attackPower)) {
             actionSections.push(evaluateForDisplay(action.stats.attackPower, character.adventurer).format(2) + 'x power');

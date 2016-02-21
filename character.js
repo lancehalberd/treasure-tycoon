@@ -225,6 +225,7 @@ function updateAdventurer(adventurer) {
     adventurer.actions = [];
     adventurer.reactions = [];
     adventurer.tags = [];
+    adventurer.helptext = adventurer.name;
     if (!adventurer.equipment.weapon) {
         // Fighting unarmed is considered using a fist weapon.
         adventurer.tags = ['fist', 'melee'];
