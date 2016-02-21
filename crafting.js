@@ -249,7 +249,7 @@ function checkToShowCraftingToopTip() {
     var sections;
     if (overCraftingItem.crafted) {
         sections = [overCraftingItem.name, 'Requires level ' + overCraftingItem.level, ''];
-        sections.push(bonusHelpText(overCraftingItem.bonuses, true));
+        sections.push(bonusHelpText(overCraftingItem.bonuses, true, null));
         if (ifdefor(overCraftingItem.craftedUnique)) {
             sections.push(tag('div', 'uniqueText', 'Unique Variant: </br>' + overCraftingItem.unique.displayName + '<br/>' + (100 * overCraftingItem.unique.chance).format(1) + '% chance'));
         }
