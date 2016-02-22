@@ -160,7 +160,7 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
         'hit': false, 'target': target,
         'update': function (character) {
             // Put an absolute cap on how far a projectile can travel
-            if (self.y > 240 || attackStats.distance > 2000) self.done = true;
+            if (self.y > 240 - 64 || attackStats.distance > 2000) self.done = true;
             if (self.done || self.delay-- > 0) return
             self.x += self.vx;
             self.y += self.vy;
@@ -194,7 +194,7 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                             if (self.vx * (self.target.x + 32 - self.x) <= 0) {
                                 self.vx = -self.vx;
                             }
-                            if (self.y > 120) self.vy = -distance / 200;
+                            if (self.y > 240 - 128) self.vy = -distance / 200;
                             attackStats.accuracy *= .95;
                             break;
                         }
@@ -252,7 +252,7 @@ function applyAttackToTarget(attackStats, target) {
     var magicDamage = Math.floor(attackStats.magicDamage * multiplier);
     attackStats.evaded = false;
     if (!ifdefor(attack.alwaysHits)) {
-        var evasionRoll = Math.random() * target.evasion;
+        var evasionRoll = (target.maxEvasion ? 1 : Math.random()) * target.evasion;
         if (attackStats.accuracy < evasionRoll) {
             hitText.value = 'miss';
             if (ifdefor(attack.damageOnMiss)) {

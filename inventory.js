@@ -234,7 +234,7 @@ function bonusHelpText(rawBonuses, implicit, actor) {
     if (ifdefor(bonuses['%damage'])) {
         sections.push(bonuses['%damage'].percent(1) + ' increased physical damage');
     }
-    if (ifdefor(bonuses['*damage'])) {
+    if (ifdefor(bonuses['*damage'], 1) !== 1) {
         sections.push(bonuses['*damage'].format(1) + 'x more physical damage');
     }
     if (ifdefor(bonuses['%magicDamage'])) {
@@ -255,13 +255,13 @@ function bonusHelpText(rawBonuses, implicit, actor) {
     if (ifdefor(bonuses['+healthGainOnHit'])) {
         sections.push('Gain ' + bonuses['+healthGainOnHit'].format(1) + ' health on hit');
     }
-    if (ifdefor(bonuses['*healthGainOnHit'])) {
+    if (ifdefor(bonuses['*healthGainOnHit'], 1) !== 1) {
         sections.push('Gain ' + bonuses['*healthGainOnHit'].format(1) + 'x more health on hit');
     }
     if (ifdefor(bonuses['+healthRegen'])) {
         sections.push('Regenerate ' + bonuses['+healthRegen'].format(1) + ' health per second');
     }
-    if (ifdefor(bonuses['*healthRegen'])) {
+    if (ifdefor(bonuses['*healthRegen'], 1) !== 1) {
         sections.push('Regenerate ' + bonuses['*healthRegen'].format(1) + 'x more health per second');
     }
     if (ifdefor(bonuses['%maxHealth'])) {
@@ -270,7 +270,7 @@ function bonusHelpText(rawBonuses, implicit, actor) {
     if (ifdefor(bonuses['%attackSpeed'])) {
         sections.push(bonuses['%attackSpeed'].percent(1) + ' increased attack speed');
     }
-    if (ifdefor(bonuses['*attackSpeed'])) {
+    if (ifdefor(bonuses['*attackSpeed'], 1) !== 1) {
         sections.push(bonuses['*attackSpeed'].format(1) + 'x attack speed');
     }
     if (ifdefor(bonuses['+critChance'])) {
@@ -280,19 +280,19 @@ function bonusHelpText(rawBonuses, implicit, actor) {
     if (ifdefor(bonuses['%critChance'])) {
         sections.push(bonuses['%critChance'].percent(1) + ' increased critical chance');
     }
-    if (ifdefor(bonuses['*critChance'])) {
+    if (ifdefor(bonuses['*critChance'], 1) !== 1) {
         sections.push(bonuses['*critChance'].format(1) + 'x critical chance');
     }
     if (ifdefor(bonuses['+critDamage'])) {
         sections.push(bonuses['+critDamage'].percent(1) + ' increased critical damage');
     }
-    if (ifdefor(bonuses['*critDamage'])) {
+    if (ifdefor(bonuses['*critDamage'], 1) !== 1) {
         sections.push(bonuses['*critDamage'].format(1) + 'x critical damage');
     }
     if (ifdefor(bonuses['+critAccuracy'])) {
         sections.push(bonuses['+critAccuracy'].percent(1) + ' increased critical accuracy');
     }
-    if (ifdefor(bonuses['*critAccuracy'])) {
+    if (ifdefor(bonuses['*critAccuracy'], 1) !== 1) {
         sections.push(bonuses['*critAccuracy'].format(1) + 'x critical accuracy');
     }
     if (ifdefor(bonuses['+magicResist'])) {
@@ -307,7 +307,7 @@ function bonusHelpText(rawBonuses, implicit, actor) {
     if (ifdefor(bonuses['%accuracy'])) {
         sections.push(bonuses['%accuracy'].percent(1) + ' increased accuracy');
     }
-    if (ifdefor(bonuses['*accuracy'])) {
+    if (ifdefor(bonuses['*accuracy'], 1) !== 1) {
         sections.push(bonuses['*accuracy'].format(1) + 'x accuracy');
     }
     if (ifdefor(bonuses['+speed'])) {
@@ -319,19 +319,19 @@ function bonusHelpText(rawBonuses, implicit, actor) {
     if (ifdefor(bonuses['+increasedExperience'])) {
         sections.push('Gain ' + bonuses['+increasedExperience'].percent(1) + ' more experience');
     }
-    if (ifdefor(bonuses['*amount'])) {
+    if (ifdefor(bonuses['*amount'], 1) !== 1) {
         sections.push(bonuses['*amount'].format(1) + 'x more effective');
     }
-    if (ifdefor(bonuses['*healthBonus'])) {
+    if (ifdefor(bonuses['*healthBonus'], 1) !== 1) {
         sections.push(bonuses['*healthBonus'].format(1) + 'x health');
     }
-    if (ifdefor(bonuses['*damageBonus'])) {
+    if (ifdefor(bonuses['*damageBonus'], 1) !== 1) {
         sections.push(bonuses['*damageBonus'].format(1) + 'x damage');
     }
-    if (ifdefor(bonuses['*attackSpeedBonus'])) {
+    if (ifdefor(bonuses['*attackSpeedBonus'], 1) !== 1) {
         sections.push(bonuses['*attackSpeedBonus'].format(1) + 'x attack speed');
     }
-    if (ifdefor(bonuses['*speedBonus'])) {
+    if (ifdefor(bonuses['*speedBonus'], 1) !== 1) {
         sections.push(bonuses['*speedBonus'].format(1) + 'x movement speed');
     }
     // Some unique abilities just map 'key' => 'help text' directly.

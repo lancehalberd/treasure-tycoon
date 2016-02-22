@@ -96,11 +96,15 @@ var abilities = {
     'stopTime': {'name': 'Stop Time', 'bonuses': {'+intelligence': 10}, 'reaction':
             {'type': 'stop', 'tags': ['spell'], 'stats': {'duration': ['{intelligence}' , '/', '50'], 'cooldown': 120},
             'helpText': 'If you would receiving a lethal blow, cast a spell that stops time for everyone else.'}},
-
+    // Tier 7 classes
+    // Master
+    // Fool
+    'tomFoolery': {'name': 'Tom Foolery', 'bonuses': {'+evasion': 5}, 'reaction':
+             {'type': 'dodge', 'stats': {'cooldown': 30, 'buff': {'stats': {'*accuracy': 0, '$maxEvasion': 'Evasion checks are always perfect', 'duration': 5}}}, 'helpText': 'Dodge an attack and gain: {buff}'}},
     // Monster abilities
     'summoner': {'bonuses': {'*minion:skill:limit': 2, '*minion:skill:cooldown': .5, '*minion:skill:healthBonus': 2, '*minion:skill:damageBonus': 2}}
 };
-//var testAbilities = [abilities.ninja];
+var testAbilities = [];
 $.each(abilities, function (key, ability) {
     ability.key = key;
     if (ability.action) {

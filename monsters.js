@@ -1,7 +1,7 @@
 
-var enchantedMonsterBonuses = {'*maxHealth': 1.5, '*minDamge': 1.5, '*maxDamage': 1.5, '*xpValue': 3, '*coins': 2, '*anima': 3};
-var imbuedMonsterBonuses = {'*maxHealth': 5, '*minDamge': 5, '*maxDamage': 5, '*xpValue': 10, '*coins': 6, '*anima': 10};
-var bossMonsterBonuses = {'*maxHealth': 2, '*minDamge': 2, '*maxDamage': 2, '*xpValue': 4, '+coins': 2, '*coins': 4, '+anima': 1, '*anima': 4};
+var enchantedMonsterBonuses = {'*maxHealth': 1.5, '*damage': 1.5, '*xpValue': 3, '*coins': 2, '*anima': 3};
+var imbuedMonsterBonuses = {'*maxHealth': 2.5, '*damage': 2.5, '*xpValue': 10, '*coins': 6, '*anima': 10};
+var bossMonsterBonuses = {'*maxHealth': 2, '*damage': 2, '*xpValue': 4, '+coins': 2, '*coins': 4, '+anima': 1, '*anima': 4};
 var monsterPrefixes = [
     [
         {'name': 'Hawkeye', 'bonuses': {'+accuracy': [5, 10]}}
@@ -211,7 +211,7 @@ function setBaseMonsterStats(monster, level) {
     monster.base.critAccuracy = 1;
     monster.base.attackSpeed = 1 + .05 * growth;
     monster.base.speed = 100;
-    monster.base.accuracy = 10 + 3 * growth;
+    monster.base.accuracy = 5 + 3 * growth;
     monster.base.evasion = 1 + growth * .5;
     monster.base.block = 2 * growth;
     monster.base.magicBlock = growth;
@@ -276,11 +276,12 @@ function initalizeMonsters() {
     addMonster('butcher', {'name': 'Skelegiant', 'source': skeletonGiantSource,
         'implicitBonuses': {'*maxHealth': 3, '+critDamage': .5, '*magicDamage': 0, '*accuracy': 2,
                             '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 0, '*magicResist': 0},
-        'abilities': [abilities['hook']]
+        'abilities': [abilities.hook]
     });
     addMonster('dragon', {'name': 'Dragon', 'source': dragonSource, 'stationary': true, // speed still effects animation
         'implicitBonuses': {'*maxHealth': 1.6, '+range': 8, '+critChance': .15, '*accuracy': 2,
                             '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 2, '+magicResist': .5,
-                            '*speed': 2}, 'tags': ['ranged']
+                            '*speed': 2}, 'tags': ['ranged'],
+        'abilities': [abilities.sideStep]
     });
 }
