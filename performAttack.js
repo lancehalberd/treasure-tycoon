@@ -306,6 +306,11 @@ function applyAttackToTarget(attackStats, target) {
             attacker.pull = {'x': attacker.x, 'time': attacker.time + .3, 'damage': 0};
             hitText.value += ' hooked!';
         }
+        if (attack.domino) {
+            target.dominoAttackStats = attackStats;
+            var targetX = (attacker.x < target.x) ? (target.x + ifdefor(attack.distance, 128)) : (target.x - ifdefor(attack.distance, 128));
+            target.pull = {'x': targetX, 'time': target.time + .3, 'damage': 0};
+        }
     } else {
         hitText.value = 'blocked';
         hitText.color = 'blue';

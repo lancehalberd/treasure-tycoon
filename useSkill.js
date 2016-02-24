@@ -22,6 +22,11 @@ function useSkill(actor, skill, target) {
         skill.readyAt = actor.time + 1000;
         return false;
     }
+    for (var i = 0; i < ifdefor(skill.base.restrictions, []).length; i++) {
+        if (actor.tags.indexOf(skill.base.restrictions[i]) < 0) {
+            return false;
+        }
+    }
     if (!skillDefinition.isValid(actor, skill, target)) {
         return false;
     }

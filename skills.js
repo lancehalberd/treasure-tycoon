@@ -22,6 +22,8 @@ var abilities = {
             {'type': 'counterAttack', 'stats': {'attackPower': 1.5, 'chance': .1}, 'helpText': 'Perform a powerful counter attack.<br/>The chance to counter is lower the further away the attacker is.'}},
     'counterPower': {'name': 'Improved Counter', 'bonuses': {'+strength': 5, '+counterAttack:skill:attackPower': .5, '*counterAttack:skill:accuracy': 1.5}},
     'counterChance': {'name': 'Heightened Reflexes', 'bonuses': {'+dexterity': 5, '+counterAttack:skill:chance': .1}},
+    'dragonPunch': {'name': 'Dragon Punch', 'action':
+        {'type': 'attack', 'restrictions': ['fist'], 'stats': {'cooldown': 30, '$alwaysHits': 'Never misses', '$undodgeable': 'Cannot be dodged', 'attackPower': 3, 'distance': 256, '$domino': 'Knocks target away possibly damaging other enemies.'}}},
     // Priest
     'priest': {'name': 'Divine Blessing', 'bonuses': {'*heal:amount': 2, '*healthRegen': 2, '*healthGainOnHit': 2}},
     'minorIntelligence': {'name': 'Minor Intelligence', 'bonuses': {'+intelligence': 5}},
@@ -155,12 +157,17 @@ function abilityHelpText(ability, character) {
                 return evaluateForDisplay(action.stats[key], character.adventurer);
             }));
         }
-        if (ifdefor(action.stats.$alwaysHits)) {
-            actionSections.push('Never misses');
+        for (var i = 0; i < ifdefor(action.restrictions, []).length; i++) {
+            actionSections.push(properCase(action.restrictions[i]) + ' only');
         }
-        if (ifdefor(action.stats.$undodgeable)) {
-            actionSections.push('Cannot be dodged');
+        if (ifdefor(action.stats.attackPower)) {
+            actionSections.push(evaluateForDisplay(action.stats.attackPower, character.adventurer).format(2) + 'x power');
         }
+        $.each(action.stats, function (key, value) {
+            if (key.charAt(0) === '$') {
+                actionSections.push(value);
+            }
+        });
         if (ifdefor(action.monsterKey)) {
             actionSections.push('Summons a ' + monsters[action.monsterKey].name);
         }
@@ -175,9 +182,6 @@ function abilityHelpText(ability, character) {
         }
         if (ifdefor(action.stats.speedBonus, 1) !== 1) {
             actionSections.push(evaluateForDisplay(action.stats.speedBonus, character.adventurer).format(1) + 'x movement speed');
-        }
-        if (ifdefor(action.stats.attackPower)) {
-            actionSections.push(evaluateForDisplay(action.stats.attackPower, character.adventurer).format(2) + 'x power');
         }
         if (ifdefor(action.stats.range)) {
             actionSections.push('Range ' + evaluateForDisplay(action.stats.range, character.adventurer).format(1));

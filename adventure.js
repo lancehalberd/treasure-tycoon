@@ -222,6 +222,17 @@ function processStatusEffects(character, target, delta) {
     if (ifdefor(target.healthRegen)) {
         target.health += target.healthRegen * delta;
     }
+    if (target.pull && target.dominoAttackStats) {
+        for (var i = 0; i < target.allies.length; i++) {
+            var ally = target.allies[i];
+            if (ally === target || ally.x < target.x || target.x + target.width < ally.x) continue;
+            applyAttackToTarget(target.dominoAttackStats, ally);
+            target.dominoAttackStats = null;
+            target.pull = null;
+            target.stunned = Math.max(target.time + .3, target.stunned);
+            break;
+        }
+    }
     if (ifdefor(target.pull)) {
         var timeLeft = (target.pull.time - target.time);
         if (timeLeft > 0) {
