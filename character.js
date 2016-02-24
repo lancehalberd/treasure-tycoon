@@ -101,7 +101,7 @@ function newCharacter(job) {
         draggedJewel = loot.generateLootDrop().gainLoot(character);
         draggedJewel.shape.setCenterPosition(character.jewelsCanvas.width / 2, character.jewelsCanvas.width / 2);
         if (!equipJewel(character)) {
-            consol.log("Failed to place jewel on starting board.");
+            console.log("Failed to place jewel on starting board.");
         }
     });
     draggedJewel = null;
@@ -321,6 +321,9 @@ function updateActorStats(actor) {
     });
     actor.actions.concat(actor.reactions).forEach(function (action) {
         $.each(action.base.stats, function (stat) {
+            if (stat.charAt(0) === '$') {
+                stat = stat.substring(1);
+            }
             action[stat] = getStatForAction(actor, action.base, stat);
         })
         $.each(specialTraits, function (stat) {
@@ -387,10 +390,13 @@ function getStat(actor, stat) {
     return (base + plus) * percent * multiplier;
 }
 function getStatForAction(actor, dataObject, stat) {
-    var base = evaluateValue(actor, ifdefor(dataObject.stats[stat], 0)), plus = 0, percent = 1, multiplier = 1, specialValue = false;
+    var base = evaluateValue(actor, ifdefor(dataObject.stats[stat], 0)), plus = 0, percent = 1, multiplier = 1, specialValue = ifdefor(dataObject.stats['$' + stat], false);
     if (typeof base === 'object' && base.constructor != Array) {
         var subObject = {};
         $.each(base.stats, function (key, value) {
+            if (key.charAt(0) === '$') {
+                key = key.substring(1);
+            }
             subObject[key] = getStatForAction(actor, base, key);
         });
         return subObject;
@@ -417,7 +423,7 @@ function getStatForAction(actor, dataObject, stat) {
             }
         });
     });
-    if (specialValue) {
+    if (specialTraits[stat]) {
         return specialValue;
     }
     return (base + plus) * percent * multiplier;

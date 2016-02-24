@@ -129,7 +129,7 @@ function updateDamageInfo(character) {
     $evasion.parent().attr('helptext', (1 - hitPercent).percent(1) + ' estimated chance to evade attacks.');
 }
 
-function createAttackStats(character, attack, attacker) {
+function createAttackStats(attacker, attack) {
     var isCritical = Math.random() <= attack.critChance;
     var damage = Random.range(attack.minDamage, attack.maxDamage);
     var magicDamage = Random.range(attack.minMagicDamage, attack.maxMagicDamage);
@@ -142,7 +142,6 @@ function createAttackStats(character, attack, attacker) {
         accuracy *= (1 + attack.critAccuracy);
     }
     return {
-        'character': character,
         'distance': 0,
         'source': attacker,
         'attack': attack,
@@ -206,21 +205,23 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
         },
         'draw': function (character) {
             if (self.done || self.delay > 0) return
-            attackStats.character.context.fillStyle = ifdefor(color, '#000');
-            attackStats.character.context.fillRect(self.x - character.cameraX - size / 2, self.y - size / 2, size, size);
+            character.context.fillStyle = ifdefor(color, '#000');
+            character.context.fillRect(self.x - character.cameraX - size / 2, self.y - size / 2, size, size);
         }
     };
     attackStats.projectile = self;
     return self;
 }
-function performAttack(character, attack, attacker, target) {
-    var attackStats = createAttackStats(character, attack, attacker);
-
-    attacker.attackCooldown = attacker.time + 1 / (attack.attackSpeed * Math.max(.1, (1 - attacker.slow)));
-    attacker.target = target;
-
-    if (attack.base.tags.indexOf('ranged') >= 0) {
-        character.projectiles.push(projectile(
+function performAttack(attacker, attack, target) {
+    var character = attacker.character;
+    var attackStats = createAttackStats(attacker, attack);
+    attacker.attackCooldown = attacker.time + 1 / (attackStats.attack.attackSpeed * Math.max(.1, (1 - attacker.slow)));
+    performAttackProper(attackStats, target);
+}
+function performAttackProper(attackStats, target) {
+    var attacker = attackStats.source;
+    if (attackStats.attack.base.tags.indexOf('ranged') >= 0) {
+        attacker.character.projectiles.push(projectile(
             attackStats, attacker.x + attacker.width / 2 + attacker.direction * attacker.width / 4, 240 - 128,
             attacker.direction * 15, -getDistance(attacker, target) / 200, target, 0,
             attackStats.isCritical ? 'yellow' : 'red', attackStats.isCritical ? 15 : 10));
@@ -232,7 +233,7 @@ function performAttack(character, attack, attacker, target) {
 }
 function applyAttackToTarget(attackStats, target) {
     var distance = attackStats.distance;
-    var character = attackStats.character;
+    var character = target.character;
     var hitText = {x: target.x + 32, y: 240 - 128, color: 'red'};
     if (target.invulnerable) {
         hitText.value = 'invulnerable';

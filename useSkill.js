@@ -39,6 +39,7 @@ function useSkill(actor, skill, target) {
     skillDefinition.use(actor, skill, target);
 
     actor.lastAction = skill;
+    actor.target = target;
     // Every time a skill is used, we push it to the back of possible choices. That
     // way if multiple abilities are always available (such as with 100% CDR),
     // the actor will cycle through them instead of using the first one in the list
@@ -76,7 +77,7 @@ skillDefinitions.attack = {
         return target && !target.cloaked && getDistance(actor, target) <= attackSkill.range * 32;
     },
     use: function (actor, attackSkill, target) {
-        performAttack(actor.character, attackSkill, actor, target);
+        performAttack(actor, attackSkill, target);
     }
 }
 
@@ -113,8 +114,9 @@ skillDefinitions.revive = {
 skillDefinitions.stop = {
     isValid: function (actor, stopSkill, attackStats) {
         if (attackStats.evaded) return false;
-        // Cast stop only when the incoming hit would kill the character.
-        return actor.health - ifdefor(attackStats.totalDamage, 0) <= 0;
+        // Cast stop only when the incoming hit would deal more than half of the
+        // character's remaining health in damage.
+        return ifdefor(attackStats.totalDamage, 0) >= actor.health / 2;
     },
     use: function (actor, stopSkill, attackStats) {
         attackStats.stopped = true;
@@ -134,13 +136,7 @@ skillDefinitions.minion = {
     use: function (actor, minionSkill, target) {
         var monsterData = {
             'key': minionSkill.base.monsterKey,
-            'bonuses': {'*maxHealth': ifdefor(minionSkill.healthBonus, 1),
-                        '*minDamage': ifdefor(minionSkill.damageBonus, 1),
-                        '*maxDamage': ifdefor(minionSkill.damageBonus, 1),
-                        '*minMagicDamage': ifdefor(minionSkill.damageBonus, 1),
-                        '*maxMagicDamage': ifdefor(minionSkill.damageBonus, 1),
-                        '*attackSpeed': ifdefor(minionSkill.attackSpeedBonus, 1),
-                        '*speed': ifdefor(minionSkill.speedBonus, 1)}
+            'bonuses': getMinionSkillBonuses(minionSkill)
         }
         actor.pull = {'x': actor.x - actor.direction * 64, 'time': actor.time + .3, 'damage': 0};
         var newMonster = makeMonster(monsterData, actor.level, [], true);
@@ -157,6 +153,43 @@ skillDefinitions.minion = {
     }
 };
 
+function cloneActor(actor) {
+    var clone;
+    if (actor.personCanvas) {
+        clone = makeAdventurer(actor.job, actor.level, {});
+        clone.hairOffset = actor.hairOffset;
+        clone.equipment = actor.equipment;
+        updateAdventurer(clone);
+    } else {
+        var monsterData = {'key': actor.base.key};
+        clone = makeMonster(monsterData, actor.level, [], true);
+    }
+    clone.bonuses = actor.bonuses.slice();
+    actor.pull = {'x': actor.x - actor.direction * 64, 'time': actor.time + .3, 'damage': 0};
+    clone.x = actor.x + actor.direction * 32;
+    clone.character = actor.character;
+    clone.direction = actor.direction;
+    clone.speed = Math.max(actor.speed + 5, clone.speed);
+    clone.allies = actor.allies;
+    clone.enemies = actor.enemies;
+    clone.stunned = 0;
+    clone.slow = 0;
+    clone.pull = null;
+    clone.time = 0;
+    clone.timedEffects = [];
+    return clone;
+}
+
+function getMinionSkillBonuses(minionSkill) {
+    return {'*maxHealth': ifdefor(minionSkill.healthBonus, 1),
+            '*minDamage': ifdefor(minionSkill.damageBonus, 1),
+            '*maxDamage': ifdefor(minionSkill.damageBonus, 1),
+            '*minMagicDamage': ifdefor(minionSkill.damageBonus, 1),
+            '*maxMagicDamage': ifdefor(minionSkill.damageBonus, 1),
+            '*attackSpeed': ifdefor(minionSkill.attackSpeedBonus, 1),
+            '*speed': ifdefor(minionSkill.speedBonus, 1)};
+}
+
 skillDefinitions.clone = {
     isValid: function (actor, cloneSkill, attackStats) {
         var count = 0;
@@ -166,43 +199,59 @@ skillDefinitions.clone = {
         return count < cloneSkill.limit && Math.random() < cloneSkill.chance;
     },
     use: function (actor, cloneSkill, attackStats) {
-        var clone;
-        if (actor.personCanvas) {
-            clone = makeAdventurer(actor.job, actor.level, {});
-            clone.name = actor.name + ' shadow clone';
-            clone.hairOffset = actor.hairOffset;
-            clone.equipment = actor.equipment;
-            updateAdventurer(clone);
-        } else {
-            var monsterData = {'key': actor.base.key};
-            clone = makeMonster(monsterData, actor.level, [], true);
-        }
-        clone.bonuses = actor.bonuses.slice();
-        actor.pull = {'x': actor.x - actor.direction * 64, 'time': actor.time + .3, 'damage': 0};
-        clone.x = actor.x + actor.direction * 32;
-        clone.character = actor.character;
-        clone.direction = actor.direction;
-        clone.speed = Math.max(actor.speed + 5, clone.speed);
+        var clone = cloneActor(actor);
         clone.source = cloneSkill;
-        clone.allies = actor.allies;
-        clone.enemies = actor.enemies;
-        clone.stunned = 0;
-        clone.slow = 0;
-        clone.pull = null;
-        clone.time = 0;
-        clone.timedEffects = [];
-        clone.bonuses.push({'*maxHealth': ifdefor(cloneSkill.healthBonus, 1),
-            '*minDamage': ifdefor(cloneSkill.damageBonus, 1),
-            '*maxDamage': ifdefor(cloneSkill.damageBonus, 1),
-            '*minMagicDamage': ifdefor(cloneSkill.damageBonus, 1),
-            '*maxMagicDamage': ifdefor(cloneSkill.damageBonus, 1),
-            '*attackSpeed': ifdefor(cloneSkill.attackSpeedBonus, 1),
-            '*speed': ifdefor(cloneSkill.speedBonus, 1)});
+        clone.name = actor.name + ' shadow clone';
+        clone.bonuses.push(getMinionSkillBonuses(cloneSkill));
         updateActorStats(clone);
         actor.allies.push(clone);
         actor.stunned = actor.time + .3;
         // Clone has same percent health as creator.
         clone.health = Math.max(1, clone.maxHealth * actor.health / actor.maxHealth);
+    }
+};
+
+skillDefinitions.decoy = {
+    isValid: function (actor, decoySkill, attackStats) {
+        var count = 0;
+        actor.allies.forEach(function (ally) {
+            if (ally.source == decoySkill) count++;
+        });
+        return count < ifdefor(decoySkill.limit, 10);
+    },
+    use: function (actor, decoySkill, attackStats) {
+        var clone = cloneActor(actor);
+        clone.source = decoySkill;
+        clone.name = actor.name + ' decoy';
+        clone.bonuses.push(getMinionSkillBonuses(decoySkill));
+        addBonusesAndActions(clone, abilities.explode);
+        updateActorStats(clone);
+        actor.allies.push(clone);
+        actor.stunned = actor.time + .3;
+        // Clone has same percent health as creator.
+        clone.health = Math.max(1, clone.maxHealth * actor.health / actor.maxHealth);
+    }
+};
+
+skillDefinitions.explode = {
+    isValid: function (actor, explodeSkill, attackStats) {
+        if (attackStats.evaded) return false;
+        // Cast revive only when the incoming hit would kill the character.
+        return actor.health - ifdefor(attackStats.totalDamage, 0) <= 0;
+    },
+    use: function (actor, explodeSkill, attackStats) {
+        // Shoot a projectile at every enemy.
+        for (var i = 0; i < actor.enemies.length; i++) {
+            performAttackProper({
+                'distance': 0,
+                'source': actor,
+                'attack': explodeSkill,
+                'isCritical': true,
+                'damage': 0,
+                'magicDamage': explodeSkill.power,
+                'accuracy': 0,
+            }, actor.enemies[i]);
+        }
     }
 };
 
@@ -249,7 +298,29 @@ skillDefinitions.dodge = {
             });
         }
     }
-}
+};
+skillDefinitions.smokeBomb = {
+    isValid: function (actor, smokeBombSkill, attackStats) {
+        if (attackStats.evaded) return false;
+        // Cast stop only when the incoming hit would deal more than half of the
+        // character's remaining health in damage.
+        return ifdefor(attackStats.totalDamage, 0) >= actor.health / 2;
+    },
+    use: function (actor, smokeBombSkill, attackStats) {
+        attackStats.dodged = true;
+        if (ifdefor(smokeBombSkill.distance)) {
+            actor.pull = {'x': actor.x + actor.direction * ifdefor(smokeBombSkill.distance, 64), 'time': actor.time + ifdefor(dodgeSkill.moveDuration, .3), 'damage': 0};
+        }
+        if (ifdefor(smokeBombSkill.buff)) {
+            addTimedEffect(actor.character, actor, smokeBombSkill.buff);
+        }
+        if (ifdefor(smokeBombSkill.globalDebuff)) {
+            actor.enemies.forEach(function (enemy) {
+                addTimedEffect(actor.character, enemy, smokeBombSkill.globalDebuff);
+            });
+        }
+    }
+};
 
 skillDefinitions.counterAttack = {
     isValid: function (actor, counterAttackSkill, attackStats) {
@@ -261,9 +332,9 @@ skillDefinitions.counterAttack = {
             && Math.random() < counterAttackSkill.chance * Math.min(1, 32 / getDistance(actor, attackStats.source));
     },
     use: function (actor, counterAttackSkill, attackStats) {
-        performAttack(actor.character, counterAttackSkill, actor, attackStats.source);
+        performAttack(actor, counterAttackSkill, attackStats.source);
     }
-}
+};
 skillDefinitions.deflect = {
     isValid: function (actor, deflectSkill, attackStats) {
         if (attackStats.evaded) return false;
@@ -284,7 +355,7 @@ skillDefinitions.deflect = {
         // This prevents the attack in progress from hitting the deflector.
         attackStats.deflected = true;
     }
-}
+};
 skillDefinitions.evadeAndCounter = {
     isValid: function (actor, evadeAndCounterSkill, attackStats) {
         if (!attackStats.evaded) return false;
@@ -293,6 +364,16 @@ skillDefinitions.evadeAndCounter = {
         return getDistance(actor, attackStats.source) <= evadeAndCounterSkill.range * 32;
     },
     use: function (actor, evadeAndCounterSkill, attackStats) {
-        performAttack(actor.character, evadeAndCounterSkill, actor, attackStats.source);
+        performAttack(actor, evadeAndCounterSkill, attackStats.source);
     }
-}
+};
+
+skillDefinitions.mimic = {
+    isValid: function (actor, counterAttackSkill, attackStats) {
+        // Only non basic attacks can be mimicked.
+        return attackStats.attack.base.tags.indexOf('basic') < 0;
+    },
+    use: function (actor, counterAttackSkill, attackStats) {
+        performAttack(actor, attackStats.attack, attackStats.source);
+    }
+};

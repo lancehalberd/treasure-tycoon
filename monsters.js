@@ -188,6 +188,7 @@ function updateMonster(monster) {
 }
 var monsters = {};
 function addMonster(key, data) {
+    data.key = key;
     monsters[key] = data;
 }
 function enemySheet(key) {

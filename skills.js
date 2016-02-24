@@ -10,7 +10,7 @@ var abilities = {
     'dodge': {'name': 'Dodge', 'bonuses': {'+evasion': 2}, 'reaction':
              {'type': 'dodge', 'stats': {'cooldown': 10, 'distance': -128, 'buff': {'stats': {'%evasion': .5, 'duration': 5}}}, 'helpText': 'Leap back to dodge an attack and gain: {buff}'}},
     'acrobatics': {'name': 'Acrobatics', 'bonuses': {'+evasion': 2, '+dodge:skill:cooldown': -2, '*dodge:skill:distance': 2}},
-    'bullseye': {'name': 'Bullseye', 'action': {'type': 'attack', 'stats': {'cooldown': 15, 'alwaysHits': true, 'undodgeable': true}}},
+    'bullseye': {'name': 'Bullseye', 'action': {'type': 'attack', 'stats': {'cooldown': 15, '$alwaysHits': 'Never misses', '$undodgeable': 'Cannot be dodged'}}},
     'bullseyeCritical': {'name': 'Dead On', 'bonuses': {'+bullseye:skill:critChance': 1}, 'helpText': 'Bullseye always strikes critically.'},
     // Black Belt
     'blackbelt': {'name': 'Martial Arts', 'bonuses': {'*unarmed:damage': 3, '*unarmed:attackSpeed': 1.5,
@@ -38,7 +38,7 @@ var abilities = {
     // Tier 2 classes
     // Corsair
     'hook': {'name': 'Grappling Hook', 'action': {'type': 'attack',
-                    'stats': {'cooldown': 10, 'range': 10, 'dragDamage': 0, 'dragStun': 0, 'rangeDamage': 0, 'alwaysHits': true, 'pullsTarget': true},
+                    'stats': {'cooldown': 10, 'range': 10, 'dragDamage': 0, 'dragStun': 0, 'rangeDamage': 0, '$alwaysHits': 'Never misses', '$pullsTarget': 'Pulls target'},
                     'helpText': 'Throw a hook to damage and pull enemies closer.'}},
     'hookRange': {'name': 'Long Shot', 'bonuses': {'+hook:skill:range': 5, '+hook:skill:cooldown': -3}},
     'hookDrag': {'name': 'Barbed Wire', 'bonuses': {'+hook:skill:dragDamage': .1}},
@@ -51,7 +51,7 @@ var abilities = {
             {'type': 'buff', 'stats': {'cooldown': 30, 'buff': {'stats': {'+armor': ['{intelligence}'], 'duration': 20}}}, 'helpText': 'Create a magic barrier that grants: {buff}'}},
     // Dancer
     'dancer': {'name': 'Dancing', 'bonuses': {'+evasion': 3}, 'reaction':
-            {'type': 'evadeAndCounter', 'stats': {'alwaysHits': true, 'range': 1}, 'helpText': 'Counter whenever you successfully evade an attack.'}},
+            {'type': 'evadeAndCounter', 'stats': {'$alwaysHits': 'Never misses', 'range': 1}, 'helpText': 'Counter whenever you successfully evade an attack.'}},
     'distract': {'name': 'Distract', 'bonuses': {'+evasion': 3}, 'reaction':
             {'type': 'dodge', 'stats': {'globalDebuff': {'stats': {'*accuracy': .5, 'duration': 2}}, 'cooldown': 10}, 'helpText': 'Dodge an attack with a distracting flourish that inflicts: {globalDebuff} on all enemies.'}},
     // Tier 3 classes
@@ -88,6 +88,8 @@ var abilities = {
     // Tier 6 classes
     // Ninja
     'ninja': {'name': 'Ninjutsu', 'bonuses':{'$cloaking': 'Invisible while moving', '$oneHanded:skill:doubleStrike': 'Attacks hit twice'}},
+    'smokeBomb': {'name': 'Smoke Bomb', 'reaction':
+            {'type': 'smokeBomb', 'stats': {'globalDebuff': {'stats': {'*accuracy': 0, 'duration': 5}}, 'cooldown': 100}, 'helpText': 'If an attack would deal more than half of your remaining life, dodge it and throw a smoke bomb causing: {globalDebuff} to all enemies.'}},
     'shadowClone': {'name': 'Shadow Clone', 'reaction':
             {'type': 'clone',  'tags': ['minion'], 'stats': {'limit': 10, 'chance': .1, 'healthBonus': .1, 'damageBonus': .1, 'speedBonus': 1.2},
             'helpText': 'Chance to summon a weak clone of yourself on taking damage'}},
@@ -95,12 +97,19 @@ var abilities = {
     // Sage
     'stopTime': {'name': 'Stop Time', 'bonuses': {'+intelligence': 10}, 'reaction':
             {'type': 'stop', 'tags': ['spell'], 'stats': {'duration': ['{intelligence}' , '/', '50'], 'cooldown': 120},
-            'helpText': 'If you would receiving a lethal blow, cast a spell that stops time for everyone else.'}},
+            'helpText': 'If an attack would deal more than half of your remaining life, negate it and cast a spell that stops time for everyone else.'}},
     // Tier 7 classes
     // Master
     // Fool
     'tomFoolery': {'name': 'Tom Foolery', 'bonuses': {'+evasion': 5}, 'reaction':
              {'type': 'dodge', 'stats': {'cooldown': 30, 'buff': {'stats': {'*accuracy': 0, '$maxEvasion': 'Evasion checks are always perfect', 'duration': 5}}}, 'helpText': 'Dodge an attack and gain: {buff}'}},
+    'mimic': {'name': 'Mimic', 'reaction':
+             {'type': 'mimic', 'stats': {}, 'helpText': 'Counter an enemy ability with a copy of that ability.'}},
+    'decoy': {'name': 'Decoy', 'reaction':
+            {'type': 'decoy',  'tags': ['minion'], 'stats': {'cooldown': 60, 'healthBonus': .4, 'damageBonus': .4, 'speedBonus': 1.2},
+            'helpText': 'Dodge an attack and leave behind a decoy that explodes on death damaging all enemies.'}},
+    'explode': {'name': 'Decoy Burst', 'reaction':
+             {'type': 'explode', 'tags': ['ranged'], 'stats': {'power': '{maxHealth}', '$alwaysHits': 'Shrapnel cannot be evaded'}, 'helpText': 'Explode into shrapnel on death.'}},
     // Monster abilities
     'summoner': {'bonuses': {'*minion:skill:limit': 2, '*minion:skill:cooldown': .5, '*minion:skill:healthBonus': 2, '*minion:skill:damageBonus': 2}}
 };
@@ -146,10 +155,10 @@ function abilityHelpText(ability, character) {
                 return evaluateForDisplay(action.stats[key], character.adventurer);
             }));
         }
-        if (ifdefor(action.stats.alwaysHits)) {
+        if (ifdefor(action.stats.$alwaysHits)) {
             actionSections.push('Never misses');
         }
-        if (ifdefor(action.stats.undodgeable)) {
+        if (ifdefor(action.stats.$undodgeable)) {
             actionSections.push('Cannot be dodged');
         }
         if (ifdefor(action.monsterKey)) {
