@@ -32,7 +32,7 @@ function startArea(character, index) {
     character.$panel.find('.js-adventureMode').show();
 }
 function isActorDead(actor) {
-    return actor.health <= 0 && !actor.undying;
+    return actor.health <= 0 && !actor.undying && !actor.pull;
 }
 
 function timeStopLoop(character, delta) {
@@ -211,15 +211,12 @@ function startNextWave(character) {
     character.waveIndex++;
 }
 function processStatusEffects(character, target, delta) {
-    if (target.health <= 0) {
-        return;
-    }
     // Apply DOT, movement effects and other things that happen to targets here.
     // Target becomes 50% less slow over 1 second, or loses .1 slow over one second, whichever is faster.
     if (target.slow) {
         target.slow = Math.max(0, Math.min(target.slow - .5 * target.slow * delta, target.slow - .1 * delta));
     }
-    if (ifdefor(target.healthRegen)) {
+    if (target.health > 0 && ifdefor(target.healthRegen)) {
         target.health += target.healthRegen * delta;
     }
     if (target.pull && target.dominoAttackStats) {

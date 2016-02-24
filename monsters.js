@@ -274,7 +274,7 @@ function initalizeMonsters() {
         'implicitBonuses': {'*maxHealth': 2, '+critDamage': .5, '*magicDamage': 0, '*accuracy': 2,
                             '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 0, '*magicResist': 0}
     });
-    addMonster('butcher', {'name': 'Skelegiant', 'source': skeletonGiantSource,
+    addMonster('butcher', {'name': 'Butcher', 'source': skeletonGiantSource,
         'implicitBonuses': {'*maxHealth': 3, '+critDamage': .5, '*magicDamage': 0, '*accuracy': 2,
                             '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 0, '*magicResist': 0},
         'abilities': [abilities.hook]
