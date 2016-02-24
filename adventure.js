@@ -428,6 +428,9 @@ function drawMonster(character, monster, index) {
     //context.fillRect(monster.x - cameraX, 240 - 128 - 72, 64, 128);
     // life bar
     drawBar(context, monster.x - cameraX + source.width - 32, 240 - 128 - 36 - 5 * index, 64, 4, 'white', monster.color, monster.health / monster.maxHealth);
+    if (ifdefor(monster.reflectBarrier, 0)) {
+        drawBar(context, monster.x - cameraX + source.width - 32, 240 - 128 - 36 - 5 * index - 2, 64, 4, 'white', 'blue', monster.reflectBarrier / monster.maxReflectBarrier);
+    }
 }
 function drawAdventurer(character, adventurer, index) {
     var cameraX = character.cameraX;
@@ -458,6 +461,9 @@ function drawAdventurer(character, adventurer, index) {
     //context.fillRect(adventurer.x - cameraX, 240 - 128 - 72, 64, 128);
     // life bar
     drawBar(context, adventurer.x - cameraX, 240 - 128 - 36 - 5 * index, 64, 4, 'white', 'red', adventurer.health / adventurer.maxHealth);
+    if (ifdefor(adventurer.reflectBarrier, 0)) {
+        drawBar(context, adventurer.x - cameraX, 240 - 128 - 36 - 5 * index - 2, 64, 4, 'white', 'blue', adventurer.reflectBarrier / adventurer.maxReflectBarrier);
+    }
 }
 function drawMinimap(character) {
     var y = 240 - 18;

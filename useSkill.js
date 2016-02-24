@@ -94,7 +94,7 @@ skillDefinitions.revive = {
     },
     use: function (actor, reviveSkill, attackStats) {
         attackStats.stopped = true;
-        actor.health = reviveSkill.amount;
+        actor.health = reviveSkill.power;
         actor.stunned = actor.time + .3;
         if (reviveSkill.buff) {
             addTimedEffect(actor.character, actor, reviveSkill.buff);
@@ -263,10 +263,10 @@ skillDefinitions.explode = {
 skillDefinitions.heal = {
     isValid: function (actor, healSkill, attackStats) {
         // Don't use a heal ability unless none of it will be wasted or the actor is below half life.
-        return (actor.health + healSkill.amount <= actor.maxHealth) || (actor.health <= actor.maxHealth / 2);
+        return (actor.health + healSkill.power <= actor.maxHealth) || (actor.health <= actor.maxHealth / 2);
     },
     use: function (actor, healSkill, attackStats) {
-        actor.health += healSkill.amount;
+        actor.health += healSkill.power;
         actor.stunned = actor.time + .3;
     }
 };
@@ -380,5 +380,15 @@ skillDefinitions.mimic = {
     },
     use: function (actor, counterAttackSkill, attackStats) {
         performAttack(actor, attackStats.attack, attackStats.source);
+    }
+};
+
+skillDefinitions.reflect = {
+    isValid: function (actor, reflectSkill, attackStats) {
+        return true;
+    },
+    use: function (actor, reflectSkill, attackStats) {
+        actor.reflectBarrier = ifdefor(actor.reflectBarrier, 0) + reflectSkill.power;
+        actor.maxReflectBarrier = actor.reflectBarrier;
     }
 };

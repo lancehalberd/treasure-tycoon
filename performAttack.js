@@ -156,10 +156,10 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
     size = ifdefor(size, 10);
     var self = {
         'x': x, 'y': y, 'vx': vx, 'vy': vy, 't': 0, 'done': false, 'delay': delay,
-        'hit': false, 'target': target,
+        'hit': false, 'target': target, 'attackStats': attackStats,
         'update': function (character) {
             // Put an absolute cap on how far a projectile can travel
-            if (self.y > 240 - 64 || attackStats.distance > 2000) self.done = true;
+            if (self.y > 240 - 64 || self.attackStats.distance > 2000) self.done = true;
             if (self.done || self.delay-- > 0) return
             self.x += self.vx;
             self.y += self.vy;
@@ -167,17 +167,26 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
             self.t += 1;
             // Don't do any collision detection once the projectile is spent.
             if (self.hit) return;
-            attackStats.distance += Math.sqrt(self.vx * self.vx + self.vy * self.vy);
+            self.attackStats.distance += Math.sqrt(self.vx * self.vx + self.vy * self.vy);
             if (Math.abs(self.target.x + 32 - self.x) < 10 && self.target.health > 0) {
                 self.hit = true;
-                if (applyAttackToTarget(attackStats, self.target)) {
+                if (ifdefor(self.target.reflectBarrier, 0)) {
+                    self.target.reflectBarrier = Math.max(0, self.target.reflectBarrier - self.attackStats.magicDamage - self.attackStats.damage);
+                    self.hit = false;
+                    var newTarget = self.attackStats.source;
+                    self.attackStats.source = self.target;
+                    self.target = newTarget;
+                    self.vx = -self.vx;
+                    var distance = Math.abs(self.x - newTarget.x);
+                    if (self.y > 240 - 128) self.vy = -distance / 200;
+                } else if (applyAttackToTarget(self.attackStats, self.target)) {
                     self.done = true;
                     if (ifdefor(attackStats.attack.chaining)) {
                         self.done = false;
                         // reduce the speed. This seems realistic and make it easier to
                         // distinguish bounced attacks from new attacks.
                         self.vx = -self.vx / 5;
-                        var targets = attackStats.source.enemies.slice();
+                        var targets = self.attackStats.source.enemies.slice();
                         while (targets.length) {
                             var index = Math.floor(Math.random() * targets.length);
                             var newTarget = targets[index];
@@ -194,7 +203,7 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                                 self.vx = -self.vx;
                             }
                             if (self.y > 240 - 128) self.vy = -distance / 200;
-                            attackStats.accuracy *= .95;
+                            self.attackStats.accuracy *= .95;
                             break;
                         }
                     }
@@ -209,7 +218,7 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
             character.context.fillRect(self.x - character.cameraX - size / 2, self.y - size / 2, size, size);
         }
     };
-    attackStats.projectile = self;
+    self.attackStats.projectile = self;
     return self;
 }
 function performAttack(attacker, attack, target) {

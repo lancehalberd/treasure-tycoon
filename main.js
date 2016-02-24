@@ -193,8 +193,11 @@ function infoLoop(character, delta) {
 }
 
 function drawBar(context, x, y, width, height, background, color, percent) {
-    context.fillStyle = background;
-    context.fillRect(x, y, width, height);
+    percent = Math.max(0, Math.min(1, percent));
+    if (background) {
+        context.fillStyle = background;
+        context.fillRect(x, y, width, height);
+    }
     context.fillStyle = color;
     context.fillRect(x + 1, y + 1, Math.floor((width - 2) * percent), height - 2);
 }

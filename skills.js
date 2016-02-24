@@ -25,16 +25,16 @@ var abilities = {
     'dragonPunch': {'name': 'Dragon Punch', 'action':
         {'type': 'attack', 'restrictions': ['fist'], 'stats': {'cooldown': 30, '$alwaysHits': 'Never misses', '$undodgeable': 'Cannot be dodged', 'attackPower': 3, 'distance': 256, '$domino': 'Knocks target away possibly damaging other enemies.'}}},
     // Priest
-    'priest': {'name': 'Divine Blessing', 'bonuses': {'*heal:amount': 2, '*healthRegen': 2, '*healthGainOnHit': 2}},
+    'priest': {'name': 'Divine Blessing', 'bonuses': {'*heal:power': 2, '*healthRegen': 2, '*healthGainOnHit': 2}},
     'minorIntelligence': {'name': 'Minor Intelligence', 'bonuses': {'+intelligence': 5}},
     'heal': {'name': 'Heal', 'bonuses': {'+intelligence': 5}, 'action':
-            {'type': 'heal', 'tags': ['spell'], 'stats': {'amount': ['{intelligence}'], 'cooldown': 10}, 'helpText': 'Cast a spell to restore {amount} health.'}},
-    //'reflect': {'name': 'Reflect Magic', 'bonuses': {'+intelligence': 10}, 'attacks': [
-    //        {'type': 'reflect', 'tags': ['spell'], 'stats': {'amount': ['{intelligence}', '*', 10], 'cooldown': 20},
-    //        'helpText': 'Create a magical barrier that will reflect spell damage until it breaks after taking {amount} damage. Further casting strengthens the barrier.'}]},
+            {'type': 'heal', 'tags': ['spell'], 'stats': {'power': ['{intelligence}'], 'cooldown': 10}, 'helpText': 'Cast a spell to restore {power} health.'}},
+    'reflect': {'name': 'Reflect', 'bonuses': {'+intelligence': 10}, 'action':
+            {'type': 'reflect', 'tags': ['spell'], 'stats': {'power': ['{intelligence}'], 'cooldown': 20},
+            'helpText': 'Create a magical barrier that will reflect projectile attacks until it breaks after taking {power} damage. Further casting strengthens the barrier.'}},
     'revive': {'name': 'Revive', 'bonuses': {'+intelligence': 10}, 'reaction':
-            {'type': 'revive', 'tags': ['spell'], 'stats': {'amount': ['{intelligence}'], 'cooldown': 120},
-            'helpText': 'Upon receiving a lethal blow, cast a spell that brings you back to life with {amount} health.'}},
+            {'type': 'revive', 'tags': ['spell'], 'stats': {'power': ['{intelligence}'], 'cooldown': 120},
+            'helpText': 'Upon receiving a lethal blow, cast a spell that brings you back to life with {power} health.'}},
     'reviveInstantCooldown': {'name': 'Miracle', 'bonuses': {'$revive:skill:instantCooldown': 'Reset cooldowns of other abilities'}},
     'reviveInvulnerability': {'name': 'Halo', 'bonuses': {'$revive:skill:buff': {'duration': 2, '$invulnerable': 'Invulnerability'}}},
     // Tier 2 classes
@@ -115,7 +115,7 @@ var abilities = {
     // Monster abilities
     'summoner': {'bonuses': {'*minion:skill:limit': 2, '*minion:skill:cooldown': .5, '*minion:skill:healthBonus': 2, '*minion:skill:damageBonus': 2}}
 };
-var testAbilities = [];
+var testAbilities = [abilities.reflect];
 $.each(abilities, function (key, ability) {
     ability.key = key;
     if (ability.action) {
