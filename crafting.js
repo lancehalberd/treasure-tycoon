@@ -179,7 +179,6 @@ $('.js-craftItem').on('click', function () {
     // This is used to determine what proportion of the crafting weight goes to which item.
     var totalCraftingWeight = 0;
     itemsFilteredByType.forEach(function (item) {
-        if (item === craftedItem) return;
         totalCraftingWeight += item.level * item.level * 5;
     });
     // Remove crafting weight from the crafted item and distribute it out proportionally
@@ -191,7 +190,6 @@ $('.js-craftItem').on('click', function () {
     itemsFilteredByType.forEach(function (item) {
         item.craftingWeight += distributedCraftingWeight * item.level * item.level * 5 / totalCraftingWeight;
     });
-    craftedItem.craftingWeight /= 2;
     updateSelectedCraftingWeight();
     var item = makeItem(craftedItem, craftingLevel);
     // Rolling a plain item has a chance to create a unique if one exists for
