@@ -50,6 +50,8 @@ var abilities = {
             {'type': 'deflect', 'stats': {'attackPower': [.5, '+', ['{strength}', '/', 100]], 'cooldown': ['20', '*', [100, '/', [100, '+', '{dexterity}']]], 'chance': 1}, 'helpText': 'Deflect ranged attacks back at enemies.'}},
     'plunder': {'name': 'Plunder', 'bonuses': {'+dexterity': 5, '+strength': 10}, 'action':
             {'type': 'plunder', 'stats': {'range': 2, 'count': 1, 'duration': ['{strength}', '/', 10], 'cooldown': ['40', '*', [100, '/', [100, '+', '{dexterity}']]]}, 'helpText': 'Steal an enemies enchantment for yourself.'}},
+    'deepPockets': {'name': 'Deep Pockets', 'bonuses': {'+dexterity': 10, '+plunder:skill:count': 1}, 'helpText': 'Steal an additional enchantment when you use plunder.'},
+    'robBlind': {'name': 'Rob Blind', 'bonuses': {'+strength': 10, '+plunder:skill:count': 2}, 'helpText': 'Steal two additional enchantments when you use plunder.'},
     // Paladin
     'protect': {'name': 'Protect', 'bonuses': {'+intelligence': 5}, 'action':
             {'type': 'buff', 'target': 'self', 'stats': {'cooldown': 30, 'buff': {'stats': {'+armor': ['{intelligence}'], 'duration': 20}}}, 'helpText': 'Create a magic barrier that grants: {buff}'}},
@@ -117,7 +119,7 @@ var abilities = {
     // Monster abilities
     'summoner': {'bonuses': {'*minion:skill:limit': 2, '*minion:skill:cooldown': .5, '*minion:skill:healthBonus': 2, '*minion:skill:damageBonus': 2}}
 };
-var testAbilities = [abilities.plunder];
+var testAbilities = [];
 $.each(abilities, function (key, ability) {
     ability.key = key;
     if (ability.action) {
