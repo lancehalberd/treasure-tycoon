@@ -228,6 +228,7 @@ function performAttack(attacker, attack, target) {
     var attackStats = createAttackStats(attacker, attack);
     attacker.attackCooldown = attacker.time + 1 / (attackStats.attack.attackSpeed * Math.max(.1, (1 - attacker.slow)));
     performAttackProper(attackStats, target);
+    return attackStats;
 }
 function performAttackProper(attackStats, target) {
     var attacker = attackStats.source;

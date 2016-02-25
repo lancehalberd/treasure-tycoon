@@ -234,6 +234,10 @@ function processStatusEffects(character, target, delta) {
         }
     }
     if (ifdefor(target.pull) && target.pull.delay < target.time) {
+        if (target.pull.attackStats) {
+            performAttackProper(target.pull.attackStats, target);
+            target.pull.attackStats = null;
+        }
         var timeLeft = (target.pull.time - target.time);
         if (timeLeft > 0) {
             var dx = (target.pull.x - target.x) * Math.min(1, delta / timeLeft);

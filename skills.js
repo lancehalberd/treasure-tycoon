@@ -56,9 +56,12 @@ var abilities = {
     'protect': {'name': 'Protect', 'bonuses': {'+intelligence': 5}, 'action':
             {'type': 'buff', 'target': 'self', 'stats': {'cooldown': 30, 'buff': {'stats': {'+armor': ['{intelligence}'], 'duration': 20}}}, 'helpText': 'Create a magic barrier that grants: {buff}'}},
     'banishingStrike': {'name': 'Banishing Strike', 'bonuses': {'+intelligence': 5, '+strength': 5}, 'action':
-            {'type': 'banish', 'restrictions': ['melee'], 'stats': {'cooldown': 30, 'attackPower': 2, 'distance': [6, '+', ['{strength}' , '/', 20]], '$alwaysHits': 'Never misses',
+            {'type': 'banish', 'restrictions': ['melee'], 'stats': {'cooldown': 30, 'attackPower': 2, 'distance': [6, '+', ['{strength}' , '/', 20]],
+            '$alwaysHits': 'Never misses', 'purify': 0, 'shockwave': 0,
             'mainDebuff': {'stats': {'*damage': .5, '*magicDamage': .5, 'duration': ['{intelligence}', '/', 20]}},
             'otherDebuff': {'stats': {'*speed': .1, 'duration': ['{intelligence}', '/', 20]}}}, 'helpText': 'Perform a mighty strike that inflicts the enemy with: {mainDebuff} And knocks all other enemies away, slowing them.'}},
+    'purify': {'name': 'Purify', 'bonuses': {'+intelligence': 10, '+banishingStrike:skill:purify': 4}, 'helpText': 'Remove all enchantments from enemies hit by banishing strike'},
+    'shockwave': {'name': 'Shockwave', 'bonuses': {'+strength': 10, '+banishingStrike:skill:shockwave': 1}, 'helpText': 'Banishing strike also damages knocked back enemies'},
     // Dancer
     'dancer': {'name': 'Dancing', 'bonuses': {'+evasion': 3}, 'reaction':
             {'type': 'evadeAndCounter', 'stats': {'$alwaysHits': 'Never misses', 'range': 1}, 'helpText': 'Counter whenever you successfully evade an attack.'}},

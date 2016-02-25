@@ -436,9 +436,15 @@ skillDefinitions.banish = {
         return target && !target.cloaked;
     },
     use: function (actor, banishSkill, target) {
-        performAttack(actor, banishSkill, target);
+        var attackStats = performAttack(actor, banishSkill, target);
         if (ifdefor(banishSkill.mainDebuff)) {
             addTimedEffect(target, banishSkill.mainDebuff);
+        }
+        // The purify upgrade removes all enchantments from a target.
+        if (banishSkill.purify && target.prefixes.length + target.suffixes.length > 0) {
+            target.prefixes = [];
+            target.suffixes = [];
+            updateMonster(target);
         }
         actor.enemies.forEach(function (enemy) {
             if (enemy === target) {
@@ -446,7 +452,14 @@ skillDefinitions.banish = {
             }
             var distance = getDistance(actor, enemy);
             if (distance < 32 * banishSkill.distance) {
+                // Adding the delay here creates a shockwave effect where the enemies
+                // all get pushed from a certain point at the same time, rather than
+                // them all immediately moving towards the point initially.
                 enemy.pull = {'x': actor.x + actor.direction * (64 + 32 * banishSkill.distance), 'delay': enemy.time + distance * .02 / 32, 'time': enemy.time + banishSkill.distance * .02, 'damage': 0};
+                // The shockwave upgrade applies the same damage to the targets hit by the shockwave.
+                if (banishSkill.shockwave) {
+                    enemy.pull.attackStats = attackStats;
+                }
             }
             if (ifdefor(banishSkill.otherDebuff)) {
                 addTimedEffect(enemy, banishSkill.otherDebuff);
