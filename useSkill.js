@@ -27,18 +27,20 @@ function useSkill(actor, skill, target) {
             return false;
         }
     }
-    // Action skills have targets and won't activate if that target is out of range.
-    if (actionIndex >= 0 && getDistance(actor, target) > skill.range * 32) {
-        return false;
-    }
-    if (ifdefor(skill.base.target) === 'self' && actor !== target) {
-        return false;
-    }
-    if (ifdefor(skill.base.target) === 'allies' && actor.allies.indexOf(target) < 0) {
-        return false;
-    }
-    if (ifdefor(skill.base.target, 'enemies') === 'enemies' && actor.enemies.indexOf(target) < 0) {
-        return false;
+    // Action skills have targets and won't activate if that target is out of range or not of the correct type.
+    if (actionIndex >= 0) {
+        if (getDistance(actor, target) > skill.range * 32) {
+            return false;
+        }
+        if (ifdefor(skill.base.target) === 'self' && actor !== target) {
+            return false;
+        }
+        if (ifdefor(skill.base.target) === 'allies' && actor.allies.indexOf(target) < 0) {
+            return false;
+        }
+        if (ifdefor(skill.base.target, 'enemies') === 'enemies' && actor.enemies.indexOf(target) < 0) {
+            return false;
+        }
     }
     if (!skillDefinition.isValid(actor, skill, target)) {
         return false;
@@ -98,7 +100,7 @@ skillDefinitions.attack = {
     use: function (actor, attackSkill, target) {
         performAttack(actor, attackSkill, target);
     }
-}
+};
 
 skillDefinitions.revive = {
     isValid: function (actor, reviveSkill, attackStats) {
@@ -426,5 +428,29 @@ skillDefinitions.plunder = {
             allAffixes = target.prefixes.concat(target.suffixes);
         }
         updateMonster(target);
+    }
+};
+
+skillDefinitions.banish = {
+    isValid: function (actor, banishSkill, target) {
+        return target && !target.cloaked;
+    },
+    use: function (actor, banishSkill, target) {
+        performAttack(actor, banishSkill, target);
+        if (ifdefor(banishSkill.mainDebuff)) {
+            addTimedEffect(target, banishSkill.mainDebuff);
+        }
+        actor.enemies.forEach(function (enemy) {
+            if (enemy === target) {
+                return;
+            }
+            var distance = getDistance(actor, enemy);
+            if (distance < 32 * banishSkill.distance) {
+                enemy.pull = {'x': actor.x + actor.direction * (64 + 32 * banishSkill.distance), 'delay': enemy.time + distance * .02 / 32, 'time': enemy.time + banishSkill.distance * .02, 'damage': 0};
+            }
+            if (ifdefor(banishSkill.otherDebuff)) {
+                addTimedEffect(enemy, banishSkill.otherDebuff);
+            }
+        });
     }
 };

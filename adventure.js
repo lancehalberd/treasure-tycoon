@@ -233,7 +233,7 @@ function processStatusEffects(character, target, delta) {
             break;
         }
     }
-    if (ifdefor(target.pull)) {
+    if (ifdefor(target.pull) && target.pull.delay < target.time) {
         var timeLeft = (target.pull.time - target.time);
         if (timeLeft > 0) {
             var dx = (target.pull.x - target.x) * Math.min(1, delta / timeLeft);

@@ -235,10 +235,13 @@ function bonusHelpText(rawBonuses, implicit, actor) {
         sections.push(bonuses['%damage'].percent(1) + ' increased physical damage');
     }
     if (ifdefor(bonuses['*damage'], 1) !== 1) {
-        sections.push(bonuses['*damage'].format(1) + 'x more physical damage');
+        sections.push(bonuses['*damage'].format(1) + 'x physical damage');
     }
     if (ifdefor(bonuses['%magicDamage'])) {
         sections.push(bonuses['%magicDamage'].percent(1) + ' increased magic damage');
+    }
+    if (ifdefor(bonuses['*magicDamage'], 1) !== 1) {
+        sections.push(bonuses['*magicDamage'].format(1) + 'x magic damage');
     }
     if (ifdefor(bonuses['+dexterity'])) {
         sections.push('+' + bonuses['+dexterity'].format(1) + ' Dexterity');
@@ -259,13 +262,13 @@ function bonusHelpText(rawBonuses, implicit, actor) {
         sections.push('Gain ' + bonuses['+healthGainOnHit'].format(1) + ' health on hit');
     }
     if (ifdefor(bonuses['*healthGainOnHit'], 1) !== 1) {
-        sections.push('Gain ' + bonuses['*healthGainOnHit'].format(1) + 'x more health on hit');
+        sections.push('Gain ' + bonuses['*healthGainOnHit'].format(1) + 'x health gained on hit');
     }
     if (ifdefor(bonuses['+healthRegen'])) {
         sections.push('Regenerate ' + bonuses['+healthRegen'].format(1) + ' health per second');
     }
     if (ifdefor(bonuses['*healthRegen'], 1) !== 1) {
-        sections.push('Regenerate ' + bonuses['*healthRegen'].format(1) + 'x more health per second');
+        sections.push('Regenerate ' + bonuses['*healthRegen'].format(1) + 'x health regenerated per second');
     }
     if (ifdefor(bonuses['%maxHealth'])) {
         sections.push(bonuses['%maxHealth'].percent(1) + ' increased health');

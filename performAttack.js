@@ -190,7 +190,9 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                         while (targets.length) {
                             var index = Math.floor(Math.random() * targets.length);
                             var newTarget = targets[index];
-                            if (newTarget.health <= 0 || newTarget === self.target || newTarget.cloaked) {
+                            if (newTarget.health <= 0 || newTarget === self.target || newTarget.cloaked
+                                || getDistance(self.target, newTarget) > self.attackStats.attack.range * 32
+                            ) {
                                 targets.splice(index--, 1);
                                 continue;
                             }
