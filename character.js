@@ -18,6 +18,7 @@ var allRoundedStats = ['dexterity', 'strength', 'intelligence', 'maxHealth', 'sp
      'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage'];
 
 function displayInfoMode(character) {
+    character.adventurer.percentHealth = 1;
     character.adventurer.health = character.adventurer.maxHealth;
     character.adventurer.attackCooldown = 0;
     character.adventurer.target = null;
@@ -136,7 +137,8 @@ function makeAdventurer(job, level, equipment) {
         'xpToLevel': xpToLevel(0),
         'personCanvas': personCanvas,
         'personContext': personContext,
-        'attackCooldown': 0
+        'attackCooldown': 0,
+        'percentHealth': 1
     };
     equipmentSlots.forEach(function (type) {
         adventurer.equipment[type] = null;
@@ -225,7 +227,6 @@ function updateAdventurer(adventurer) {
     adventurer.actions = [];
     adventurer.reactions = [];
     adventurer.tags = [];
-    adventurer.helptext = adventurer.name;
     if (!adventurer.equipment.weapon) {
         // Fighting unarmed is considered using a fist weapon.
         adventurer.tags = ['fist', 'melee'];
@@ -319,6 +320,17 @@ function updateActorStats(actor) {
     allRoundedStats.forEach(function (stat) {
         actor[stat] = Math.round(actor[stat]);
     });
+    var sections = [actor.name, ''];
+    ifdefor(actor.timedEffects, []).forEach(function (timedEffect) {
+        sections.push(bonusHelpText(timedEffect, false, actor));
+    });
+    ifdefor(actor.prefixes, []).forEach(function (affix) {
+        sections.push(bonusHelpText(affix.bonuses, false, actor));
+    });
+    ifdefor(actor.suffixes, []).forEach(function (affix) {
+        sections.push(bonusHelpText(affix.bonuses, false, actor));
+    });
+    actor.helptext = sections.join('<br/>');
     actor.actions.concat(actor.reactions).forEach(function (action) {
         $.each(action.base.stats, function (stat) {
             if (stat.charAt(0) === '$') {
@@ -330,6 +342,7 @@ function updateActorStats(actor) {
             action[stat] = getStatForAction(actor, action.base, stat);
         });
     });
+    actor.health = actor.percentHealth * actor.maxHealth;
     if (ifdefor(actor.isMainCharacter)) {
         refreshStatsPanel(actor.character);
     }
@@ -467,8 +480,6 @@ function gainXP(adventurer, amount) {
 function gainLevel(adventurer) {
     adventurer.level++;
     gain('fame', adventurer.level);
-    adventurer.maxHealth += 5;
-    adventurer.health = adventurer.maxHealth;
     adventurer.xp = 0;
     adventurer.xpToLevel = xpToLevel(adventurer.level);
     updateActorStats(adventurer);

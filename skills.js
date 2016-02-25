@@ -28,9 +28,9 @@ var abilities = {
     'priest': {'name': 'Divine Blessing', 'bonuses': {'*heal:power': 2, '*healthRegen': 2, '*healthGainOnHit': 2}},
     'minorIntelligence': {'name': 'Minor Intelligence', 'bonuses': {'+intelligence': 5}},
     'heal': {'name': 'Heal', 'bonuses': {'+intelligence': 5}, 'action':
-            {'type': 'heal', 'tags': ['spell'], 'stats': {'power': ['{intelligence}'], 'cooldown': 10}, 'helpText': 'Cast a spell to restore {power} health.'}},
+            {'type': 'heal', 'target': 'allies', 'tags': ['spell'], 'stats': {'power': ['{intelligence}'], 'cooldown': 10}, 'helpText': 'Cast a spell to restore {power} health.'}},
     'reflect': {'name': 'Reflect', 'bonuses': {'+intelligence': 10}, 'action':
-            {'type': 'reflect', 'tags': ['spell'], 'stats': {'power': ['{intelligence}'], 'cooldown': 20},
+            {'type': 'reflect', 'target': 'self', 'tags': ['spell'], 'stats': {'power': ['{intelligence}'], 'cooldown': 20},
             'helpText': 'Create a magical barrier that will reflect projectile attacks until it breaks after taking {power} damage. Further casting strengthens the barrier.'}},
     'revive': {'name': 'Revive', 'bonuses': {'+intelligence': 10}, 'reaction':
             {'type': 'revive', 'tags': ['spell'], 'stats': {'power': ['{intelligence}'], 'cooldown': 120},
@@ -46,11 +46,13 @@ var abilities = {
     'hookDrag': {'name': 'Barbed Wire', 'bonuses': {'+hook:skill:dragDamage': .1}},
     'hookStun': {'name': 'Tazer Wire', 'bonuses': {'+hook:skill:dragStun': .1}},
     'hookPower': {'name': 'Power Shot', 'bonuses': {'+hook:skill:rangeDamage': .1}},
-    'deflect': {'name': 'Deflect', 'bonuses': {'+dexterity': 5, '+strength': 5}, 'reaction':
+    'deflect': {'name': 'Deflect', 'bonuses': {'+dexterity': 10, '+strength': 5}, 'reaction':
             {'type': 'deflect', 'stats': {'attackPower': [.5, '+', ['{strength}', '/', 100]], 'cooldown': ['20', '*', [100, '/', [100, '+', '{dexterity}']]], 'chance': 1}, 'helpText': 'Deflect ranged attacks back at enemies.'}},
+    'plunder': {'name': 'Plunder', 'bonuses': {'+dexterity': 5, '+strength': 10}, 'action':
+            {'type': 'plunder', 'stats': {'range': 2, 'count': 1, 'duration': ['{strength}', '/', 10], 'cooldown': ['40', '*', [100, '/', [100, '+', '{dexterity}']]]}, 'helpText': 'Steal an enemies enchantment for yourself.'}},
     // Paladin
     'protect': {'name': 'Protect', 'bonuses': {'+intelligence': 5}, 'action':
-            {'type': 'buff', 'stats': {'cooldown': 30, 'buff': {'stats': {'+armor': ['{intelligence}'], 'duration': 20}}}, 'helpText': 'Create a magic barrier that grants: {buff}'}},
+            {'type': 'buff', 'target': 'self', 'stats': {'cooldown': 30, 'buff': {'stats': {'+armor': ['{intelligence}'], 'duration': 20}}}, 'helpText': 'Create a magic barrier that grants: {buff}'}},
     // Dancer
     'dancer': {'name': 'Dancing', 'bonuses': {'+evasion': 3}, 'reaction':
             {'type': 'evadeAndCounter', 'stats': {'$alwaysHits': 'Never misses', 'range': 1}, 'helpText': 'Counter whenever you successfully evade an attack.'}},
@@ -115,7 +117,7 @@ var abilities = {
     // Monster abilities
     'summoner': {'bonuses': {'*minion:skill:limit': 2, '*minion:skill:cooldown': .5, '*minion:skill:healthBonus': 2, '*minion:skill:damageBonus': 2}}
 };
-var testAbilities = [abilities.reflect];
+var testAbilities = [abilities.plunder];
 $.each(abilities, function (key, ability) {
     ability.key = key;
     if (ability.action) {

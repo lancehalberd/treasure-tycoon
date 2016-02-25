@@ -4,10 +4,11 @@ var imbuedMonsterBonuses = {'*maxHealth': 2.5, '*damage': 2.5, '*xpValue': 10, '
 var bossMonsterBonuses = {'*maxHealth': 2, '*damage': 2, '*xpValue': 4, '+coins': 2, '*coins': 4, '+anima': 1, '*anima': 4};
 var monsterPrefixes = [
     [
-        {'name': 'Hawkeye', 'bonuses': {'+accuracy': [5, 10]}}
+        {'name': 'Hawkeye', 'bonuses': {'+accuracy': [5, 10]}},
+        {'name': 'Giant', 'bonuses': {'*maxHealth': 2}}
     ],
     [
-        {'name': 'Eldritch', 'bonuses': {'+minMagicDamage': [1, 2], '*maxMagicDamage': [2, 3]}}
+        {'name': 'Eldritch', 'bonuses': {'+magicDamage': [1, 2], '*magicDamage': [2, 3]}}
     ],
     [
         {'name': 'Telekenetic', 'bonuses': {'+range': [3, 5]}}
@@ -52,7 +53,8 @@ function makeMonster(monsterData, level, extraSkills, noRarity) {
         'prefixes': [],
         'suffixes': [],
         'abilities': [],
-        'extraSkills': ifdefor(extraSkills, [])
+        'extraSkills': ifdefor(extraSkills, []),
+        'percentHealth': 1
     };
     var baseMonster;
     if (typeof(monsterData) == 'string') {
@@ -95,10 +97,8 @@ function makeMonster(monsterData, level, extraSkills, noRarity) {
             addMonsterSuffix(monster);
         }
     }
-    monster.base.health = monster.base.maxHealth;
     monster.timedEffects = [];
     updateMonster(monster);
-    monster.health = monster.maxHealth;
     return monster;
 }
 function addMonsterPrefix(monster) {
@@ -144,14 +144,14 @@ function updateMonster(monster) {
         monster.color = 'red';
         monster.image = monster.base.source.image.normal;
     }
-    var name = monster.base.name;
-    var prefixNames = [];
     monster.extraSkills.forEach(function (ability) {
         addBonusesAndActions(monster, ability);
     });
     monster.base.abilities.forEach(function (ability) {
         addBonusesAndActions(monster, ability);
     });
+    var name =  monster.base.name;
+    var prefixNames = [];
     monster.prefixes.forEach(function (affix) {
         prefixNames.push(affix.base.name);
         addBonusesAndActions(monster, affix);
@@ -167,7 +167,7 @@ function updateMonster(monster) {
     if (suffixNames.length) {
         name = name + ' of ' + suffixNames.join(' and ');
     }
-    monster.helptext = name;
+    monster.name = name;
     // Add the character's current equipment to bonuses and graphics
     equipmentSlots.forEach(function (type) {
         var equipment = ifdefor(monster.equipment[type]);

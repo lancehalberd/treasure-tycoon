@@ -252,6 +252,9 @@ function bonusHelpText(rawBonuses, implicit, actor) {
     if (ifdefor(bonuses['+maxHealth'])) {
         sections.push('+' + bonuses['+maxHealth'].format(1) + ' health');
     }
+    if (ifdefor(bonuses['*maxHealth'])) {
+        sections.push(bonuses['*maxHealth'].format(1) + 'x health');
+    }
     if (ifdefor(bonuses['+healthGainOnHit'])) {
         sections.push('Gain ' + bonuses['+healthGainOnHit'].format(1) + ' health on hit');
     }

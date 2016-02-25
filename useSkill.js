@@ -27,9 +27,23 @@ function useSkill(actor, skill, target) {
             return false;
         }
     }
+    // Action skills have targets and won't activate if that target is out of range.
+    if (actionIndex >= 0 && getDistance(actor, target) > skill.range * 32) {
+        return false;
+    }
+    if (ifdefor(skill.base.target) === 'self' && actor !== target) {
+        return false;
+    }
+    if (ifdefor(skill.base.target) === 'allies' && actor.allies.indexOf(target) < 0) {
+        return false;
+    }
+    if (ifdefor(skill.base.target, 'enemies') === 'enemies' && actor.enemies.indexOf(target) < 0) {
+        return false;
+    }
     if (!skillDefinition.isValid(actor, skill, target)) {
         return false;
     }
+
     var cdr = Math.min(.9, ifdefor(actor.cooldownReduction, 0));
     skill.readyAt = actor.time + ifdefor(skill.cooldown, 0) * (1 - cdr);
     // Show the name of the skill used if it isn't a basic attack. When skills have distinct
@@ -79,7 +93,7 @@ var skillDefinitions = {};
 
 skillDefinitions.attack = {
     isValid: function (actor, attackSkill, target) {
-        return target && !target.cloaked && getDistance(actor, target) <= attackSkill.range * 32;
+        return target && !target.cloaked;
     },
     use: function (actor, attackSkill, target) {
         performAttack(actor, attackSkill, target);
@@ -95,9 +109,10 @@ skillDefinitions.revive = {
     use: function (actor, reviveSkill, attackStats) {
         attackStats.stopped = true;
         actor.health = reviveSkill.power;
+        actor.percentHealth = actor.health / actor.maxHealth;
         actor.stunned = actor.time + .3;
         if (reviveSkill.buff) {
-            addTimedEffect(actor.character, actor, reviveSkill.buff);
+            addTimedEffect(actor, reviveSkill.buff);
         }
         if (reviveSkill.instantCooldown) {
             for(var i = 0; i < ifdefor(actor.actions, []).length; i++) {
@@ -208,11 +223,10 @@ skillDefinitions.clone = {
         clone.source = cloneSkill;
         clone.name = actor.name + ' shadow clone';
         clone.bonuses.push(getMinionSkillBonuses(cloneSkill));
+        clone.percentHealth = actor.percentHealth;
         updateActorStats(clone);
         actor.allies.push(clone);
         actor.stunned = actor.time + .3;
-        // Clone has same percent health as creator.
-        clone.health = Math.max(1, clone.maxHealth * actor.health / actor.maxHealth);
     }
 };
 
@@ -261,12 +275,14 @@ skillDefinitions.explode = {
 };
 
 skillDefinitions.heal = {
-    isValid: function (actor, healSkill, attackStats) {
+    isValid: function (actor, healSkill, target) {
+        // Only heal allies.
+        if (actor.allies.indexOf(target) < 0) return false;
         // Don't use a heal ability unless none of it will be wasted or the actor is below half life.
-        return (actor.health + healSkill.power <= actor.maxHealth) || (actor.health <= actor.maxHealth / 2);
+        return (target.health + healSkill.power <= target.maxHealth) || (target.health <= target.maxHealth / 2);
     },
-    use: function (actor, healSkill, attackStats) {
-        actor.health += healSkill.power;
+    use: function (actor, healSkill, target) {
+        target.health += healSkill.power;
         actor.stunned = actor.time + .3;
     }
 };
@@ -276,7 +292,7 @@ skillDefinitions.buff = {
         return true;
     },
     use: function (actor, buffSkill, target) {
-        addTimedEffect(actor.character, actor, buffSkill.buff);
+        addTimedEffect(actor, buffSkill.buff);
         actor.stunned = actor.time + .3;
     }
 };
@@ -295,11 +311,11 @@ skillDefinitions.dodge = {
             actor.pull = {'x': actor.x + actor.direction * dodgeSkill.distance, 'time': actor.time + ifdefor(dodgeSkill.moveDuration, .3), 'damage': 0};
         }
         if (ifdefor(dodgeSkill.buff)) {
-            addTimedEffect(actor.character, actor, dodgeSkill.buff);
+            addTimedEffect(actor, dodgeSkill.buff);
         }
         if (ifdefor(dodgeSkill.globalDebuff)) {
             actor.enemies.forEach(function (enemy) {
-                addTimedEffect(actor.character, enemy, dodgeSkill.globalDebuff);
+                addTimedEffect(enemy, dodgeSkill.globalDebuff);
             });
         }
     }
@@ -317,11 +333,11 @@ skillDefinitions.smokeBomb = {
             actor.pull = {'x': actor.x + actor.direction * ifdefor(smokeBombSkill.distance, 64), 'time': actor.time + ifdefor(dodgeSkill.moveDuration, .3), 'damage': 0};
         }
         if (ifdefor(smokeBombSkill.buff)) {
-            addTimedEffect(actor.character, actor, smokeBombSkill.buff);
+            addTimedEffect(actor, smokeBombSkill.buff);
         }
         if (ifdefor(smokeBombSkill.globalDebuff)) {
             actor.enemies.forEach(function (enemy) {
-                addTimedEffect(actor.character, enemy, smokeBombSkill.globalDebuff);
+                addTimedEffect(enemy, smokeBombSkill.globalDebuff);
             });
         }
     }
@@ -334,7 +350,7 @@ skillDefinitions.counterAttack = {
         // Can only counter attack if the target is in range, and the chance to
         // counter attack is reduced by a factor of the distance.
         return distance <= counterAttackSkill.range * 32
-            && Math.random() < counterAttackSkill.chance * Math.min(1, 32 / getDistance(actor, attackStats.source));
+            && Math.random() < counterAttackSkill.chance * Math.min(1, 32 / distance);
     },
     use: function (actor, counterAttackSkill, attackStats) {
         performAttack(actor, counterAttackSkill, attackStats.source);
@@ -384,11 +400,31 @@ skillDefinitions.mimic = {
 };
 
 skillDefinitions.reflect = {
-    isValid: function (actor, reflectSkill, attackStats) {
+    isValid: function (actor, reflectSkill, target) {
         return true;
     },
-    use: function (actor, reflectSkill, attackStats) {
+    use: function (actor, reflectSkill, target) {
         actor.reflectBarrier = ifdefor(actor.reflectBarrier, 0) + reflectSkill.power;
         actor.maxReflectBarrier = actor.reflectBarrier;
+    }
+};
+
+skillDefinitions.plunder = {
+    isValid: function (actor, plunderSkill, target) {
+        return ifdefor(target.prefixes, []).length + ifdefor(target.suffixes, []).length;
+    },
+    use: function (actor, plunderSkill, target) {
+
+        var allAffixes = target.prefixes.concat(target.suffixes);
+        for (var i = 0; i < plunderSkill.count && allAffixes.length; i++) {
+            var affix = Random.element(allAffixes);
+            if (target.prefixes.indexOf(affix) >= 0) target.prefixes.splice(target.prefixes.indexOf(affix), 1);
+            if (target.suffixes.indexOf(affix) >= 0) target.suffixes.splice(target.suffixes.indexOf(affix), 1);
+            var bonuses = affix.bonuses;
+            bonuses['duration'] = plunderSkill.duration;
+            addTimedEffect(actor, bonuses);
+            allAffixes = target.prefixes.concat(target.suffixes);
+        }
+        updateMonster(target);
     }
 };

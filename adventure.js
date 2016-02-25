@@ -9,6 +9,7 @@ function startArea(character, index) {
     character.adventurer.stunned = 0;
     character.adventurer.pull = null;
     character.adventurer.timedEffects = [];
+    character.adventurer.percentHealth = 1;
     character.adventurer.health = character.adventurer.maxHealth;
     character.adventurer.time = 0;
     character.finishTime = false;
@@ -68,6 +69,7 @@ function timeStopLoop(character, delta) {
     runActorLoop(character, actor);
     moveActor(actor, delta);
     actor.health = Math.min(actor.maxHealth, Math.max(0, actor.health));
+    actor.percentHealth = actor.health / actor.maxHealth;
     return true;
 }
 function checkToStartNextWave(character) {
@@ -142,6 +144,7 @@ function adventureLoop(character, delta) {
     });
     everybody.forEach(function (actor) {
         actor.health = Math.min(actor.maxHealth, Math.max(0, actor.health));
+        actor.percentHealth = actor.health / actor.maxHealth;
     });
     for (var i = 0; i < character.projectiles.length; i++) {
         character.projectiles[i].update(character);
@@ -179,7 +182,7 @@ function expireTimedEffects(character, actor) {
         updateActorStats(actor);
     }
 }
-function addTimedEffect(character, actor, effect) {
+function addTimedEffect(actor, effect) {
     effect = copy(effect);
     effect.expirationTime = actor.time + effect.duration;
     actor.timedEffects.push(effect);
@@ -254,19 +257,32 @@ function processStatusEffects(character, target, delta) {
 }
 function runActorLoop(character, actor) {
     if (actor.stunned) return;
-    var targets = actor.enemies.slice();
-    // The main purpose of this is to prevent pulled actors from passing through their enemies.
-    actor.blocked = false; // Character is assumed to not be blocked each frame
-    if (actor.target) {
-        var index = targets.indexOf(actor.target);
-        if (index >= 0) {
-            targets.splice(index, 1);
-            targets.unshift(actor.target);
-        }
+    var targets = [];
+    for (var i = 0; i < actor.allies.length; i++) {
+        var target = actor.allies[i];
+        target.priority = getDistance(actor, target) - 1000;
+        targets.push(target);
     }
+    actor.blocked = false;
+    for (var i = 0; i < actor.enemies.length; i++) {
+        var target = actor.enemies[i];
+        target.priority = getDistance(actor, target);
+        actor.blocked = actor.blocked || target.priority <= 0; // block the actor if a target is too close
+        if (target === actor.target) {
+            target.priority -= 100;
+        }
+        targets.push(target);
+    }
+    // An actor that is being pulled cannot perform any actions.
+    if (actor.pull) {
+        actor.cloaked = (actor.cloaking && !actor.blocked && !actor.target);
+        return;
+    }
+    // The main purpose of this is to prevent pulled actors from passing through their enemies.
+     // Character is assumed to not be blocked each frame
     // Target the enemy closest to you, not necessarily the one previously targeted.
     targets.sort(function (A, B) {
-        return actor.direction * (A.x - B.x);
+        return A.priority - B.priority;
     });
     // Don't choose a new target until
     if (ifdefor(actor.attackCooldown, 0) > actor.time) {
@@ -275,22 +291,17 @@ function runActorLoop(character, actor) {
     actor.target = null;
     for (var i = 0; i < targets.length; i++) {
         var target = targets[i];
-        var distance = Math.abs(target.x - actor.x) - 64; // 64 is the width of the character
-        actor.blocked = actor.blocked || distance <= 0; // block the actor if a target is too close
-        // Don't check to attack if the character is disabled, already has a
-        if (actor.pull || actor.target) {
-            continue;
-        }
         // Returns true if the actor chose an action. May actually take an action
         // that doesn't target an enemy, but that's okay, we set target anyway
         // to indicate that he has acted this frame.
-        if (checkToAttackTarget(character, actor, target)) {
+        if (checkToUseSkillOnTarget(character, actor, target)) {
             actor.target = target;
+            break;
         }
     }
     actor.cloaked = (actor.cloaking && !actor.blocked && !actor.target);
 }
-function checkToAttackTarget(character, actor, target) {
+function checkToUseSkillOnTarget(character, actor, target) {
     for(var i = 0; i < ifdefor(actor.actions, []).length; i++) {
         if (useSkill(actor, actor.actions[i], target, false)) {
             return true;
