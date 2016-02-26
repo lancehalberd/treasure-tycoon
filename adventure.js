@@ -421,7 +421,7 @@ function drawMonster(character, monster, index) {
     if (monster.cloaked) {
         context.globalAlpha = .2;
     }
-    if (source.flipped && monster.direction < 0) {
+    if ((source.flipped && monster.direction < 0) || (!source.flipped && monster.direction > 0)) {
         context.translate((monster.x - cameraX + source.width), 0);
         context.scale(-1, 1);
         context.drawImage(monster.image, frame * source.width + source.offset, 0 , source.width, 64,

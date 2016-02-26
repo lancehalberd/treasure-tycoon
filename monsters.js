@@ -1,7 +1,7 @@
 
 var enchantedMonsterBonuses = {'*maxHealth': 1.5, '*damage': 1.5, '*xpValue': 3, '*coins': 2, '*anima': 3};
 var imbuedMonsterBonuses = {'*maxHealth': 2.5, '*damage': 2.5, '*xpValue': 10, '*coins': 6, '*anima': 10};
-var bossMonsterBonuses = {'*maxHealth': 2, '*damage': 2, '*xpValue': 4, '+coins': 2, '*coins': 4, '+anima': 1, '*anima': 4};
+var bossMonsterBonuses = {'*maxHealth': 2, '*damage': 2, '*xpValue': 4, '+coins': 2, '*coins': 4, '+anima': 1, '*anima': 4, '$uncontrollable': 'Cannot be controlled.'};
 var monsterPrefixes = [
     [
         {'name': 'Hawkeye', 'bonuses': {'+accuracy': [5, 10]}},

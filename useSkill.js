@@ -95,7 +95,7 @@ var skillDefinitions = {};
 
 skillDefinitions.attack = {
     isValid: function (actor, attackSkill, target) {
-        return target && !target.cloaked;
+        return !target.cloaked;
     },
     use: function (actor, attackSkill, target) {
         performAttack(actor, attackSkill, target);
@@ -435,7 +435,7 @@ skillDefinitions.plunder = {
 
 skillDefinitions.banish = {
     isValid: function (actor, banishSkill, target) {
-        return target && !target.cloaked;
+        return !target.cloaked;
     },
     use: function (actor, banishSkill, target) {
         var attackStats = performAttack(actor, banishSkill, target);
@@ -467,5 +467,20 @@ skillDefinitions.banish = {
                 }
             }
         });
+    }
+};
+
+skillDefinitions.charm = {
+    isValid: function (actor, charmSkill, target) {
+        return !target.cloaked && !target.uncontrollable;
+    },
+    use: function (actor, charmSkill, target) {
+        target.allies = actor.allies;
+        target.enemies = actor.enemies;
+        target.speed = Math.max(actor.speed + 20, actor.speed);
+        actor.enemies.splice(actor.enemies.indexOf(target), 1);
+        actor.allies.push(target);
+        target.direction = actor.direction;
+        actor.stunned = actor.time + 1;
     }
 };
