@@ -280,8 +280,8 @@ function applyAttackToTarget(attackStats, target) {
         }
     }
     // Apply block reduction
-    var blockRoll = Random.range(0, target.block);
-    var magicBlockRoll = Random.range(0, target.magicBlock);
+    var blockRoll = Math.round((target.maxBlock ? 1 : Math.random()) * target.block);
+    var magicBlockRoll = Math.round((target.maxMagicBlock ? 1 : Math.random()) * target.magicBlock);
     damage = Math.max(0, damage - blockRoll);
     magicDamage = Math.max(0, magicDamage - magicBlockRoll);
     // Apply armor and magic resistance mitigation

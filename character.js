@@ -394,6 +394,9 @@ function getStat(actor, stat) {
             if (ifdefor(bonus['$' + key])) {
                 specialValue = evaluateValue(actor, bonus['$' + key]);
             }
+            if (ifdefor(bonus[key])) {
+                specialValue = evaluateValue(actor, bonus[key]);
+            }
         });
     });
     if (specialValue) {
@@ -406,6 +409,10 @@ function getStatForAction(actor, dataObject, stat) {
     var base = evaluateValue(actor, ifdefor(dataObject.stats[stat], 0)), plus = 0, percent = 1, multiplier = 1, specialValue = ifdefor(dataObject.stats['$' + stat], false);
     if (typeof base === 'object' && base.constructor != Array) {
         var subObject = {};
+        if (!base.stats) {
+            console.log(base);
+            throw new Error("Found buff with undefined stats");
+        }
         $.each(base.stats, function (key, value) {
             if (key.charAt(0) === '$') {
                 key = key.substring(1);
@@ -433,6 +440,9 @@ function getStatForAction(actor, dataObject, stat) {
             multiplier *= evaluateValue(actor, ifdefor(bonus['*' + key], 1));
             if (ifdefor(bonus['$' + key])) {
                 specialValue = evaluateValue(actor, bonus['$' + key]);
+            }
+            if (ifdefor(bonus[key])) {
+                specialValue = evaluateValue(actor, bonus[key]);
             }
         });
     });

@@ -322,24 +322,26 @@ skillDefinitions.dodge = {
         }
     }
 };
-skillDefinitions.smokeBomb = {
-    isValid: function (actor, smokeBombSkill, attackStats) {
+// Counters with the skill if the player would receive more than half their remaining health in damage
+skillDefinitions.criticalCounter = {
+    isValid: function (actor, counterSkill, attackStats) {
         if (attackStats.evaded) return false;
         // Cast stop only when the incoming hit would deal more than half of the
         // character's remaining health in damage.
         return ifdefor(attackStats.totalDamage, 0) >= actor.health / 2;
     },
-    use: function (actor, smokeBombSkill, attackStats) {
-        attackStats.dodged = true;
-        if (ifdefor(smokeBombSkill.distance)) {
-            actor.pull = {'x': actor.x + actor.direction * ifdefor(smokeBombSkill.distance, 64), 'time': actor.time + ifdefor(dodgeSkill.moveDuration, .3), 'damage': 0};
+    use: function (actor, counterSkill, attackStats) {
+        if (counterSkill.dodgeAttack) attackStats.dodged = true;
+        if (counterSkill.stopAttack) attackStats.stopped = true;
+        if (ifdefor(counterSkill.distance)) {
+            actor.pull = {'x': actor.x + actor.direction * ifdefor(counterSkill.distance, 64), 'time': actor.time + ifdefor(counterSkill.moveDuration, .3), 'damage': 0};
         }
-        if (ifdefor(smokeBombSkill.buff)) {
-            addTimedEffect(actor, smokeBombSkill.buff);
+        if (ifdefor(counterSkill.buff)) {
+            addTimedEffect(actor, counterSkill.buff);
         }
-        if (ifdefor(smokeBombSkill.globalDebuff)) {
+        if (ifdefor(counterSkill.globalDebuff)) {
             actor.enemies.forEach(function (enemy) {
-                addTimedEffect(enemy, smokeBombSkill.globalDebuff);
+                addTimedEffect(enemy, counterSkill.globalDebuff);
             });
         }
     }
@@ -460,9 +462,9 @@ skillDefinitions.banish = {
                 if (banishSkill.shockwave) {
                     enemy.pull.attackStats = attackStats;
                 }
-            }
-            if (ifdefor(banishSkill.otherDebuff)) {
-                addTimedEffect(enemy, banishSkill.otherDebuff);
+                if (ifdefor(banishSkill.otherDebuff)) {
+                    addTimedEffect(enemy, banishSkill.otherDebuff);
+                }
             }
         });
     }

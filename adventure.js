@@ -28,6 +28,7 @@ function startArea(character, index) {
     character.adventurer.actions.concat(character.adventurer.reactions).forEach(function (action) {
         action.readyAt = 0;
     });
+    updateActorStats(character.adventurer);
     drawAdventure(character);
     character.$panel.find('.js-infoMode').hide();
     character.$panel.find('.js-adventureMode').show();
