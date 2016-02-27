@@ -289,12 +289,17 @@ skillDefinitions.heal = {
     }
 };
 
-skillDefinitions.buff = {
-    isValid: function (actor, buffSkill, target) {
+skillDefinitions.effect = {
+    isValid: function (actor, effectSkill, target) {
         return true;
     },
-    use: function (actor, buffSkill, target) {
-        addTimedEffect(actor, buffSkill.buff);
+    use: function (actor, effectSkill, target) {
+        if (effectSkill.buff) {
+            addTimedEffect(target, effectSkill.buff);
+        }
+        if (effectSkill.debuff) {
+            addTimedEffect(target, effectSkill.debuff);
+        }
         actor.stunned = actor.time + .3;
     }
 };

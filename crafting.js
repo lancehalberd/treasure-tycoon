@@ -246,7 +246,12 @@ function checkToShowCraftingToopTip() {
     }
     var sections;
     if (overCraftingItem.crafted) {
-        sections = [overCraftingItem.name, 'Requires level ' + overCraftingItem.level, ''];
+        sections = [overCraftingItem.name];
+        if (overCraftingItem.tags) {
+            sections.push(overCraftingItem.tags.map(tagToDisplayName).join(', '));
+        }
+        sections.push('Requires level ' + overCraftingItem.level);
+        sections.push('');
         sections.push(bonusHelpText(overCraftingItem.bonuses, true, null));
         if (ifdefor(overCraftingItem.craftedUnique)) {
             sections.push(tag('div', 'uniqueText', 'Unique Variant: </br>' + overCraftingItem.unique.displayName + '<br/>' + (100 * overCraftingItem.unique.chance).format(1) + '% chance'));

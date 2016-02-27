@@ -54,7 +54,7 @@ var abilities = {
     'robBlind': {'name': 'Rob Blind', 'bonuses': {'+strength': 10, '+plunder:skill:count': 2}, 'helpText': 'Steal two additional enchantments when you use plunder.'},
     // Paladin
     'protect': {'name': 'Protect', 'bonuses': {'+intelligence': 5}, 'action':
-            {'type': 'buff', 'target': 'self', 'stats': {'cooldown': 30, 'buff': {'stats': {'+armor': ['{intelligence}'], 'duration': 20}}}, 'helpText': 'Create a magic barrier that grants: {buff}'}},
+            {'type': 'effect', 'target': 'self', 'stats': {'cooldown': 30, 'buff': {'stats': {'+armor': ['{intelligence}'], 'duration': 20}}}, 'helpText': 'Create a magic barrier that grants: {buff}'}},
     'banishingStrike': {'name': 'Banishing Strike', 'bonuses': {'+intelligence': 5, '+strength': 5}, 'action':
             {'type': 'banish', 'restrictions': ['melee'], 'stats': {'cooldown': 30, 'attackPower': 2, 'distance': [6, '+', ['{strength}' , '/', 20]],
             '$alwaysHits': 'Never misses', 'purify': 0, 'shockwave': 0,
@@ -83,6 +83,9 @@ var abilities = {
     //'petFood': {'name': 'Pet Food', 'bonuses': {'+pet:skill:cooldown': -3, '+pet:skill:healthBonus': 1}, 'helpText': 'Pet has 50% more health and can be called more frequently.'},
     //'petTraining': {'name': 'Pet Training', 'next': ['whistle'], 'bonuses': {'+pet:skill:cooldown': -3, '+pet:skill:damageBonus': .5}, 'helpText': 'Pet deals 50% more damage and can be called more frequently.'},
     //'whistle': {'name': 'Whistle', 'bonuses': {'+pet:skill:cooldown': -10}, 'helpText': 'Greatly reduces the cooldown for calling your pet.'},
+    'net': {'name': 'Net Trap', 'action': {'type': 'effect',
+                    'stats': {'cooldown': 10, 'range': 10, '$alwaysHits': 'Never misses', 'debuff': {'stats': {'*speed': 0, 'duration': 3}}},
+                    'helpText': 'Throw a net to ensnare a distant enemy.'}},
     // Warrior
     'ferocity': {'name': 'Ferocity', 'bonuses': {'%damage': .2}},
     // Wizard
