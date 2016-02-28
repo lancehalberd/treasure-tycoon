@@ -156,20 +156,18 @@ skillDefinitions.minion = {
         return count < minionSkill.limit;
     },
     use: function (actor, minionSkill, target) {
-        var monsterData = {
-            'key': minionSkill.base.monsterKey,
-            'bonuses': getMinionSkillBonuses(minionSkill)
-        }
         actor.pull = {'x': actor.x - actor.direction * 64, 'time': actor.time + .3, 'damage': 0};
-        var newMonster = makeMonster(monsterData, actor.level, [], true);
+        var newMonster = makeMonster({'key': minionSkill.base.monsterKey}, actor.level, [], true);
         newMonster.x = actor.x + actor.direction * 32;
         newMonster.character = actor.character;
         newMonster.direction = actor.direction;
-        newMonster.speed = Math.max(actor.speed + 5, newMonster.speed);
         newMonster.source = minionSkill;
         newMonster.allies = actor.allies;
         newMonster.enemies = actor.enemies;
         newMonster.time = 0;
+        newMonster.bonuses.push(getMinionSpeedBonus(actor, newMonster));
+        newMonster.bonuses.push(getMinionSkillBonuses(minionSkill));
+        updateActorStats(newMonster);
         actor.allies.push(newMonster);
         actor.stunned = actor.time + .3;
     }
@@ -183,15 +181,13 @@ function cloneActor(actor) {
         clone.equipment = actor.equipment;
         updateAdventurer(clone);
     } else {
-        var monsterData = {'key': actor.base.key};
-        clone = makeMonster(monsterData, actor.level, [], true);
+        clone = makeMonster({'key': actor.base.key}, actor.level, [], true);
     }
     clone.bonuses = actor.bonuses.slice();
     actor.pull = {'x': actor.x - actor.direction * 64, 'time': actor.time + .3, 'damage': 0};
     clone.x = actor.x + actor.direction * 32;
     clone.character = actor.character;
     clone.direction = actor.direction;
-    clone.speed = Math.max(actor.speed + 5, clone.speed);
     clone.allies = actor.allies;
     clone.enemies = actor.enemies;
     clone.stunned = 0;
@@ -211,6 +207,9 @@ function getMinionSkillBonuses(minionSkill) {
             '*attackSpeed': ifdefor(minionSkill.attackSpeedBonus, 1),
             '*speed': ifdefor(minionSkill.speedBonus, 1)};
 }
+function getMinionSpeedBonus(actor, minion) {
+    return {'+speed': Math.max(5, actor.speed + 5 - minion.speed)};
+}
 
 skillDefinitions.clone = {
     isValid: function (actor, cloneSkill, attackStats) {
@@ -224,6 +223,7 @@ skillDefinitions.clone = {
         var clone = cloneActor(actor);
         clone.source = cloneSkill;
         clone.name = actor.name + ' shadow clone';
+        clone.bonuses.push(getMinionSpeedBonus(actor, clone));
         clone.bonuses.push(getMinionSkillBonuses(cloneSkill));
         clone.percentHealth = actor.percentHealth;
         updateActorStats(clone);
@@ -244,6 +244,7 @@ skillDefinitions.decoy = {
         var clone = cloneActor(actor);
         clone.source = decoySkill;
         clone.name = actor.name + ' decoy';
+        clone.bonuses.push(getMinionSpeedBonus(actor, clone));
         clone.bonuses.push(getMinionSkillBonuses(decoySkill));
         addBonusesAndActions(clone, abilities.explode);
         updateActorStats(clone);
@@ -291,11 +292,18 @@ skillDefinitions.heal = {
 
 skillDefinitions.effect = {
     isValid: function (actor, effectSkill, target) {
-        return true;
+        return actor.allies.length > 1;
     },
     use: function (actor, effectSkill, target) {
         if (effectSkill.buff) {
             addTimedEffect(target, effectSkill.buff);
+        }
+        // Ranger's Sic 'em ability buffs all allies but not the actor.
+        if (effectSkill.allyBuff) {
+            for (var i = 0; i < actor.allies.length; i++) {
+                if (actor.allies[i] === actor) continue;
+                addTimedEffect(actor.allies[i], effectSkill.allyBuff);
+            }
         }
         if (effectSkill.debuff) {
             addTimedEffect(target, effectSkill.debuff);
@@ -482,7 +490,8 @@ skillDefinitions.charm = {
     use: function (actor, charmSkill, target) {
         target.allies = actor.allies;
         target.enemies = actor.enemies;
-        target.speed = Math.max(actor.speed + 20, actor.speed);
+        target.bonuses.push(getMinionSpeedBonus(actor, target));
+        updateActorStats(target);
         actor.enemies.splice(actor.enemies.indexOf(target), 1);
         actor.allies.push(target);
         target.direction = actor.direction;

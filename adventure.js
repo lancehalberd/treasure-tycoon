@@ -234,7 +234,7 @@ function processStatusEffects(character, target, delta) {
             break;
         }
     }
-    if (ifdefor(target.pull) && target.pull.delay < target.time) {
+    if (ifdefor(target.pull) && ifdefor(target.pull.delay, 0) < target.time) {
         if (target.pull.attackStats) {
             performAttackProper(target.pull.attackStats, target);
             target.pull.attackStats = null;

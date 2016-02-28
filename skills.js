@@ -78,14 +78,17 @@ var abilities = {
     'ranger': {'name': 'Taming', 'bonuses': {'*minion:healthBonus': 2, '*minion:attackSpeedBonus': 1.5, '*minion:speedBonus': 1.5}},
     'finesse':  {'name': 'Finesse', 'bonuses': {'%attackSpeed': .2}},
     'pet': {'name': 'Pet', 'action':
-            {'type': 'minion', 'tags': ['pet'], 'monsterKey': 'caterpillar', 'stats': {'limit': 1, 'cooldown': 30, 'healthBonus': 1, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1.5},
+            {'type': 'minion', 'target': 'self', 'tags': ['pet'], 'monsterKey': 'caterpillar', 'stats': {'limit': 1, 'cooldown': 30, 'healthBonus': 1, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1.5},
             'helpText': 'Call up to 1 pet to fight with you.'}},
     //'petFood': {'name': 'Pet Food', 'bonuses': {'+pet:skill:cooldown': -3, '+pet:skill:healthBonus': 1}, 'helpText': 'Pet has 50% more health and can be called more frequently.'},
     //'petTraining': {'name': 'Pet Training', 'next': ['whistle'], 'bonuses': {'+pet:skill:cooldown': -3, '+pet:skill:damageBonus': .5}, 'helpText': 'Pet deals 50% more damage and can be called more frequently.'},
     //'whistle': {'name': 'Whistle', 'bonuses': {'+pet:skill:cooldown': -10}, 'helpText': 'Greatly reduces the cooldown for calling your pet.'},
     'net': {'name': 'Net Trap', 'action': {'type': 'effect',
-                    'stats': {'cooldown': 10, 'range': 10, '$alwaysHits': 'Never misses', 'debuff': {'stats': {'*speed': 0, 'duration': 3}}},
+                    'stats': {'cooldown': 10, 'range': 10, 'debuff': {'stats': {'*speed': 0, 'duration': 3}}},
                     'helpText': 'Throw a net to ensnare a distant enemy.'}},
+    'sicem': {'name': 'Sic \'em', 'bonuses': {'+dexterity': 10}, 'action': {'type': 'effect',
+                    'stats': {'cooldown': [60, '*', [100, '/', [100, '+', '{dexterity}']]], 'range': 10, 'allyBuff': {'stats': {'*speed': 2, '*attackSpeed': 2, '*damage': 2, 'duration': 2}}},
+                    'helpText': 'Incite your allies to fiercely attack the enemy granting them: {allyBuff}'}},
     // Warrior
     'ferocity': {'name': 'Ferocity', 'bonuses': {'%damage': .2}},
     // Wizard
@@ -105,7 +108,7 @@ var abilities = {
     // Sorcerer
     'majorIntelligence': {'name': 'Major Intelligence', 'bonuses': {'+intelligence': 20}},
     'raiseDead': {'name': 'Raise Dead', 'action':
-            {'type': 'minion', 'tags': ['spell', 'skeleton'], 'monsterKey': 'skeleton', 'stats': {'limit': 1, 'cooldown': 10, 'healthBonus': .5, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1},
+            {'type': 'minion', 'target': 'self', 'tags': ['spell', 'skeleton'], 'monsterKey': 'skeleton', 'stats': {'limit': 1, 'cooldown': 10, 'healthBonus': .5, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1},
             'helpText': 'Raise a skeleton to fight for you.'}},
     // Tier 6 classes
     // Ninja
