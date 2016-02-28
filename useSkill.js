@@ -498,3 +498,14 @@ skillDefinitions.charm = {
         actor.stunned = actor.time + 1;
     }
 };
+skillDefinitions.charge = {
+    isValid: function (actor, chargeSkill, target) {
+        return !target.cloaked;
+    },
+    use: function (actor, chargeSkill, target) {
+        actor.chargeEffect = {
+            'chargeSkill': chargeSkill,
+            'distance': 0
+        };
+    }
+};

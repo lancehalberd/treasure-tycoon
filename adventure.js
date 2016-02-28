@@ -169,7 +169,12 @@ function moveActor(actor, delta) {
             if (actor.allies[i].x < actor.x) return;
         }
     }*/
-    actor.x += actor.speed * actor.direction * Math.max(0, (1 - ifdefor(actor.slow, 0))) * delta;
+    var speedBonus = 1;
+    if (actor.chargeEffect) {
+        speedBonus *= actor.chargeEffect.chargeSkill.speedBonus;
+        actor.chargeEffect.distance += speedBonus * actor.speed * Math.max(0, (1 - ifdefor(actor.slow, 0))) * delta;
+    }
+    actor.x += speedBonus * actor.speed * actor.direction * Math.max(0, (1 - ifdefor(actor.slow, 0))) * delta;
 }
 function expireTimedEffects(character, actor) {
     var changed = false;
@@ -260,6 +265,15 @@ function processStatusEffects(character, target, delta) {
         target.stunned = null;
     }
 }
+function getAllInRange(x, range, targets) {
+    var targetsInRange = [];
+    for (var i = 0; i < targets.length; i++) {
+        if (Math.abs(targets[i].x - x) <= range * 32) {
+            targetsInRange.push(targets[i]);
+        }
+    }
+    return targetsInRange
+}
 function runActorLoop(character, actor) {
     if (actor.stunned) return;
     var targets = [];
@@ -272,14 +286,29 @@ function runActorLoop(character, actor) {
     for (var i = 0; i < actor.enemies.length; i++) {
         var target = actor.enemies[i];
         target.priority = getDistance(actor, target);
-        actor.blocked = actor.blocked || target.priority <= 0; // block the actor if a target is too close
+        if (target.priority <= 0) {
+            actor.blocked = true;
+            if (actor.chargeEffect) {
+                var attackStats = createAttackStats(actor, actor.chargeEffect.chargeSkill);
+                attackStats.distance = actor.chargeEffect.distance;
+                console.log(actor.chargeEffect.chargeSkill.area);
+                var hitTargets = getAllInRange(target.x, actor.chargeEffect.chargeSkill.area, actor.enemies);
+                for (var j = 0; j < hitTargets.length; j++) {
+                    applyAttackToTarget(attackStats, hitTargets[j]);
+                }
+                actor.chargeEffect = null;
+                actor.target = target;
+                return;
+            }
+        }
         if (target === actor.target) {
             target.priority -= 100;
         }
         targets.push(target);
     }
     // An actor that is being pulled cannot perform any actions.
-    if (actor.pull) {
+    if (actor.pull || actor.chargeEffect) {
+        actor.target = null;
         actor.cloaked = (actor.cloaking && !actor.blocked && !actor.target);
         return;
     }

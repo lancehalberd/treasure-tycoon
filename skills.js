@@ -91,6 +91,10 @@ var abilities = {
                     'helpText': 'Incite your allies to fiercely attack the enemy granting them: {allyBuff}'}},
     // Warrior
     'ferocity': {'name': 'Ferocity', 'bonuses': {'%damage': .2}},
+    'charge': {'name': 'Charge', 'bonuses': {'+strength': 5}, 'action':
+        {'type': 'charge', 'stats': {'range': 15, 'attackPower': 2, 'cooldown': 30, 'speedBonus': 3, 'stun': .5, 'area': 0, 'rangeDamage': 0, '$alwaysHits': 'Never misses'}, 'helpText': 'Charge at enemies, damaging and stunning them on impact.'}},
+    'batteringRam': {'name': 'Battering Ram', 'bonuses': {'+charge:skill:rangeDamage': .1}, 'helpText': 'Charge deals more damage from further away.'},
+    'impactRadius': {'name': 'Impact Radius', 'bonuses': {'+charge:skill:area': 6}, 'helpText': 'Charge damage and stun applies to nearby enemies.'},
     // Wizard
     'resonance': {'name': 'Resonance', 'bonuses': {'%magicDamage': .2}},
     // Tier 4 classes

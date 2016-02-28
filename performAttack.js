@@ -311,8 +311,12 @@ function applyAttackToTarget(attackStats, target) {
         target.health -= totalDamage;
         hitText.value = totalDamage;
         // Some attacks pull the target towards the attacker
+        if (attack.stun) {
+            target.stunned = Math.max(ifdefor(target.stunned, 0), target.time + attack.stun);
+            hitText.value += ' stunned!';
+        }
         if (attack.pullsTarget) {
-            target.stunned = target.time + .3 + distance / 32 * ifdefor(attack.dragStun, 0);
+            target.stunned =  Math.max(ifdefor(target.stunned, 0), target.time + .3 + distance / 32 * ifdefor(attack.dragStun, 0));
             var targetX = (attacker.x > target.x) ? (attacker.x - 64) : (attacker.x + 64);
             target.pull = {'x': targetX, 'time': target.time + .3, 'damage': Math.floor(distance / 32 * damage * ifdefor(attack.dragDamage, 0))};
             attacker.pull = {'x': attacker.x, 'time': attacker.time + .3, 'damage': 0};
