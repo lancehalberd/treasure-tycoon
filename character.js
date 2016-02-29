@@ -390,6 +390,7 @@ function getStat(actor, stat) {
     actor.bonuses.concat(ifdefor(actor.timedEffects, [])).forEach(function (bonus) {
         keys.forEach(function (key) {
             plus += evaluateValue(actor, ifdefor(bonus['+' + key], 0));
+            plus -= evaluateValue(actor, ifdefor(bonus['-' + key], 0));
             percent += evaluateValue(actor, ifdefor(bonus['%' + key], 0));
             multiplier *= evaluateValue(actor, ifdefor(bonus['*' + key], 1));
             if (ifdefor(bonus['$' + key])) {
@@ -437,6 +438,7 @@ function getStatForAction(actor, dataObject, stat) {
     actor.bonuses.forEach(function (bonus) {
         keys.forEach(function (key) {
             plus += evaluateValue(actor, ifdefor(bonus['+' + key], 0));
+            plus -= evaluateValue(actor, ifdefor(bonus['-' + key], 0));
             percent += evaluateValue(actor, ifdefor(bonus['%' + key], 0));
             multiplier *= evaluateValue(actor, ifdefor(bonus['*' + key], 1));
             if (ifdefor(bonus['$' + key])) {
