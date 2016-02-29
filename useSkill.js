@@ -452,9 +452,6 @@ skillDefinitions.banish = {
     },
     use: function (actor, banishSkill, target) {
         var attackStats = performAttack(actor, banishSkill, target);
-        if (ifdefor(banishSkill.mainDebuff)) {
-            addTimedEffect(target, banishSkill.mainDebuff);
-        }
         // The purify upgrade removes all enchantments from a target.
         if (banishSkill.purify && target.prefixes.length + target.suffixes.length > 0) {
             target.prefixes = [];

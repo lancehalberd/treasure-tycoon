@@ -179,7 +179,7 @@ function moveActor(actor, delta) {
 function expireTimedEffects(character, actor) {
     var changed = false;
     for (var i = 0; i < actor.timedEffects.length; i++) {
-        if (actor.timedEffects[i].expirationTime < actor.time) {
+        if (actor.timedEffects[i].expirationTime && actor.timedEffects[i].expirationTime < actor.time) {
             actor.timedEffects.splice(i--);
             changed = true;
         }
@@ -190,7 +190,12 @@ function expireTimedEffects(character, actor) {
 }
 function addTimedEffect(actor, effect) {
     effect = copy(effect);
-    effect.expirationTime = actor.time + effect.duration;
+    // effects without duration last indefinitely.
+    if (effect.duration) {
+        effect.expirationTime = actor.time + effect.duration;
+    } else {
+        effect.expirationTime = false;
+    }
     actor.timedEffects.push(effect);
     updateActorStats(actor);
 }

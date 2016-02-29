@@ -307,6 +307,9 @@ function applyAttackToTarget(attackStats, target) {
     }
     attacker.health += ifdefor(attack.healthGainOnHit, 0);
     target.slow += ifdefor(attack.slowOnHit, 0);
+    if (ifdefor(attack.debuff)) {
+        addTimedEffect(target, attack.debuff);
+    }
     if (totalDamage > 0) {
         target.health -= totalDamage;
         hitText.value = totalDamage;

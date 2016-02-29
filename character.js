@@ -93,6 +93,7 @@ function newCharacter(job) {
     character.adventurer.abilities.push(abilities[abilityKey]);
     for (var i = 0; i < ifdefor(window.testAbilities, []).length; i++) {
         character.adventurer.abilities.push(testAbilities[i]);
+        console.log(abilityHelpText(testAbilities[i], character));
     }
     character.board = readBoardFromData(job.startingBoard, character, abilities[abilityKey], true);
     centerShapesInRectangle(character.board.fixed.map(jewelToShape).concat(character.board.spaces), rectangle(0, 0, character.boardCanvas.width, character.boardCanvas.height));
@@ -467,7 +468,13 @@ function evaluateValue(actor, value) {
         throw new Error('Expected "formula" to be an array, but value is: ' + formula);
     }
     formula = formula.slice();
-    value = evaluateValue(actor, formula.shift());
+
+    if (formula.length == 2 && formula[0] === '-') {
+        formula.shift()
+        value = -1 * evaluateValue(actor, formula.shift());
+    } else {
+        value = evaluateValue(actor, formula.shift());
+    }
     if (formula.length > 1) {
         var operator = formula.shift();
         var operand = evaluateValue(actor, formula.shift());

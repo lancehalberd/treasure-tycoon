@@ -58,8 +58,8 @@ var abilities = {
     'banishingStrike': {'name': 'Banishing Strike', 'bonuses': {'+intelligence': 5, '+strength': 5}, 'action':
             {'type': 'banish', 'restrictions': ['melee'], 'stats': {'cooldown': 30, 'attackPower': 2, 'distance': [6, '+', ['{strength}' , '/', 20]],
             '$alwaysHits': 'Never misses', 'purify': 0, 'shockwave': 0,
-            'mainDebuff': {'stats': {'*damage': .5, '*magicDamage': .5, 'duration': ['{intelligence}', '/', 20]}},
-            'otherDebuff': {'stats': {'*speed': .1, 'duration': ['{intelligence}', '/', 20]}}}, 'helpText': 'Perform a mighty strike that inflicts the enemy with: {mainDebuff} And knocks all other enemies away, slowing them.'}},
+            'debuff': {'stats': {'*damage': .5, '*magicDamage': .5, 'duration': ['{intelligence}', '/', 20]}},
+            'otherDebuff': {'stats': {'*speed': .1, 'duration': ['{intelligence}', '/', 20]}}}, 'helpText': 'Perform a mighty strike that inflicts the enemy with: {debuff} And knocks all other enemies away, slowing them.'}},
     'purify': {'name': 'Purify', 'bonuses': {'+intelligence': 10, '+banishingStrike:skill:purify': 4}, 'helpText': 'Remove all enchantments from enemies hit by banishing strike'},
     'shockwave': {'name': 'Shockwave', 'bonuses': {'+strength': 10, '+banishingStrike:skill:shockwave': 1}, 'helpText': 'Banishing strike also damages knocked back enemies'},
     'aegis': {'name': 'Aegis', 'bonuses': {'+magicBlock': 5, '+block': 10}, 'reaction':
@@ -95,6 +95,9 @@ var abilities = {
         {'type': 'charge', 'stats': {'range': 15, 'attackPower': 2, 'cooldown': 30, 'speedBonus': 3, 'stun': .5, 'area': 0, 'rangeDamage': 0, '$alwaysHits': 'Never misses'}, 'helpText': 'Charge at enemies, damaging and stunning them on impact.'}},
     'batteringRam': {'name': 'Battering Ram', 'bonuses': {'+charge:skill:rangeDamage': .1}, 'helpText': 'Charge deals more damage from further away.'},
     'impactRadius': {'name': 'Impact Radius', 'bonuses': {'+charge:skill:area': 6}, 'helpText': 'Charge damage and stun applies to nearby enemies.'},
+    'armorBreak': {'name': 'Armor Break', 'bonuses': {'+strength': 15}, 'action':
+        {'type': 'attack', 'restrictions': ['melee'], 'stats': {'attackPower': 3, 'cooldown': 30, 'stun': .5, '$alwaysHits': 'Never misses',
+        'debuff': {'stats': {'-armor': ['{strength}', '/', 2], '-block': ['{strength}', '/', 2], 'duration': 0 /* 0=forever. help text won't display as buff if duration is unset.*/}}}, 'helpText': 'Deliver a might blow that destroys the targets armor causing: {debuff}'}},
     // Wizard
     'resonance': {'name': 'Resonance', 'bonuses': {'%magicDamage': .2}},
     // Tier 4 classes
@@ -162,7 +165,6 @@ function findSpecialTraits(object) {
     })
 }
 findSpecialTraits(abilities);
-
 function abilityHelpText(ability, character) {
     var sections = [ability.name, ''];
     if (ifdefor(ability.helpText)) {

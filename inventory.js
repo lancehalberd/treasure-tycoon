@@ -152,7 +152,12 @@ function evaluateForDisplay(value, actor) {
         throw new Error('Expected "formula" to be an array, but value is: ' + JSON.stringify(fullFormula));
     }
     formula = fullFormula.slice();
-    value = evaluateForDisplay(formula.shift(), null);
+    if (formula.length == 2 && formula[0] === '-') {
+        formula.shift();
+        value = '-' + evaluateForDisplay(formula.shift(), null);
+    } else {
+        value = evaluateForDisplay(formula.shift(), null);
+    }
     if (formula.length > 1) {
         value = '(' + value + ' '+ formula.shift() + ' ' + evaluateForDisplay(formula.shift(), null) +')';
     }
@@ -202,7 +207,10 @@ function bonusHelpText(rawBonuses, implicit, actor) {
     }
     if (ifdefor(bonuses['+armor'])) {
         if (implicit) sections.push('Armor: ' + bonuses['+armor'].format(1));
-        else sections.push(bonuses['+armor'] + ' increased armor');
+        else sections.push(bonuses['+armor'].format(1) + ' increased armor');
+    }
+    if (ifdefor(bonuses['-armor'])) {
+        sections.push(bonuses['-armor'].format(1) + ' decreased armor');
     }
     if (ifdefor(bonuses['+evasion'])) {
         if (implicit) sections.push('Evasion: ' + bonuses['+evasion'].format(1));
@@ -211,6 +219,9 @@ function bonusHelpText(rawBonuses, implicit, actor) {
     if (ifdefor(bonuses['+block'])) {
         if (implicit) sections.push('Block: ' + bonuses['+block'].format(1));
         else sections.push(bonuses['+block'].format(1) + ' increased block');
+    }
+    if (ifdefor(bonuses['-block'])) {
+        sections.push(bonuses['-block'].format(1) + ' decreased block');
     }
     if (ifdefor(bonuses['+magicBlock'])) {
         if (implicit) sections.push('Magic Block: ' + bonuses['+magicBlock'].format(1));
@@ -365,6 +376,9 @@ function bonusHelpText(rawBonuses, implicit, actor) {
     if (ifdefor(bonuses['+rangeDamage'])) {
         sections.push(bonuses['+rangeDamage'].percent(1) + ' increased damage the further the attack travels');
     }
+    if (ifdefor(bonuses['+area'])) {
+        sections.push(bonuses['+area'].format(1) + ' increased area of effect');
+    }
     if (ifdefor(bonuses['+cooldown'])) {
         if (bonuses['+cooldown'] > 0) {
             sections.push('Cooldown increased by ' + bonuses['+cooldown'] + ' seconds');
@@ -384,6 +398,8 @@ function bonusHelpText(rawBonuses, implicit, actor) {
     }
     if (ifdefor(bonuses['duration'])) { // Buffs/debuffs only.
         sections.push('For ' + bonuses.duration + ' seconds');
+    }
+    if (ifdefor(bonuses['duration']) !== null) { // Buffs/debuffs only.
         return tag('div', 'buffText', sections.join('<br/>'));
     }
     return sections.join('<br/>');
