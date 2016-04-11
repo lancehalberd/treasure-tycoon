@@ -149,6 +149,25 @@ function createAttackStats(attacker, attack) {
         'damage': damage,
         'magicDamage': magicDamage,
         'accuracy': accuracy,
+        'area': ifdefor(attack.area, 0)
+    };
+}
+
+function createSpellStats(attacker, spell) {
+    var isCritical = Math.random() <= spell.critChance;
+    var magicDamage = getPower(attacker, spell);
+    if (isCritical) {
+        magicDamage *= (1 + spell.critDamage);
+    }
+    return {
+        'distance': 0,
+        'source': attacker,
+        'attack': spell,
+        'isCritical': isCritical,
+        'damage': 0,
+        'magicDamage': magicDamage,
+        'accuracy': 0,
+        'area': ifdefor(spell.area, 0)
     };
 }
 
@@ -230,6 +249,12 @@ function performAttack(attacker, attack, target) {
     performAttackProper(attackStats, target);
     return attackStats;
 }
+function castSpell(attacker, spell, target) {
+    var character = attacker.character;
+    var attackStats = createSpellStats(attacker, spell);
+    performAttackProper(attackStats, target);
+    return attackStats;
+}
 function performAttackProper(attackStats, target) {
     var attacker = attackStats.source;
     if (attackStats.attack.base.tags.indexOf('ranged') >= 0) {
@@ -244,6 +269,21 @@ function performAttackProper(attackStats, target) {
     }
 }
 function applyAttackToTarget(attackStats, target) {
+    var attack = attackStats.attack;
+    var attacker = attackStats.source;
+    if (attackStats.area > 0) {
+        var area = attackStats.area;
+        attackStats.area = 0;
+        attacker.enemies.forEach(function (enemy) {
+            if (enemy === target) {
+                return;
+            }
+            var distance = getDistance(attacker, enemy);
+            if (distance <= 32 * area) {
+                applyAttackToTarget(attackStats, enemy);
+            }
+        });
+    }
     var distance = attackStats.distance;
     var character = target.character;
     var hitText = {x: target.x + 32, y: 240 - 128, color: 'red'};
@@ -254,8 +294,6 @@ function applyAttackToTarget(attackStats, target) {
         character.textPopups.push(hitText);
         return false;
     }
-    var attack = attackStats.attack;
-    var attacker = attackStats.source;
     var multiplier = ifdefor(attack.rangeDamage) ? (1 + attack.rangeDamage * distance / 32) : 1;
     if (attackStats.isCritical) {
         hitText.color = 'yellow';

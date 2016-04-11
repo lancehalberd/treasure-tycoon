@@ -54,7 +54,7 @@ var abilities = {
     'robBlind': {'name': 'Rob Blind', 'bonuses': {'+strength': 10, '+plunder:skill:count': 2}, 'helpText': 'Steal two additional enchantments when you use plunder.'},
     // Paladin
     'protect': {'name': 'Protect', 'bonuses': {'+intelligence': 5}, 'action':
-            {'type': 'effect', 'target': 'self', 'stats': {'cooldown': 30, 'buff': {'stats': {'+armor': ['{intelligence}'], 'duration': 20}}}, 'helpText': 'Create a magic barrier that grants: {buff}'}},
+            {'type': 'effect', 'tags': ['spell'], 'target': 'self', 'stats': {'cooldown': 30, 'buff': {'stats': {'+armor': ['{intelligence}'], 'duration': 20}}}, 'helpText': 'Create a magic barrier that grants: {buff}'}},
     'banishingStrike': {'name': 'Banishing Strike', 'bonuses': {'+intelligence': 5, '+strength': 5}, 'action':
             {'type': 'banish', 'restrictions': ['melee'], 'stats': {'cooldown': 30, 'attackPower': 2, 'distance': [6, '+', ['{strength}' , '/', 20]],
             '$alwaysHits': 'Never misses', 'purify': 0, 'shockwave': 0,
@@ -100,6 +100,9 @@ var abilities = {
         'debuff': {'stats': {'-armor': ['{strength}', '/', 2], '-block': ['{strength}', '/', 2], 'duration': 0 /* 0=forever. help text won't display as buff if duration is unset.*/}}}, 'helpText': 'Deliver a might blow that destroys the targets armor causing: {debuff}'}},
     // Wizard
     'resonance': {'name': 'Resonance', 'bonuses': {'%magicDamage': .2}},
+    'fireball': {'name': 'Fireball', 'bonuses': {'+intelligence': 5}, 'action':
+        {'type': 'spell', 'tags': ['spell', 'ranged'], 'stats': {'power': ['{intelligence}'], 'range': 12, 'cooldown': 10, '$alwaysHits': 'Never misses', 'area': 5},
+        'helpText': 'Conjure an explosive fireball to hurl at enemies dealing {power} damage.'}},
     // Tier 4 classes
     // Assassin
     // Dark Knight
@@ -214,6 +217,9 @@ function abilityHelpText(ability, character) {
         }
         if (ifdefor(action.stats.range)) {
             actionSections.push('Range ' + evaluateForDisplay(action.stats.range, character.adventurer).format(1));
+        }
+        if (ifdefor(action.stats.area)) {
+            actionSections.push('Area ' + evaluateForDisplay(action.stats.area, character.adventurer).format(1));
         }
         if (ifdefor(action.stats.chance)) {
             actionSections.push(evaluateForDisplay(action.stats.chance, character.adventurer).percent() + ' chance');

@@ -76,6 +76,14 @@ function useSkill(actor, skill, target) {
     return true;
 }
 
+function getPower(actor, skill) {
+    var power = skill.power;
+    if (skill.base.tags.indexOf('spell') >= 0) {
+        power += Random.range(actor.minMagicDamage, actor.maxMagicDamage);
+    }
+    return power;
+}
+
 /**
  * Hash of skill methods that causes an actor to perform a skill on the given target.
  *
@@ -102,6 +110,15 @@ skillDefinitions.attack = {
     }
 };
 
+skillDefinitions.spell = {
+    isValid: function (actor, spellSkill, target) {
+        return !target.cloaked;
+    },
+    use: function (actor, spellSkill, target) {
+        castSpell(actor, spellSkill, target);
+    }
+};
+
 skillDefinitions.revive = {
     isValid: function (actor, reviveSkill, attackStats) {
         if (attackStats.evaded) return false;
@@ -110,7 +127,7 @@ skillDefinitions.revive = {
     },
     use: function (actor, reviveSkill, attackStats) {
         attackStats.stopped = true;
-        actor.health = reviveSkill.power;
+        actor.health = getPower(actor, reviveSkill);
         actor.percentHealth = actor.health / actor.maxHealth;
         actor.stunned = actor.time + .3;
         if (reviveSkill.buff) {
@@ -282,10 +299,10 @@ skillDefinitions.heal = {
         // Only heal allies.
         if (actor.allies.indexOf(target) < 0) return false;
         // Don't use a heal ability unless none of it will be wasted or the actor is below half life.
-        return (target.health + healSkill.power <= target.maxHealth) || (target.health <= target.maxHealth / 2);
+        return (target.health + getPower(actor, healSkill) <= target.maxHealth) || (target.health <= target.maxHealth / 2);
     },
     use: function (actor, healSkill, target) {
-        target.health += healSkill.power;
+        target.health += getPower(actor, healSkill);
         actor.stunned = actor.time + .3;
     }
 };
@@ -421,7 +438,7 @@ skillDefinitions.reflect = {
         return true;
     },
     use: function (actor, reflectSkill, target) {
-        actor.reflectBarrier = ifdefor(actor.reflectBarrier, 0) + reflectSkill.power;
+        actor.reflectBarrier = ifdefor(actor.reflectBarrier, 0) + getPower(actor, reflectSkill);
         actor.maxReflectBarrier = actor.reflectBarrier;
     }
 };
