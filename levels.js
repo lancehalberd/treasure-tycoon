@@ -213,13 +213,13 @@ function initializeLevels() {
              'monsters': ['dragon', 'skeleton'],
              'events': [['skeleton', 'skeleton'],['butcher'], ['skeleton', 'skeleton', 'dragon'], ['butcher', 'dragon']]});
     addLevel({'name': 'Dungeon', 'level': 5, 'background': backgrounds.cave, 'specialLoot': [simpleSaphireLoot],'next': ['bottomlessdepths6'],
-             'skill': abilities.majorDexterity, 'board': helmBoard,
-             'enemySkills': [abilities.majorDexterity],
+             'skill': abilities.majorIntelligence, 'board': helmBoard,
+             'enemySkills': [abilities.majorIntelligence],
              'monsters': ['gnome', 'butterfly'],
              'events': [['dragon']]});
     addLevel({'name': 'Valley', 'level': 5, 'background': backgrounds.forest, 'specialLoot': [simpleEmeraldLoot], 'next': ['oceanoftrees6'],
-             'skill':  abilities.majorIntelligence, 'board': crownBoard,
-             'enemySkills': [abilities.heal, abilities.protect, abilities.majorIntelligence],
+             'skill':  abilities.majorDexterity, 'board': crownBoard,
+             'enemySkills': [abilities.heal, abilities.protect, abilities.majorDexterity],
              'monsters': ['butterfly', 'gnomecromancer'],
              'events': [['butterfly', 'butterfly'], ['gnomecromancer', 'gnomecromancer'],  ['gnomecromancer', 'dragon', 'gnomecromancer']]});
 
