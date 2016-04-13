@@ -99,6 +99,7 @@ var abilities = {
         {'type': 'attack', 'restrictions': ['melee'], 'stats': {'attackPower': 3, 'cooldown': 30, 'stun': .5, '$alwaysHits': 'Never misses',
         'debuff': {'stats': {'-armor': ['{strength}', '/', 2], '-block': ['{strength}', '/', 2], 'duration': 0 /* 0=forever. help text won't display as buff if duration is unset.*/}}}, 'helpText': 'Deliver a might blow that destroys the targets armor causing: {debuff}'}},
     // Wizard
+    'arcaneProdigy': {'name': 'Arcane Prodigy', 'bonuses': {'*spell:skill:area': 2, '*spell:skill:power': 2}},
     'resonance': {'name': 'Resonance', 'bonuses': {'%magicDamage': .2}},
     'fireball': {'name': 'Fireball', 'bonuses': {'+intelligence': 5}, 'action':
         {'type': 'spell', 'tags': ['spell', 'ranged'], 'stats': {'power': ['{intelligence}'], 'range': 12, 'cooldown': 10, '$alwaysHits': 'Never misses', 'area': 5},

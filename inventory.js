@@ -336,6 +336,9 @@ function bonusHelpText(rawBonuses, implicit, actor) {
     if (ifdefor(bonuses['+increasedExperience'])) {
         sections.push('Gain ' + bonuses['+increasedExperience'].percent(1) + ' more experience');
     }
+    if (ifdefor(bonuses['*area'], 1) !== 1) {
+        sections.push(bonuses['*area'].format(1) + 'x increased area of effect');
+    }
     if (ifdefor(bonuses['*power'], 1) !== 1) {
         sections.push(bonuses['*power'].format(1) + 'x more effective');
     }

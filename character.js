@@ -108,6 +108,54 @@ function newCharacter(job) {
     });
     draggedJewel = null;
     overJewel = null;
+    for (var i = 0; i < character.adventurer.actions.length; i++) {
+        console.log(getTargetsForAction(character.adventurer, character.adventurer.actions[i]));
+    }
+}
+function getTargetsForAction(actor, action) {
+    var keys = [];
+    var seen = {};
+    $.each(action.base.stats, function (stat) {
+        if (stat.charAt(0) === '$') {
+            stat = stat.substring(1);
+        }
+        getTargetsForActionStat(actor, action.base, stat).forEach(function (newKey) {
+            if (seen[newKey]) return;
+            seen[newKey] = true;
+            keys.push(newKey);
+        });
+    });
+    return keys;
+}
+function getTargetsForActionStat(actor, dataObject, stat) {
+    var keys = [];
+    var base = evaluateValue(actor, ifdefor(dataObject.stats[stat], 0));
+    if (typeof base === 'object' && base.constructor != Array) {
+        var subObject = {};
+        if (!base.stats) {
+            console.log(base);
+            throw new Error("Found buff with undefined stats");
+        }
+        $.each(base.stats, function (key, value) {
+            if (key.charAt(0) === '$') {
+                key = key.substring(1);
+            }
+            keys = keys.concat(getTargetsForActionStat(actor, base, key));
+        });
+        return keys;
+    }
+    keys.push('skill:' + stat);
+    var extraTags = [];
+    if (dataObject.type) {
+        extraTags.push(dataObject.type);
+    }
+    if (dataObject.key && dataObject.type !== dataObject.key) {
+        extraTags.push(dataObject.key);
+    }
+    ifdefor(dataObject.tags, []).concat(extraTags).forEach(function (prefix) {
+        keys.push(prefix + ':skill:' + stat);
+    });
+    return keys;
 }
 function convertShapeDataToShape(shapeData) {
     return makeShape(shapeData.p[0], shapeData.p[1], (shapeData.t % 360 + 360) % 360, shapeDefinitions[shapeData.k][0], 30);
@@ -428,15 +476,24 @@ function getStatForAction(actor, dataObject, stat) {
     // inherits the attackSpeed value from the skill user, so we don't want to apply
     // '*attackSpeed': 2 to it as this has already been applied to the base attackSpeed.
     var keys = ['skill:' + stat];
-    var extraTags = [dataObject.type];
-    if (dataObject.type !== dataObject.key) {
+    var extraTags = [];
+    if (dataObject.type) {
+        extraTags.push(dataObject.type);
+    }
+    if (dataObject.key && dataObject.type !== dataObject.key) {
         extraTags.push(dataObject.key)
     }
     ifdefor(dataObject.tags, []).concat(extraTags).forEach(function (prefix) {
         keys.push(prefix + ':skill:' + stat);
     });
+    // sometimes we get duplicate keys, so we use this to avoid processing the same
+    // buff twice. This seems a little better than just trying to remove the keys
+    // and is less work than making sure they aren't added in the first place.
     actor.bonuses.forEach(function (bonus) {
+        var usedKeys = {};
         keys.forEach(function (key) {
+            if (usedKeys[key]) return;
+            usedKeys[key] = true;
             plus += evaluateValue(actor, ifdefor(bonus['+' + key], 0));
             plus -= evaluateValue(actor, ifdefor(bonus['-' + key], 0));
             percent += evaluateValue(actor, ifdefor(bonus['%' + key], 0));

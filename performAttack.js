@@ -252,6 +252,7 @@ function performAttack(attacker, attack, target) {
 function castSpell(attacker, spell, target) {
     var character = attacker.character;
     var attackStats = createSpellStats(attacker, spell);
+    attacker.attackCooldown = attacker.time + .2;
     performAttackProper(attackStats, target);
     return attackStats;
 }
@@ -278,7 +279,7 @@ function applyAttackToTarget(attackStats, target) {
             if (enemy === target) {
                 return;
             }
-            var distance = getDistance(attacker, enemy);
+            var distance = getDistance(target, enemy);
             if (distance <= 32 * area) {
                 applyAttackToTarget(attackStats, enemy);
             }
