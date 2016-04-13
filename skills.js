@@ -102,7 +102,7 @@ var abilities = {
     'arcaneProdigy': {'name': 'Arcane Prodigy', 'bonuses': {'*spell:skill:area': 2, '*spell:skill:power': 2}},
     'resonance': {'name': 'Resonance', 'bonuses': {'%magicDamage': .2}},
     'fireball': {'name': 'Fireball', 'bonuses': {'+intelligence': 5}, 'action':
-        {'type': 'spell', 'tags': ['spell', 'ranged'], 'stats': {'power': ['{intelligence}'], 'range': 12, 'cooldown': 10, '$alwaysHits': 'Never misses', 'area': 5},
+        {'type': 'spell', 'tags': ['spell', 'ranged'], 'stats': {'power': ['{intelligence}'], 'range': 12, 'cooldown': 4, '$alwaysHits': 'Never misses', 'area': 3},
         'helpText': 'Conjure an explosive fireball to hurl at enemies dealing {power} damage.'}},
     // Tier 4 classes
     // Assassin

@@ -275,6 +275,7 @@ function applyAttackToTarget(attackStats, target) {
     if (attackStats.area > 0) {
         var area = attackStats.area;
         attackStats.area = 0;
+        attacker.character.effects.push(explosionEffect(target.x, 128, area * 32, 10, 'red', .3));
         attacker.enemies.forEach(function (enemy) {
             if (enemy === target) {
                 return;

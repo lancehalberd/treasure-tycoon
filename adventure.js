@@ -17,6 +17,7 @@ function startArea(character, index) {
     character.enemies = [];
     character.objects = [];
     character.projectiles = [];
+    character.effects = [];
     character.allies = [character.adventurer];
     character.adventurer.allies = character.allies;
     character.adventurer.enemies = character.enemies;
@@ -149,12 +150,29 @@ function adventureLoop(character, delta) {
     });
     for (var i = 0; i < character.projectiles.length; i++) {
         character.projectiles[i].update(character);
+        if (character.projectiles[i].done) {
+            character.projectiles.splice(i--, 1);
+        }
+    }
+    for (var i = 0; i < character.effects.length; i++) {
+        character.effects[i].update(character);
+        if (character.effects[i].done) {
+            character.effects.splice(i--, 1);
+        }
     }
     for (var i = 0; i < character.treasurePopups.length; i++) {
         character.treasurePopups[i].update(character);
+        if (character.treasurePopups[i].done) {
+            character.treasurePopups.splice(i--, 1);
+        }
     }
     for (var i = 0; i < character.textPopups.length; i++) {
-        character.textPopups[i].y--;
+        var textPopup = character.textPopups[i];
+        textPopup.y--;
+        textPopup.duration = ifdefor(textPopup.duration, 30);
+        if (textPopup.duration-- < 0) {
+            character.textPopups.splice(i--, 1);
+        }
     }
 }
 function moveActor(actor, delta) {
@@ -413,29 +431,20 @@ function drawAdventure(character) {
     // Draw text popups such as damage dealt, item points gained, and so on.
     context.fillStyle = 'red';
     for (var i = 0; i < character.treasurePopups.length; i++) {
-        var treasurePopup = character.treasurePopups[i];
-        treasurePopup.draw(character);
-        if (treasurePopup.done) {
-            character.treasurePopups.splice(i--, 1);
-        }
+        character.treasurePopups[i].draw(character);
     }
     for (var i = 0; i < character.projectiles.length; i++) {
-        var projectile = character.projectiles[i];
-        projectile.draw(character);
-        if (projectile.done) {
-            character.projectiles.splice(i--, 1);
-        }
+        character.projectiles[i].draw(character);
+    }
+    for (var i = 0; i < character.effects.length; i++) {
+        character.effects[i].draw(character);
     }
     for (var i = 0; i < character.textPopups.length; i++) {
         var textPopup = character.textPopups[i];
-        textPopup.duration = ifdefor(textPopup.duration, 30);
         context.fillStyle = ifdefor(textPopup.color, "red");
         context.font = ifdefor(textPopup.font, "20px sans-serif");
         context.textAlign = 'center'
         context.fillText(textPopup.value, textPopup.x - cameraX, textPopup.y);
-        if (textPopup.duration-- < 0) {
-            character.textPopups.splice(i--, 1);
-        }
     }
     drawMinimap(character);
 }
