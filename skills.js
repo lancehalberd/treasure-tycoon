@@ -104,6 +104,7 @@ var abilities = {
     'fireball': {'name': 'Fireball', 'bonuses': {'+intelligence': 5}, 'action':
         {'type': 'spell', 'tags': ['spell', 'ranged'], 'color': 'red', 'stats': {'power': ['{intelligence}'], 'range': 12, 'cooldown': 8, '$alwaysHits': 'Never misses', 'explode': 1, 'area': 3, 'areaCoefficient': .5},
         'helpText': 'Conjure an explosive fireball to hurl at enemies dealing {power} damage.'}},
+    'chainReaction': {'name': 'Chain Reaction', 'bonuses': {'+fireball:skill:explode': 1}, 'helpText': 'Fireball explosions will chain an extra time.'},
     'freeze': {'name': 'Freeze', 'bonuses': {'+intelligence': 10}, 'action':
         {'type': 'spell', 'tags': ['spell', 'nova'], 'height': 20, 'color': 'white', 'alpha': .7, 'stats': {'power': ['{intelligence}', '/', 2], 'area': [4, '+', ['{intelligence}', '/', '50']], 'areaCoefficient': 1, 'cooldown': 10,
         '$alwaysHits': 'Never misses', 'slowOnHit': 1},
@@ -155,7 +156,7 @@ var abilities = {
     'summoner': {'bonuses': {'*minion:skill:limit': 2, '*minion:skill:cooldown': .5, '*minion:skill:healthBonus': 2, '*minion:skill:damageBonus': 2}}
 };
 var testAbilities = [];
-//var testAbilities = [abilities.fireball, abilities.wizard];
+//var testAbilities = [abilities.fireball, abilities.chainReaction, abilities.wizard];
 //var testAbilities = [abilities.freeze, abilities.absoluteZero, abilities.wizard];
 $.each(abilities, function (key, ability) {
     ability.key = key;
