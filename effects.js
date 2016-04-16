@@ -1,18 +1,13 @@
 
 function explosionEffect(attackStats, x, y) {
-    var color = ifdefor(attackStats.attack.color, 'red');
-    var alpha = ifdefor(attackStats.attack.alpha, .5);
-    if (!alpha) {
-        alpha = .5;
-    }
-    var frames = ifdefor(attackStats.attack.frames, 10);
-    if (!frames) {
-        frames = 10;
-    }
+    var color = ifdefor(attackStats.attack.base.color, 'red');
+    var alpha = ifdefor(attackStats.attack.base.alpha, .5);
+    var frames = ifdefor(attackStats.attack.base.frames, 10);
     if (!attackStats.attack.area) {
         throw new Error('Explosion effect called with no area set.');
     }
     var radius = attackStats.attack.area * ifdefor(attackStats.effectivness, 1) * 32;
+    var height = ifdefor(attackStats.attack.base.height, radius);
     var self = {
         'hitTargets': [], 'attackStats': attackStats, 'x': x, 'y': y, 'currentFrame': 0, 'done': false,
         'update': function (character) {
@@ -44,8 +39,12 @@ function explosionEffect(attackStats, x, y) {
             character.context.globalAlpha = alpha;
             character.context.fillStyle = color;
             character.context.beginPath();
-            character.context.arc(self.x - character.cameraX, self.y, currentRadius, 0, 2 * Math.PI);
+            character.context.save();
+            character.context.translate((self.x - character.cameraX), self.y);
+            character.context.scale(1, height / currentRadius);
+            character.context.arc(0, 0, currentRadius, 0, 2 * Math.PI);
             character.context.fill();
+            character.context.restore();
             character.context.globalAlpha = 1;
         }
     };

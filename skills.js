@@ -99,14 +99,14 @@ var abilities = {
         {'type': 'attack', 'restrictions': ['melee'], 'stats': {'attackPower': 3, 'cooldown': 30, 'stun': .5, '$alwaysHits': 'Never misses',
         'debuff': {'stats': {'-armor': ['{strength}', '/', 2], '-block': ['{strength}', '/', 2], 'duration': 0 /* 0=forever. help text won't display as buff if duration is unset.*/}}}, 'helpText': 'Deliver a might blow that destroys the targets armor causing: {debuff}'}},
     // Wizard
-    'arcaneProdigy': {'name': 'Arcane Prodigy', 'bonuses': {'*spell:skill:area': 2, '*spell:skill:power': 2}},
+    'wizard': {'name': 'Arcane Prodigy', 'bonuses': {'*spell:skill:area': 2, '*spell:skill:power': 2}},
     'resonance': {'name': 'Resonance', 'bonuses': {'%magicDamage': .2}},
     'fireball': {'name': 'Fireball', 'bonuses': {'+intelligence': 5}, 'action':
-        {'type': 'spell', 'tags': ['spell', 'ranged'], 'stats': {'power': ['{intelligence}'], 'range': 12, 'cooldown': 3, '$alwaysHits': 'Never misses', '$color': 'red', 'explode': 1, 'area': 3, 'areaCoefficient': .5},
+        {'type': 'spell', 'tags': ['spell', 'ranged'], 'color': 'red', 'stats': {'power': ['{intelligence}'], 'range': 12, 'cooldown': 8, '$alwaysHits': 'Never misses', 'explode': 1, 'area': 3, 'areaCoefficient': .5},
         'helpText': 'Conjure an explosive fireball to hurl at enemies dealing {power} damage.'}},
     'freeze': {'name': 'Freeze', 'bonuses': {'+intelligence': 10}, 'action':
-        {'type': 'spell', 'tags': ['spell', 'nova'], 'stats': {'power': ['{intelligence}', '/', 2], 'area': [4, '+', ['{intelligence}', '/', '50']], 'areaCoefficient': 1, 'cooldown': 10,
-        '$alwaysHits': 'Never misses', '$color': 'white', '$alpha': .7, 'slowOnHit': 1},
+        {'type': 'spell', 'tags': ['spell', 'nova'], 'height': 20, 'color': 'white', 'alpha': .7, 'stats': {'power': ['{intelligence}', '/', 2], 'area': [4, '+', ['{intelligence}', '/', '50']], 'areaCoefficient': 1, 'cooldown': 10,
+        '$alwaysHits': 'Never misses', 'slowOnHit': 1},
         'helpText': 'Emit a blast of icy air that deals {power} damage and slows enemies. The effect is less the further away the enemy is.'}},
     'absoluteZero': {'name': 'Absolute Zero', 'bonuses': {'+intelligence': 5, '*freeze:skill:slowOnHit': 2}, 'helpText': 'Doubles the effectiveness of Freeze\'s slow.'},
     // Tier 4 classes
@@ -155,8 +155,8 @@ var abilities = {
     'summoner': {'bonuses': {'*minion:skill:limit': 2, '*minion:skill:cooldown': .5, '*minion:skill:healthBonus': 2, '*minion:skill:damageBonus': 2}}
 };
 var testAbilities = [];
-//var testAbilities = [abilities.fireball, abilities.arcaneProdigy];
-//var testAbilities = [abilities.freeze, abilities.absoluteZero, abilities.arcaneProdigy];
+//var testAbilities = [abilities.fireball, abilities.wizard];
+//var testAbilities = [abilities.freeze, abilities.absoluteZero, abilities.wizard];
 $.each(abilities, function (key, ability) {
     ability.key = key;
     if (ability.action) {

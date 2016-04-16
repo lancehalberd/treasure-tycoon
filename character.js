@@ -593,9 +593,10 @@ addCharacterClass('Paladin', 1, 2, 2);
 addCharacterClass('Dancer', 2, 1, 2);
 
 addCharacterClass('Ranger', 3, 1, 1, {'weapon': itemsByKey.ball},
-    [jewelLoot(['diamond'], [1, 1], [[10,15], [5, 10], [90, 100]], false), simpleJewelLoot, simpleJewelLoot], 'savannah');
+    [jewelLoot(['diamond'], [1, 1], [[10,15], [90, 100], [5, 10]], false), simpleJewelLoot, simpleJewelLoot], 'savannah');
 addCharacterClass('Warrior', 1, 3, 1);
-addCharacterClass('Wizard', 1, 1, 3);
+addCharacterClass('Wizard', 1, 1, 3, {'weapon': itemsByKey.stick},
+    [jewelLoot(['diamond'], [1, 1], [[10,15], [5, 10], [90, 100]], false), simpleJewelLoot, simpleJewelLoot], 'savannah');
 
 addCharacterClass('Assassin', 3, 2, 1);
 addCharacterClass('Dark Knight', 1, 3, 2);

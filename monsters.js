@@ -134,14 +134,14 @@ function updateMonster(monster) {
     var enchantments = monster.prefixes.length + monster.suffixes.length;
     if (enchantments > 2) {
         monster.bonuses.push(imbuedMonsterBonuses);
-        monster.base['$color'] = '#c6f';
+        monster.color= '#c6f';
         monster.image = monster.base.source.image.imbued;
     } else if (enchantments) {
         monster.bonuses.push(enchantedMonsterBonuses);
-        monster.base['$color'] = '#af0';
+        monster.color = '#af0';
         monster.image = monster.base.source.image.enchanted;
     } else {
-        monster.base['$color'] = 'red';
+        monster.color = 'red';
         monster.image = monster.base.source.image.normal;
     }
     monster.extraSkills.forEach(function (ability) {
