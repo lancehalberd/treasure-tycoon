@@ -29,7 +29,16 @@ function useSkill(actor, skill, target) {
     }
     // Action skills have targets and won't activate if that target is out of range or not of the correct type.
     if (actionIndex >= 0) {
-        if (getDistance(actor, target) > skill.range * 32) {
+        // Nova skills use area instead of range for checking for valid targets.
+        if (skill.base.tags.indexOf('nova') >= 0) {
+            // Use half of the nova range since novas deal reduced damage the further
+            // targets are. It would be cool if the player could configure the
+            // trigger distance for these abilities. Maybe each abilities could
+            // have a configuration specific to it.
+            if (getDistance(actor, target) > skill.area * 32 / 2) {
+                return false;
+            }
+        } else if (getDistance(actor, target) > skill.range * 32) {
             return false;
         }
         if (ifdefor(skill.base.target) === 'self' && actor !== target) {
@@ -182,6 +191,7 @@ skillDefinitions.minion = {
         newMonster.allies = actor.allies;
         newMonster.enemies = actor.enemies;
         newMonster.time = 0;
+        newMonster.animationTime = 0;
         newMonster.bonuses.push(getMinionSpeedBonus(actor, newMonster));
         newMonster.bonuses.push(getMinionSkillBonuses(minionSkill));
         updateActorStats(newMonster);
@@ -211,6 +221,7 @@ function cloneActor(actor) {
     clone.slow = 0;
     clone.pull = null;
     clone.time = 0;
+    clone.animationTime = 0;
     clone.timedEffects = [];
     return clone;
 }

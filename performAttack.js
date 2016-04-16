@@ -149,7 +149,7 @@ function createAttackStats(attacker, attack) {
         'damage': damage,
         'magicDamage': magicDamage,
         'accuracy': accuracy,
-        'area': ifdefor(attack.area, 0)
+        'explode': ifdefor(attack.explode, 0)
     };
 }
 
@@ -167,7 +167,7 @@ function createSpellStats(attacker, spell) {
         'damage': 0,
         'magicDamage': magicDamage,
         'accuracy': 0,
-        'area': ifdefor(spell.area, 0)
+        'explode': ifdefor(spell.explode, 0)
     };
 }
 
@@ -258,7 +258,10 @@ function castSpell(attacker, spell, target) {
 }
 function performAttackProper(attackStats, target) {
     var attacker = attackStats.source;
-    if (attackStats.attack.base.tags.indexOf('ranged') >= 0) {
+    if (attackStats.attack.base.tags.indexOf('nova') >= 0) {
+        attackStats.explode--;
+        attacker.character.effects.push(explosionEffect(attackStats, attacker.x + attacker.width / 2 + attacker.direction * attacker.width / 4, 120));
+    } else if (attackStats.attack.base.tags.indexOf('ranged') >= 0) {
         attacker.character.projectiles.push(projectile(
             attackStats, attacker.x + attacker.width / 2 + attacker.direction * attacker.width / 4, 240 - 128,
             attacker.direction * 15, -getDistance(attacker, target) / 200, target, 0,
@@ -272,19 +275,22 @@ function performAttackProper(attackStats, target) {
 function applyAttackToTarget(attackStats, target) {
     var attack = attackStats.attack;
     var attacker = attackStats.source;
-    if (attackStats.area > 0) {
-        var area = attackStats.area;
-        attackStats.area = 0;
-        attacker.character.effects.push(explosionEffect(target.x, 128, area * 32, 10, 'red', .3));
-        attacker.enemies.forEach(function (enemy) {
-            if (enemy === target) {
-                return;
-            }
-            var distance = getDistance(target, enemy);
-            if (distance <= 32 * area) {
-                applyAttackToTarget(attackStats, enemy);
-            }
-        });
+    var effectiveness = ifdefor(attackStats.effectiveness, 1);
+
+    if (ifdefor(attackStats.explode) > 0) {
+        var explodeAttackStats = {
+            'distance': 0,
+            'source': attackStats.source,
+            'attack': attackStats.attack,
+            'isCritical': attackStats.isCritical,
+            'damage': attackStats.damage,
+            'magicDamage': attackStats.magicDamage,
+            'accuracy': attackStats.accuracy,
+            'explode': attackStats.explode - 1
+        };
+        var explosion = explosionEffect(explodeAttackStats, target.x, 128);
+        attacker.character.effects.push(explosion);
+        explosion.hitTargets.push(target);
     }
     var distance = attackStats.distance;
     var character = target.character;
@@ -301,16 +307,17 @@ function applyAttackToTarget(attackStats, target) {
         hitText.color = 'yellow';
         hitText.font = "30px sans-serif"
     }
-    var damage = Math.floor(attackStats.damage * multiplier);
-    var magicDamage = Math.floor(attackStats.magicDamage * multiplier);
+    var damage = Math.floor(attackStats.damage * multiplier * effectiveness);
+    var magicDamage = Math.floor(attackStats.magicDamage * multiplier * effectiveness);
     attackStats.evaded = false;
     if (!ifdefor(attack.alwaysHits)) {
         var evasionRoll = (target.maxEvasion ? 1 : Math.random()) * target.evasion;
         if (attackStats.accuracy < evasionRoll) {
             hitText.value = 'miss';
             if (ifdefor(attack.damageOnMiss)) {
-                target.health -= attack.damageOnMiss;
-                hitText.value = 'miss (' + attack.damageOnMiss + ')';
+                var damageOnMiss = Math.round(attack.damageOnMiss * effectiveness);
+                target.health -= damageOnMiss;
+                hitText.value = 'miss (' + damageOnMiss + ')';
             }
             // Target has evaded the attack.
             hitText.color = 'blue';
@@ -345,8 +352,8 @@ function applyAttackToTarget(attackStats, target) {
     if (attackStats.dodged && !ifdefor(attack.undodgeable)) {
         return false;
     }
-    attacker.health += ifdefor(attack.healthGainOnHit, 0);
-    target.slow += ifdefor(attack.slowOnHit, 0);
+    attacker.health += ifdefor(attack.healthGainOnHit * effectiveness, 0);
+    target.slow += ifdefor(attack.slowOnHit * effectiveness, 0);
     if (ifdefor(attack.debuff)) {
         addTimedEffect(target, attack.debuff);
     }
@@ -355,19 +362,19 @@ function applyAttackToTarget(attackStats, target) {
         hitText.value = totalDamage;
         // Some attacks pull the target towards the attacker
         if (attack.stun) {
-            target.stunned = Math.max(ifdefor(target.stunned, 0), target.time + attack.stun);
+            target.stunned = Math.max(ifdefor(target.stunned, 0), target.time + attack.stun * effectiveness);
             hitText.value += ' stunned!';
         }
         if (attack.pullsTarget) {
-            target.stunned =  Math.max(ifdefor(target.stunned, 0), target.time + .3 + distance / 32 * ifdefor(attack.dragStun, 0));
+            target.stunned =  Math.max(ifdefor(target.stunned, 0), target.time + .3 + distance / 32 * ifdefor(attack.dragStun * effectiveness, 0));
             var targetX = (attacker.x > target.x) ? (attacker.x - 64) : (attacker.x + 64);
-            target.pull = {'x': targetX, 'time': target.time + .3, 'damage': Math.floor(distance / 32 * damage * ifdefor(attack.dragDamage, 0))};
+            target.pull = {'x': targetX, 'time': target.time + .3, 'damage': Math.floor(distance / 32 * damage * ifdefor(attack.dragDamage * effectiveness, 0))};
             attacker.pull = {'x': attacker.x, 'time': attacker.time + .3, 'damage': 0};
             hitText.value += ' hooked!';
         }
         if (attack.domino) {
             target.dominoAttackStats = attackStats;
-            var targetX = (attacker.x < target.x) ? (target.x + ifdefor(attack.distance, 128)) : (target.x - ifdefor(attack.distance, 128));
+            var targetX = (attacker.x < target.x) ? (target.x + ifdefor(attack.distance * effectiveness, 128)) : (target.x - ifdefor(attack.distance * effectiveness, 128));
             target.pull = {'x': targetX, 'time': target.time + .3, 'damage': 0};
         }
     } else {

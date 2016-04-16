@@ -397,7 +397,7 @@ function updateActorStats(actor) {
     }
 }
 function getStat(actor, stat) {
-    var base = ifdefor(actor.base[stat], 0), plus = 0, percent = 1, multiplier = 1, specialValue = null;
+    var base = ifdefor(actor.base[stat], 0), plus = 0, percent = 1, multiplier = 1, specialValue = ifdefor(actor.base['$' + stat], false);
     var baseKeys = [stat];
     if (stat === 'evasion' || stat === 'attackSpeed') {
         percent += .002 * actor.dexterity;

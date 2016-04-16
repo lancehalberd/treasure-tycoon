@@ -12,6 +12,7 @@ function startArea(character, index) {
     character.adventurer.percentHealth = 1;
     character.adventurer.health = character.adventurer.maxHealth;
     character.adventurer.time = 0;
+    character.adventurer.animationTime = 0;
     character.finishTime = false;
     character.cameraX = -30;
     character.enemies = [];
@@ -42,6 +43,7 @@ function timeStopLoop(character, delta) {
     if (!character.timeStopEffect) return false;
     var actor = character.timeStopEffect.actor;
     actor.time += delta;
+    actor.animationTime += delta * Math.max(.1, 1 - actor.slow);
     if (actor.time >= character.timeStopEffect.endAt) {
         character.timeStopEffect = null;
         return false;
@@ -101,6 +103,7 @@ function adventureLoop(character, delta) {
     // Advance subjective time for each actor.
     everybody.forEach(function (actor) {
         actor.time += delta;
+        actor.animationTime += delta * Math.max(.1, 1 - actor.slow);
         processStatusEffects(character, actor, delta);
     });
     // Check for defeated player/enemies.
@@ -190,9 +193,9 @@ function moveActor(actor, delta) {
     var speedBonus = 1;
     if (actor.chargeEffect) {
         speedBonus *= actor.chargeEffect.chargeSkill.speedBonus;
-        actor.chargeEffect.distance += speedBonus * actor.speed * Math.max(0, (1 - ifdefor(actor.slow, 0))) * delta;
+        actor.chargeEffect.distance += speedBonus * actor.speed * Math.max(.1, 1 - actor.slow) * delta;
     }
-    actor.x += speedBonus * actor.speed * actor.direction * Math.max(0, (1 - ifdefor(actor.slow, 0))) * delta;
+    actor.x += speedBonus * actor.speed * actor.direction * Math.max(.1, 1 - actor.slow) * delta;
 }
 function expireTimedEffects(character, actor) {
     var changed = false;
@@ -224,7 +227,8 @@ function startNextWave(character) {
         var extraSkills = ifdefor(character.area.enemySkills, []).concat({'bonuses' : wave.extraBonuses});
         var newMonster = makeMonster(entityData, character.area.level, extraSkills);
         newMonster.x = x;
-        newMonster.time = newMonster.x;
+        newMonster.time = 0;
+        newMonster.animationTime = newMonster.x;
         newMonster.character = character;
         newMonster.direction = -1; // Monsters move right to left
         newMonster.allies = character.enemies;
@@ -314,7 +318,6 @@ function runActorLoop(character, actor) {
             if (actor.chargeEffect) {
                 var attackStats = createAttackStats(actor, actor.chargeEffect.chargeSkill);
                 attackStats.distance = actor.chargeEffect.distance;
-                console.log(actor.chargeEffect.chargeSkill.area);
                 var hitTargets = getAllInRange(target.x, actor.chargeEffect.chargeSkill.area, actor.enemies);
                 for (var j = 0; j < hitTargets.length; j++) {
                     applyAttackToTarget(attackStats, hitTargets[j]);
@@ -457,7 +460,7 @@ function drawMonster(character, monster, index) {
     var context = character.context;
     var fps = ifdefor(monster.base.fpsMultiplier, 1) * 3 * monster.speed / 100;
     var source = monster.base.source;
-    var frame = Math.floor(monster.time * fps) % source.frames;
+    var frame = Math.floor(monster.animationTime * fps) % source.frames;
     if (monster.pull) {
         frame = 0;
     }
@@ -502,7 +505,7 @@ function drawAdventurer(character, adventurer, index) {
     if (adventurer.target && adventurer.lastAction && adventurer.lastAction.attackSpeed) { // attacking loop
         var attackSpeed = adventurer.lastAction.attackSpeed;
         var attackFps = 1 / ((1 / attackSpeed) / fightLoop.length);
-        var frame = Math.floor(Math.abs(adventurer.time - adventurer.attackCooldown) * attackFps) % fightLoop.length;
+        var frame = Math.floor(Math.abs(adventurer.animationTime - adventurer.attackCooldown) * attackFps) % fightLoop.length;
         context.drawImage(adventurer.personCanvas, fightLoop[frame] * 32, 0 , 32, 64,
                         adventurer.x - cameraX, 240 - 128 - 72, 64, 128);
     } else { // walking loop
@@ -510,7 +513,7 @@ function drawAdventurer(character, adventurer, index) {
             context.globalAlpha = .2;
         }
         var fps = Math.floor(3 * adventurer.speed / 100);
-        var frame = Math.floor(adventurer.time * fps) % walkLoop.length;
+        var frame = Math.floor(adventurer.animationTime * fps) % walkLoop.length;
         if (adventurer.pull || adventurer.stunned) {
             frame = 0;
         }
