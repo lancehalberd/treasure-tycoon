@@ -27,10 +27,37 @@ function useSkill(actor, skill, target) {
             return false;
         }
     }
+    var isNova = skill.base.tags.indexOf('nova') >= 0;
+    var isField = skill.base.tags.indexOf('field') >= 0;
+    var isAOE = skill.cleave || isNova || isField;
     // Action skills have targets and won't activate if that target is out of range or not of the correct type.
     if (actionIndex >= 0) {
+        // Let's be careful about using any ability that can't be used more than once every 2 seconds.
+        if (ifdefor(skill.cooldown, 0) > 2 && ifdefor(skill.base.target, 'enemies') === 'enemies') {
+            var health = 0;
+            if (isAOE) {
+                var targetsInRange = getEnemiesInRange(actor, skill);
+                if (targetsInRange.length === 0) {
+                    return false;
+                }
+                targetsInRange.forEach(function (target) {
+                    health += target.health;
+                })
+                // scale health by number of targets for aoe attacks.
+                health *= targetsInRange.length;
+            } else {
+                health = target.health;
+            }
+            var attackStats = createAttackStats(actor, skill);
+            // Make sure the total health of the target/combined targets is at least
+            // twice the damage output of the attack.
+            // console.log(skill.base.name + ' ' + health + ' < ' + 2 * (attackStats.damage + attackStats.magicDamage));
+            if (health < (attackStats.damage + attackStats.magicDamage)) {
+                return false;
+            }
+        }
         // Nova skills use area instead of range for checking for valid targets.
-        if (skill.base.tags.indexOf('nova') >= 0) {
+        if (isNova) {
             // Use half of the nova range since novas deal reduced damage the further
             // targets are. It would be cool if the player could configure the
             // trigger distance for these abilities. Maybe each abilities could
@@ -38,7 +65,7 @@ function useSkill(actor, skill, target) {
             if (getDistance(actor, target) > skill.area * 32 / 2) {
                 return false;
             }
-        } else if (skill.base.tags.indexOf('field') >= 0){
+        } else if (isField){
             // Use half of the nova range since novas deal reduced damage the further
             // targets are. It would be cool if the player could configure the
             // trigger distance for these abilities. Maybe each abilities could
@@ -91,6 +118,25 @@ function useSkill(actor, skill, target) {
         actor.reactions.push(skill);
     }
     return true;
+}
+
+function getEnemiesInRange(actor, skill) {
+    var targets = [];
+    for (var i = 0; i < actor.enemies.length; i++) {
+        var target = actor.enemies[i];
+        var distance = getDistance(actor, target);
+        if (skill.base.tags.indexOf('nova') >= 0 || skill.base.tags.indexOf('field') >= 0) {
+            if (distance < skill.area * 32) {
+                targets.push(target);
+                continue;
+            }
+        }
+        if ((skill.range + ifdefor(skill.teleport, 0)) * 32 >= distance) {
+            targets.push(target);
+            continue;
+        }
+    }
+    return targets;
 }
 
 function getPower(actor, skill) {

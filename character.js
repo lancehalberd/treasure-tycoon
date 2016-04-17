@@ -489,7 +489,7 @@ function getStatForAction(actor, dataObject, stat) {
     // sometimes we get duplicate keys, so we use this to avoid processing the same
     // buff twice. This seems a little better than just trying to remove the keys
     // and is less work than making sure they aren't added in the first place.
-    actor.bonuses.forEach(function (bonus) {
+    actor.bonuses.concat(ifdefor(dataObject.bonuses, [])).forEach(function (bonus) {
         var usedKeys = {};
         keys.forEach(function (key) {
             if (usedKeys[key]) return;

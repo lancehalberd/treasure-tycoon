@@ -133,6 +133,8 @@ function createAttackStats(attacker, attack) {
     var isCritical = Math.random() <= attack.critChance;
     var damage = Random.range(attack.minDamage, attack.maxDamage);
     var magicDamage = Random.range(attack.minMagicDamage, attack.maxMagicDamage);
+    var sacrificedHealth = Math.floor(attacker.health * ifdefor(attack.healthSacrifice, 0));
+    damage += sacrificedHealth;
     var accuracy = Math.random() * attack.accuracy;
     damage *= ifdefor(attack.attackPower, 1);
     magicDamage *= ifdefor(attack.attackPower, 1);
@@ -143,36 +145,43 @@ function createAttackStats(attacker, attack) {
     }
     return {
         'distance': 0,
+        'healthSacrificed': sacrificedHealth,
         'source': attacker,
         'attack': attack,
         'isCritical': isCritical,
         'damage': damage,
         'magicDamage': magicDamage,
         'accuracy': accuracy,
-        'explode': ifdefor(attack.explode, 0)
+        'explode': ifdefor(attack.explode, 0),
+        'cleave': ifdefor(attack.cleave, 0)
     };
 }
 
 function createSpellStats(attacker, spell) {
     var isCritical = Math.random() <= spell.critChance;
     var magicDamage = getPower(attacker, spell);
+    var sacrificedHealth = Math.floor(attacker.health * ifdefor(spell.healthSacrifice, 0));
+    magicDamage += sacrificedHealth;
     if (isCritical) {
         magicDamage *= (1 + spell.critDamage);
     }
     return {
         'distance': 0,
+        'healthSacrificed': sacrificedHealth,
         'source': attacker,
         'attack': spell,
         'isCritical': isCritical,
         'damage': 0,
         'magicDamage': magicDamage,
         'accuracy': 0,
-        'explode': ifdefor(spell.explode, 0)
+        'explode': ifdefor(spell.explode, 0),
+        'cleave': ifdefor(spell.cleave, 0)
     };
 }
 function performAttack(attacker, attack, target) {
     var character = attacker.character;
     var attackStats = createAttackStats(attacker, attack);
+    attacker.health -= attackStats.healthSacrificed;
     attacker.attackCooldown = attacker.time + 1 / (attackStats.attack.attackSpeed * Math.max(.1, (1 - attacker.slow)));
     performAttackProper(attackStats, target);
     return attackStats;
@@ -180,6 +189,7 @@ function performAttack(attacker, attack, target) {
 function castSpell(attacker, spell, target) {
     var character = attacker.character;
     var attackStats = createSpellStats(attacker, spell);
+    attacker.health -= attackStats.healthSacrificed;
     attacker.attackCooldown = attacker.time + .2;
     performAttackProper(attackStats, target);
     return attackStats;
@@ -218,6 +228,33 @@ function applyAttackToTarget(attackStats, target) {
     var attacker = attackStats.source;
     var effectiveness = ifdefor(attackStats.effectiveness, 1);
 
+    if (ifdefor(attackStats.cleave) > 0) {
+        var cleaveAttackStats = {
+            'distance': 0,
+            'source': attackStats.source,
+            'attack': attackStats.attack,
+            'isCritical': attackStats.isCritical,
+            // Apply cleave damage by the coefficient.
+            'damage': attackStats.damage * attackStats.cleave,
+            'magicDamage': attackStats.magicDamage * attackStats.cleave,
+            'accuracy': attackStats.accuracy,
+            'explode': attackStats.explode,
+            'cleave': 0
+        };
+        for (var i = 0; i < attackStats.source.enemies.length; i++) {
+            var cleaveTarget = attackStats.source.enemies[i];
+            if (cleaveTarget === target) {
+                continue;
+            }
+            // ignore targets that got behind the attacker.
+            if ((cleaveTarget.x - attacker.x) * attacker.direction < 0) {
+                continue;
+            }
+            var distance = getDistance(attacker, cleaveTarget);
+            if (distance > attackStats.attack.range * 32) continue;
+            applyAttackToTarget(cleaveAttackStats, cleaveTarget);
+        }
+    }
     if (ifdefor(attackStats.explode) > 0) {
         var explodeAttackStats = {
             'distance': 0,

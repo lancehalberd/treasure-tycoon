@@ -121,6 +121,9 @@ var abilities = {
     'blinkStrike': {'name': 'Blink Strike', 'bonuses': {'+dexterity': 5}, 'action':
         {'type': 'attack', 'restrictions': ['melee'], 'stats': {'attackPower': 1.5, 'cooldown': 6, '$alwaysHits': 'Never misses', 'teleport': 6}}, 'helpText': 'Instantly teleport to and attack a nearby enemy.'},
     // Dark Knight
+    'soulStrike': {'name': 'Soul Strike', 'bonuses': {'+strength': 10}, 'action':
+        {'type': 'attack', 'restrictions': ['melee'], 'bonuses': {'+skill:range': 2}, 'stats': {'attackPower': 2, 'cooldown': 15, '$alwaysHits': 'Never misses', 'healthSacrifice': .2, 'cleave': 1}},
+        'helpText': 'Sacrifice a portion of your current health to deal a cleaving attack that hits all enemies in an extended range.'},
     // Bard
     // Tier 5 classes
     // Sniper
@@ -169,6 +172,7 @@ var testAbilities = [];
 //var testAbilities = [abilities.storm, abilities.stormDuration, abilities.stormFrequency, abilities.wizard];
 //var testAbilities = [abilities.fireball, abilities.chainReaction, abilities.wizard, abilities.freeze, abilities.absoluteZero, abilities.storm, abilities.stormDuration, abilities.stormFrequency];
 //var testAbilities = [abilities.blinkStrike];
+//var testAbilities = [abilities.soulStrike];
 $.each(abilities, function (key, ability) {
     ability.key = key;
     if (ability.action) {
