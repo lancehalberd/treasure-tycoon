@@ -235,8 +235,17 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
         },
         'draw': function (character) {
             if (self.done || self.delay > 0) return
-            character.context.fillStyle = ifdefor(color, '#000');
-            character.context.fillRect(self.x - character.cameraX - size / 2, self.y - size / 2, size, size);
+            if (self.attackStats.attack.base.animation && projectileAnimations[self.attackStats.attack.base.animation]) {
+                var animation = projectileAnimations[self.attackStats.attack.base.animation];
+                var frame = animation.frames[Math.floor(self.t / 5) % animation.frames.length];
+                console.log(self.attackStats.attack.base.animation);
+                console.log(size);
+                character.context.drawImage(animation.image, frame[0], frame[1], frame[2], frame[3],
+                                  self.x - character.cameraX - size / 2, self.y - size / 2, size, size);
+            } else {
+                character.context.fillStyle = ifdefor(color, '#000');
+                character.context.fillRect(self.x - character.cameraX - size / 2, self.y - size / 2, size, size);
+            }
         }
     };
     self.attackStats.projectile = self;
@@ -267,7 +276,7 @@ function performAttackProper(attackStats, target) {
         attacker.character.projectiles.push(projectile(
             attackStats, attacker.x + attacker.width / 2 + attacker.direction * attacker.width / 4, 240 - 128,
             attacker.direction * 15, -getDistance(attacker, target) / 200, target, 0,
-            attackStats.isCritical ? 'yellow' : 'red', attackStats.isCritical ? 15 : 10));
+            attackStats.isCritical ? 'yellow' : 'red', ifdefor(attackStats.attack.base.size, 10) * (attackStats.isCritical ? 1.5 : 1)));
     } else {
         attackStats.distance = getDistance(attacker, target);
         // apply melee attacks immediately

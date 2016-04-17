@@ -37,6 +37,7 @@ var state = {
     craftingViewContext: craftingViewCanvas.getContext('2d')
 }
 var coins, animaDrops;
+var projectileAnimations = [];
 function initializeCoins() {
     var coinImage = images['gfx/moneyIcon.png'];
     coins = [
@@ -62,11 +63,14 @@ function initializeCoins() {
         {'value': 200000, 'image': coinImage, 'x': 160, 'y': 64, 'width': 24, 'height': 24},
     ];
 }
+function initializeProjectileAnimations() {
+    projectileAnimations['fireball'] = {'image': images['gfx/projectiles.png'], frames:[[0, 0, 16, 16], [32, 0, 16, 16], [64, 0, 16, 16]]}
+}
 // Load any graphic assets needed by the game here.
 async.mapSeries([
     // Original images from project contributors:
     'gfx/person.png', 'gfx/grass.png', 'gfx/cave.png', 'gfx/forest.png', 'gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png',
-    'gfx/treasureChest.png', 'gfx/moneyIcon.png',
+    'gfx/treasureChest.png', 'gfx/moneyIcon.png', 'gfx/projectiles.png',
     // Public domain images:
     'gfx/chest-closed.png', 'gfx/chest-open.png' // http://opengameart.org/content/treasure-chests
 ], loadImage, function(err, results){
@@ -80,6 +84,7 @@ async.mapSeries([
     initializeLevels();
     initializeCraftingImage();
     initializeCoins();
+    initializeProjectileAnimations();
     updateItemCrafting();
     var jobKey = Random.element(ranks[0]);
     newCharacter(characterClasses[jobKey]);

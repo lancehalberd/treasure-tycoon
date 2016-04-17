@@ -102,7 +102,7 @@ var abilities = {
     'wizard': {'name': 'Arcane Prodigy', 'bonuses': {'*spell:skill:area': 2, '*spell:skill:power': 2}},
     'resonance': {'name': 'Resonance', 'bonuses': {'%magicDamage': .2}},
     'fireball': {'name': 'Fireball', 'bonuses': {'+intelligence': 5}, 'action':
-        {'type': 'spell', 'tags': ['spell', 'ranged'], 'color': 'red', 'stats': {'power': ['{intelligence}'], 'range': 12, 'cooldown': 8, '$alwaysHits': 'Never misses', 'explode': 1, 'area': 3, 'areaCoefficient': .5},
+        {'type': 'spell', 'tags': ['spell', 'ranged'], 'animation': 'fireball', 'size': 32, 'color': 'red', 'stats': {'power': ['{intelligence}'], 'range': 12, 'cooldown': 8, '$alwaysHits': 'Never misses', 'explode': 1, 'area': 3, 'areaCoefficient': .5},
         'helpText': 'Conjure an explosive fireball to hurl at enemies dealing {power} damage.'}},
     'chainReaction': {'name': 'Chain Reaction', 'bonuses': {'+fireball:skill:explode': 1}, 'helpText': 'Fireball explosions will chain an extra time.'},
     'freeze': {'name': 'Freeze', 'bonuses': {'+intelligence': 10}, 'action':
