@@ -38,6 +38,14 @@ function useSkill(actor, skill, target) {
             if (getDistance(actor, target) > skill.area * 32 / 2) {
                 return false;
             }
+        } else if (skill.base.tags.indexOf('field') >= 0){
+            // Use half of the nova range since novas deal reduced damage the further
+            // targets are. It would be cool if the player could configure the
+            // trigger distance for these abilities. Maybe each abilities could
+            // have a configuration specific to it.
+            if (getDistance(actor, target) > skill.area * 32) {
+                return false;
+            }
         } else if (getDistance(actor, target) > skill.range * 32) {
             return false;
         }

@@ -258,7 +258,9 @@ function castSpell(attacker, spell, target) {
 }
 function performAttackProper(attackStats, target) {
     var attacker = attackStats.source;
-    if (attackStats.attack.base.tags.indexOf('nova') >= 0) {
+    if (attackStats.attack.base.tags.indexOf('field') >= 0) {
+        attacker.character.effects.push(fieldEffect(attackStats, attacker));
+    } else  if (attackStats.attack.base.tags.indexOf('nova') >= 0) {
         attackStats.explode--;
         attacker.character.effects.push(explosionEffect(attackStats, attacker.x + attacker.width / 2 + attacker.direction * attacker.width / 4, 120));
     } else if (attackStats.attack.base.tags.indexOf('ranged') >= 0) {

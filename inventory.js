@@ -705,7 +705,7 @@ $(document).on('keydown', function(event) {
             gainXP(character.adventurer, character.adventurer.xpToLevel);
             updateAdventurer(character.adventurer);
             $.each(levels, function (key) {
-                if (visibleLevels[key]) {
+                if (visibleLevels[key] && levels[key].skill) {
                     character.currentLevelIndex = key
                     completeArea(character);
                 }

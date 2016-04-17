@@ -109,7 +109,12 @@ var abilities = {
         {'type': 'spell', 'tags': ['spell', 'nova'], 'height': 20, 'color': 'white', 'alpha': .7, 'stats': {'power': ['{intelligence}', '/', 2], 'area': [4, '+', ['{intelligence}', '/', '50']], 'areaCoefficient': 1, 'cooldown': 10,
         '$alwaysHits': 'Never misses', 'slowOnHit': 1},
         'helpText': 'Emit a blast of icy air that deals {power} damage and slows enemies. The effect is less the further away the enemy is.'}},
-    'absoluteZero': {'name': 'Absolute Zero', 'bonuses': {'+intelligence': 5, '*freeze:skill:slowOnHit': 2}, 'helpText': 'Doubles the effectiveness of Freeze\'s slow.'},
+    'storm': {'name': 'Storm', 'bonuses': {'+intelligence': 15}, 'action':
+        {'type': 'spell', 'tags': ['spell', 'field'], 'height': 40, 'color': 'yellow', 'alpha': .2, 'stats': {'hitsPerSecond': 2, 'duration': 5, 'power': ['{intelligence}', '/', 4], 'area': [5, '+', ['{intelligence}', '/', '50']], 'cooldown': 20,
+        '$alwaysHits': 'Never misses'},
+        'helpText': 'Create a cloud of static electricity that randomly deals magic damage to nearby enemies.'}},
+    'stormFrequency': {'name': 'Lightning Rod', 'bonuses': {'*storm:skill:hitsPerSecond': 2}},
+    'stormDuration': {'name': 'Storm Mastery', 'bonuses': {'*storm:skill:duration': 2}},
     // Tier 4 classes
     // Assassin
     // Dark Knight
@@ -158,6 +163,7 @@ var abilities = {
 var testAbilities = [];
 //var testAbilities = [abilities.fireball, abilities.chainReaction, abilities.wizard];
 //var testAbilities = [abilities.freeze, abilities.absoluteZero, abilities.wizard];
+//var testAbilities = [abilities.storm, abilities.stormDuration, abilities.stormFrequency, abilities.wizard];
 $.each(abilities, function (key, ability) {
     ability.key = key;
     if (ability.action) {
