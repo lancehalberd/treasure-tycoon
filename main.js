@@ -64,7 +64,7 @@ function initializeCoins() {
     ];
 }
 function initializeProjectileAnimations() {
-    projectileAnimations['fireball'] = {'image': images['gfx/projectiles.png'], frames:[[0, 0, 16, 16], [32, 0, 16, 16], [64, 0, 16, 16]]}
+    projectileAnimations['fireball'] = {'image': images['gfx/projectiles.png'], frames:[[0, 0, 20, 20], [32, 0, 20, 20], [64, 0, 20, 20]]}
 }
 // Load any graphic assets needed by the game here.
 async.mapSeries([
