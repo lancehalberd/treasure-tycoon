@@ -88,7 +88,6 @@ function fieldEffect(attackStats, followTarget) {
             if (!targets.length) {
                 return;
             }
-            console.log("lightning strike!");
             applyAttackToTarget(attackStats, Random.element(targets));
         },
         'draw': function (character) {
