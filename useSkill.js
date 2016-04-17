@@ -46,7 +46,7 @@ function useSkill(actor, skill, target) {
             if (getDistance(actor, target) > skill.area * 32) {
                 return false;
             }
-        } else if (getDistance(actor, target) > skill.range * 32) {
+        } else if (getDistance(actor, target) > (skill.range + ifdefor(skill.teleport, 0)) * 32) {
             return false;
         }
         if (ifdefor(skill.base.target) === 'self' && actor !== target) {

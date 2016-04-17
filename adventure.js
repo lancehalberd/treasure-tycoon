@@ -371,7 +371,9 @@ function checkToUseSkillOnTarget(character, actor, target) {
 }
 
 function getDistance(actorA, actorB) {
-    return Math.max(0, (actorA.x > actorB.x) ? (actorA.x - actorB.x - 64) : (actorB.x - actorA.x - 64));
+    return Math.max(0, (actorA.x > actorB.x)
+        ? (actorA.x - actorB.x - ifdefor(actorB.width, 64))
+        : (actorB.x - actorA.x - ifdefor(actorA.width, 64)));
 }
 
 function defeatedEnemy(character, enemy) {

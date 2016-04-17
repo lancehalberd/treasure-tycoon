@@ -118,6 +118,8 @@ var abilities = {
     'stormDuration': {'name': 'Storm Mastery', 'bonuses': {'*storm:skill:duration': 2}},
     // Tier 4 classes
     // Assassin
+    'blinkStrike': {'name': 'Blink Strike', 'bonuses': {'+dexterity': 5}, 'action':
+        {'type': 'attack', 'restrictions': ['melee'], 'stats': {'attackPower': 1.5, 'cooldown': 6, '$alwaysHits': 'Never misses', 'teleport': 6}}, 'helpText': 'Instantly teleport to and attack a nearby enemy.'},
     // Dark Knight
     // Bard
     // Tier 5 classes
@@ -166,6 +168,7 @@ var testAbilities = [];
 //var testAbilities = [abilities.freeze, abilities.absoluteZero, abilities.wizard];
 //var testAbilities = [abilities.storm, abilities.stormDuration, abilities.stormFrequency, abilities.wizard];
 //var testAbilities = [abilities.fireball, abilities.chainReaction, abilities.wizard, abilities.freeze, abilities.absoluteZero, abilities.storm, abilities.stormDuration, abilities.stormFrequency];
+//var testAbilities = [abilities.blinkStrike];
 $.each(abilities, function (key, ability) {
     ability.key = key;
     if (ability.action) {

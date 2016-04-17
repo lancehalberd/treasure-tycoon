@@ -186,6 +186,17 @@ function castSpell(attacker, spell, target) {
 }
 function performAttackProper(attackStats, target) {
     var attacker = attackStats.source;
+    // If the attack allows the user to teleport, teleport them to an optimal location for attacking.
+    var teleport = ifdefor(attackStats.attack.teleport, 0) * 32;
+    if (teleport) {
+        // It is easier for me to understand this code if I break it up into facing right and facing left cases.
+        if (attacker.direction > 0) {
+            // Teleport to the location furthest from enemies that leaves the enemy within range to attack.
+            attacker.x = Math.max(attacker.x - teleport, Math.min(attacker.x + teleport, target.x - attackStats.attack.range * 32 - attacker.width));
+        } else {
+            attacker.x = Math.min(attacker.x + teleport, Math.max(attacker.x - teleport, target.x + target.width + attackStats.attack.range * 32));
+        }
+    }
     if (attackStats.attack.base.tags.indexOf('field') >= 0) {
         attacker.character.effects.push(fieldEffect(attackStats, attacker));
     } else  if (attackStats.attack.base.tags.indexOf('nova') >= 0) {
