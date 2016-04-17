@@ -250,11 +250,24 @@ function initalizeMonsters() {
                             '*speed': .3},
         'abilities': [abilities.raiseDead, abilities.summoner], 'tags': ['ranged']
     });
+    addMonster('gnomeWizard', {'name': 'Gnome Wizard', 'source': gnomeSource, 'fpsMultiplier': 1.5,
+        'implicitBonuses': {'+range': 2, '*attackSpeed': 1.5, '+magicDamage': 2,
+                            '*block': .5, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
+                            '*speed': .3},
+        'abilities': [abilities.fireball, abilities.freeze, abilities.wizard], 'tags': ['ranged']
+    });
     addMonster('skeleton', {'name': 'Skeleton', 'source': skeletonSource,
         // Fast to counter ranged heroes, low range+damage + fast attacks to be weak to armored heroes.
         'implicitBonuses': {'+range': -.5, '*minDamage': .4, '*maxDamage': .4, '+accuracy': 2, '*attackSpeed': 2, '*magicDamage': 0,
                             '*block': 0, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': 2}
+    });
+    addMonster('undeadWarrior', {'name': 'Undead Warrior', 'source': skeletonSource,
+        // Fast to counter ranged heroes, low range+damage + fast attacks to be weak to armored heroes.
+        'implicitBonuses': {'+range': -.5, '*minDamage': .4, '*maxDamage': .4, '+accuracy': 2, '*attackSpeed': 2, '*magicDamage': 0,
+                            '*block': 0, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
+                            '*speed': 2},
+        'abilities': [abilities.blinkStrike, abilities.soulStrike, abilities.majorStrength, abilities.vitality]
     });
     //console.log(JSON.stringify(makeMonster('skeleton', 1)));
     addMonster('butterfly', {'name': 'Butterfly', 'source': butterflySource,
@@ -267,8 +280,15 @@ function initalizeMonsters() {
         'implicitBonuses': {'+maxHealth': 20, '*maxHealth': 3, '+range': 5, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5, '*accuracy': 2,
                             '*minDamage': .8, '*maxDamage': .8, '*attackSpeed': .5, '*magicDamage': .5,
                             '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
-                            '*speed': .6},
-            'abilities': [abilities.pet, abilities.summoner], 'tags': ['ranged']
+                            '*speed': .6}, 'tags': ['ranged'],
+        'abilities': [abilities.pet, abilities.summoner]
+    });
+    addMonster('lightningBug', {'name': 'Lightning Bug', 'source': butterflySource,
+        'implicitBonuses': {'*maxHealth': 1.5, '+range': 4, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5, '*accuracy': 2,
+                            '*minDamage': .8, '*maxDamage': .8, '*attackSpeed': .5, '*magicDamage': .5,
+                            '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
+                            '*speed': .6}, 'tags': ['ranged'],
+        'abilities': [abilities.storm]
     });
     addMonster('giantSkeleton', {'name': 'Skelegiant', 'source': skeletonGiantSource,
         'implicitBonuses': {'*maxHealth': 2, '+critDamage': .5, '*magicDamage': 0, '*accuracy': 2,
@@ -279,10 +299,15 @@ function initalizeMonsters() {
                             '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 0, '*magicResist': 0},
         'abilities': [abilities.hook]
     });
+    addMonster('frostGiant', {'name': 'Frost Giant', 'source': skeletonGiantSource,
+        'implicitBonuses': {'*maxHealth': 2, '+critDamage': .5, '*magicDamage': 0, '*accuracy': 2,
+                            '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 0, '*magicResist': 0},
+        'abilities': [abilities.freeze]
+    });
     addMonster('dragon', {'name': 'Dragon', 'source': dragonSource, 'stationary': true, // speed still effects animation
         'implicitBonuses': {'*maxHealth': 1.6, '+range': 8, '+critChance': .15, '*accuracy': 2,
                             '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 2, '+magicResist': .5,
                             '*speed': 2}, 'tags': ['ranged'],
-        'abilities': [abilities.sideStep]
+        'abilities': [abilities.fireball, abilities.sideStep]
     });
 }

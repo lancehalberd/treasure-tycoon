@@ -33,7 +33,9 @@ function useSkill(actor, skill, target) {
     // Action skills have targets and won't activate if that target is out of range or not of the correct type.
     if (actionIndex >= 0) {
         // Let's be careful about using any ability that can't be used more than once every 2 seconds.
-        if (ifdefor(skill.cooldown, 0) > 2 && ifdefor(skill.base.target, 'enemies') === 'enemies') {
+        // For enemies, ignore this code if they are targeting the main character since hitting the main character is
+        // always sufficient reason to use their most powerful abilities.
+        if (!target.isMainCharacter && ifdefor(skill.cooldown, 0) > 2 && ifdefor(skill.base.target, 'enemies') === 'enemies') {
             var health = 0;
             if (isAOE) {
                 var targetsInRange = getEnemiesInRange(actor, skill);

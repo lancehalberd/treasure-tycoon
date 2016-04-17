@@ -226,11 +226,11 @@ function initializeLevels() {
     var index = 0;
     $.each(abilities, function (key, ability) {
         if (!abilitiesUsed[key] && ability.name) {
-            addLevel({'name': 'test-' + (index++), 'level': 1, 'background': backgrounds.forest, 'specialLoot': [simpleJewelLoot], 'next': [],
+            addLevel({'name': 'test-' + (index++), 'level': index, 'background': backgrounds.forest, 'specialLoot': [simpleJewelLoot], 'next': [],
                      'skill':  ability, 'board': { 'fixed' : [{"k":"triangle","p":[105,68],"t":60}], 'spaces' : [] },
                      'enemySkills': [ability],
                      'monsters': ['butterfly', 'skeleton', 'gnome', 'caterpillar', 'dragon'],
-                     'events': [['skeleton', 'gnome'], ['motherfly'], ['dragon'], ['gnomecromancer', 'gnomecromancer'], ['butcher']]});
+                     'events': [['motherfly'], ['giantSkeleton'], ['dragon'], ['gnomecromancer', 'gnomecromancer'], ['undeadWarrior', 'undeadWarrior'], ['lightningBug'], ['frostGiant'], ['gnomeWizard'], ['butcher']]});
         }
     });
 }
