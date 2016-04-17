@@ -109,6 +109,7 @@ var abilities = {
         {'type': 'spell', 'tags': ['spell', 'nova'], 'height': 20, 'color': 'white', 'alpha': .7, 'stats': {'power': ['{intelligence}', '/', 2], 'area': [4, '+', ['{intelligence}', '/', '50']], 'areaCoefficient': 1, 'cooldown': 10,
         '$alwaysHits': 'Never misses', 'slowOnHit': 1},
         'helpText': 'Emit a blast of icy air that deals {power} damage and slows enemies. The effect is less the further away the enemy is.'}},
+    'absoluteZero': {'name': 'Absolute Zero', 'bonuses': {'*freeze:skill:slowOnHit': 2}},
     'storm': {'name': 'Storm', 'bonuses': {'+intelligence': 15}, 'action':
         {'type': 'spell', 'tags': ['spell', 'field'], 'height': 40, 'color': 'yellow', 'alpha': .2, 'stats': {'hitsPerSecond': 2, 'duration': 5, 'power': ['{intelligence}', '/', 4], 'area': [5, '+', ['{intelligence}', '/', '50']], 'cooldown': 20,
         '$alwaysHits': 'Never misses'},
