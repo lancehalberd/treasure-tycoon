@@ -229,9 +229,14 @@ function initalizeMonsters() {
     var butterflySource = {'image': enemySheet('gfx/caterpillar.png'), 'offset': 4 * 48, 'width': 48, 'flipped': true, frames: 4};
     var skeletonGiantSource = {'image': enemySheet('gfx/skeletonGiant.png'), 'offset': 0, 'width': 48, 'flipped': true, frames: 7};
     var dragonSource = {'image': enemySheet('gfx/dragonEastern.png'), 'offset': 0, 'width': 48, 'flipped': false, frames: 5};
+    var batSource = {'image': enemySheet('gfx/bat.png'), 'offset': 0, 'width': 32, 'height': 32, 'flipped': false, frames: 5, 'y': 20};
     addMonster('dummy', {
         'name': 'Dummy', 'source': caterpillarSource,
         'implicitBonuses': {'+magicDamage': 2}
+    });
+    addMonster('bat', {
+        'name': 'Bat', 'source': batSource,
+        'implicitBonuses': {'*evasion': 1.2, '*accuracy': 1.2, '*damage': .4, '*speed': 2.5}
     });
     addMonster('caterpillar', {
         'name': 'Caterpillar', 'source': caterpillarSource,

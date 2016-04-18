@@ -466,34 +466,28 @@ function drawMonster(character, monster, index) {
     if (monster.pull) {
         frame = 0;
     }
+    context.save();
     if (monster.cloaked) {
         context.globalAlpha = .2;
     }
-    if ((source.flipped && monster.direction < 0) || (!source.flipped && monster.direction > 0)) {
-        context.translate((monster.x - cameraX + source.width), 0);
-        context.scale(-1, 1);
-        context.drawImage(monster.image, frame * source.width + source.offset, 0 , source.width, 64,
-                          -source.width, 240 - 128 - 72, source.width * 2, 128);
-        context.scale(-1, 1);
-        context.translate(-(monster.x - cameraX + source.width), 0);
-    } else {
-        context.translate((monster.x - cameraX + source.width), 0);
-        context.drawImage(monster.image, frame * source.width + source.offset, 0 , source.width, 64,
-                          -source.width, 240 - 128 - 72, source.width * 2, 128);
-        context.translate(-(monster.x - cameraX + source.width), 0);
-    }
-    context.globalAlpha = 1;
     monster.left = monster.x - cameraX;
-    monster.top = 240 - 128 - 72;
+    monster.top = 240 - ifdefor(source.height, 64) * 2 - 72 - ifdefor(source.y, 0) * 2;
     monster.width = source.width * 2;
-    monster.height = 128;
+    monster.height = ifdefor(source.height, 64) * 2;
+    context.translate(monster.left + monster.width / 2, 0);
+    if ((source.flipped && monster.direction < 0) || (!source.flipped && monster.direction > 0)) {
+        context.scale(-1, 1);
+    }
+    context.drawImage(monster.image, frame * source.width + source.offset, 0 , source.width, ifdefor(source.height, 64),
+                      -monster.width / 2, monster.top, monster.width, monster.height);
+    context.restore();
     // Uncomment to draw a reference of the character to show where left side of monster should be
     // context.drawImage(character.personCanvas, 0 * 32, 0 , 32, 64, monster.x - cameraX, 240 - 128 - 72, 64, 128);
     //context.fillRect(monster.x - cameraX, 240 - 128 - 72, 64, 128);
     // life bar
-    drawBar(context, monster.x - cameraX + source.width - 32, 240 - 128 - 36 - 5 * index, 64, 4, 'white', monster.color, monster.health / monster.maxHealth);
+    drawBar(context, monster.x - cameraX + source.width - 32, 240 - 128 - 36 - 5 * index - ifdefor(source.y, 0) * 2, 64, 4, 'white', monster.color, monster.health / monster.maxHealth);
     if (ifdefor(monster.reflectBarrier, 0)) {
-        drawBar(context, monster.x - cameraX + source.width - 32, 240 - 128 - 36 - 5 * index - 2, 64, 4, 'white', 'blue', monster.reflectBarrier / monster.maxReflectBarrier);
+        drawBar(context, monster.x - cameraX + source.width - 32, 240 - 128 - 36 - 5 * index - 2 - ifdefor(source.y, 0) * 2, 64, 4, 'white', 'blue', monster.reflectBarrier / monster.maxReflectBarrier);
     }
 }
 function drawAdventurer(character, adventurer, index) {

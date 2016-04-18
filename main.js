@@ -72,7 +72,8 @@ async.mapSeries([
     'gfx/person.png', 'gfx/grass.png', 'gfx/cave.png', 'gfx/forest.png', 'gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png',
     'gfx/treasureChest.png', 'gfx/moneyIcon.png', 'gfx/projectiles.png',
     // Public domain images:
-    'gfx/chest-closed.png', 'gfx/chest-open.png' // http://opengameart.org/content/treasure-chests
+    'gfx/chest-closed.png', 'gfx/chest-open.png', // http://opengameart.org/content/treasure-chests
+    'gfx/bat.png' //http://opengameart.org/content/bat-32x32
 ], loadImage, function(err, results){
     ['gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png'].forEach(function (imageKey) {
         images[imageKey + '-enchanted'] = makeTintedImage(images[imageKey], '#af0');
