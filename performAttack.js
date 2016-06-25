@@ -179,7 +179,6 @@ function createSpellStats(attacker, spell) {
     };
 }
 function performAttack(attacker, attack, target) {
-    var character = attacker.character;
     var attackStats = createAttackStats(attacker, attack);
     attacker.health -= attackStats.healthSacrificed;
     attacker.attackCooldown = attacker.time + 1 / (attackStats.attack.attackSpeed * Math.max(.1, (1 - attacker.slow)));
@@ -187,7 +186,6 @@ function performAttack(attacker, attack, target) {
     return attackStats;
 }
 function castSpell(attacker, spell, target) {
-    var character = attacker.character;
     var attackStats = createSpellStats(attacker, spell);
     attacker.health -= attackStats.healthSacrificed;
     attacker.attackCooldown = attacker.time + .2;
@@ -207,15 +205,18 @@ function performAttackProper(attackStats, target) {
             attacker.x = Math.min(attacker.x + teleport, Math.max(attacker.x - teleport, target.x + target.width + attackStats.attack.range * 32));
         }
     }
-    if (attackStats.attack.base.tags.indexOf('field') >= 0) {
+    if (attackStats.attack.base.tags.indexOf('song') >= 0) {
+        attacker.character.effects.push(songEffect(attackStats));
+    } else if (attackStats.attack.base.tags.indexOf('field') >= 0) {
         attacker.character.effects.push(fieldEffect(attackStats, attacker));
-    } else  if (attackStats.attack.base.tags.indexOf('nova') >= 0) {
+    } else if (attackStats.attack.base.tags.indexOf('nova') >= 0) {
         attackStats.explode--;
         attacker.character.effects.push(explosionEffect(attackStats, attacker.x + attacker.width / 2 + attacker.direction * attacker.width / 4, 120));
     } else if (attackStats.attack.base.tags.indexOf('ranged') >= 0) {
+        var distance = getDistance(attacker, target);
         attacker.character.projectiles.push(projectile(
             attackStats, attacker.x + attacker.width / 2 + attacker.direction * attacker.width / 4, 240 - 128,
-            attacker.direction * 15, -getDistance(attacker, target) / 200, target, 0,
+            attacker.direction * Math.max(15, distance / 25), -1, target, 0,
             attackStats.isCritical ? 'yellow' : 'red', ifdefor(attackStats.attack.base.size, 10) * (attackStats.isCritical ? 1.5 : 1)));
     } else {
         attackStats.distance = getDistance(attacker, target);
@@ -310,9 +311,12 @@ function applyAttackToTarget(attackStats, target) {
     damage = Math.max(0, damage - blockRoll);
     magicDamage = Math.max(0, magicDamage - magicBlockRoll);
     // Apply armor and magic resistance mitigation
-    // TODO: Implement armor penetration here.
-    damage = Math.round(applyArmorToDamage(damage, target.armor));
-    magicDamage = Math.round(magicDamage * Math.max(0, (1 - target.magicResist)));
+    if (!ifdefor(attack.ignoreArmor)) {
+        damage = Math.round(applyArmorToDamage(damage, target.armor));
+    }
+    if (!ifdefor(attack.ignoreResistance)) {
+        magicDamage = Math.round(magicDamage * Math.max(0, (1 - target.magicResist)));
+    }
     var totalDamage = damage + magicDamage;
     attackStats.totalDamage = totalDamage;
     attackStats.deflected = false;

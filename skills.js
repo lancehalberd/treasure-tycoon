@@ -78,7 +78,7 @@ var abilities = {
     'ranger': {'name': 'Taming', 'bonuses': {'*minion:healthBonus': 2, '*minion:attackSpeedBonus': 1.5, '*minion:speedBonus': 1.5}},
     'finesse':  {'name': 'Finesse', 'bonuses': {'%attackSpeed': .2}},
     'pet': {'name': 'Pet', 'action':
-            {'type': 'minion', 'target': 'self', 'tags': ['pet'], 'monsterKey': 'caterpillar', 'stats': {'limit': 1, 'cooldown': 30, 'healthBonus': 1, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1.5},
+            {'type': 'minion', 'target': 'self', 'tags': ['pet'], 'monsterKey': 'petCaterpillar', 'stats': {'limit': 1, 'cooldown': 30, 'healthBonus': 1, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1},
             'helpText': 'Call up to 1 pet to fight with you.'}},
     //'petFood': {'name': 'Pet Food', 'bonuses': {'+pet:skill:cooldown': -3, '+pet:skill:healthBonus': 1}, 'helpText': 'Pet has 50% more health and can be called more frequently.'},
     //'petTraining': {'name': 'Pet Training', 'next': ['whistle'], 'bonuses': {'+pet:skill:cooldown': -3, '+pet:skill:damageBonus': .5}, 'helpText': 'Pet deals 50% more damage and can be called more frequently.'},
@@ -125,18 +125,48 @@ var abilities = {
         {'type': 'attack', 'restrictions': ['melee'], 'bonuses': {'+skill:range': 2}, 'stats': {'attackPower': 2, 'cooldown': 15, '$alwaysHits': 'Never misses', 'healthSacrifice': .2, 'cleave': 1}},
         'helpText': 'Sacrifice a portion of your current health to deal a cleaving attack that hits all enemies in an extended range.'},
     // Bard
+    'attackSong': {'name': 'Furious Tocatta', 'bonuses': {'+dexterity': 10}, 'action':
+        // The stats on this buff should be based on the caster, not the target.
+        {'type': 'song', 'tags': ['song', 'field'], 'target': 'allies', 'color': 'orange', 'alpha': .2, 'stats': {'area': 8, 'cooldown': 30, 'duration': 10,
+        'buff': {'stats': {'%attackSpeed': [.2, '+', ['{dexterity}', '/', 1000]], '%accuracy': [.2, '+', ['{intelligence}', '/', 1000]], '%damage': [.2, '+', ['{strength}', '/', 1000]]}}
+        }, 'helpText': 'Play a tune that inspires you and your allies to attack more fiercely, granting all allies in range: {buff}'}},
+    'defenseSong': {'name': 'Rondo of Hope', 'bonuses': {'+intelligence': 10}, 'action':
+        // The stats on this buff should be based on the caster, not the target.
+        {'type': 'song', 'tags': ['song', 'field'], 'target': 'allies', 'color': 'purple', 'alpha': .2, 'stats': {'area': 10, 'cooldown': 45, 'duration': 20,
+        'buff': {'stats': {'%evasion': [.2, '+', ['{dexterity}', '/', 1000]], '%block': [.2, '+', ['{intelligence}', '/', 1000]], '%health': [.2, '+', ['{strength}', '/', 1000]]}}
+        }, 'helpText': 'Play an uplifting rondo that steels you and your allies defenses for battle, granting all allies in range: {buff}'}},
+    'heroSong': {'name': 'Hero\'s Ballade', 'bonuses': {'+intelligence': 10, '+dexterity': 10}, 'action':
+        // The stats on this buff should be based on the caster, not the target.
+        {'type': 'heroSong', 'tags': ['song', 'field'], 'target': 'allies', 'color': 'gold', 'alpha': .2, 'stats': {'area': 8, 'cooldown':  ['300', '*', [100, '/', [100, '+', '{intelligence}']]], 'duration': [2, '+', ['{dexterity}' , '/', '200']],
+        'buff': {'stats': {'$invulnerable': 'Invulnerability', '+healthRegen': ['{intelligence}', '/', 10], '%critChance': ['{dexterity}', '/', 500]}}
+        }, 'helpText': 'Play a ballade to inspire heroic feats granting all allies in range: {buff}'}},
     // Tier 5 classes
     // Sniper
-    //'sniper': {'name': 'Sharp Shooter', 'bonuses': {'*bow:critChance': 1.5, '*bow:critMultiplier': 1.5, '$bow:criticalPiercing': 'Critical strikes hit multiple enemies.'}},
+    'sniper': {'name': 'Sharp Shooter', 'bonuses': {'*bow:critChance': 1.5, '*bow:critDamage': 1.5, '$bow:criticalPiercing': 'Critical strikes hit multiple enemies.'}},
     'majorDexterity': {'name': 'Major Dexterity', 'bonuses': {'+dexterity': 20}},
+    'powerShot': {'name': 'Power Shot', 'bonuses': {'+dexterity': 5},
+        'action': {'type': 'attack', 'restrictions': ['ranged'], 'bonuses': {'+skill:range': 5, '+skill:critChance': 1},
+                    'stats': {'attackPower': 1.5, 'cooldown': 10, '$alwaysHits': 'Never misses'},
+                    'helpText': 'Perform a powerful long ranged attack that always strikes critically.'}},
+    'snipe': {'name': 'Snipe', 'bonuses': {'+dexterity': 15},
+        'action': {'type': 'attack', 'restrictions': ['ranged'], 'bonuses': {'+skill:range': 10},
+                    'stats': {'attackPower': 2, 'cooldown': 30, '$ignoreArmor': 'Ignore armor and block',
+                    '$ignoreResistance': 'Ignore magic resistance and magic block', '$alwaysHits': 'Never misses'},
+                    'helpText': 'Precisely target an enemies weak spot from any distance ignoring all armor and resistances.'}},
+
     // Samurai
     'majorStrength': {'name': 'Major Strength', 'bonuses': {'+strength': 20}},
     'sideStep': {'name': 'Side Step', 'bonuses': {'+evasion': 2}, 'reaction':
-             {'type': 'dodge', 'stats': {'cooldown': 10, 'rangedOnly': true, 'moveDuration': .05, 'distance': 64, 'buff': {'stats': {'+critChance': .2, 'duration': 2}}}, 'helpText': 'Side step a ranged attack and advance toward enemis gaining: {buff}'}},
+             {'type': 'dodge', 'stats': {'cooldown': 10, 'rangedOnly': true, 'moveDuration': .05, 'distance': 64, 'buff': {'stats': {'+critChance': .2, 'duration': 2}}},
+        'helpText': 'Side step a ranged attack and advance toward enemis gaining: {buff}'}},
+    'dragonSlayer': {'name': 'Dragon Slayer', 'bonuses': {'+strength': 15},
+        'action': {'type': 'attack', 'restrictions': ['melee'], 'bonuses': {'+skill:critDamage': .5, '*skill:critChance': 2},
+                   'stats': {'attackPower': 3, 'cooldown': 20, '$alwaysHits': 'Never misses'},
+        'helpText': 'Strike with unparalleled ferocity.'}},
     // Sorcerer
     'majorIntelligence': {'name': 'Major Intelligence', 'bonuses': {'+intelligence': 20}},
     'raiseDead': {'name': 'Raise Dead', 'action':
-            {'type': 'minion', 'target': 'self', 'tags': ['spell', 'skeleton'], 'monsterKey': 'skeleton', 'stats': {'limit': 1, 'cooldown': 10, 'healthBonus': .5, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1},
+            {'type': 'minion', 'target': 'enemies', 'targetDeadUnits': true, 'consumeCorpse': true, 'tags': ['spell'], 'stats': {'limit': 10, 'chance': .4, 'cooldown': .5, 'healthBonus': 1, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1},
             'helpText': 'Raise a skeleton to fight for you.'}},
     // Tier 6 classes
     // Ninja
@@ -166,6 +196,7 @@ var abilities = {
     // Monster abilities
     'summoner': {'bonuses': {'*minion:skill:limit': 2, '*minion:skill:cooldown': .5, '*minion:skill:healthBonus': 2, '*minion:skill:damageBonus': 2}}
 };
+var testJob = 'priest';
 var testAbilities = [];
 //var testAbilities = [abilities.fireball, abilities.chainReaction, abilities.wizard];
 //var testAbilities = [abilities.freeze, abilities.absoluteZero, abilities.wizard];
@@ -173,6 +204,13 @@ var testAbilities = [];
 //var testAbilities = [abilities.fireball, abilities.chainReaction, abilities.wizard, abilities.freeze, abilities.absoluteZero, abilities.storm, abilities.stormDuration, abilities.stormFrequency];
 //var testAbilities = [abilities.blinkStrike];
 //var testAbilities = [abilities.soulStrike];
+//var testAbilities = [abilities.pet, abilities.attackSong];
+//var testAbilities = [abilities.pet, abilities.defenseSong];
+//var testAbilities = [abilities.pet, abilities.heroSong];
+//var testAbilities = [abilities.pet, abilities.attackSong, abilities.defenseSong, abilities.heroSong];
+//var testAbilities = [abilities.sniper, abilities.snipe];
+//var testAbilities = [abilities.majorStrength, abilities.dragonSlayer];
+var testAbilities = [abilities.raiseDead];
 $.each(abilities, function (key, ability) {
     ability.key = key;
     if (ability.action) {

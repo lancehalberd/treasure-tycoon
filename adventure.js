@@ -9,6 +9,7 @@ function startArea(character, index) {
     character.adventurer.stunned = 0;
     character.adventurer.pull = null;
     character.adventurer.timedEffects = [];
+    character.adventurer.fieldEffects = [];
     character.adventurer.percentHealth = 1;
     character.adventurer.health = character.adventurer.maxHealth;
     character.adventurer.time = 0;
@@ -35,8 +36,14 @@ function startArea(character, index) {
     character.$panel.find('.js-infoMode').hide();
     character.$panel.find('.js-adventureMode').show();
 }
-function isActorDead(actor) {
-    return actor.health <= 0 && !actor.undying && !actor.pull;
+function checkIfActorDied(actor) {
+    if (!actor.isDead && actor.health <= 0 && !actor.undying && !actor.pull) {
+        actor.isDead = true;
+        actor.timeOfDeath = actor.time;
+        if (actor.character.enemies.indexOf(actor) >= 0 ) {
+            defeatedEnemy(actor.character, actor);
+        }
+    }
 }
 
 function timeStopLoop(character, delta) {
@@ -49,7 +56,8 @@ function timeStopLoop(character, delta) {
         return false;
     }
     processStatusEffects(character, actor, delta);
-    if (isActorDead(actor)) {
+    checkIfActorDied(actor);
+    if (actor.isDead) {
         character.timeStopEffect = null;
         return false;
     }
@@ -57,16 +65,7 @@ function timeStopLoop(character, delta) {
     // bars from going negative.
     for (var i = 0; i < actor.enemies.length; i++) {
         var enemy = actor.enemies[i];
-        if (isActorDead(enemy)) {
-            if (character.enemies.indexOf(enemy) >= 0) {
-                defeatedEnemy(character, enemy);
-            }
-            if (enemy.isMainCharacter) {
-                displayInfoMode(character);
-                return true;
-            }
-            actor.enemies.splice(i--, 1);
-        }
+        checkIfActorDied(enemy);
     }
     checkToStartNextWave(character);
     expireTimedEffects(character, actor);
@@ -75,6 +74,13 @@ function timeStopLoop(character, delta) {
     actor.health = Math.min(actor.maxHealth, Math.max(0, actor.health));
     actor.percentHealth = actor.health / actor.maxHealth;
     return true;
+}
+function removeActor(actor) {
+    var index = actor.allies.indexOf(actor);
+    actor.allies.splice(index, 1);
+    if (actor.isMainCharacter) {
+        displayInfoMode(actor.character);
+    }
 }
 function checkToStartNextWave(character) {
     // Check to start next wave/complete level.
@@ -106,26 +112,14 @@ function adventureLoop(character, delta) {
         actor.animationTime += delta * Math.max(.1, 1 - actor.slow);
         processStatusEffects(character, actor, delta);
     });
-    // Check for defeated player/enemies.
-    if (isActorDead(adventurer)) {
-        displayInfoMode(character);
-        return;
-    }
     for (var i = 0; i < character.enemies.length; i++) {
         var enemy = character.enemies[i];
-        if (isActorDead(enemy)) {
-            character.enemies.splice(i--, 1);
-            defeatedEnemy(character, enemy);
-            continue;
-        }
+        checkIfActorDied(enemy);
         expireTimedEffects(character, enemy);
     }
     for (var i = 0; i < character.allies.length; i++) {
         var ally = character.allies[i];
-        if (isActorDead(ally, character)) {
-            character.allies.splice(i--, 1);
-            continue;
-        }
+        checkIfActorDied(ally);
         expireTimedEffects(character, ally);
     }
     for (var i = 0; i < character.objects.length; i++) {
@@ -146,10 +140,6 @@ function adventureLoop(character, delta) {
     });
     everybody.forEach(function (actor) {
         moveActor(actor, delta);
-    });
-    everybody.forEach(function (actor) {
-        actor.health = Math.min(actor.maxHealth, Math.max(0, actor.health));
-        actor.percentHealth = actor.health / actor.maxHealth;
     });
     for (var i = 0; i < character.projectiles.length; i++) {
         character.projectiles[i].update(character);
@@ -177,9 +167,29 @@ function adventureLoop(character, delta) {
             character.textPopups.splice(i--, 1);
         }
     }
+    everybody.forEach(function (actor) {
+        if (actor.timeOfDeath < actor.time - 1) {
+            removeActor(actor);
+        }
+        // Since damage can be dealt at various points in the frame, it is difficult to pin point what damage was dealt
+        // since the last action check. To this end, we keep track of their health over the last five frames and use
+        // these values to determine how much damage has accrued recendebug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);tly for abilities that trigger when a character
+        // is in danger.
+        actor.health = Math.min(actor.maxHealth, Math.max(0, actor.health));
+        if ((actor.time * 1000) % 100 < 20) {
+            if (!actor.healthValues) {
+                actor.healthValues = [];
+            }
+            actor.healthValues.unshift(actor.health);
+            while (actor.healthValues.length > 10) {
+                actor.healthValues.pop();
+            }
+        }
+        actor.percentHealth = actor.health / actor.maxHealth;
+    });
 }
 function moveActor(actor, delta) {
-    if (actor.stunned || actor.blocked || actor.target || actor.pull || ifdefor(actor.stationary)) {
+    if (actor.isDead || actor.stunned || actor.blocked || actor.target || actor.pull || ifdefor(actor.stationary)) {
         return;
     }
     // Make sure the main character doesn't run in front of their allies.
@@ -198,6 +208,7 @@ function moveActor(actor, delta) {
     actor.x += speedBonus * actor.speed * actor.direction * Math.max(.1, 1 - actor.slow) * delta;
 }
 function expireTimedEffects(character, actor) {
+    if (actor.isDead ) return;
     var changed = false;
     for (var i = 0; i < actor.timedEffects.length; i++) {
         if (actor.timedEffects[i].expirationTime && actor.timedEffects[i].expirationTime < actor.time) {
@@ -210,6 +221,7 @@ function expireTimedEffects(character, actor) {
     }
 }
 function addTimedEffect(actor, effect) {
+    if (actor.isDead ) return;
     effect = copy(effect);
     // effects without duration last indefinitely.
     if (effect.duration) {
@@ -247,13 +259,14 @@ function startNextWave(character) {
     character.waveIndex++;
 }
 function processStatusEffects(character, target, delta) {
+    if (target.isDead ) return;
     // Apply DOT, movement effects and other things that happen to targets here.
     // Target becomes 50% less slow over 1 second, or loses .1 slow over one second, whichever is faster.
     if (target.slow) {
         target.slow = Math.max(0, Math.min(target.slow - .5 * target.slow * delta, target.slow - .1 * delta));
     }
     if (target.health > 0 && ifdefor(target.healthRegen)) {
-        target.health += target.healthRegen * delta;
+        target.health = Math.min(target.health + target.healthRegen * delta, target.maxHealth);
     }
     if (target.pull && target.dominoAttackStats) {
         for (var i = 0; i < target.allies.length; i++) {
@@ -302,7 +315,7 @@ function getAllInRange(x, range, targets) {
     return targetsInRange
 }
 function runActorLoop(character, actor) {
-    if (actor.stunned) return;
+    if (actor.isDead || actor.stunned) return;
     var targets = [];
     for (var i = 0; i < actor.allies.length; i++) {
         var target = actor.allies[i];
@@ -314,7 +327,7 @@ function runActorLoop(character, actor) {
         var target = actor.enemies[i];
         target.priority = getDistance(actor, target);
         if (target.priority <= 0) {
-            actor.blocked = true;
+            if (!target.isDead) actor.blocked = true;
             if (actor.chargeEffect) {
                 var attackStats = createAttackStats(actor, actor.chargeEffect.chargeSkill);
                 attackStats.distance = actor.chargeEffect.distance;
@@ -391,165 +404,4 @@ function defeatedEnemy(character, enemy) {
         loot.gainLoot(character);
         loot.addTreasurePopup(character, enemy.x +enemy.base.source.width / 2 + index * 20, 240 - 140, 0, -1, index * 10);
     });
-}
-function drawAdventure(character) {
-    var adventurer = character.adventurer;
-    var context = character.context;
-    var cameraX = character.cameraX;
-    context.clearRect(0, 0, character.canvas.width, character.canvas.height);
-    var background = ifdefor(character.area.background, backgrounds.field);
-    var cloudX = cameraX + character.time * .5;
-    background.forEach(function(section) {
-        var source = section.source;
-        var y = ifdefor(section.y, 0);
-        var height = ifdefor(section.height, 240 - y);
-        var width = ifdefor(section.width, 64);
-        var parallax = ifdefor(section.parallax, 1);
-        var spacing = ifdefor(section.spacing, 1);
-        var velocity = ifdefor(section.velocity, 0);
-        var alpha = ifdefor(section.alpha, 1);
-        context.globalAlpha = alpha;
-        for (var i = 0; i <= 704; i += 64 * spacing) {
-            var x = (768 + (i - (cameraX - character.time * velocity) * parallax) % 768) % 768 - 64;
-            context.drawImage(source.image, source.x, source.y, source.width, source.height,
-                                  x, y, width, height);
-        }
-        context.globalAlpha = 1;
-    });
-    character.objects.forEach(function (object, index) {
-        object.draw(character.context, object.x - cameraX, 240 - 128);
-    });
-    character.enemies.forEach(function (actor, index) {
-        drawActor(character, actor, index)
-    });
-    character.allies.forEach(function (actor, index) {
-        if (actor == adventurer) return;
-        drawActor(character, actor, -index)
-    });
-    drawActor(character, adventurer, 0);
-    context.globalAlpha = 1;
-    // xp bar
-    drawBar(context, 35, 240 - 45, 400, 6, 'white', '#00C000', adventurer.xp / adventurer.xpToLevel);
-    context.font = "20px sans-serif";
-    context.textAlign = 'right'
-    context.fillText(adventurer.level, 30, 240 - 35);
-    // Draw text popups such as damage dealt, item points gained, and so on.
-    context.fillStyle = 'red';
-    for (var i = 0; i < character.treasurePopups.length; i++) {
-        character.treasurePopups[i].draw(character);
-    }
-    for (var i = 0; i < character.projectiles.length; i++) {
-        character.projectiles[i].draw(character);
-    }
-    for (var i = 0; i < character.effects.length; i++) {
-        character.effects[i].draw(character);
-    }
-    for (var i = 0; i < character.textPopups.length; i++) {
-        var textPopup = character.textPopups[i];
-        context.fillStyle = ifdefor(textPopup.color, "red");
-        context.font = ifdefor(textPopup.font, "20px sans-serif");
-        context.textAlign = 'center'
-        context.fillText(textPopup.value, textPopup.x - cameraX, textPopup.y);
-    }
-    drawMinimap(character);
-}
-function drawActor(character, actor, index) {
-    if (actor.personCanvas) drawAdventurer(character, actor, index);
-    else drawMonster(character, actor, index);
-}
-function drawMonster(character, monster, index) {
-    var cameraX = character.cameraX;
-    var context = character.context;
-    var fps = ifdefor(monster.base.fpsMultiplier, 1) * 3 * monster.speed / 100;
-    var source = monster.base.source;
-    var frame = Math.floor(monster.animationTime * fps) % source.frames;
-    if (monster.pull) {
-        frame = 0;
-    }
-    context.save();
-    if (monster.cloaked) {
-        context.globalAlpha = .2;
-    }
-    monster.left = monster.x - cameraX;
-    monster.top = 240 - ifdefor(source.height, 64) * 2 - 72 - ifdefor(source.y, 0) * 2;
-    monster.width = source.width * 2;
-    monster.height = ifdefor(source.height, 64) * 2;
-    context.translate(monster.left + monster.width / 2, 0);
-    if ((source.flipped && monster.direction < 0) || (!source.flipped && monster.direction > 0)) {
-        context.scale(-1, 1);
-    }
-    context.drawImage(monster.image, frame * source.width + source.offset, 0 , source.width, ifdefor(source.height, 64),
-                      -monster.width / 2, monster.top, monster.width, monster.height);
-    context.restore();
-    // Uncomment to draw a reference of the character to show where left side of monster should be
-    // context.drawImage(character.personCanvas, 0 * 32, 0 , 32, 64, monster.x - cameraX, 240 - 128 - 72, 64, 128);
-    //context.fillRect(monster.x - cameraX, 240 - 128 - 72, 64, 128);
-    // life bar
-    drawBar(context, monster.x - cameraX + source.width - 32, 240 - 128 - 36 - 5 * index - ifdefor(source.y, 0) * 2, 64, 4, 'white', monster.color, monster.health / monster.maxHealth);
-    if (ifdefor(monster.reflectBarrier, 0)) {
-        drawBar(context, monster.x - cameraX + source.width - 32, 240 - 128 - 36 - 5 * index - 2 - ifdefor(source.y, 0) * 2, 64, 4, 'white', 'blue', monster.reflectBarrier / monster.maxReflectBarrier);
-    }
-}
-function drawAdventurer(character, adventurer, index) {
-    var cameraX = character.cameraX;
-    var context = character.context;
-    adventurer.left = adventurer.x - cameraX;
-    adventurer.top = 240 - 128 - 72;
-    adventurer.width = 64;
-    adventurer.height = 128;
-    //draw character
-    if (adventurer.target && adventurer.lastAction && adventurer.lastAction.attackSpeed) { // attacking loop
-        var attackSpeed = adventurer.lastAction.attackSpeed;
-        var attackFps = 1 / ((1 / attackSpeed) / fightLoop.length);
-        var frame = Math.floor(Math.abs(adventurer.animationTime - adventurer.attackCooldown) * attackFps) % fightLoop.length;
-        context.drawImage(adventurer.personCanvas, fightLoop[frame] * 32, 0 , 32, 64,
-                        adventurer.x - cameraX, 240 - 128 - 72, 64, 128);
-    } else { // walking loop
-        if (adventurer.cloaked) {
-            context.globalAlpha = .2;
-        }
-        var fps = Math.floor(3 * adventurer.speed / 100);
-        var frame = Math.floor(adventurer.animationTime * fps) % walkLoop.length;
-        if (adventurer.pull || adventurer.stunned) {
-            frame = 0;
-        }
-        context.drawImage(adventurer.personCanvas, walkLoop[frame] * 32, 0 , 32, 64,
-                        adventurer.x - cameraX, 240 - 128 - 72, 64, 128);
-    }
-    //context.fillRect(adventurer.x - cameraX, 240 - 128 - 72, 64, 128);
-    // life bar
-    drawBar(context, adventurer.x - cameraX, 240 - 128 - 36 - 5 * index, 64, 4, 'white', 'red', adventurer.health / adventurer.maxHealth);
-    if (ifdefor(adventurer.reflectBarrier, 0)) {
-        drawBar(context, adventurer.x - cameraX, 240 - 128 - 36 - 5 * index - 2, 64, 4, 'white', 'blue', adventurer.reflectBarrier / adventurer.maxReflectBarrier);
-    }
-}
-function drawMinimap(character) {
-    var y = 240 - 18;
-    var height = 6;
-    var x = 10;
-    var width = 650;
-    var context = character.context;
-    drawBar(context, x, y, width, height, 'white', 'white', character.waveIndex / character.area.waves.length);
-    for (var i = 0; i < character.area.waves.length; i++) {
-        var centerX = x + (i + 1) * width / character.area.waves.length;
-        var centerY = y + height / 2;
-        context.fillStyle = 'white';
-        context.beginPath();
-            context.arc(centerX, centerY, 11, 0, 2 * Math.PI);
-        context.fill();
-    }
-    context.fillStyle = 'orange';
-    context.fillRect(x + 1, y + 1, (width - 2) * (character.waveIndex / character.area.waves.length) - 10, height - 2);
-    for (var i = 0; i < character.area.waves.length; i++) {
-        var centerX = x + (i + 1) * width / character.area.waves.length;
-        var centerY = y + height / 2;
-        if (i < character.waveIndex) {
-            context.fillStyle = 'orange';
-            context.beginPath();
-            context.arc(centerX, centerY, 10, 0, 2 * Math.PI);
-            context.fill();
-        }
-        var waveCompleted = (i < character.waveIndex - 1)  || (i <= character.waveIndex && (character.enemies.length + character.objects.length) === 0);
-        character.area.waves[i].draw(context, waveCompleted, centerX, centerY);
-    }
 }

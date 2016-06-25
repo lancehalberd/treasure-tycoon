@@ -88,6 +88,7 @@ async.mapSeries([
     initializeProjectileAnimations();
     updateItemCrafting();
     var jobKey = Random.element(ranks[0]);
+    jobKey = ifdefor(testJob, jobKey);
     newCharacter(characterClasses[jobKey]);
     gainJewel(makeJewel(1, 'triangle', [90, 5, 5], 1.1));
     gainJewel(makeJewel(1, 'triangle', [5, 90, 5], 1.1));
@@ -290,7 +291,7 @@ function checkRemoveToolTip() {
     if (overJewel || draggedJewel || overCraftingItem) {
         return;
     }
-    if (canvasPopupTarget && !isActorDead(canvasPopupTarget) && canvasPopupTarget.character.area) {
+    if (canvasPopupTarget && !canvasPopupTarget.isDead && canvasPopupTarget.character.area) {
         if (isPointInRect(canvasCoords[0], canvasCoords[1], canvasPopupTarget.left, canvasPopupTarget.top, canvasPopupTarget.width, canvasPopupTarget.height)) {
             return;
         }

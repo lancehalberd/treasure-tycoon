@@ -22,6 +22,17 @@ function useSkill(actor, skill, target) {
         skill.readyAt = actor.time + 1000;
         return false;
     }
+    if (ifdefor(skill.base.targetDeadUnits) && !target.isDead) {
+        // Skills that target dead units can only be used on targets that are dying.
+        return false;
+    } else if (!ifdefor(skill.base.targetDeadUnits) && target.isDead) {
+        // Normal skills may not target dying units.
+        return false;
+    }
+    var logStop = false;
+    if (ifdefor(skill.base.targetDeadUnits)) {
+        logStop = true;
+    }
     for (var i = 0; i < ifdefor(skill.base.restrictions, []).length; i++) {
         if (actor.tags.indexOf(skill.base.restrictions[i]) < 0) {
             return false;
@@ -32,6 +43,31 @@ function useSkill(actor, skill, target) {
     var isAOE = skill.cleave || isNova || isField;
     // Action skills have targets and won't activate if that target is out of range or not of the correct type.
     if (actionIndex >= 0) {
+        // Nova skills use area instead of range for checking for valid targets.
+        if (isNova) {
+            // Use half of the nova range since novas deal reduced damage the further
+            // targets are. It would be cool if the player could configure the
+            // trigger distance for these abilities. Maybe each abilities could
+            // have a configuration specific to it.
+            if (getDistance(actor, target) > skill.area * 32 / 2) {
+                return false;
+            }
+        } else if (isField){
+            if (getDistance(actor, target) > skill.area * 32) {
+                return false;
+            }
+        } else if (getDistance(actor, target) > (skill.range + ifdefor(skill.teleport, 0)) * 32) {
+            return false;
+        }
+        if (ifdefor(skill.base.target) === 'self' && actor !== target) {
+            return false;
+        }
+        if (ifdefor(skill.base.target) === 'allies' && actor.allies.indexOf(target) < 0) {
+            return false;
+        }
+        if (ifdefor(skill.base.target, 'enemies') === 'enemies' && actor.enemies.indexOf(target) < 0) {
+            return false;
+        }
         // Let's be careful about using any ability that can't be used more than once every 2 seconds.
         // For enemies, ignore this code if they are targeting the main character since hitting the main character is
         // always sufficient reason to use their most powerful abilities.
@@ -52,43 +88,22 @@ function useSkill(actor, skill, target) {
             }
             var attackStats = createAttackStats(actor, skill);
             // Make sure the total health of the target/combined targets is at least
-            // twice the damage output of the attack.
+            // the damage output of the attack.
             // console.log(skill.base.name + ' ' + health + ' < ' + 2 * (attackStats.damage + attackStats.magicDamage));
             if (health < (attackStats.damage + attackStats.magicDamage)) {
                 return false;
             }
         }
-        // Nova skills use area instead of range for checking for valid targets.
-        if (isNova) {
-            // Use half of the nova range since novas deal reduced damage the further
-            // targets are. It would be cool if the player could configure the
-            // trigger distance for these abilities. Maybe each abilities could
-            // have a configuration specific to it.
-            if (getDistance(actor, target) > skill.area * 32 / 2) {
-                return false;
-            }
-        } else if (isField){
-            // Use half of the nova range since novas deal reduced damage the further
-            // targets are. It would be cool if the player could configure the
-            // trigger distance for these abilities. Maybe each abilities could
-            // have a configuration specific to it.
-            if (getDistance(actor, target) > skill.area * 32) {
-                return false;
-            }
-        } else if (getDistance(actor, target) > (skill.range + ifdefor(skill.teleport, 0)) * 32) {
-            return false;
-        }
-        if (ifdefor(skill.base.target) === 'self' && actor !== target) {
-            return false;
-        }
-        if (ifdefor(skill.base.target) === 'allies' && actor.allies.indexOf(target) < 0) {
-            return false;
-        }
-        if (ifdefor(skill.base.target, 'enemies') === 'enemies' && actor.enemies.indexOf(target) < 0) {
-            return false;
-        }
     }
     if (!skillDefinition.isValid(actor, skill, target)) {
+        return false;
+    }
+    if (ifdefor(skill.base.consumeCorpse) && target.isDead) {
+        removeActor(target);
+    }
+    // Only use skill if they meet the RNG for using it. This is currently only used by the
+    // 15% chance to raise dead on unit, which is why it comes after consuming the corpse.
+    if (ifdefor(skill.chance, 1) < Math.random()) {
         return false;
     }
 
@@ -155,8 +170,8 @@ function getPower(actor, skill) {
  * No logic about whether the actor can use this skill is included. This can
  * be used when an actor mimics a target and uses a skill they don't possess,
  * or when a pet is ordered to use a skill they cannot otherwise or when a skill
- * is performed even though its cooldown is not available, such as summoning
- * a pet when the "Sick 'em" ability is used.
+ * is performed even though its cooldown is not available, such as commanding
+ * a pet to attack when the "Sick 'em" ability is used.
  *
  * The methods each have the following signature:
  * @param object actor  The actor performing the skill.
@@ -181,6 +196,47 @@ skillDefinitions.spell = {
     },
     use: function (actor, spellSkill, target) {
         castSpell(actor, spellSkill, target);
+    }
+};
+skillDefinitions.song = {
+    isValid: function (actor, songSkill, target) {
+        return true;
+    },
+    use: function (actor, songSkill, target) {
+        var attackStats = createSpellStats(actor, songSkill);
+        actor.attackCooldown = actor.time + .2;
+        performAttackProper(attackStats, target);
+        return attackStats;
+    }
+};
+skillDefinitions.heroSong = {
+    isValid: function (actor, songSkill, target) {
+        var healthValues = target.healthValues;
+        // healthValues might not be set right when a target spawns.
+        if (!healthValues || target.isMainCharacter) {
+            return false;
+        }
+        // Use ability if target is low on life.
+        //console.log(target.health / target.maxHealth);
+        if (target.health / target.maxHealth <= 1 / 3) {
+            console.log("Target is low on life.");
+            return true;
+        }
+        // Use ability if target is losing remaining life rapidly.
+        var maxHealth = Math.max.apply(null, healthValues);
+        //console.log(healthValues[0] + ' / ' + target.maxHealth);
+        if (healthValues[0] / maxHealth <= .6) {
+            ///console.log(healthValues);
+            console.log("Target is losing life too fast.");
+            return true;
+        }
+        return false;
+    },
+    use: function (actor, songSkill, target) {
+        var attackStats = createSpellStats(actor, songSkill);
+        actor.attackCooldown = actor.time + .2;
+        performAttackProper(attackStats, target);
+        return attackStats;
     }
 };
 
@@ -239,8 +295,14 @@ skillDefinitions.minion = {
     },
     use: function (actor, minionSkill, target) {
         actor.pull = {'x': actor.x - actor.direction * 64, 'time': actor.time + .3, 'damage': 0};
-        var newMonster = makeMonster({'key': minionSkill.base.monsterKey}, actor.level, [], true);
-        newMonster.x = actor.x + actor.direction * 32;
+        var newMonster;
+        if (minionSkill.base.consumeCorpse) {
+            newMonster = makeMonster({'key': target.key}, target.level, [], true);
+            newMonster.x = target.x;
+        } else {
+            newMonster = makeMonster({'key': minionSkill.base.monsterKey}, actor.level, [], true);
+            newMonster.x = actor.x + actor.direction * 32;
+        }
         newMonster.character = actor.character;
         newMonster.direction = actor.direction;
         newMonster.source = minionSkill;
@@ -279,6 +341,7 @@ function cloneActor(actor) {
     clone.time = 0;
     clone.animationTime = 0;
     clone.timedEffects = [];
+    clone.fieldEffects = [];
     return clone;
 }
 

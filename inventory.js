@@ -129,6 +129,9 @@ function itemHelpText(item) {
     return sections.join('<br/>');
 }
 function evaluateForDisplay(value, actor) {
+    if (typeof value === 'undefined') {
+        throw new Error('Value was undefined');
+    }
     if (!actor && actor !== null) {
         throw new Error('Forgot to pass actor to evaluateForDisplay.');
     }
@@ -422,7 +425,13 @@ String.prototype.percent = function (digits) {
     if (parseFloat(this) == this) {
         return parseFloat(this).percent(digits);
     }
-    return this + '%';
+    return this + ' x 100%'
+    // Replace any numbers with n*100 since this is a percent.
+    return this.replace(/[+-]?\d+(\.\d+)?/, function (number) {
+        console.log("found number " + number);
+        console.log("changed to: " + (parseFloat(number) * 100).format(digits));
+        return (parseFloat(number) * 100).format(digits);
+    }) + '%';
 }
 Number.prototype.coins = function () {
     return tag('span', 'icon coin') + ' ' + tag('span', 'value coins', this);

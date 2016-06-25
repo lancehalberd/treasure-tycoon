@@ -46,7 +46,7 @@
     margin-right: 5px;
 }
 .recallButton {
-    font-size: .6em;
+    font-size: 8px;
 }
 .playerPanel  {
     height: 270px;
@@ -90,7 +90,7 @@
 }
 
 .infoPanel .panelTitle {
-    font-size: 1.2em;
+    font-size: 20px;
     font-family: sans-serif;
     border-bottom: 1px solid black;
     padding-bottom: 5px;
@@ -161,7 +161,7 @@ button {
 }
 
 .playerBox {
-    font-size: 1em;
+    font-size: 16px;
     position: relative;
     padding: 5px;
     box-sizing: border-box;
@@ -390,7 +390,7 @@ button {
 
 .adventure {
     display: block;
-    font-size: 1em;
+    font-size: 12px;
 }
 
 .adventureButton {
@@ -401,11 +401,11 @@ select {
     font-size: 20px;
 }
 button {
-    font-size: .8em;
+    font-size: 12px;
     padding: 2px;
 }
 .learnSkill {
-    font-size: .6em;
+    font-size: 10px;
 }
 .infoPanel {
     padding: 5px;
@@ -427,7 +427,7 @@ button.disabled {
 
 .formulaStat {
     font-weight: bold;
-    font-size: .8em;
+    font-size: 12px;
     font-style: italic;
 }
 

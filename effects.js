@@ -1,4 +1,80 @@
 
+function songEffect(attackStats) {
+    var color = ifdefor(attackStats.attack.base.color, 'red');
+    var alpha = ifdefor(attackStats.attack.base.alpha, .5);
+    var frames = ifdefor(attackStats.attack.base.frames, 10);
+    if (!attackStats.attack.area) {
+        throw new Error('Song effect called with no area set.');
+    }
+    var radius = attackStats.attack.area * ifdefor(attackStats.effectivness, 1) * 32;
+    var endTime = attackStats.source.time + attackStats.attack.duration;
+    var followTarget = attackStats.source;
+    var height = ifdefor(attackStats.attack.base.height, 60);
+    var yOffset = ifdefor(attackStats.attack.base.yOffset, 120);
+    // This list is kept up to date each frame and targets stats are updated as they
+    // are added/removed from this list.
+    var effectedTargets = [];
+    var self = {
+        'attackStats': attackStats, 'currentFrame': 0, 'done': false,
+        'update': function (character) {
+            self.currentFrame++;
+            if (followTarget.time > endTime) {
+                self.done = true;
+                while (effectedTargets.length) {
+                    var target = effectedTargets.pop();
+                    var effectIndex = target.fieldEffects.indexOf(self.attackStats.attack.buff);
+                    target.fieldEffects.splice(effectIndex, 1);
+                    // console.log("removing " + self.attackStats.attack.base.name + ' from ' + target.name);
+                    updateActorStats(target);
+                }
+                return;
+            }
+            var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
+            var oldTargets = effectedTargets;
+            var currentTargets = [];
+            for (var i = 0; i < self.attackStats.source.allies.length; i++) {
+                var target = self.attackStats.source.allies[i];
+                // distance is 1d right now, maybe we should change that?
+                var distance = Math.max(0,  (followTarget.x > target.x) ? (followTarget.x - target.x - target.width) : (target.x - followTarget.x));
+                if (distance > currentRadius) continue;
+                currentTargets.push(target);
+                var oldIndex = oldTargets.indexOf(target);
+                if (oldIndex >= 0) {
+                    // Remove this from the set of old targets, since it is still being
+                    // targeted. Below we remove the effect from old targets that
+                    // are no longer being targeted.
+                    oldTargets.splice(oldIndex, 1);
+                } else {
+                    target.fieldEffects.push(self.attackStats.attack.buff);
+                    updateActorStats(target);
+                }
+            }
+            while (oldTargets.length) {
+                var target = oldTargets.pop();
+                var effectIndex = target.fieldEffects.indexOf(self.attackStats.attack.buff);
+                target.fieldEffects.splice(effectIndex, 1);
+                // console.log("removing " + self.attackStats.attack.base.name + ' from ' + target.name);
+                updateActorStats(target);
+            }
+            effectedTargets = currentTargets;
+        },
+        'draw': function (character) {
+            if (self.done) return;
+            var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
+            character.context.save();
+            character.context.globalAlpha = alpha;
+            character.context.fillStyle = color;
+            character.context.beginPath();
+            character.context.translate((followTarget.x - character.cameraX), yOffset);
+            character.context.scale(1, height / currentRadius);
+            character.context.arc(0, 0, currentRadius, 0, 2 * Math.PI);
+            character.context.fill();
+            character.context.restore();
+        }
+    };
+    return self;
+}
+
 function explosionEffect(attackStats, x, y) {
     var color = ifdefor(attackStats.attack.base.color, 'red');
     var alpha = ifdefor(attackStats.attack.base.alpha, .5);
@@ -57,7 +133,7 @@ function fieldEffect(attackStats, followTarget) {
     var alpha = ifdefor(attackStats.attack.base.alpha, .5);
     var frames = ifdefor(attackStats.attack.base.frames, 10);
     if (!attackStats.attack.area) {
-        throw new Error('Explosion effect called with no area set.');
+        throw new Error('Field effect called with no area set.');
     }
     var radius = attackStats.attack.area * ifdefor(attackStats.effectivness, 1) * 32;
     var height = ifdefor(attackStats.attack.base.height, radius);

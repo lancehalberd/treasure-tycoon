@@ -373,6 +373,9 @@ function updateActorStats(actor) {
     ifdefor(actor.timedEffects, []).forEach(function (timedEffect) {
         sections.push(bonusHelpText(timedEffect, false, actor));
     });
+    ifdefor(actor.fieldEffects, []).forEach(function (fieldEffect) {
+        sections.push(bonusHelpText(fieldEffect, false, actor));
+    });
     ifdefor(actor.prefixes, []).forEach(function (affix) {
         sections.push(bonusHelpText(affix.bonuses, false, actor));
     });
@@ -435,7 +438,7 @@ function getStat(actor, stat) {
             keys.push(tagPrefix + ':' + baseKey);
         });
     });
-    actor.bonuses.concat(ifdefor(actor.timedEffects, [])).forEach(function (bonus) {
+    actor.bonuses.concat(ifdefor(actor.timedEffects, [])).concat(ifdefor(actor.fieldEffects, [])).forEach(function (bonus) {
         keys.forEach(function (key) {
             plus += evaluateValue(actor, ifdefor(bonus['+' + key], 0));
             plus -= evaluateValue(actor, ifdefor(bonus['-' + key], 0));
@@ -489,7 +492,7 @@ function getStatForAction(actor, dataObject, stat) {
     // sometimes we get duplicate keys, so we use this to avoid processing the same
     // buff twice. This seems a little better than just trying to remove the keys
     // and is less work than making sure they aren't added in the first place.
-    actor.bonuses.concat(ifdefor(dataObject.bonuses, [])).forEach(function (bonus) {
+    actor.bonuses.concat(ifdefor(dataObject.bonuses, [])).concat(ifdefor(actor.timedEffects, [])).concat(ifdefor(actor.fieldEffects, [])).forEach(function (bonus) {
         var usedKeys = {};
         keys.forEach(function (key) {
             if (usedKeys[key]) return;
@@ -588,27 +591,27 @@ addCharacterClass('Black Belt', 0, 2, 1, {},
 addCharacterClass('Priest', 1, 0, 2, {'weapon': itemsByKey.stick},
     [jewelLoot(['triangle'], [1, 1], [[10,15], [5, 10], [90, 100]], false), smallJewelLoot, smallJewelLoot], 'cave');
 
-addCharacterClass('Corsair', 2, 2, 1);
-addCharacterClass('Paladin', 1, 2, 2);
-addCharacterClass('Dancer', 2, 1, 2);
+addCharacterClass('Corsair', 2, 2, 1, {'weapon': itemsByKey.rock});
+addCharacterClass('Paladin', 1, 2, 2, {'weapon': itemsByKey.stick});
+addCharacterClass('Dancer', 2, 1, 2, {'weapon': itemsByKey.ball});
 
 addCharacterClass('Ranger', 3, 1, 1, {'weapon': itemsByKey.ball},
     [jewelLoot(['diamond'], [1, 1], [[10,15], [90, 100], [5, 10]], false), simpleJewelLoot, simpleJewelLoot], 'savannah');
-addCharacterClass('Warrior', 1, 3, 1);
+addCharacterClass('Warrior', 1, 3, 1, {'weapon': itemsByKey.rock});
 addCharacterClass('Wizard', 1, 1, 3, {'weapon': itemsByKey.stick},
     [jewelLoot(['diamond'], [1, 1], [[10,15], [5, 10], [90, 100]], false), simpleJewelLoot, simpleJewelLoot], 'savannah');
 
-addCharacterClass('Assassin', 3, 2, 1);
-addCharacterClass('Dark Knight', 1, 3, 2);
-addCharacterClass('Bard', 2, 1, 3);
+addCharacterClass('Assassin', 3, 2, 1, {'weapon': itemsByKey.ball});
+addCharacterClass('Dark Knight', 1, 3, 2, {'weapon': itemsByKey.rock});
+addCharacterClass('Bard', 2, 1, 3, {'weapon': itemsByKey.stick});
 
-addCharacterClass('Sniper', 4, 1, 2);
-addCharacterClass('Samurai', 2, 4, 1);
-addCharacterClass('Sorcerer', 1, 2, 4);
+addCharacterClass('Sniper', 4, 1, 2, {'weapon': itemsByKey.ball});
+addCharacterClass('Samurai', 2, 4, 1, {'weapon': itemsByKey.rock});
+addCharacterClass('Sorcerer', 1, 2, 4, {'weapon': itemsByKey.stick});
 
-addCharacterClass('Ninja', 4, 4, 2);
-addCharacterClass('Enhancer', 2, 4, 4);
-addCharacterClass('Sage', 4, 2, 4);
+addCharacterClass('Ninja', 4, 4, 2, {'weapon': itemsByKey.ball});
+addCharacterClass('Enhancer', 2, 4, 4, {'weapon': itemsByKey.rock});
+addCharacterClass('Sage', 4, 2, 4, {'weapon': itemsByKey.stick});
 
 addCharacterClass('Master', 4, 4, 4);
 

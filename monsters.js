@@ -98,6 +98,7 @@ function makeMonster(monsterData, level, extraSkills, noRarity) {
         }
     }
     monster.timedEffects = [];
+    monster.fieldEffects = [];
     updateMonster(monster);
     return monster;
 }
@@ -243,6 +244,11 @@ function initalizeMonsters() {
         'implicitBonuses': {'*magicDamage': 0,
                             '*block': .5, '+magicBlock': 4, '*magicBlock': 2, '+magicResist': .5,
                             '*speed': .5}
+    });
+    addMonster('petCaterpillar', {
+        'name': 'Caterpillar', 'source': caterpillarSource,
+        'implicitBonuses': {'*magicDamage': 0,
+                            '*block': .5, '+magicBlock': 4, '*magicBlock': 2, '+magicResist': .5}
     });
     addMonster('gnome', {'name': 'Gnome', 'source': gnomeSource, 'fpsMultiplier': 1.5,
         'implicitBonuses': {'+range': 2, '*attackSpeed': 1.5, '+magicDamage': 2,

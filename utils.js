@@ -56,7 +56,7 @@ function copy(object) {
     if (typeof(object) === 'undefined' || object === null) {
         return null;
     }
-    if (typeof(object) === 'string' || typeof(object) === 'number') {
+    if (typeof(object) === 'string' || typeof(object) === 'number' || typeof(object) === 'boolean') {
         return object;
     }
     if (object.constructor == Array) {
