@@ -259,7 +259,7 @@ function initalizeMonsters() {
         'implicitBonuses': {'+range': 2, '*attackSpeed': 1.5, '+magicDamage': 2,
                             '*block': .5, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': .3},
-        'abilities': [abilities.raiseDead, abilities.summoner], 'tags': ['ranged']
+        'abilities': [abilities.summonSkeleton, abilities.summoner], 'tags': ['ranged']
     });
     addMonster('gnomeWizard', {'name': 'Gnome Wizard', 'source': gnomeSource, 'fpsMultiplier': 1.5,
         'implicitBonuses': {'+range': 2, '*attackSpeed': 1.5, '+magicDamage': 2,

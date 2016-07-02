@@ -38,9 +38,11 @@ function useSkill(actor, skill, target) {
             return false;
         }
     }
-    var isNova = skill.base.tags.indexOf('nova') >= 0;
-    var isField = skill.base.tags.indexOf('field') >= 0;
-    var isAOE = skill.cleave || isNova || isField;
+    var isNova = skill.base.tags.indexOf('nova') >= 0; // AOE centered on player (freeze)
+    var isField = skill.base.tags.indexOf('field') >= 0; // AOE with duration centered on player (thunderstorm)
+    var isBlast = skill.base.tags.indexOf('blast') >= 0; // AOE centered on target (plague, dispell, drain life)
+    var isRain = skill.base.tags.indexOf('rain') >= 0; // Projectiles fall from the sky at targets (meteor)
+    var isAOE = skill.cleave || isNova || isField || isBlast || isRain;
     // Action skills have targets and won't activate if that target is out of range or not of the correct type.
     if (actionIndex >= 0) {
         // Nova skills use area instead of range for checking for valid targets.
@@ -74,7 +76,7 @@ function useSkill(actor, skill, target) {
         if (!target.isMainCharacter && ifdefor(skill.cooldown, 0) > 2 && ifdefor(skill.base.target, 'enemies') === 'enemies') {
             var health = 0;
             if (isAOE) {
-                var targetsInRange = getEnemiesInRange(actor, skill);
+                var targetsInRange = getEnemiesInRange(actor, skill, target);
                 if (targetsInRange.length === 0) {
                     return false;
                 }
@@ -87,10 +89,17 @@ function useSkill(actor, skill, target) {
                 health = target.health;
             }
             var attackStats = createAttackStats(actor, skill);
+            // Any life gained by this attack should be considered in the calculation as well in favor of using the attack.
+            var possibleLifeGain = (attackStats.damage + attackStats.magicDamage) * ifdefor(skill.lifeSteal, 0);
+            var actualLifeGain = Math.min(actor.maxHealth - actor.health, possibleLifeGain);
+            // console.log([ifdefor(skill.lifeSteal, 0), possibleLifeGain, actualLifeGain]);
             // Make sure the total health of the target/combined targets is at least
             // the damage output of the attack.
-            // console.log(skill.base.name + ' ' + health + ' < ' + 2 * (attackStats.damage + attackStats.magicDamage));
-            if (health < (attackStats.damage + attackStats.magicDamage)) {
+            // console.log([health, 4 * actualLifeGain, '<', (attackStats.damage + attackStats.magicDamage), 2 * possibleLifeGain]);
+            // console.log(skill.base.name + ' ' + health + ' < ' + (attackStats.damage + attackStats.magicDamage) + 2 * possibleLifeGain);
+            // We weight wasted life gain very high to avoid using life stealing moves when the user has full life,
+            // and then weight actual life gained even higher to encourage using life stealing moves that will restore a lot of health.
+            if (health + 8 * actualLifeGain < (attackStats.damage + attackStats.magicDamage) + 5 * possibleLifeGain) {
                 return false;
             }
         }
@@ -137,11 +146,22 @@ function useSkill(actor, skill, target) {
     return true;
 }
 
-function getEnemiesInRange(actor, skill) {
-    var targets = [];
+function getEnemiesInRange(actor, skill, skillTarget) {
+    var targets = [], distance;
+    // Rain targets everything on the field.
+    if (skill.base.tags.indexOf('rain') >= 0) {
+        return actor.enemies.slice();
+    }
     for (var i = 0; i < actor.enemies.length; i++) {
         var target = actor.enemies[i];
-        var distance = getDistance(actor, target);
+        if (skill.base.tags.indexOf('blast') >= 0) {
+            distance = getDistance(skillTarget, target);
+            if (distance < skill.area * 32) {
+                targets.push(target);
+                continue;
+            }
+        }
+        distance = getDistance(actor, target);
         if (skill.base.tags.indexOf('nova') >= 0 || skill.base.tags.indexOf('field') >= 0) {
             if (distance < skill.area * 32) {
                 targets.push(target);
@@ -157,11 +177,13 @@ function getEnemiesInRange(actor, skill) {
 }
 
 function getPower(actor, skill) {
-    var power = skill.power;
+    return skill.power;
+    // This is now done when calculating stats so that *power can effect power from magic damage.
+    /*var power = skill.power;
     if (skill.base.tags.indexOf('spell') >= 0) {
         power += Random.range(actor.minMagicDamage, actor.maxMagicDamage);
     }
-    return power;
+    return power;*/
 }
 
 /**
@@ -219,7 +241,6 @@ skillDefinitions.heroSong = {
         // Use ability if target is low on life.
         //console.log(target.health / target.maxHealth);
         if (target.health / target.maxHealth <= 1 / 3) {
-            console.log("Target is low on life.");
             return true;
         }
         // Use ability if target is losing remaining life rapidly.
@@ -227,7 +248,6 @@ skillDefinitions.heroSong = {
         //console.log(healthValues[0] + ' / ' + target.maxHealth);
         if (healthValues[0] / maxHealth <= .6) {
             ///console.log(healthValues);
-            console.log("Target is losing life too fast.");
             return true;
         }
         return false;
@@ -439,7 +459,12 @@ skillDefinitions.heal = {
 
 skillDefinitions.effect = {
     isValid: function (actor, effectSkill, target) {
-        return actor.allies.length > 1;
+        if (effectSkill.allyBuff) {
+            return actor.allies.length > 1;
+        }
+        // It would be nice to have some way to avoid using buffs too pre emptively here.
+        // For example, only activate a buff if health <50% or an enemy is targeting you.
+        return true;
     },
     use: function (actor, effectSkill, target) {
         if (effectSkill.buff) {

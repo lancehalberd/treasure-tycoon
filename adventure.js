@@ -14,6 +14,8 @@ function startArea(character, index) {
     character.adventurer.health = character.adventurer.maxHealth;
     character.adventurer.time = 0;
     character.adventurer.animationTime = 0;
+    character.adventurer.isDead = false;
+    character.adventurer.timeOfDeath = undefined;
     character.finishTime = false;
     character.cameraX = -30;
     character.enemies = [];
@@ -268,6 +270,7 @@ function processStatusEffects(character, target, delta) {
     if (target.health > 0 && ifdefor(target.healthRegen)) {
         target.health = Math.min(target.health + target.healthRegen * delta, target.maxHealth);
     }
+    target.health = target.health - ifdefor(target.damageOverTime, 0) * delta;
     if (target.pull && target.dominoAttackStats) {
         for (var i = 0; i < target.allies.length; i++) {
             var ally = target.allies[i];

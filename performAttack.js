@@ -210,8 +210,28 @@ function performAttackProper(attackStats, target) {
     } else if (attackStats.attack.base.tags.indexOf('field') >= 0) {
         attacker.character.effects.push(fieldEffect(attackStats, attacker));
     } else if (attackStats.attack.base.tags.indexOf('nova') >= 0) {
-        attackStats.explode--;
+        // attackStats.explode--;
         attacker.character.effects.push(explosionEffect(attackStats, attacker.x + attacker.width / 2 + attacker.direction * attacker.width / 4, 120));
+    } else if (attackStats.attack.base.tags.indexOf('blast') >= 0) {
+        // attackStats.explode--;
+        attacker.character.effects.push(explosionEffect(attackStats, target.x + target.width / 2 + target.direction * target.width / 4, 120));
+    } else if (attackStats.attack.base.tags.indexOf('rain') >= 0) {
+        // attackStats.explode--;
+        var targets = [];
+        var count = Math.floor(ifdefor(attackStats.attack.count, 1));
+        for (var i = 0; i < count; i++) {
+            if (!targets.length) {
+                targets = Random.shuffle(attacker.enemies);
+            }
+            var currentTarget = targets.pop();
+            var x = attacker.x + attacker.width / 2 + 500 * (i + 1) / (count + 2);
+            var y = -100;
+            var vy = 2;
+            var vx = (x > currentTarget.x) ? -1 : 1;
+            attacker.character.projectiles.push(projectile(
+                attackStats, x, y, vx, vy, currentTarget, i * 10, // delay is in frames
+                attackStats.isCritical ? 'yellow' : 'red', ifdefor(attackStats.attack.base.size, 10) * (attackStats.isCritical ? 1.5 : 1)));
+        }
     } else if (attackStats.attack.base.tags.indexOf('ranged') >= 0) {
         var distance = getDistance(attacker, target);
         attacker.character.projectiles.push(projectile(
@@ -267,7 +287,7 @@ function applyAttackToTarget(attackStats, target) {
             'accuracy': attackStats.accuracy,
             'explode': attackStats.explode - 1
         };
-        var explosion = explosionEffect(explodeAttackStats, target.x, 128);
+        var explosion = explosionEffect(explodeAttackStats, target.x + ifdefor(target.width, 64) / 2, 128);
         attacker.character.effects.push(explosion);
         explosion.hitTargets.push(target);
     }
@@ -341,6 +361,7 @@ function applyAttackToTarget(attackStats, target) {
     }
     if (totalDamage > 0) {
         target.health -= totalDamage;
+        attacker.health += ifdefor(attack.lifeSteal, 0) * totalDamage;
         hitText.value = totalDamage;
         // Some attacks pull the target towards the attacker
         if (attack.stun) {

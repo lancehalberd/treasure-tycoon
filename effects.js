@@ -96,7 +96,7 @@ function explosionEffect(attackStats, x, y) {
                 // areaCoefficient = 0 means the blast is equally effective everywhere.
                 // areaCoefficient = 1 means the blast has no effect at the edge.
                 // areaCoefficient < 0 means the blast has increased effect the further it is from the center.
-                self.attackStats.effectiveness = 1 - currentRadius / radius * self.attackStats.attack.areaCoefficient;
+                self.attackStats.effectiveness = 1 - currentRadius / radius * ifdefor(self.attackStats.attack.areaCoefficient, 1);
                 for (var i = 0; i < self.attackStats.source.enemies.length; i++) {
                     var target = self.attackStats.source.enemies[i];
                     if (self.hitTargets.indexOf(target) >= 0) continue;
@@ -193,14 +193,31 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
             // Put an absolute cap on how far a projectile can travel
             if (self.y > 240 - 64 || self.attackStats.distance > 2000) self.done = true;
             if (self.done || self.delay-- > 0) return
+            var tx = self.target.x + ifdefor(self.target.width, 64) / 2;
+            var ty = ifdefor(self.target.y, 64) + ifdefor(self.target.height, 128) / 2;
             self.x += self.vx;
             self.y += self.vy;
-            self.vy+= .1 * 15 / Math.abs(self.vx);
+            var hit = false;
+            if (attackStats.attack.base.tags.indexOf('rain') >= 0) {
+                var speed = Math.sqrt(self.vx * self.vx + self.vy * self.vy);
+                self.vx = tx - self.x;
+                self.vy = Math.max(self.vy, ty - self.y);
+                var distance = Math.sqrt(self.vx * self.vx + self.vy * self.vy);
+                self.vx *= speed / distance;
+                self.vy *= speed / distance;
+                self.vy += 1;
+                // rain hits when it touches the ground
+                hit = self.y >= (240 - 96);
+            } else {
+                self.vy += .1 * 15 / Math.abs(self.vx);
+                // normal projectiles hit when they get close to the targets center.
+                hit = Math.abs(tx - self.x) < 10 && Math.abs(ty - self.y) < 64 && self.target.health > 0;
+            }
             self.t += 1;
             // Don't do any collision detection once the projectile is spent.
             if (self.hit) return;
             self.attackStats.distance += Math.sqrt(self.vx * self.vx + self.vy * self.vy);
-            if (Math.abs(self.target.x + 32 - self.x) < 10 && self.target.health > 0) {
+            if (hit) {
                 self.hit = true;
                 if (ifdefor(self.target.reflectBarrier, 0)) {
                     self.target.reflectBarrier = Math.max(0, self.target.reflectBarrier - self.attackStats.magicDamage - self.attackStats.damage);
@@ -242,7 +259,7 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                         }
                     }
                 }
-            } else if (self.target.health > 0 && self.vx * (self.target.x + 32 - self.x) <= 0) {
+            } else if (self.target.health > 0 && self.vx * (tx - self.x) <= 0) {
                 self.vx = -self.vx;
             }
         },

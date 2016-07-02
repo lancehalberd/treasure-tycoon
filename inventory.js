@@ -128,7 +128,7 @@ function itemHelpText(item) {
     sections.push('Sell for ' + sellValues.join(' '));
     return sections.join('<br/>');
 }
-function evaluateForDisplay(value, actor) {
+function evaluateForDisplay(value, actor, localObject) {
     if (typeof value === 'undefined') {
         throw new Error('Value was undefined');
     }
@@ -157,19 +157,20 @@ function evaluateForDisplay(value, actor) {
     formula = fullFormula.slice();
     if (formula.length == 2 && formula[0] === '-') {
         formula.shift();
-        value = '-' + evaluateForDisplay(formula.shift(), null);
+        value = '-' + evaluateForDisplay(formula.shift(), null, localObject);
     } else {
-        value = evaluateForDisplay(formula.shift(), null);
+        value = evaluateForDisplay(formula.shift(), null, localObject);
     }
     if (formula.length > 1) {
-        value = '(' + value + ' '+ formula.shift() + ' ' + evaluateForDisplay(formula.shift(), null) +')';
+        value = '(' + value + ' '+ formula.shift() + ' ' + evaluateForDisplay(formula.shift(), null, localObject) +')';
     }
     if (actor) {
-        value += ' ' + tag('span', 'formulaStat', '[=' +  evaluateValue(actor, fullFormula).format(2) +  ']');
+        value += ' ' + tag('span', 'formulaStat', '[=' +  evaluateValue(actor, fullFormula, localObject).format(2) +  ']');
     }
     return value;
 }
-function bonusHelpText(rawBonuses, implicit, actor) {
+function bonusHelpText(rawBonuses, implicit, actor, localObject) {
+    localObject = ifdefor(localObject, actor);
     if (!actor && actor !== null) {
         throw new Error('Forgot to pass actor to bonusHelpText.');
     }
@@ -190,7 +191,7 @@ function bonusHelpText(rawBonuses, implicit, actor) {
             tagBonuses[tag] = ifdefor(tagBonuses[tag], {});
             tagBonuses[tag][parts[0].charAt(0) + parts[1]] = value;
         }
-        bonuses[key] = evaluateForDisplay(value, actor);
+        bonuses[key] = evaluateForDisplay(value, actor, localObject);
     });
     var sections = [];
     if (ifdefor(bonuses['+minDamage'])) {

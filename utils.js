@@ -32,7 +32,7 @@ var Random = {
      * @param {Array} array  The array of elements to shuffle
      */
     'shuffle': function (array) {
-        array = array.concat();
+        array = array.slice();
         var currentIndex = array.length, temporaryValue, randomIndex;
         // While there remain elements to shuffle...
         while (0 !== currentIndex) {

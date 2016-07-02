@@ -165,22 +165,62 @@ var abilities = {
         'helpText': 'Strike with unparalleled ferocity.'}},
     // Sorcerer
     'majorIntelligence': {'name': 'Major Intelligence', 'bonuses': {'+intelligence': 20}},
-    'raiseDead': {'name': 'Raise Dead', 'action':
+    'raiseDead': {'name': 'Raise Dead', 'bonuses': {'+intelligence': 5}, 'action':
             {'type': 'minion', 'target': 'enemies', 'targetDeadUnits': true, 'consumeCorpse': true, 'tags': ['spell'], 'stats': {'limit': 10, 'chance': .4, 'cooldown': .5, 'healthBonus': 1, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1},
-            'helpText': 'Raise a skeleton to fight for you.'}},
+            'helpText': 'Sometimes raise defeated enemies to fight for you.'}},
+    'drainLife': {'name': 'Drain Life', 'bonuses': {'+intelligence': 10},
+        'action': {'type': 'spell', 'tags': ['spell', 'blast'], 'height': 20, 'color': 'green', 'alpha': .5, 'bonuses': {'*skill:power': .5},
+                   'stats': {'range': 10, 'power': ['{intelligence}', '/', 2], 'area': [8, '+', ['{intelligence}', '/', '100']], 'areaCoefficient': 1, 'cooldown': 10, 'lifeSteal': 1,
+        '$alwaysHits': 'Never misses'},
+        'helpText': 'Drain life from all enemies in a large area.'}},
+    'plague': {'name': 'Plague', 'bonuses': {'+intelligence': 15},
+        'action': {'type': 'spell', 'tags': ['spell', 'blast'], 'height': 20, 'color': 'yellow', 'alpha': .4, 'bonuses': {'*skill:power': .1},
+                   'stats': {'range': 10, 'power': ['{intelligence}'], 'area': [8, '+', ['{intelligence}', '/', '100']], 'areaCoefficient': 1, 'cooldown': 20, '$alwaysHits': 'Never misses',
+                             'debuff': {'stats': {'+damageOverTime': ['{this.power}'], 'duration': 0 /* 0=forever. help text won't display as buff if duration is unset.*/}}},
+        'helpText': 'Apply a permanent debuff that deals damage over time to effected enemies.'}},
     // Tier 6 classes
     // Ninja
     'ninja': {'name': 'Ninjutsu', 'bonuses':{'$cloaking': 'Invisible while moving', '$oneHanded:skill:doubleStrike': 'Attacks hit twice'}},
-    'smokeBomb': {'name': 'Smoke Bomb', 'reaction':
-            {'type': 'criticalCounter', 'stats': {'dodgeAttack': 1, 'globalDebuff': {'stats': {'*accuracy': 0, 'duration': 5}}, 'cooldown': 100}, 'helpText': 'If an attack would deal more than half of your remaining life, dodge it and throw a smoke bomb causing: {globalDebuff} to all enemies.'}},
-    'shadowClone': {'name': 'Shadow Clone', 'reaction':
-            {'type': 'clone',  'tags': ['minion'], 'stats': {'limit': 10, 'chance': .1, 'healthBonus': .1, 'damageBonus': .1, 'speedBonus': 1.2},
+    'smokeBomb': {'name': 'Smoke Bomb', 'bonuses': {'+dexterity': 10},
+        'reaction': {'type': 'criticalCounter', 'stats': {'dodgeAttack': 1, 'globalDebuff': {'stats': {'*accuracy': 0, 'duration': 5}}, 'cooldown': 100},
+            'helpText': 'If an attack would deal more than half of your remaining life, dodge it and throw a smoke bomb causing: {globalDebuff} to all enemies.'}},
+    'throwWeapon': {'name': 'Throw Weapon', 'bonuses': {'+strength': 10},
+        'action': {'type': 'attack', 'restrictions': ['melee'], 'tags': ['ranged'],
+                    'stats': {'range': 12, 'attackPower': 1.5, 'cooldown': 10, '$alwaysHits': 'Never misses'},
+                    'helpText': 'Throw a copy of your weapon at a distance enemy.'}},
+    'shadowClone': {'name': 'Shadow Clone', 'bonuses': {'+strength': 10, '+dexterity': 10},
+        'reaction': {'type': 'clone',  'tags': ['minion'], 'stats': {'limit': 10, 'chance': .1, 'healthBonus': .1, 'damageBonus': .1, 'speedBonus': 1.2},
             'helpText': 'Chance to summon a weak clone of yourself on taking damage'}},
     // Enhancer
+    'enhanceWeapon': {'name': 'Enhance Weapon', 'bonuses': {'+strength': 10, '+intelligence': 5}, 'action':
+            {'type': 'effect', 'tags': ['spell'], 'target': 'self', 'stats': {'cooldown': 20,
+                'buff': {'stats': {'+damage': ['{strength}', '/', 10], '+magicDamage': ['{intelligence}', '/', 10], '+critDamage': ['{dexterity}', '/', 500], 'duration': 5}}},
+                'helpText': 'Enhance the strength of your weapon granting: {buff}'}},
+    'enhanceArmor': {'name': 'Enhance Armor', 'bonuses': {'+strength': 5, '+intelligence': 10}, 'action':
+            {'type': 'effect', 'tags': ['spell'], 'target': 'self', 'stats': {'cooldown': 30,
+                'buff': {'stats': {'+armor': ['{strength}', '/', 10], '+magicBlock': ['{intelligence}', '/', 20], '+block': ['{intelligence}', '/', 10], '+evasion': ['{dexterity}', '/', 10], 'duration': 15}}},
+                'helpText': 'Enhance the strength of your armor granting: {buff}'}},
+    'enhanceAbility': {'name': 'Enhance Ability', 'bonuses': {'+strength': 10, '+intelligence': 10}, 'action':
+            {'type': 'effect', 'tags': ['spell'], 'target': 'self', 'stats': {'cooldown': 30,
+                'buff': {'stats': {'+cooldownReduction': .2, '*power': 1.2, '*attackPower': 1.2, '*range': 1.2, 'duration': 10}}},
+                'helpText': 'Enhance your own abilities granting: {buff}'}},
     // Sage
     'stopTime': {'name': 'Stop Time', 'bonuses': {'+intelligence': 10}, 'reaction':
             {'type': 'stop', 'tags': ['spell'], 'stats': {'duration': ['{intelligence}' , '/', '50'], 'cooldown': 120},
             'helpText': 'If an attack would deal more than half of your remaining life, negate it and cast a spell that stops time for everyone else.'}},
+    'dispell': {'name': 'Dispell', 'bonuses': {'+intelligence': 15},
+        'action': {'type': 'spell', 'tags': ['spell', 'blast'], 'height': 20, 'color': 'grey', 'alpha': .4, 'bonuses': {'*skill:power': 0},
+                   'stats': {'range': 10, 'power': 0, 'area': [8, '+', ['{intelligence}', '/', '100']], 'cooldown': 15, '$alwaysHits': 'Never misses',
+                             'debuff': {'stats': {'*magicResist': .5, '*magicBlock': .5, 'duration': 0 /* 0=forever. help text won't display as buff if duration is unset.*/}}},
+        'helpText': 'Premanently reduce the magic resistances of all enemies in a large area.'}},
+    'meteor': {'name': 'Meteor', 'bonuses': {'+intelligence': 20},
+        'action': {'type': 'spell', 'tags': ['spell', 'rain'], 'height': 20, 'color': 'grey', 'alpha': .4, 'size': 20,
+                   'stats': {'count': [1, '+', ['{intelligence}', '/', '100']], 'explode': 1, 'power': ['{intelligence}', '/', 2], 'area': [2, '+', ['{intelligence}', '/', '100']], 'cooldown': 15, '$alwaysHits': 'Never misses'},
+        'helpText': 'Rain {count} meteors down on your enemies each dealing {power} damage.'}},
+    'meteorShower': {'name': 'Meteor Shower', 'bonuses': {'+intelligence': 10, '+meteor:skill:count': ['{intelligence}', '/', '50'], '-meteor:skill:area': ['{intelligence}', '/', '200'], '-meteor:skill:power': ['{intelligence}', '/', '4']},
+        'helpText': 'Summon many more, but less powerful meteors.'},
+    'meteorPower': {'name': 'Meteor Power', 'bonuses': {'+intelligence': 10, '-meteor:skill:count': ['{intelligence}', '/', '200'], '+meteor:skill:area': ['{intelligence}', '/', '50'], '+meteor:skill:power': ['{intelligence}']},
+        'helpText': 'Summon fewer, but much more powerful meteors.'},
     // Tier 7 classes
     // Master
     // Fool
@@ -194,9 +234,12 @@ var abilities = {
     'explode': {'name': 'Decoy Burst', 'reaction':
              {'type': 'explode', 'tags': ['ranged'], 'stats': {'power': '{maxHealth}', '$alwaysHits': 'Shrapnel cannot be evaded'}, 'helpText': 'Explode into shrapnel on death.'}},
     // Monster abilities
-    'summoner': {'bonuses': {'*minion:skill:limit': 2, '*minion:skill:cooldown': .5, '*minion:skill:healthBonus': 2, '*minion:skill:damageBonus': 2}}
+    'summoner': {'bonuses': {'*minion:skill:limit': 2, '*minion:skill:cooldown': .5, '*minion:skill:healthBonus': 2, '*minion:skill:damageBonus': 2}},
+    'summonSkeleton': {'name': 'Summon Skeleton', 'bonuses': {'+intelligence': 5}, 'action':
+            {'type': 'minion', 'target': 'enemies', 'monsterKey': 'skeleton', 'tags': ['spell'], 'stats': {'limit': 2, 'cooldown': .5, 'healthBonus': .5, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1},
+            'helpText': 'Raise a skeleton to fight for you.'}},
 };
-var testJob = 'priest';
+//var testJob = 'sage';
 var testAbilities = [];
 //var testAbilities = [abilities.fireball, abilities.chainReaction, abilities.wizard];
 //var testAbilities = [abilities.freeze, abilities.absoluteZero, abilities.wizard];
@@ -210,7 +253,12 @@ var testAbilities = [];
 //var testAbilities = [abilities.pet, abilities.attackSong, abilities.defenseSong, abilities.heroSong];
 //var testAbilities = [abilities.sniper, abilities.snipe];
 //var testAbilities = [abilities.majorStrength, abilities.dragonSlayer];
-var testAbilities = [abilities.raiseDead];
+//var testAbilities = [abilities.raiseDead, abilities.plague];
+//var testAbilities = [abilities.throwWeapon];
+//var testAbilities = [abilities.enhanceWeapon, abilities.enhanceArmor, abilities.enhanceAbility];
+//var testAbilities = [abilities.dispell, abilities.meteor];
+//var testAbilities = [abilities.majorIntelligence, abilities.majorIntelligence, abilities.meteor, abilities.meteorRain, abilities.meteorPower];
+//var testAbilities = [abilities.majorIntelligence, abilities.majorIntelligence, abilities.meteor, abilities.meteorPower];
 $.each(abilities, function (key, ability) {
     ability.key = key;
     if (ability.action) {
@@ -231,31 +279,34 @@ function findSpecialTraits(object) {
 }
 findSpecialTraits(abilities);
 function abilityHelpText(ability, character) {
+    function evaluateActionStat(key) {
+        return evaluateForDisplay(action.stats[key], character.adventurer, action);
+    }
+    var action = ifdefor(ability.action, ability.reaction);
     var sections = [ability.name, ''];
     if (ifdefor(ability.helpText)) {
         sections.push(ability.helpText.replace(/\{(\w+)\}/, function (match, key) {
-            return evaluateForDisplay(ability.bonuses[key], character.adventurer);
+            return evaluateForDisplay(ability.bonuses[key], character.adventurer, ability);
         }));
         sections.push('');
     }
-    var helpText = bonusHelpText(ifdefor(ability.bonuses, {}), false, character.adventurer);
+    var helpText = bonusHelpText(ifdefor(ability.bonuses, {}, ability), false, character.adventurer);
     if (helpText) {
         sections.push(helpText);
         sections.push('');
     }
-    var action = ifdefor(ability.action, ability.reaction);
     if (action) {
         var actionSections = [];
         if (ifdefor(action.helpText)) {
             actionSections.push(action.helpText.replace(/\{(\w+)\}/, function (match, key) {
-                return evaluateForDisplay(action.stats[key], character.adventurer);
+                return evaluateActionStat(key);
             }));
         }
         for (var i = 0; i < ifdefor(action.restrictions, []).length; i++) {
             actionSections.push(properCase(action.restrictions[i]) + ' only');
         }
         if (ifdefor(action.stats.attackPower)) {
-            actionSections.push(evaluateForDisplay(action.stats.attackPower, character.adventurer).format(2) + 'x power');
+            actionSections.push(evaluateForDisplay(action.stats.attackPower, character.adventurer, action).format(2) + 'x power');
         }
         $.each(action.stats, function (key, value) {
             if (key.charAt(0) === '$') {
@@ -266,31 +317,31 @@ function abilityHelpText(ability, character) {
             actionSections.push('Summons a ' + monsters[action.monsterKey].name);
         }
         if (ifdefor(action.stats.healthBonus, 1) !== 1) {
-            actionSections.push(evaluateForDisplay(action.stats.healthBonus, character.adventurer).format(1) + 'x health');
+            actionSections.push(evaluateActionStat('healthBonus').format(1) + 'x health');
         }
         if (ifdefor(action.stats.damageBonus, 1) !== 1) {
-            actionSections.push(evaluateForDisplay(action.stats.damageBonus, character.adventurer).format(1) + 'x damage');
+            actionSections.push(evaluateActionStat('damageBonus').format(1) + 'x damage');
         }
         if (ifdefor(action.stats.attackSpeedBonus, 1) !== 1) {
-            actionSections.push(evaluateForDisplay(action.stats.attackSpeedBonus, character.adventurer).format(1) + 'x attack speed');
+            actionSections.push(evaluateActionStat('attackSpeedBonus').format(1) + 'x attack speed');
         }
         if (ifdefor(action.stats.speedBonus, 1) !== 1) {
-            actionSections.push(evaluateForDisplay(action.stats.speedBonus, character.adventurer).format(1) + 'x movement speed');
+            actionSections.push(evaluateActionStat('speedBonus').format(1) + 'x movement speed');
         }
         if (ifdefor(action.stats.range)) {
-            actionSections.push('Range ' + evaluateForDisplay(action.stats.range, character.adventurer).format(1));
+            actionSections.push('Range ' + evaluateActionStat('range').format(1));
         }
         if (ifdefor(action.stats.area)) {
-            actionSections.push('Area ' + evaluateForDisplay(action.stats.area, character.adventurer).format(1));
+            actionSections.push('Area ' + evaluateActionStat('area').format(1));
         }
         if (ifdefor(action.stats.chance)) {
-            actionSections.push(evaluateForDisplay(action.stats.chance, character.adventurer).percent() + ' chance');
+            actionSections.push(evaluateActionStat('chance').percent() + ' chance');
         }
         if (ifdefor(action.stats.duration)) {
-            actionSections.push('lasts ' + evaluateForDisplay(action.stats.duration, character.adventurer).format(1) + ' seconds');
+            actionSections.push('lasts ' + evaluateActionStat('duration').format(1) + ' seconds');
         }
         if (ifdefor(action.stats.cooldown)) {
-            actionSections.push('Cooldown: ' + evaluateForDisplay(action.stats.cooldown, character.adventurer).format(1) + ' seconds');
+            actionSections.push('Cooldown: ' + evaluateActionStat('cooldown').format(1) + ' seconds');
         }
         sections.push(tag('div', 'abilityText', actionSections.join('<br/>')));
     }

@@ -11,7 +11,7 @@ var allComputedStats = ['dexterity', 'strength', 'intelligence', 'maxHealth', 's
      'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage',
      'critChance', 'critDamage', 'critAccuracy',
      'damageOnMiss', 'slowOnHit', 'healthRegen', 'healthGainOnHit',
-     'increasedDrops', 'increasedExperience', 'cooldownReduction'];
+     'increasedDrops', 'increasedExperience', 'cooldownReduction', 'damageOverTime'];
 var allRoundedStats = ['dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
      'coins', 'xpValue', 'anima',
      'evasion', 'block', 'magicBlock', 'armor', 'accuracy',
@@ -119,7 +119,7 @@ function getTargetsForAction(actor, action) {
         if (stat.charAt(0) === '$') {
             stat = stat.substring(1);
         }
-        getTargetsForActionStat(actor, action.base, stat).forEach(function (newKey) {
+        getTargetsForActionStat(actor, action.base, stat, action).forEach(function (newKey) {
             if (seen[newKey]) return;
             seen[newKey] = true;
             keys.push(newKey);
@@ -127,9 +127,9 @@ function getTargetsForAction(actor, action) {
     });
     return keys;
 }
-function getTargetsForActionStat(actor, dataObject, stat) {
+function getTargetsForActionStat(actor, dataObject, stat, action) {
     var keys = [];
-    var base = evaluateValue(actor, ifdefor(dataObject.stats[stat], 0));
+    var base = evaluateValue(actor, ifdefor(dataObject.stats[stat], 0), action);
     if (typeof base === 'object' && base.constructor != Array) {
         var subObject = {};
         if (!base.stats) {
@@ -140,7 +140,7 @@ function getTargetsForActionStat(actor, dataObject, stat) {
             if (key.charAt(0) === '$') {
                 key = key.substring(1);
             }
-            keys = keys.concat(getTargetsForActionStat(actor, base, key));
+            keys = keys.concat(getTargetsForActionStat(actor, base, key, action));
         });
         return keys;
     }
@@ -388,10 +388,10 @@ function updateActorStats(actor) {
             if (stat.charAt(0) === '$') {
                 stat = stat.substring(1);
             }
-            action[stat] = getStatForAction(actor, action.base, stat);
+            action[stat] = getStatForAction(actor, action.base, stat, action);
         })
         $.each(specialTraits, function (stat) {
-            action[stat] = getStatForAction(actor, action.base, stat);
+            action[stat] = getStatForAction(actor, action.base, stat, action);
         });
     });
     actor.health = actor.percentHealth * actor.maxHealth;
@@ -440,15 +440,15 @@ function getStat(actor, stat) {
     });
     actor.bonuses.concat(ifdefor(actor.timedEffects, [])).concat(ifdefor(actor.fieldEffects, [])).forEach(function (bonus) {
         keys.forEach(function (key) {
-            plus += evaluateValue(actor, ifdefor(bonus['+' + key], 0));
-            plus -= evaluateValue(actor, ifdefor(bonus['-' + key], 0));
-            percent += evaluateValue(actor, ifdefor(bonus['%' + key], 0));
-            multiplier *= evaluateValue(actor, ifdefor(bonus['*' + key], 1));
+            plus += evaluateValue(actor, ifdefor(bonus['+' + key], 0), actor);
+            plus -= evaluateValue(actor, ifdefor(bonus['-' + key], 0), actor);
+            percent += evaluateValue(actor, ifdefor(bonus['%' + key], 0), actor);
+            multiplier *= evaluateValue(actor, ifdefor(bonus['*' + key], 1), actor);
             if (ifdefor(bonus['$' + key])) {
-                specialValue = evaluateValue(actor, bonus['$' + key]);
+                specialValue = evaluateValue(actor, bonus['$' + key], actor);
             }
             if (ifdefor(bonus[key])) {
-                specialValue = evaluateValue(actor, bonus[key]);
+                specialValue = evaluateValue(actor, bonus[key], actor);
             }
         });
     });
@@ -458,8 +458,9 @@ function getStat(actor, stat) {
     //console.log(stat +": " + ['(',base, '+', plus,') *', percent, '*', multiplier]);
     return (base + plus) * percent * multiplier;
 }
-function getStatForAction(actor, dataObject, stat) {
-    var base = evaluateValue(actor, ifdefor(dataObject.stats[stat], 0)), plus = 0, percent = 1, multiplier = 1, specialValue = ifdefor(dataObject.stats['$' + stat], false);
+function getStatForAction(actor, dataObject, stat, action) {
+    action.foo;
+    var base = evaluateValue(actor, ifdefor(dataObject.stats[stat], 0), action), plus = 0, percent = 1, multiplier = 1, specialValue = ifdefor(dataObject.stats['$' + stat], false);
     if (typeof base === 'object' && base.constructor != Array) {
         var subObject = {};
         if (!base.stats) {
@@ -470,7 +471,7 @@ function getStatForAction(actor, dataObject, stat) {
             if (key.charAt(0) === '$') {
                 key = key.substring(1);
             }
-            subObject[key] = getStatForAction(actor, base, key);
+            subObject[key] = getStatForAction(actor, base, key, action);
         });
         return subObject;
     }
@@ -489,6 +490,9 @@ function getStatForAction(actor, dataObject, stat) {
     ifdefor(dataObject.tags, []).concat(extraTags).forEach(function (prefix) {
         keys.push(prefix + ':skill:' + stat);
     });
+    if (stat === 'power' && dataObject.tags.indexOf('spell') >= 0) {
+        plus = (actor.minMagicDamage + actor.maxMagicDamage) / 2;
+    }
     // sometimes we get duplicate keys, so we use this to avoid processing the same
     // buff twice. This seems a little better than just trying to remove the keys
     // and is less work than making sure they aren't added in the first place.
@@ -497,15 +501,15 @@ function getStatForAction(actor, dataObject, stat) {
         keys.forEach(function (key) {
             if (usedKeys[key]) return;
             usedKeys[key] = true;
-            plus += evaluateValue(actor, ifdefor(bonus['+' + key], 0));
-            plus -= evaluateValue(actor, ifdefor(bonus['-' + key], 0));
-            percent += evaluateValue(actor, ifdefor(bonus['%' + key], 0));
-            multiplier *= evaluateValue(actor, ifdefor(bonus['*' + key], 1));
+            plus += evaluateValue(actor, ifdefor(bonus['+' + key], 0), action);
+            plus -= evaluateValue(actor, ifdefor(bonus['-' + key], 0), action);
+            percent += evaluateValue(actor, ifdefor(bonus['%' + key], 0), action);
+            multiplier *= evaluateValue(actor, ifdefor(bonus['*' + key], 1), action);
             if (ifdefor(bonus['$' + key])) {
-                specialValue = evaluateValue(actor, bonus['$' + key]);
+                specialValue = evaluateValue(actor, bonus['$' + key], action);
             }
             if (ifdefor(bonus[key])) {
-                specialValue = evaluateValue(actor, bonus[key]);
+                specialValue = evaluateValue(actor, bonus[key], action);
             }
         });
     });
@@ -514,11 +518,14 @@ function getStatForAction(actor, dataObject, stat) {
     }
     return (base + plus) * percent * multiplier;
 }
-function evaluateValue(actor, value) {
+function evaluateValue(actor, value, localObject) {
     if (typeof value === 'number') {
         return value;
     }
     if (typeof value === 'string' && value.charAt(0) === '{') {
+        if (value.indexOf('this.') >= 0) {
+            return localObject[value.substring(6, value.length - 1)];
+        }
         return actor[value.substring(1, value.length - 1)];
     }
     // If this is an object, just return it for further processing.
@@ -533,13 +540,13 @@ function evaluateValue(actor, value) {
 
     if (formula.length == 2 && formula[0] === '-') {
         formula.shift()
-        value = -1 * evaluateValue(actor, formula.shift());
+        value = -1 * evaluateValue(actor, formula.shift(), localObject);
     } else {
-        value = evaluateValue(actor, formula.shift());
+        value = evaluateValue(actor, formula.shift(), localObject);
     }
     if (formula.length > 1) {
         var operator = formula.shift();
-        var operand = evaluateValue(actor, formula.shift());
+        var operand = evaluateValue(actor, formula.shift(), localObject);
         if (operator == '+') {
             value += operand;
         } else if (operator == '-') {
@@ -609,7 +616,7 @@ addCharacterClass('Sniper', 4, 1, 2, {'weapon': itemsByKey.ball});
 addCharacterClass('Samurai', 2, 4, 1, {'weapon': itemsByKey.rock});
 addCharacterClass('Sorcerer', 1, 2, 4, {'weapon': itemsByKey.stick});
 
-addCharacterClass('Ninja', 4, 4, 2, {'weapon': itemsByKey.ball});
+addCharacterClass('Ninja', 4, 4, 2, {'weapon': itemsByKey.rock});
 addCharacterClass('Enhancer', 2, 4, 4, {'weapon': itemsByKey.rock});
 addCharacterClass('Sage', 4, 2, 4, {'weapon': itemsByKey.stick});
 
