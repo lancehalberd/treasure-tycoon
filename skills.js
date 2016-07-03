@@ -39,6 +39,8 @@ var abilities = {
     'reviveInvulnerability': {'name': 'Halo', 'bonuses': {'$revive:skill:buff': {'duration': 2, '$invulnerable': 'Invulnerability'}}},
     // Tier 2 classes
     // Corsair
+    'corsair': {'name': 'Venom', 'bonuses': {'+poison': .2}, 'onHitEffect': {'debuff': {'*damage': .9}},
+                    'helpText': "Apply a stacking buff with every hit that weakens enemies' attacks and deals damage over time."},
     'hook': {'name': 'Grappling Hook', 'action': {'type': 'attack',
                     'stats': {'cooldown': 10, 'range': 10, 'dragDamage': 0, 'dragStun': 0, 'rangeDamage': 0, '$alwaysHits': 'Never misses', '$pullsTarget': 'Pulls target'},
                     'helpText': 'Throw a hook to damage and pull enemies closer.'}},
@@ -239,7 +241,7 @@ var abilities = {
             {'type': 'minion', 'target': 'enemies', 'monsterKey': 'skeleton', 'tags': ['spell'], 'stats': {'limit': 2, 'cooldown': .5, 'healthBonus': .5, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1},
             'helpText': 'Raise a skeleton to fight for you.'}},
 };
-//var testJob = 'sage';
+//var testJob = 'corsair';
 var testAbilities = [];
 //var testAbilities = [abilities.fireball, abilities.chainReaction, abilities.wizard];
 //var testAbilities = [abilities.freeze, abilities.absoluteZero, abilities.wizard];

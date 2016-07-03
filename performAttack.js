@@ -359,9 +359,24 @@ function applyAttackToTarget(attackStats, target) {
     if (ifdefor(attack.debuff)) {
         addTimedEffect(target, attack.debuff);
     }
+    for (var i = 0; i < ifdefor(attacker.onHitEffects, []).length; i++) {
+        var onHitEffect = attacker.onHitEffects[i];
+        // Some abilities like corsairs venom add a stacking debuff to the target every hit.
+        if (ifdefor(onHitEffect.debuff)) {
+            addTimedEffect(target, onHitEffect.debuff);
+        }
+        // Some abilities like dancer's whirling dervish add a stacking buff to the attacker every hit.
+        if (ifdefor(onHitEffect.buff)) {
+            console.log("BUFFED");
+            addTimedEffect(attacker, onHitEffect.buff);
+        }
+    }
     if (totalDamage > 0) {
         target.health -= totalDamage;
-        attacker.health += ifdefor(attack.lifeSteal, 0) * totalDamage;
+        attacker.health += ifdefor(attack.lifeSteal, 0) * totalDamage
+        if (ifdefor(attack.poison)) {
+            addTimedEffect(target, {'+damageOverTime': totalDamage * attack.poison});
+        }
         hitText.value = totalDamage;
         // Some attacks pull the target towards the attacker
         if (attack.stun) {

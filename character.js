@@ -8,7 +8,7 @@ var pointsTypes = ['coins', 'anima', 'fame'];
 var allComputedStats = ['dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
      'coins', 'xpValue', 'anima',
      'evasion', 'block', 'magicBlock', 'armor', 'magicResist', 'accuracy', 'range', 'attackSpeed',
-     'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage',
+     'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage', 'poison',
      'critChance', 'critDamage', 'critAccuracy',
      'damageOnMiss', 'slowOnHit', 'healthRegen', 'healthGainOnHit',
      'increasedDrops', 'increasedExperience', 'cooldownReduction', 'damageOverTime'];
@@ -238,6 +238,9 @@ function addBonusesAndActions(actor, source) {
     if (ifdefor(source.bonuses)) {
         actor.bonuses.push(source.bonuses);
     }
+    if (ifdefor(source.onHitEffect)) {
+        actor.onHitEffects.push(source.onHitEffect);
+    }
     if (ifdefor(source.action)) {
         var action = {'base': createAction(source.action)}
         if (source.action.type === 'attack') {
@@ -253,7 +256,7 @@ function addBonusesAndActions(actor, source) {
         actor.reactions.push(action);
     }
 }
-var inheritedActionStats = ['range', 'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage',
+var inheritedActionStats = ['range', 'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage', 'poison',
     'accuracy', 'attackSpeed', 'critChance', 'critDamage', 'critAccuracy', 'damageOnMiss', 'slowOnHit', 'healthGainOnHit'];
 function createAction(data) {
     var stats = ifdefor(data.stats, {});
@@ -276,6 +279,7 @@ function updateAdventurer(adventurer) {
     adventurer.actions = [];
     adventurer.reactions = [];
     adventurer.tags = [];
+    adventurer.onHitEffects = [];
     if (!adventurer.equipment.weapon) {
         // Fighting unarmed is considered using a fist weapon.
         adventurer.tags = ['fist', 'melee'];
@@ -336,6 +340,7 @@ function updateAdventurer(adventurer) {
     updateActorStats(adventurer);
 }
 function updateActorStats(actor) {
+    actor.percentHealth = ifdefor(actor.health, 1) / ifdefor(actor.maxHealth, 1);
     if (actor.personCanvas) {
         actor.base.maxHealth = 10 * (actor.level + actor.job.dexterityBonus + actor.job.strengthBonus + actor.job.intelligenceBonus);
         actor.base.accuracy = 2 * actor.level;
