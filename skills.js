@@ -284,7 +284,7 @@ var abilities = {
             {'type': 'minion', 'target': 'enemies', 'monsterKey': 'skeleton', 'tags': ['spell'], 'stats': {'limit': 2, 'cooldown': .5, 'healthBonus': .5, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1},
             'helpText': 'Raise a skeleton to fight for you.'}},
 };
-//var testJob = 'sniper';
+var testJob;
 var testAbilities = [];
 //var testAbilities = [abilities.fireball, abilities.chainReaction, abilities.wizard];
 //var testAbilities = [abilities.freeze, abilities.absoluteZero, abilities.wizard];
@@ -310,6 +310,8 @@ var testAbilities = [];
 //var testAbilities = [abilities.vitality, abilities.consume];
 //var testAbilities = [abilities.pet, abilities.attackSong, abilities.protect, abilities.raiseDead];
 //var testAbilities = [abilities.aiming, abilities.snipe];
+//var testAbilities = [abilities.armorPenetration];
+//var testAbilities = [abilities.armorPenetration, abilities.abilityMastery, abilities.fireball];
 $.each(abilities, function (key, ability) {
     ability.key = key;
     if (ability.action) {
