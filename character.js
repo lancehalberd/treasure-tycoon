@@ -265,7 +265,10 @@ var inheritedActionStats = ['range', 'minDamage', 'maxDamage', 'minMagicDamage',
     'accuracy', 'attackSpeed', 'critChance', 'critDamage', 'critAccuracy', 'damageOnMiss', 'slowOnHit', 'healthGainOnHit'];
 function createAction(data) {
     var stats = ifdefor(data.stats, {});
-    var action =  {'type': 'attack', 'tags': [], 'helpText': 'A basic attack.', 'stats': {'cooldown': 0, 'cleave': 0, 'cleaveRange': 0, 'knockbackChance': 0, 'knockbackDistance': 1, 'cull': 0, 'criticalPiercing': false}};
+    var action =  {'type': 'attack', 'tags': [], 'helpText': 'A basic attack.', 'stats':
+        {'cooldown': 0, 'cleave': 0, 'cleaveRange': 0, 'knockbackChance': 0, 'knockbackDistance': 1, 'cull': 0,
+         'criticalPiercing': false, 'armorPenetration': 0, 'instantCooldownChance': 0}
+    };
     $.each(data, function (key, value) {
         action[key] = copy(value);
     });
@@ -492,7 +495,6 @@ function getStat(actor, stat) {
     return (base + plus) * percent * multiplier + flatBonus;
 }
 function getStatForAction(actor, dataObject, stat, action) {
-    action.foo;
     var base = evaluateValue(actor, ifdefor(dataObject.stats[stat], 0), action), plus = 0, percent = 1, multiplier = 1, specialValue = ifdefor(dataObject.stats['$' + stat], false);
     if (typeof base === 'object' && base.constructor != Array) {
         var subObject = {};

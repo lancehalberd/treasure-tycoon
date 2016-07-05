@@ -364,6 +364,9 @@ function bonusHelpText(rawBonuses, implicit, actor, localObject) {
     if (ifdefor(bonuses['+limit'])) {
         sections.push('+' + bonuses['+limit'].format() + ' maximum minions');
     }
+    if (ifdefor(bonuses['+armorPenetration'])) {
+        sections.push('+' + bonuses['+armorPenetration'].percent() + ' armor penetration');
+    }
 
     // Some unique abilities just map 'key' => 'help text' directly.
     $.each(rawBonuses, function (key, value) {

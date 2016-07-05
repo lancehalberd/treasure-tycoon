@@ -196,14 +196,16 @@ var abilities = {
                     'helpText': 'Precisely target an enemies weak spot from any distance ignoring all armor and resistances.'}},
 
     // Samurai
+    'samurai': {'name': 'Great Warrior', 'bonuses': {'*twoHanded:damage': 2}}, /* Damage modifier exists only on the character, not on skills...*/
     'majorStrength': {'name': 'Major Strength', 'bonuses': {'+strength': 20}},
     'sideStep': {'name': 'Side Step', 'bonuses': {'+evasion': 2}, 'reaction':
              {'type': 'dodge', 'stats': {'cooldown': 10, 'rangedOnly': true, 'moveDuration': .05, 'distance': 64, 'buff': {'stats': {'+critChance': .2, 'duration': 2, 'area': 0}}},
         'helpText': 'Side step a ranged attack and advance toward enemis gaining: {buff}'}},
-    'dragonSlayer': {'name': 'Dragon Slayer', 'bonuses': {'+strength': 15},
+    'dragonSlayer': {'name': 'Dragon Slayer', 'bonuses': {'+strength': 10},
         'action': {'type': 'attack', 'restrictions': ['melee'], 'bonuses': {'+skill:critDamage': .5, '*skill:critChance': 2},
                    'stats': {'attackPower': 3, 'cooldown': 20, '$alwaysHits': 'Never misses'},
         'helpText': 'Strike with unparalleled ferocity.'}},
+    'armorPenetration': {'name': 'Penetrating Strikes', 'bonuses': {'+strength': 15, '+melee:skill:armorPenetration': .3}},
     // Sorcerer
     'majorIntelligence': {'name': 'Major Intelligence', 'bonuses': {'+intelligence': 20}},
     'raiseDead': {'name': 'Raise Dead', 'bonuses': {'+intelligence': 5}, 'action':
@@ -264,6 +266,8 @@ var abilities = {
         'helpText': 'Summon fewer, but much more powerful meteors.'},
     // Tier 7 classes
     // Master
+    'equipmentMastery': {'name': 'Equipment Mastery', 'bonuses': {'+strength': 5, '+dexterity': 5, '+intelligence': 5, '$equipmentMastery': 'Equip gear beyond your level for a 5% penalty per level.'}},
+    'abilityMastery': {'name': 'Ability Mastery', 'bonuses': {'+strength': 10, '+dexterity': 10, '+intelligence': 10, '+skill:instantCooldownChance': .1}},
     // Fool
     'tomFoolery': {'name': 'Tom Foolery', 'bonuses': {'+evasion': 5}, 'reaction':
              {'type': 'dodge', 'stats': {'cooldown': 30, 'buff': {'tags': ['buff'], 'stats': {'*accuracy': 0, '$maxEvasion': 'Evasion checks are always perfect', 'duration': 5, 'area': 0}}}, 'helpText': 'Dodge an attack and gain: {buff}'}},

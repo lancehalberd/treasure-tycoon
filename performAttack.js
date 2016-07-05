@@ -157,7 +157,8 @@ function createAttackStats(attacker, attack, target) {
         'accuracy': accuracy,
         'explode': ifdefor(attack.explode, 0),
         'cleave': ifdefor(attack.cleave, 0),
-        'piercing': ifdefor(attack.criticalPiercing) ? isCritical : false
+        'piercing': ifdefor(attack.criticalPiercing) ? isCritical : false,
+        'strikes': ifdefor(attack.doubleStrike) ? 2 : 1
     };
 }
 
@@ -182,7 +183,8 @@ function createSpellStats(attacker, spell, target) {
         'magicDamage': magicDamage,
         'accuracy': 0,
         'explode': ifdefor(spell.explode, 0),
-        'cleave': ifdefor(spell.cleave, 0)
+        'cleave': ifdefor(spell.cleave, 0),
+        'strikes': 1
     };
 }
 function performAttack(attacker, attack, target) {
@@ -255,6 +257,10 @@ function applyAttackToTarget(attackStats, target) {
     var attack = attackStats.attack;
     var attacker = attackStats.source;
     var effectiveness = ifdefor(attackStats.effectiveness, 1);
+    if (ifdefor(attackStats.strikes, 1) > 1) {
+        attackStats.strikes--;
+        applyAttackToTarget(attackStats, target);
+    }
 
     if (ifdefor(attackStats.cleave) > 0) {
         var cleaveAttackStats = {
@@ -339,7 +345,8 @@ function applyAttackToTarget(attackStats, target) {
     magicDamage = Math.max(0, magicDamage - magicBlockRoll);
     // Apply armor and magic resistance mitigation
     if (!ifdefor(attack.ignoreArmor)) {
-        damage = Math.round(applyArmorToDamage(damage, target.armor));
+        var effectiveArmor = target.armor * (1 - ifdefor(attack.armorPenetration, 0));
+        damage = Math.round(applyArmorToDamage(damage, effectiveArmor));
     }
     if (!ifdefor(attack.ignoreResistance)) {
         magicDamage = Math.round(magicDamage * Math.max(0, (1 - target.magicResist)));
@@ -383,7 +390,7 @@ function applyAttackToTarget(attackStats, target) {
         }
     }
     if (totalDamage > 0) {
-        if (target.health / target.maxHealth <= ifdefor(attack.cull, 0)) {
+        if (ifdefor(attack.cull, 0) > 0 && target.health / target.maxHealth <= attack.cull) {
             target.health = 0;
             hitText.value = 'culled!';
         } else {
