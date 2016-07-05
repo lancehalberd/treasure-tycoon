@@ -26,6 +26,7 @@ function startArea(character, index) {
     character.adventurer.allies = character.allies;
     character.adventurer.enemies = character.enemies;
     character.adventurer.slow = 0;
+    character.adventurer.bonusMaxHealth = 0;
     character.treasurePopups = [];
     character.textPopups = [];
     character.timeStopEffect = null;
@@ -73,9 +74,19 @@ function timeStopLoop(character, delta) {
     expireTimedEffects(character, actor);
     runActorLoop(character, actor);
     moveActor(actor, delta);
+    capHealth(actor);
+    updateActorHelpText(actor);
+    return true;
+}
+function capHealth(actor) {
+    // Apply overhealing if the actor is over their health cap and possesses overhealing.
+    if (ifdefor(actor.overHeal, 0) && actor.health > actor.maxHealth) {
+        var bonusMaxHealth = actor.overHeal * (actor.health - actor.maxHealth);
+        actor.bonusMaxHealth = ifdefor(actor.bonusMaxHealth, 0) + bonusMaxHealth
+        actor.maxHealth += bonusMaxHealth;
+    }
     actor.health = Math.min(actor.maxHealth, Math.max(0, actor.health));
     actor.percentHealth = actor.health / actor.maxHealth;
-    return true;
 }
 function removeActor(actor) {
     var index = actor.allies.indexOf(actor);
@@ -92,6 +103,7 @@ function checkToStartNextWave(character) {
                 character.finishTime = character.time + 2;
             } else if (character.finishTime <= character.time) {
                 completeArea(character);
+                displayInfoMode(character);
                 return;
             }
         } else {
@@ -177,7 +189,8 @@ function adventureLoop(character, delta) {
         // since the last action check. To this end, we keep track of their health over the last five frames and use
         // these values to determine how much damage has accrued recendebug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);tly for abilities that trigger when a character
         // is in danger.
-        actor.health = Math.min(actor.maxHealth, Math.max(0, actor.health));
+        capHealth(actor);
+        updateActorHelpText(actor);
         if ((actor.time * 1000) % 100 < 20) {
             if (!actor.healthValues) {
                 actor.healthValues = [];
@@ -187,10 +200,12 @@ function adventureLoop(character, delta) {
                 actor.healthValues.pop();
             }
         }
-        actor.percentHealth = actor.health / actor.maxHealth;
     });
 }
 function moveActor(actor, delta) {
+    if (actor.target && actor.target.pull) {
+        actor.target = null;
+    }
     if (actor.isDead || actor.stunned || actor.blocked || actor.target || actor.pull || ifdefor(actor.stationary)) {
         return;
     }
@@ -224,7 +239,19 @@ function expireTimedEffects(character, actor) {
 }
 function addTimedEffect(actor, effect) {
     if (actor.isDead ) return;
+    var area = ifdefor(effect.area);
     effect = copy(effect);
+    effect.area = 0;
+    if (area) {
+        actor.allies.forEach(function (ally) {
+            if (ally === actor) {
+                return;
+            }
+            if (getDistance(actor, ally) < area * 32) {
+                addTimedEffect(ally, effect);
+            }
+        });
+    }
     // effects without duration last indefinitely.
     if (effect.duration) {
         effect.expirationTime = actor.time + effect.duration;
@@ -268,7 +295,8 @@ function processStatusEffects(character, target, delta) {
         target.slow = Math.max(0, Math.min(target.slow - .5 * target.slow * delta, target.slow - .1 * delta));
     }
     if (target.health > 0 && ifdefor(target.healthRegen)) {
-        target.health = Math.min(target.health + target.healthRegen * delta, target.maxHealth);
+        target.health = target.health + target.healthRegen * delta;
+        capHealth(target);
     }
     target.health = target.health - ifdefor(target.damageOverTime, 0) * delta;
     if (target.pull && target.dominoAttackStats) {
@@ -332,7 +360,7 @@ function runActorLoop(character, actor) {
         if (target.priority <= 0) {
             if (!target.isDead) actor.blocked = true;
             if (actor.chargeEffect) {
-                var attackStats = createAttackStats(actor, actor.chargeEffect.chargeSkill);
+                var attackStats = createAttackStats(actor, actor.chargeEffect.chargeSkill, target);
                 attackStats.distance = actor.chargeEffect.distance;
                 var hitTargets = getAllInRange(target.x, actor.chargeEffect.chargeSkill.area, actor.enemies);
                 for (var j = 0; j < hitTargets.length; j++) {

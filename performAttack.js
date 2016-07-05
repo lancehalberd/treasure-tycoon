@@ -129,8 +129,11 @@ function updateDamageInfo(character) {
     $evasion.parent().attr('helptext', (1 - hitPercent).percent(1) + ' estimated chance to evade attacks.');
 }
 
-function createAttackStats(attacker, attack) {
+function createAttackStats(attacker, attack, target) {
     var isCritical = Math.random() <= attack.critChance;
+    if (ifdefor(attack.firstStrike)) {
+        isCritical = isCritical || target.health >= target.maxHealth;
+    }
     var damage = Random.range(attack.minDamage, attack.maxDamage);
     var magicDamage = Random.range(attack.minMagicDamage, attack.maxMagicDamage);
     var sacrificedHealth = Math.floor(attacker.health * ifdefor(attack.healthSacrifice, 0));
@@ -153,12 +156,16 @@ function createAttackStats(attacker, attack) {
         'magicDamage': magicDamage,
         'accuracy': accuracy,
         'explode': ifdefor(attack.explode, 0),
-        'cleave': ifdefor(attack.cleave, 0)
+        'cleave': ifdefor(attack.cleave, 0),
+        'piercing': ifdefor(attack.criticalPiercing) ? isCritical : false
     };
 }
 
-function createSpellStats(attacker, spell) {
+function createSpellStats(attacker, spell, target) {
     var isCritical = Math.random() <= spell.critChance;
+    if (ifdefor(spell.firstStrike)) {
+        isCritical = isCritical || target.health >= target.maxHealth;
+    }
     var magicDamage = getPower(attacker, spell);
     var sacrificedHealth = Math.floor(attacker.health * ifdefor(spell.healthSacrifice, 0));
     magicDamage += sacrificedHealth;
@@ -179,14 +186,14 @@ function createSpellStats(attacker, spell) {
     };
 }
 function performAttack(attacker, attack, target) {
-    var attackStats = createAttackStats(attacker, attack);
+    var attackStats = createAttackStats(attacker, attack, target);
     attacker.health -= attackStats.healthSacrificed;
     attacker.attackCooldown = attacker.time + 1 / (attackStats.attack.attackSpeed * Math.max(.1, (1 - attacker.slow)));
     performAttackProper(attackStats, target);
     return attackStats;
 }
 function castSpell(attacker, spell, target) {
-    var attackStats = createSpellStats(attacker, spell);
+    var attackStats = createSpellStats(attacker, spell, target);
     attacker.health -= attackStats.healthSacrificed;
     attacker.attackCooldown = attacker.time + .2;
     performAttackProper(attackStats, target);
@@ -272,7 +279,7 @@ function applyAttackToTarget(attackStats, target) {
                 continue;
             }
             var distance = getDistance(attacker, cleaveTarget);
-            if (distance > attackStats.attack.range * 32) continue;
+            if (distance > (attackStats.attack.range + ifdefor(attackStats.attack.cleaveRange, 0)) * 32) continue;
             applyAttackToTarget(cleaveAttackStats, cleaveTarget);
         }
     }
@@ -359,29 +366,44 @@ function applyAttackToTarget(attackStats, target) {
     if (ifdefor(attack.debuff)) {
         addTimedEffect(target, attack.debuff);
     }
-    for (var i = 0; i < ifdefor(attacker.onHitEffects, []).length; i++) {
-        var onHitEffect = attacker.onHitEffects[i];
+    var effects = ifdefor(attacker.onHitEffects, []);
+    if (attackStats.isCritical) {
+        effects = effects.concat(ifdefor(attacker.onCritEffects, []));
+    }
+    for (var i = 0; i < effects.length; i++) {
+        var effect = effects[i];
         // Some abilities like corsairs venom add a stacking debuff to the target every hit.
-        if (ifdefor(onHitEffect.debuff)) {
-            addTimedEffect(target, onHitEffect.debuff);
+        if (ifdefor(effect.debuff)) {
+            addTimedEffect(target, effect.debuff);
         }
         // Some abilities like dancer's whirling dervish add a stacking buff to the attacker every hit.
-        if (ifdefor(onHitEffect.buff)) {
+        if (ifdefor(effect.buff)) {
             console.log("BUFFED");
-            addTimedEffect(attacker, onHitEffect.buff);
+            addTimedEffect(attacker, effect.buff);
         }
     }
     if (totalDamage > 0) {
-        target.health -= totalDamage;
+        if (target.health / target.maxHealth <= ifdefor(attack.cull, 0)) {
+            target.health = 0;
+            hitText.value = 'culled!';
+        } else {
+            target.health -= totalDamage;
+            hitText.value = totalDamage;
+        }
         attacker.health += ifdefor(attack.lifeSteal, 0) * totalDamage
         if (ifdefor(attack.poison)) {
             addTimedEffect(target, {'+damageOverTime': totalDamage * attack.poison});
         }
-        hitText.value = totalDamage;
         // Some attacks pull the target towards the attacker
         if (attack.stun) {
             target.stunned = Math.max(ifdefor(target.stunned, 0), target.time + attack.stun * effectiveness);
             hitText.value += ' stunned!';
+        }
+        if (Math.random() < ifdefor(attack.knockbackChance, 0)) {
+            var targetX = target.x - target.direction * 32 * ifdefor(attack.knockbackDistance, 1);
+            // unset the current target since they are being pushed away.
+            attacker.target = null;
+            target.pull = {'x': targetX, 'time': target.time + .3, 'damage': 0};
         }
         if (attack.pullsTarget) {
             target.stunned =  Math.max(ifdefor(target.stunned, 0), target.time + .3 + distance / 32 * ifdefor(attack.dragStun * effectiveness, 0));

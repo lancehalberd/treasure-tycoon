@@ -29,10 +29,6 @@ function useSkill(actor, skill, target) {
         // Normal skills may not target dying units.
         return false;
     }
-    var logStop = false;
-    if (ifdefor(skill.base.targetDeadUnits)) {
-        logStop = true;
-    }
     for (var i = 0; i < ifdefor(skill.base.restrictions, []).length; i++) {
         if (actor.tags.indexOf(skill.base.restrictions[i]) < 0) {
             return false;
@@ -42,6 +38,7 @@ function useSkill(actor, skill, target) {
     var isField = skill.base.tags.indexOf('field') >= 0; // AOE with duration centered on player (thunderstorm)
     var isBlast = skill.base.tags.indexOf('blast') >= 0; // AOE centered on target (plague, dispell, drain life)
     var isRain = skill.base.tags.indexOf('rain') >= 0; // Projectiles fall from the sky at targets (meteor)
+    var isSpell = skill.base.tags.indexOf('spell');
     var isAOE = skill.cleave || isNova || isField || isBlast || isRain;
     // Action skills have targets and won't activate if that target is out of range or not of the correct type.
     if (actionIndex >= 0) {
@@ -88,7 +85,7 @@ function useSkill(actor, skill, target) {
             } else {
                 health = target.health;
             }
-            var attackStats = createAttackStats(actor, skill);
+            var attackStats = isSpell ? createSpellStats(actor, skill, target) : createAttackStats(actor, skill, target);
             // Any life gained by this attack should be considered in the calculation as well in favor of using the attack.
             var possibleLifeGain = (attackStats.damage + attackStats.magicDamage) * ifdefor(skill.lifeSteal, 0);
             var actualLifeGain = Math.min(actor.maxHealth - actor.health, possibleLifeGain);
@@ -220,12 +217,22 @@ skillDefinitions.spell = {
         castSpell(actor, spellSkill, target);
     }
 };
+
+skillDefinitions.consume = {
+    isValid: function (actor, consumeSkill, target) {
+        return true;
+    },
+    use: function (actor, consumeSkill, target) {
+        actor.health += target.maxHealth * ifdefor(consumeSkill.consumeRatio, 1);
+        stealAffixes(actor, target, consumeSkill);
+    }
+};
 skillDefinitions.song = {
     isValid: function (actor, songSkill, target) {
         return true;
     },
     use: function (actor, songSkill, target) {
-        var attackStats = createSpellStats(actor, songSkill);
+        var attackStats = createSpellStats(actor, songSkill, target);
         actor.attackCooldown = actor.time + .2;
         performAttackProper(attackStats, target);
         return attackStats;
@@ -253,7 +260,7 @@ skillDefinitions.heroSong = {
         return false;
     },
     use: function (actor, songSkill, target) {
-        var attackStats = createSpellStats(actor, songSkill);
+        var attackStats = createSpellStats(actor, songSkill, target);
         actor.attackCooldown = actor.time + .2;
         performAttackProper(attackStats, target);
         return attackStats;
@@ -603,20 +610,25 @@ skillDefinitions.plunder = {
         return ifdefor(target.prefixes, []).length + ifdefor(target.suffixes, []).length;
     },
     use: function (actor, plunderSkill, target) {
-
-        var allAffixes = target.prefixes.concat(target.suffixes);
-        for (var i = 0; i < plunderSkill.count && allAffixes.length; i++) {
-            var affix = Random.element(allAffixes);
-            if (target.prefixes.indexOf(affix) >= 0) target.prefixes.splice(target.prefixes.indexOf(affix), 1);
-            if (target.suffixes.indexOf(affix) >= 0) target.suffixes.splice(target.suffixes.indexOf(affix), 1);
-            var bonuses = affix.bonuses;
-            bonuses['duration'] = plunderSkill.duration;
-            addTimedEffect(actor, bonuses);
-            allAffixes = target.prefixes.concat(target.suffixes);
-        }
-        updateMonster(target);
+        stealAffixes(actor, target, plunderSkill);
     }
 };
+function stealAffixes(actor, target, skill) {
+    if (!ifdefor(skill.count)) {
+        return;
+    }
+    var allAffixes = target.prefixes.concat(target.suffixes);
+    for (var i = 0; i < skill.count && allAffixes.length; i++) {
+        var affix = Random.element(allAffixes);
+        if (target.prefixes.indexOf(affix) >= 0) target.prefixes.splice(target.prefixes.indexOf(affix), 1);
+        if (target.suffixes.indexOf(affix) >= 0) target.suffixes.splice(target.suffixes.indexOf(affix), 1);
+        var bonuses = affix.bonuses;
+        bonuses['duration'] = skill.duration;
+        addTimedEffect(actor, bonuses);
+        allAffixes = target.prefixes.concat(target.suffixes);
+    }
+    updateMonster(target);
+}
 
 skillDefinitions.banish = {
     isValid: function (actor, banishSkill, target) {

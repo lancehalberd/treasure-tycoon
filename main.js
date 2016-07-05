@@ -131,7 +131,10 @@ function completeArea(character) {
     if (!character.levelsCompleted[character.currentLevelIndex]) {
         gain('fame', level.level);
         if (level.skill) {
-            $adventureDiv.append($tag('button','js-learnSkill learnSkill', '+' + level.skill.name));
+            var $learnSkill = $tag('button','js-learnSkill learnSkill', '+' + level.skill.name);
+            $learnSkill.attr('helpText', '1');
+            $learnSkill.data('helpMethod', getAbilityHelpText);
+            $adventureDiv.append($learnSkill);
         } else {
             // Just show a checkmark if the area has no skill associated with it.
             $adventureDiv.append($tag('span','', '&#10003;'));
@@ -146,7 +149,6 @@ function completeArea(character) {
         });
     }
     unlockItemLevel(level.level);
-    displayInfoMode(character);
 }
 function unlockItemLevel(level) {
     for (var itemLevel = $('.js-levelSelect').find('option').length + 1; itemLevel <= level + 1 && itemLevel <= items.length; itemLevel++) {
@@ -238,7 +240,7 @@ $('.js-mouseContainer').on('mouseover mousemove', '.js-adventureMode .js-canvas'
     }
     var sourceCharacter = $(this).closest('.js-playerPanel').data('character');
     sourceCharacter.allies.concat(sourceCharacter.enemies).forEach(function (actor) {
-        if (isPointInRect(x, y, actor.left, actor.top, actor.width, actor.height)) {
+        if (!actor.isDead && isPointInRect(x, y, actor.left, actor.top, actor.width, actor.height)) {
             canvasPopupTarget = actor;
             return false;
         }
@@ -308,6 +310,9 @@ function removeToolTip() {
     $popupTarget = null;
 }
 function getHelpText($popupTarget) {
+    if ($popupTarget.data('helpMethod')) {
+        return $popupTarget.data('helpMethod')($popupTarget);
+    }
     return $popupTarget.attr('helpText');
 }
 

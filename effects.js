@@ -188,7 +188,7 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
     size = ifdefor(size, 10);
     var self = {
         'x': x, 'y': y, 'vx': vx, 'vy': vy, 't': 0, 'done': false, 'delay': delay,
-        'hit': false, 'target': target, 'attackStats': attackStats,
+        'hit': false, 'target': target, 'attackStats': attackStats, 'hitTargets': [],
         'update': function (character) {
             // Put an absolute cap on how far a projectile can travel
             if (self.y > 240 - 64 || self.attackStats.distance > 2000) self.done = true;
@@ -214,6 +214,18 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                 hit = Math.abs(tx - self.x) < 10 && Math.abs(ty - self.y) < 64 && self.target.health > 0;
             }
             self.t += 1;
+            if (self.attackStats.piercing) {
+                for (var i = 0; i < self.attackStats.source.enemies.length; i++) {
+                    var enemy = self.attackStats.source.enemies[i];
+                    if (enemy === self.target || self.hitTargets.indexOf(enemy) >= 0) {
+                        continue;
+                    }
+                    if (Math.abs(enemy.x + ifdefor(enemy.width, 64) / 2 - self.x) < 10 && Math.abs(ifdefor(enemy.y, 64) + ifdefor(enemy.height, 128) / 2 - self.y) < 64 && enemy.health > 0) {
+                        applyAttackToTarget(self.attackStats, enemy);
+                        self.hitTargets.push(enemy);
+                    }
+                }
+            }
             // Don't do any collision detection once the projectile is spent.
             if (self.hit) return;
             self.attackStats.distance += Math.sqrt(self.vx * self.vx + self.vy * self.vy);
@@ -232,6 +244,8 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                     self.done = true;
                     if (ifdefor(attackStats.attack.chaining)) {
                         self.done = false;
+                        // every bounce allows piercing projectiles to hit each target again.
+                        self.hitTargets = [];
                         // reduce the speed. This seems realistic and make it easier to
                         // distinguish bounced attacks from new attacks.
                         self.vx = -self.vx / 5;
@@ -257,6 +271,9 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                             self.attackStats.accuracy *= .95;
                             break;
                         }
+                    } else if (ifdefor(self.attackStats.piercing)) {
+                        self.done = false;
+                        console.log('pierce');
                     }
                 }
             } else if (self.target.health > 0 && self.vx * (tx - self.x) <= 0) {

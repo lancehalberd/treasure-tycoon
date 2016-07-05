@@ -75,20 +75,23 @@ function $levelDiv(key) {
     return $tag('div', 'js-adventure adventure js-area-' + key).data('levelIndex', key).append($levelButton).append($confirmButton).append($cancelButton);
 }
 function updateSkillButtons(character) {
-    character.$panel.find('.js-learnSkill').each(function (index, element) {
-        var areaKey = $(element).closest('.js-adventure').data('levelIndex');
-        var level = levels[areaKey];
-        var sections = [];
-        if (character.adventurer.xpToLevel > character.adventurer.xp) {
-            $(element).addClass('disabled');
-            sections.push(character.adventurer.name + ' still needs ' + (character.adventurer.xpToLevel - character.adventurer.xp) + ' XP before learning a new skill.');
-            sections.push('');
-        } else {
-            $(element).removeClass('disabled');
-        }
-        sections.push(abilityHelpText(level.skill, character));
-        $(element).attr('helptext', sections.join('<br/>'));
-    });
+    if (character.adventurer.xpToLevel > character.adventurer.xp) {
+        character.$panel.find('.js-learnSkill').addClass('disabled');
+    } else {
+        character.$panel.find('.js-learnSkill').removeClass('disabled');
+    }
+}
+function getAbilityHelpText($element) {
+    var character = $element.closest('.js-playerPanel').data('character');
+    var areaKey = $element.closest('.js-adventure').data('levelIndex');
+    var level = levels[areaKey];
+    var sections = [];
+    if (character.adventurer.xpToLevel > character.adventurer.xp) {
+        sections.push(character.adventurer.name + ' still needs ' + (character.adventurer.xpToLevel - character.adventurer.xp) + ' XP before learning a new skill.');
+        sections.push('');
+    }
+    sections.push(abilityHelpText(level.skill, character));
+    return sections.join('<br/>');
 }
 function createEndlessLevel(key, level) {
     var tier = 1;

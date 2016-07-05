@@ -8,7 +8,7 @@ var pointsTypes = ['coins', 'anima', 'fame'];
 var allComputedStats = ['dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
      'coins', 'xpValue', 'anima',
      'evasion', 'block', 'magicBlock', 'armor', 'magicResist', 'accuracy', 'range', 'attackSpeed',
-     'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage', 'poison',
+     'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage', 'poison', 'overHeal',
      'critChance', 'critDamage', 'critAccuracy',
      'damageOnMiss', 'slowOnHit', 'healthRegen', 'healthGainOnHit',
      'increasedDrops', 'increasedExperience', 'cooldownReduction', 'damageOverTime'];
@@ -23,6 +23,8 @@ function displayInfoMode(character) {
     character.adventurer.attackCooldown = 0;
     character.adventurer.target = null;
     character.adventurer.slow = 0;
+    character.adventurer.bonusMaxHealth = 0;
+    updateActorStats(character.adventurer);
     character.$panel.find('.js-adventureMode').hide();
     var $infoPanel = character.$panel.find('.js-infoMode');
     $infoPanel.show();
@@ -241,6 +243,9 @@ function addBonusesAndActions(actor, source) {
     if (ifdefor(source.onHitEffect)) {
         actor.onHitEffects.push(source.onHitEffect);
     }
+    if (ifdefor(source.onCritEffect)) {
+        actor.onCritEffects.push(source.onCritEffect);
+    }
     if (ifdefor(source.action)) {
         var action = {'base': createAction(source.action)}
         if (source.action.type === 'attack') {
@@ -260,7 +265,7 @@ var inheritedActionStats = ['range', 'minDamage', 'maxDamage', 'minMagicDamage',
     'accuracy', 'attackSpeed', 'critChance', 'critDamage', 'critAccuracy', 'damageOnMiss', 'slowOnHit', 'healthGainOnHit'];
 function createAction(data) {
     var stats = ifdefor(data.stats, {});
-    var action =  {'type': 'attack', 'tags': [], 'helpText': 'A basic attack.', 'stats': {'cooldown': 0}};
+    var action =  {'type': 'attack', 'tags': [], 'helpText': 'A basic attack.', 'stats': {'cooldown': 0, 'cleave': 0, 'cleaveRange': 0, 'knockbackChance': 0, 'knockbackDistance': 1, 'cull': 0, 'criticalPiercing': false}};
     $.each(data, function (key, value) {
         action[key] = copy(value);
     });
@@ -280,6 +285,7 @@ function updateAdventurer(adventurer) {
     adventurer.reactions = [];
     adventurer.tags = [];
     adventurer.onHitEffects = [];
+    adventurer.onCritEffects = [];
     if (!adventurer.equipment.weapon) {
         // Fighting unarmed is considered using a fist weapon.
         adventurer.tags = ['fist', 'melee'];
@@ -374,7 +380,40 @@ function updateActorStats(actor) {
     allRoundedStats.forEach(function (stat) {
         actor[stat] = Math.round(actor[stat]);
     });
-    var sections = [actor.name, ''];
+    actor.actions.concat(actor.reactions).forEach(function (action) {
+        $.each(action.base.stats, function (stat) {
+            if (stat.charAt(0) === '$') {
+                stat = stat.substring(1);
+            }
+            action[stat] = getStatForAction(actor, action.base, stat, action);
+        })
+        $.each(specialTraits, function (stat) {
+            action[stat] = getStatForAction(actor, action.base, stat, action);
+        });
+    });
+    // Collect all buffs/debuffs from onHit/onCritEffects
+    var effects = [];
+    actor.onHitEffects.concat(actor.onCritEffects).forEach(function (effect) {
+        if (ifdefor(effect.buff)) effects.push(effect.buff);
+        if (ifdefor(effect.debuff)) effects.push(effect.debuff);
+    });
+    // Calculate variables for all buff/debuffs from onHit/onCritEffects.
+    effects.forEach(function (effect) {
+        $.each(effect.stats, function (stat) {
+            if (stat.charAt(0) === '$') {
+                stat = stat.substring(1);
+            }
+            effect[stat] = getStatForAction(actor, effect, stat, effect);
+        });
+    });
+    actor.health = actor.percentHealth * actor.maxHealth;
+    if (ifdefor(actor.isMainCharacter)) {
+        refreshStatsPanel(actor.character);
+    }
+    updateActorHelpText(actor);
+}
+function updateActorHelpText(actor) {
+    var sections = [actor.name + ' ' + Math.ceil(actor.health) + '/' + Math.ceil(actor.maxHealth), ''];
     ifdefor(actor.timedEffects, []).forEach(function (timedEffect) {
         sections.push(bonusHelpText(timedEffect, false, actor));
     });
@@ -388,30 +427,19 @@ function updateActorStats(actor) {
         sections.push(bonusHelpText(affix.bonuses, false, actor));
     });
     actor.helptext = sections.join('<br/>');
-    actor.actions.concat(actor.reactions).forEach(function (action) {
-        $.each(action.base.stats, function (stat) {
-            if (stat.charAt(0) === '$') {
-                stat = stat.substring(1);
-            }
-            action[stat] = getStatForAction(actor, action.base, stat, action);
-        })
-        $.each(specialTraits, function (stat) {
-            action[stat] = getStatForAction(actor, action.base, stat, action);
-        });
-    });
-    actor.health = actor.percentHealth * actor.maxHealth;
-    if (ifdefor(actor.isMainCharacter)) {
-        refreshStatsPanel(actor.character);
+    if ($popup && canvasPopupTarget === actor) {
+        $popup.html(canvasPopupTarget.helptext);
     }
 }
 function getStat(actor, stat) {
-    var base = ifdefor(actor.base[stat], 0), plus = 0, percent = 1, multiplier = 1, specialValue = ifdefor(actor.base['$' + stat], false);
+    var base = ifdefor(actor.base[stat], 0), plus = 0, flatBonus = 0, percent = 1, multiplier = 1, specialValue = ifdefor(actor.base['$' + stat], false);
     var baseKeys = [stat];
     if (stat === 'evasion' || stat === 'attackSpeed') {
         percent += .002 * actor.dexterity;
     }
     if (stat === 'maxHealth') {
         percent += .002 * actor.strength;
+        flatBonus += ifdefor(actor.bonusMaxHealth, 0);
     }
     if (stat === 'block' || stat === 'magicBlock' || stat === 'accuracy') {
         percent += .002 * actor.intelligence;
@@ -461,7 +489,7 @@ function getStat(actor, stat) {
         return specialValue;
     }
     //console.log(stat +": " + ['(',base, '+', plus,') *', percent, '*', multiplier]);
-    return (base + plus) * percent * multiplier;
+    return (base + plus) * percent * multiplier + flatBonus;
 }
 function getStatForAction(actor, dataObject, stat, action) {
     action.foo;

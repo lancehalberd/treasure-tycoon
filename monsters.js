@@ -130,6 +130,7 @@ function updateMonster(monster) {
     monster.reactions = [];
     monster.tags = ifdefor(monster.base.tags, []);
     monster.onHitEffects = [];
+    monster.onCritEffects = [];
     if (monster.tags.indexOf('ranged') < 0) {
         monster.tags.push('melee');
     }

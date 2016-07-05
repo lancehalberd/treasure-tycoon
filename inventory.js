@@ -358,6 +358,13 @@ function bonusHelpText(rawBonuses, implicit, actor, localObject) {
     if (ifdefor(bonuses['*speedBonus'], 1) !== 1) {
         sections.push(bonuses['*speedBonus'].format(1) + 'x movement speed');
     }
+    if (ifdefor(bonuses['*cooldown'], 1) !== 1) {
+        sections.push(bonuses['*cooldown'].format(1) + 'x cooldown time');
+    }
+    if (ifdefor(bonuses['+limit'])) {
+        sections.push('+' + bonuses['+limit'].format() + ' maximum minions');
+    }
+
     // Some unique abilities just map 'key' => 'help text' directly.
     $.each(rawBonuses, function (key, value) {
         if (key.indexOf(':') < 0 && typeof(value) === 'string') {
@@ -366,7 +373,12 @@ function bonusHelpText(rawBonuses, implicit, actor, localObject) {
     });
 
     $.each(tagBonuses, function (tagName, bonuses) {
-        sections.push(tag('div', 'tagText', tagToCategoryDisplayName(tagName) + ':<br/>' + bonusHelpText(bonuses, false, actor)));
+        if (tagName === 'skill') {
+            // The tagName 'skill' applies to all attacks, so don't breka it out into a special section.
+            sections.push(bonusHelpText(bonuses, false, actor));
+        } else {
+            sections.push(tag('div', 'tagText', tagToCategoryDisplayName(tagName) + ':<br/>' + bonusHelpText(bonuses, false, actor)));
+        }
     });
 
     // Special effects
@@ -403,8 +415,39 @@ function bonusHelpText(rawBonuses, implicit, actor, localObject) {
     if (ifdefor(bonuses['+chance'])) {
         sections.push(bonuses['+chance'].percent() + ' increased chance');
     }
+    if (ifdefor(bonuses['+cleave'])) {
+        sections.push(bonuses['+cleave'].percent() + ' splash damage to all enemies in range');
+    }
+    if (ifdefor(bonuses['+cleaveRange'])) {
+        sections.push(bonuses['+cleaveRange'].format(1) + ' increased range for splash damage');
+    }
+    if (ifdefor(bonuses['+knockbackChance'])) {
+        sections.push(bonuses['+knockbackChance'].percent() + ' to knock back enemies on hit');
+    }
+    if (ifdefor(bonuses['+knockbackDistance'])) {
+        sections.push(bonuses['+knockbackDistance'].format(1) + ' increased knockback distance');
+    }
+    if (ifdefor(bonuses['+cull'])) {
+        sections.push('Instantly kill enemies with less than ' + bonuses['+cull'].percent() + ' health');
+    }
+    if (ifdefor(bonuses['+overHeal'])) {
+        sections.push(bonuses['+overHeal'].percent() + ' of health gained beyond your max health is gained as additional max health');
+    }
+    if (ifdefor(bonuses['+lifeSteal'])) {
+        sections.push(bonuses['+lifeSteal'].percent() + ' of damage dealt is gained as life');
+    }
+
+    if (ifdefor(bonuses['*duration'])) {
+        sections.push(bonuses['*duration'].format(1) + 'x increased duration');
+    }
+    if (ifdefor(bonuses['+count'])) {
+        sections.push('+' + bonuses['+count'].format() + ' enchantment(s) stolen');
+    }
+    if (ifdefor(bonuses['+duration'])) {
+        sections.push(bonuses['+duration'].format(1) + 's increased duration');
+    }
     if (ifdefor(bonuses['duration'])) { // Buffs/debuffs only.
-        sections.push('For ' + bonuses.duration + ' seconds');
+        sections.push('For ' + bonuses.duration.format(1) + ' seconds');
     }
     if (ifdefor(bonuses['duration']) !== null) { // Buffs/debuffs only.
         return tag('div', 'buffText', sections.join('<br/>'));
