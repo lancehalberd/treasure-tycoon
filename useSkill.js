@@ -315,6 +315,10 @@ skillDefinitions.stop = {
 skillDefinitions.minion = {
     isValid: function (actor, minionSkill, target) {
         var count = 0;
+        // Cannot raise corpses of uncontrollable enemies as minions.
+        if (minionSkill.base.consumeCorpse && target.uncontrollable) {
+            return false;
+        }
         actor.allies.forEach(function (ally) {
             if (ally.source == minionSkill) count++;
         });
@@ -324,7 +328,7 @@ skillDefinitions.minion = {
         actor.pull = {'x': actor.x - actor.direction * 64, 'time': actor.time + .3, 'damage': 0};
         var newMonster;
         if (minionSkill.base.consumeCorpse) {
-            newMonster = makeMonster({'key': target.key}, target.level, [], true);
+            newMonster = makeMonster({'key': target.base.key}, target.level, [], true);
             newMonster.x = target.x;
         } else {
             newMonster = makeMonster({'key': minionSkill.base.monsterKey}, actor.level, [], true);

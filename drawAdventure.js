@@ -26,14 +26,13 @@ function drawAdventure(character) {
         object.draw(character.context, object.x - cameraX, 240 - 128);
     });
     character.enemies.forEach(function (actor, index) {
-        drawActor(character, actor, index)
+        drawActor(character, actor, 1 + character.enemies.length - index)
     });
+    drawActor(character, adventurer, 0);
     character.allies.forEach(function (actor, index) {
         if (actor == adventurer) return;
         drawActor(character, actor, -index)
     });
-    drawActor(character, adventurer, 0);
-    context.globalAlpha = 1;
     // xp bar
     drawBar(context, 35, 240 - 45, 400, 6, 'white', '#00C000', adventurer.xp / adventurer.xpToLevel);
     context.font = "20px sans-serif";
@@ -84,7 +83,7 @@ function drawMonster(character, monster, index) {
         context.globalAlpha = .2;
     }
     monster.left = monster.x - cameraX;
-    monster.top = 240 - ifdefor(source.height, 64) * 2 - 72 - ifdefor(source.y, 0) * 2;
+    monster.top = 240 - ifdefor(source.height, 64) * 2 - 72 - ifdefor(source.y, 0) * 2 - 2 * index;
     monster.width = source.width * 2;
     monster.height = ifdefor(source.height, 64) * 2;
     context.translate(monster.left + monster.width / 2, 0);
@@ -99,16 +98,16 @@ function drawMonster(character, monster, index) {
     //context.fillRect(monster.x - cameraX, 240 - 128 - 72, 64, 128);
     // life bar
     if (monster.isDead) return;
-    drawBar(context, monster.x - cameraX + source.width - 32, 240 - 128 - 36 - 5 * index - ifdefor(source.y, 0) * 2, 64, 4, 'white', monster.color, monster.health / monster.maxHealth);
+    drawBar(context, monster.x - cameraX + source.width - 32, 240 - 128 - 36 - 2 * index - ifdefor(source.y, 0) * 2, 64, 4, 'white', monster.color, monster.health / monster.maxHealth);
     if (ifdefor(monster.reflectBarrier, 0)) {
-        drawBar(context, monster.x - cameraX + source.width - 32, 240 - 128 - 36 - 5 * index - 2 - ifdefor(source.y, 0) * 2, 64, 4, 'white', 'blue', monster.reflectBarrier / monster.maxReflectBarrier);
+        drawBar(context, monster.x - cameraX + source.width - 32, 240 - 128 - 36 - 2 * index - 2 - ifdefor(source.y, 0) * 2, 64, 4, 'white', 'blue', monster.reflectBarrier / monster.maxReflectBarrier);
     }
 }
 function drawAdventurer(character, adventurer, index) {
     var cameraX = character.cameraX;
     var context = character.context;
     adventurer.left = adventurer.x - cameraX;
-    adventurer.top = 240 - 128 - 72;
+    adventurer.top = 240 - 128 - 72 - 2 * index;
     adventurer.width = 64;
     adventurer.height = 128;
     //draw character
@@ -133,9 +132,9 @@ function drawAdventurer(character, adventurer, index) {
     //context.fillRect(adventurer.x - cameraX, 240 - 128 - 72, 64, 128);
     // life bar
     if (adventurer.isDead) return;
-    drawBar(context, adventurer.x - cameraX, 240 - 128 - 36 - 5 * index, 64, 4, 'white', 'red', adventurer.health / adventurer.maxHealth);
+    drawBar(context, adventurer.x - cameraX, 240 - 128 - 36 - 2 * index, 64, 4, 'white', 'red', adventurer.health / adventurer.maxHealth);
     if (ifdefor(adventurer.reflectBarrier, 0)) {
-        drawBar(context, adventurer.x - cameraX, 240 - 128 - 36 - 5 * index - 2, 64, 4, 'white', 'blue', adventurer.reflectBarrier / adventurer.maxReflectBarrier);
+        drawBar(context, adventurer.x - cameraX, 240 - 128 - 36 - 2 * index - 2, 64, 4, 'white', 'blue', adventurer.reflectBarrier / adventurer.maxReflectBarrier);
     }
 }
 function drawMinimap(character) {

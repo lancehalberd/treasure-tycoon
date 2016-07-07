@@ -5,17 +5,87 @@ var names = ['Chris', 'Leon', 'Hillary', 'Michelle', 'Rob', 'Reuben', 'Kingston'
 var walkLoop = [0, 1, 2, 3];
 var fightLoop = [4, 5, 6];
 var pointsTypes = ['coins', 'anima', 'fame'];
-var allComputedStats = ['dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
+// These are the only variables on actors that can be targeted by effects.
+var allActorVariables = [
+    'dexterity', 'strength', 'intelligence', 'maxHealth', 'healthRegen', 'speed',
+    // defensive stats
+    'evasion', 'block', 'magicBlock', 'armor', 'magicResist',
+    // special traits
+    'cloaking', 'overHeal', 'increasedDrops', 'increasedExperience', 'cooldownReduction',
+    'equipmentMastery', 'invulnerable', 'maxBlock', 'maxMagicBlock', 'maxEvasion',
+    'uncontrollable',
+    // tracked for debuffs that deal damage over time
+    'damageOverTime',
+    // For enemy loot
+    'coins', 'xpValue', 'anima'
+];
+// These are variables that can be targeted by effects on any action.
+var commonActionVariables = {
+    // core action stats
+    'accuracy': 'Checked against target\'s evasion to determine if this will hit the target.',
+    'range': 'How far away this ability can target something.',
+    'attackSpeed': 'How many times can this ability be used in one second.',
+    'minDamage': 'The minimum physical damage of this skill.',
+    'maxDamage': 'The maximum physical damage of this skill.',
+    'minMagicDamage': 'The minimum magic damage of this skill.',
+    'maxMagicDamage': 'The maximum magic damage of this skill.',
+    'critChance': 'The percent chance for this ability to strike critically.',
+    'critDamage': 'The percentage of bonus damage critical strikes gain.',
+    'critAccuracy': 'The percentage of bonus accuracy critical strikes gain.',
+    // common skill stats
+    'cooldown': 'How long you have to wait before this skill can be used again.',
+    'duration': 'How long this effect lasts.',
+    'area': 'The radius of this skill\'s effect.',
+    // various effects on hit
+    'poison': 'Percentage of damage to deal each second over time.',
+    'damageOnMiss': '.',
+    'slowOnHit': '.',
+    'healthGainOnHit': '.',
+    'cleave': '.',
+    'cleaveRange': '.',
+    'knockbackChance': '.',
+    'knockbackDistance': '.',
+    'cull': '.',
+    'armorPenetration': '.',
+    'instantCooldownChance': '.', // %chance to ignore cooldown for an action
+    // special flags
+    'alwaysHits': '.',
+    'chaining': '.',
+    'criticalPiercing': '.',
+    'domino': '.',
+    'doubleStrike': '.',
+    'firstStrike': '.',
+    'ignoreArmor': '.',
+    'ignoreResistance': '.',
+    'instantCooldown': '.',
+    'pullsTarget': '.',
+    'undodgeable': '.',
+};
+
+var allRoundedVariables = ['dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
      'coins', 'xpValue', 'anima',
-     'evasion', 'block', 'magicBlock', 'armor', 'magicResist', 'accuracy', 'range', 'attackSpeed',
-     'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage', 'poison', 'overHeal',
-     'critChance', 'critDamage', 'critAccuracy',
-     'damageOnMiss', 'slowOnHit', 'healthRegen', 'healthGainOnHit',
-     'increasedDrops', 'increasedExperience', 'cooldownReduction', 'damageOverTime'];
-var allRoundedStats = ['dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
-     'coins', 'xpValue', 'anima',
-     'evasion', 'block', 'magicBlock', 'armor', 'accuracy',
-     'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage'];
+     'evasion', 'block', 'magicBlock', 'armor'];
+
+// All actors receive these bonuses, which give various benefits based on the core stats:
+// dexterity, strength, and intelligence. Bonuses for bonusMaxHealth and healthRegen are included
+// here but they could probably be added separately. BonuseMaxHealth is used to track
+// overhealing which increases maxHealth for the duration of one adventure, and healthRegen
+// is the passive healthRegen that all actors are given.
+var coreStatBonuses = {
+    '%evasion': [.002, '*', '{dexterity}'],
+    '%attackSpeed': [.002, '*', '{dexterity}'],
+    '+ranged:damage': ['{dexterity}', '/', 10],
+    '%maxHealth': [.002, '*', '{strength}'],
+    '%damage': [.002, '*', '{strength}'],
+    '+melee:damage': ['{strength}', '/', 10],
+    '%block': [.002, '*', '{intelligence}'],
+    '%magicBlock': [.002, '*', '{intelligence}'],
+    '%accuracy': [.002, '*', '{intelligence}'],
+    '+magic:magicDamage': ['{intelligence}', '/', 10],
+    '&maxHealth': '{bonusMaxHealth}',
+    'healthRegen': ['{maxHealth}', '/', 100],
+    'spell:power': [['{minMagicDamage}', '+' ,'{maxMagicDamage}'], '/' , 2]
+}
 
 function displayInfoMode(character) {
     character.adventurer.percentHealth = 1;
@@ -47,7 +117,11 @@ function refreshStatsPanel(character) {
     character.$panel.find('.js-infoMode .js-intelligence').text(adventurer.intelligence.format(0));
     $statsPanel.find('.js-toLevel').text(adventurer.xpToLevel - adventurer.xp);
     $statsPanel.find('.js-maxHealth').text(adventurer.maxHealth.format(0));
-    $statsPanel.find('.js-range').text(adventurer.range.format(2));
+    if (adventurer.actions.length) {
+        // This code assumes the basic attack is always the last action.
+        var attack = adventurer.actions[adventurer.actions.length - 1];
+        $statsPanel.find('.js-range').text(attack.range.format(2));
+    }
     $statsPanel.find('.js-speed').text(adventurer.speed.format(1));
     $statsPanel.find('.js-healthRegen').text(adventurer.healthRegen.format(1));
     updateDamageInfo(character);
@@ -110,16 +184,26 @@ function newCharacter(job) {
     });
     draggedJewel = null;
     overJewel = null;
-    for (var i = 0; i < character.adventurer.actions.length; i++) {
+    /*for (var i = 0; i < character.adventurer.actions.length; i++) {
         console.log(getTargetsForAction(character.adventurer, character.adventurer.actions[i]));
-    }
+    }*/
 }
 function getTargetsForAction(actor, action) {
     var keys = [];
     var seen = {};
+    $.each(commonActionVariables, function (stat) {
+        getTargetsForActionStat(actor, action.base, stat, action).forEach(function (newKey) {
+            if (seen[newKey]) return;
+            seen[newKey] = true;
+            keys.push(newKey);
+        });
+    });
     $.each(action.base.stats, function (stat) {
         if (stat.charAt(0) === '$') {
             stat = stat.substring(1);
+        }
+        if (commonActionVariables[stat]) {
+            return;
         }
         getTargetsForActionStat(actor, action.base, stat, action).forEach(function (newKey) {
             if (seen[newKey]) return;
@@ -138,15 +222,21 @@ function getTargetsForActionStat(actor, dataObject, stat, action) {
             console.log(base);
             throw new Error("Found buff with undefined stats");
         }
+        $.each(commonActionVariables, function (key) {
+            keys = keys.concat(getTargetsForActionStat(actor, base, key, action));
+        });
         $.each(base.stats, function (key, value) {
             if (key.charAt(0) === '$') {
                 key = key.substring(1);
+            }
+            if (commonActionVariables[key]) {
+                return;
             }
             keys = keys.concat(getTargetsForActionStat(actor, base, key, action));
         });
         return keys;
     }
-    keys.push('skill:' + stat);
+    keys.push(stat);
     var extraTags = [];
     if (dataObject.type) {
         extraTags.push(dataObject.type);
@@ -155,7 +245,7 @@ function getTargetsForActionStat(actor, dataObject, stat, action) {
         extraTags.push(dataObject.key);
     }
     ifdefor(dataObject.tags, []).concat(extraTags).forEach(function (prefix) {
-        keys.push(prefix + ':skill:' + stat);
+        keys.push(prefix + ':' + stat);
     });
     return keys;
 }
@@ -170,13 +260,6 @@ function makeAdventurer(job, level, equipment) {
         'x': 0,
         'equipment': {},
         'job': job,
-        'base': {
-            'maxHealth': 20,
-            'armor': 0,
-            'speed': 250,
-            'evasion': 1,
-            'block': 1,
-        },
         'width': 64,
         'bonuses': [],
         'unlockedAbilities': {},
@@ -261,20 +344,11 @@ function addBonusesAndActions(actor, source) {
         actor.reactions.push(action);
     }
 }
-var inheritedActionStats = ['range', 'minDamage', 'maxDamage', 'minMagicDamage', 'maxMagicDamage', 'poison',
-    'accuracy', 'attackSpeed', 'critChance', 'critDamage', 'critAccuracy', 'damageOnMiss', 'slowOnHit', 'healthGainOnHit'];
 function createAction(data) {
     var stats = ifdefor(data.stats, {});
-    var action =  {'type': 'attack', 'tags': [], 'helpText': 'A basic attack.', 'stats':
-        {'cooldown': 0, 'cleave': 0, 'cleaveRange': 0, 'knockbackChance': 0, 'knockbackDistance': 1, 'cull': 0,
-         'criticalPiercing': false, 'armorPenetration': 0, 'instantCooldownChance': 0}
-    };
+    var action =  {'type': 'attack', 'tags': [], 'helpText': 'A basic attack.', 'stats': {}};
     $.each(data, function (key, value) {
         action[key] = copy(value);
-    });
-    // Inherit stats from the base character stats by default.
-    inheritedActionStats.forEach(function (stat) {
-        action.stats[stat] = ['{' + stat + '}'];
     });
     $.each(stats, function (stat, value) {
         action.stats[stat] = value;
@@ -289,6 +363,21 @@ function updateAdventurer(adventurer) {
     adventurer.tags = [];
     adventurer.onHitEffects = [];
     adventurer.onCritEffects = [];
+    var adventurerBonuses = {
+        'maxHealth': 10 * (adventurer.level + adventurer.job.dexterityBonus + adventurer.job.strengthBonus + adventurer.job.intelligenceBonus),
+        'accuracy': 2 * adventurer.level,
+        'evasion': adventurer.level,
+        'block': adventurer.level,
+        'magicBlock': adventurer.level / 2,
+        'dexterity': adventurer.level * adventurer.job.dexterityBonus,
+        'strength': adventurer.level * adventurer.job.strengthBonus,
+        'intelligence': adventurer.level * adventurer.job.intelligenceBonus,
+        'critDamage': .5,
+        'critAccuracy': .5,
+        'speed': 250
+    };
+    adventurer.bonuses.push(adventurerBonuses);
+    adventurer.bonuses.push(coreStatBonuses);
     if (!adventurer.equipment.weapon) {
         // Fighting unarmed is considered using a fist weapon.
         adventurer.tags = ['fist', 'melee'];
@@ -297,6 +386,14 @@ function updateAdventurer(adventurer) {
         if (!adventurer.equipment.offhand) {
             adventurer.tags.push('unarmed');
         }
+        var barehandBonsuses = {
+            'minDamage': adventurer.level,
+            'maxDamage': adventurer.level,
+            'range': .5,
+            'attackSpeed': 1,
+            'critChance': .01
+        }
+        adventurer.bonuses.push(barehandBonsuses);
     } else {
         adventurer.tags.push(adventurer.equipment.weapon.base.type);
         adventurer.tags = adventurer.tags.concat(ifdefor(adventurer.equipment.weapon.base.tags, []));
@@ -350,49 +447,31 @@ function updateAdventurer(adventurer) {
 }
 function updateActorStats(actor) {
     actor.percentHealth = ifdefor(actor.health, 1) / ifdefor(actor.maxHealth, 1);
-    if (actor.personCanvas) {
-        actor.base.maxHealth = 10 * (actor.level + actor.job.dexterityBonus + actor.job.strengthBonus + actor.job.intelligenceBonus);
-        actor.base.accuracy = 2 * actor.level;
-        actor.base.evasion = actor.level;
-        actor.base.block = actor.level;
-        actor.base.magicBlock = actor.level / 2;
-        actor.base.dexterity = actor.level * actor.job.dexterityBonus;
-        actor.base.strength = actor.level * actor.job.strengthBonus;
-        actor.base.intelligence = actor.level * actor.job.intelligenceBonus;
-        actor.base.minDamage = 0;
-        actor.base.maxDamage = 0;
-        actor.base.range = 0;
-        actor.base.attackSpeed = 0;
-        actor.base.critChance = 0;
-        actor.base.critDamage = .5;
-        actor.base.critAccuracy = .5;
-        if (!actor.equipment.weapon) {
-            actor.base.minDamage = actor.level;
-            actor.base.maxDamage = actor.level;
-            actor.base.range = .5;
-            actor.base.attackSpeed = 1;
-            actor.base.critChance = .01;
-        }
-    }
-    allComputedStats.forEach(function (stat) {
+    allActorVariables.forEach(function (stat) {
         actor[stat] = getStat(actor, stat);
     });
-    $.each(specialTraits, function (stat) {
-        actor[stat] = getStat(actor, stat);
-    });
-    allRoundedStats.forEach(function (stat) {
+    allRoundedVariables.forEach(function (stat) {
         actor[stat] = Math.round(actor[stat]);
     });
     actor.actions.concat(actor.reactions).forEach(function (action) {
+        $.each(commonActionVariables, function (stat) {
+            action[stat] = getStatForAction(actor, action.base, stat, action);
+        });
+        // Make sure to compute stats that appear specifically on this action
+        // but that aren't included on commonActionVariables. At some point we
+        // may just do away with this entirely or split the variables more
+        // efficiently between these two. Right now commonActionVariables includes
+        // a lot of effects which will not often appear.
         $.each(action.base.stats, function (stat) {
             if (stat.charAt(0) === '$') {
                 stat = stat.substring(1);
             }
+            // don't recalculate stats that we have already computed.
+            if (commonActionVariables[stat]) {
+                return;
+            }
             action[stat] = getStatForAction(actor, action.base, stat, action);
         })
-        $.each(specialTraits, function (stat) {
-            action[stat] = getStatForAction(actor, action.base, stat, action);
-        });
     });
     // Collect all buffs/debuffs from onHit/onCritEffects
     var effects = [];
@@ -402,9 +481,16 @@ function updateActorStats(actor) {
     });
     // Calculate variables for all buff/debuffs from onHit/onCritEffects.
     effects.forEach(function (effect) {
+        $.each(commonActionVariables, function (stat) {
+            action[stat] = getStatForAction(actor, effect, stat, effect);
+        });
         $.each(effect.stats, function (stat) {
             if (stat.charAt(0) === '$') {
                 stat = stat.substring(1);
+            }
+            // don't recalculate stats that we have already computed.
+            if (commonActionVariables[stat]) {
+                return;
             }
             effect[stat] = getStatForAction(actor, effect, stat, effect);
         });
@@ -435,37 +521,10 @@ function updateActorHelpText(actor) {
     }
 }
 function getStat(actor, stat) {
-    var base = ifdefor(actor.base[stat], 0), plus = 0, flatBonus = 0, percent = 1, multiplier = 1, specialValue = ifdefor(actor.base['$' + stat], false);
+    var plus = 0, flatBonus = 0, percent = 1, multiplier = 1, specialValue = false;
     var baseKeys = [stat];
-    if (stat === 'evasion' || stat === 'attackSpeed') {
-        percent += .002 * actor.dexterity;
-    }
-    if (stat === 'maxHealth') {
-        percent += .002 * actor.strength;
-        flatBonus += ifdefor(actor.bonusMaxHealth, 0);
-    }
-    if (stat === 'block' || stat === 'magicBlock' || stat === 'accuracy') {
-        percent += .002 * actor.intelligence;
-    }
-    if (stat === 'minDamage' || stat === 'maxDamage') {
-        baseKeys.push('damage');
-        percent += .002 * actor.strength;
-        if (actor.tags.indexOf('ranged') >= 0) {
-            plus += actor.dexterity / 10;
-        } else {
-            plus += actor.strength / 10;
-        }
-    }
-    if (stat === 'healthRegen') {
-        plus += .01 * actor.maxHealth;
-    }
-    if ((stat === 'minMagicDamage' || stat === 'maxMagicDamage')) {
-        baseKeys.push('magicDamage');
-        // Int boost to magic damage, but only for weapons/monsters tagged 'magic'.
-        if (actor.tags.indexOf('magic') >= 0) {
-            plus += actor.intelligence / 10;
-        }
-    }
+    if (stat === 'minDamage' || stat === 'maxDamage') baseKeys.push('damage');
+    if (stat === 'minMagicDamage' || stat === 'maxMagicDamage') baseKeys.push('magicDamage');
     // For example, when calculating min magic damage for a wand user, we check for all the following:
     // minMagicDamage, magicDamage, wand:minMagicDamage, wand:magicDamage, ranged:minMagicDamage, ranged:magicDamage, etc
     var keys = baseKeys.slice();
@@ -476,45 +535,47 @@ function getStat(actor, stat) {
     });
     actor.bonuses.concat(ifdefor(actor.timedEffects, [])).concat(ifdefor(actor.fieldEffects, [])).forEach(function (bonus) {
         keys.forEach(function (key) {
+            plus += evaluateValue(actor, ifdefor(bonus[key], 0), actor);
             plus += evaluateValue(actor, ifdefor(bonus['+' + key], 0), actor);
             plus -= evaluateValue(actor, ifdefor(bonus['-' + key], 0), actor);
+            flatBonus += evaluateValue(actor, ifdefor(bonus['&' + key], 0), actor);
             percent += evaluateValue(actor, ifdefor(bonus['%' + key], 0), actor);
             multiplier *= evaluateValue(actor, ifdefor(bonus['*' + key], 1), actor);
             if (ifdefor(bonus['$' + key])) {
                 specialValue = evaluateValue(actor, bonus['$' + key], actor);
-            }
-            if (ifdefor(bonus[key])) {
-                specialValue = evaluateValue(actor, bonus[key], actor);
             }
         });
     });
     if (specialValue) {
         return specialValue;
     }
-    //console.log(stat +": " + ['(',base, '+', plus,') *', percent, '*', multiplier]);
-    return (base + plus) * percent * multiplier + flatBonus;
+    // console.log(stat +": " + [plus,'*', percent, '*', multiplier, '+', flatBonus].join(' '));
+    return plus * percent * multiplier + flatBonus;
 }
 function getStatForAction(actor, dataObject, stat, action) {
-    var base = evaluateValue(actor, ifdefor(dataObject.stats[stat], 0), action), plus = 0, percent = 1, multiplier = 1, specialValue = ifdefor(dataObject.stats['$' + stat], false);
+    var base = evaluateValue(actor, ifdefor(dataObject.stats[stat], 0), action), plus = 0, flatBonus = 0, percent = 1, multiplier = 1, specialValue = ifdefor(dataObject.stats['$' + stat], false);
     if (typeof base === 'object' && base.constructor != Array) {
         var subObject = {};
         if (!base.stats) {
             console.log(base);
             throw new Error("Found buff with undefined stats");
         }
+        $.each(commonActionVariables, function (stat) {
+            action[stat] = getStatForAction(actor, base, stat, action);
+        });
         $.each(base.stats, function (key, value) {
             if (key.charAt(0) === '$') {
                 key = key.substring(1);
+            }
+            // don't recalculate stats that we have already computed.
+            if (commonActionVariables[key]) {
+                return;
             }
             subObject[key] = getStatForAction(actor, base, key, action);
         });
         return subObject;
     }
-    // stats from skills are prefixed with 'skill:' always so they won't be effected
-    // by bonuses to global characters stats. For instance, skill.attackSpeed: ['attackSpeed']
-    // inherits the attackSpeed value from the skill user, so we don't want to apply
-    // '*attackSpeed': 2 to it as this has already been applied to the base attackSpeed.
-    var keys = ['skill:' + stat];
+    var keys = [stat];
     var extraTags = [];
     if (dataObject.type) {
         extraTags.push(dataObject.type);
@@ -523,11 +584,8 @@ function getStatForAction(actor, dataObject, stat, action) {
         extraTags.push(dataObject.key)
     }
     ifdefor(dataObject.tags, []).concat(extraTags).forEach(function (prefix) {
-        keys.push(prefix + ':skill:' + stat);
+        keys.push(prefix + ':' + stat);
     });
-    if (stat === 'power' && dataObject.tags.indexOf('spell') >= 0) {
-        plus = (actor.minMagicDamage + actor.maxMagicDamage) / 2;
-    }
     // sometimes we get duplicate keys, so we use this to avoid processing the same
     // buff twice. This seems a little better than just trying to remove the keys
     // and is less work than making sure they aren't added in the first place.
@@ -536,22 +594,21 @@ function getStatForAction(actor, dataObject, stat, action) {
         keys.forEach(function (key) {
             if (usedKeys[key]) return;
             usedKeys[key] = true;
+            plus += evaluateValue(actor, ifdefor(bonus[key], 0), action);
             plus += evaluateValue(actor, ifdefor(bonus['+' + key], 0), action);
             plus -= evaluateValue(actor, ifdefor(bonus['-' + key], 0), action);
+            flatBonus += evaluateValue(actor, ifdefor(bonus['&' + key], 0), action);
             percent += evaluateValue(actor, ifdefor(bonus['%' + key], 0), action);
             multiplier *= evaluateValue(actor, ifdefor(bonus['*' + key], 1), action);
             if (ifdefor(bonus['$' + key])) {
                 specialValue = evaluateValue(actor, bonus['$' + key], action);
             }
-            if (ifdefor(bonus[key])) {
-                specialValue = evaluateValue(actor, bonus[key], action);
-            }
         });
     });
-    if (specialTraits[stat]) {
+    if (specialValue) {
         return specialValue;
     }
-    return (base + plus) * percent * multiplier;
+    return (base + plus + flatBonus) * percent * multiplier + flatBonus;
 }
 function evaluateValue(actor, value, localObject) {
     if (typeof value === 'number') {

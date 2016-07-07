@@ -25,7 +25,7 @@ function updateDamageInfo(character) {
     } else {
         sections.push(attackSpeed.format(2) + ' attacks per second.');
     }
-    sections.push(attack.accuracy + ' accuracy rating.');
+    sections.push(attack.accuracy.format(1) + ' accuracy rating.');
     if (ifdefor(attack.critChance)) {
         sections.push('');
         sections.push(attack.critChance.percent(1) + ' chance to crit for:');

@@ -32,7 +32,7 @@ var monsterSuffixes = [
         {'name': 'Shadows', 'bonuses': {'+evasion': [3, 5]}}
     ],
     [
-        {'name': 'Stealth', 'bonuses': {'+cloaking': 1}}
+        {'name': 'Stealth', 'bonuses': {'$cloaking': true}}
     ]
 ];
 
@@ -41,18 +41,10 @@ function makeMonster(monsterData, level, extraSkills, noRarity) {
         'level': level,
         'slow': 0,
         'equipment': {},
-        'attackColldown': 0,
-        'base': {
-            'level': level,
-            'coins': Random.range(1, level * level * 4),
-            'anima': Random.range(1, level * level),
-            'xpValue': level * 2,
-            'abilities': []
-        },
+        'attackCooldown': 0,
         'bonuses': [],
         'prefixes': [],
         'suffixes': [],
-        'abilities': [],
         'extraSkills': ifdefor(extraSkills, []),
         'percentHealth': 1
     };
@@ -68,12 +60,16 @@ function makeMonster(monsterData, level, extraSkills, noRarity) {
             monster.extraSkills.push({'bonuses': monsterData.bonuses});
         }
     }
-    $.each(baseMonster, function (stat, value) {
-        monster[stat] = value;
-        monster.base[stat] = value;
-    });
-
-    setBaseMonsterStats(monster, level);
+    if (!baseMonster) {
+        console.log(baseMonster);
+        console.log(monsterData);
+        throw new Error('could not determine base monster type');
+    }
+    monster.base = baseMonster;
+    monster.stationary = ifdefor(baseMonster.stationary);
+    /* $.each(baseMonster, function (key, value) {
+        monster[key] = value;
+    }); */
 
     if (!ifdefor(noRarity)) {
         var rarity = (Math.random() < .25) ? (Math.random() * level * .6) : 0;
@@ -125,7 +121,7 @@ function matchingMonsterAffixes(list, monster, alreadyUsed) {
 }
 function updateMonster(monster) {
     // Clear the character's bonuses and graphics.
-    monster.bonuses = [monster.implicitBonuses];
+    monster.bonuses = [monster.base.implicitBonuses, getMonsterBonuses(monster)];
     monster.actions = [];
     monster.reactions = [];
     monster.tags = ifdefor(monster.base.tags, []);
@@ -147,10 +143,10 @@ function updateMonster(monster) {
         monster.color = 'red';
         monster.image = monster.base.source.image.normal;
     }
-    monster.extraSkills.forEach(function (ability) {
+    ifdefor(monster.extraSkills, []).forEach(function (ability) {
         addBonusesAndActions(monster, ability);
     });
-    monster.base.abilities.forEach(function (ability) {
+    ifdefor(monster.base.abilities, []).forEach(function (ability) {
         addBonusesAndActions(monster, ability);
     });
     var name =  monster.base.name;
@@ -201,29 +197,34 @@ function enemySheet(key) {
         'imbued': images[key + '-imbued'],
     }
 }
-function setBaseMonsterStats(monster, level) {
-    var growth = level - 1;
-    // Health scales linearly to level 10, then 10% a level.
-    monster.base.maxHealth = (growth <= 10) ? (8 + 20 * growth) : 200 * Math.pow(1.1, growth - 10);
-    monster.base.range = 1;
-    monster.base.minDamage = Math.round(.9 * (3 + 8 * growth));
-    monster.base.maxDamage = Math.round(1.1 * (3 + 8 * growth));
-    monster.base.minMagicDamage = Math.round(.9 * (1 + 2 * growth));
-    monster.base.maxMagicDamage = Math.round(1.1 * (1 + 2 * growth));
-    monster.base.critChance = .05;
-    monster.base.critDamage = .5;
-    monster.base.critAccuracy = 1;
-    monster.base.attackSpeed = 1 + .05 * growth;
-    monster.base.speed = 100;
-    monster.base.accuracy = 5 + 3 * growth;
-    monster.base.evasion = 1 + growth * .5;
-    monster.base.block = 2 * growth;
-    monster.base.magicBlock = growth;
-    monster.base.armor = 2 * growth;
-    monster.base.magicResist = .001 * growth;
-    monster.base.strength = 5 * growth;
-    monster.base.intelligence = 5 * growth;
-    monster.base.dexterity = 5 * growth;
+function getMonsterBonuses(monster) {
+    var growth = monster.level - 1;
+    return {
+        // Health scales linearly to level 10, then 10% a level.
+        'maxHealth': (growth <= 10) ? (8 + 20 * growth) : 200 * Math.pow(1.1, growth - 10),
+        'range': 1,
+        'minDamage': Math.round(.9 * (3 + 8 * growth)),
+        'maxDamage': Math.round(1.1 * (3 + 8 * growth)),
+        'minMagicDamage': Math.round(.9 * (1 + 2 * growth)),
+        'maxMagicDamage': Math.round(1.1 * (1 + 2 * growth)),
+        'critChance': .05,
+        'critDamage': .5,
+        'critAccuracy': 1,
+        'attackSpeed': 1 + .05 * growth,
+        'speed': 100,
+        'accuracy': 5 + 3 * growth,
+        'evasion': 1 + growth * .5,
+        'block': 2 * growth,
+        'magicBlock': growth,
+        'armor': 2 * growth,
+        'magicResist': .001 * growth,
+        'strength': 5 * growth,
+        'intelligence': 5 * growth,
+        'dexterity': 5 * growth,
+        'coins': Random.range(1, (growth + 1) * (growth + 1) * 4),
+        'anima': Random.range(1, (growth + 1) * (growth + 1)),
+        'xpValue': (growth + 1) * 2
+    };
 }
 function initalizeMonsters() {
     var caterpillarSource = {'image': enemySheet('gfx/caterpillar.png'), 'offset': 0, 'width': 48, 'flipped': true, frames: 4};
