@@ -75,7 +75,7 @@ function updateDamageInfo(character) {
     } else {
         sections.push('Total Expected DPS is ' + (expectedPhysicalDPS + expectedMagicDPS).format(1));
     }
-    var $statsPanel = character.$panel.find('.js-infoMode .js-stats');
+    var $statsPanel = $('.js-stats');
     var $damage =  $statsPanel.find('.js-damage');
     $damage.text( (rawPhysicalDPS + rawMagicDPS).format(1) + ' (' + (expectedPhysicalDPS + expectedMagicDPS).format(1) + ')');
     $damage.parent().attr('helptext', sections.join('<br/>'));

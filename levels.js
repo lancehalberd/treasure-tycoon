@@ -57,42 +57,6 @@ function instantiateLevel(levelData, completed) {
         'background': levelData.background
     };
 }
-function $levelDiv(key) {
-    if (!levels[key]) {
-        if (key.indexOf('eternalfields') >= 0) {
-            createEndlessLevel('eternalfields', Number(key.substring(13)));
-        } else if (key.indexOf('bottomlessdepths') >= 0) {
-            createEndlessLevel('bottomlessdepths', Number(key.substring(16)));
-        } else if (key.indexOf('oceanoftrees') >= 0) {
-            createEndlessLevel('oceanoftrees', Number(key.substring(12)));
-        } else {
-            throw new Error('Level ' + key + ' not found');
-        }
-    }
-    var $levelButton = $tag('button', 'js-adventureButton adventureButton' , 'Lv' + levels[key].level + ' ' + levels[key].name).data('levelIndex', key);
-    var $confirmButton = $tag('button','js-confirmSkill', 'Apply').attr('helptext', 'Finalize augmentation and level this character.').hide();
-    var $cancelButton = $tag('button','js-cancelSkill', 'Abort').attr('helptext', 'Cancel augmentation.').hide();
-    return $tag('div', 'js-adventure adventure js-area-' + key).data('levelIndex', key).append($levelButton).append($confirmButton).append($cancelButton);
-}
-function updateSkillButtons(character) {
-    if (character.adventurer.xpToLevel > character.adventurer.xp) {
-        character.$panel.find('.js-learnSkill').addClass('disabled');
-    } else {
-        character.$panel.find('.js-learnSkill').removeClass('disabled');
-    }
-}
-function getAbilityHelpText($element) {
-    var character = $element.closest('.js-playerPanel').data('character');
-    var areaKey = $element.closest('.js-adventure').data('levelIndex');
-    var level = levels[areaKey];
-    var sections = [];
-    if (character.adventurer.xpToLevel > character.adventurer.xp) {
-        sections.push(character.adventurer.name + ' still needs ' + (character.adventurer.xpToLevel - character.adventurer.xp) + ' XP before learning a new skill.');
-        sections.push('');
-    }
-    sections.push(abilityHelpText(level.skill, character));
-    return sections.join('<br/>');
-}
 function createEndlessLevel(key, level) {
     var tier = 1;
     if (level >= jewelTierLevels[5]) tier = 5

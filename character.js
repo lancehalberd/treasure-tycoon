@@ -84,10 +84,10 @@ var coreStatBonuses = {
     '+magic:magicDamage': ['{intelligence}', '/', 10],
     '&maxHealth': '{bonusMaxHealth}',
     'healthRegen': ['{maxHealth}', '/', 100],
-    'spell:power': [['{minMagicDamage}', '+' ,'{maxMagicDamage}'], '/' , 2]
+    'spell:power': [['{this.minMagicDamage}', '+' ,'{this.maxMagicDamage}'], '/' , 2]
 }
 
-function displayInfoMode(character) {
+function returnToMap(character) {
     character.adventurer.percentHealth = 1;
     character.adventurer.health = character.adventurer.maxHealth;
     character.adventurer.attackCooldown = 0;
@@ -95,26 +95,24 @@ function displayInfoMode(character) {
     character.adventurer.slow = 0;
     character.adventurer.bonusMaxHealth = 0;
     updateActorStats(character.adventurer);
-    character.$panel.find('.js-adventureMode').hide();
-    var $infoPanel = character.$panel.find('.js-infoMode');
-    $infoPanel.show();
     var currentLevelIndex = character.currentLevelIndex;
     character.area = null;
     character.currentLevelIndex = null;
     refreshStatsPanel(character);
-    character.$panel.find('.js-recall').prop('disabled', true);
+    $('.js-recall').prop('disabled', true);
     if (character.replay) {
         startArea(character, currentLevelIndex);
     }
+    drawMap();
 }
 function refreshStatsPanel(character) {
     var adventurer = character.adventurer;
-    var $statsPanel = character.$panel.find('.js-infoMode .js-stats');
-    character.$panel.find('.js-name').text(adventurer.job.name + ' ' + adventurer.name);
-    character.$panel.find('.js-level').text(adventurer.level);
-    character.$panel.find('.js-infoMode .js-dexterity').text(adventurer.dexterity.format(0));
-    character.$panel.find('.js-infoMode .js-strength').text(adventurer.strength.format(0));
-    character.$panel.find('.js-infoMode .js-intelligence').text(adventurer.intelligence.format(0));
+    var $statsPanel = $('.js-stats');
+    $('.js-playerName').text(adventurer.job.name + ' ' + adventurer.name);
+    $('.js-playerLevel').text(adventurer.level);
+    $statsPanel.find('.js-dexterity').text(adventurer.dexterity.format(0));
+    $statsPanel.find('.js-strength').text(adventurer.strength.format(0));
+    $statsPanel.find('.js-intelligence').text(adventurer.intelligence.format(0));
     $statsPanel.find('.js-toLevel').text(adventurer.xpToLevel - adventurer.xp);
     $statsPanel.find('.js-maxHealth').text(adventurer.maxHealth.format(0));
     if (adventurer.actions.length) {
@@ -131,40 +129,30 @@ function refreshStatsPanel(character) {
             jewel.helpText =  abilityHelpText(jewel.ability, character);
         }
     }
-    updateSkillButtons(character);
 }
 function newCharacter(job) {
     var personCanvas = createCanvas(personFrames * 32, 64);
     var personContext = personCanvas.getContext("2d");
     personContext.imageSmoothingEnabled = false;
-    var $newPlayerPanel = $('.js-playerPanelTemplate').clone()
-        .removeClass('js-playerPanelTemplate').addClass('js-playerPanel').show();
-    // The player template will be between the adventure panels and the hire adventure controls.
-    $('.js-playerColumn .js-playerPanelTemplate').before($newPlayerPanel);
     var character = {};
     character.adventurer = makeAdventurer(job, 1, ifdefor(job.startingEquipment, {}));
     character.adventurer.character = character;
     character.adventurer.direction = 1; // Character moves left to right.
     character.adventurer.isMainCharacter = true;
-    character.$panel = $newPlayerPanel;
-    character.canvas = $newPlayerPanel.find('.js-adventureMode .js-canvas')[0];
-    character.context = character.canvas.getContext("2d");
-    character.context.imageSmoothingEnabled = false;
-    character.previewContext = $newPlayerPanel.find('.js-infoMode .js-canvas')[0].getContext("2d"),
-    character.previewContext.imageSmoothingEnabled = false;
-    character.jewelsCanvas = $newPlayerPanel.find('.js-skillCanvas')[0];
-    character.jewelsContext = character.jewelsCanvas.getContext("2d");
-    character.boardCanvas = createCanvas(character.jewelsCanvas.width, character.jewelsCanvas.height);
+    character.boardCanvas = createCanvas(jewelsCanvas.width, jewelsCanvas.height);
     character.boardContext = character.boardCanvas.getContext("2d");
     character.time = now();
     character.gameSpeed = 1;
     character.replay = false;
     character.levelsCompleted = {};
-    character.previewContext.imageSmoothingEnabled = false;
     state.characters.push(character);
-    $newPlayerPanel.data('character', character);
-    $newPlayerPanel.find('.js-map').append($levelDiv(ifdefor(job.areaKey, 'meadow')));
-    displayInfoMode(character);
+    var levelKey = ifdefor(job.levelKey, 'meadow');
+    unlockMapLevel(levelKey);
+    if (!state.selectedCharacter) {
+        state.selectedCharacter = character;
+        state.currentArea = levelsToAreas[levelKey];
+    }
+    returnToMap(character);
     var abilityKey = ifdefor(abilities[job.key]) ? job.key : 'heal';
     character.adventurer.abilities.push(abilities[abilityKey]);
     for (var i = 0; i < ifdefor(window.testAbilities, []).length; i++) {
@@ -177,7 +165,7 @@ function newCharacter(job) {
     updateAdventurer(character.adventurer);
     ifdefor(job.jewelLoot, [smallJewelLoot, smallJewelLoot, smallJewelLoot]).forEach(function (loot) {
         draggedJewel = loot.generateLootDrop().gainLoot(character);
-        draggedJewel.shape.setCenterPosition(character.jewelsCanvas.width / 2, character.jewelsCanvas.width / 2);
+        draggedJewel.shape.setCenterPosition(jewelsCanvas.width / 2, jewelsCanvas.width / 2);
         if (!equipJewel(character)) {
             console.log("Failed to place jewel on starting board.");
         }
@@ -418,7 +406,7 @@ function updateAdventurer(adventurer) {
             adventurer.bonuses.push(jewel.adjacencyBonuses);
         });
         // Don't show the offhand slot if equipped with a two handed weapon.
-        adventurer.character.$panel.find('.js-offhand').toggle(!isTwoHandedWeapon(adventurer.equipment.weapon));
+        $('.js-offhand').toggle(!isTwoHandedWeapon(adventurer.equipment.weapon));
     }
     // Add the adventurer's current equipment to bonuses and graphics
     equipmentSlots.forEach(function (type) {
@@ -439,7 +427,7 @@ function updateAdventurer(adventurer) {
             }
         }
         if (ifdefor(adventurer.isMainCharacter)) {
-            adventurer.character.$panel.find('.js-infoMode .js-equipment .js-' + type).append(equipment.$item);
+            $('.js-equipment .js-' + type).append(equipment.$item);
         }
     });
     adventurer.actions.push({'base': createAction({'tags': adventurer.tags.concat(['basic'])})});
@@ -482,7 +470,7 @@ function updateActorStats(actor) {
     // Calculate variables for all buff/debuffs from onHit/onCritEffects.
     effects.forEach(function (effect) {
         $.each(commonActionVariables, function (stat) {
-            action[stat] = getStatForAction(actor, effect, stat, effect);
+            effect[stat] = getStatForAction(actor, effect, stat, effect);
         });
         $.each(effect.stats, function (stat) {
             if (stat.charAt(0) === '$') {
@@ -560,8 +548,8 @@ function getStatForAction(actor, dataObject, stat, action) {
             console.log(base);
             throw new Error("Found buff with undefined stats");
         }
-        $.each(commonActionVariables, function (stat) {
-            action[stat] = getStatForAction(actor, base, stat, action);
+        $.each(commonActionVariables, function (key) {
+            subObject[key] = getStatForAction(actor, base, key, action);
         });
         $.each(base.stats, function (key, value) {
             if (key.charAt(0) === '$') {
@@ -608,6 +596,10 @@ function getStatForAction(actor, dataObject, stat, action) {
     if (specialValue) {
         return specialValue;
     }
+    //if (stat === 'cooldown') {
+        // console.log(ifdefor(dataObject.stats[stat], 0));
+        //console.log([base + plus + flatBonus,  percent, multiplier, flatBonus]);
+    //}
     return (base + plus + flatBonus) * percent * multiplier + flatBonus;
 }
 function evaluateValue(actor, value, localObject) {
@@ -639,6 +631,7 @@ function evaluateValue(actor, value, localObject) {
     if (formula.length > 1) {
         var operator = formula.shift();
         var operand = evaluateValue(actor, formula.shift(), localObject);
+        // console.log([value, operator, operand]);
         if (operator == '+') {
             value += operand;
         } else if (operator == '-') {
@@ -662,7 +655,7 @@ function gainLevel(adventurer) {
     adventurer.xpToLevel = xpToLevel(adventurer.level);
     updateActorStats(adventurer);
 }
-function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonus, startingEquipment, jewelLoot, areaKey) {
+function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonus, startingEquipment, jewelLoot, levelKey) {
     var key = name.replace(/\s*/g, '').toLowerCase();
     startingEquipment = ifdefor(startingEquipment, {});
     startingEquipment.body = ifdefor(startingEquipment.body, itemsByKey.woolshirt);
@@ -675,7 +668,7 @@ function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonu
         'startingEquipment': startingEquipment,
         'startingBoard': ifdefor(classBoards[key], squareBoard),
         'jewelLoot': jewelLoot,
-        'areaKey': ifdefor(areaKey, 'meadow')
+        'levelKey': ifdefor(levelKey, 'meadow')
     };
 }
 

@@ -1,10 +1,11 @@
 function drawAdventure(character) {
     var adventurer = character.adventurer;
-    var context = character.context;
+    var context = mainContext;
     var cameraX = character.cameraX;
-    context.clearRect(0, 0, character.canvas.width, character.canvas.height);
+    context.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
     var background = ifdefor(character.area.background, backgrounds.field);
     var cloudX = cameraX + character.time * .5;
+    var fullDrawingWidth = Math.ceil(mainCanvas.width / 64) * 64 + 64;
     background.forEach(function(section) {
         var source = section.source;
         var y = ifdefor(section.y, 0);
@@ -15,15 +16,15 @@ function drawAdventure(character) {
         var velocity = ifdefor(section.velocity, 0);
         var alpha = ifdefor(section.alpha, 1);
         context.globalAlpha = alpha;
-        for (var i = 0; i <= 704; i += 64 * spacing) {
-            var x = (768 + (i - (cameraX - character.time * velocity) * parallax) % 768) % 768 - 64;
+        for (var i = 0; i <= fullDrawingWidth; i += 64 * spacing) {
+            var x = (fullDrawingWidth + (i - (cameraX - character.time * velocity) * parallax) % fullDrawingWidth) % fullDrawingWidth - 64;
             context.drawImage(source.image, source.x, source.y, source.width, source.height,
                                   x, y, width, height);
         }
         context.globalAlpha = 1;
     });
     character.objects.forEach(function (object, index) {
-        object.draw(character.context, object.x - cameraX, 240 - 128);
+        object.draw(context, object.x - cameraX, 240 - 128);
     });
     character.enemies.forEach(function (actor, index) {
         drawActor(character, actor, 1 + character.enemies.length - index)
@@ -59,19 +60,18 @@ function drawAdventure(character) {
     drawMinimap(character);
 }
 function drawActor(character, actor, index) {
-    var context = character.context;
-    context.save();
+    mainContext.save();
     if (actor.isDead) {
         actor.animationTime = actor.timeOfDeath;
-        context.globalAlpha = 1 - (actor.time - actor.timeOfDeath);
+        mainContext.globalAlpha = 1 - (actor.time - actor.timeOfDeath);
     }
     if (actor.personCanvas) drawAdventurer(character, actor, index);
     else drawMonster(character, actor, index);
-    context.restore();
+    mainContext.restore();
 }
 function drawMonster(character, monster, index) {
     var cameraX = character.cameraX;
-    var context = character.context;
+    var context = mainContext;
     var fps = ifdefor(monster.base.fpsMultiplier, 1) * 3 * monster.speed / 100;
     var source = monster.base.source;
     var frame = Math.floor(monster.animationTime * fps) % source.frames;
@@ -105,7 +105,6 @@ function drawMonster(character, monster, index) {
 }
 function drawAdventurer(character, adventurer, index) {
     var cameraX = character.cameraX;
-    var context = character.context;
     adventurer.left = adventurer.x - cameraX;
     adventurer.top = 240 - 128 - 72 - 2 * index;
     adventurer.width = 64;
@@ -115,34 +114,34 @@ function drawAdventurer(character, adventurer, index) {
         var attackSpeed = adventurer.lastAction.attackSpeed;
         var attackFps = 1 / ((1 / attackSpeed) / fightLoop.length);
         var frame = Math.floor(Math.abs(adventurer.animationTime - adventurer.attackCooldown) * attackFps) % fightLoop.length;
-        context.drawImage(adventurer.personCanvas, fightLoop[frame] * 32, 0 , 32, 64,
+        mainContext.drawImage(adventurer.personCanvas, fightLoop[frame] * 32, 0 , 32, 64,
                         adventurer.x - cameraX, 240 - 128 - 72, 64, 128);
     } else { // walking loop
         if (adventurer.cloaked) {
-            context.globalAlpha = .2;
+            mainContext.globalAlpha = .2;
         }
         var fps = Math.floor(3 * adventurer.speed / 100);
         var frame = Math.floor(adventurer.animationTime * fps) % walkLoop.length;
         if (adventurer.pull || adventurer.stunned) {
             frame = 0;
         }
-        context.drawImage(adventurer.personCanvas, walkLoop[frame] * 32, 0 , 32, 64,
+        mainContext.drawImage(adventurer.personCanvas, walkLoop[frame] * 32, 0 , 32, 64,
                         adventurer.x - cameraX, 240 - 128 - 72, 64, 128);
     }
-    //context.fillRect(adventurer.x - cameraX, 240 - 128 - 72, 64, 128);
+    //mainContext.fillRect(adventurer.x - cameraX, 240 - 128 - 72, 64, 128);
     // life bar
     if (adventurer.isDead) return;
-    drawBar(context, adventurer.x - cameraX, 240 - 128 - 36 - 2 * index, 64, 4, 'white', 'red', adventurer.health / adventurer.maxHealth);
+    drawBar(mainContext, adventurer.x - cameraX, 240 - 128 - 36 - 2 * index, 64, 4, 'white', 'red', adventurer.health / adventurer.maxHealth);
     if (ifdefor(adventurer.reflectBarrier, 0)) {
-        drawBar(context, adventurer.x - cameraX, 240 - 128 - 36 - 2 * index - 2, 64, 4, 'white', 'blue', adventurer.reflectBarrier / adventurer.maxReflectBarrier);
+        drawBar(mainContext, adventurer.x - cameraX, 240 - 128 - 36 - 2 * index - 2, 64, 4, 'white', 'blue', adventurer.reflectBarrier / adventurer.maxReflectBarrier);
     }
 }
 function drawMinimap(character) {
     var y = 240 - 18;
     var height = 6;
     var x = 10;
-    var width = 650;
-    var context = character.context;
+    var width = 750;
+    var context = mainContext;
     drawBar(context, x, y, width, height, 'white', 'white', character.waveIndex / character.area.waves.length);
     for (var i = 0; i < character.area.waves.length; i++) {
         var centerX = x + (i + 1) * width / character.area.waves.length;

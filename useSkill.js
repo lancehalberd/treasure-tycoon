@@ -498,7 +498,7 @@ skillDefinitions.effect = {
 skillDefinitions.dodge = {
     isValid: function (actor, dodgeSkill, attackStats) {
         // side step can only dodge ranged attacked.
-        if (ifdefor(dodgeSkill.rangedOnly) && !attackStats.projectile) {
+        if (ifdefor(dodgeSkill.base.rangedOnly) && !attackStats.projectile) {
             return false;
         }
         return !attackStats.evaded;

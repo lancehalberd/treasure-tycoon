@@ -8,8 +8,15 @@ function equipItem(adventurer, item) {
         return;
     }
     item.$item.detach();
+    item.actor = adventurer;
     adventurer.equipment[item.base.slot] = item;
     updateAdventurer(adventurer);
+}
+function unequipSlot(actor, slotKey) {
+    if (actor.equipment[slotKey]) {
+        actor.equipment[slotKey].actor = null;
+        actor.equipment[slotKey] = null;
+    }
 }
 function isTwoHandedWeapon(item) {
     return item && ifdefor(item.base.tags, []).indexOf('twoHanded') >= 0;
@@ -496,10 +503,9 @@ function sellItem(item) {
     if ($dragHelper && (!$dragHelper.data('$source') || $dragHelper.data('$source').data('item') !== item)) {
         return;
     }
-    var sourceCharacter = item.$item.closest('.js-playerPanel').data('character');
-    if (sourceCharacter) {
-        sourceCharacter.adventurer.equipment[item.base.slot] = null;
-        updateAdventurer(sourceCharacter.adventurer);
+    if (item.actor) {
+        unequipSlot(item.actor, item.base.slot);
+        updateAdventurer(item.actor);
     }
     gain('coins', sellValue(item));
     destroyItem(item);
@@ -542,15 +548,14 @@ $('body').on('mousedown', '.js-item', function (event) {
     }
     $dragHelper = $(this).clone();
     $dragHelper.data('$source', $(this));
+    $dragHelper.data('sourceCharacter', state.selectedCharacter);
     $(this).css('opacity', '.3');
     $dragHelper.css('position', 'absolute');
     $('.js-mouseContainer').append($dragHelper);
     updateDragHelper();
     dragged = false;
     var item = $(this).data('item');
-    state.characters.forEach(function (character) {
-        character.$panel.find('.js-equipment .js-' + item.base.slot).addClass(item.level > character.adventurer.level ? 'invalid' : 'active');
-    });
+    $('.js-equipment .js-' + item.base.slot).addClass(item.level > state.selectedCharacter.adventurer.level ? 'invalid' : 'active');
     $('.js-enchantmentSlot').addClass('active');
 });
 
@@ -588,9 +593,9 @@ function stopDrag() {
             if ($otherItem.length) {
                 $('.js-inventory').append($otherItem);
             }
-            var character = $source.closest('.js-playerPanel').data('character');
+            var character = $dragHelper.data('sourceCharacter');
             if (character) {
-                character.adventurer.equipment[item.base.slot] = null;
+                unequipSlot(character.adventurer, item.base.slot);
                 updateAdventurer(character.adventurer);
             }
             $('.js-enchantmentSlot').append($source);
@@ -600,21 +605,21 @@ function stopDrag() {
         if (!hit) {
             $('.js-equipment .js-' + item.base.slot).each(function (index, element) {
                 if (collision($dragHelper, $(element))) {
-                    var targetCharacter = $(element).closest('.js-playerPanel').data('character');
+                    var targetCharacter = state.selectedCharacter;
                     if (targetCharacter.adventurer.level < item.level) {
                         return false;
                     }
-                    var sourceCharacter = $source.closest('.js-playerPanel').data('character');
+                    var sourceCharacter = state.selectedCharacter;
                     hit = true
                     var currentMain = targetCharacter.adventurer.equipment[item.base.slot];
                     var currentSub = null;
                     if (isTwoHandedWeapon(item)) {
                         currentSub = targetCharacter.adventurer.equipment.offhand;
-                        targetCharacter.adventurer.equipment.offhand = null;
+                        unequipSlot(targetCharacter.adventurer, 'offhand');
                     }
-                    targetCharacter.adventurer.equipment[item.base.slot] = null;
-                   if (sourceCharacter && sourceCharacter !== targetCharacter) {
-                        sourceCharacter.adventurer.equipment[item.base.slot] = null;
+                    unequipSlot(targetCharacter.adventurer, item.base.slot);
+                    if (sourceCharacter && sourceCharacter !== targetCharacter) {
+                        unequipSlot(sourceCharacter.adventurer, item.base.slot);
                         if (!currentMain && !currentSub) {
                             updateAdventurer(sourceCharacter.adventurer);
                         } else {
@@ -655,20 +660,18 @@ function stopDrag() {
             });
             if ($target) {
                 hit = true;
-                var character = $source.closest('.js-playerPanel').data('character');
-                if (character) {
-                    character.adventurer.equipment[item.base.slot] = null;
-                    updateAdventurer(character.adventurer);
+                if (item.actor) {
+                    unequipSlot(item.actor, item.base.slot);
+                    updateAdventurer(item.actor);
                 }
                 $source.detach();
                 $target.before($source);
             }
         }
         if (!hit && collision($dragHelper, $('.js-inventory'))) {
-            var character = $source.closest('.js-playerPanel').data('character');
-            if (character) {
-                character.adventurer.equipment[item.base.slot] = null;
-                updateAdventurer(character.adventurer);
+            if (item.actor) {
+                unequipSlot(item.actor, item.base.slot);
+                updateAdventurer(item.actor);
             }
             $source.detach();
             $('.js-inventory').append($source);
@@ -743,30 +746,19 @@ $(document).on('keydown', function(event) {
         unlockItemLevel(100);
         state.characters.forEach(function (character) {
             $.each(levels, function (key) {
-                if (!character.$panel.find('.js-area-' + key).length) {
-                    var $div = $levelDiv(key);
-                    character.$panel.find('.js-map').append($div);
-                }
+                unlockMapLevel(key);
             });
         });
+        drawMap()
     }
     if (event.which == 76) { // 'l'
-        state.characters.forEach(function (character) {
-            var visibleLevels = {};
-            $.each(levels, function (key) {
-                if (character.$panel.find('.js-area-' + key).length) {
-                    visibleLevels[key] = true;
-                }
-            });
-            gainXP(character.adventurer, character.adventurer.xpToLevel);
-            updateAdventurer(character.adventurer);
-            $.each(levels, function (key) {
-                if (visibleLevels[key] && levels[key].skill) {
-                    character.currentLevelIndex = key
-                    completeArea(character);
-                }
-            });
-        });
+        var visibleLevels = {};
+        gainXP(state.selectedCharacter.adventurer, state.selectedCharacter.adventurer.xpToLevel);
+        updateAdventurer(state.selectedCharacter.adventurer);
+        if (currentMapTarget && currentMapTarget.levelKey) {
+            state.selectedCharacter.currentLevelIndex = currentMapTarget.levelKey;
+            completeLevel(state.selectedCharacter)
+        }
     }
     //console.log(event.which);
 });

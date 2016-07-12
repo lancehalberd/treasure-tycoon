@@ -26,6 +26,9 @@ var fps = 6;
 var craftingViewCanvas = $('.js-craftingCanvas')[0];
 var craftingCanvas = createCanvas(craftingViewCanvas.width, craftingViewCanvas.height);
 var state = {
+    selectedCharacter: null,
+    currentArea: null,
+    areas: {}, // {'northernWilderness': {'grove': true, 'orchard': true}}
     characters: [],
     jewels: [],
     fame: 0,
@@ -66,6 +69,7 @@ function initializeCoins() {
 function initializeProjectileAnimations() {
     projectileAnimations['fireball'] = {'image': images['gfx/projectiles.png'], frames:[[0, 0, 20, 20], [32, 0, 20, 20], [64, 0, 20, 20]]}
 }
+var mainCanvas, mainContext, jewelsCanvas, jewelsContext, previewContext;
 // Load any graphic assets needed by the game here.
 async.mapSeries([
     // Original images from project contributors:
@@ -73,12 +77,15 @@ async.mapSeries([
     'gfx/treasureChest.png', 'gfx/moneyIcon.png', 'gfx/projectiles.png',
     // Public domain images:
     'gfx/chest-closed.png', 'gfx/chest-open.png', // http://opengameart.org/content/treasure-chests
-    'gfx/bat.png' //http://opengameart.org/content/bat-32x32
+    'gfx/bat.png', // http://opengameart.org/content/bat-32x32
+    'gfx/militaryIcons.png', // http://opengameart.org/content/140-military-icons-set-fixed
+    'gfx/oldMap.png' // http://subtlepatterns.com/old-map/
 ], loadImage, function(err, results){
     ['gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png'].forEach(function (imageKey) {
         images[imageKey + '-enchanted'] = makeTintedImage(images[imageKey], '#af0');
         images[imageKey + '-imbued'] = makeTintedImage(images[imageKey], '#c6f');
     });
+    showContext('adventure');
     initializeJobs();
     initalizeMonsters();
     initializeBackground();
@@ -89,13 +96,20 @@ async.mapSeries([
     updateItemCrafting();
     var jobKey = Random.element(ranks[0]);
     jobKey = ifdefor(testJob, jobKey);
-    newCharacter(characterClasses[jobKey]);
+    mainCanvas = $('.js-mainCanvas')[0];
+    mainContext = mainCanvas.getContext('2d');
+    mainContext.imageSmoothingEnabled = false;
+    jewelsCanvas = $('.js-skillCanvas')[0];
+    jewelsContext = jewelsCanvas.getContext("2d");
+    previewContext = $('.js-previewCanvas')[0].getContext("2d")
+    previewContext.imageSmoothingEnabled = false;
     gainJewel(makeJewel(1, 'triangle', [90, 5, 5], 1.1));
     gainJewel(makeJewel(1, 'triangle', [5, 90, 5], 1.1));
     gainJewel(makeJewel(1, 'triangle', [5, 5, 90], 1.1));
     gain('fame', 20);
     gain('coins', 10);
     gain('anima', 0);
+    newCharacter(characterClasses[jobKey]);
     setInterval(mainLoop, 20);
     var $options = $('.js-toolbar').children();
     $options.detach();
@@ -106,6 +120,7 @@ async.mapSeries([
     var jewelButtonCanvas = $('.js-jewelButtonCanvas')[0];
     centerShapesInRectangle([testShape], rectangle(0, 0, jewelButtonCanvas.width, jewelButtonCanvas.height));
     drawJewel(jewelButtonCanvas.getContext('2d'), testShape, [0, 0], 'black');
+    drawMap();
 });
 function makeTintedImage(image, tint) {
     var tintCanvas = createCanvas(image.width, image.height);
@@ -124,32 +139,6 @@ function makeTintedImage(image, tint) {
     return resultCanvas;
 }
 
-function completeArea(character) {
-    var $adventureDiv = character.$panel.find('.js-infoMode').find('.js-area-' + character.currentLevelIndex);
-    // If the character beat the last adventure open to them, unlock the next one
-    var level = levels[character.currentLevelIndex];
-    if (!character.levelsCompleted[character.currentLevelIndex]) {
-        gain('fame', level.level);
-        if (level.skill) {
-            var $learnSkill = $tag('button','js-learnSkill learnSkill', '+' + level.skill.name);
-            $learnSkill.attr('helpText', '1');
-            $learnSkill.data('helpMethod', getAbilityHelpText);
-            $adventureDiv.append($learnSkill);
-        } else {
-            // Just show a checkmark if the area has no skill associated with it.
-            $adventureDiv.append($tag('span','', '&#10003;'));
-            $adventureDiv.find('.js-learnSkill, .js-confirmSkill, .js-cancelSkill').remove();
-        }
-        character.levelsCompleted[character.currentLevelIndex] = true;
-        level.next.forEach(function (areaKey) {
-            // Add a button for the unlocked area only if no such button exists already.
-            if (!character.$panel.find('.js-infoMode').find('.js-area-' + areaKey).length) {
-                character.$panel.find('.js-map').append($levelDiv(areaKey));
-            }
-        });
-    }
-    unlockItemLevel(level.level);
-}
 function unlockItemLevel(level) {
     for (var itemLevel = $('.js-levelSelect').find('option').length + 1; itemLevel <= level + 1 && itemLevel <= items.length; itemLevel++) {
         var $newOption = $tag('option', '', 'Level ' + itemLevel).attr('value', itemLevel);
@@ -174,7 +163,7 @@ function mainLoop() {
                 character.time += delta / 1000;
                 adventureLoop(character, delta / 1000);
                 if (character.enemies.length) {
-                    character.cameraX = (character.cameraX * 10 + character.adventurer.x - 10) / 11;
+                    character.cameraX = (character.cameraX * 10 + character.adventurer.x - 50) / 11;
                 } else if (character.cameraX < character.adventurer.x - 200) {
                     character.cameraX = (character.cameraX * 10 + character.adventurer.x - 200) / 11;
                 }
@@ -194,8 +183,8 @@ function mainLoop() {
 function infoLoop(character, delta) {
     var fps = Math.floor(3 * 5 / 3);
     var frame = Math.floor(character.time * fps) % walkLoop.length;
-    character.previewContext.clearRect(0, 0, 64, 128);
-    character.previewContext.drawImage(character.adventurer.personCanvas, walkLoop[frame] * 32, 0 , 32, 64, 0, -20, 64, 128);
+    previewContext.clearRect(0, 0, 64, 128);
+    previewContext.drawImage(character.adventurer.personCanvas, walkLoop[frame] * 32, 0 , 32, 64, 0, -20, 64, 128);
     if ($('.js-jewel-inventory').is(":visible")) {
         drawBoardJewels(character);
     }
@@ -231,21 +220,28 @@ $('.js-mouseContainer').on('mouseover mousemove', '[helpText]', function (event)
 $('.js-mouseContainer').on('mouseout', '[helpText]', function (event) {
     removeToolTip();
 });
-$('.js-mouseContainer').on('mouseover mousemove', '.js-adventureMode .js-canvas', function (event) {
+$('.js-mouseContainer').on('mouseout', '.js-mainCanvas', function (event) {
+    removeToolTip();
+});
+$('.js-mouseContainer').on('mouseover mousemove', '.js-mainCanvas', function (event) {
     var x = event.pageX - $(this).offset().left;
     var y = event.pageY - $(this).offset().top;
     canvasCoords = [x, y];
     if ($popup) {
         return;
     }
-    var sourceCharacter = $(this).closest('.js-playerPanel').data('character');
-    sourceCharacter.allies.concat(sourceCharacter.enemies).forEach(function (actor) {
-        if (!actor.isDead && isPointInRect(x, y, actor.left, actor.top, actor.width, actor.height)) {
-            canvasPopupTarget = actor;
-            return false;
-        }
-        return true;
-    });
+    canvasPopupTarget = null;
+    if (state.selectedCharacter.area) {
+        state.selectedCharacter.allies.concat(state.selectedCharacter.enemies).forEach(function (actor) {
+            if (!actor.isDead && isPointInRect(x, y, actor.left, actor.top, actor.width, actor.height)) {
+                canvasPopupTarget = actor;
+                return false;
+            }
+            return true;
+        });
+    } else {
+        canvasPopupTarget = getMapPopupTarget(x, y);
+    }
     if (!canvasPopupTarget) {
         return;
     }
@@ -253,8 +249,17 @@ $('.js-mouseContainer').on('mouseover mousemove', '.js-adventureMode .js-canvas'
     y = event.pageY - $('.js-mouseContainer').offset().top;
     //console.log([event.pageX,event.pageY]);
     $popup = $tag('div', 'toolTip js-toolTip', canvasPopupTarget.helptext);
+    $popup.data('canvasTarget', canvasPopupTarget);
     updateToolTip(x, y, $popup);
     $('.js-mouseContainer').append($popup);
+});
+$('.js-mouseContainer').on('click', '.js-mainCanvas', function (event) {
+    var x = event.pageX - $(this).offset().left;
+    var y = event.pageY - $(this).offset().top;
+    canvasCoords = [x, y];
+    if (!state.selectedCharacter.area) {
+        clickMapHandler(x, y);
+    }
 });
 $('.js-mouseContainer').on('mouseover mousemove', checkToShowJewelToolTip);
 function checkToShowJewelToolTip() {
@@ -271,7 +276,7 @@ function checkToShowJewelToolTip() {
     }
     //console.log([event.pageX,event.pageY]);
     if (jewel.fixed && !jewel.confirmed) {
-        $popup = $tag('div', 'toolTip js-toolTip', 'Drag and rotate to adjust this augmentation.<br/><br/> Click the "Apply" button to the right when you are done. <br/><br/>' + jewel.helpText);
+        $popup = $tag('div', 'toolTip js-toolTip', 'Drag and rotate to adjust this augmentation.<br/><br/> Click the "Apply" button above when you are done.<br/><br/>' + jewel.helpText);
     } else {
         $popup = $tag('div', 'toolTip js-toolTip', jewel.helpText);
     }
@@ -293,8 +298,13 @@ function checkRemoveToolTip() {
     if (overJewel || draggedJewel || overCraftingItem) {
         return;
     }
-    if (canvasPopupTarget && !canvasPopupTarget.isDead && canvasPopupTarget.character.area) {
+    if (canvasPopupTarget && !canvasPopupTarget.isDead && (canvasPopupTarget.character && canvasPopupTarget.character.area)) {
         if (isPointInRect(canvasCoords[0], canvasCoords[1], canvasPopupTarget.left, canvasPopupTarget.top, canvasPopupTarget.width, canvasPopupTarget.height)) {
+            return;
+        }
+    }
+    if (canvasPopupTarget && !canvasPopupTarget.character) {
+        if (isPointInRect(canvasCoords[0], canvasCoords[1], canvasPopupTarget.x * 40, canvasPopupTarget.y * 40, 40, 40)) {
             return;
         }
     }
@@ -331,99 +341,35 @@ function updateRetireButtons() {
     $('.js-retire').toggle($('.js-playerPanel').length > 1);
 }
 
-$('body').on('click', '.js-adventureButton', function (event) {
-    startArea($(this).closest('.js-playerPanel').data('character'), $(this).data('levelIndex'));
-});
-// When a player clicks the learn skill button, we add the board segment to their skill board
-// as a preview, center it and then snap it to a valid position. From there they can move it
-// around and either apply the change or cancel.
-$('body').on('click', '.js-learnSkill', function (event) {
-    var character = $(this).closest('.js-playerPanel').data('character');
-    if (character.adventurer.xp < character.adventurer.xpToLevel) {
-        return;
-    }
-    var areaKey = $(this).closest('.js-adventure').data('levelIndex');
-    var level = levels[areaKey];
-    var board = readBoardFromData(level.board, character, level.skill);
-    $(this).closest('.js-adventure').find('.js-confirmSkill, .js-cancelSkill').show();
-    character.$panel.find('.js-learnSkill').hide();
-    centerShapesInRectangle(board.fixed.map(jewelToShape).concat(board.spaces), rectangle(0, 0, character.boardCanvas.width, character.boardCanvas.height));
-    snapBoardToBoard(board, character.board);
-    character.board.boardPreview = board;
-    showJewels();
-});
-$('body').on('click', '.js-confirmSkill', function (event) {
-    var character = $(this).closest('.js-playerPanel').data('character');
-    var areaKey = $(this).closest('.js-adventure').data('levelIndex');
-    var level = levels[areaKey];
-    character.adventurer.abilities.push(level.skill);
-    character.board.spaces = character.board.spaces.concat(character.board.boardPreview.spaces);
-    character.board.boardPreview.fixed.forEach(function (jewel) {
-        jewel.confirmed = true;
-    });
-    character.board.fixed = character.board.fixed.concat(character.board.boardPreview.fixed);
-    character.board.boardPreview = null;
-    drawBoardBackground(character.boardContext, character.board);
-    showJewels();
-    gainLevel(character.adventurer);
-    updateAdventurer(character.adventurer);
-    // Replace the skill buttons with a checkmark, they aren't used any more.
-    $(this).closest('.js-adventure').append($tag('span','', '&#10003;'));
-    $(this).closest('.js-adventure').find('.js-learnSkill, .js-confirmSkill, .js-cancelSkill').remove();
-    character.$panel.find('.js-learnSkill').show();
-});
-$('body').on('click', '.js-cancelSkill', function (event) {
-    var character = $(this).closest('.js-playerPanel').data('character');
-    $(this).closest('.js-adventure').find('.js-confirmSkill, .js-cancelSkill').hide();
-    character.$panel.find('.js-learnSkill').show();
-    character.board.boardPreview = null;
-    showJewels();
-});
-
 $('body').on('click', '.js-retire', function (event) {
     if (state.characters.length < 2) {
         return;
     }
     var $panel = $(this).closest('.js-playerPanel');
-    var character = $panel.data('character');
-    gain('fame', Math.ceil(character.adventurer.level * character.adventurer.job.cost / 10));
+    gain('fame', Math.ceil(state.selectedCharacter.adventurer.level * state.selectedCharacter.adventurer.job.cost / 10));
     $panel.remove();
     updateRetireButtons();
-    state.characters.splice(state.characters.indexOf(character), 1);
+    var index = state.characters.indexOf(state.selectedCharacter);
+    state.characters.splice(index, 1);
+    state.selectedCharacter = state.characters[Math.min(index, state.characters.length)];
 });
 $('.js-showCraftingPanel').on('click', function (event) {
-    showEquipment();
-    $('.js-infoPanel').hide();
-    $('.js-craftingPanel').show();
-    $('.js-craftingBar').show('fast');
-});
-$('.js-showEnchantingPanel').on('click', function (event) {
-    showEquipment();
-    $('.js-infoPanel').hide();
-    $('.js-enchantingPanel').show();
-    $('.js-craftingBar').hide('fast');
+    showContext('item');
 });
 $('.js-showJewelsPanel').on('click', function (event) {
-    showJewels();
+    showContext('jewel');
 });
-function showJewels() {
-    $('.js-equipment').hide();
-    $('.js-inventory').hide();
-    $('.js-jewelBoard').show();
-    $('.js-jewel-inventory').show();
-    $('.js-infoPanel').hide();
-    $('.js-jewelPanel').show();
-    $('.js-craftingBar').hide('fast');
-}
+$('.js-mainView').on('click', function (event) {
+    showContext('adventure');
+});
 function showEquipment() {
     $('.js-equipment').show();
     $('.js-inventory').show();
     $('.js-jewelBoard').hide();
-    $('.js-jewel-inventory').hide();
 }
 $('body').on('click', '.js-recall', function (event) {
     var $panel = $(this).closest('.js-playerPanel');
-    var character = $panel.data('character');
+    var character = state.selectedCharacter;
     // The last wave of an area is always the bonus treasure chest. In order to prevent
     // the player from missing this chest or opening it without clearing the level,
     // which would allow them to claim the reward again, we disable recall during
@@ -433,20 +379,22 @@ $('body').on('click', '.js-recall', function (event) {
     }
     $panel.find('.js-repeat').prop('checked', false);
     character.replay = false;
-    displayInfoMode(character);
+    returnToMap(character);
 });
 $('body').on('click', '.js-repeat', function (event) {
     var $panel = $(this).closest('.js-playerPanel');
-    var character = $panel.data('character');
-    character.replay = $(this).is(':checked');
+    state.selectedCharacter.replay = $(this).is(':checked');
 });
 $('body').on('click', '.js-fastforward', function (event) {
     var $panel = $(this).closest('.js-playerPanel');
-    var character = $panel.data('character');
-    character.gameSpeed = $(this).is(':checked') ? 3 : 1;
+    state.selectedCharacter.gameSpeed = $(this).is(':checked') ? 3 : 1;
 });
 $('body').on('click', '.js-slowMotion', function (event) {
     var $panel = $(this).closest('.js-playerPanel');
-    var character = $panel.data('character');
-    character.loopSkip = $(this).is(':checked') ? 5 : 1;
+    state.selectedCharacter.loopSkip = $(this).is(':checked') ? 5 : 1;
 });
+
+function showContext(context) {
+    $('.js-adventureContext, .js-jewelContext, .js-itemContext').hide();
+    $('.js-' + context + 'Context').show();
+}

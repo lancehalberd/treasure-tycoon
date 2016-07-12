@@ -12,8 +12,8 @@
             margin-left: auto;
             margin-right: auto;
             padding-top: 10px;
-            width: 960px;
-            min-height: 800px;
+            width: 800px;
+            min-height: 600px;
             background-color: black;
             background-repeat: repeat;
             top: 0px;
@@ -56,7 +56,7 @@
             }
         }, 200);
     </script>
-    <div class="js-gameContent" style="display: none">
+    <div class="js-gameContent gameContent" style="display: none">
         <div class="pointsBar">
             <div class="points" helptext="Adventure points are used to hire new adventurers.<br/>AP is gained by leveling adventurers and completing new areas.<br/>You can gain large amounts of AP by retiring high level adventurers.">
                 Fame: <span class="js-fame fame"></span>
@@ -68,9 +68,93 @@
                 <span class="icon anima"></span> <span class="js-anima anima"></span>
             </div>
         </div>
-        <div class="controlColumn">
+        <canvas class="js-mainCanvas mainCanvas js-adventureContext" width="800" height="240" style="background-color: blue;"></canvas>
+        <div class="playerControlBar js-adventureContext">
+            Level <span class="js-playerLevel">X</span> <span class="js-playerName controlBarEntry">X</span>
+            <button class="js-recall controlBarEntry recallButton">Recall</button>
+            <label class="controlBarEntry"><input type="checkbox" class="js-repeat"> Repeat</label>
+            <label class="controlBarEntry"><input type="checkbox" class="js-fastforward"> Fast Forward</label>
+            <label class="controlBarEntry"><input type="checkbox" class="js-slowMotion"> Slow Motion</label>
+        </div>
+        <div class="js-controlColumn displayColumn js-adventureContext">
+            <div class="toolbar js-toolbar">
+                <button class="js-showCraftingPanel item" helptext="Click here to visit the Temple of Fortune."><div class="icon crafting"></div></button>
+                <button class="js-showJewelsPanel item" helptext="Click here to visit the Altar of Creation."><canvas class="js-jewelButtonCanvas" width="40" height="40"></canvas></button>
+            </div>
+            <div class="js-adventurePanel">
+                <select class="js-jobSelect jobSelect"></select><button class="js-hire" helpText="Hire another adventurer. <br/><br/> Gain AP by completing new adventures and retiring high level adventurers. <br/><br/> You may have many adventurers but it could be hard on your computer to have too many.">Hire for 10 AP!</button>
+            </div>
+        </div><div class="js-jewel-inventory displayColumn jewel-inventory js-jewelContext"></div><div class="js-jewelColumn displayColumn jewelColumn js-jewelContext">
+            <div class="js-jewelBoard jewelBoard">
+                <canvas class="js-canvas js-skillCanvas" width="320" height="320"></canvas>
+                <button class="js-confirmSkill confirmSkill" helptext="Finalize augmentation and level this character." style="display: none;">Apply</button>
+                <button class="js-mainView mainViewButton" helptext="Return to adventure screen.">X</button>
+            </div>
+            <div class="js-jewelPanel infoPanel jewelCrafting">
+                <div class="panelTitle" style="text-align: center;">Altar of Creation</div>
+                <div style="text-align: center;">
+                    <div class="js-jewelCraftingSlot jewelCraftingSlot" helptext="Drag a jewel here to craft."></div>
+                    <div class="js-jewelCraftingSlot jewelCraftingSlot" helptext="Drag a jewel here to craft."></div>
+                </div>
+                <button class="js-jewelCraftingButton centered" style="display: none;">Split</button>
+                <button class="js-sellItem sellItem item" disabled helptext="Drag items here to sell them. <br/> You can also hover over an item and type 'S' to sell quickly."><div class="icon money"></div></button>
+            </div>
+        </div><div class="js-characterColumn displayColumn characterColumn js-adventureContext js-jewelContext js-itemContext">
+            <div class="js-stats stats playerBox">
+                <canvas class="js-canvas js-previewCanvas" width="64" height="128" style="position: absolute; left: 0px"></canvas>
+                <div helptext="Experience required before you can learn another skill and level up. <br/><br/>Completing adventures unlocks new skills. <br/><br/> Leveling increases health and basic stats slightly.">
+                    Next Lvl: <span class="js-toLevel">X</span> xp
+                </div>
+                <div helptext="Starting health for each adventure.">
+                    Health: <span class="js-maxHealth">X</span>
+                </div>
+                <div helptext="How fast your adventurer regenerates health.">
+                    Regen: <span class="js-healthRegen">X</span>
+                </div>
+                <div>
+                    Damage: <span class="js-damage">X</span>
+                </div>
+                <div helptext="Higher range will let you attack enemies safely from afar.">
+                    Range: <span class="js-range">X</span>
+                </div>
+                <div>
+                    Evasion: <span class="js-evasion">X</span>
+                </div>
+                <div>
+                    Protection: <span class="js-protection">X</span>
+                </div>
+                <div>
+                    Resistance: <span class="js-resistance">X</span>
+                </div>
+                <div helptext="How fast your adventurer moves">
+                    Speed: <span class="js-speed">X</span>
+                </div>
+                <div>
+                    <button class="js-retire" style="display: none;">Retire</button>
+                </div>
+                <div class="triStatBox">
+                    <div class="js-dexterity dexterity" helptext="Dexterity increases attack speed, evasion and damage with ranged weapons.">X</div>
+                    <div class="js-strength strength" helptext="Strength increases physical damage, health and damage with melee weapons.">X</div>
+                    <div class="js-intelligence intelligence" helptext="Intelligence increases accuracy, block and magic block and damage with magic weapons.">X</div>
+                </div>
+            </div><div class="js-equipment equipment playerBox js-itemContext">
+                <div class="js-head js-itemSlot itemSlot head"></div>
+                <div class="js-body js-itemSlot itemSlot body"></div>
+                <div class="js-arms js-itemSlot itemSlot arms"></div>
+                <div class="js-weapon js-itemSlot itemSlot weapon"></div>
+                <div class="js-offhand js-itemSlot itemSlot offhand"></div>
+                <div class="js-legs js-itemSlot itemSlot legs"></div>
+                <div class="js-feet js-itemSlot itemSlot feet"></div>
+                <div class="js-back js-itemSlot itemSlot back"></div>
+                <div class="js-ring js-itemSlot itemSlot ring"></div>
+            </div>
+        </div><div class="js-itemCrafting js-characterColumn displayColumn itemCrafting js-itemContext">
+                <button class="js-mainView mainViewButton" helptext="Return to adventure screen.">X</button>
+            <div class="panelTitle">Temple of Fortune</div>
+            <div class="js-craftingBar craftingBar">
+                <canvas class="js-craftingCanvas" height="210" width="1100" style="background-color: white;"></canvas>
+            </div>
             <div class="js-craftingPanel js-infoPanel infoPanel">
-                <div class="panelTitle">Crafting</div>
                 <div>
                     <select class="js-levelSelect itemCraftingSelect">
                         <option value='1'>Level 1</option>
@@ -97,107 +181,16 @@
                     <button class="js-craftItem centered" helptext="Click here to craft a random item. The above settings can be used to control the quality and type of items that can be created.">Craft for 5 <span class="icon coin"></span></button>
                 </div>
             </div>
-            <div class="js-enchantingPanel js-infoPanel infoPanel" style="display: none;">
-                <div class="panelTitle">Enchanting</div>
+            <div class="js-enchantingPanel js-infoPanel infoPanel">
                 <button class="js-enchantmentOption js-enchant" helptext="You can spend Anima to add one to two magical properties to an unenchanted item." style="display: none;">Enchant</button></span>
                 <button class="js-enchantmentOption js-imbue" helptext="You can spend Anima to add three to four magical properties to an unenchanted item." style="display: none;">Imbue</button></span>
                 <div class="js-enchantmentSlot js-itemSlot itemSlot enchantmentSlot" helptext="Drag an item here to see enchanting options."></div>
                 <button class="js-enchantmentOption js-augment" helptext="Spend Anima to add up to four magical properties to an enchanted item." style="display: none;">Augment</button>
                 <button class="js-enchantmentOption js-mutate" helptext="Spend Anima to randomize the magical properties on an item." style="display: none;">Mutate</button>
                 <button class="js-enchantmentOption js-reset" helptext="You can spend Coins to remove all enchantments from an item.<br/>This will allow you to enchant it again differently." style="display: none;">Reset</button>
+                <button class="js-sellItem sellItem item" disabled helptext="Drag items here to sell them. <br/> You can also hover over an item and type 'S' to sell quickly."><div class="icon money"></div></button>
             </div>
-            <div class="js-jewelPanel js-infoPanel infoPanel" style="display: none;">
-                <div class="panelTitle">Gem Cutting</div>
-                <div style="text-align: center;">
-                    <div class="js-jewelCraftingSlot jewelCraftingSlot" helptext="Drag a jewel here to craft."></div>
-                    <div class="js-jewelCraftingSlot jewelCraftingSlot" helptext="Drag a jewel here to craft."></div>
-                </div>
-                <button class="js-jewelCraftingButton centered" style="display: none;">Split</button>
-            </div>
-            <div class="toolbar js-toolbar">
-                <button class="js-sellItem sellItem item" helptext="Drag items here to sell them. <br/> You can also hover over an item and type 'S' to sell quickly."><div class="icon money"></div></button>
-                <button class="js-showCraftingPanel item" helptext="Click here to open the crafting tab."><div class="icon crafting"></div></button>
-                <button class="js-showEnchantingPanel item" helptext="Click here to open the enchanting tab."><div class="icon enchanting"></div></button>
-                <button class="js-showJewelsPanel item" helptext="Click here to open the jewels tab."><canvas class="js-jewelButtonCanvas" width="40" height="40"></canvas></button>
-            </div>
-            <div class="js-inventory inventory"></div>
-            <div class="js-jewel-inventory jewel-inventory" style="display: none;"></div>
-        </div><div class="js-playerColumn playerColumn">
-            <div class="js-craftingBar craftingBar">
-                <canvas class="js-craftingCanvas" height="210" width="1100" style="background-color: white;"></canvas>
-            </div>
-            <div class="js-playerPanelTemplate playerPanel" style="display: none;">
-                <div class="playerControlBar">
-                    Level <span class="js-level">X</span> <span class="js-name controlBarEntry">X</span>
-                    <button class="js-recall controlBarEntry recallButton">Recall</button>
-                    <label class="controlBarEntry"><input type="checkbox" class="js-repeat"> Repeat</label>
-                    <label class="controlBarEntry"><input type="checkbox" class="js-fastforward"> Fast Forward</label>
-                    <label class="controlBarEntry"><input type="checkbox" class="js-slowMotion"> Slow Motion</label>
-                </div>
-                <div class="js-infoMode infoMode">
-                    <canvas class="js-canvas" width="64" height="128" style="background-color: white; position: absolute; left: 0px"></canvas>
-                    <div class="js-stats stats playerBox">
-                        <div helptext="Experience required before you can learn another skill and level up. <br/><br/>Completing adventures unlocks new skills. <br/><br/> Leveling increases health and basic stats slightly.">
-                            Next Lvl: <span class="js-toLevel">X</span> xp
-                        </div>
-                        <div helptext="Starting health for each adventure.">
-                            Health: <span class="js-maxHealth">X</span>
-                        </div>
-                        <div helptext="How fast your adventurer regenerates health.">
-                            Regen: <span class="js-healthRegen">X</span>
-                        </div>
-                        <div>
-                            Damage: <span class="js-damage">X</span>
-                        </div>
-                        <div helptext="Higher range will let you attack enemies safely from afar.">
-                            Range: <span class="js-range">X</span>
-                        </div>
-                        <div>
-                            Evasion: <span class="js-evasion">X</span>
-                        </div>
-                        <div>
-                            Protection: <span class="js-protection">X</span>
-                        </div>
-                        <div>
-                            Resistance: <span class="js-resistance">X</span>
-                        </div>
-                        <div helptext="How fast your adventurer moves">
-                            Speed: <span class="js-speed">X</span>
-                        </div>
-                        <div>
-                            <button class="js-retire" style="display: none;">Retire</button>
-                        </div>
-                    <div class="triStatBox">
-                        <div class="js-dexterity dexterity" helptext="Dexterity increases attack speed, evasion and damage with ranged weapons.">X</div>
-                        <div class="js-strength strength" helptext="Strength increases physical damage, health and damage with melee weapons.">X</div>
-                        <div class="js-intelligence intelligence" helptext="Intelligence increases accuracy, block and magic block and damage with magic weapons.">X</div>
-                    </div>
-                    </div><div class="js-equipment equipment playerBox">
-                        <div class="js-head js-itemSlot itemSlot head"></div>
-                        <div class="js-body js-itemSlot itemSlot body"></div>
-                        <div class="js-arms js-itemSlot itemSlot arms"></div>
-                        <div class="js-weapon js-itemSlot itemSlot weapon"></div>
-                        <div class="js-offhand js-itemSlot itemSlot offhand"></div>
-                        <div class="js-legs js-itemSlot itemSlot legs"></div>
-                        <div class="js-feet js-itemSlot itemSlot feet"></div>
-                        <div class="js-back js-itemSlot itemSlot back"></div>
-                        <div class="js-ring js-itemSlot itemSlot ring"></div>
-                    </div><div class="js-jewelBoard jewelBoard playerBox" style="display: none;">
-                        <canvas class="js-canvas js-skillCanvas" width="220" height="220">
-                        </canvas>
-                    </div><div class="js-mapBox playerBox">
-                        <div class="js-map map"></div>
-                    </div>
-                </div>
-                <div class="js-adventureMode">
-                    <canvas class="js-canvas" width="695" height="240" style="background-color: blue;">
-                    </canvas>
-                </div>
-            </div>
-            <div class="js-adventurePanel">
-                <select class="js-jobSelect"></select><button class="js-hire" helpText="Hire another adventurer. <br/><br/> Gain AP by completing new adventures and retiring high level adventurers. <br/><br/> You may have many adventurers but it could be hard on your computer to have too many.">Hire for 10 AP!</button>
-            </div>
-        </div>
+        </div><div class="js-inventory displayColumn inventory js-itemContext"></div>
     </div>
 </div>
 </body>
@@ -226,6 +219,7 @@
 <script src="drawAdventure.js"></script>
 <script src="monsters.js"></script>
 <script src="levels.js"></script>
+<script src="maps.js"></script>
 <script src="polygon.js"></script>
 <script src="backgrounds.js"></script>
 <script src="main.js"></script>

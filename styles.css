@@ -1,6 +1,15 @@
+.gameContent {
+    overflow-x: hidden;
+    overflow-y: hidden;
+    white-space: nowrap;
+    height: 600px;
+}
+
 .pointsBar {
     background-color: #ccc;
     padding: 4px;
+    height: 30px;
+    box-sizing: border-box;
 }
 .pointsBar .points {
     display: inline-block;
@@ -17,17 +26,8 @@
 .anima {
     color: #c4f;
 }
-.controlColumn {
-    width: 240px;
-    display: inline-block;
-    background-color: grey;
-    box-sizing: border-box;
-    border-right: 2px solid black;
-    height: 800px;
-    vertical-align: top;
-}
 .playerColumn {
-    width: 720px;
+    width: 560px;
     display: inline-block;
     background-color: grey;
     box-sizing: border-box;
@@ -41,6 +41,7 @@
     height: 30px;
     padding: 3px;
     box-sizing: border-box;
+    background-color: #ccc;
 }
 .controlBarEntry {
     margin-right: 5px;
@@ -63,8 +64,6 @@
     width: 800px;
 }
 .infoPanel {
-    min-height: 200px;
-    border-bottom: 2px solid black;
     box-sizing: border-box;
 }
 .toolbar {
@@ -78,8 +77,11 @@
     vertical-align: top;
     background-color: #CCC;
 }
-.toolbar .item.sellItem {
-    margin-right: 25px;
+.item.sellItem {
+    position: absolute;
+    left: 2px;
+    bottom: 2px;
+    cursor: default;
 }
 .inventory {
     padding: 4px;
@@ -87,9 +89,11 @@
     overflow-y: scroll;
     height: 540px;
     box-sizing: border-box;
+    width: 170px;
+    white-space: normal;
 }
 
-.infoPanel .panelTitle {
+.panelTitle {
     font-size: 20px;
     font-family: sans-serif;
     border-bottom: 1px solid black;
@@ -97,12 +101,30 @@
     margin-bottom: 15px;
 }
 
+.mainCanvas {
+    display: block;
+}
+
+.displayColumn {
+    position: relative;
+    background-color: #ccc;
+    display: inline-block;
+    vertical-align: top;
+    height: 570px;
+}
+
+.jewelCrafting {
+    position: relative;
+    height: 240px;
+}
+
 .jewel-inventory {
     padding: 5px;
     padding-right:0;
+    white-space: normal;
     overflow-x: hidden;
     overflow-y: scroll;
-    height: 540px;
+    width: 240px;
     box-sizing: border-box;
 }
 
@@ -167,8 +189,6 @@ button {
     box-sizing: border-box;
     width: 225px;
     height: 236px;
-    display: inline-block;
-    border: 1px solid black;
     vertical-align: top;
     margin: 2px;
     margin-right: 1px;
@@ -217,6 +237,12 @@ button {
 
 .jewelBoard {
     position: relative;
+    background-color: skyblue;
+}
+.confirmSkill {
+    position: absolute;
+    right: 25px;
+    top: 2px;
 }
 
 .equipment > .head {
@@ -417,6 +443,10 @@ button {
 .itemCraftingSelect {
     width: 100px;
 }
+.itemCrafting {
+    position: relative;
+    width: 390px;
+}
 
 label {
     cursor: pointer;
@@ -455,4 +485,18 @@ button.disabled {
 
 select {
     margin-right: 5px;
+}
+
+.jobSelect {
+    display: block;
+}
+
+.mainViewButton {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+}
+
+.characterColumn {
+    width: 240px;
 }

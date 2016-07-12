@@ -61,15 +61,15 @@ function songEffect(attackStats) {
         'draw': function (character) {
             if (self.done) return;
             var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
-            character.context.save();
-            character.context.globalAlpha = alpha;
-            character.context.fillStyle = color;
-            character.context.beginPath();
-            character.context.translate((followTarget.x - character.cameraX), yOffset);
-            character.context.scale(1, height / currentRadius);
-            character.context.arc(0, 0, currentRadius, 0, 2 * Math.PI);
-            character.context.fill();
-            character.context.restore();
+            mainContext.save();
+            mainContext.globalAlpha = alpha;
+            mainContext.fillStyle = color;
+            mainContext.beginPath();
+            mainContext.translate((followTarget.x - character.cameraX), yOffset);
+            mainContext.scale(1, height / currentRadius);
+            mainContext.arc(0, 0, currentRadius, 0, 2 * Math.PI);
+            mainContext.fill();
+            mainContext.restore();
         }
     };
     return self;
@@ -112,16 +112,16 @@ function explosionEffect(attackStats, x, y) {
         'draw': function (character) {
             if (self.done) return
             var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
-            character.context.globalAlpha = alpha;
-            character.context.fillStyle = color;
-            character.context.beginPath();
-            character.context.save();
-            character.context.translate((self.x - character.cameraX), self.y);
-            character.context.scale(1, height / currentRadius);
-            character.context.arc(0, 0, currentRadius, 0, 2 * Math.PI);
-            character.context.fill();
-            character.context.restore();
-            character.context.globalAlpha = 1;
+            mainContext.globalAlpha = alpha;
+            mainContext.fillStyle = color;
+            mainContext.beginPath();
+            mainContext.save();
+            mainContext.translate((self.x - character.cameraX), self.y);
+            mainContext.scale(1, height / currentRadius);
+            mainContext.arc(0, 0, currentRadius, 0, 2 * Math.PI);
+            mainContext.fill();
+            mainContext.restore();
+            mainContext.globalAlpha = 1;
         }
     };
     return self;
@@ -169,16 +169,16 @@ function fieldEffect(attackStats, followTarget) {
         'draw': function (character) {
             if (self.done) return
             var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
-            character.context.globalAlpha = alpha;
-            character.context.fillStyle = color;
-            character.context.beginPath();
-            character.context.save();
-            character.context.translate((followTarget.x - character.cameraX), 40);
-            character.context.scale(1, height / currentRadius);
-            character.context.arc(0, 0, currentRadius, 0, 2 * Math.PI);
-            character.context.fill();
-            character.context.restore();
-            character.context.globalAlpha = 1;
+            mainContext.globalAlpha = alpha;
+            mainContext.fillStyle = color;
+            mainContext.beginPath();
+            mainContext.save();
+            mainContext.translate((followTarget.x - character.cameraX), 40);
+            mainContext.scale(1, height / currentRadius);
+            mainContext.arc(0, 0, currentRadius, 0, 2 * Math.PI);
+            mainContext.fill();
+            mainContext.restore();
+            mainContext.globalAlpha = 1;
         }
     };
     return self;
@@ -285,11 +285,11 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
             if (self.attackStats.attack.base.animation && projectileAnimations[self.attackStats.attack.base.animation]) {
                 var animation = projectileAnimations[self.attackStats.attack.base.animation];
                 var frame = animation.frames[Math.floor(self.t / 5) % animation.frames.length];
-                character.context.drawImage(animation.image, frame[0], frame[1], frame[2], frame[3],
+                mainContext.drawImage(animation.image, frame[0], frame[1], frame[2], frame[3],
                                   self.x - character.cameraX - size / 2, self.y - size / 2, size, size);
             } else {
-                character.context.fillStyle = ifdefor(color, '#000');
-                character.context.fillRect(self.x - character.cameraX - size / 2, self.y - size / 2, size, size);
+                mainContext.fillStyle = ifdefor(color, '#000');
+                mainContext.fillRect(self.x - character.cameraX - size / 2, self.y - size / 2, size, size);
             }
         }
     };

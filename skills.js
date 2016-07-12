@@ -194,7 +194,7 @@ var abilities = {
     'samurai': {'name': 'Great Warrior', 'bonuses': {'*twoHanded:damage': 2}}, /* Damage modifier exists only on the character, not on skills...*/
     'majorStrength': {'name': 'Major Strength', 'bonuses': {'+strength': 20}},
     'sideStep': {'name': 'Side Step', 'bonuses': {'+evasion': 2}, 'reaction':
-             {'type': 'dodge', 'stats': {'cooldown': 10, 'rangedOnly': true, 'moveDuration': .05, 'distance': 64, 'buff': {'stats': {'+critChance': .2, 'duration': 2, 'area': 0}}},
+             {'type': 'dodge', 'rangedOnly': true, 'stats': {'cooldown': 10, 'moveDuration': .05, 'distance': 64, 'buff': {'stats': {'+critChance': .2, 'duration': 2, 'area': 0}}},
         'helpText': 'Side step a ranged attack and advance toward enemis gaining: {buff}'}},
     'dragonSlayer': {'name': 'Dragon Slayer', 'bonuses': {'+strength': 10},
         'action': {'type': 'attack', 'restrictions': ['melee'], 'bonuses': {'+critDamage': .5, '*critChance': 2},
@@ -279,12 +279,12 @@ var abilities = {
             {'type': 'minion', 'target': 'enemies', 'monsterKey': 'skeleton', 'tags': ['spell'], 'stats': {'limit': 2, 'cooldown': .5, 'healthBonus': .5, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1},
             'helpText': 'Raise a skeleton to fight for you.'}},
 };
-var testJob;
+var testJob = 'priest';
 var testAbilities = [];
 //var testAbilities = [abilities.fireball, abilities.chainReaction, abilities.wizard];
 //var testAbilities = [abilities.freeze, abilities.absoluteZero, abilities.wizard];
 //var testAbilities = [abilities.storm, abilities.stormDuration, abilities.stormFrequency, abilities.wizard];
-//var testAbilities = [abilities.fireball, abilities.chainReaction, abilities.wizard, abilities.freeze, abilities.absoluteZero, abilities.storm, abilities.stormDuration, abilities.stormFrequency];
+var testAbilities = [abilities.fireball, abilities.chainReaction, abilities.wizard, abilities.freeze, abilities.absoluteZero, abilities.storm, abilities.stormDuration, abilities.stormFrequency];
 //var testAbilities = [abilities.blinkStrike];
 //var testAbilities = [abilities.soulStrike];
 //var testAbilities = [abilities.pet, abilities.attackSong];

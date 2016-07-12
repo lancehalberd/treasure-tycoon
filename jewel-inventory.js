@@ -123,7 +123,7 @@ $('body').on('mousemove', '.js-skillCanvas', function (event) {
     }
     overJewel = null;
     overVertex = null;
-    var character = $(this).closest('.js-playerPanel').data('character');
+    var character = state.selectedCharacter;
     var relativePosition = relativeMousePosition(this);
     var jewels = character.board.jewels;
     for (var i = 0; i < jewels.length; i++) {
@@ -170,7 +170,7 @@ $('body').on('mousemove', function () {
         var center = draggedJewel.shape.center;
         var centerToMouse = null;
         if (draggedJewel.character) {
-            centerToMouse = vector(center, relativeMousePosition(draggedJewel.character.jewelsCanvas));
+            centerToMouse = vector(center, relativeMousePosition(jewelsCanvas));
         } else {
             centerToMouse = vector(center, relativeMousePosition(draggedJewel.canvas));
         }
@@ -202,7 +202,7 @@ function dragBoard() {
     if (draggingBoardJewel.confirmed) {
         boardShapes = boardShapes.concat(character.board.jewels.map(jewelToShape)).concat(character.board.fixed.map(jewelToShape)).concat(character.board.spaces);
     }
-    var mousePosition = relativeMousePosition(character.jewelsCanvas);
+    var mousePosition = relativeMousePosition(jewelsCanvas);
     // Translate the board so the fixed jewel is centered under the mouse.
     if (overVertex === null) {
         var v = vector(draggingBoardJewel.shape.center, mousePosition);
@@ -250,7 +250,7 @@ function checkIfStillOverJewel() {
     if (!overJewel) return;
     var relativePosition
     if (overJewel.character) {
-        relativePosition = relativeMousePosition(overJewel.character.jewelsCanvas);
+        relativePosition = relativeMousePosition(jewelsCanvas);
     } else {
         relativePosition = relativeMousePosition(overJewel.canvas);
     }
@@ -323,10 +323,9 @@ function stopJewelDrag() {
     // Drop the jewel on a skill board if it is over one.
     $('.js-skillCanvas').each(function (index, element) {
         if (collision(draggedJewel.$canvas, $(element))) {
-            var targetCharacter = $(element).closest('.js-playerPanel').data('character');
-            var relativePosition = relativeMousePosition(targetCharacter.jewelsCanvas);
+            var relativePosition = relativeMousePosition(jewelsCanvas);
             draggedJewel.shape.setCenterPosition(relativePosition[0], relativePosition[1]);
-            if (equipJewel(targetCharacter, true)) {
+            if (equipJewel(state.selectedCharacter, true)) {
                 checkToShowJewelToolTip();
                 updateJewelCraftingOptions();
                 return false;

@@ -10,11 +10,10 @@ function treasurePopup(x, y, vx, vy, delay, text, color, font) {
         },
         'draw': function (character) {
             if (delay > 0) return
-            var context = character.context;
-            context.fillStyle = ifdefor(color, "yellow");
-            context.font = ifdefor(font, "20px sans-serif");
-            context.textAlign = 'center'
-            context.fillText(text, self.x - character.cameraX, self.y);
+            mainContext.fillStyle = ifdefor(color, "yellow");
+            mainContext.font = ifdefor(font, "20px sans-serif");
+            mainContext.textAlign = 'center'
+            mainContext.fillText(text, self.x - character.cameraX, self.y);
         }
     };
     return self;
@@ -33,7 +32,7 @@ function coinTreasurePopup(coin, x, y, vx, vy, delay) {
         },
         'draw': function (character) {
             if (delay > 0) return
-            character.context.drawImage(coin.image, coin.x, coin.y, coin.width, coin.height,
+            mainContext.drawImage(coin.image, coin.x, coin.y, coin.width, coin.height,
                 self.x - coin.width / 2 - character.cameraX, self.y - coin.height / 2, coin.width, coin.height);
         }
     };
@@ -94,7 +93,7 @@ function animaTreasurePopup(coin, x, y, vx, vy, delay) {
         },
         'draw': function (character) {
             if (delay > 0 || self.x < character.adventurer.x + 16) return
-            character.context.drawImage(coin.image, coin.x, coin.y, coin.width, coin.height,
+            mainContext.drawImage(coin.image, coin.x, coin.y, coin.width, coin.height,
                 self.x - coin.width / 2 - character.cameraX, self.y - coin.height / 2, coin.width, coin.height);
         }
     };
@@ -142,8 +141,8 @@ function jewelTreasurePopup(jewel, x, y, vx, vy, delay) {
         'draw': function (character) {
             if (delay > 0) return
             popupShape.setCenterPosition(self.x - character.cameraX, self.y);
-            var lightSource = relativeMousePosition(character.canvas);
-            drawJewel(character.context, popupShape, lightSource, 'white');
+            var lightSource = relativeMousePosition(mainCanvas);
+            drawJewel(mainContext, popupShape, lightSource, 'white');
         }
     };
     return self;

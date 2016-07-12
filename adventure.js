@@ -17,7 +17,7 @@ function startArea(character, index) {
     character.adventurer.isDead = false;
     character.adventurer.timeOfDeath = undefined;
     character.finishTime = false;
-    character.cameraX = -30;
+    character.cameraX = -60;
     character.enemies = [];
     character.objects = [];
     character.projectiles = [];
@@ -30,14 +30,12 @@ function startArea(character, index) {
     character.treasurePopups = [];
     character.textPopups = [];
     character.timeStopEffect = null;
-    character.$panel.find('.js-recall').prop('disabled', false);
+    $('.js-recall').prop('disabled', false);
     character.adventurer.actions.concat(character.adventurer.reactions).forEach(function (action) {
         action.readyAt = 0;
     });
     updateActorStats(character.adventurer);
     drawAdventure(character);
-    character.$panel.find('.js-infoMode').hide();
-    character.$panel.find('.js-adventureMode').show();
 }
 function checkIfActorDied(actor) {
     if (!actor.isDead && actor.health <= 0 && !actor.undying && !actor.pull) {
@@ -92,7 +90,7 @@ function removeActor(actor) {
     var index = actor.allies.indexOf(actor);
     actor.allies.splice(index, 1);
     if (actor.isMainCharacter) {
-        displayInfoMode(actor.character);
+        returnToMap(actor.character);
     }
 }
 function checkToStartNextWave(character) {
@@ -102,14 +100,14 @@ function checkToStartNextWave(character) {
             if (!character.finishTime) {
                 character.finishTime = character.time + 2;
             } else if (character.finishTime <= character.time) {
-                completeArea(character);
-                displayInfoMode(character);
+                completeLevel(character);
+                returnToMap(character);
                 return;
             }
         } else {
             startNextWave(character);
             if (character.waveIndex >= character.area.waves.length) {
-                character.$panel.find('.js-recall').prop('disabled', true);
+                $('.js-recall').prop('disabled', true);
             }
         }
     }
