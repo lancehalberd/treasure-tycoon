@@ -279,12 +279,12 @@ var abilities = {
             {'type': 'minion', 'target': 'enemies', 'monsterKey': 'skeleton', 'tags': ['spell'], 'stats': {'limit': 2, 'cooldown': .5, 'healthBonus': .5, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1},
             'helpText': 'Raise a skeleton to fight for you.'}},
 };
-var testJob = 'priest';
+var testJob = 'blackbelt';
 var testAbilities = [];
 //var testAbilities = [abilities.fireball, abilities.chainReaction, abilities.wizard];
 //var testAbilities = [abilities.freeze, abilities.absoluteZero, abilities.wizard];
 //var testAbilities = [abilities.storm, abilities.stormDuration, abilities.stormFrequency, abilities.wizard];
-var testAbilities = [abilities.fireball, abilities.chainReaction, abilities.wizard, abilities.freeze, abilities.absoluteZero, abilities.storm, abilities.stormDuration, abilities.stormFrequency];
+//var testAbilities = [abilities.fireball, abilities.chainReaction, abilities.wizard, abilities.freeze, abilities.absoluteZero, abilities.storm, abilities.stormDuration, abilities.stormFrequency];
 //var testAbilities = [abilities.blinkStrike];
 //var testAbilities = [abilities.soulStrike];
 //var testAbilities = [abilities.pet, abilities.attackSong];
@@ -318,89 +318,3 @@ $.each(abilities, function (key, ability) {
         ability.reaction.key = key;
     }
 });
-var specialTraits = {};
-function findSpecialTraits(object) {
-    $.each(object, function (key, value) {
-        if (typeof(key) === 'string' && key.indexOf('$') >= 0) specialTraits[key.substring(1).split(':').pop()] = true;
-        if (typeof(value) === 'object') findSpecialTraits(value);
-    })
-}
-findSpecialTraits(abilities);
-function abilityHelpText(ability, character) {
-    function evaluateActionStat(key) {
-        return evaluateForDisplay(action.stats[key], character.adventurer, action);
-    }
-    var action = ifdefor(ability.action, ability.reaction);
-    var sections = [ability.name, ''];
-    if (ifdefor(ability.helpText)) {
-        sections.push(ability.helpText.replace(/\{(\w+)\}/, function (match, key) {
-            return evaluateForDisplay(ability.bonuses[key], character.adventurer, ability);
-        }));
-        sections.push('');
-    }
-    var helpText = bonusHelpText(ifdefor(ability.bonuses, {}, ability), false, character.adventurer);
-    if (helpText) {
-        sections.push(helpText);
-        sections.push('');
-    }
-    if (action) {
-        var actionSections = [];
-        if (ifdefor(action.helpText)) {
-            actionSections.push(action.helpText.replace(/\{(\w+)\}/, function (match, key) {
-                return evaluateActionStat(key);
-            }));
-        }
-        for (var i = 0; i < ifdefor(action.restrictions, []).length; i++) {
-            actionSections.push(properCase(action.restrictions[i]) + ' only');
-        }
-        if (ifdefor(action.stats.attackPower)) {
-            actionSections.push(evaluateForDisplay(action.stats.attackPower, character.adventurer, action).format(2) + 'x power');
-        }
-        $.each(action.stats, function (key, value) {
-            if (key.charAt(0) === '$') {
-                actionSections.push(value);
-            }
-        });
-        if (ifdefor(action.monsterKey)) {
-            actionSections.push('Summons a ' + monsters[action.monsterKey].name);
-        }
-        if (ifdefor(action.stats.healthBonus, 1) !== 1) {
-            actionSections.push(evaluateActionStat('healthBonus').format(1) + 'x health');
-        }
-        if (ifdefor(action.stats.damageBonus, 1) !== 1) {
-            actionSections.push(evaluateActionStat('damageBonus').format(1) + 'x damage');
-        }
-        if (ifdefor(action.stats.attackSpeedBonus, 1) !== 1) {
-            actionSections.push(evaluateActionStat('attackSpeedBonus').format(1) + 'x attack speed');
-        }
-        if (ifdefor(action.stats.speedBonus, 1) !== 1) {
-            actionSections.push(evaluateActionStat('speedBonus').format(1) + 'x movement speed');
-        }
-        if (ifdefor(action.stats.range)) {
-            actionSections.push('Range ' + evaluateActionStat('range').format(1));
-        }
-        if (ifdefor(action.stats.area)) {
-            actionSections.push('Area ' + evaluateActionStat('area').format(1));
-        }
-        if (ifdefor(action.stats.cleave)) {
-            actionSections.push(evaluateActionStat('cleave').percent() + ' splash damage to all enemies in range');
-        }
-        if (ifdefor(action.stats.cleaveRange)) {
-            actionSections.push(evaluateActionStat('cleaveRange').format(1) + ' increased range for splash damage');
-        }
-        if (ifdefor(action.stats.chance)) {
-            actionSections.push(evaluateActionStat('chance').percent() + ' chance');
-        }
-        if (ifdefor(action.stats.consumeRatio)) {
-            actionSections.push('Absorb '  + evaluateActionStat('consumeRatio').percent() + ' of the target\'s max health');
-        }
-        if (ifdefor(action.stats.duration)) {
-            actionSections.push('lasts ' + evaluateActionStat('duration').format(1) + ' seconds');
-        }
-        if (ifdefor(action.stats.cooldown)) {
-            actionSections.push('Cooldown: ' + evaluateActionStat('cooldown').format(1) + ' seconds');
-        }
-        sections.push(tag('div', 'abilityText', actionSections.join('<br/>')));
-    }
-    return sections.join('<br/>');
-}

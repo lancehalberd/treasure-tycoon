@@ -1,4 +1,5 @@
-function equipItem(adventurer, item) {
+function equipItem(adventurer, item, skipUpdate) {
+    //console.log("equip " + item.base.slot);
     if (adventurer.equipment[item.base.slot]) {
         console.log("Tried to equip an item without first unequiping!");
         return;
@@ -8,14 +9,21 @@ function equipItem(adventurer, item) {
         return;
     }
     item.$item.detach();
+    if (state.selectedCharacter && state.selectedCharacter.adventurer === adventurer) {
+        $('.js-equipment .js-' + item.base.slot).append(item.$item);
+    }
     item.actor = adventurer;
     adventurer.equipment[item.base.slot] = item;
-    updateAdventurer(adventurer);
+    if (!ifdefor(skipUpdate))updateAdventurer(adventurer);
 }
-function unequipSlot(actor, slotKey) {
+function unequipSlot(actor, slotKey, update) {
+    //console.log(new Error("unequip " + slotKey));
     if (actor.equipment[slotKey]) {
         actor.equipment[slotKey].actor = null;
         actor.equipment[slotKey] = null;
+        if (update) {
+            updateAdventurer(actor);
+        }
     }
 }
 function isTwoHandedWeapon(item) {
@@ -56,6 +64,11 @@ function updateItem(item) {
         item.$item.addClass('enchanted');
     }
 }
+function addToInventory(item) {
+    item.$item.detach();
+    $('.js-inventorySlot').before(item.$item);
+    $('.js-inventorySlot').hide();
+}
 var tagToDisplayNameMap = {
     'twoHanded': '2-handed',
     'oneHanded': '1-handed',
@@ -82,387 +95,6 @@ var tagToCategoryMap = {
 };
 function tagToCategoryDisplayName(tag) {
     return ifdefor(tagToCategoryMap[tag], properCase(tag));
-}
-function itemHelpText(item) {
-    // Unique items have a distinct display name that is used instead of the
-    // affix generated name.
-    var name;
-    if (ifdefor(item.displayName)) {
-        name = item.displayName;
-    } else {
-        name = item.base.name;
-        var prefixNames = [];
-        item.prefixes.forEach(function (affix) {
-            prefixNames.unshift(affix.base.name);
-        });
-        if (prefixNames.length) {
-            name = prefixNames.join(', ') + ' ' + name;
-        }
-        var suffixNames = [];
-        item.suffixes.forEach(function (affix) {
-            suffixNames.push(affix.base.name);
-        });
-        if (suffixNames.length) {
-            name = name + ' of ' + suffixNames.join(' and ');
-        }
-    }
-    var sections = [name];
-    if (item.base.tags) {
-        sections.push(item.base.tags.map(tagToDisplayName).join(', '));
-    }
-    sections.push('Requires level ' + item.level);
-    sections.push('');
-    sections.push(bonusHelpText(item.base.bonuses, true, null));
-
-    if (item.prefixes.length || item.suffixes.length) {
-        sections.push('');
-        item.prefixes.forEach(function (affix) {
-            sections.push(bonusHelpText(affix.bonuses, false, null));
-        });
-        item.suffixes.forEach(function (affix) {
-            sections.push(bonusHelpText(affix.bonuses, false, null));
-        });
-    }
-    sections.push('');
-
-    var sellValues = [points('coins', sellValue(item))];
-    var total = item.prefixes.length + item.suffixes.length;
-    if (total) {
-        var animaValue = item.base.level * item.base.level * item.base.level;
-        if (total <= 2) sellValues.push(points('anima', animaValue * total));
-        else sellValues.push(points('anima', animaValue * total));
-    }
-    sections.push('Sell for ' + sellValues.join(' '));
-    return sections.join('<br/>');
-}
-function evaluateForDisplay(value, actor, localObject) {
-    if (typeof value === 'undefined') {
-        throw new Error('Value was undefined');
-    }
-    if (!actor && actor !== null) {
-        throw new Error('Forgot to pass actor to evaluateForDisplay.');
-    }
-    if (typeof value === 'number') {
-        return value;
-    }
-    if (typeof value === 'string' && value.charAt(0) === '{') {
-        return tag('span', 'formulaStat', value.substring(1, value.length - 1));
-    }
-    if (typeof value === 'string' || typeof value === 'boolean') {
-        return value;
-    }
-    if (value.constructor !== Array) {
-        if (value.stats) {
-            return bonusHelpText(value.stats, false, actor);
-        }
-        return value;
-    }
-    var fullFormula = value;
-    if (!fullFormula || !fullFormula.length) {
-        throw new Error('Expected "formula" to be an array, but value is: ' + JSON.stringify(fullFormula));
-    }
-    formula = fullFormula.slice();
-    if (formula.length == 2 && formula[0] === '-') {
-        formula.shift();
-        value = '-' + evaluateForDisplay(formula.shift(), null, localObject);
-    } else {
-        value = evaluateForDisplay(formula.shift(), null, localObject);
-    }
-    if (formula.length > 1) {
-        value = '(' + value + ' '+ formula.shift() + ' ' + evaluateForDisplay(formula.shift(), null, localObject) +')';
-    }
-    if (actor) {
-        value += ' ' + tag('span', 'formulaStat', '[=' +  evaluateValue(actor, fullFormula, localObject).format(2) +  ']');
-    }
-    return value;
-}
-function bonusHelpText(rawBonuses, implicit, actor, localObject) {
-    localObject = ifdefor(localObject, actor);
-    if (!actor && actor !== null) {
-        throw new Error('Forgot to pass actor to bonusHelpText.');
-    }
-    var bonuses = {};
-    var tagBonuses = {};
-    $.each(rawBonuses, function (key, value) {
-        // Transform things like {'+bow:minDamage': 1} => 'bow': {'+minDamage': 1}
-        // so that we can display per tag bonuses.
-        if (key.indexOf(':') >= 0) {
-            var parts = key.split(':');
-            // skill is a required key word for anything that targets a tagged ability
-            // but shouldn't be considered a seperate tag.
-            if (parts[1] === 'skill' && parts.length > 2) {
-                parts.splice(1, 1);
-                parts[0] += ' skills';
-            }
-            var tag = parts[0].substring(1);
-            tagBonuses[tag] = ifdefor(tagBonuses[tag], {});
-            tagBonuses[tag][parts[0].charAt(0) + parts[1]] = value;
-        }
-        bonuses[key] = evaluateForDisplay(value, actor, localObject);
-    });
-    var sections = [];
-    if (ifdefor(bonuses['+minDamage'])) {
-        if (implicit) sections.push('Damage: ' + bonuses['+minDamage'].format(1) + ' to ' + bonuses['+maxDamage'].format(1));
-        else sections.push(bonuses['+minDamage'] + ' to ' + bonuses['+maxDamage'] + ' increased damage');
-    }
-    if (ifdefor(bonuses['+minMagicDamage'])) {
-        if (implicit) sections.push('Magic: ' + bonuses['+minMagicDamage'].format(1) + ' to ' + bonuses['+maxMagicDamage'].format(1));
-        else sections.push(bonuses['+minMagicDamage'] + ' to ' + bonuses['+maxMagicDamage'] + ' increased magic damage');
-    }
-    if (ifdefor(bonuses['+range'])) {
-        if (implicit) sections.push('Range: ' + bonuses['+range'].format(1));
-        else sections.push(bonuses['+range'] + ' increased range');
-    }
-    if (ifdefor(bonuses['+attackSpeed'])) {
-        sections.push('Attack Speed: ' + bonuses['+attackSpeed'].format(1));
-    }
-    if (ifdefor(bonuses['+armor'])) {
-        if (implicit) sections.push('Armor: ' + bonuses['+armor'].format(1));
-        else sections.push(bonuses['+armor'].format(1) + ' increased armor');
-    }
-    if (ifdefor(bonuses['-armor'])) {
-        sections.push(bonuses['-armor'].format(1) + ' decreased armor');
-    }
-    if (ifdefor(bonuses['+evasion'])) {
-        if (implicit) sections.push('Evasion: ' + bonuses['+evasion'].format(1));
-        else sections.push(bonuses['+evasion'].format(1) + ' increased evasion');
-    }
-    if (ifdefor(bonuses['+block'])) {
-        if (implicit) sections.push('Block: ' + bonuses['+block'].format(1));
-        else sections.push(bonuses['+block'].format(1) + ' increased block');
-    }
-    if (ifdefor(bonuses['-block'])) {
-        sections.push(bonuses['-block'].format(1) + ' decreased block');
-    }
-    if (ifdefor(bonuses['+magicBlock'])) {
-        if (implicit) sections.push('Magic Block: ' + bonuses['+magicBlock'].format(1));
-        else sections.push(bonuses['+magicBlock'].format(1) + ' increased magic block');
-    }
-    if (ifdefor(bonuses['%armor'])) {
-        sections.push(bonuses['%armor'].percent(1) + ' increased armor');
-    }
-    if (ifdefor(bonuses['%evasion'])) {
-        sections.push(bonuses['%evasion'].percent(1) + ' increased evasion');
-    }
-    if (ifdefor(bonuses['%block'])) {
-        sections.push(bonuses['%block'].percent(1) + ' increased block');
-    }
-    if (ifdefor(bonuses['%magicBlock'])) {
-        sections.push(bonuses['%magicBlock'].percent(1) + ' increased magic block');
-    }
-    if (ifdefor(bonuses['+damageOnMiss'])) {
-        sections.push('Deals ' + bonuses['+damageOnMiss'] + ' true damage to enemy on miss');
-    }
-    if (ifdefor(bonuses['%damage'])) {
-        sections.push(bonuses['%damage'].percent(1) + ' increased physical damage');
-    }
-    if (ifdefor(bonuses['*damage'], 1) !== 1) {
-        sections.push(bonuses['*damage'].format(1) + 'x physical damage');
-    }
-    if (ifdefor(bonuses['%magicDamage'])) {
-        sections.push(bonuses['%magicDamage'].percent(1) + ' increased magic damage');
-    }
-    if (ifdefor(bonuses['*magicDamage'], 1) !== 1) {
-        sections.push(bonuses['*magicDamage'].format(1) + 'x magic damage');
-    }
-    if (ifdefor(bonuses['+dexterity'])) {
-        sections.push('+' + bonuses['+dexterity'].format(1) + ' Dexterity');
-    }
-    if (ifdefor(bonuses['+strength'])) {
-        sections.push('+' + bonuses['+strength'].format(1) + ' Strength');
-    }
-    if (ifdefor(bonuses['+intelligence'])) {
-        sections.push('+' + bonuses['+intelligence'].format(1) + ' Intelligence');
-    }
-    if (ifdefor(bonuses['+maxHealth'])) {
-        sections.push('+' + bonuses['+maxHealth'].format(1) + ' health');
-    }
-    if (ifdefor(bonuses['*maxHealth'])) {
-        sections.push(bonuses['*maxHealth'].format(1) + 'x health');
-    }
-    if (ifdefor(bonuses['+healthGainOnHit'])) {
-        sections.push('Gain ' + bonuses['+healthGainOnHit'].format(1) + ' health on hit');
-    }
-    if (ifdefor(bonuses['*healthGainOnHit'], 1) !== 1) {
-        sections.push('Gain ' + bonuses['*healthGainOnHit'].format(1) + 'x health gained on hit');
-    }
-    if (ifdefor(bonuses['+healthRegen'])) {
-        sections.push('Regenerate ' + bonuses['+healthRegen'].format(1) + ' health per second');
-    }
-    if (ifdefor(bonuses['*healthRegen'], 1) !== 1) {
-        sections.push('Regenerate ' + bonuses['*healthRegen'].format(1) + 'x health regenerated per second');
-    }
-    if (ifdefor(bonuses['%maxHealth'])) {
-        sections.push(bonuses['%maxHealth'].percent(1) + ' increased health');
-    }
-    if (ifdefor(bonuses['%attackSpeed'])) {
-        sections.push(bonuses['%attackSpeed'].percent(1) + ' increased attack speed');
-    }
-    if (ifdefor(bonuses['*attackSpeed'], 1) !== 1) {
-        sections.push(bonuses['*attackSpeed'].format(1) + 'x attack speed');
-    }
-    if (ifdefor(bonuses['+critChance'])) {
-        if (implicit) sections.push(bonuses['+critChance'].percent(0) + ' critical strike chance');
-        else sections.push('Additional ' + bonuses['+critChance'].percent(0) + ' chance to critical strike');
-    }
-    if (ifdefor(bonuses['%critChance'])) {
-        sections.push(bonuses['%critChance'].percent(1) + ' increased critical chance');
-    }
-    if (ifdefor(bonuses['*critChance'], 1) !== 1) {
-        sections.push(bonuses['*critChance'].format(1) + 'x critical chance');
-    }
-    if (ifdefor(bonuses['+critDamage'])) {
-        sections.push(bonuses['+critDamage'].percent(1) + ' increased critical damage');
-    }
-    if (ifdefor(bonuses['*critDamage'], 1) !== 1) {
-        sections.push(bonuses['*critDamage'].format(1) + 'x critical damage');
-    }
-    if (ifdefor(bonuses['+critAccuracy'])) {
-        sections.push(bonuses['+critAccuracy'].percent(1) + ' increased critical accuracy');
-    }
-    if (ifdefor(bonuses['*critAccuracy'], 1) !== 1) {
-        sections.push(bonuses['*critAccuracy'].format(1) + 'x critical accuracy');
-    }
-    if (ifdefor(bonuses['+magicResist'])) {
-        sections.push('Reduces magic damage received by ' + bonuses['+magicResist'].percent(0));
-    }
-    if (ifdefor(bonuses['+slowOnHit'])) {
-        sections.push('Slow target by ' + bonuses['+slowOnHit'].percent(0));
-    }
-    if (ifdefor(bonuses['+accuracy'])) {
-        sections.push((bonuses['+accuracy'] > 0 ? '+' : '') + bonuses['+accuracy'].format(1) + ' accuracy');
-    }
-    if (ifdefor(bonuses['%accuracy'])) {
-        sections.push(bonuses['%accuracy'].percent(1) + ' increased accuracy');
-    }
-    if (ifdefor(bonuses['*accuracy'], 1) !== 1) {
-        sections.push(bonuses['*accuracy'].format(1) + 'x accuracy');
-    }
-    if (ifdefor(bonuses['+speed'])) {
-        sections.push((bonuses['+speed'] > 0 ? '+' : '') + bonuses['+speed'].format(1) + ' speed');
-    }
-    if (ifdefor(bonuses['+increasedDrops'])) {
-        sections.push('Gain ' + bonuses['+increasedDrops'].percent(1) + ' more coins and anima');
-    }
-    if (ifdefor(bonuses['+increasedExperience'])) {
-        sections.push('Gain ' + bonuses['+increasedExperience'].percent(1) + ' more experience');
-    }
-    if (ifdefor(bonuses['*area'], 1) !== 1) {
-        sections.push(bonuses['*area'].format(1) + 'x increased area of effect');
-    }
-    if (ifdefor(bonuses['*power'], 1) !== 1) {
-        sections.push(bonuses['*power'].format(1) + 'x more effective');
-    }
-    if (ifdefor(bonuses['*healthBonus'], 1) !== 1) {
-        sections.push(bonuses['*healthBonus'].format(1) + 'x health');
-    }
-    if (ifdefor(bonuses['*damageBonus'], 1) !== 1) {
-        sections.push(bonuses['*damageBonus'].format(1) + 'x damage');
-    }
-    if (ifdefor(bonuses['*attackSpeedBonus'], 1) !== 1) {
-        sections.push(bonuses['*attackSpeedBonus'].format(1) + 'x attack speed');
-    }
-    if (ifdefor(bonuses['*speedBonus'], 1) !== 1) {
-        sections.push(bonuses['*speedBonus'].format(1) + 'x movement speed');
-    }
-    if (ifdefor(bonuses['*cooldown'], 1) !== 1) {
-        sections.push(bonuses['*cooldown'].format(1) + 'x cooldown time');
-    }
-    if (ifdefor(bonuses['+limit'])) {
-        sections.push('+' + bonuses['+limit'].format() + ' maximum minions');
-    }
-    if (ifdefor(bonuses['+armorPenetration'])) {
-        sections.push('+' + bonuses['+armorPenetration'].percent() + ' armor penetration');
-    }
-
-    // Some unique abilities just map 'key' => 'help text' directly.
-    $.each(rawBonuses, function (key, value) {
-        if (key.indexOf(':') < 0 && typeof(value) === 'string') {
-            sections.push(value);
-        }
-    });
-
-    $.each(tagBonuses, function (tagName, bonuses) {
-        if (tagName === 'skill') {
-            // The tagName 'skill' applies to all attacks, so don't breka it out into a special section.
-            sections.push(bonusHelpText(bonuses, false, actor));
-        } else {
-            sections.push(tag('div', 'tagText', tagToCategoryDisplayName(tagName) + ':<br/>' + bonusHelpText(bonuses, false, actor)));
-        }
-    });
-
-    // Special effects
-    if (ifdefor(bonuses['$buff'])) {
-        sections.push('Gain:');
-        sections.push(bonusHelpText(bonuses['$buff'], false, actor));
-    }
-    if (ifdefor(bonuses['+dragDamage'])) {
-        sections.push(bonuses['+dragDamage'].percent(1) + ' of initial damage is dealt per distance dragged');
-    }
-    if (ifdefor(bonuses['+dragStun'])) {
-        sections.push('Target is stunned for ' + bonuses['+dragStun'].format(1) + ' seconds per distance dragged');
-    }
-    if (ifdefor(bonuses['+rangeDamage'])) {
-        sections.push(bonuses['+rangeDamage'].percent(1) + ' increased damage the further the attack travels');
-    }
-    if (ifdefor(bonuses['+area'])) {
-        sections.push(bonuses['+area'].format(1) + ' increased area of effect');
-    }
-    if (ifdefor(bonuses['+cooldown'])) {
-        if (bonuses['+cooldown'] > 0) {
-            sections.push('Cooldown increased by ' + bonuses['+cooldown'] + ' seconds');
-        }
-        if (bonuses['+cooldown'] < 0) {
-            sections.push('Cooldown reduced by ' + -bonuses['+cooldown'] + ' seconds');
-        }
-    }
-    if (ifdefor(bonuses['*distance'])) {
-        sections.push((bonuses['*distance']).format(1) + 'x distance');
-    }
-    if (ifdefor(bonuses['+attackPower'])) {
-        sections.push(bonuses['+attackPower'].format(2) + 'x increased attack power');
-    }
-    if (ifdefor(bonuses['+chance'])) {
-        sections.push(bonuses['+chance'].percent() + ' increased chance');
-    }
-    if (ifdefor(bonuses['+cleave'])) {
-        sections.push(bonuses['+cleave'].percent() + ' splash damage to all enemies in range');
-    }
-    if (ifdefor(bonuses['+cleaveRange'])) {
-        sections.push(bonuses['+cleaveRange'].format(1) + ' increased range for splash damage');
-    }
-    if (ifdefor(bonuses['+knockbackChance'])) {
-        sections.push(bonuses['+knockbackChance'].percent() + ' to knock back enemies on hit');
-    }
-    if (ifdefor(bonuses['+knockbackDistance'])) {
-        sections.push(bonuses['+knockbackDistance'].format(1) + ' increased knockback distance');
-    }
-    if (ifdefor(bonuses['+cull'])) {
-        sections.push('Instantly kill enemies with less than ' + bonuses['+cull'].percent() + ' health');
-    }
-    if (ifdefor(bonuses['+overHeal'])) {
-        sections.push(bonuses['+overHeal'].percent() + ' of health gained beyond your max health is gained as additional max health');
-    }
-    if (ifdefor(bonuses['+lifeSteal'])) {
-        sections.push(bonuses['+lifeSteal'].percent() + ' of damage dealt is gained as life');
-    }
-
-    if (ifdefor(bonuses['*duration'])) {
-        sections.push(bonuses['*duration'].format(1) + 'x increased duration');
-    }
-    if (ifdefor(bonuses['+count'])) {
-        sections.push('+' + bonuses['+count'].format() + ' enchantment(s) stolen');
-    }
-    if (ifdefor(bonuses['+duration'])) {
-        sections.push(bonuses['+duration'].format(1) + 's increased duration');
-    }
-    if (ifdefor(bonuses['duration'])) { // Buffs/debuffs only.
-        sections.push('For ' + bonuses.duration.format(1) + ' seconds');
-    }
-    if (ifdefor(bonuses['duration']) !== null) { // Buffs/debuffs only.
-        return tag('div', 'buffText', sections.join('<br/>'));
-    }
-    return sections.join('<br/>');
 }
 // Wrapper for toFixed that strips trailing '0's and '.'s.
 // Foundt at http://stackoverflow.com/questions/7312468/javascript-round-to-a-number-of-decimal-places-but-strip-extra-zeros
@@ -504,8 +136,7 @@ function sellItem(item) {
         return;
     }
     if (item.actor) {
-        unequipSlot(item.actor, item.base.slot);
-        updateAdventurer(item.actor);
+        unequipSlot(item.actor, item.base.slot, true);
     }
     gain('coins', sellValue(item));
     destroyItem(item);
@@ -548,7 +179,6 @@ $('body').on('mousedown', '.js-item', function (event) {
     }
     $dragHelper = $(this).clone();
     $dragHelper.data('$source', $(this));
-    $dragHelper.data('sourceCharacter', state.selectedCharacter);
     $(this).css('opacity', '.3');
     $dragHelper.css('position', 'absolute');
     $('.js-mouseContainer').append($dragHelper);
@@ -557,6 +187,7 @@ $('body').on('mousedown', '.js-item', function (event) {
     var item = $(this).data('item');
     $('.js-equipment .js-' + item.base.slot).addClass(item.level > state.selectedCharacter.adventurer.level ? 'invalid' : 'active');
     $('.js-enchantmentSlot').addClass('active');
+    $('.js-inventorySlot').addClass('active');
 });
 
 function updateDragHelper() {
@@ -573,110 +204,108 @@ $(document).on("mousemove", function (event) {
 });
 
 function stopDrag() {
-    if ($dragHelper) {
-        var $source = $dragHelper.data('$source');
-        // If this doesn't have item data, it must be a jewel.
-        if (!$source) {
-            stopJewelDrag();
-            return;
+    if (!$dragHelper) {
+        stopInventoryDrag();
+        return;
+    }
+    var $source = $dragHelper.data('$source');
+    // If this doesn't have item data, it must be a jewel.
+    if (!$source) {
+        stopJewelDrag();
+        return;
+    }
+    var item = $source.data('item');
+    if (collision($dragHelper, $('.js-sellItem'))) {
+        sellItem(item);
+        return;
+    }
+    if (collision($dragHelper, $('.js-enchantmentSlot'))) {
+        var $otherItem = $('.js-enchantmentSlot').find('.js-item');
+        // If there is an item already in the enchantment slot, place it
+        // back in the inventory.
+        if ($otherItem.length) {
+            addToInventory($otherItem.data('item'));
         }
-        var item = $source.data('item');
-        var hit = false;
-        if (collision($dragHelper, $('.js-sellItem'))) {
-            sellItem(item);
-            return;
+        if (item.actor) {
+            unequipSlot(item.actor, item.base.slot, true);
         }
-        if (!hit && collision($dragHelper, $('.js-enchantmentSlot'))) {
-            var $otherItem = $('.js-enchantmentSlot').find('.js-item');
-            // If there is an item already in the enchantment slot, place it
-            // back in the inventory.
-            if ($otherItem.length) {
-                $('.js-inventory').append($otherItem);
+        $('.js-enchantmentSlot').append($source);
+        stopInventoryDrag();
+        return;
+    }
+    var hit = false;
+    $('.js-equipment .js-' + item.base.slot).each(function (index, element) {
+        if (!collision($dragHelper, $(element))) {
+            return true;
+        }
+        var targetCharacter = state.selectedCharacter;
+        if (targetCharacter.adventurer.level < item.level) {
+            return false;
+        }
+        var sourceCharacter = state.selectedCharacter;
+        hit = true
+        var currentMain = targetCharacter.adventurer.equipment[item.base.slot];
+        var currentSub = null;
+        if (isTwoHandedWeapon(item)) {
+            currentSub = targetCharacter.adventurer.equipment.offhand;
+            unequipSlot(targetCharacter.adventurer, 'offhand');
+        }
+        unequipSlot(targetCharacter.adventurer, item.base.slot);
+        if (sourceCharacter && sourceCharacter !== targetCharacter) {
+            unequipSlot(sourceCharacter.adventurer, item.base.slot);
+            if (!currentMain && !currentSub) {
+                updateAdventurer(sourceCharacter.adventurer);
+            } else {
+                if (currentMain && currentMain.level <= sourceCharacter.adventurer.level) {
+                    // Swap the item back to the source character if they can equip it.
+                    equipItem(sourceCharacter.adventurer, currentMain);
+                    currentMain = null;
+                }
+                if (currentSub && currentSub.level <= sourceCharacter.adventurer.level) {
+                    // Swap the item back to the source character if they can equip it.
+                    equipItem(sourceCharacter.adventurer, currentSub);
+                    currentSub = null;
+                }
             }
-            var character = $dragHelper.data('sourceCharacter');
-            if (character) {
-                unequipSlot(character.adventurer, item.base.slot);
-                updateAdventurer(character.adventurer);
+        }
+        //unequip the existing item if it hasn't already been swapped.
+        if (currentMain) {
+            addToInventory(currentMain);
+        }
+        if (currentSub) {
+            addToInventory(currentSub);
+        }
+        equipItem(targetCharacter.adventurer, item);
+        return false;
+    });
+    if (!hit) {
+        var $target = null;
+        $('.js-inventory .js-item').each(function (index, element) {
+            var $element = $(element);
+            if (collision($dragHelper, $element) && !$element.is($source)) {
+                $target = $element;
             }
-            $('.js-enchantmentSlot').append($source);
-            updateEnchantmentOptions();
+        });
+        if ($target) {
             hit = true;
-        }
-        if (!hit) {
-            $('.js-equipment .js-' + item.base.slot).each(function (index, element) {
-                if (collision($dragHelper, $(element))) {
-                    var targetCharacter = state.selectedCharacter;
-                    if (targetCharacter.adventurer.level < item.level) {
-                        return false;
-                    }
-                    var sourceCharacter = state.selectedCharacter;
-                    hit = true
-                    var currentMain = targetCharacter.adventurer.equipment[item.base.slot];
-                    var currentSub = null;
-                    if (isTwoHandedWeapon(item)) {
-                        currentSub = targetCharacter.adventurer.equipment.offhand;
-                        unequipSlot(targetCharacter.adventurer, 'offhand');
-                    }
-                    unequipSlot(targetCharacter.adventurer, item.base.slot);
-                    if (sourceCharacter && sourceCharacter !== targetCharacter) {
-                        unequipSlot(sourceCharacter.adventurer, item.base.slot);
-                        if (!currentMain && !currentSub) {
-                            updateAdventurer(sourceCharacter.adventurer);
-                        } else {
-                            if (currentMain && currentMain.level <= sourceCharacter.adventurer.level) {
-                                // Swap the item back to the source character if they can equip it.
-                                equipItem(sourceCharacter.adventurer, currentMain);
-                                currentMain = null;
-                            }
-                            if (currentSub && currentSub.level <= sourceCharacter.adventurer.level) {
-                                // Swap the item back to the source character if they can equip it.
-                                equipItem(sourceCharacter.adventurer, currentSub);
-                                currentSub = null;
-                            }
-                        }
-                    }
-                    //unequip the existing item if it hasn't already been swapped.
-                    if (currentMain) {
-                        currentMain.$item.detach();
-                        $('.js-inventory').append(currentMain.$item);
-                    }
-                    if (currentSub) {
-                        currentSub.$item.detach();
-                        $('.js-inventory').append(currentSub.$item);
-                    }
-                    equipItem(targetCharacter.adventurer, item);
-                    return false;
-                }
-                return true;
-            });
-        }
-        if (!hit) {
-            var $target = null;
-            $('.js-inventory .js-item').each(function (index, element) {
-                var $element = $(element);
-                if (collision($dragHelper, $element) && !$element.is($source)) {
-                    $target = $element;
-                }
-            });
-            if ($target) {
-                hit = true;
-                if (item.actor) {
-                    unequipSlot(item.actor, item.base.slot);
-                    updateAdventurer(item.actor);
-                }
-                $source.detach();
-                $target.before($source);
-            }
-        }
-        if (!hit && collision($dragHelper, $('.js-inventory'))) {
             if (item.actor) {
-                unequipSlot(item.actor, item.base.slot);
-                updateAdventurer(item.actor);
+                unequipSlot(item.actor, item.base.slot, true);
             }
             $source.detach();
-            $('.js-inventory').append($source);
+            $target.before($source);
         }
-        $source.css('opacity', '1');
+    }
+    if (!hit && collision($dragHelper, $('.js-inventory'))) {
+        if (item.actor) {
+            unequipSlot(item.actor, item.base.slot, true);
+        }
+        addToInventory(item);
+    }
+    stopInventoryDrag();
+}
+function stopInventoryDrag(args) {
+    if ($dragHelper) {
+        $dragHelper.data('$source').css('opacity', '1');
         $dragHelper.remove();
         $dragHelper = null;
         updateEnchantmentOptions();
@@ -743,7 +372,7 @@ $(document).on('keydown', function(event) {
         $.each(itemsByKey, function (key, item) {
             item.crafted = true;
         });
-        unlockItemLevel(100);
+        unlockItemLevel(73);
         state.characters.forEach(function (character) {
             $.each(levels, function (key) {
                 unlockMapLevel(key);

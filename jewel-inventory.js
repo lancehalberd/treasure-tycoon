@@ -368,7 +368,7 @@ function appendJewelToElement(jewel, $element) {
     $element.append(jewel.$item);
     jewel.$canvas.css('position', '');
 }
-function equipJewel(character, replace) {
+function equipJewel(character, replace, skipUpdate) {
     if (jewelTierLevels[draggedJewel.tier] <= character.adventurer.level
         && snapToBoard(draggedJewel, character.board, replace)) {
         draggedJewel.character = character;
@@ -379,7 +379,7 @@ function equipJewel(character, replace) {
         updateAdjacentJewels(draggedJewel);
         draggedJewel = null;
         $dragHelper = null;
-        updateAdventurer(character.adventurer);
+        if (!ifdefor(skipUpdate)) updateAdventurer(character.adventurer);
         return true;
     }
     updateAdjacentJewels(draggedJewel);

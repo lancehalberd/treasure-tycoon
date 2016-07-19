@@ -56,6 +56,10 @@ $.each(maps, function (areaKey, area) {
     });
 });
 function drawMap() {
+    // don't draw the map if the character is currently on an adventure.
+    if (state.selectedCharacter.area) {
+        return;
+    }
     var context = mainContext;
     var currentArea = maps[state.currentArea];
     // Draw parchment backdrop.
@@ -197,7 +201,10 @@ function completeLevel(character) {
         centerShapesInRectangle(previewBoard.fixed.map(jewelToShape).concat(previewBoard.spaces), rectangle(0, 0, character.boardCanvas.width, character.boardCanvas.height));
         snapBoardToBoard(previewBoard, character.board);
         character.board.boardPreview = previewBoard;
-        showContext('jewel');
+        // Only show them the jewel context if they don't have replay enabled.
+        if (state.selectedCharacter === character && !character.replay) {
+            showContext('jewel');
+        }
         // Show the button that let's them confirm the skill board augmentation.
         $('.js-confirmSkill').show();
     }

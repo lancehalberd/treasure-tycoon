@@ -87,27 +87,31 @@ var coreStatBonuses = {
     'spell:power': [['{this.minMagicDamage}', '+' ,'{this.maxMagicDamage}'], '/' , 2]
 }
 
-function returnToMap(character) {
+function resetCharacterStats(character) {
+    character.adventurer.bonusMaxHealth = 0;
     character.adventurer.percentHealth = 1;
     character.adventurer.health = character.adventurer.maxHealth;
     character.adventurer.attackCooldown = 0;
     character.adventurer.target = null;
     character.adventurer.slow = 0;
-    character.adventurer.bonusMaxHealth = 0;
+}
+function returnToMap(character) {
     updateActorStats(character.adventurer);
+    resetCharacterStats(character);
     var currentLevelIndex = character.currentLevelIndex;
     character.area = null;
     character.currentLevelIndex = null;
-    refreshStatsPanel(character);
     $('.js-recall').prop('disabled', true);
+    if (state.selectedCharacter === character) {
+        drawMap();
+        refreshStatsPanel(character, $('.js-stats'));
+    }
     if (character.replay) {
         startArea(character, currentLevelIndex);
     }
-    drawMap();
 }
-function refreshStatsPanel(character) {
+function refreshStatsPanel(character, $statsPanel) {
     var adventurer = character.adventurer;
-    var $statsPanel = $('.js-stats');
     $('.js-playerName').text(adventurer.job.name + ' ' + adventurer.name);
     $('.js-playerLevel').text(adventurer.level);
     $statsPanel.find('.js-dexterity').text(adventurer.dexterity.format(0));
@@ -139,6 +143,16 @@ function newCharacter(job) {
     character.adventurer.character = character;
     character.adventurer.direction = 1; // Character moves left to right.
     character.adventurer.isMainCharacter = true;
+    character.adventurer.bonusMaxHealth = 0;
+    character.adventurer.percentHealth = 1;
+    character.adventurer.health = character.adventurer.maxHealth;
+    var characterCanvas = createCanvas(32, 64);
+    character.$characterCanvas = $(characterCanvas);
+    character.$characterCanvas.addClass('js-character character')
+        .attr('helptext', character.adventurer.job.name + ' ' + character.adventurer.name)
+        .data('character', character);
+    character.characterContext = characterCanvas.getContext("2d");
+    $('.js-charactersBox').append(character.$characterCanvas)
     character.boardCanvas = createCanvas(jewelsCanvas.width, jewelsCanvas.height);
     character.boardContext = character.boardCanvas.getContext("2d");
     character.time = now();
@@ -148,11 +162,9 @@ function newCharacter(job) {
     state.characters.push(character);
     var levelKey = ifdefor(job.levelKey, 'meadow');
     unlockMapLevel(levelKey);
-    if (!state.selectedCharacter) {
-        state.selectedCharacter = character;
+    if (!state.currentArea) {
         state.currentArea = levelsToAreas[levelKey];
     }
-    returnToMap(character);
     var abilityKey = ifdefor(abilities[job.key]) ? job.key : 'heal';
     character.adventurer.abilities.push(abilities[abilityKey]);
     for (var i = 0; i < ifdefor(window.testAbilities, []).length; i++) {
@@ -162,16 +174,18 @@ function newCharacter(job) {
     character.board = readBoardFromData(job.startingBoard, character, abilities[abilityKey], true);
     centerShapesInRectangle(character.board.fixed.map(jewelToShape).concat(character.board.spaces), rectangle(0, 0, character.boardCanvas.width, character.boardCanvas.height));
     drawBoardBackground(character.boardContext, character.board);
-    updateAdventurer(character.adventurer);
     ifdefor(job.jewelLoot, [smallJewelLoot, smallJewelLoot, smallJewelLoot]).forEach(function (loot) {
         draggedJewel = loot.generateLootDrop().gainLoot(character);
         draggedJewel.shape.setCenterPosition(jewelsCanvas.width / 2, jewelsCanvas.width / 2);
-        if (!equipJewel(character)) {
+        if (!equipJewel(character, false, true)) {
             console.log("Failed to place jewel on starting board.");
         }
     });
     draggedJewel = null;
     overJewel = null;
+    updateAdventurer(character.adventurer);
+    resetCharacterStats(character);
+    setSelectedCharacter(character);
     /*for (var i = 0; i < character.adventurer.actions.length; i++) {
         console.log(getTargetsForAction(character.adventurer, character.adventurer.actions[i]));
     }*/
@@ -269,7 +283,7 @@ function makeAdventurer(job, level, equipment) {
         item.crafted = true;
         state.craftingContext.fillStyle = 'green';
         state.craftingContext.fillRect(item.craftingX, item.craftingY, craftingSlotSize, craftingSlotSize);
-        equipItem(adventurer, makeItem(item, 1));
+        equipItem(adventurer, makeItem(item, 1), true);
     });
     drawCraftingViewCanvas();
     return adventurer;
@@ -426,9 +440,6 @@ function updateAdventurer(adventurer) {
                 adventurer.personContext.drawImage(images['gfx/person.png'], i * 32 + equipment.base.offset * sectionWidth, 0 , 32, 64, i * 32, 0, 32, 64);
             }
         }
-        if (ifdefor(adventurer.isMainCharacter)) {
-            $('.js-equipment .js-' + type).append(equipment.$item);
-        }
     });
     adventurer.actions.push({'base': createAction({'tags': adventurer.tags.concat(['basic'])})});
     updateActorStats(adventurer);
@@ -484,8 +495,8 @@ function updateActorStats(actor) {
         });
     });
     actor.health = actor.percentHealth * actor.maxHealth;
-    if (ifdefor(actor.isMainCharacter)) {
-        refreshStatsPanel(actor.character);
+    if (ifdefor(actor.isMainCharacter) && actor.character === state.selectedCharacter) {
+        refreshStatsPanel(actor.character, $('.js-stats'));
     }
     updateActorHelpText(actor);
 }
@@ -542,6 +553,9 @@ function getStat(actor, stat) {
 }
 function getStatForAction(actor, dataObject, stat, action) {
     var base = evaluateValue(actor, ifdefor(dataObject.stats[stat], 0), action), plus = 0, flatBonus = 0, percent = 1, multiplier = 1, specialValue = ifdefor(dataObject.stats['$' + stat], false);
+    var baseKeys = [stat];
+    if (stat === 'minDamage' || stat === 'maxDamage') baseKeys.push('damage');
+    if (stat === 'minMagicDamage' || stat === 'maxMagicDamage') baseKeys.push('magicDamage');
     if (typeof base === 'object' && base.constructor != Array) {
         var subObject = {};
         if (!base.stats) {
@@ -563,7 +577,7 @@ function getStatForAction(actor, dataObject, stat, action) {
         });
         return subObject;
     }
-    var keys = [stat];
+    var keys = baseKeys.slice();
     var extraTags = [];
     if (dataObject.type) {
         extraTags.push(dataObject.type);
@@ -572,7 +586,9 @@ function getStatForAction(actor, dataObject, stat, action) {
         extraTags.push(dataObject.key)
     }
     ifdefor(dataObject.tags, []).concat(extraTags).forEach(function (prefix) {
-        keys.push(prefix + ':' + stat);
+        baseKeys.forEach(function(baseKey) {
+            keys.push(prefix + ':' + baseKey);
+        });
     });
     // sometimes we get duplicate keys, so we use this to avoid processing the same
     // buff twice. This seems a little better than just trying to remove the keys
@@ -596,53 +612,12 @@ function getStatForAction(actor, dataObject, stat, action) {
     if (specialValue) {
         return specialValue;
     }
-    //if (stat === 'cooldown') {
-        // console.log(ifdefor(dataObject.stats[stat], 0));
-        //console.log([base + plus + flatBonus,  percent, multiplier, flatBonus]);
-    //}
+   /* if (stat === 'minDamage') {
+        console.log(keys);
+        console.log(ifdefor(dataObject.stats[stat], 0));
+        console.log([base + plus + flatBonus,  percent, multiplier, flatBonus]);
+    }*/
     return (base + plus + flatBonus) * percent * multiplier + flatBonus;
-}
-function evaluateValue(actor, value, localObject) {
-    if (typeof value === 'number') {
-        return value;
-    }
-    if (typeof value === 'string' && value.charAt(0) === '{') {
-        if (value.indexOf('this.') >= 0) {
-            return localObject[value.substring(6, value.length - 1)];
-        }
-        return actor[value.substring(1, value.length - 1)];
-    }
-    // If this is an object, just return it for further processing.
-    if (value.constructor !== Array) {
-        return value;
-    }
-    var formula = value;
-    if (!formula || !formula.length) {
-        throw new Error('Expected "formula" to be an array, but value is: ' + formula);
-    }
-    formula = formula.slice();
-
-    if (formula.length == 2 && formula[0] === '-') {
-        formula.shift()
-        value = -1 * evaluateValue(actor, formula.shift(), localObject);
-    } else {
-        value = evaluateValue(actor, formula.shift(), localObject);
-    }
-    if (formula.length > 1) {
-        var operator = formula.shift();
-        var operand = evaluateValue(actor, formula.shift(), localObject);
-        // console.log([value, operator, operand]);
-        if (operator == '+') {
-            value += operand;
-        } else if (operator == '-') {
-            value -= operand;
-        } else if (operator == '*') {
-            value *= operand;
-        } else if (operator == '/') {
-            value /= operand;
-        }
-    }
-    return value;
 }
 function gainXP(adventurer, amount) {
     amount *= (1 + adventurer.increasedExperience);

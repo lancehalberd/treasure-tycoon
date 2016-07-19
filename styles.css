@@ -1,8 +1,17 @@
 .gameContent {
+    position: relative;
     overflow-x: hidden;
     overflow-y: hidden;
     white-space: nowrap;
     height: 600px;
+}
+
+.displayColumn {
+    position: relative;
+    background-color: #ccc;
+    display: inline-block;
+    vertical-align: top;
+    height: 570px;
 }
 
 .pointsBar {
@@ -55,9 +64,15 @@
     margin-bottom: 5px;
 }
 .craftingBar {
+    position: relative;
     overflow-x: auto;
     background-color: #CCC;
     margin-bottom: 5px;
+    height: 210px;
+}
+.craftingBar .craftingCanvas {
+    position: absolute;
+    bottom: 0px;
 }
 .playerPanel .infoMode {
     position: relative;
@@ -65,17 +80,6 @@
 }
 .infoPanel {
     box-sizing: border-box;
-}
-.toolbar {
-    padding: 5px;
-    height: 60px;
-    border-bottom: 2px solid black;
-    box-sizing: border-box;
-}
-.toolbar .item {
-    margin-right: 5px;
-    vertical-align: top;
-    background-color: #CCC;
 }
 .item.sellItem {
     position: absolute;
@@ -87,30 +91,20 @@
     padding: 4px;
     overflow-x: hidden;
     overflow-y: scroll;
-    height: 540px;
     box-sizing: border-box;
     width: 170px;
     white-space: normal;
+    background-color: #AAA;
 }
 
 .panelTitle {
     font-size: 20px;
     font-family: sans-serif;
-    border-bottom: 1px solid black;
-    padding-bottom: 5px;
-    margin-bottom: 15px;
+    margin-bottom: 5px;
 }
 
 .mainCanvas {
     display: block;
-}
-
-.displayColumn {
-    position: relative;
-    background-color: #ccc;
-    display: inline-block;
-    vertical-align: top;
-    height: 570px;
 }
 
 .jewelCrafting {
@@ -126,6 +120,7 @@
     overflow-y: scroll;
     width: 240px;
     box-sizing: border-box;
+    background-color: #AAA;
 }
 
 .jewel, .jewelCraftingSlot {
@@ -144,7 +139,7 @@
     vertical-align: top;
 }
 
-.item {
+.item, .inventory > .inventorySlot {
     position: relative;
     display: inline-block;
     width: 46px;
@@ -153,6 +148,7 @@
     box-sizing: border-box;
     cursor: pointer;
     padding: 2px;
+    vertical-align: top;
 }
 .itemLevel {
     position: absolute;
@@ -185,10 +181,9 @@ button {
 .playerBox {
     font-size: 16px;
     position: relative;
-    padding: 5px;
     box-sizing: border-box;
-    width: 225px;
-    height: 236px;
+    width: 240px;
+    height: 240px;
     vertical-align: top;
     margin: 2px;
     margin-right: 1px;
@@ -343,7 +338,7 @@ button {
 }
 
 .itemSlot {
-    background-color: #aaaaaa;
+    background-color: #ffffff;
     height: 50px;
     width: 50px;
     padding: 2px;
@@ -447,6 +442,65 @@ button {
     position: relative;
     width: 390px;
 }
+.craftingPanel {
+    position: relative;
+    height: 200px;
+}
+.itemCraftingOption {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    background-color: white;
+    box-sizing: border-box;
+    cursor: pointer;
+    vertical-align: top;
+    border-radius: 25px;
+    border: 2px solid #0f0;
+    padding: 3px;
+}
+.itemCraftingOption.disabled {
+    opacity: .5;
+    border-color: red;
+}
+
+.itemCraftingOption.allOption {
+    position: absolute;
+    left: 170px;
+    top: 60px;
+}
+.itemCraftingOption.armorOption {
+    position: absolute;
+    left: 170px;
+    top: 0px;
+    padding-top: 5px;
+}
+.itemCraftingOption.weaponOption {
+    position: absolute;
+    left: 110px;
+    top: 100px;
+}
+.itemCraftingOption.accessoryOption {
+    position: absolute;
+    left: 230px;
+    top: 100px;
+}
+
+.itemCraftingOption .multiplier {
+    display: none;
+    color: #0f0;
+    font-weight: bold;
+    position: absolute;
+    font-size: 20px;
+    right: 5px;
+    bottom: 0px;
+}
+.itemCraftingOption.disabled .multiplier {
+    color: red;
+}
+.itemCraftingOption:hover .multiplier {
+    display: block;
+}
+
 
 label {
     cursor: pointer;
@@ -497,6 +551,37 @@ select {
     right: 2px;
 }
 
+.controlColumn {
+    width: 80px;
+    white-space: normal;
+}
+.controlColumn .item {
+    margin-bottom: 5px;
+    vertical-align: top;
+    background-color: #CCC;
+
+}
 .characterColumn {
     width: 240px;
+}
+
+.recruitmentColumn {
+    width: 480px
+}
+
+.icon.backButton {
+    background-image: url('gfx/militaryIcons.png');
+    background-size: 406px 410px;
+    width: 32px;
+    height: 32px;
+    background-position: 0px -12px;
+}
+
+.characterBox {
+    position: relative;
+    left: -40px;
+}
+
+.characterBox .character {
+    cursor: pointer;
 }

@@ -34,6 +34,7 @@ var state = {
     fame: 0,
     coins: 0,
     anima: 0,
+    maxCraftingLevel: 1,
     craftingCanvas: craftingCanvas,
     craftingContext: craftingCanvas.getContext('2d'),
     craftingViewCanvas: craftingViewCanvas,
@@ -107,13 +108,10 @@ async.mapSeries([
     gainJewel(makeJewel(1, 'triangle', [5, 90, 5], 1.1));
     gainJewel(makeJewel(1, 'triangle', [5, 5, 90], 1.1));
     gain('fame', 20);
-    gain('coins', 10);
+    gain('coins', 1000);
     gain('anima', 0);
     newCharacter(characterClasses[jobKey]);
     setInterval(mainLoop, 20);
-    var $options = $('.js-toolbar').children();
-    $options.detach();
-    $('.js-toolbar').empty().append($options);
     $('.js-loading').hide();
     $('.js-gameContent').show();
     var testShape = makeShape(0, 0, 0, shapeDefinitions.triangle[0]).scale(30);
@@ -138,15 +136,6 @@ function makeTintedImage(image, tint) {
     resultContext.globalAlpha = 1;
     return resultCanvas;
 }
-
-function unlockItemLevel(level) {
-    for (var itemLevel = $('.js-levelSelect').find('option').length + 1; itemLevel <= level + 1 && itemLevel <= items.length; itemLevel++) {
-        var $newOption = $tag('option', '', 'Level ' + itemLevel).attr('value', itemLevel);
-        items[itemLevel - 1] = ifdefor(items[itemLevel - 1], []);
-        $('.js-levelSelect').append($newOption);
-    }
-    updateItemCrafting();
-}
 function mainLoop() {
     var time = now();
     var delta = 20;
@@ -162,32 +151,37 @@ function mainLoop() {
             for (var i = 0; i < character.gameSpeed && character.area; i++) {
                 character.time += delta / 1000;
                 adventureLoop(character, delta / 1000);
-                if (character.enemies.length) {
+                if (!character.area) {
+                    return
+                }
+                if (character.waveIndex < character.area.waves.length - 1) {
                     character.cameraX = (character.cameraX * 10 + character.adventurer.x - 50) / 11;
                 } else if (character.cameraX < character.adventurer.x - 200) {
                     character.cameraX = (character.cameraX * 10 + character.adventurer.x - 200) / 11;
                 }
             }
-            if (character.area) {
-                drawAdventure(character);
-            }
-        } else {
-            // Don't do the full fastforward during info mode, it is annoying.
-            var characterDelta = Math.min(character.gameSpeed, 2) * delta / 1000;
-            character.time += characterDelta;
-            infoLoop(character, characterDelta);
         }
+        var fps = Math.floor(3 * 5 / 3);
+        var frame = Math.floor(now() * fps / 1000) % walkLoop.length;
+        if (state.selectedCharacter === character) {
+            previewContext.clearRect(0, 0, 64, 128);
+            previewContext.drawImage(character.adventurer.personCanvas, walkLoop[frame] * 32, 0 , 32, 64, 0, -20, 64, 128);
+            character.characterContext.globalAlpha = 1;
+        } else {
+            character.characterContext.globalAlpha = .3;
+        }
+        //character.characterContext.fillStyle = 'white';
+        character.characterContext.clearRect(0, 0, 32, 64);
+        character.characterContext.drawImage(character.adventurer.personCanvas, walkLoop[frame] * 32, 0 , 32, 64, 0, -10, 32, 64);
     });
-    checkRemoveToolTip();
-}
-function infoLoop(character, delta) {
-    var fps = Math.floor(3 * 5 / 3);
-    var frame = Math.floor(character.time * fps) % walkLoop.length;
-    previewContext.clearRect(0, 0, 64, 128);
-    previewContext.drawImage(character.adventurer.personCanvas, walkLoop[frame] * 32, 0 , 32, 64, 0, -20, 64, 128);
-    if ($('.js-jewel-inventory').is(":visible")) {
-        drawBoardJewels(character);
+    if (currentContext === 'adventure' && state.selectedCharacter.area) {
+        drawAdventure(state.selectedCharacter);
     }
+    if (currentContext === 'jewel') {
+        drawBoardJewels(state.selectedCharacter);
+    }
+    $('.js-inventorySlot').toggle($('.js-inventory .js-item').length === 0);
+    checkRemoveToolTip();
 }
 
 function drawBar(context, x, y, width, height, background, color, percent) {
@@ -362,11 +356,6 @@ $('.js-showJewelsPanel').on('click', function (event) {
 $('.js-mainView').on('click', function (event) {
     showContext('adventure');
 });
-function showEquipment() {
-    $('.js-equipment').show();
-    $('.js-inventory').show();
-    $('.js-jewelBoard').hide();
-}
 $('body').on('click', '.js-recall', function (event) {
     var $panel = $(this).closest('.js-playerPanel');
     var character = state.selectedCharacter;
@@ -394,7 +383,37 @@ $('body').on('click', '.js-slowMotion', function (event) {
     state.selectedCharacter.loopSkip = $(this).is(':checked') ? 5 : 1;
 });
 
+var currentContext;
 function showContext(context) {
+    currentContext = context;
     $('.js-adventureContext, .js-jewelContext, .js-itemContext').hide();
     $('.js-' + context + 'Context').show();
 }
+
+function setSelectedCharacter(character) {
+    if (state.selectedCharacter === character) {
+        return;
+    }
+    state.selectedCharacter = character;
+    var adventurer = character.adventurer;
+    // update the map.
+    drawMap();
+    // update the equipment displayed.
+    equipmentSlots.forEach(function (type) {
+        //detach any existing item
+        $('.js-equipment .js-' + type + ' .js-item').detach();
+        var equipment = adventurer.equipment[type];
+        if (equipment) {
+            $('.js-equipment .js-' + type).append(equipment.$item);
+        }
+    });
+    // update stats panel.
+    refreshStatsPanel(character, $('.js-stats'))
+    // update controls:
+    $('.js-repeat').prop('checked', character.replay);
+    $('.js-fastforward').prop('checked', character.gameSpeed === 3);
+    $('.js-slowMotion').prop('checked', character.loopSkip === 5);
+}
+$('.js-charactersBox').on('click', '.js-character', function () {
+    setSelectedCharacter($(this).data('character'));
+})
