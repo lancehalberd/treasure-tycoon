@@ -135,9 +135,6 @@ function refreshStatsPanel(character, $statsPanel) {
     }
 }
 function newCharacter(job) {
-    var personCanvas = createCanvas(personFrames * 32, 64);
-    var personContext = personCanvas.getContext("2d");
-    personContext.imageSmoothingEnabled = false;
     var character = {};
     character.adventurer = makeAdventurer(job, 1, ifdefor(job.startingEquipment, {}));
     character.adventurer.character = character;
@@ -252,7 +249,7 @@ function getTargetsForActionStat(actor, dataObject, stat, action) {
     return keys;
 }
 function convertShapeDataToShape(shapeData) {
-    return makeShape(shapeData.p[0], shapeData.p[1], (shapeData.t % 360 + 360) % 360, shapeDefinitions[shapeData.k][0], 30);
+    return makeShape(shapeData.p[0], shapeData.p[1], (shapeData.t % 360 + 360) % 360, shapeDefinitions[shapeData.k][0], jewelShapeScale);
 }
 function makeAdventurer(job, level, equipment) {
     var personCanvas = createCanvas(personFrames * 32, 64);

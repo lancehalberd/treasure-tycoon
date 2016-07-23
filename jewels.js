@@ -1,4 +1,13 @@
+var jewelShapeScale = 30;
+
 function makeJewel(tier, shapeType, components, quality) {
+    var shapeDefinition = shapeDefinitions[shapeType][0];
+    var shape = makeShape(0, 0, 0, shapeDefinition).scale(jewelShapeScale)
+    jewel = makeJewelProper(tier, shape, components, quality);
+    jewel.shape.setCenterPosition(jewel.canvas.width / 2, jewel.canvas.height / 2);
+    return jewel;
+}
+function makeJewelProper(tier, shape, components, quality) {
     var componentsSum = 0;
     var componentBonuses = {};
     var jewelType = 0;
@@ -62,18 +71,18 @@ function makeJewel(tier, shapeType, components, quality) {
             RGB[i] = Math.min(255, Math.max(0, RGB[i] + [0, 10, 20, 40, 60][qualifierIndex]));
         }
     }
-    var shapeDefinition = shapeDefinitions[shapeType][0];
+    var shapeDefinition = shapeDefinitions[shape.key][0];
     var area = shapeDefinition.area;
     var jewel = {
         'tier': tier,
-        'shapeType': shapeType,
+        'shapeType': shape.key,
         'components': components,
         'componentBonuses': componentBonuses,
         'qualifierName': ['Perfect', 'Brilliant', 'Shining', '', 'Dull'][qualifierIndex],
         'qualifierBonus': qualifierBonus,
         'jewelType': jewelType,
         'quality': quality,
-        'shape': makeShape(0, 0, 0, shapeDefinition).scale(30),
+        'shape': shape,
         'area': area,
         'price': Math.round(10 * Math.pow(quality, 6) * (5 - qualifierIndex) * area),
         'adjacentJewels': [],
@@ -93,7 +102,12 @@ function makeJewel(tier, shapeType, components, quality) {
     jewel.$item = $tag('div', 'js-jewel jewel').append(jewel.canvas);
     jewel.$item.data('jewel', jewel);
     jewel.character = null;
-    updateJewel(jewel);
+    var bonusMultiplier = jewel.quality * shapeDefinition.area * jewel.qualifierBonus;
+    jewel.bonuses = copy(jewel.componentBonuses);
+    $.each(jewel.bonuses, function (key, value) {
+        jewel.bonuses[key] = value * bonusMultiplier;
+    });
+    jewel.helpText = jewelHelpText(jewel);
     return jewel;
 }
 function clearAdjacentJewels(jewel) {
@@ -225,16 +239,6 @@ function arrayToCssRGB(array) {
 }
 function toHex(d) {
     return  ("0"+(Number(d).toString(16))).slice(-2).toUpperCase();
-}
-function updateJewel(jewel) {
-    var shapeDefinition = shapeDefinitions[jewel.shapeType][0];
-    var bonusMultiplier = jewel.quality * shapeDefinition.area * jewel.qualifierBonus;
-    jewel.bonuses = copy(jewel.componentBonuses);
-    $.each(jewel.bonuses, function (key, value) {
-        jewel.bonuses[key] = value * bonusMultiplier;
-    });
-    jewel.helpText = jewelHelpText(jewel);
-    jewel.shape.setCenterPosition(jewel.canvas.width / 2, jewel.canvas.height / 2);
 }
 
 var jewelDefinitions = [

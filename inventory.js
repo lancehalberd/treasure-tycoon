@@ -344,6 +344,7 @@ function addItem(level, data) {
     items[level].push(data);
     itemsBySlotAndLevel[data.slot][level].push(data);
     var key = data.name.replace(/\s*/g, '').toLowerCase();
+    data.key = key;
     itemsByKey[key] = data;
 }
 
