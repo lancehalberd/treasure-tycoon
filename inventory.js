@@ -388,6 +388,28 @@ $(document).on('keydown', function(event) {
             state.selectedCharacter.currentLevelIndex = currentMapTarget.levelKey;
             completeLevel(state.selectedCharacter)
         }
+        if (overCraftingItem) {
+            if (lastCraftedItem) {
+                state.craftingContext.fillStyle = ifdefor(lastCraftedItem.craftedUnique ? '#44ccff' : 'green');
+                state.craftingContext.fillRect(lastCraftedItem.craftingX, lastCraftedItem.craftingY, craftingSlotSize, craftingSlotSize);
+            }
+            overCraftingItem.crafted = true;
+            var item = makeItem(overCraftingItem, craftingLevel);
+            updateItem(item);
+            $('.js-inventory').prepend(item.$item);
+            if (item.base.unique) {
+                item = makeItem(overCraftingItem, craftingLevel);
+                makeItemUnique(item);
+                updateItem(item);
+                $('.js-inventory').prepend(item.$item);
+                overCraftingItem.craftedUnique = true;
+            }
+            state.craftingContext.fillStyle = ifdefor(overCraftingItem.craftedUnique) ? '#0088ff' : 'orange';
+            state.craftingContext.fillRect(overCraftingItem.craftingX, overCraftingItem.craftingY, craftingSlotSize, craftingSlotSize);
+            $('.js-inventorySlot').hide();
+            drawCraftingViewCanvas();
+            lastCraftedItem = overCraftingItem;
+        }
     }
     //console.log(event.which);
 });
