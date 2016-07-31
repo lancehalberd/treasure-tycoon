@@ -186,6 +186,7 @@ $('body').on('mousedown', '.js-item', function (event) {
         $('.js-enchantmentOptions').show();
         $('.js-craftingOptions').hide();
         $('.js-craftingSelectOptions').hide();
+        updateEnchantmentOptions();
     }
     updateDragHelper();
     dragged = false;
@@ -239,7 +240,7 @@ function applyDragResults() {
         return;
     }
     var item = $source.data('item');
-    if (collision($dragHelper, $('.js-sellItem'))) {
+    if (collision($dragHelper, $('.js-sellItem:visible'))) {
         sellItem(item);
         return;
     }
