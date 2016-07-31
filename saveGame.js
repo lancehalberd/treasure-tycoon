@@ -84,6 +84,7 @@ function importState(stateData) {
     changedPoints('anima');
     changedPoints('fame');
     updateItemCrafting();
+    updateRetireButtons();
     return state;
 }
 function exportCharacter(character) {

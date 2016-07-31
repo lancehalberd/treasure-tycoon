@@ -332,7 +332,7 @@ function updateToolTip(x, y, $popup) {
     $popup.css('left', left + "px").css('top', top + "px");
 }
 function updateRetireButtons() {
-    $('.js-retire').toggle($('.js-playerPanel').length > 1);
+    $('.js-retire').toggle(state.characters.length > 1);
 }
 
 $('body').on('click', '.js-retire', function (event) {
@@ -342,10 +342,13 @@ $('body').on('click', '.js-retire', function (event) {
     var $panel = $(this).closest('.js-playerPanel');
     gain('fame', Math.ceil(state.selectedCharacter.adventurer.level * state.selectedCharacter.adventurer.job.cost / 10));
     $panel.remove();
-    updateRetireButtons();
     var index = state.characters.indexOf(state.selectedCharacter);
     state.characters.splice(index, 1);
     state.selectedCharacter = state.characters[Math.min(index, state.characters.length)];
+    $($('.js-charactersBox .js-character')[index]).remove();
+    setSelectedCharacter(state.characters[Math.min(index, state.characters.length - 1)]);
+    saveGame();
+    updateRetireButtons();
 });
 $('.js-showCraftingPanel').on('click', function (event) {
     showContext('item');
