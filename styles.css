@@ -350,11 +350,6 @@ button {
 .itemSlot.invalid {
     background-color: #ff8888;
 }
-.enchantmentSlot {
-    margin-top: 5px;
-    margin-left: auto;
-    margin-right: auto;
-}
 .icon.armor {
     background-position: -20px -20px;
 }
@@ -463,27 +458,27 @@ button {
     border-color: red;
 }
 
-.itemCraftingOption.allOption {
+.itemCrafting .centerSlot {
     position: absolute;
     left: 170px;
     top: 60px;
 }
-.itemCraftingOption.armorOption {
+.itemCrafting .topSlot {
     position: absolute;
     left: 170px;
     top: 0px;
-    padding-top: 5px;
 }
-.itemCraftingOption.weaponOption {
+.itemCrafting .bottomLeftSlot {
     position: absolute;
     left: 110px;
     top: 100px;
 }
-.itemCraftingOption.accessoryOption {
+.itemCrafting .bottomRightSlot {
     position: absolute;
     left: 230px;
     top: 100px;
 }
+
 
 .itemCraftingOption .multiplier {
     display: none;

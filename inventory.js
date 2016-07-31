@@ -182,6 +182,11 @@ $('body').on('mousedown', '.js-item', function (event) {
     $(this).css('opacity', '.3');
     $dragHelper.css('position', 'absolute');
     $('.js-mouseContainer').append($dragHelper);
+    if (!$('.js-craftingSelectOptions .js-itemSlot:visible').length) {
+        $('.js-enchantmentOptions').show();
+        $('.js-craftingOptions').hide();
+        $('.js-craftingSelectOptions').hide();
+    }
     updateDragHelper();
     dragged = false;
     var item = $(this).data('item');
@@ -202,10 +207,29 @@ function updateDragHelper() {
 $(document).on("mousemove", function (event) {
     updateDragHelper();
 });
-
 function stopDrag() {
+    applyDragResults();
+    // Check if the player has claimed an item from the craftingSelectOptions
+    if ($('.js-craftingSelectOptions:visible').length) {
+        if ($('.js-craftingSelectOptions .js-itemSlot').length > $('.js-craftingSelectOptions .js-itemSlot .js-item').length) {
+            $('.js-craftingSelectOptions .js-itemSlot').empty();
+            $('.js-craftingSelectOptions').hide();
+            $('.js-craftingOptions').show();
+            craftingTypeFilter = 'all';
+            updateItemCrafting();
+            saveGame();
+        }
+    } else {
+        // Hide the enchantment options if there is no longer an item in the enchantment slot.
+        if (!$('.js-enchantmentSlot').find('.js-item').length) {
+            $('.js-enchantmentOptions').hide();
+            $('.js-craftingOptions').show();
+        }
+    }
+    stopInventoryDrag();
+}
+function applyDragResults() {
     if (!$dragHelper) {
-        stopInventoryDrag();
         return;
     }
     var $source = $dragHelper.data('$source');
@@ -230,7 +254,6 @@ function stopDrag() {
             unequipSlot(item.actor, item.base.slot, true);
         }
         $('.js-enchantmentSlot').append($source);
-        stopInventoryDrag();
         return;
     }
     var hit = false;
@@ -301,9 +324,8 @@ function stopDrag() {
         }
         addToInventory(item);
     }
-    stopInventoryDrag();
 }
-function stopInventoryDrag(args) {
+function stopInventoryDrag() {
     if ($dragHelper) {
         $dragHelper.data('$source').css('opacity', '1');
         $dragHelper.remove();
@@ -391,8 +413,8 @@ $(document).on('keydown', function(event) {
         }
         if (overCraftingItem) {
             if (lastCraftedItem) {
-                state.craftingContext.fillStyle = ifdefor(lastCraftedItem.craftedUnique ? '#44ccff' : 'green');
-                state.craftingContext.fillRect(lastCraftedItem.craftingX, lastCraftedItem.craftingY, craftingSlotSize, craftingSlotSize);
+                craftingContext.fillStyle = ifdefor(lastCraftedItem.craftedUnique ? '#44ccff' : 'green');
+                craftingContext.fillRect(lastCraftedItem.craftingX, lastCraftedItem.craftingY, craftingSlotSize, craftingSlotSize);
             }
             overCraftingItem.crafted = true;
             var item = makeItem(overCraftingItem, craftingLevel);
@@ -405,8 +427,8 @@ $(document).on('keydown', function(event) {
                 $('.js-inventory').prepend(item.$item);
                 overCraftingItem.craftedUnique = true;
             }
-            state.craftingContext.fillStyle = ifdefor(overCraftingItem.craftedUnique) ? '#0088ff' : 'orange';
-            state.craftingContext.fillRect(overCraftingItem.craftingX, overCraftingItem.craftingY, craftingSlotSize, craftingSlotSize);
+            craftingContext.fillStyle = ifdefor(overCraftingItem.craftedUnique) ? '#0088ff' : 'orange';
+            craftingContext.fillRect(overCraftingItem.craftingX, overCraftingItem.craftingY, craftingSlotSize, craftingSlotSize);
             $('.js-inventorySlot').hide();
             drawCraftingViewCanvas();
             lastCraftedItem = overCraftingItem;

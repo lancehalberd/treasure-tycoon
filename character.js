@@ -278,8 +278,8 @@ function makeAdventurer(job, level, equipment) {
     });
     $.each(equipment, function (key, item) {
         item.crafted = true;
-        state.craftingContext.fillStyle = 'green';
-        state.craftingContext.fillRect(item.craftingX, item.craftingY, craftingSlotSize, craftingSlotSize);
+        craftingContext.fillStyle = 'green';
+        craftingContext.fillRect(item.craftingX, item.craftingY, craftingSlotSize, craftingSlotSize);
         equipItem(adventurer, makeItem(item, 1), true);
     });
     drawCraftingViewCanvas();
@@ -315,7 +315,7 @@ function spend(pointsType, amount) {
 }
 function changedPoints(pointsType) {
     if (pointsType == 'fame') updateHireButton();
-    else updateCraftButton();
+    else updateCraftingButtons();
     $('.js-' + pointsType).text(state[pointsType]);
 }
 function addBonusesAndActions(actor, source) {
@@ -718,4 +718,5 @@ $('.js-hire').on('click', function () {
     var jobKey = Random.element($jobOption.data('jobs'));
     newCharacter(characterClasses[jobKey]);
     updateRetireButtons();
+    saveGame();
 });

@@ -1,3 +1,91 @@
+function loadOrCreateSavedData() {
+    /** @type Object */
+    var importedSaveData = $.jStorage.get("savedGame");
+    if (importedSaveData) {
+        console.log("loading saved data");
+        importState(importedSaveData);
+    }
+}
+
+function saveGame() {
+    console.log("saving game data");
+    $.jStorage.set("savedGame", exportState(state));
+}
+
+function exportState(state) {
+    var data = {};
+    data.fame = state.fame;
+    data.coins = state.coins;
+    data.anima = state.anima;
+    data.characters = state.characters.map(exportCharacter);
+    data.areas = copy(state.areas);
+    data.maxCraftingLevel = state.maxCraftingLevel;
+    data.currentArea = state.currentArea;
+    data.jewels = [];
+    $('.js-jewel-inventory .js-jewel').each(function () {
+        data.jewels.push(exportJewel($(this).data('jewel')));
+    })
+    data.items = [];
+    $('.js-inventory .js-item').each(function () {
+        data.items.push(exportItem($(this).data('item')));
+    });
+    if ($('.js-craftingSelectOptions:visible').length) {
+        data.craftingItems = [];
+        $('.js-craftingSelectOptions .js-itemSlot .js-item').each(function () {
+            data.craftingItems.push(exportItem($(this).data('item')));
+        })
+    } else if ($('.js-enchantmentSlot .js-item').length) {
+        data.enchantmentItem = exportItem($('.js-enchantmentSlot .js-item').data('item'));
+    }
+    data.craftingLevel = state.craftingLevel;
+    data.craftingTypeFilter = state.craftingTypeFilter;
+    return data;
+}
+function importState(stateData) {
+    var $helperSlot = $('.js-inventory .js-inventorySlot').detach();
+    $('.js-inventory').empty().append($helperSlot);
+    $('.js-jewel-inventory').empty();
+    state = {};
+    state.fame = stateData.fame;
+    state.coins = stateData.coins;
+    state.anima = stateData.anima;
+    state.currentArea = stateData.currentArea;
+    state.areas = copy(stateData.areas);
+    state.maxCraftingLevel = stateData.maxCraftingLevel;
+    state.characters = [];
+    $('.js-charactersBox').empty();
+    stateData.characters.map(importCharacter);
+    stateData.jewels.forEach(function (jewelData) {
+        var jewel = importJewel(jewelData);
+        $('.js-jewel-inventory').append(jewel.$item);
+    });
+    stateData.items.forEach(function (itemData) {
+        var item = importItem(itemData);
+        $('.js-inventory').append(item.$item);
+    });
+    if (stateData.craftingItems && stateData.craftingItems.length) {
+        $('.js-craftingSelectOptions .js-itemSlot').each(function (index) {
+            var item = importItem(stateData.craftingItems[index]);
+            $(this).append(item.$item);
+        });
+        $('.js-craftingSelectOptions').show();
+        $('.js-craftingOptions').hide();
+    } else if (stateData.enchantmentItem) {
+        var item = importItem(stateData.enchantmentItem);
+        $('.js-enchantmentSlot').append(item.$item);
+        $('.js-enchantmentOptions').show();
+        $('.js-craftingOptions').hide();
+        updateEnchantmentOptions();
+    }
+    state.craftingLevel = stateData.craftingLevel;
+    state.craftingTypeFilter = stateData.craftingTypeFilter;
+    drawCraftingViewCanvas();
+    changedPoints('coins');
+    changedPoints('anima');
+    changedPoints('fame');
+    updateItemCrafting();
+    return state;
+}
 function exportCharacter(character) {
     var data = {};
     data.adventurer = exportAdventurer(character.adventurer);
@@ -103,8 +191,11 @@ function exportItem(item) {
 function importItem(itemData) {
     var baseItem = itemsByKey[itemData.itemKey];
     baseItem.crafted = true;
-    state.craftingContext.fillStyle = 'green';
-    state.craftingContext.fillRect(baseItem.craftingX, baseItem.craftingY, craftingSlotSize, craftingSlotSize);
+    if (itemData.unique) {
+        baseItem.craftedUnique = true;
+    }
+    craftingContext.fillStyle = baseItem.craftedUnique ? '#44ccff' : 'green';
+    craftingContext.fillRect(baseItem.craftingX, baseItem.craftingY, craftingSlotSize, craftingSlotSize);
     var item = {
         'base': baseItem,
         'itemLevel': itemData.itemLevel,
@@ -121,6 +212,7 @@ function exportAffix(affix) {
     var data = {};
     data.affixKey = affix.base.key;
     data.bonuses = copy(affix.bonuses);
+    return data;
 }
 function importAffix(affixData) {
     var baseAffix = affixesByKey[affixData.affixKey];
@@ -136,20 +228,12 @@ function exportJewelBoard(board) {
     board.fixed.forEach(function (fixedJewel) {
         var fixedData = {
             'abilityKey': fixedJewel.ability.key,
-            'shape': exportShape(fixedJewel.shape)
+            'shape': exportShape(fixedJewel.shape),
+            'confirmed': fixedJewel.confirmed
         }
         data.fixed.push(fixedData);
     });
-    data.jewels = [];
-    board.jewels.forEach(function (jewel) {
-        var jewelData = {
-            'tier': jewel.tier,
-            'quality': jewel.quality,
-            'components': jewel.components.slice(),
-            'shape': exportShape(jewel.shape)
-        }
-        data.jewels.push(jewelData);
-    });
+    data.jewels = board.jewels.map(exportJewel);
     data.spaces = board.spaces.map(exportShape);
     return data;
 }
@@ -161,17 +245,24 @@ function importJewelBoard(jewelBoardData, character) {
         var ability = abilities[fixedJewelData.abilityKey];
         var shape = importShape(fixedJewelData.shape);
         var fixedJewel = makeFixedJewel(shape, character, ability);
+        fixedJewel.confirmed = fixedJewelData.confirmed;
         character.adventurer.abilities.push(ability);
         jewelBoard.fixed.push(fixedJewel);
     });
-    jewelBoard.jewels = [];
-    jewelBoardData.jewels.forEach(function (jewelData) {
-        var shape = importShape(jewelData.shape);
-        var jewel = makeJewelProper(jewelData.tier, shape, jewelData.components, jewelData.quality);
-        jewelBoard.jewels.push(jewel);
-    });
+    jewelBoard.jewels = jewelBoardData.jewels.map(importJewel);
     jewelBoard.spaces = jewelBoardData.spaces.map(importShape);
     return jewelBoard;
+}
+function exportJewel(jewel) {
+    return {
+        'tier': jewel.tier,
+        'quality': jewel.quality,
+        'components': jewel.components.slice(),
+        'shape': exportShape(jewel.shape)
+    }
+}
+function importJewel(jewelData) {
+    return makeJewelProper(jewelData.tier, importShape(jewelData.shape), jewelData.components, jewelData.quality);
 }
 function exportShape(shape) {
     return {'shapeKey': shape.key, 'x': shape.points[0][0], 'y': shape.points[0][1], 'rotation': shape.angles[0]};

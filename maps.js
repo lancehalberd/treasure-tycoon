@@ -215,9 +215,7 @@ function completeLevel(character) {
 }
 $('body').on('click', '.js-confirmSkill', function (event) {
     var character = state.selectedCharacter;
-    console.log(character.board.boardPreview);
     var skill = character.board.boardPreview.fixed[0].ability;
-    console.log(skill);
     character.adventurer.abilities.push(skill);
     character.board.spaces = character.board.spaces.concat(character.board.boardPreview.spaces);
     character.board.boardPreview.fixed.forEach(function (jewel) {

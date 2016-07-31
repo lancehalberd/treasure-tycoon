@@ -140,6 +140,7 @@ $.each(prefixes, function (level, levelAffixes) {
         affixesByKey[key] = affix;
         affix.level = level;
         affix.prefix = true;
+        affix.key = key;
     });
 });
 $.each(suffixes, function (level, levelAffixes) {
@@ -148,6 +149,7 @@ $.each(suffixes, function (level, levelAffixes) {
         affixesByKey[key] = affix;
         affix.level = level;
         affix.suffix = true;
+        affix.key = key;
     });
 });
 function makeAffix(baseAffix) {

@@ -23,23 +23,22 @@ function points(type, value) {
 }
 
 var fps = 6;
-var craftingViewCanvas = $('.js-craftingCanvas')[0];
-var craftingCanvas = createCanvas(craftingViewCanvas.width, craftingViewCanvas.height);
 var state = {
     selectedCharacter: null,
     currentArea: null,
     areas: {}, // {'northernWilderness': {'grove': true, 'orchard': true}}
     characters: [],
-    jewels: [],
     fame: 0,
     coins: 0,
     anima: 0,
     maxCraftingLevel: 1,
-    craftingCanvas: craftingCanvas,
-    craftingContext: craftingCanvas.getContext('2d'),
-    craftingViewCanvas: craftingViewCanvas,
-    craftingViewContext: craftingViewCanvas.getContext('2d')
-}
+    craftingLevel: 1,
+    craftingTypeFilter: 'all'
+};
+var craftingViewCanvas = $('.js-craftingCanvas')[0];
+var craftingViewContext = craftingViewCanvas.getContext('2d');
+var craftingCanvas = createCanvas(craftingViewCanvas.width, craftingViewCanvas.height);
+var craftingContext = craftingCanvas.getContext('2d');
 var coins, animaDrops;
 var projectileAnimations = [];
 function initializeCoins() {
@@ -118,6 +117,7 @@ async.mapSeries([
     var jewelButtonCanvas = $('.js-jewelButtonCanvas')[0];
     centerShapesInRectangle([testShape], rectangle(0, 0, jewelButtonCanvas.width, jewelButtonCanvas.height));
     drawJewel(jewelButtonCanvas.getContext('2d'), testShape, [0, 0], 'black');
+    loadOrCreateSavedData();
     drawMap();
 });
 function makeTintedImage(image, tint) {
