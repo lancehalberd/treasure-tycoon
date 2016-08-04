@@ -193,7 +193,8 @@ function getMapPopupTarget(x, y) {
             currentMapTarget.overShrine = false;
             return false;
         }
-        if (isPointInRect(x, y, levelData.x * 40 - 12, levelData.y * 40 - 12, 24, 24)) {
+        var divinityScore = ifdefor(state.selectedCharacter.divinityScores[levelKey], 0);
+        if (divinityScore > 0 && isPointInRect(x, y, levelData.x * 40 - 12, levelData.y * 40 - 12, 24, 24)) {
             var level = levels[levelKey];
             levelData.helptext = ''
             if (state.selectedCharacter.currentLevelKey !== levelKey || !state.selectedCharacter.levelCompleted) {
