@@ -202,7 +202,6 @@ function getMapPopupTarget(x, y) {
             if (state.selectedCharacter.adventurer.abilities.indexOf(level.skill) < 0  && state.selectedCharacter.divinity < totalCost) {
                 levelData.helptext += '<p>' + state.selectedCharacter.adventurer.name + ' does not have enough divinity to learn the skill from this shrine.</p><br/>';
             }
-            levelData.helptext = '<p>Level ' + level.level + ' ' + level.name +'</p><br/>';
             if (state.selectedCharacter.adventurer.abilities.indexOf(level.skill) < 0) {
                 levelData.helptext += '<p style="font-weight: bold">Spend ' + totalCost + ' divinity at this shrine to learn:</p>' + abilityHelpText(level.skill, state.selectedCharacter);
             } else {
