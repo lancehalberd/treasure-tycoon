@@ -195,8 +195,9 @@ function getMapPopupTarget(x, y) {
         }
         if (isPointInRect(x, y, levelData.x * 40 - 12, levelData.y * 40 - 12, 24, 24)) {
             var level = levels[levelKey];
+            levelData.helptext = ''
             if (state.selectedCharacter.currentLevelKey !== levelKey || !state.selectedCharacter.levelCompleted) {
-                levelData.helptext = '<p>An adventurer can only visit the shrine for the last adventure they completed.</p><br/>';
+                levelData.helptext += '<p>An adventurer can only visit the shrine for the last adventure they completed.</p><br/>';
             }
             var totalCost = totalCostForNextLevel(state.selectedCharacter, level);
             if (state.selectedCharacter.adventurer.abilities.indexOf(level.skill) < 0  && state.selectedCharacter.divinity < totalCost) {
