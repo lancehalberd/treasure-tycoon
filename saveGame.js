@@ -39,6 +39,7 @@ function exportState(state) {
     }
     data.craftingLevel = state.craftingLevel;
     data.craftingTypeFilter = state.craftingTypeFilter;
+    data.selectedCharacterIndex = state.characters.indexOf(state.selectedCharacter);
     return data;
 }
 function importState(stateData) {
@@ -85,6 +86,8 @@ function importState(stateData) {
     changedPoints('fame');
     updateItemCrafting();
     updateRetireButtons();
+    var selectedCharacterIndex = Math.min(ifdefor(stateData.selectedCharacterIndex, 0), stateData.characters.length - 1);
+    setSelectedCharacter(state.characters[selectedCharacterIndex]);
     return state;
 }
 function exportCharacter(character) {
@@ -92,8 +95,11 @@ function exportCharacter(character) {
     data.adventurer = exportAdventurer(character.adventurer);
     data.board = exportJewelBoard(character.board);
     data.gameSpeed = character.gameSpeed;
-    data.levelsCompleted = character.levelsCompleted;
+    data.divinityScores = character.divinityScores;
     data.replay = character.replay;
+    data.divinity = character.divinity;
+    data.currentLevelKey = character.currentLevelKey;
+    data.levelCompleted = character.levelCompleted;
     return data;
 }
 function importCharacter(characterData) {
@@ -117,7 +123,10 @@ function importCharacter(characterData) {
     character.time = now();
     character.gameSpeed = characterData.gameSpeed;
     character.replay = characterData.replay;
-    character.levelsCompleted = characterData.levelsCompleted;
+    character.divinityScores = ifdefor(characterData.divinityScores, {});
+    character.divinity = ifdefor(characterData.divinity, 0);
+    character.currentLevelKey = ifdefor(characterData.currentLevelKey, ifdefor(character.adventurer.job.levelKey, 'meadow'));
+    character.levelCompleted = ifdefor(characterData.levelCompleted, false);
     // Should probably show all next areas here.
     state.characters.push(character);
     character.board = importJewelBoard(characterData.board, character);
@@ -130,9 +139,9 @@ function importCharacter(characterData) {
     drawBoardBackground(character.boardContext, character.board);
     updateAdventurer(character.adventurer);
     resetCharacterStats(character);
-    setSelectedCharacter(character);
     // Update crafting view canvas in case new items were imported.
     drawCraftingViewCanvas();
+    $('.js-confirmSkill').toggle(character.board.boardPreview !== null);
     return character;
 }
 function exportAdventurer(adventurer) {
@@ -145,7 +154,6 @@ function exportAdventurer(adventurer) {
     data.jobKey = adventurer.job.key;
     data.level = adventurer.level;
     data.name = adventurer.name;
-    data.xp = adventurer.xp;
     return data;
 }
 function importAdventurer(adventurerData) {
@@ -163,8 +171,6 @@ function importAdventurer(adventurerData) {
         'name': adventurerData.name,
         'hairOffset': adventurerData.hairOffset,
         'level': adventurerData.level,
-        'xp': adventurerData.xp,
-        'xpToLevel': xpToLevel(adventurerData.level - 1),
         'personCanvas': personCanvas,
         'personContext': personContext,
         'attackCooldown': 0,
@@ -236,6 +242,9 @@ function exportJewelBoard(board) {
     });
     data.jewels = board.jewels.map(exportJewel);
     data.spaces = board.spaces.map(exportShape);
+    if (board.boardPreview) {
+        data.boardPreview = exportJewelBoard(board.boardPreview);
+    }
     return data;
 }
 // In addition to creating the jewel board, it also applies abilities to the adventurer.
@@ -247,11 +256,16 @@ function importJewelBoard(jewelBoardData, character) {
         var shape = importShape(fixedJewelData.shape);
         var fixedJewel = makeFixedJewel(shape, character, ability);
         fixedJewel.confirmed = fixedJewelData.confirmed;
-        character.adventurer.abilities.push(ability);
+        if (fixedJewel.confirmed) {
+            character.adventurer.abilities.push(ability);
+        }
         jewelBoard.fixed.push(fixedJewel);
     });
     jewelBoard.jewels = jewelBoardData.jewels.map(importJewel);
     jewelBoard.spaces = jewelBoardData.spaces.map(importShape);
+    if (jewelBoardData.boardPreview) {
+        jewelBoard.boardPreview = importJewelBoard(jewelBoardData.boardPreview, character);
+    }
     return jewelBoard;
 }
 function exportJewel(jewel) {

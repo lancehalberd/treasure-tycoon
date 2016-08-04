@@ -34,11 +34,6 @@ function drawAdventure(character) {
         if (actor == adventurer) return;
         drawActor(character, actor, -index)
     });
-    // xp bar
-    drawBar(context, 35, 240 - 45, 400, 6, 'white', '#00C000', adventurer.xp / adventurer.xpToLevel);
-    context.font = "20px sans-serif";
-    context.textAlign = 'right'
-    context.fillText(adventurer.level, 30, 240 - 35);
     // Draw text popups such as damage dealt, item points gained, and so on.
     context.fillStyle = 'red';
     for (var i = 0; i < character.treasurePopups.length; i++) {

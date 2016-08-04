@@ -406,12 +406,13 @@ $(document).on('keydown', function(event) {
     }
     if (event.which == 76) { // 'l'
         var visibleLevels = {};
-        gainXP(state.selectedCharacter.adventurer, state.selectedCharacter.adventurer.xpToLevel);
-        updateAdventurer(state.selectedCharacter.adventurer);
+        // state.selectedCharacter.divinity += 10;
+        // state.selectedCharacter.divinity *= 2;
         if (currentMapTarget && currentMapTarget.levelKey) {
-            state.selectedCharacter.currentLevelIndex = currentMapTarget.levelKey;
-            completeLevel(state.selectedCharacter)
+            state.selectedCharacter.currentLevelKey = currentMapTarget.levelKey;
+            completeLevel(state.selectedCharacter);
         }
+        updateAdventurer(state.selectedCharacter.adventurer);
         if (overCraftingItem) {
             if (lastCraftedItem) {
                 craftingContext.fillStyle = ifdefor(lastCraftedItem.craftedUnique ? '#44ccff' : 'green');

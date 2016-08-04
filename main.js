@@ -298,7 +298,10 @@ function checkRemoveToolTip() {
         }
     }
     if (canvasPopupTarget && !canvasPopupTarget.character) {
-        if (isPointInRect(canvasCoords[0], canvasCoords[1], canvasPopupTarget.x * 40, canvasPopupTarget.y * 40, 40, 40)) {
+        if (!canvasPopupTarget.overShrine && isPointInRect(canvasCoords[0], canvasCoords[1], canvasPopupTarget.x * 40, canvasPopupTarget.y * 40, 40, 40)) {
+            return;
+        }
+        if (canvasPopupTarget.overShrine && isPointInRect(canvasCoords[0], canvasCoords[1], canvasPopupTarget.x * 40 - 12, canvasPopupTarget.y * 40 - 12, 24, 24)) {
             return;
         }
     }
@@ -398,6 +401,7 @@ function setSelectedCharacter(character) {
         return;
     }
     state.selectedCharacter = character;
+    state.currentArea = levelsToAreas[character.currentLevelKey];
     var adventurer = character.adventurer;
     // update the map.
     drawMap();
