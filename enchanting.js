@@ -49,11 +49,11 @@ addPrefix(33, 'Sharp', 'weapon', {'+critDamage': [21, 40, 100]});
 addPrefix(63, 'Deadly', 'weapon', {'+critDamage': [41, 70, 100]});
 
 addPrefix(3, 'Precise', 'weapon', {'%critChance': [10, 20, 100], '+critAccuracy': [10, 20, 100]});
-addPrefix(23, 'Precise', 'weapon', {'%critChance': [21, 40, 100], '+critAccuracy': [21, 40, 100]});
-addPrefix(53, 'Precise', 'weapon', {'%critChance': [41, 70, 100], '+critAccuracy': [41, 70, 100]});
+addPrefix(23, 'Preciser', 'weapon', {'%critChance': [21, 40, 100], '+critAccuracy': [21, 40, 100]});
+addPrefix(53, 'Precisest', 'weapon', {'%critChance': [41, 70, 100], '+critAccuracy': [41, 70, 100]});
 
 
-addPrefix(11, 'Hardy', armorSlots, {'%armor': [2, 6, 100]});
+addPrefix(11, 'Rough', armorSlots, {'%armor': [2, 6, 100]});
 addPrefix(21, 'Thick', armorSlots, {'%armor': [5, 10, 100]});
 addPrefix(31, 'Refined', armorSlots, {'%armor': [10, 15, 100]});
 addPrefix(41, 'Hardened', armorSlots, {'%armor': [15, 20, 100]});
@@ -69,7 +69,7 @@ addPrefix(69, 'Radiant', armorSlots, {'+magicBlock': [30, 40]});
 
 addPrefix(1, 'Hardy', 'body', {'+maxHealth': [20, 30]});
 addPrefix(10, 'Fit', 'body', {'+maxHealth': [40, 60]});
-addPrefix(25, 'Strong', 'body', {'+maxHealth': [70, 90]});
+addPrefix(25, 'Powerful', 'body', {'+maxHealth': [70, 90]});
 addPrefix(40, 'Robust', 'body', {'+maxHealth': [100, 120]});
 addPrefix(55, 'Vigorous', 'body', {'+maxHealth': [140, 160]});
 addPrefix(70, 'Stalwart', 'body', {'+maxHealth': [180, 200]});
@@ -137,6 +137,9 @@ var affixesByKey = {};
 $.each(prefixes, function (level, levelAffixes) {
     ifdefor(levelAffixes, []).forEach(function (affix) {
         var key = affix.name.replace(/\s*/g, '').toLowerCase();
+        if (affixesByKey[key]) {
+            throw new Error('affix key ' + key + ' is already used.');
+        }
         affixesByKey[key] = affix;
         affix.level = level;
         affix.prefix = true;
@@ -146,6 +149,9 @@ $.each(prefixes, function (level, levelAffixes) {
 $.each(suffixes, function (level, levelAffixes) {
     ifdefor(levelAffixes, []).forEach(function (affix) {
         var key = affix.name.replace(/\s*/g, '').toLowerCase();
+        if (affixesByKey[key]) {
+            throw new Error('affix key ' + key + ' is already used.');
+        }
         affixesByKey[key] = affix;
         affix.level = level;
         affix.suffix = true;

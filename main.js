@@ -269,10 +269,11 @@ function checkToShowJewelToolTip() {
         }
     }
     //console.log([event.pageX,event.pageY]);
+    var helpText = jewel.helpMethod ? jewel.helpMethod() : jewel.helpText;
     if (jewel.fixed && !jewel.confirmed) {
-        $popup = $tag('div', 'toolTip js-toolTip', 'Drag and rotate to adjust this augmentation.<br/><br/> Click the "Apply" button above when you are done.<br/><br/>' + jewel.helpText);
+        $popup = $tag('div', 'toolTip js-toolTip', 'Drag and rotate to adjust this augmentation.<br/><br/> Click the "Apply" button above when you are done.<br/><br/>' + helpText);
     } else {
-        $popup = $tag('div', 'toolTip js-toolTip', jewel.helpText);
+        $popup = $tag('div', 'toolTip js-toolTip', helpText);
     }
     $popup.data('jewel', jewel);
     $popupTarget = null;
@@ -420,6 +421,7 @@ function setSelectedCharacter(character) {
     $('.js-repeat').prop('checked', character.replay);
     $('.js-fastforward').prop('checked', character.gameSpeed === 3);
     $('.js-slowMotion').prop('checked', character.loopSkip === 5);
+    $('.js-confirmSkill').toggle(character.board.boardPreview !== null);
 }
 $('.js-charactersBox').on('click', '.js-character', function () {
     setSelectedCharacter($(this).data('character'));

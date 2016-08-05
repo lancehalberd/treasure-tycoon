@@ -102,6 +102,9 @@ function drawMap() {
     var shrineSource = {'image': images['gfx/militaryIcons.png'], 'xOffset': 102, 'yOffset': 125, 'width': 16, 'height': 16};
     var circleSource = {'image': images['gfx/militaryIcons.png'], 'xOffset': 51, 'yOffset': 90, 'width': 16, 'height': 16};
     var checkSource = {'image': images['gfx/militaryIcons.png'], 'xOffset': 68, 'yOffset': 90, 'width': 16, 'height': 16};
+    var bronzeSource = {'image': images['gfx/militaryIcons.png'], 'xOffset': 102, 'yOffset': 40, 'width': 16, 'height': 16};
+    var silverSource = {'image': images['gfx/militaryIcons.png'], 'xOffset': 85, 'yOffset': 40, 'width': 16, 'height': 16};
+    var goldSource = {'image': images['gfx/militaryIcons.png'], 'xOffset': 68, 'yOffset': 40, 'width': 16, 'height': 16};
     $.each(currentArea.levels, function (levelKey, levelData){
         var level = levels[levelKey];
         // Don't draw levels that have not been unlocked yet.
@@ -120,8 +123,6 @@ function drawMap() {
             context.translate(levelData.x * 40, levelData.y * 40);
             context.drawImage(shrineSource.image, shrineSource.xOffset, shrineSource.yOffset, shrineSource.width, shrineSource.height,
                               -12, -12, 24, 24);
-            console.log(state.selectedCharacter.adventurer);
-            console.log(state.selectedCharacter.adventurer.abilities);
             if (state.selectedCharacter.adventurer.abilities.indexOf(level.skill) >= 0) {
                 // If the character has learned the ability for this level, draw a check mark on the shrine.
                 context.drawImage(checkSource.image, checkSource.xOffset, checkSource.yOffset, checkSource.width, checkSource.height,
@@ -148,12 +149,23 @@ function drawMap() {
                           levelData.x * 40 + 20 - 16, levelData.y * 40 + 20 - 18, 32, 32);
 
 
-        context.fillStyle = 'black';
-        context.fillRect(levelData.x * 40, levelData.y * 40 + 34, 40, 15);
-        context.fillStyle = 'white';
-        context.font = '10px sans-serif';
-        context.textAlign = 'center'
-        context.fillText(abbreviateDivinity(divinityScore), levelData.x * 40 + 20, levelData.y * 40 + 45);
+        if (divinityScore > 0) {
+            context.fillStyle = 'black';
+            context.fillRect(levelData.x * 40, levelData.y * 40 + 34, 40, 15);
+            context.fillStyle = 'white';
+            context.font = '10px sans-serif';
+            context.textAlign = 'center'
+            context.fillText(abbreviateDivinity(divinityScore), levelData.x * 40 + 20, levelData.y * 40 + 45);
+            source = silverSource;
+            var baseScore = Math.round(baseDivinity(level.level));
+            if (baseScore > divinityScore) {
+                source = bronzeSource;
+            } else if (baseScore < divinityScore) {
+                source = goldSource;
+            }
+            context.drawImage(source.image, source.xOffset, source.yOffset, source.width, source.height,
+                              levelData.x * 40 - 10, levelData.y * 40 + 34, 16, 16);
+        }
     });
     // Draw arrows pointing to other areas.
     // Images start at 0,6 and have 17 pixels between them.
@@ -184,9 +196,9 @@ function getMapPopupTarget(x, y) {
             var level = levels[levelKey];
             levelData.helptext = '<p>Level ' + level.level + ' ' + level.name +'</p><br/>';
             if (state.selectedCharacter.adventurer.abilities.indexOf(level.skill) < 0) {
-                levelData.helptext += '<p style="font-weight: bold">Visit shrine to learn:</p>' + abilityHelpText(level.skill, state.selectedCharacter);
+                levelData.helptext += '<p style="font-weight: bold">Visit shrine to learn: ' + level.skill.name + '</p>';
             } else {
-                levelData.helptext += '<p style="font-size: 10px">This character has already learned:</p>' + abilityHelpText(level.skill, state.selectedCharacter);
+                levelData.helptext += '<p style="font-size: bold">This character has already learned:</p>' + level.skill.name + '</p>';
             }
 
             currentMapTarget = levelData;
@@ -246,7 +258,6 @@ function clickMapHandler(x, y) {
 }
 
 function completeLevel(character) {
-    console.log("completing level ");
     // If the character beat the last adventure open to them, unlock the next one
     var level = levels[character.currentLevelKey];
     var oldDivinityScore = ifdefor(state.selectedCharacter.divinityScores[character.currentLevelKey], 0);
@@ -264,14 +275,16 @@ function completeLevel(character) {
         });
     }
     // Add time bonus here later.
-    var newDivinityScore = Math.floor(baseDivinity(level.level));
+
+    var numberOfWaves = Math.max(level.events.length,  Math.floor(5 * Math.sqrt(level.level))) + 1; // Count the chest as a wave.
+    var timeBonus = (character.completionTime <= numberOfWaves * (5 + level.level / 2)) ? 1.2 : (character.completionTime <= numberOfWaves * (10 + level.level / 2)) ? 1 : .8;
+    var newDivinityScore = Math.round(timeBonus * baseDivinity(level.level));
     character.divinity += Math.max(0, newDivinityScore - oldDivinityScore);
     character.divinityScores[character.currentLevelKey] = Math.max(oldDivinityScore, newDivinityScore);
     character.levelCompleted = true;
 
     // This code will be used when they activate a shrine
     if (character.adventurer.abilities.indexOf(level.skill) < 0 && character.divinity >= totalCostForNextLevel(character, level)) {
-        console.log("adding board preview");
         var boardPreview = readBoardFromData(level.board, character, level.skill);
         centerShapesInRectangle(boardPreview.fixed.map(jewelToShape).concat(boardPreview.spaces), rectangle(0, 0, character.boardCanvas.width, character.boardCanvas.height));
         snapBoardToBoard(boardPreview, character.board);

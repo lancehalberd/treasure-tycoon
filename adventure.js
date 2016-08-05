@@ -25,6 +25,7 @@ function startArea(character, index) {
     character.adventurer.isDead = false;
     character.adventurer.timeOfDeath = undefined;
     character.finishTime = false;
+    character.startTime = character.time;
     character.cameraX = -60;
     character.enemies = [];
     character.objects = [];
@@ -108,6 +109,7 @@ function checkToStartNextWave(character) {
         if (character.waveIndex >= character.area.waves.length) {
             if (!character.finishTime) {
                 character.finishTime = character.time + 2;
+                character.completionTime = character.time - character.startTime;
             } else if (character.finishTime <= character.time) {
                 completeLevel(character);
                 returnToMap(character);

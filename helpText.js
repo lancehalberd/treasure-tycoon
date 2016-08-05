@@ -340,10 +340,10 @@ function bonusHelpText(rawBonuses, implicit, actor, localObject) {
 }
 
 function abilityHelpText(ability, character) {
+    var action = ifdefor(ability.action, ability.reaction);
     function evaluateActionStat(key) {
         return evaluateForDisplay(action.stats[key], character.adventurer, action);
     }
-    var action = ifdefor(ability.action, ability.reaction);
     var sections = [ability.name, ''];
     if (ifdefor(ability.helpText)) {
         sections.push(ability.helpText.replace(/\{(\w+)\}/, function (match, key) {

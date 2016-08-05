@@ -125,12 +125,6 @@ function refreshStatsPanel(character, $statsPanel) {
     $statsPanel.find('.js-speed').text(adventurer.speed.format(1));
     $statsPanel.find('.js-healthRegen').text(adventurer.healthRegen.format(1));
     updateDamageInfo(character);
-    if (character.board) {
-        for (var i = 0; i < character.board.fixed.length; i++) {
-            var jewel = character.board.fixed[i];
-            jewel.helpText =  abilityHelpText(jewel.ability, character);
-        }
-    }
 }
 function newCharacter(job) {
     var character = {};
@@ -732,7 +726,7 @@ function abbreviateDivinity(amount) {
 function totalCostForNextLevel(character, level) {
     var totalDivinityCost = divinityToLevelUp(character.adventurer.level);
     if (character.adventurer.level > 1) {
-        totalDivinityCost += Math.ceil(ifdefor(level.skill.costCoefficient, 1) * baseDivinity(level.level) / 2);
+        totalDivinityCost += Math.ceil(ifdefor(level.skill.costCoefficient, 1) * baseDivinity(level.level));
     }
     return totalDivinityCost;
 }

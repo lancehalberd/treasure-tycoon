@@ -410,6 +410,11 @@ $(document).on('keydown', function(event) {
         // state.selectedCharacter.divinity *= 2;
         if (currentMapTarget && currentMapTarget.levelKey) {
             state.selectedCharacter.currentLevelKey = currentMapTarget.levelKey;
+            if (!state.selectedCharacter.completionTime) {
+                state.selectedCharacter.completionTime = 100;
+            } else {
+                state.selectedCharacter.completionTime -= 10;
+            }
             completeLevel(state.selectedCharacter);
         }
         updateAdventurer(state.selectedCharacter.adventurer);

@@ -88,6 +88,8 @@ function importState(stateData) {
     updateRetireButtons();
     var selectedCharacterIndex = Math.min(ifdefor(stateData.selectedCharacterIndex, 0), stateData.characters.length - 1);
     setSelectedCharacter(state.characters[selectedCharacterIndex]);
+    // Update crafting view canvas in case new items were imported.
+    drawCraftingViewCanvas();
     return state;
 }
 function exportCharacter(character) {
@@ -139,9 +141,6 @@ function importCharacter(characterData) {
     drawBoardBackground(character.boardContext, character.board);
     updateAdventurer(character.adventurer);
     resetCharacterStats(character);
-    // Update crafting view canvas in case new items were imported.
-    drawCraftingViewCanvas();
-    $('.js-confirmSkill').toggle(character.board.boardPreview !== null);
     return character;
 }
 function exportAdventurer(adventurer) {
