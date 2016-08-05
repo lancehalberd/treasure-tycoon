@@ -198,7 +198,7 @@ function getMapPopupTarget(x, y) {
             if (state.selectedCharacter.adventurer.abilities.indexOf(level.skill) < 0) {
                 levelData.helptext += '<p style="font-weight: bold">Visit shrine to learn: ' + level.skill.name + '</p>';
             } else {
-                levelData.helptext += '<p style="font-size: bold">This character has already learned:</p>' + level.skill.name + '</p>';
+                levelData.helptext += '<p style="font-size: 12">' + state.selectedCharacter.adventurer.name + ' has already learned:</p>' + level.skill.name + '</p>';
             }
 
             currentMapTarget = levelData;
@@ -210,16 +210,16 @@ function getMapPopupTarget(x, y) {
             var level = levels[levelKey];
             levelData.helptext = ''
             if (state.selectedCharacter.currentLevelKey !== levelKey || !state.selectedCharacter.levelCompleted) {
-                levelData.helptext += '<p>An adventurer can only visit the shrine for the last adventure they completed.</p><br/>';
+                levelData.helptext += '<p style="font-size: 12">An adventurer can only visit the shrine for the last adventure they completed.</p><br/>';
             }
             var totalCost = totalCostForNextLevel(state.selectedCharacter, level);
             if (state.selectedCharacter.adventurer.abilities.indexOf(level.skill) < 0  && state.selectedCharacter.divinity < totalCost) {
-                levelData.helptext += '<p>' + state.selectedCharacter.adventurer.name + ' does not have enough divinity to learn the skill from this shrine.</p><br/>';
+                levelData.helptext += '<p style="font-size: 12">' + state.selectedCharacter.adventurer.name + ' does not have enough divinity to learn the skill from this shrine.</p><br/>';
             }
             if (state.selectedCharacter.adventurer.abilities.indexOf(level.skill) < 0) {
                 levelData.helptext += '<p style="font-weight: bold">Spend ' + totalCost + ' divinity at this shrine to learn:</p>' + abilityHelpText(level.skill, state.selectedCharacter);
             } else {
-                levelData.helptext += '<p style="font-size: 10px">' + state.selectedCharacter.adventurer.name + ' has already learned:</p>' + abilityHelpText(level.skill, state.selectedCharacter);
+                levelData.helptext += '<p style="font-size: 12px">' + state.selectedCharacter.adventurer.name + ' has already learned:</p>' + abilityHelpText(level.skill, state.selectedCharacter);
             }
 
             currentMapTarget = levelData;
