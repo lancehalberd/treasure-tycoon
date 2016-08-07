@@ -296,7 +296,6 @@ button {
     display: inline-block;
     width: 40px;
     height: 40px;
-    background-position: -200px -80px;
     vertical-align: middle;
 }
 
@@ -546,22 +545,16 @@ select {
     right: 2px;
 }
 
-.controlColumn {
-    width: 80px;
-    white-space: normal;
-}
-.controlColumn .item {
-    margin-bottom: 5px;
+.controlBar .item {
     vertical-align: top;
     background-color: #CCC;
-
 }
 .characterColumn {
     width: 240px;
 }
 
 .recruitmentColumn {
-    width: 480px
+    width: 560px
 }
 
 .icon.backButton {
@@ -570,6 +563,13 @@ select {
     width: 32px;
     height: 32px;
     background-position: 0px -12px;
+}
+
+.icon.treasure {
+    background-image: url('gfx/chest-open.png');
+    background-size: 32px 32px;
+    width: 32px;
+    height: 32px;
 }
 
 .characterBox {

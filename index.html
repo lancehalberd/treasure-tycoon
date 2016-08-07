@@ -69,9 +69,10 @@
                 <span class="icon anima"></span> <span class="js-anima anima"></span>
             </div>
         </div>
-        <canvas class="js-mainCanvas mainCanvas js-adventureContext" width="800" height="240" style="background-color: blue;"></canvas>
+        <div class="js-mainCanvasContainer" style="overflow-y: hidden; height: 240px; width: 800px;">
+            <canvas class="js-mainCanvas mainCanvas" width="800" height="240" style="background-color: blue;"></canvas>
+        </div>
         <div class="playerControlBar js-adventureContext">
-            Level <span class="js-playerLevel">X</span> <span class="js-playerName controlBarEntry">X</span>
             <button class="js-recall controlBarEntry recallButton">Recall</button>
             <label class="controlBarEntry"><input type="checkbox" class="js-repeat"> Repeat</label>
             <label class="controlBarEntry"><input type="checkbox" class="js-fastforward"> Fast Forward</label>
@@ -80,42 +81,29 @@
         <div class="js-characterColumn displayColumn characterColumn js-adventureContext js-jewelContext js-itemContext">
             <div class="js-stats stats playerBox">
                 <canvas class="js-canvas js-previewCanvas" width="64" height="128" style="position: absolute; left: 0px"></canvas>
+                Level <span class="js-playerLevel">X</span> <span class="js-playerName controlBarEntry">X</span>
                 <div helptext="Divinity can be used at shrines to level up and gain new bonuses and abilities. <br/><br/> Completing new adventures grants divinity and access to the shrine for that area. <br/><br/> Leveling allows you to equip more powerful gear and increases health and basic stats slightly.">
                     Divinity: <span class="js-divinity">X</span>
                 </div>
-                <div helptext="Starting health for each adventure.">
-                    Health: <span class="js-maxHealth">X</span>
-                </div>
-                <div helptext="How fast your adventurer regenerates health.">
-                    Regen: <span class="js-healthRegen">X</span>
-                </div>
-                <div>
-                    Damage: <span class="js-damage">X</span>
-                </div>
-                <div helptext="Higher range will let you attack enemies safely from afar.">
-                    Range: <span class="js-range">X</span>
-                </div>
-                <div>
-                    Evasion: <span class="js-evasion">X</span>
-                </div>
-                <div>
-                    Protection: <span class="js-protection">X</span>
-                </div>
-                <div>
-                    Resistance: <span class="js-resistance">X</span>
-                </div>
-                <div helptext="How fast your adventurer moves">
-                    Speed: <span class="js-speed">X</span>
-                </div>
-                <div>
-                    <button class="js-retire" style="display: none;">Retire</button>
-                </div>
+                <div helptext="Starting health for each adventure.">Health: <span class="js-maxHealth">X</span></div>
+                <div helptext="How fast your adventurer regenerates health.">Regen: <span class="js-healthRegen">X</span></div>
+                <div>Damage: <span class="js-damage">X</span></div>
+                <div helptext="Higher range will let you attack enemies safely from afar.">Range: <span class="js-range">X</span></div>
+                <div>Evasion: <span class="js-evasion">X</span></div>
+                <div>Protection: <span class="js-protection">X</span></div>
+                <div>Resistance: <span class="js-resistance">X</span></div>
+                <div helptext="How fast your adventurer moves">Speed: <span class="js-speed">X</span></div>
+                <div><button class="js-retire" style="display: none;">Retire</button></div>
                 <div class="triStatBox">
                     <div class="js-dexterity dexterity" helptext="Dexterity increases attack speed, evasion and damage with ranged weapons.">X</div>
                     <div class="js-strength strength" helptext="Strength increases physical damage, health and damage with melee weapons.">X</div>
                     <div class="js-intelligence intelligence" helptext="Intelligence increases accuracy, block and magic block and damage with magic weapons.">X</div>
                 </div>
                 <div class="js-charactersBox characterBox"></div>
+            </div><div class="controlBar">
+                <button class="js-showAdventurePanel item" helptext="Click here to visit the Guild Hall."><div class="icon treasure"></div></button>
+                <button class="js-showCraftingPanel item" helptext="Click here to visit the Temple of Fortune."><div class="icon crafting"></div></button>
+                <button class="js-showJewelsPanel item" helptext="Click here to visit the Altar of Creation."><canvas class="js-jewelButtonCanvas" width="40" height="40"></canvas></button>
             </div><div class="js-equipment equipment playerBox js-itemContext">
                 <div class="js-head js-itemSlot itemSlot head"></div>
                 <div class="js-body js-itemSlot itemSlot body"></div>
@@ -141,9 +129,6 @@
                 <button class="js-jewelCraftingButton centered" style="display: none;">Split</button>
                 <button class="js-sellItem sellItem item" disabled helptext="Drag items here to sell them. <br/> You can also hover over an item and type 'S' to sell quickly."><div class="icon money"></div></button>
             </div>
-        </div><div class="js-controlColumn js-adventureContext displayColumn controlColumn">
-            <button class="js-showCraftingPanel item" helptext="Click here to visit the Temple of Fortune."><div class="icon crafting"></div></button>
-            <button class="js-showJewelsPanel item" helptext="Click here to visit the Altar of Creation."><canvas class="js-jewelButtonCanvas" width="40" height="40"></canvas></button>
         </div><div class="displayColumn js-adventureContext recruitmentColumn">
             <div class="js-adventurePanel">
                 <select class="js-jobSelect jobSelect"></select><button class="js-hire" helpText="Hire another adventurer. <br/><br/> Gain AP by completing new adventures and retiring high level adventurers. <br/><br/> You may have many adventurers but it could be hard on your computer to have too many.">Hire for 10 AP!</button>
@@ -180,7 +165,6 @@
                 <button class="js-sellItem sellItem item" disabled helptext="Drag items here to sell them. <br/> You can also hover over an item and type 'S' to sell quickly."><div class="icon money"></div></button>
             </div>
         </div>
-        <button class="js-mainView js-jewelContext js-itemContext mainViewButton" helptext="Return to adventure screen."><div class="icon backButton"></div></button>
     </div>
 </div>
 </body>
