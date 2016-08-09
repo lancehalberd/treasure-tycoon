@@ -65,6 +65,10 @@ $('body').on('mousedown', function (event) {
     if (!overJewel) {
         return;
     }
+    // Cannot interact with jewel boards of characters that are not in your guild yet.
+    if (overJewel.character && state.characters.indexOf(overJewel.character) < 0) {
+        return;
+    }
     if (overJewel.fixed) {
         // Don't allow users to rotate the entire board. This can be confusing,
         // and they may accidentally trigger this trying to rotate other jewels.
@@ -123,7 +127,7 @@ $('body').on('mousemove', '.js-skillCanvas', function (event) {
     }
     overJewel = null;
     overVertex = null;
-    var character = state.selectedCharacter;
+    var character = $(this).data('character');
     var relativePosition = relativeMousePosition(this);
     var jewels = character.board.jewels;
     for (var i = 0; i < jewels.length; i++) {
@@ -250,7 +254,7 @@ function checkIfStillOverJewel() {
     if (!overJewel) return;
     var relativePosition
     if (overJewel.character) {
-        relativePosition = relativeMousePosition(jewelsCanvas);
+        relativePosition = relativeMousePosition(overJewel.character.jewelsCanvas);
     } else {
         relativePosition = relativeMousePosition(overJewel.canvas);
     }

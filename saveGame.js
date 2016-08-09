@@ -21,6 +21,11 @@ function exportState(state) {
     data.areas = copy(state.areas);
     data.maxCraftingLevel = state.maxCraftingLevel;
     data.currentArea = state.currentArea;
+    data.applications = [];
+    $('.js-heroApplication').each(function () {
+        var application = $(this).data('character');
+        data.applications.push(exportCharacter(application));
+    });
     data.jewels = [];
     $('.js-jewel-inventory .js-jewel').each(function () {
         data.jewels.push(exportJewel($(this).data('jewel')));
@@ -51,13 +56,38 @@ function importState(stateData) {
     state.coins = stateData.coins;
     state.anima = stateData.anima;
     state.currentArea = stateData.currentArea;
+    // Grab one slot to serve as the template for the applications we will add.
+    var $slot = $('.js-heroApplication').first().detach();
+    // Clean up all the slots on the page.
+    $('.js-heroApplication').data('character', null).remove();
+    var applications = ifdefor(stateData.applications, []).map(importCharacter);
+    while ($('.js-heroApplication').length + applications.length < 2) {
+        console.log('adding application');
+        var $applicationPanel = $slot.clone();
+        $('.js-recruitmentColumn').append($applicationPanel);
+        createNewHeroApplicant($applicationPanel);
+    }
+    applications.forEach(function (application) {
+        var $applicationPanel = $slot.clone();
+        $('.js-recruitmentColumn').append($applicationPanel);
+        setHeroApplication($applicationPanel, application);
+    });
+    // Clean up the last slot.
+    $slot.data('character', null).remove();
+    state.characters = [];
     state.areas = copy(stateData.areas);
     state.maxCraftingLevel = stateData.maxCraftingLevel;
     state.characters = [];
     $('.js-charactersBox').empty();
-    stateData.characters.map(importCharacter);
+    var characters = stateData.characters.map(importCharacter);
+    characters.forEach(function (character) {
+        state.characters.push(character);
+        $('.js-charactersBox').append(character.$characterCanvas)
+    });
+
     stateData.jewels.forEach(function (jewelData) {
         var jewel = importJewel(jewelData);
+        jewel.shape.setCenterPosition(jewel.canvas.width / 2, jewel.canvas.height / 2);
         $('.js-jewel-inventory').append(jewel.$item);
     });
     stateData.items.forEach(function (itemData) {
@@ -98,10 +128,12 @@ function exportCharacter(character) {
     data.board = exportJewelBoard(character.board);
     data.gameSpeed = character.gameSpeed;
     data.divinityScores = character.divinityScores;
+    data.fame = character.fame;
     data.replay = character.replay;
     data.divinity = character.divinity;
     data.currentLevelKey = character.currentLevelKey;
     data.levelCompleted = character.levelCompleted;
+    data.applicationAge = ifdefor(character.applicationAge, 0);
     return data;
 }
 function importCharacter(characterData) {
@@ -119,7 +151,6 @@ function importCharacter(characterData) {
         .attr('helptext', character.adventurer.job.name + ' ' + character.adventurer.name)
         .data('character', character);
     character.characterContext = characterCanvas.getContext("2d");
-    $('.js-charactersBox').append(character.$characterCanvas)
     character.boardCanvas = createCanvas(jewelsCanvas.width, jewelsCanvas.height);
     character.boardContext = character.boardCanvas.getContext("2d");
     character.time = now();
@@ -129,9 +160,9 @@ function importCharacter(characterData) {
     character.divinity = ifdefor(characterData.divinity, 0);
     character.currentLevelKey = ifdefor(characterData.currentLevelKey, ifdefor(character.adventurer.job.levelKey, 'meadow'));
     character.levelCompleted = ifdefor(characterData.levelCompleted, false);
-    // Should probably show all next areas here.
-    state.characters.push(character);
     character.board = importJewelBoard(characterData.board, character);
+    character.fame = ifdefor(characterData.fame, Math.ceil(character.divinity / 10));
+    character.applicationAge = ifdefor(characterData.applicationAge, 0);
     // Equiping the jewels cannot be done until character.board is actually set.
     character.board.jewels.forEach(function (jewel) {
         jewel.character = character;

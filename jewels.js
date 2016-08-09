@@ -217,6 +217,20 @@ function updateAdjacencyBonuses(jewel) {
     }
     jewel.helpText = jewelHelpText(jewel);
 }
+function updateJewelBonuses(character) {
+    character.jewelBonuses = {};
+    character.board.jewels.forEach(function (jewel) {
+        $.each(jewel.bonuses, function (bonusKey, bonusValue) {
+            character.jewelBonuses[bonusKey] = bonusValue + ifdefor(character.jewelBonuses[bonusKey], 0);
+        })
+        $.each(jewel.adjacencyBonuses, function (bonusKey, bonusValue) {
+            character.jewelBonuses[bonusKey] = bonusValue + ifdefor(character.jewelBonuses[bonusKey], 0);
+        })
+    });
+    if (character === state.selectedCharacter) {
+        $('.js-jewelBonuses .js-content').empty().append(bonusHelpText(character.jewelBonuses, false, character.adventurer,character.adventurer));
+    }
+}
 function makeFixedJewel(shape, character, ability) {
     shape.color = '#333333';
     return {

@@ -1,5 +1,5 @@
 
-function updateDamageInfo(character) {
+function updateDamageInfo(character, $statsPanel) {
     var adventurer = character.adventurer;
     if (!adventurer || !adventurer.actions) return;
     var attack = adventurer.actions[adventurer.actions.length - 1];
@@ -75,7 +75,6 @@ function updateDamageInfo(character) {
     } else {
         sections.push('Total Expected DPS is ' + (expectedPhysicalDPS + expectedMagicDPS).format(1));
     }
-    var $statsPanel = $('.js-stats');
     var $damage =  $statsPanel.find('.js-damage');
     $damage.text( (rawPhysicalDPS + rawMagicDPS).format(1) + ' (' + (expectedPhysicalDPS + expectedMagicDPS).format(1) + ')');
     $damage.parent().attr('helptext', sections.join('<br/>'));

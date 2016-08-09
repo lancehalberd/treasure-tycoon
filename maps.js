@@ -260,8 +260,10 @@ function clickMapHandler(x, y) {
 function completeLevel(character) {
     // If the character beat the last adventure open to them, unlock the next one
     var level = levels[character.currentLevelKey];
+    increaseAgeOfApplications();
     var oldDivinityScore = ifdefor(state.selectedCharacter.divinityScores[character.currentLevelKey], 0);
     if (oldDivinityScore === 0) {
+        character.fame += level.level;
         gain('fame', level.level);
         var areaKey = levelsToAreas[character.currentLevelKey];
         if (!areaKey) {
@@ -274,8 +276,6 @@ function completeLevel(character) {
             unlockMapLevel(levelKey);
         });
     }
-    // Add time bonus here later.
-
     var numberOfWaves = Math.max(level.events.length,  Math.floor(5 * Math.sqrt(level.level))) + 1; // Count the chest as a wave.
     var timeBonus = (character.completionTime <= numberOfWaves * (5 + level.level / 2)) ? 1.2 : (character.completionTime <= numberOfWaves * (10 + level.level / 2)) ? 1 : .8;
     var newDivinityScore = Math.round(timeBonus * baseDivinity(level.level));

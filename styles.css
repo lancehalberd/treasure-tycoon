@@ -183,7 +183,7 @@ button {
     position: relative;
     box-sizing: border-box;
     width: 240px;
-    height: 240px;
+    max-height: 240px;
     vertical-align: top;
     margin: 2px;
     margin-right: 1px;
@@ -191,11 +191,12 @@ button {
     overflow-x: hidden;
 }
 .stats {
-    padding-left: 60px;
+    padding-top: 20px; /* Leave space for "Level X Job Name" abs positioned at top */
+    padding-left: 60px; /* Leave space for preview image on the left */
 }
 .triStatBox {
     position: absolute;
-    top: 110px;
+    top: 130px;
     left: 0px;
     width: 64px;
     height: 30px;
@@ -228,6 +229,7 @@ button {
 
 .equipment {
     position: relative;
+    height: 240px;
 }
 
 .jewelBoard {
@@ -553,10 +555,6 @@ select {
     width: 240px;
 }
 
-.recruitmentColumn {
-    width: 560px
-}
-
 .icon.backButton {
     background-image: url('gfx/militaryIcons.png');
     background-size: 406px 410px;
@@ -579,4 +577,29 @@ select {
 
 .characterBox .character {
     cursor: pointer;
+}
+
+.jewelBonuses {
+    height: 280px;
+    line-height: 20px;
+    white-space: normal;
+    padding: 5px;
+}
+
+.recruitmentColumn {
+    width: 560px;
+    height: 300px;
+    overflow-x: scroll;
+}
+
+.heroApplication {
+    display: inline-block;
+    margin-right: 2px;
+    width: 240px;
+    height: 300px;
+    background-color: burlywood;
+}
+
+.heroApplicationButton {
+    margin: 5px;
 }

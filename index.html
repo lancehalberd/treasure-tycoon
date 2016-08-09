@@ -59,14 +59,14 @@
     </script>
     <div class="js-gameContent gameContent" style="display: none">
         <div class="pointsBar">
-            <div class="points" helptext="Fame is used to hire new adventurers.<br/>Fame is gained by leveling adventurers and completing new areas.<br/>You can gain large amounts of Fame by retiring high level adventurers.">
-                Fame: <span class="js-fame fame"></span>
+            <div class="points" helptext="The fame of your guild effects how powerful your guild recruits will be and how much you will have to pay to recruit them.<br/><br/>Fame is gained by leveling adventurers and completing new areas.<br/>Hiring famous adventurers also increases the fame of your guild.">
+                Fame: <span class="js-global-fame fame"></span>
             </div>
             <div class="points" helptext="Coins are used to create brand new items.<br/>Coins are found in chests and dropped from defeated enemies.">
-                <span class="icon coin"></span> <span class="js-coins coins"></span>
+                <span class="icon coin"></span> <span class="js-global-coins coins"></span>
             </div>
             <div class="points" helptext="Anima is used to enchant items with special powers.<br/>Anima is absorbed from defeated enemies and salvaged from gems.">
-                <span class="icon anima"></span> <span class="js-anima anima"></span>
+                <span class="icon anima"></span> <span class="js-global-anima anima"></span>
             </div>
         </div>
         <div class="js-mainCanvasContainer" style="overflow-y: hidden; height: 240px; width: 800px;">
@@ -80,11 +80,12 @@
         </div>
         <div class="js-characterColumn displayColumn characterColumn js-adventureContext js-jewelContext js-itemContext">
             <div class="js-stats stats playerBox">
-                <canvas class="js-canvas js-previewCanvas" width="64" height="128" style="position: absolute; left: 0px"></canvas>
-                Level <span class="js-playerLevel">X</span> <span class="js-playerName controlBarEntry">X</span>
+                <div style="position: absolute; left: 5px; top: 0px;">Level <span class="js-playerLevel">X</span> <span class="js-playerName controlBarEntry">X</span></div>
+                <canvas class="js-canvas js-previewCanvas" width="64" height="128" style="position: absolute; left: 0px; top: 20px;"></canvas>
                 <div helptext="Divinity can be used at shrines to level up and gain new bonuses and abilities. <br/><br/> Completing new adventures grants divinity and access to the shrine for that area. <br/><br/> Leveling allows you to equip more powerful gear and increases health and basic stats slightly.">
                     Divinity: <span class="js-divinity">X</span>
                 </div>
+                    <div helptext="How famous this adventurer is. Famous adventurers are more powerful but also more expensive.<br/> Hiring and retiring famous adventurers increases the fame of your guild.">Fame: <span class="js-fame">X</span></div>
                 <div helptext="Starting health for each adventure.">Health: <span class="js-maxHealth">X</span></div>
                 <div helptext="How fast your adventurer regenerates health.">Regen: <span class="js-healthRegen">X</span></div>
                 <div>Damage: <span class="js-damage">X</span></div>
@@ -114,7 +115,7 @@
                 <div class="js-feet js-itemSlot itemSlot feet"></div>
                 <div class="js-back js-itemSlot itemSlot back"></div>
                 <div class="js-ring js-itemSlot itemSlot ring"></div>
-            </div>
+            </div><div class="js-jewelBonuses playerBox js-jewelContext jewelBonuses"><div class="panelTitle" style="text-align: center;">Jewel Bonuses</div><div class="js-content"></div></div>
         </div><div class="js-jewel-inventory displayColumn jewel-inventory js-jewelContext"></div><div class="js-jewelColumn displayColumn jewelColumn js-jewelContext">
             <div class="js-jewelBoard jewelBoard">
                 <canvas class="js-canvas js-skillCanvas" width="320" height="320"></canvas>
@@ -129,11 +130,26 @@
                 <button class="js-jewelCraftingButton centered" style="display: none;">Split</button>
                 <button class="js-sellItem sellItem item" disabled helptext="Drag items here to sell them. <br/> You can also hover over an item and type 'S' to sell quickly."><div class="icon money"></div></button>
             </div>
-        </div><div class="displayColumn js-adventureContext recruitmentColumn">
-            <div class="js-adventurePanel">
-                <select class="js-jobSelect jobSelect"></select><button class="js-hire" helpText="Hire another adventurer. <br/><br/> Gain AP by completing new adventures and retiring high level adventurers. <br/><br/> You may have many adventurers but it could be hard on your computer to have too many.">Hire for 10 AP!</button>
+        </div><div class="js-recruitmentColumn js-adventureContext displayColumn recruitmentColumn">
+            <div class="js-heroApplication heroApplication">
+                <div class="js-stats stats playerBox">
+                    <div style="position: absolute; left: 5px; top: 0px;">Recruit: <span class="js-playerName controlBarEntry">X</span></div>
+                    <canvas class="js-canvas js-previewCanvas" width="64" height="128" style="position: absolute; left: 0px; top: 20px;"></canvas>
+                    <div helptext="Starting health for each adventure.">Health: <span class="js-maxHealth">X</span></div>
+                    <div helptext="How famous this adventurer is. Famous adventurers are more powerful but also more expensive.<br/> Hiring and retiring famous adventurers increases the fame of your guild.">Fame: <span class="js-fame">X</span></div>
+                    <div style="position: relative; overflow: hidden; height: 160px; width: 160px;">
+                        <canvas class="js-canvas js-skillCanvas" width="360" height="360" style="background-color: #00F; width: 360px; height: 360px; position: relative; left: -80px; top: -80px;"></canvas>
+                    </div>
+                    <div class="triStatBox">
+                        <div class="js-dexterity dexterity" helptext="Dexterity increases attack speed, evasion and damage with ranged weapons.">X</div>
+                        <div class="js-strength strength" helptext="Strength increases physical damage, health and damage with melee weapons.">X</div>
+                        <div class="js-intelligence intelligence" helptext="Intelligence increases accuracy, block and magic block and damage with magic weapons.">X</div>
+                    </div>
+                </div>
+                <p><button class="js-hireApplicant heroApplicationButton" helptext="Hire this adventurer. The more famous your guild is, the cheaper it is to hire adventurers.">Hire</button><span class="js-hirePrice"></span></p>
+                <p><button class="js-seekNewApplicant heroApplicationButton" helptext="Seek another guild applicant. Completing adventures will reduce this price.">Seek Another</button><span class="js-seekPrice"></span></p>
             </div>
-        </div><div class="js-inventory displayColumn inventory js-itemContext"><div class="js-inventorySlot js-itemSlot itemSlot inventorySlot" helptext="Drag an item here to move it into your inventory."></div></div><div class="js-itemCrafting js-characterColumn displayColumn itemCrafting js-itemContext">
+        </div><div class="js-inventory displayColumn inventory js-itemContext"><div class="js-inventorySlot js-itemSlot itemSlot inventorySlot" helptext="Drag an item here to move it into your inventory."></div></div><div class="js-itemCrafting displayColumn itemCrafting js-itemContext">
             <div class="panelTitle">Temple of Fortune</div>
             <div class="craftingPrice">Item Level <span class='js-craftingLevel'>1</span><span class="js-levelMultiplier"></span></div>
             <div class="js-craftingBar craftingBar">
@@ -188,6 +204,7 @@
 <script src="loot.js"></script>
 <script src="boards.js"></script>
 <script src="character.js"></script>
+<script src="heroApplication.js"></script>
 <script src="effects.js"></script>
 <script src="performAttack.js"></script>
 <script src="useSkill.js"></script>
