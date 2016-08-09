@@ -222,8 +222,7 @@ function getMonsterBonuses(monster) {
         'intelligence': 5 * growth,
         'dexterity': 5 * growth,
         'coins': Random.range(1, (growth + 1) * (growth + 1) * 4),
-        'anima': Random.range(1, (growth + 1) * (growth + 1)),
-        'xpValue': (growth + 1) * 2
+        'anima': Random.range(1, (growth + 1) * (growth + 1))
     };
 }
 function initalizeMonsters() {

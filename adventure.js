@@ -2,8 +2,16 @@ function startArea(character, index) {
     if (!levels[index]) {
         throw new Error('No level found for ' + index);
     }
-    character.currentLevelIndex = index;
-    character.area = instantiateLevel(levels[index], character.levelsCompleted[index]);
+
+    if (character.currentLevelKey !== index) {
+        character.levelCompleted = false;
+        character.board.boardPreview = null;
+        drawBoardBackground(character.boardContext, character.board);
+        $('.js-confirmSkill').hide();
+    }
+    character.currentLevelKey = index;
+    var levelCompleted = ifdefor(character.divinityScores[index], 0) !== 0;
+    character.area = instantiateLevel(levels[index], levelCompleted);
     character.waveIndex = 0;
     character.adventurer.x = 0;
     character.adventurer.stunned = 0;
@@ -17,6 +25,7 @@ function startArea(character, index) {
     character.adventurer.isDead = false;
     character.adventurer.timeOfDeath = undefined;
     character.finishTime = false;
+    character.startTime = character.time;
     character.cameraX = -60;
     character.enemies = [];
     character.objects = [];
@@ -36,6 +45,7 @@ function startArea(character, index) {
     });
     updateActorStats(character.adventurer);
     drawAdventure(character);
+    saveGame();
 }
 function checkIfActorDied(actor) {
     if (!actor.isDead && actor.health <= 0 && !actor.undying && !actor.pull) {
@@ -99,6 +109,7 @@ function checkToStartNextWave(character) {
         if (character.waveIndex >= character.area.waves.length) {
             if (!character.finishTime) {
                 character.finishTime = character.time + 2;
+                character.completionTime = character.time - character.startTime;
             } else if (character.finishTime <= character.time) {
                 completeLevel(character);
                 returnToMap(character);
@@ -421,10 +432,6 @@ function getDistance(actorA, actorB) {
 function defeatedEnemy(character, enemy) {
     if (character.adventurer.health <= 0) {
         return;
-    }
-    // Character only gains experience from equal or higher level monsters.
-    if (enemy.level >= character.adventurer.level) {
-        gainXP(character.adventurer, enemy.xpValue);
     }
     var loot = [];
     if (enemy.coins) loot.push(coinsLootDrop(enemy.coins));

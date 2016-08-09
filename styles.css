@@ -183,7 +183,7 @@ button {
     position: relative;
     box-sizing: border-box;
     width: 240px;
-    height: 240px;
+    max-height: 240px;
     vertical-align: top;
     margin: 2px;
     margin-right: 1px;
@@ -191,11 +191,12 @@ button {
     overflow-x: hidden;
 }
 .stats {
-    padding-left: 60px;
+    padding-top: 20px; /* Leave space for "Level X Job Name" abs positioned at top */
+    padding-left: 60px; /* Leave space for preview image on the left */
 }
 .triStatBox {
     position: absolute;
-    top: 110px;
+    top: 130px;
     left: 0px;
     width: 64px;
     height: 30px;
@@ -228,6 +229,7 @@ button {
 
 .equipment {
     position: relative;
+    height: 240px;
 }
 
 .jewelBoard {
@@ -296,7 +298,6 @@ button {
     display: inline-block;
     width: 40px;
     height: 40px;
-    background-position: -200px -80px;
     vertical-align: middle;
 }
 
@@ -349,11 +350,6 @@ button {
 }
 .itemSlot.invalid {
     background-color: #ff8888;
-}
-.enchantmentSlot {
-    margin-top: 5px;
-    margin-left: auto;
-    margin-right: auto;
 }
 .icon.armor {
     background-position: -20px -20px;
@@ -463,27 +459,27 @@ button {
     border-color: red;
 }
 
-.itemCraftingOption.allOption {
+.itemCrafting .centerSlot {
     position: absolute;
     left: 170px;
     top: 60px;
 }
-.itemCraftingOption.armorOption {
+.itemCrafting .topSlot {
     position: absolute;
     left: 170px;
     top: 0px;
-    padding-top: 5px;
 }
-.itemCraftingOption.weaponOption {
+.itemCrafting .bottomLeftSlot {
     position: absolute;
     left: 110px;
     top: 100px;
 }
-.itemCraftingOption.accessoryOption {
+.itemCrafting .bottomRightSlot {
     position: absolute;
     left: 230px;
     top: 100px;
 }
+
 
 .itemCraftingOption .multiplier {
     display: none;
@@ -551,22 +547,12 @@ select {
     right: 2px;
 }
 
-.controlColumn {
-    width: 80px;
-    white-space: normal;
-}
-.controlColumn .item {
-    margin-bottom: 5px;
+.controlBar .item {
     vertical-align: top;
     background-color: #CCC;
-
 }
 .characterColumn {
     width: 240px;
-}
-
-.recruitmentColumn {
-    width: 480px
 }
 
 .icon.backButton {
@@ -577,6 +563,13 @@ select {
     background-position: 0px -12px;
 }
 
+.icon.treasure {
+    background-image: url('gfx/chest-open.png');
+    background-size: 32px 32px;
+    width: 32px;
+    height: 32px;
+}
+
 .characterBox {
     position: relative;
     left: -40px;
@@ -584,4 +577,29 @@ select {
 
 .characterBox .character {
     cursor: pointer;
+}
+
+.jewelBonuses {
+    height: 280px;
+    line-height: 20px;
+    white-space: normal;
+    padding: 5px;
+}
+
+.recruitmentColumn {
+    width: 560px;
+    height: 300px;
+    overflow-x: scroll;
+}
+
+.heroApplication {
+    display: inline-block;
+    margin-right: 2px;
+    width: 240px;
+    height: 300px;
+    background-color: burlywood;
+}
+
+.heroApplicationButton {
+    margin: 5px;
 }

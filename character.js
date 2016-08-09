@@ -17,7 +17,7 @@ var allActorVariables = [
     // tracked for debuffs that deal damage over time
     'damageOverTime',
     // For enemy loot
-    'coins', 'xpValue', 'anima'
+    'coins', 'anima'
 ];
 // These are variables that can be targeted by effects on any action.
 var commonActionVariables = {
@@ -63,7 +63,7 @@ var commonActionVariables = {
 };
 
 var allRoundedVariables = ['dexterity', 'strength', 'intelligence', 'maxHealth', 'speed',
-     'coins', 'xpValue', 'anima',
+     'coins', 'anima',
      'evasion', 'block', 'magicBlock', 'armor'];
 
 // All actors receive these bonuses, which give various benefits based on the core stats:
@@ -98,26 +98,25 @@ function resetCharacterStats(character) {
 function returnToMap(character) {
     updateActorStats(character.adventurer);
     resetCharacterStats(character);
-    var currentLevelIndex = character.currentLevelIndex;
     character.area = null;
-    character.currentLevelIndex = null;
     $('.js-recall').prop('disabled', true);
     if (state.selectedCharacter === character) {
         drawMap();
-        refreshStatsPanel(character, $('.js-stats'));
+        refreshStatsPanel(character, $('.js-characterColumn .js-stats'));
     }
     if (character.replay) {
-        startArea(character, currentLevelIndex);
+        startArea(character, character.currentLevelKey);
     }
 }
 function refreshStatsPanel(character, $statsPanel) {
     var adventurer = character.adventurer;
-    $('.js-playerName').text(adventurer.job.name + ' ' + adventurer.name);
-    $('.js-playerLevel').text(adventurer.level);
+    $statsPanel.find('.js-playerName').text(adventurer.job.name + ' ' + adventurer.name);
+    $statsPanel.find('.js-playerLevel').text(adventurer.level);
+    $statsPanel.find('.js-fame').text(character.fame.format(1));
     $statsPanel.find('.js-dexterity').text(adventurer.dexterity.format(0));
     $statsPanel.find('.js-strength').text(adventurer.strength.format(0));
     $statsPanel.find('.js-intelligence').text(adventurer.intelligence.format(0));
-    $statsPanel.find('.js-toLevel').text(adventurer.xpToLevel - adventurer.xp);
+    $statsPanel.find('.js-divinity').text(character.divinity);
     $statsPanel.find('.js-maxHealth').text(adventurer.maxHealth.format(0));
     if (adventurer.actions.length) {
         // This code assumes the basic attack is always the last action.
@@ -126,18 +125,9 @@ function refreshStatsPanel(character, $statsPanel) {
     }
     $statsPanel.find('.js-speed').text(adventurer.speed.format(1));
     $statsPanel.find('.js-healthRegen').text(adventurer.healthRegen.format(1));
-    updateDamageInfo(character);
-    if (character.board) {
-        for (var i = 0; i < character.board.fixed.length; i++) {
-            var jewel = character.board.fixed[i];
-            jewel.helpText =  abilityHelpText(jewel.ability, character);
-        }
-    }
+    updateDamageInfo(character, $statsPanel);
 }
 function newCharacter(job) {
-    var personCanvas = createCanvas(personFrames * 32, 64);
-    var personContext = personCanvas.getContext("2d");
-    personContext.imageSmoothingEnabled = false;
     var character = {};
     character.adventurer = makeAdventurer(job, 1, ifdefor(job.startingEquipment, {}));
     character.adventurer.character = character;
@@ -152,19 +142,16 @@ function newCharacter(job) {
         .attr('helptext', character.adventurer.job.name + ' ' + character.adventurer.name)
         .data('character', character);
     character.characterContext = characterCanvas.getContext("2d");
-    $('.js-charactersBox').append(character.$characterCanvas)
     character.boardCanvas = createCanvas(jewelsCanvas.width, jewelsCanvas.height);
     character.boardContext = character.boardCanvas.getContext("2d");
     character.time = now();
     character.gameSpeed = 1;
     character.replay = false;
-    character.levelsCompleted = {};
-    state.characters.push(character);
-    var levelKey = ifdefor(job.levelKey, 'meadow');
-    unlockMapLevel(levelKey);
-    if (!state.currentArea) {
-        state.currentArea = levelsToAreas[levelKey];
-    }
+    character.divinityScores = {};
+    character.divinity = 0;
+    character.currentLevelKey = ifdefor(job.levelKey, 'meadow');
+    character.levelCompleted = false;
+    character.fame = 1;
     var abilityKey = ifdefor(abilities[job.key]) ? job.key : 'heal';
     character.adventurer.abilities.push(abilities[abilityKey]);
     for (var i = 0; i < ifdefor(window.testAbilities, []).length; i++) {
@@ -175,6 +162,9 @@ function newCharacter(job) {
     centerShapesInRectangle(character.board.fixed.map(jewelToShape).concat(character.board.spaces), rectangle(0, 0, character.boardCanvas.width, character.boardCanvas.height));
     drawBoardBackground(character.boardContext, character.board);
     ifdefor(job.jewelLoot, [smallJewelLoot, smallJewelLoot, smallJewelLoot]).forEach(function (loot) {
+        // Technically this gives the player the jewel, which we don't want to do for characters
+        // generated that they don't control, but it immediately assigns it to the character,
+        // so as long as this doesn't fail, that should not matter.
         draggedJewel = loot.generateLootDrop().gainLoot(character);
         draggedJewel.shape.setCenterPosition(jewelsCanvas.width / 2, jewelsCanvas.width / 2);
         if (!equipJewel(character, false, true)) {
@@ -185,10 +175,10 @@ function newCharacter(job) {
     overJewel = null;
     updateAdventurer(character.adventurer);
     resetCharacterStats(character);
-    setSelectedCharacter(character);
     /*for (var i = 0; i < character.adventurer.actions.length; i++) {
         console.log(getTargetsForAction(character.adventurer, character.adventurer.actions[i]));
     }*/
+    return character;
 }
 function getTargetsForAction(actor, action) {
     var keys = [];
@@ -252,7 +242,7 @@ function getTargetsForActionStat(actor, dataObject, stat, action) {
     return keys;
 }
 function convertShapeDataToShape(shapeData) {
-    return makeShape(shapeData.p[0], shapeData.p[1], (shapeData.t % 360 + 360) % 360, shapeDefinitions[shapeData.k][0], 30);
+    return makeShape(shapeData.p[0], shapeData.p[1], (shapeData.t % 360 + 360) % 360, shapeDefinitions[shapeData.k][0], jewelShapeScale);
 }
 function makeAdventurer(job, level, equipment) {
     var personCanvas = createCanvas(personFrames * 32, 64);
@@ -269,8 +259,6 @@ function makeAdventurer(job, level, equipment) {
         'name': Random.element(names),
         'hairOffset': Random.range(hair[0], hair[1]),
         'level': level,
-        'xp': 0,
-        'xpToLevel': xpToLevel(0),
         'personCanvas': personCanvas,
         'personContext': personContext,
         'attackCooldown': 0,
@@ -281,8 +269,8 @@ function makeAdventurer(job, level, equipment) {
     });
     $.each(equipment, function (key, item) {
         item.crafted = true;
-        state.craftingContext.fillStyle = 'green';
-        state.craftingContext.fillRect(item.craftingX, item.craftingY, craftingSlotSize, craftingSlotSize);
+        craftingContext.fillStyle = 'green';
+        craftingContext.fillRect(item.craftingX, item.craftingY, craftingSlotSize, craftingSlotSize);
         equipItem(adventurer, makeItem(item, 1), true);
     });
     drawCraftingViewCanvas();
@@ -301,9 +289,6 @@ function readBoardFromData(boardData, character, ability, confirmed) {
     };
 }
 
-function xpToLevel(level) {
-    return (level + 1) * (level + 2) * 5;
-}
 function gain(pointsType, amount) {
     state[pointsType] += amount;
     changedPoints(pointsType);
@@ -317,9 +302,9 @@ function spend(pointsType, amount) {
     return true;
 }
 function changedPoints(pointsType) {
-    if (pointsType == 'fame') updateHireButton();
-    else updateCraftButton();
-    $('.js-' + pointsType).text(state[pointsType]);
+    if (pointsType == 'fame') updateHireButtons();
+    else updateCraftingButtons();
+    $('.js-global-' + pointsType).text(state[pointsType]);
 }
 function addBonusesAndActions(actor, source) {
     if (ifdefor(source.bonuses)) {
@@ -415,12 +400,12 @@ function updateAdventurer(adventurer) {
         addBonusesAndActions(adventurer, ability);
     });
     if (adventurer.character) {
-        adventurer.character.board.jewels.forEach(function (jewel) {
-            adventurer.bonuses.push(jewel.bonuses);
-            adventurer.bonuses.push(jewel.adjacencyBonuses);
-        });
-        // Don't show the offhand slot if equipped with a two handed weapon.
-        $('.js-offhand').toggle(!isTwoHandedWeapon(adventurer.equipment.weapon));
+        updateJewelBonuses(adventurer.character);
+        adventurer.bonuses.push(adventurer.character.jewelBonuses);
+        if (adventurer.character === state.selectedCharacter) {
+            // Don't show the offhand slot if equipped with a two handed weapon.
+            $('.js-offhand').toggle(!isTwoHandedWeapon(adventurer.equipment.weapon));
+        }
     }
     // Add the adventurer's current equipment to bonuses and graphics
     equipmentSlots.forEach(function (type) {
@@ -496,7 +481,7 @@ function updateActorStats(actor) {
     });
     actor.health = actor.percentHealth * actor.maxHealth;
     if (ifdefor(actor.isMainCharacter) && actor.character === state.selectedCharacter) {
-        refreshStatsPanel(actor.character, $('.js-stats'));
+        refreshStatsPanel(actor.character, $('.js-characterColumn .js-stats'));
     }
     updateActorHelpText(actor);
 }
@@ -619,15 +604,10 @@ function getStatForAction(actor, dataObject, stat, action) {
     }*/
     return (base + plus + flatBonus) * percent * multiplier + flatBonus;
 }
-function gainXP(adventurer, amount) {
-    amount *= (1 + adventurer.increasedExperience);
-    adventurer.xp = Math.min(adventurer.xp + amount, adventurer.xpToLevel);
-}
 function gainLevel(adventurer) {
     adventurer.level++;
+    adventurer.fame += adventurer.level;
     gain('fame', adventurer.level);
-    adventurer.xp = 0;
-    adventurer.xpToLevel = xpToLevel(adventurer.level);
     updateActorStats(adventurer);
 }
 function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonus, startingEquipment, jewelLoot, levelKey) {
@@ -683,43 +663,29 @@ addCharacterClass('Sage', 4, 2, 4, {'weapon': itemsByKey.stick});
 
 addCharacterClass('Master', 4, 4, 4);
 
-var ranks = [
-    ['juggler', 'blackbelt', 'priest'],
-    ['corsair', 'paladin', 'dancer'],
-    ['ranger', 'warrior', 'wizard'],
-    ['assassin', 'darkknight', 'bard'],
-    ['sniper', 'samurai', 'sorcerer'],
-    ['ninja', 'enhancer', 'sage'],
-    ['master', 'fool']
-];
-function initializeJobs() {
-    var $jobSelect = $('.js-jobSelect');
-    var cost = 10;
-    ranks.forEach(function (rankJobs, index) {
-        $jobSelect.append($tag('option', '', 'Rank ' + (index + 1) + ' Adventurer').data('jobs', rankJobs).data('cost', cost));
-        rankJobs.forEach(function (jobKey) {
-            var jobData = characterClasses[jobKey];
-            jobData.cost = cost;
-            $jobSelect.append($tag('option', '', jobData.name).data('jobs', [jobKey]).data('cost', cost * rankJobs.length));
-        });
-        cost *= 10;
-    });
-    updateHireButton();
+function divinityToLevelUp(currentLevel) {
+    return Math.ceil(baseDivinity(currentLevel)*(1 + (currentLevel - 1) / 10));
 }
-$('.js-jobSelect').on('change', updateHireButton);
-function updateHireButton() {
-    var $jobOption = $('.js-jobSelect').find(':selected');
-    var cost = $jobOption.data('cost');
-    $('.js-hire').text('Hire for ' + $jobOption.data('cost') + ' Fame!');
-    $('.js-hire').toggleClass('disabled', (cost > state.fame));
+function baseDivinity(level) {
+    return 10 * Math.pow(1.25, level - 1);
 }
-$('.js-hire').on('click', function () {
-    var $jobOption = $('.js-jobSelect').find(':selected');
-    var cost = $jobOption.data('cost');
-    if (!spend('fame', cost)) {
-        return;
+function abbreviateDivinity(amount) {
+    if (amount > 1000000000) {
+        return (amount / 1000000000 + '').slice(0, 5) + ' B';
     }
-    var jobKey = Random.element($jobOption.data('jobs'));
-    newCharacter(characterClasses[jobKey]);
-    updateRetireButtons();
-});
+    if (amount > 1000000) {
+        return (amount / 1000000 + '').slice(0, 5) + ' M';
+    }
+    if (amount > 1000) {
+        return (amount / 1000 + '').slice(0, 5) + ' K';
+    }
+    return amount;
+}
+
+function totalCostForNextLevel(character, level) {
+    var totalDivinityCost = divinityToLevelUp(character.adventurer.level);
+    if (character.adventurer.level > 1) {
+        totalDivinityCost += Math.ceil(ifdefor(level.skill.costCoefficient, 1) * baseDivinity(level.level));
+    }
+    return totalDivinityCost;
+}

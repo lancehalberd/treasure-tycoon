@@ -21,6 +21,13 @@ function checkToMakeItemUnique(item) {
     }
     // On success, reset the chance to roll the unique back to its original value.
     uniqueData.chance = uniqueData.initialChance;
+    makeItemUnique(item);
+}
+function makeItemUnique(item) {
+    var uniqueData = ifdefor(item.base.unique);
+    if (!uniqueData) {
+        return;
+    }
     item.displayName = uniqueData.displayName;
     uniqueData.prefixes.forEach(function (affix) {
         affix = (typeof(affix) === 'string') ? affixesByKey[affix] : affix;

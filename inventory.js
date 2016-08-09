@@ -182,6 +182,12 @@ $('body').on('mousedown', '.js-item', function (event) {
     $(this).css('opacity', '.3');
     $dragHelper.css('position', 'absolute');
     $('.js-mouseContainer').append($dragHelper);
+    if (!$('.js-craftingSelectOptions .js-itemSlot:visible').length) {
+        $('.js-enchantmentOptions').show();
+        $('.js-craftingOptions').hide();
+        $('.js-craftingSelectOptions').hide();
+        updateEnchantmentOptions();
+    }
     updateDragHelper();
     dragged = false;
     var item = $(this).data('item');
@@ -202,10 +208,29 @@ function updateDragHelper() {
 $(document).on("mousemove", function (event) {
     updateDragHelper();
 });
-
 function stopDrag() {
+    applyDragResults();
+    // Check if the player has claimed an item from the craftingSelectOptions
+    if ($('.js-craftingSelectOptions:visible').length) {
+        if ($('.js-craftingSelectOptions .js-itemSlot').length > $('.js-craftingSelectOptions .js-itemSlot .js-item').length) {
+            $('.js-craftingSelectOptions .js-itemSlot').empty();
+            $('.js-craftingSelectOptions').hide();
+            $('.js-craftingOptions').show();
+            craftingTypeFilter = 'all';
+            updateItemCrafting();
+            saveGame();
+        }
+    } else {
+        // Hide the enchantment options if there is no longer an item in the enchantment slot.
+        if (!$('.js-enchantmentSlot').find('.js-item').length) {
+            $('.js-enchantmentOptions').hide();
+            $('.js-craftingOptions').show();
+        }
+    }
+    stopInventoryDrag();
+}
+function applyDragResults() {
     if (!$dragHelper) {
-        stopInventoryDrag();
         return;
     }
     var $source = $dragHelper.data('$source');
@@ -215,7 +240,7 @@ function stopDrag() {
         return;
     }
     var item = $source.data('item');
-    if (collision($dragHelper, $('.js-sellItem'))) {
+    if (collision($dragHelper, $('.js-sellItem:visible'))) {
         sellItem(item);
         return;
     }
@@ -230,7 +255,6 @@ function stopDrag() {
             unequipSlot(item.actor, item.base.slot, true);
         }
         $('.js-enchantmentSlot').append($source);
-        stopInventoryDrag();
         return;
     }
     var hit = false;
@@ -301,9 +325,8 @@ function stopDrag() {
         }
         addToInventory(item);
     }
-    stopInventoryDrag();
 }
-function stopInventoryDrag(args) {
+function stopInventoryDrag() {
     if ($dragHelper) {
         $dragHelper.data('$source').css('opacity', '1');
         $dragHelper.remove();
@@ -344,6 +367,7 @@ function addItem(level, data) {
     items[level].push(data);
     itemsBySlotAndLevel[data.slot][level].push(data);
     var key = data.name.replace(/\s*/g, '').toLowerCase();
+    data.key = key;
     itemsByKey[key] = data;
 }
 
@@ -366,7 +390,6 @@ $(document).on('keydown', function(event) {
         }
     }
     if (event.which == 68) { // 'd'
-        gain('fame', 1000);
         gain('coins', 1000);
         gain('anima', 1000);
         $.each(itemsByKey, function (key, item) {
@@ -382,11 +405,39 @@ $(document).on('keydown', function(event) {
     }
     if (event.which == 76) { // 'l'
         var visibleLevels = {};
-        gainXP(state.selectedCharacter.adventurer, state.selectedCharacter.adventurer.xpToLevel);
-        updateAdventurer(state.selectedCharacter.adventurer);
+        // state.selectedCharacter.divinity += 10;
+        // state.selectedCharacter.divinity *= 2;
         if (currentMapTarget && currentMapTarget.levelKey) {
-            state.selectedCharacter.currentLevelIndex = currentMapTarget.levelKey;
-            completeLevel(state.selectedCharacter)
+            state.selectedCharacter.currentLevelKey = currentMapTarget.levelKey;
+            if (!state.selectedCharacter.completionTime) {
+                state.selectedCharacter.completionTime = 100;
+            } else {
+                state.selectedCharacter.completionTime -= 10;
+            }
+            completeLevel(state.selectedCharacter);
+        }
+        updateAdventurer(state.selectedCharacter.adventurer);
+        if (overCraftingItem) {
+            if (lastCraftedItem) {
+                craftingContext.fillStyle = ifdefor(lastCraftedItem.craftedUnique ? '#44ccff' : 'green');
+                craftingContext.fillRect(lastCraftedItem.craftingX, lastCraftedItem.craftingY, craftingSlotSize, craftingSlotSize);
+            }
+            overCraftingItem.crafted = true;
+            var item = makeItem(overCraftingItem, craftingLevel);
+            updateItem(item);
+            $('.js-inventory').prepend(item.$item);
+            if (item.base.unique) {
+                item = makeItem(overCraftingItem, craftingLevel);
+                makeItemUnique(item);
+                updateItem(item);
+                $('.js-inventory').prepend(item.$item);
+                overCraftingItem.craftedUnique = true;
+            }
+            craftingContext.fillStyle = ifdefor(overCraftingItem.craftedUnique) ? '#0088ff' : 'orange';
+            craftingContext.fillRect(overCraftingItem.craftingX, overCraftingItem.craftingY, craftingSlotSize, craftingSlotSize);
+            $('.js-inventorySlot').hide();
+            drawCraftingViewCanvas();
+            lastCraftedItem = overCraftingItem;
         }
     }
     //console.log(event.which);

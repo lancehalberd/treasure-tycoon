@@ -23,23 +23,23 @@ function points(type, value) {
 }
 
 var fps = 6;
-var craftingViewCanvas = $('.js-craftingCanvas')[0];
-var craftingCanvas = createCanvas(craftingViewCanvas.width, craftingViewCanvas.height);
 var state = {
     selectedCharacter: null,
     currentArea: null,
     areas: {}, // {'northernWilderness': {'grove': true, 'orchard': true}}
     characters: [],
-    jewels: [],
     fame: 0,
     coins: 0,
     anima: 0,
     maxCraftingLevel: 1,
-    craftingCanvas: craftingCanvas,
-    craftingContext: craftingCanvas.getContext('2d'),
-    craftingViewCanvas: craftingViewCanvas,
-    craftingViewContext: craftingViewCanvas.getContext('2d')
-}
+    craftingLevel: 1,
+    craftingTypeFilter: 'all',
+    applicationSlots: 2
+};
+var craftingViewCanvas = $('.js-craftingCanvas')[0];
+var craftingViewContext = craftingViewCanvas.getContext('2d');
+var craftingCanvas = createCanvas(craftingViewCanvas.width, craftingViewCanvas.height);
+var craftingContext = craftingCanvas.getContext('2d');
 var coins, animaDrops;
 var projectileAnimations = [];
 function initializeCoins() {
@@ -87,7 +87,6 @@ async.mapSeries([
         images[imageKey + '-imbued'] = makeTintedImage(images[imageKey], '#c6f');
     });
     showContext('adventure');
-    initializeJobs();
     initalizeMonsters();
     initializeBackground();
     initializeLevels();
@@ -95,29 +94,34 @@ async.mapSeries([
     initializeCoins();
     initializeProjectileAnimations();
     updateItemCrafting();
-    var jobKey = Random.element(ranks[0]);
+    var jobKey = Random.element(jobRanks[0]);
     jobKey = ifdefor(testJob, jobKey);
     mainCanvas = $('.js-mainCanvas')[0];
     mainContext = mainCanvas.getContext('2d');
     mainContext.imageSmoothingEnabled = false;
     jewelsCanvas = $('.js-skillCanvas')[0];
     jewelsContext = jewelsCanvas.getContext("2d");
-    previewContext = $('.js-previewCanvas')[0].getContext("2d")
+    previewContext = $('.js-characterColumn .js-previewCanvas')[0].getContext("2d")
     previewContext.imageSmoothingEnabled = false;
     gainJewel(makeJewel(1, 'triangle', [90, 5, 5], 1.1));
     gainJewel(makeJewel(1, 'triangle', [5, 90, 5], 1.1));
     gainJewel(makeJewel(1, 'triangle', [5, 5, 90], 1.1));
-    gain('fame', 20);
-    gain('coins', 1000);
+    gain('fame', 1);
+    gain('coins', 50);
     gain('anima', 0);
-    newCharacter(characterClasses[jobKey]);
+    hireCharacter(newCharacter(characterClasses[jobKey]));
+    $('.js-heroApplication').after($('.js-heroApplication').clone());
+    $('.js-heroApplication').each(function () {
+        createNewHeroApplicant($(this));
+    });
     setInterval(mainLoop, 20);
     $('.js-loading').hide();
     $('.js-gameContent').show();
-    var testShape = makeShape(0, 0, 0, shapeDefinitions.triangle[0]).scale(30);
+    var testShape = makeShape(0, 0, 0, shapeDefinitions.triangle[0]).scale(jewelShapeScale);
     var jewelButtonCanvas = $('.js-jewelButtonCanvas')[0];
     centerShapesInRectangle([testShape], rectangle(0, 0, jewelButtonCanvas.width, jewelButtonCanvas.height));
     drawJewel(jewelButtonCanvas.getContext('2d'), testShape, [0, 0], 'black');
+    loadOrCreateSavedData();
     drawMap();
 });
 function makeTintedImage(image, tint) {
@@ -142,6 +146,8 @@ function mainLoop() {
     if ($('.js-jewel-inventory').is(":visible")) {
         redrawInventoryJewels();
     }
+    var fps = Math.floor(3 * 5 / 3);
+    var frame = Math.floor(now() * fps / 1000) % walkLoop.length;
     state.characters.forEach(function (character) {
         if (character.area) {
             character.loopCount = ifdefor(character.loopCount) + 1;
@@ -161,8 +167,6 @@ function mainLoop() {
                 }
             }
         }
-        var fps = Math.floor(3 * 5 / 3);
-        var frame = Math.floor(now() * fps / 1000) % walkLoop.length;
         if (state.selectedCharacter === character) {
             previewContext.clearRect(0, 0, 64, 128);
             previewContext.drawImage(character.adventurer.personCanvas, walkLoop[frame] * 32, 0 , 32, 64, 0, -20, 64, 128);
@@ -177,8 +181,19 @@ function mainLoop() {
     if (currentContext === 'adventure' && state.selectedCharacter.area) {
         drawAdventure(state.selectedCharacter);
     }
+    if (currentContext === 'adventure') {
+        $('.js-heroApplication').each(function () {
+            var $applicationPanel = $(this);
+            var applicantPreviewContext = $applicationPanel.find('.js-previewCanvas')[0].getContext("2d");
+            var character = $applicationPanel.data('character');
+            applicantPreviewContext.imageSmoothingEnabled = false;
+            applicantPreviewContext.clearRect(0, 0, 64, 128);
+            applicantPreviewContext.drawImage(character.adventurer.personCanvas, walkLoop[frame] * 32, 0 , 32, 64, 0, -20, 64, 128);
+            drawBoardJewels(character, $applicationPanel.find('.js-skillCanvas')[0]);
+        })
+     }
     if (currentContext === 'jewel') {
-        drawBoardJewels(state.selectedCharacter);
+        drawBoardJewels(state.selectedCharacter, jewelsCanvas);
     }
     $('.js-inventorySlot').toggle($('.js-inventory .js-item').length === 0);
     checkRemoveToolTip();
@@ -269,10 +284,11 @@ function checkToShowJewelToolTip() {
         }
     }
     //console.log([event.pageX,event.pageY]);
+    var helpText = jewel.helpMethod ? jewel.helpMethod() : jewel.helpText;
     if (jewel.fixed && !jewel.confirmed) {
-        $popup = $tag('div', 'toolTip js-toolTip', 'Drag and rotate to adjust this augmentation.<br/><br/> Click the "Apply" button above when you are done.<br/><br/>' + jewel.helpText);
+        $popup = $tag('div', 'toolTip js-toolTip', 'Drag and rotate to adjust this augmentation.<br/><br/> Click the "Apply" button above when you are done.<br/><br/>' + helpText);
     } else {
-        $popup = $tag('div', 'toolTip js-toolTip', jewel.helpText);
+        $popup = $tag('div', 'toolTip js-toolTip', helpText);
     }
     $popup.data('jewel', jewel);
     $popupTarget = null;
@@ -298,7 +314,10 @@ function checkRemoveToolTip() {
         }
     }
     if (canvasPopupTarget && !canvasPopupTarget.character) {
-        if (isPointInRect(canvasCoords[0], canvasCoords[1], canvasPopupTarget.x * 40, canvasPopupTarget.y * 40, 40, 40)) {
+        if (!canvasPopupTarget.overShrine && isPointInRect(canvasCoords[0], canvasCoords[1], canvasPopupTarget.x * 40, canvasPopupTarget.y * 40, 40, 40)) {
+            return;
+        }
+        if (canvasPopupTarget.overShrine && isPointInRect(canvasCoords[0], canvasCoords[1], canvasPopupTarget.x * 40 - 12, canvasPopupTarget.y * 40 - 12, 24, 24)) {
             return;
         }
     }
@@ -332,7 +351,7 @@ function updateToolTip(x, y, $popup) {
     $popup.css('left', left + "px").css('top', top + "px");
 }
 function updateRetireButtons() {
-    $('.js-retire').toggle($('.js-playerPanel').length > 1);
+    $('.js-retire').toggle(state.characters.length > 1);
 }
 
 $('body').on('click', '.js-retire', function (event) {
@@ -340,21 +359,24 @@ $('body').on('click', '.js-retire', function (event) {
         return;
     }
     var $panel = $(this).closest('.js-playerPanel');
-    gain('fame', Math.ceil(state.selectedCharacter.adventurer.level * state.selectedCharacter.adventurer.job.cost / 10));
+    // gain('fame', state.selectedCharacter.fame);
     $panel.remove();
-    updateRetireButtons();
     var index = state.characters.indexOf(state.selectedCharacter);
     state.characters.splice(index, 1);
     state.selectedCharacter = state.characters[Math.min(index, state.characters.length)];
+    $($('.js-charactersBox .js-character')[index]).remove();
+    setSelectedCharacter(state.characters[Math.min(index, state.characters.length - 1)]);
+    saveGame();
+    updateRetireButtons();
+});
+$('.js-showAdventurePanel').on('click', function (event) {
+    showContext('adventure');
 });
 $('.js-showCraftingPanel').on('click', function (event) {
     showContext('item');
 });
 $('.js-showJewelsPanel').on('click', function (event) {
     showContext('jewel');
-});
-$('.js-mainView').on('click', function (event) {
-    showContext('adventure');
 });
 $('body').on('click', '.js-recall', function (event) {
     var $panel = $(this).closest('.js-playerPanel');
@@ -386,7 +408,12 @@ $('body').on('click', '.js-slowMotion', function (event) {
 var currentContext;
 function showContext(context) {
     currentContext = context;
-    $('.js-adventureContext, .js-jewelContext, .js-itemContext').hide();
+    if (context !== 'adventure') {
+        $('.js-mainCanvasContainer').slideUp('fast');
+    } else {
+        $('.js-mainCanvasContainer').slideDown('fast');
+    }
+    $('.js-adventureContext, .js-jewelContext, .js-itemContext').not('.js-' + context + 'Context').hide();
     $('.js-' + context + 'Context').show();
 }
 
@@ -395,7 +422,9 @@ function setSelectedCharacter(character) {
         return;
     }
     state.selectedCharacter = character;
+    state.currentArea = levelsToAreas[character.currentLevelKey];
     var adventurer = character.adventurer;
+    updateAdventurer(adventurer);
     // update the map.
     drawMap();
     // update the equipment displayed.
@@ -408,11 +437,14 @@ function setSelectedCharacter(character) {
         }
     });
     // update stats panel.
-    refreshStatsPanel(character, $('.js-stats'))
+    refreshStatsPanel(character, $('.js-characterColumn .js-stats'))
     // update controls:
     $('.js-repeat').prop('checked', character.replay);
     $('.js-fastforward').prop('checked', character.gameSpeed === 3);
     $('.js-slowMotion').prop('checked', character.loopSkip === 5);
+    $('.js-confirmSkill').toggle(!!character.board.boardPreview);
+    $('.js-jewelBoard .js-skillCanvas').data('character', character);
+    character.jewelsCanvas = $('.js-jewelBoard .js-skillCanvas')[0];
 }
 $('.js-charactersBox').on('click', '.js-character', function () {
     setSelectedCharacter($(this).data('character'));

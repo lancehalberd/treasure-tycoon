@@ -32,12 +32,12 @@ function drawBoardBackground(context, board) {
         context.stroke();
     }
 }
-function drawBoardJewels(character) {
+function drawBoardJewels(character, jewelsCanvas) {
     var lightSource = relativeMousePosition(jewelsCanvas);
-    var context = jewelsContext
+    var context = jewelsCanvas.getContext('2d');
     var board = character.board;
     context.clearRect(0, 0, jewelsCanvas.width, jewelsCanvas.height);
-    context.drawImage(character.boardCanvas, 0, 0, jewelsCanvas.width, jewelsCanvas.height);
+    context.drawImage(character.boardCanvas, 0, 0, character.boardCanvas.width, character.boardCanvas.height);
     var focusedJewelIsOnBoard = false;
     var fixedJewels = board.fixed;
     if (draggedJewel && !overVertex) {

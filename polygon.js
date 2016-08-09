@@ -213,8 +213,10 @@ $.each(shapeDefinitions, function (key, shapes) {
  * Creates a shape at the given location and angle from the shape definition.
  */
 function makeShape(x, y, angleInDegrees, shapeDefinition, scale) {
-    return polygon(x, y, angleInDegrees, shapeDefinition.color, scale)
+    var shape = polygon(x, y, angleInDegrees, shapeDefinition.color, scale)
         .addVerticesAndLengths(shapeDefinition.lengths, shapeDefinition.angles);
+    shape.key = shapeDefinition.key;
+    return shape;
 }
 function unshiftOrPush(array, value) {
     if (Math.random() < .5) {
