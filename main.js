@@ -442,7 +442,7 @@ function setSelectedCharacter(character) {
     $('.js-repeat').prop('checked', character.replay);
     $('.js-fastforward').prop('checked', character.gameSpeed === 3);
     $('.js-slowMotion').prop('checked', character.loopSkip === 5);
-    $('.js-confirmSkill').toggle(character.board.boardPreview !== null);
+    $('.js-confirmSkill').toggle(!!character.board.boardPreview);
     $('.js-jewelBoard .js-skillCanvas').data('character', character);
     character.jewelsCanvas = $('.js-jewelBoard .js-skillCanvas')[0];
 }
