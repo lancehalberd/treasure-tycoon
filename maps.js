@@ -10,8 +10,10 @@ maps.northernWilderness = {
         'valley': { 'x': 10, 'y': 1, 'unlocks': ['oceanoftrees6']},
     },
     'exits': {
-        'easternHighway': {'x': 12, 'y': 5, 'degrees': -30},
-        'westCoast': {'x': 8, 'y': 5, 'degrees': 210}
+        'easternHighway': {'x': 12, 'y': 5, 'degrees': -60},
+        'westCoast': {'x': 8, 'y': 5, 'degrees': 210},
+        'lushForest': {'x': 19, 'y': 3, 'degrees': -10},
+        'fertileDelta': {'x': 0, 'y': 3, 'degrees': -10}
     }
 };
 maps.easternHighway = {
@@ -26,7 +28,8 @@ maps.easternHighway = {
     },
     'exits': {
         'northernWilderness': {'x': 0, 'y': 0, 'degrees': 150},
-        'westCoast': {'x': 0, 'y': 5, 'degrees': 180}
+        'westCoast': {'x': 0, 'y': 5, 'degrees': 180},
+        'lushForest': {'x': 10, 'y': 0, 'degrees': 110}
     }
 };
 maps.westCoast = {
@@ -41,7 +44,47 @@ maps.westCoast = {
     },
     'exits': {
         'easternHighway': {'x': 19, 'y': 5, 'degrees': 0},
-        'northernWilderness': {'x': 19, 'y': 0, 'degrees': 30}
+        'northernWilderness': {'x': 19, 'y': 0, 'degrees': 30},
+        'fertileDelta': {'x': 0, 'y': 3, 'degrees': -10}
+    }
+};
+maps.lushForest = {
+    'name': 'Lush Forest',
+    'levels': {
+        'floor': { 'x': 2, 'y': 3, 'unlocks': ['shrubbery', 'mossbed','meadow','grove']},
+        'shrubbery': { 'x': 6, 'y': 1, 'unlocks': ['ruins']},
+        'mossbed': { 'x': 4, 'y': 4, 'unlocks': ['riverbank']},
+        'riverbank': { 'x': 8, 'y': 4, 'unlocks': ['ruins']},
+        'ruins': { 'x': 10, 'y': 2, 'unlocks': ['canopy','cliff','understorey']},
+        'understorey': { 'x': 12, 'y': 4, 'unlocks': ['canopy']},
+        'canopy': { 'x': 14, 'y': 3, 'unlocks': ['emergents']},
+        'cliff': { 'x': 13, 'y': 1, 'unlocks': ['emergents']},
+        'emergents': { 'x': 16, 'y': 2, 'unlocks': ['ravine']},
+        'ravine': { 'x': 18, 'y': 4, 'unlocks': []},
+    },
+    'exits': {
+        'northernWilderness': {'x': 0, 'y': 3, 'degrees': 170},
+        'easternHighway': {'x': 10, 'y': 5, 'degrees': -60}
+    }
+};
+maps.fertileDelta = {
+    'name': 'Fertile Delta',
+    'levels': {
+        'shore': { 'x': 2, 'y': 3, 'unlocks': ['oceanside','cave','grove']},
+        'oceanside': { 'x': 6, 'y': 1, 'unlocks': ['wetlands','floodplain']},
+        'wetlands': { 'x': 4, 'y': 4, 'unlocks': ['meander']},
+        'floodplain': { 'x': 8, 'y': 4, 'unlocks': ['meander']},
+        'levee': { 'x': 10, 'y': 2, 'unlocks': ['channel']},
+        'meander': { 'x': 12, 'y': 4, 'unlocks': ['levee']},
+        'channel': { 'x': 14, 'y': 3, 'unlocks': ['confluence']},
+        'confluence': { 'x': 13, 'y': 1, 'unlocks': ['tributaries']},
+        'tributaries': { 'x': 16, 'y': 2, 'unlocks': ['headwaters']},
+        'headwaters': { 'x': 18, 'y': 4, 'unlocks': []},
+        //needs levels created and rearrangement of areas
+    },
+    'exits': {
+        'northernWilderness': {'x': 0, 'y': 3, 'degrees': 170},
+        'westCoast': {'x': 10, 'y': 5, 'degrees': -60}
     }
 };
 var levelsToAreas = {};

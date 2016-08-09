@@ -190,6 +190,59 @@ function initializeLevels() {
              'monsters': ['motherfly', 'gnomecromancer'],
              'events': [['motherfly', 'motherfly'], ['gnomecromancer', 'gnomecromancer'],  ['gnomecromancer', 'gnomeWizard', 'gnomecromancer']]});
 
+    // Corsair levels
+    addLevel({'name': 'Floor', 'level': 2, 'background': backgrounds.forest, 'specialLoot': [simpleJewelLoot],
+             'skill':  abilities.majorDexterity, 'board': crownBoard,
+             'enemySkills': [abilities.heal, abilities.protect, abilities.majorDexterity],
+             'monsters': ['motherfly', 'gnomecromancer'],
+             'events': [['motherfly', 'motherfly'], ['gnomecromancer', 'gnomecromancer'],  ['gnomecromancer', 'gnomeWizard', 'gnomecromancer']]});
+    addLevel({'name': 'Shrubbery', 'level': 4, 'background': backgrounds.forest, 'specialLoot': [simpleJewelLoot],
+             'skill':  abilities.majorDexterity, 'board': crownBoard,
+             'enemySkills': [abilities.heal, abilities.protect, abilities.majorDexterity],
+             'monsters': ['motherfly', 'gnomecromancer'],
+             'events': [['motherfly', 'motherfly'], ['gnomecromancer', 'gnomecromancer'],  ['gnomecromancer', 'gnomeWizard', 'gnomecromancer']]});
+    addLevel({'name': 'Understorey', 'level': 16, 'background': backgrounds.forest, 'specialLoot': [simpleJewelLoot],
+             'skill':  abilities.majorDexterity, 'board': crownBoard,
+             'enemySkills': [abilities.heal, abilities.protect, abilities.majorDexterity],
+             'monsters': ['motherfly', 'gnomecromancer'],
+             'events': [['motherfly', 'motherfly'], ['gnomecromancer', 'gnomecromancer'],  ['gnomecromancer', 'gnomeWizard', 'gnomecromancer']]});
+    addLevel({'name': 'Ravine', 'level': 33, 'background': backgrounds.forest, 'specialLoot': [simpleJewelLoot],
+             'skill':  abilities.majorDexterity, 'board': crownBoard,
+             'enemySkills': [abilities.heal, abilities.protect, abilities.majorDexterity],
+             'monsters': ['motherfly', 'gnomecromancer'],
+             'events': [['motherfly', 'motherfly'], ['gnomecromancer', 'gnomecromancer'],  ['gnomecromancer', 'gnomeWizard', 'gnomecromancer']]});
+    addLevel({'name': 'Canopy', 'level': 21, 'background': backgrounds.forest, 'specialLoot': [simpleJewelLoot],
+             'skill':  abilities.majorDexterity, 'board': crownBoard,
+             'enemySkills': [abilities.heal, abilities.protect, abilities.majorDexterity],
+             'monsters': ['motherfly', 'gnomecromancer'],
+             'events': [['motherfly', 'motherfly'], ['gnomecromancer', 'gnomecromancer'],  ['gnomecromancer', 'gnomeWizard', 'gnomecromancer']]});
+    addLevel({'name': 'Emergents', 'level': 29, 'background': backgrounds.forest, 'specialLoot': [simpleJewelLoot],
+             'skill':  abilities.majorDexterity, 'board': crownBoard,
+             'enemySkills': [abilities.heal, abilities.protect, abilities.majorDexterity],
+             'monsters': ['motherfly', 'gnomecromancer'],
+             'events': [['motherfly', 'motherfly'], ['gnomecromancer', 'gnomecromancer'],  ['gnomecromancer', 'gnomeWizard', 'gnomecromancer']]});
+    addLevel({'name': 'Mossbed', 'level': 6, 'background': backgrounds.forest, 'specialLoot': [simpleJewelLoot],
+             'skill':  abilities.majorDexterity, 'board': crownBoard,
+             'enemySkills': [abilities.heal, abilities.protect, abilities.majorDexterity],
+             'monsters': ['motherfly', 'gnomecromancer'],
+             'events': [['motherfly', 'motherfly'], ['gnomecromancer', 'gnomecromancer'],  ['gnomecromancer', 'gnomeWizard', 'gnomecromancer']]});
+    addLevel({'name': 'Riverbank', 'level': 8, 'background': backgrounds.forest, 'specialLoot': [simpleJewelLoot],
+             'skill':  abilities.majorDexterity, 'board': crownBoard,
+             'enemySkills': [abilities.heal, abilities.protect, abilities.majorDexterity],
+             'monsters': ['motherfly', 'gnomecromancer'],
+             'events': [['motherfly', 'motherfly'], ['gnomecromancer', 'gnomecromancer'],  ['gnomecromancer', 'gnomeWizard', 'gnomecromancer']]});
+    addLevel({'name': 'Ruins', 'level': 12, 'background': backgrounds.forest, 'specialLoot': [simpleJewelLoot],
+             'skill':  abilities.majorDexterity, 'board': crownBoard,
+             'enemySkills': [abilities.heal, abilities.protect, abilities.majorDexterity],
+             'monsters': ['motherfly', 'gnomecromancer'],
+             'events': [['motherfly', 'motherfly'], ['gnomecromancer', 'gnomecromancer'],  ['gnomecromancer', 'gnomeWizard', 'gnomecromancer']]});
+    addLevel({'name': 'Cliff', 'level': 25, 'background': backgrounds.forest, 'specialLoot': [simpleJewelLoot],
+             'skill':  abilities.majorDexterity, 'board': crownBoard,
+             'enemySkills': [abilities.heal, abilities.protect, abilities.majorDexterity],
+             'monsters': ['motherfly', 'gnomecromancer'],
+             'events': [['motherfly', 'motherfly'], ['gnomecromancer', 'gnomecromancer'],  ['gnomecromancer', 'gnomeWizard', 'gnomecromancer']]});
+
+
     var index = 0;
     $.each(abilities, function (key, ability) {
         if (!abilitiesUsed[key] && ability.name) {

@@ -658,7 +658,8 @@ addCharacterClass('Black Belt', 0, 2, 1, {},
 addCharacterClass('Priest', 1, 0, 2, {'weapon': itemsByKey.stick},
     [jewelLoot(['triangle'], [1, 1], [[10,15], [5, 10], [90, 100]], false), smallJewelLoot, smallJewelLoot], 'cave');
 
-addCharacterClass('Corsair', 2, 2, 1, {'weapon': itemsByKey.rock});
+addCharacterClass('Corsair', 2, 2, 1, {'weapon': itemsByKey.rock},
+    [jewelLoot(['triangle'], [1, 1], [[10,15], [90, 100], [5, 10]], false), smallJewelLoot, smallJewelLoot], 'floor');
 addCharacterClass('Paladin', 1, 2, 2, {'weapon': itemsByKey.stick});
 addCharacterClass('Dancer', 2, 1, 2, {'weapon': itemsByKey.ball});
 
