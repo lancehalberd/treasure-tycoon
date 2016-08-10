@@ -447,6 +447,7 @@ function setSelectedCharacter(character) {
     $('.js-confirmSkill').toggle(!!character.board.boardPreview);
     $('.js-jewelBoard .js-skillCanvas').data('character', character);
     character.jewelsCanvas = $('.js-jewelBoard .js-skillCanvas')[0];
+    updateRecallButton();
 }
 $('.js-charactersBox').on('click', '.js-character', function () {
     setSelectedCharacter($(this).data('character'));

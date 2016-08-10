@@ -99,7 +99,7 @@ function returnToMap(character) {
     updateActorStats(character.adventurer);
     resetCharacterStats(character);
     character.area = null;
-    $('.js-recall').prop('disabled', true);
+    updateRecallButton();
     if (state.selectedCharacter === character) {
         drawMap();
         refreshStatsPanel(character, $('.js-characterColumn .js-stats'));

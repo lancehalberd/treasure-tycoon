@@ -46,7 +46,7 @@ function startArea(character, index) {
     });
     updateActorStats(character.adventurer);
     if (state.selectedCharacter === character) {
-        $('.js-recall').prop('disabled', false);
+        updateRecallButton();
         drawAdventure(character);
     }
     saveGame();
@@ -121,11 +121,13 @@ function checkToStartNextWave(character) {
             }
         } else {
             startNextWave(character);
-            if (character.waveIndex >= character.area.waves.length) {
-                $('.js-recall').prop('disabled', true);
-            }
+            updateRecallButton();
         }
     }
+}
+function updateRecallButton() {
+    var enabled = state.selectedCharacter.area && state.selectedCharacter.waveIndex < state.selectedCharacter.area.waves.length;
+    $('.js-recall').prop('disabled', !enabled);
 }
 function adventureLoop(character, delta) {
     if (timeStopLoop(character, delta)) {
