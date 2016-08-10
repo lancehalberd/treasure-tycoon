@@ -61,7 +61,11 @@ function drawActor(character, actor, index) {
         mainContext.globalAlpha = 1 - (actor.time - actor.timeOfDeath);
     }
     if (actor.personCanvas) drawAdventurer(character, actor, index);
-    else drawMonster(character, actor, index);
+    else if (actor.image) drawMonster(character, actor, index);
+    else {
+        console.log("Unable to draw actor was neither monster nor adventurer?");
+        console.log(actor);
+    }
     mainContext.restore();
 }
 function drawMonster(character, monster, index) {

@@ -44,7 +44,9 @@ function startArea(character, index) {
         action.readyAt = 0;
     });
     updateActorStats(character.adventurer);
-    drawAdventure(character);
+    if (state.selectedCharacter === character) {
+        drawAdventure(character);
+    }
     saveGame();
 }
 function checkIfActorDied(actor) {
