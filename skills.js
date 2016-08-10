@@ -57,7 +57,7 @@ var abilities = {
     // Tier 2 classes
     // Corsair
     'corsair': {'name': 'Venom', 'bonuses': {'+poison': .2}, 'onHitEffect': {'debuff': {'tags': ['debuff'], 'stats': {'*damage': .9, 'area': 0}}},
-                    'helpText': "Apply a stacking buff with every hit that weakens enemies' attacks and deals damage over time."},
+                    'helpText': "Apply a stacking debuff with every hit that weakens enemies' attacks and deals damage over time."},
     'hook': {'name': 'Grappling Hook', 'action': {'type': 'attack',
                     'stats': {'cooldown': 10, 'range': 10, 'dragDamage': 0, 'dragStun': 0, 'rangeDamage': 0, '$alwaysHits': 'Never misses', '$pullsTarget': 'Pulls target'},
                     'helpText': 'Throw a hook to damage and pull enemies closer.'}},
