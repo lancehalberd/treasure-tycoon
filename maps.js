@@ -103,6 +103,10 @@ function drawMap() {
     if (state.selectedCharacter.area) {
         return;
     }
+    if (editingMap) {
+        drawNewMap();
+        return;
+    }
     var context = mainContext;
     var currentArea = maps[state.currentArea];
     // Draw parchment backdrop.
@@ -229,6 +233,9 @@ function drawMap() {
 
 var currentMapTarget = null;
 function getMapPopupTarget(x, y) {
+    if (editingMap) {
+        return getNewMapPopupTarget(x, y);
+    }
     var currentArea = maps[state.currentArea];
     currentMapTarget = null;
     $.each(currentArea.levels, function (levelKey, levelData){
@@ -289,6 +296,9 @@ function getMapPopupTarget(x, y) {
 }
 
 function clickMapHandler(x, y) {
+    if (editingMap) {
+        clickNewMapHandler(x, y);
+    }
     if (!currentMapTarget) return;
     if (currentMapTarget.areaKey) {
         state.currentArea = currentMapTarget.areaKey;

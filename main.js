@@ -316,6 +316,11 @@ function checkRemoveToolTip() {
         }
     }
     if (canvasPopupTarget && !canvasPopupTarget.character) {
+        if (ifdefor(canvasPopupTarget.top) !== null) {
+            if (isPointInRect(canvasCoords[0], canvasCoords[1], canvasPopupTarget.left, canvasPopupTarget.top, canvasPopupTarget.width, canvasPopupTarget.height)) {
+                return;
+            }
+        }
         if (!canvasPopupTarget.overShrine && isPointInRect(canvasCoords[0], canvasCoords[1], canvasPopupTarget.x * 40, canvasPopupTarget.y * 40, 40, 40)) {
             return;
         }

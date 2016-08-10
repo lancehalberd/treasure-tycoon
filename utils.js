@@ -114,6 +114,11 @@ function isPointInRect(x, y, l, t, w, h) {
     return !(y < t || y > (t + h) || x < l || x > (l + w));
 }
 
+
+function rectanglesOverlap(A, B) {
+    return !(A.bottom < B.top || A.top > B.bottom || A.right < B.left || A.left > B.right);
+}
+
 function isMouseOver($div) {
     var x = $('.js-mouseContainer').offset().left + mousePosition[0];
     var y = $('.js-mouseContainer').offset().top + mousePosition[1];
@@ -182,7 +187,7 @@ function constrain(value, min, max) {
 }
 
 function rectangle(left, top, width, height) {
-    return {left: left, top: top, width: width, height: height};
+    return {left: left, top: top, width: width, height: height, right: left + width, bottom: top + height};
 }
 function rectangleCenter(rectangle) {
     return [rectangle.left + rectangle.width / 2, rectangle.top + rectangle.height / 2];

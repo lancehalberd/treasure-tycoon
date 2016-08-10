@@ -404,6 +404,12 @@ $(document).on('keydown', function(event) {
         });
         drawMap()
     }
+    if (event.which == 69) { // 'e'
+        editingMap = !editingMap;
+        $('.js-mainCanvasContainer').css('height', editingMap ? '800px' : '240px');
+        $('.js-mainCanvas').attr('height', editingMap ? '800' : '240');
+        drawMap();
+    }
     if (event.which == 76) { // 'l'
         var visibleLevels = {};
         // state.selectedCharacter.divinity += 10;
