@@ -332,8 +332,8 @@ function completeLevel(character) {
         centerShapesInRectangle(boardPreview.fixed.map(jewelToShape).concat(boardPreview.spaces), rectangle(0, 0, character.boardCanvas.width, character.boardCanvas.height));
         snapBoardToBoard(boardPreview, character.board);
         character.board.boardPreview = boardPreview;
-        // Show the button that let's them confirm the skill board augmentation.
-        $('.js-confirmSkill').show();
+        // This will show the confirm skill button if this character is selected.
+        updateConfirmSkillButton();
     }
     unlockItemLevel(level.level);
     if (character === state.selectedCharacter) {
@@ -356,7 +356,7 @@ $('body').on('click', '.js-confirmSkill', function (event) {
     drawBoardBackground(character.boardContext, character.board);
     gainLevel(character.adventurer);
     updateAdventurer(character.adventurer);
-    $('.js-confirmSkill').hide();
+    updateConfirmSkillButton();
     drawMap();
     saveGame();
 });

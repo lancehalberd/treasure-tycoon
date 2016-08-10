@@ -7,9 +7,7 @@ function startArea(character, index) {
         character.levelCompleted = false;
         character.board.boardPreview = null;
         drawBoardBackground(character.boardContext, character.board);
-        if (character === state.selectedCharacter) {
-            $('.js-confirmSkill').hide();
-        }
+        updateConfirmSkillButton();
     }
     character.currentLevelKey = index;
     var levelCompleted = ifdefor(character.divinityScores[index], 0) !== 0;
@@ -124,10 +122,6 @@ function checkToStartNextWave(character) {
             updateRecallButton();
         }
     }
-}
-function updateRecallButton() {
-    var enabled = state.selectedCharacter.area && state.selectedCharacter.waveIndex < state.selectedCharacter.area.waves.length;
-    $('.js-recall').prop('disabled', !enabled);
 }
 function adventureLoop(character, delta) {
     if (timeStopLoop(character, delta)) {

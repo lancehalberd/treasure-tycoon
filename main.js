@@ -444,10 +444,17 @@ function setSelectedCharacter(character) {
     $('.js-repeat').prop('checked', character.replay);
     $('.js-fastforward').prop('checked', character.gameSpeed === 3);
     $('.js-slowMotion').prop('checked', character.loopSkip === 5);
-    $('.js-confirmSkill').toggle(!!character.board.boardPreview);
     $('.js-jewelBoard .js-skillCanvas').data('character', character);
     character.jewelsCanvas = $('.js-jewelBoard .js-skillCanvas')[0];
     updateRecallButton();
+    updateConfirmSkillButton();
+}
+function updateRecallButton() {
+    var enabled = state.selectedCharacter.area && state.selectedCharacter.waveIndex < state.selectedCharacter.area.waves.length;
+    $('.js-recall').prop('disabled', !enabled);
+}
+function updateConfirmSkillButton() {
+    $('.js-confirmSkill').toggle(!!state.selectedCharacter.board.boardPreview);
 }
 $('.js-charactersBox').on('click', '.js-character', function () {
     setSelectedCharacter($(this).data('character'));
