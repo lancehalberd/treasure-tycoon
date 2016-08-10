@@ -113,7 +113,7 @@ function initializeLevels() {
     addLevel({'name': 'Cemetery', 'level': 1, 'background': backgrounds.cemetery, 'specialLoot': [simpleRubyLoot], 'next': ['crypt'], 'skill': abilities.raiseDead,
              'board': {'fixed' : [{"k":"diamond","p":[134.75,120.47595264191645],"t":-120}], 'spaces' : [{"k":"triangle","p":[104.75,120.47595264191645],"t":-60},{"k":"triangle","p":[134.75,120.47595264191645],"t":0}]},
              'monsters': ['bat'],
-             'events': [['skeleton', 'skeleton'], ['skeleton', 'skeleton'], ['gnomecromancer'], ['skeleton', 'skeleton', 'skeleton', 'skeleton'], ['gnomecromancer', 'gnomecromancer']]});
+             'events': [['gnomecromancer', 'gnomecromancer'], ['skeleton', 'skeleton'], ['skeleton', 'skeleton'], ['gnomecromancer'], ['skeleton', 'skeleton', 'skeleton', 'skeleton'], ['gnomecromancer', 'gnomecromancer']]});
     addLevel({'name': 'Savannah', 'level': 1, 'background': backgrounds.field, 'specialLoot': [simpleRubyLoot], 'next': ['range'], 'skill': abilities.pet,
              'board': {'fixed' : [{"k":"diamond","p":[134.75,120.47595264191645],"t":-120}],'spaces' : [{"k":"triangle","p":[104.75,120.47595264191645],"t":-60},{"k":"triangle","p":[134.75,120.47595264191645],"t":0}]},
              'monsters': ['butterfly'],
