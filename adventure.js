@@ -7,7 +7,9 @@ function startArea(character, index) {
         character.levelCompleted = false;
         character.board.boardPreview = null;
         drawBoardBackground(character.boardContext, character.board);
-        $('.js-confirmSkill').hide();
+        if (character === state.selectedCharacter) {
+            $('.js-confirmSkill').hide();
+        }
     }
     character.currentLevelKey = index;
     var levelCompleted = ifdefor(character.divinityScores[index], 0) !== 0;
@@ -39,12 +41,12 @@ function startArea(character, index) {
     character.treasurePopups = [];
     character.textPopups = [];
     character.timeStopEffect = null;
-    $('.js-recall').prop('disabled', false);
     character.adventurer.actions.concat(character.adventurer.reactions).forEach(function (action) {
         action.readyAt = 0;
     });
     updateActorStats(character.adventurer);
     if (state.selectedCharacter === character) {
+        $('.js-recall').prop('disabled', false);
         drawAdventure(character);
     }
     saveGame();
