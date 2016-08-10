@@ -43,6 +43,9 @@ function jewelHelpText(jewel) {
 }
 function sellJewel(jewel) {
     if (jewel.fixed) return;
+    if (jewel.character && state.characters.indexOf(jewel.character) < 0) {
+        return;
+    }
     if ($dragHelper && jewel !== draggedJewel) {
         return;
     }
@@ -51,6 +54,7 @@ function sellJewel(jewel) {
     gain('coins', jewel.price);
     gain('anima', jewel.price);
     updateJewelCraftingOptions();
+    saveGame();
 }
 
 var overVertex = null;

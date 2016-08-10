@@ -146,6 +146,7 @@ function sellItem(item) {
         if (total <= 2) gain('anima', animaValue * total);
         else gain('anima', animaValue * total);
     }
+    saveGame();
 }
 function destroyItem(item) {
     if ($dragHelper) {
