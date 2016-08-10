@@ -183,7 +183,7 @@ button {
     position: relative;
     box-sizing: border-box;
     width: 240px;
-    max-height: 240px;
+    max-height: 250px;
     vertical-align: top;
     margin: 2px;
     margin-right: 1px;
