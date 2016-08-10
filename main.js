@@ -386,7 +386,6 @@ $('.js-showJewelsPanel').on('click', function (event) {
     showContext('jewel');
 });
 $('body').on('click', '.js-recall', function (event) {
-    var $panel = $(this).closest('.js-playerPanel');
     var character = state.selectedCharacter;
     // The last wave of an area is always the bonus treasure chest. In order to prevent
     // the player from missing this chest or opening it without clearing the level,
@@ -395,7 +394,7 @@ $('body').on('click', '.js-recall', function (event) {
     if (character.area && character.waveIndex >= character.area.waves.length) {
         return;
     }
-    $panel.find('.js-repeat').prop('checked', false);
+    $('.js-repeat').prop('checked', false);
     character.replay = false;
     returnToMap(character);
 });
