@@ -91,8 +91,6 @@ function createEndlessLevel(key, level) {
              'enemySkills': [], 'monsters': monsters, 'events': events, 'key' : key + level});
 }
 function initializeLevels() {
-    closedChestSource = {'image': images['gfx/chest-closed.png'], 'xOffset': 0, 'width': 32, 'height': 32};
-    openChestSource = {'image': images['gfx/chest-open.png'], 'xOffset': 0, 'width': 32, 'height': 32};
     // monsters are random monsters that can be added to any waves or present in random waves.
     // events are predefined sets of monsters that will appear in order throughout the level.
     // Initial levels
@@ -191,7 +189,7 @@ function initializeLevels() {
              'events': [['motherfly', 'motherfly'], ['gnomecromancer', 'gnomecromancer'],  ['gnomecromancer', 'gnomeWizard', 'gnomecromancer']]});
 
     // Corsair levels
-    addLevel({'name': 'Floor', 'level': 2, 'background': backgrounds.forest, 'specialLoot': [simpleJewelLoot],
+    addLevel({'name': 'Forest Floor', 'level': 2, 'background': backgrounds.forest, 'specialLoot': [simpleJewelLoot],
              'skill':  abilities.majorDexterity, 'board': crownBoard,
              'enemySkills': [abilities.heal, abilities.protect, abilities.majorDexterity],
              'monsters': ['motherfly', 'gnomecromancer'],

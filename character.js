@@ -83,8 +83,8 @@ var coreStatBonuses = {
     '%accuracy': [.002, '*', '{intelligence}'],
     '+magic:magicDamage': ['{intelligence}', '/', 10],
     '&maxHealth': '{bonusMaxHealth}',
-    'healthRegen': ['{maxHealth}', '/', 100],
-    'spell:power': [['{this.minMagicDamage}', '+' ,'{this.maxMagicDamage}'], '/' , 2]
+    '+healthRegen': ['{maxHealth}', '/', 100],
+    '+spell:power': [['{this.minMagicDamage}', '+' ,'{this.maxMagicDamage}'], '/' , 2]
 }
 
 function resetCharacterStats(character) {
@@ -351,17 +351,17 @@ function updateAdventurer(adventurer) {
     adventurer.onHitEffects = [];
     adventurer.onCritEffects = [];
     var adventurerBonuses = {
-        'maxHealth': 10 * (adventurer.level + adventurer.job.dexterityBonus + adventurer.job.strengthBonus + adventurer.job.intelligenceBonus),
-        'accuracy': 2 * adventurer.level,
-        'evasion': adventurer.level,
-        'block': adventurer.level,
-        'magicBlock': adventurer.level / 2,
-        'dexterity': adventurer.level * adventurer.job.dexterityBonus,
-        'strength': adventurer.level * adventurer.job.strengthBonus,
-        'intelligence': adventurer.level * adventurer.job.intelligenceBonus,
-        'critDamage': .5,
-        'critAccuracy': .5,
-        'speed': 250
+        '+maxHealth': 10 * (adventurer.level + adventurer.job.dexterityBonus + adventurer.job.strengthBonus + adventurer.job.intelligenceBonus),
+        '+accuracy': 2 * adventurer.level,
+        '+evasion': adventurer.level,
+        '+block': adventurer.level,
+        '+magicBlock': adventurer.level / 2,
+        '+dexterity': adventurer.level * adventurer.job.dexterityBonus,
+        '+strength': adventurer.level * adventurer.job.strengthBonus,
+        '+intelligence': adventurer.level * adventurer.job.intelligenceBonus,
+        '+critDamage': .5,
+        '+critAccuracy': .5,
+        '+speed': 250
     };
     adventurer.bonuses.push(adventurerBonuses);
     adventurer.bonuses.push(coreStatBonuses);
@@ -374,11 +374,11 @@ function updateAdventurer(adventurer) {
             adventurer.tags.push('unarmed');
         }
         var barehandBonsuses = {
-            'minDamage': adventurer.level,
-            'maxDamage': adventurer.level,
-            'range': .5,
-            'attackSpeed': 1,
-            'critChance': .01
+            '+minDamage': adventurer.level,
+            '+maxDamage': adventurer.level,
+            '+range': .5,
+            '+attackSpeed': 1,
+            '+critChance': .01
         }
         adventurer.bonuses.push(barehandBonsuses);
     } else {
@@ -519,7 +519,6 @@ function getStat(actor, stat) {
     });
     actor.bonuses.concat(ifdefor(actor.timedEffects, [])).concat(ifdefor(actor.fieldEffects, [])).forEach(function (bonus) {
         keys.forEach(function (key) {
-            plus += evaluateValue(actor, ifdefor(bonus[key], 0), actor);
             plus += evaluateValue(actor, ifdefor(bonus['+' + key], 0), actor);
             plus -= evaluateValue(actor, ifdefor(bonus['-' + key], 0), actor);
             flatBonus += evaluateValue(actor, ifdefor(bonus['&' + key], 0), actor);
@@ -547,9 +546,10 @@ function getStatForAction(actor, dataObject, stat, action) {
             console.log(base);
             throw new Error("Found buff with undefined stats");
         }
-        $.each(commonActionVariables, function (key) {
+        // Don't think I need to do common action variables for buffs...
+        /*$.each(commonActionVariables, function (key) {
             subObject[key] = getStatForAction(actor, base, key, action);
-        });
+        });*/
         $.each(base.stats, function (key, value) {
             if (key.charAt(0) === '$') {
                 key = key.substring(1);
@@ -583,7 +583,6 @@ function getStatForAction(actor, dataObject, stat, action) {
         keys.forEach(function (key) {
             if (usedKeys[key]) return;
             usedKeys[key] = true;
-            plus += evaluateValue(actor, ifdefor(bonus[key], 0), action);
             plus += evaluateValue(actor, ifdefor(bonus['+' + key], 0), action);
             plus -= evaluateValue(actor, ifdefor(bonus['-' + key], 0), action);
             flatBonus += evaluateValue(actor, ifdefor(bonus['&' + key], 0), action);

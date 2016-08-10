@@ -7,7 +7,7 @@ maps.northernWilderness = {
         'orchard': { 'x': 13, 'y': 3, 'unlocks': ['crevice']},
         'range': { 'x': 8, 'y': 2, 'unlocks': ['valley']},
         'crevice': { 'x': 15, 'y': 2, 'unlocks': ['valley']},
-        'valley': { 'x': 10, 'y': 1, 'unlocks': ['oceanoftrees6']},
+        'valley': { 'x': 10, 'y': 1, 'unlocks': []},
     },
     'exits': {
         'easternHighway': {'x': 12, 'y': 5, 'degrees': -60},
@@ -24,7 +24,7 @@ maps.easternHighway = {
         'road': { 'x': 4, 'y': 4, 'unlocks': ['tunnel']},
         'trail': { 'x': 6, 'y': 1, 'unlocks': ['mountain']},
         'tunnel': { 'x': 8, 'y': 3, 'unlocks': ['mountain']},
-        'mountain': { 'x': 11, 'y': 2, 'unlocks': ['eternalfields6']},
+        'mountain': { 'x': 11, 'y': 2, 'unlocks': []},
     },
     'exits': {
         'northernWilderness': {'x': 0, 'y': 0, 'degrees': 150},
@@ -40,7 +40,7 @@ maps.westCoast = {
         'temple': { 'x': 14, 'y': 4, 'unlocks': ['bayou']},
         'crypt': { 'x': 12, 'y': 1, 'unlocks': ['dungeon']},
         'bayou': { 'x': 10, 'y': 4, 'unlocks': ['dungeon']},
-        'dungeon': { 'x': 8, 'y': 2, 'unlocks': ['bottomlessdepths6']},
+        'dungeon': { 'x': 8, 'y': 2, 'unlocks': []},
     },
     'exits': {
         'easternHighway': {'x': 19, 'y': 5, 'degrees': 0},
@@ -51,7 +51,7 @@ maps.westCoast = {
 maps.lushForest = {
     'name': 'Lush Forest',
     'levels': {
-        'floor': { 'x': 2, 'y': 3, 'unlocks': ['shrubbery', 'mossbed','meadow','grove']},
+        'forestfloor': { 'x': 2, 'y': 3, 'unlocks': ['shrubbery', 'mossbed','meadow','grove']},
         'shrubbery': { 'x': 6, 'y': 1, 'unlocks': ['ruins']},
         'mossbed': { 'x': 4, 'y': 4, 'unlocks': ['riverbank']},
         'riverbank': { 'x': 8, 'y': 4, 'unlocks': ['ruins']},

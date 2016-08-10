@@ -1,7 +1,9 @@
 
 var enchantedMonsterBonuses = {'*maxHealth': 1.5, '*damage': 1.5, '*xpValue': 3, '*coins': 2, '*anima': 3};
-var imbuedMonsterBonuses = {'*maxHealth': 2.5, '*damage': 2.5, '*xpValue': 10, '*coins': 6, '*anima': 10};
-var bossMonsterBonuses = {'*maxHealth': 2, '*damage': 2, '*xpValue': 4, '+coins': 2, '*coins': 4, '+anima': 1, '*anima': 4, '$uncontrollable': 'Cannot be controlled.'};
+var imbuedMonsterBonuses = {'*maxHealth': 2, '*damage': 2, '*xpValue': 10, '*coins': 6, '*anima': 10};
+// To make bosses intimidating, give them lots of health and damage, but to keep them from being overwhelming,
+// scale down their health regen, attack speed and critical multiplier.
+var bossMonsterBonuses = {'*maxHealth': 3, '*damage': 2, '*attackSpeed': .75, '*critDamage': .5, '*critChance': .5, '*evasion': .5, '*healthRegen': .3, '*xpValue': 4, '+coins': 2, '*coins': 4, '+anima': 1, '*anima': 4, '$uncontrollable': 'Cannot be controlled.'};
 var monsterPrefixes = [
     [
         {'name': 'Hawkeye', 'bonuses': {'+accuracy': [5, 10]}},
@@ -201,28 +203,28 @@ function getMonsterBonuses(monster) {
     var growth = monster.level - 1;
     return {
         // Health scales linearly to level 10, then 10% a level.
-        'maxHealth': (growth <= 10) ? (8 + 20 * growth) : 200 * Math.pow(1.1, growth - 10),
-        'range': 1,
-        'minDamage': Math.round(.9 * (3 + 8 * growth)),
-        'maxDamage': Math.round(1.1 * (3 + 8 * growth)),
-        'minMagicDamage': Math.round(.9 * (1 + 2 * growth)),
-        'maxMagicDamage': Math.round(1.1 * (1 + 2 * growth)),
-        'critChance': .05,
-        'critDamage': .5,
-        'critAccuracy': 1,
-        'attackSpeed': 1 + .05 * growth,
-        'speed': 100,
-        'accuracy': 5 + 3 * growth,
-        'evasion': 1 + growth * .5,
-        'block': 2 * growth,
-        'magicBlock': growth,
-        'armor': 2 * growth,
-        'magicResist': .001 * growth,
-        'strength': 5 * growth,
-        'intelligence': 5 * growth,
-        'dexterity': 5 * growth,
-        'coins': Random.range(1, (growth + 1) * (growth + 1) * 4),
-        'anima': Random.range(1, (growth + 1) * (growth + 1))
+        '+maxHealth': (growth <= 10) ? (8 + 20 * growth) : 200 * Math.pow(1.1, growth - 10),
+        '+range': 1,
+        '+minDamage': Math.round(.9 * (3 + 8 * growth)),
+        '+maxDamage': Math.round(1.1 * (3 + 8 * growth)),
+        '+minMagicDamage': Math.round(.9 * (1 + 2 * growth)),
+        '+maxMagicDamage': Math.round(1.1 * (1 + 2 * growth)),
+        '+critChance': .05,
+        '+critDamage': .5,
+        '+critAccuracy': 1,
+        '+attackSpeed': 1 + .05 * growth,
+        '+speed': 100,
+        '+accuracy': 5 + 3 * growth,
+        '+evasion': 1 + growth * .5,
+        '+block': 2 * growth,
+        '+magicBlock': growth,
+        '+armor': 2 * growth,
+        '+magicResist': .001 * growth,
+        '+strength': 5 * growth,
+        '+intelligence': 5 * growth,
+        '+dexterity': 5 * growth,
+        '+coins': Random.range(1, (growth + 1) * (growth + 1) * 4),
+        '+anima': Random.range(1, (growth + 1) * (growth + 1))
     };
 }
 function initalizeMonsters() {
@@ -285,7 +287,7 @@ function initalizeMonsters() {
     //console.log(JSON.stringify(makeMonster('skeleton', 1)));
     addMonster('butterfly', {'name': 'Butterfly', 'source': butterflySource,
         'implicitBonuses': {'*maxHealth': 1.5, '+range': 4, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5, '*accuracy': 2,
-                            '*minDamage': .8, '*maxDamage': .8, '*attackSpeed': .5, '*magicDamage': .5,
+                            '*magicDamage': .5,
                             '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
                             '*speed': .6}, 'tags': ['ranged']
     });

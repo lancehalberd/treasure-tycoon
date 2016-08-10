@@ -86,6 +86,8 @@ async.mapSeries([
         images[imageKey + '-enchanted'] = makeTintedImage(images[imageKey], '#af0');
         images[imageKey + '-imbued'] = makeTintedImage(images[imageKey], '#c6f');
     });
+    closedChestSource = {'image': images['gfx/chest-closed.png'], 'xOffset': 0, 'width': 32, 'height': 32};
+    openChestSource = {'image': images['gfx/chest-open.png'], 'xOffset': 0, 'width': 32, 'height': 32};
     showContext('adventure');
     initalizeMonsters();
     initializeBackground();
