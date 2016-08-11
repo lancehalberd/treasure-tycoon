@@ -398,7 +398,7 @@ $(document).on('keydown', function(event) {
         });
         unlockItemLevel(73);
         state.characters.forEach(function (character) {
-            $.each(levels, function (key) {
+            $.each(map, function (key) {
                 unlockMapLevel(key);
             });
         });
@@ -406,8 +406,12 @@ $(document).on('keydown', function(event) {
     }
     if (event.which == 69) { // 'e'
         editingMap = !editingMap;
-        $('.js-mainCanvasContainer').css('height', editingMap ? '800px' : '240px');
-        $('.js-mainCanvas').attr('height', editingMap ? '800' : '240');
+        mapHeight = editingMap ? 600 : 240;
+        $('.js-pointsBar').toggle(!editingMap);
+        $('.js-mainCanvasContainer').css('height', editingMap ? '600px' : '240px');
+        $('.js-mainCanvas').attr('height', editingMap ? '600' : '240');
+        // Image smoothing seems to get enabled again after changing the canvas size, so disable it again.
+        $('.js-mainCanvas')[0].getContext('2d').imageSmoothingEnabled = false;
         drawMap();
     }
     if (event.which == 76) { // 'l'

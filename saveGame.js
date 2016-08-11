@@ -18,9 +18,8 @@ function exportState(state) {
     data.coins = state.coins;
     data.anima = state.anima;
     data.characters = state.characters.map(exportCharacter);
-    data.areas = copy(state.areas);
+    data.visibleLevels = copy(state.visibleLevels);
     data.maxCraftingLevel = state.maxCraftingLevel;
-    data.currentArea = state.currentArea;
     data.applications = [];
     $('.js-heroApplication').each(function () {
         var application = $(this).data('character');
@@ -55,7 +54,6 @@ function importState(stateData) {
     state.fame = stateData.fame;
     state.coins = stateData.coins;
     state.anima = stateData.anima;
-    state.currentArea = stateData.currentArea;
     // Grab one slot to serve as the template for the applications we will add.
     var $slot = $('.js-heroApplication').first().detach();
     // Clean up all the slots on the page.
@@ -75,14 +73,21 @@ function importState(stateData) {
     // Clean up the last slot.
     $slot.data('character', null).remove();
     state.characters = [];
-    state.areas = copy(stateData.areas);
+    state.visibleLevels = copy(ifdefor(stateData.visibleLevels, {}));
     state.maxCraftingLevel = stateData.maxCraftingLevel;
     state.characters = [];
     $('.js-charactersBox').empty();
     var characters = stateData.characters.map(importCharacter);
     characters.forEach(function (character) {
         state.characters.push(character);
-        $('.js-charactersBox').append(character.$characterCanvas)
+        for (var levelKey of Object.keys(character.divinityScores)) {
+            var level = map[levelKey];
+            state.visibleLevels[levelKey] = true;
+            for (var nextLevelKey of level.unlocks) {
+                state.visibleLevels[nextLevelKey] = true;
+            }
+        }
+        $('.js-charactersBox').append(character.$characterCanvas);
     });
 
     stateData.jewels.forEach(function (jewelData) {

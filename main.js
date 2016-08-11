@@ -25,8 +25,7 @@ function points(type, value) {
 var fps = 6;
 var state = {
     selectedCharacter: null,
-    currentArea: null,
-    areas: {}, // {'northernWilderness': {'grove': true, 'orchard': true}}
+    visibleLevels: {}, // {'grove': true, 'orchard': true}
     characters: [],
     fame: 0,
     coins: 0,
@@ -123,6 +122,7 @@ async.mapSeries([
     centerShapesInRectangle([testShape], rectangle(0, 0, jewelButtonCanvas.width, jewelButtonCanvas.height));
     drawJewel(jewelButtonCanvas.getContext('2d'), testShape, [0, 0], 'black');
     loadOrCreateSavedData();
+    centerMapOnLevel(map[state.selectedCharacter.currentLevelKey], true);
     drawMap();
 });
 function makeTintedImage(image, tint) {
@@ -179,8 +179,12 @@ function mainLoop() {
         character.characterContext.clearRect(0, 0, 32, 64);
         character.characterContext.drawImage(character.adventurer.personCanvas, walkLoop[frame] * 32, 0 , 32, 64, 0, -10, 32, 64);
     });
-    if (currentContext === 'adventure' && state.selectedCharacter.area) {
-        drawAdventure(state.selectedCharacter);
+    if (currentContext === 'adventure') {
+        if (state.selectedCharacter.area) drawAdventure(state.selectedCharacter);
+        else {
+            updateMap();
+            drawMap();
+        }
     }
     if (currentContext === 'adventure') {
         $('.js-heroApplication').each(function () {
@@ -309,7 +313,11 @@ function checkRemoveToolTip() {
     if (overJewel || draggedJewel || overCraftingItem) {
         return;
     }
-    if (canvasPopupTarget && !canvasPopupTarget.isDead && (canvasPopupTarget.character && canvasPopupTarget.character.area)) {
+    if (draggedMap) {
+        removeToolTip();
+        return;
+    }
+    if (canvasPopupTarget && !ifdefor(canvasPopupTarget.isDead) && (canvasPopupTarget.character && canvasPopupTarget.character.area)) {
         if (isPointInRect(canvasCoords[0], canvasCoords[1], canvasPopupTarget.left, canvasPopupTarget.top, canvasPopupTarget.width, canvasPopupTarget.height)) {
             return;
         }
@@ -319,12 +327,6 @@ function checkRemoveToolTip() {
             if (isPointInRect(canvasCoords[0], canvasCoords[1], canvasPopupTarget.left, canvasPopupTarget.top, canvasPopupTarget.width, canvasPopupTarget.height)) {
                 return;
             }
-        }
-        if (!canvasPopupTarget.overShrine && isPointInRect(canvasCoords[0], canvasCoords[1], canvasPopupTarget.x * 40, canvasPopupTarget.y * 40, 40, 40)) {
-            return;
-        }
-        if (canvasPopupTarget.overShrine && isPointInRect(canvasCoords[0], canvasCoords[1], canvasPopupTarget.x * 40 - 12, canvasPopupTarget.y * 40 - 12, 24, 24)) {
-            return;
         }
     }
     if ($popupTarget && $popupTarget.closest('body').length && isMouseOverElement($popupTarget)) {
@@ -423,11 +425,7 @@ function showContext(context) {
 }
 
 function setSelectedCharacter(character) {
-    if (state.selectedCharacter === character) {
-        return;
-    }
     state.selectedCharacter = character;
-    state.currentArea = levelsToAreas[character.currentLevelKey];
     var adventurer = character.adventurer;
     updateAdventurer(adventurer);
     // update the map.
@@ -449,6 +447,7 @@ function setSelectedCharacter(character) {
     $('.js-slowMotion').prop('checked', character.loopSkip === 5);
     $('.js-jewelBoard .js-skillCanvas').data('character', character);
     character.jewelsCanvas = $('.js-jewelBoard .js-skillCanvas')[0];
+    centerMapOnLevel(map[character.currentLevelKey]);
     updateRecallButton();
     updateConfirmSkillButton();
 }

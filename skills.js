@@ -278,6 +278,7 @@ var abilities = {
     'summonSkeleton': {'name': 'Summon Skeleton', 'bonuses': {'+intelligence': 5}, 'action':
             {'type': 'minion', 'target': 'none', 'monsterKey': 'skeleton', 'tags': ['spell'], 'stats': {'limit': 2, 'cooldown': 15, 'healthBonus': .5, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1},
             'helpText': 'Raise a skeleton to fight for you.'}},
+    'rangeAndAttackSpeed': {'bonuses': {'+range': 2, '+attackSpeed': .5}}
 };
 var testJob;// = 'blackbelt';
 var testAbilities = [];
