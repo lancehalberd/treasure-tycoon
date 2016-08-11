@@ -81,7 +81,7 @@ async.mapSeries([
     'gfx/militaryIcons.png', // http://opengameart.org/content/140-military-icons-set-fixed
     'gfx/oldMap.png' // http://subtlepatterns.com/old-map/
 ], loadImage, function(err, results){
-    ['gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png'].forEach(function (imageKey) {
+    ['gfx/bat.png', 'gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png'].forEach(function (imageKey) {
         images[imageKey + '-enchanted'] = makeTintedImage(images[imageKey], '#af0');
         images[imageKey + '-imbued'] = makeTintedImage(images[imageKey], '#c6f');
     });
