@@ -42,7 +42,7 @@ function instantiateLevel(levelData, completed) {
     return {
         'base': levelData,
         'level': level,
-        'enemySkills': levelData.enemySkills.map(function (abilityKey) { return abilities[abilityKey];}),
+        'enemySkills': ifdefor(levelData.enemySkills, []).map(function (abilityKey) { return abilities[abilityKey];}),
         'waves': waves,
         'background': backgrounds[levelData.background]
     };
