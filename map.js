@@ -13,7 +13,7 @@ var map = {
     'trail': {"x":16,"y":3,"unlocks":["mountain"],"name":"Trail","level":3,"background":"field","specialLoot":["simpleRubyLoot"],"skill":"ferocity","board":"halfHexBoard","enemySkills":["ferocity"],"monsters":["caterpillar","butterfly"],"events":[["caterpillar","caterpillar"],["motherfly"],["caterpillar","caterpillar","caterpillar","caterpillar"],["lightningBug","motherfly"]]},
     'tunnel': {"x":14,"y":5,"unlocks":["mountain"],"name":"Tunnel","level":4,"background":"cave","specialLoot":["simpleSaphireLoot"],"skill":"hook","board":"thirdHexBoard","enemySkills":[],"monsters":["undeadWarrior","giantSkeleton"],"events":[["skeleton","undeadWarrior"],["giantSkeleton","giantSkeleton"],["undeadWarrior","undeadWarrior","dragon"],["frostGiant","frostGiant"]]},
     'mountain': {"x":17,"y":5,"unlocks":[],"name":"Mountain","level":5,"background":"field","specialLoot":["simpleRubyLoot"],"skill":"majorStrength","board":"pieBoard","enemySkills":["majorStrength"],"monsters":["dragon","giantSkeleton"],"events":[["undeadWarrior","undeadWarrior"],["butcher"],["undeadWarrior","undeadWarrior","dragon"],["butcher","dragon","gnomeWizard"]]},
-    'cave': {"x":8,"y":1,"unlocks":["cemetery","temple","meadow"],"name":"Cave","level":1,"background":"cave","specialLoot":["simpleSaphireLoot"],"skill":"minorIntelligence","board":null,"enemySkills":["minorIntelligence"],"monsters":["gnome","bat"],"events":[["bat","gnome"],["bat","bat"],["gnome","gnome"],["giantSkeleton"]]},
+    'cave': {"x":8,"y":1,"unlocks":["cemetery","temple","meadow"],"name":"Cave","level":1,"background":"cave","specialLoot":["simpleSaphireLoot"],"skill":"minorIntelligence","board":"tripleTriangles","enemySkills":["minorIntelligence"],"monsters":["gnome","bat"],"events":[["bat","gnome"],["bat","bat"],["gnome","gnome"],["giantSkeleton"]]},
     'cemetery': {"x":6,"y":1,"unlocks":["crypt"],"name":"Cemetery","level":1,"background":"cemetery","specialLoot":["simpleRubyLoot"],"skill":"raiseDead","board":"smallFangBoard","monsters":["bat"],"events":[["gnomecromancer","gnomecromancer"],["skeleton","skeleton"],["skeleton","skeleton"],["gnomecromancer"],["skeleton","skeleton","skeleton","skeleton"],["gnomecromancer","gnomecromancer"]]},
     'temple': {"x":7,"y":3,"unlocks":["bayou"],"name":"Temple","level":2,"background":"cave","specialLoot":["simpleSaphireLoot"],"skill":"heal","board":"triforceBoard","enemySkills":["heal"],"monsters":["gnome","butterfly"],"events":[["dragon"]]},
     'crypt': {"x":4,"y":2,"unlocks":["dungeon"],"name":"Crypt","level":3,"background":"cemetery","specialLoot":["simpleSaphireLoot"],"skill":"resonance","board":"triforceBoard","enemySkills":["resonance"],"monsters":["gnome","butterfly"],"events":[["dragon"],["gnomeWizard"]]},
@@ -142,9 +142,6 @@ function getMapPopupTargetProper(x, y) {
         }
         return newMapTarget;
     }
-    if (!ifdefor(newMapTarget.isShrine)) {
-        return null;
-    }
     var shrine = newMapTarget;
     var divinityScore = ifdefor(state.selectedCharacter.divinityScores[shrine.level.levelKey], 0);
     if (!(divinityScore > 0)) {
@@ -211,15 +208,17 @@ $('.js-mouseContainer').on('mousedown', '.js-mainCanvas', function (event) {
 });
 $(document).on('mouseup',function (event) {
     mapDragX = mouseDragY = null;
-    draggedMap = false;
     if (editingMap) {
         selectionStartPoint = null;
         clickedMapNode = null;
     }
 });
 $('.js-mouseContainer').on('click', '.js-mainCanvas', function (event) {
+    if (draggedMap) {
+        draggedMap = false;
+        return;
+    }
     if (!editingMap) return;
-    if (draggedMap) return;
     var x = event.pageX - $(this).offset().left;
     var y = event.pageY - $(this).offset().top;
     var newMapTarget = getMapTarget(x, y);

@@ -241,7 +241,19 @@ $('.js-mouseContainer').on('mouseover mousemove', '.js-mainCanvas', function (ev
     var x = event.pageX - $(this).offset().left;
     var y = event.pageY - $(this).offset().top;
     canvasCoords = [x, y];
-    if ($popup) {
+    checkToShowAdventureToolTip(x, y);
+});
+$('.js-mouseContainer').on('click', '.js-mainCanvas', function (event) {
+    var x = event.pageX - $(this).offset().left;
+    var y = event.pageY - $(this).offset().top;
+    canvasCoords = [x, y];
+    if (!state.selectedCharacter.area) {
+        clickMapHandler(x, y);
+    }
+});
+$('.js-mouseContainer').on('mouseover mousemove', checkToShowJewelToolTip);
+function checkToShowAdventureToolTip(x, y) {
+    if ($popup || currentContext !== 'adventure') {
         return;
     }
     canvasPopupTarget = null;
@@ -259,23 +271,11 @@ $('.js-mouseContainer').on('mouseover mousemove', '.js-mainCanvas', function (ev
     if (!canvasPopupTarget) {
         return;
     }
-    x = event.pageX - $('.js-mouseContainer').offset().left;
-    y = event.pageY - $('.js-mouseContainer').offset().top;
-    //console.log([event.pageX,event.pageY]);
     $popup = $tag('div', 'toolTip js-toolTip', canvasPopupTarget.helptext);
     $popup.data('canvasTarget', canvasPopupTarget);
-    updateToolTip(x, y, $popup);
     $('.js-mouseContainer').append($popup);
-});
-$('.js-mouseContainer').on('click', '.js-mainCanvas', function (event) {
-    var x = event.pageX - $(this).offset().left;
-    var y = event.pageY - $(this).offset().top;
-    canvasCoords = [x, y];
-    if (!state.selectedCharacter.area) {
-        clickMapHandler(x, y);
-    }
-});
-$('.js-mouseContainer').on('mouseover mousemove', checkToShowJewelToolTip);
+    updateToolTip(mousePosition[0], mousePosition[1], $popup);
+}
 function checkToShowJewelToolTip() {
     var jewel = draggedJewel || overJewel;
     if (!jewel) {
@@ -304,9 +304,7 @@ $('.js-mouseContainer').on('mousemove', function (event) {
     if (!$popup) {
         return;
     }
-    var x = event.pageX - $('.js-mouseContainer').offset().left;
-    var y = event.pageY - $('.js-mouseContainer').offset().top;
-    updateToolTip(x, y, $popup);
+    updateToolTip(mousePosition[0], mousePosition[1], $popup);
 });
 
 function checkRemoveToolTip() {
@@ -317,15 +315,17 @@ function checkRemoveToolTip() {
         removeToolTip();
         return;
     }
-    if (canvasPopupTarget && !ifdefor(canvasPopupTarget.isDead) && (canvasPopupTarget.character && canvasPopupTarget.character.area)) {
-        if (isPointInRect(canvasCoords[0], canvasCoords[1], canvasPopupTarget.left, canvasPopupTarget.top, canvasPopupTarget.width, canvasPopupTarget.height)) {
-            return;
-        }
-    }
-    if (canvasPopupTarget && !canvasPopupTarget.character) {
-        if (ifdefor(canvasPopupTarget.top) !== null) {
+    if (currentContext === 'adventure') {
+        if (canvasPopupTarget && !ifdefor(canvasPopupTarget.isDead) && (canvasPopupTarget.character && canvasPopupTarget.character.area)) {
             if (isPointInRect(canvasCoords[0], canvasCoords[1], canvasPopupTarget.left, canvasPopupTarget.top, canvasPopupTarget.width, canvasPopupTarget.height)) {
                 return;
+            }
+        }
+        if (currentMapTarget && !state.selectedCharacter.area) {
+            if (ifdefor(currentMapTarget.top) !== null) {
+                if (isPointInRect(canvasCoords[0], canvasCoords[1], currentMapTarget.left, currentMapTarget.top, currentMapTarget.width, currentMapTarget.height)) {
+                    return;
+                }
             }
         }
     }
@@ -333,6 +333,7 @@ function checkRemoveToolTip() {
         return;
     }
     removeToolTip();
+    checkToShowAdventureToolTip(canvasCoords[0], canvasCoords[1]);
 }
 function removeToolTip() {
     $('.js-toolTip').remove();
