@@ -91,7 +91,6 @@ async.mapSeries([
     showContext('adventure');
     initalizeMonsters();
     initializeBackground();
-    initializeLevels();
     initializeCraftingImage();
     initializeCoins();
     initializeProjectileAnimations();

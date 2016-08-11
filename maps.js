@@ -153,7 +153,7 @@ function drawMap() {
     var silverSource = {'image': images['gfx/militaryIcons.png'], 'xOffset': 85, 'yOffset': 40, 'width': 16, 'height': 16};
     var goldSource = {'image': images['gfx/militaryIcons.png'], 'xOffset': 68, 'yOffset': 40, 'width': 16, 'height': 16};
     $.each(currentArea.levels, function (levelKey, levelData){
-        var level = levels[levelKey];
+        var level = map[levelKey];
         // Don't draw levels that have not been unlocked yet.
         if (!state.areas[state.currentArea][levelKey]) {
             return;
@@ -243,12 +243,13 @@ function getMapPopupTarget(x, y) {
             return true;
         }
         if (isPointInRect(x, y, levelData.x * 40, levelData.y * 40, 40, 40)) {
-            var level = levels[levelKey];
+            var level = map[levelKey];
             levelData.helptext = '<p>Level ' + level.level + ' ' + level.name +'</p><br/>';
-            if (state.selectedCharacter.adventurer.abilities.indexOf(level.skill) < 0) {
-                levelData.helptext += '<p style="font-weight: bold">Visit shrine to learn: ' + level.skill.name + '</p>';
+            var skill = abilities[level.skill];
+            if (state.selectedCharacter.adventurer.abilities.indexOf(skill) < 0) {
+                levelData.helptext += '<p style="font-weight: bold">Visit shrine to learn: ' + skill.name + '</p>';
             } else {
-                levelData.helptext += '<p style="font-size: 12">' + state.selectedCharacter.adventurer.name + ' has already learned:</p>' + level.skill.name + '</p>';
+                levelData.helptext += '<p style="font-size: 12">' + state.selectedCharacter.adventurer.name + ' has already learned:</p>' + skill.name + '</p>';
             }
 
             currentMapTarget = levelData;
@@ -257,7 +258,7 @@ function getMapPopupTarget(x, y) {
         }
         var divinityScore = ifdefor(state.selectedCharacter.divinityScores[levelKey], 0);
         if (divinityScore > 0 && isPointInRect(x, y, levelData.x * 40 - 12, levelData.y * 40 - 12, 24, 24)) {
-            var level = levels[levelKey];
+            var level = map[levelKey];
             levelData.helptext = ''
             if (state.selectedCharacter.currentLevelKey !== levelKey || !state.selectedCharacter.levelCompleted) {
                 levelData.helptext += '<p style="font-size: 12">An adventurer can only visit the shrine for the last adventure they completed.</p><br/>';
@@ -266,10 +267,11 @@ function getMapPopupTarget(x, y) {
             if (state.selectedCharacter.adventurer.abilities.indexOf(level.skill) < 0  && state.selectedCharacter.divinity < totalCost) {
                 levelData.helptext += '<p style="font-size: 12">' + state.selectedCharacter.adventurer.name + ' does not have enough divinity to learn the skill from this shrine.</p><br/>';
             }
+            var skill = abilities[level.skill];
             if (state.selectedCharacter.adventurer.abilities.indexOf(level.skill) < 0) {
-                levelData.helptext += '<p style="font-weight: bold">Spend ' + totalCost + ' divinity at this shrine to learn:</p>' + abilityHelpText(level.skill, state.selectedCharacter);
+                levelData.helptext += '<p style="font-weight: bold">Spend ' + totalCost + ' divinity at this shrine to learn:</p>' + abilityHelpText(skill, state.selectedCharacter);
             } else {
-                levelData.helptext += '<p style="font-size: 12px">' + state.selectedCharacter.adventurer.name + ' has already learned:</p>' + abilityHelpText(level.skill, state.selectedCharacter);
+                levelData.helptext += '<p style="font-size: 12px">' + state.selectedCharacter.adventurer.name + ' has already learned:</p>' + abilityHelpText(skill, state.selectedCharacter);
             }
 
             currentMapTarget = levelData;
@@ -297,7 +299,7 @@ function getMapPopupTarget(x, y) {
 
 function clickMapHandler(x, y) {
     if (editingMap) {
-        clickNewMapHandler(x, y);
+        return clickNewMapHandler(x, y);
     }
     if (!currentMapTarget) return;
     if (currentMapTarget.areaKey) {
@@ -312,7 +314,7 @@ function clickMapHandler(x, y) {
 
 function completeLevel(character) {
     // If the character beat the last adventure open to them, unlock the next one
-    var level = levels[character.currentLevelKey];
+    var level = map[character.currentLevelKey];
     increaseAgeOfApplications();
     var oldDivinityScore = ifdefor(state.selectedCharacter.divinityScores[character.currentLevelKey], 0);
     if (oldDivinityScore === 0) {
@@ -337,8 +339,14 @@ function completeLevel(character) {
     character.levelCompleted = true;
 
     // This code will be used when they activate a shrine
-    if (character.adventurer.abilities.indexOf(level.skill) < 0 && character.divinity >= totalCostForNextLevel(character, level)) {
-        var boardPreview = readBoardFromData(level.board, character, level.skill);
+    if (level.board && character.adventurer.abilities.indexOf(level.skill) < 0 && character.divinity >= totalCostForNextLevel(character, level)) {
+        if (!boards[level.board]) {
+            throw new Error("Could not find board: " + level.board);
+        }
+        if (!abilities[level.skill]) {
+            throw new Error("Could not find ability: " + level.skill);
+        }
+        var boardPreview = readBoardFromData(boards[level.board], character, abilities[level.skill]);
         centerShapesInRectangle(boardPreview.fixed.map(jewelToShape).concat(boardPreview.spaces), rectangle(0, 0, character.boardCanvas.width, character.boardCanvas.height));
         snapBoardToBoard(boardPreview, character.board);
         character.board.boardPreview = boardPreview;
@@ -353,7 +361,7 @@ function completeLevel(character) {
 }
 $('body').on('click', '.js-confirmSkill', function (event) {
     var character = state.selectedCharacter;
-    var level = levels[character.currentLevelKey];
+    var level = map[character.currentLevelKey];
     var skill = character.board.boardPreview.fixed[0].ability;
     character.divinity -= totalCostForNextLevel(character, level);
     character.adventurer.abilities.push(skill);

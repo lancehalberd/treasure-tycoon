@@ -184,6 +184,13 @@ var simpleRubyLoot = jewelLoot(basicShapeTypes, [1, 1], [[90, 100], [5, 10], [5,
 var simpleEmeraldLoot = jewelLoot(basicShapeTypes, [1, 1], [[5, 10], [90,100], [5, 10]], false);
 var simpleSaphireLoot = jewelLoot(basicShapeTypes, [1, 1], [[5, 10], [5, 10], [90, 100]], false);
 
+var loots = {
+    'smallJewelLoot': smallJewelLoot,
+    'simpleJewelLoot': simpleJewelLoot,
+    'simpleRubyLoot': simpleRubyLoot,
+    'simpleEmeraldLoot': simpleEmeraldLoot,
+    'simpleSaphireLoot': simpleSaphireLoot
+};
 
 function firstChest(loot) {
     return treasureChest(loot, closedChestSource, openChestSource);
@@ -191,7 +198,7 @@ function firstChest(loot) {
 function backupChest(loot) {
     return treasureChest(loot, openChestSource, openChestSource);
 }
-var closedChestSource, openChestSource; // initialized in initializeLevels
+var closedChestSource, openChestSource; // initialized when images load.
 function treasureChest(loot, closedImage, openImage) {
     var self = {
         'x': 0,

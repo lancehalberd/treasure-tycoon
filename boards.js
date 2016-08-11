@@ -52,6 +52,7 @@ var squareBoard = {
         {"k":"rhombus","p":[144.98076211353316,121],"t":60},{"k":"rhombus","p":[73.99999999999999,50.01923788646685],"t":60}]
 };
 
+
 var classBoards = {
     'juggler': board([{"k":"triangle","p":[274,113],"t":60},{"k":"diamond","p":[274,113],"t":-60},{"k":"diamond","p":[244,113],"t":0},{"k":"diamond","p":[289,138.98076211353316],"t":60}]),
     'ranger': board([{"k":"triangle","p":[274,113],"t":60},{"k":"diamond","p":[244,164.96152422706632],"t":-60},{"k":"diamond","p":[304,113],"t":0},{"k":"diamond","p":[274,113],"t":-60},
@@ -103,4 +104,43 @@ var classBoards = {
         'spaces': [{"k":"hexagon","p":[315,225.98076211353316],"t":0},{"k":"hexagon","p":[375,225.98076211353316],"t":0},{"k":"hexagon","p":[405,174.01923788646684],"t":0},
                    {"k":"hexagon","p":[375,122.05771365940052],"t":0},{"k":"hexagon","p":[315,122.05771365940052],"t":0},{"k":"hexagon","p":[285,174.01923788646684],"t":0}]
     }
+};
+
+var boards = {
+    'smallFangBoard': {'fixed' : [{"k":"diamond","p":[134.75,120.47595264191645],"t":-120}],'spaces' : [{"k":"triangle","p":[104.75,120.47595264191645],"t":-60},{"k":"triangle","p":[134.75,120.47595264191645],"t":0}]},
+    'doubleDiamonds': {'fixed' : [{"k":"diamond","p":[161,75],"t":0}],'spaces' : [{"k":"diamond","p":[131,75],"t":-60}]},
+    'triforceBoard': triforceBoard,
+    'halfHexBoard': halfHexBoard,
+    'spikeBoard': spikeBoard,
+    'thirdHexBoard': thirdHexBoard,
+    'hourGlassBoard': hourGlassBoard,
+    'fangBoard': fangBoard,
+    'petalBoard': petalBoard,
+    'pieBoard': pieBoard,
+    'helmBoard': helmBoard,
+    'crownBoard': crownBoard,
+    'triangleBoard': triangleBoard,
+    'diamondBoard': diamondBoard,
+    'diamondBoard2': diamondBoard2,
+    'hexBoard': hexBoard,
+    'squareBoard': squareBoard,
+    'juggler': classBoards.juggler,
+    'ranger': classBoards.ranger,
+    'sniper': classBoards.sniper,
+    'corsair': classBoards.corsair,
+    'assassin': classBoards.assassin,
+    'ninja': classBoards.ninja,
+    'blackbelt': classBoards.blackbelt,
+    'warrior': classBoards.warrior,
+    'samurai': classBoards.samurai,
+    'paladin': classBoards.paladin,
+    'darkknight': classBoards.darkknight,
+    'enhancer': classBoards.enhancer,
+    'priest': classBoards.priest,
+    'wizard': classBoards.wizard,
+    'sorcerer': classBoards.sorcerer,
+    'dancer': classBoards.dancer,
+    'bard': classBoards.bard,
+    'sage': classBoards.sage,
+    'master': classBoards.master
 };

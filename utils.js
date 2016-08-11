@@ -192,3 +192,38 @@ function rectangle(left, top, width, height) {
 function rectangleCenter(rectangle) {
     return [rectangle.left + rectangle.width / 2, rectangle.top + rectangle.height / 2];
 }
+function rectangleFromPoints(A, B) {
+    var left = Math.min(A.x, B.x);
+    var top = Math.min(A.y, B.y);
+    return rectangle(left, top, Math.abs(A.x - B.x), Math.abs(A.y - B.y));
+}
+
+function drawRunningAnts(context, rectangle) {
+    context.save();
+    context.strokeStyle = 'black';
+    var frame = Math.floor(now() / 80) % 10;
+    if (frame < 5) {
+        context.setLineDash([frame, 5, 5 - frame, 0]);
+    } else {
+        context.setLineDash([0, frame - 5, 5, 10 - frame]);
+    }
+    context.strokeRect(rectangle.left, rectangle.top, rectangle.width, rectangle.height);
+    context.strokeStyle = 'white';
+    frame = (frame + 5) % 10;
+    if (frame < 5) {
+        context.setLineDash([frame, 5, 5 - frame, 0]);
+    } else {
+        context.setLineDash([0, frame - 5, 5, 10 - frame]);
+    }
+    context.strokeRect(rectangle.left, rectangle.top, rectangle.width, rectangle.height);
+    context.restore();
+}
+
+function objectIndexOf(object, value, defaultValue) {
+    for (var key of Object.keys(object)) {
+        if (object[key] === value) {
+            return key;
+        }
+    }
+    return ifdefor(defaultValue);
+}

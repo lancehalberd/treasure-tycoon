@@ -1,5 +1,5 @@
 function startArea(character, index) {
-    if (!levels[index]) {
+    if (!map[index]) {
         throw new Error('No level found for ' + index);
     }
 
@@ -11,7 +11,7 @@ function startArea(character, index) {
     }
     character.currentLevelKey = index;
     var levelCompleted = ifdefor(character.divinityScores[index], 0) !== 0;
-    character.area = instantiateLevel(levels[index], levelCompleted);
+    character.area = instantiateLevel(map[index], levelCompleted);
     character.waveIndex = 0;
     character.adventurer.x = 0;
     character.adventurer.stunned = 0;
