@@ -61,14 +61,15 @@ function drawActor(character, actor, index) {
         mainContext.globalAlpha = 1 - (actor.time - actor.timeOfDeath);
     }
     if (actor.personCanvas) drawAdventurer(character, actor, index);
-    else if (actor.image) drawMonster(character, actor, index);
-    else {
-        console.log("Unable to draw actor was neither monster nor adventurer?");
-        console.log(actor);
-    }
+    else drawMonster(character, actor, index);
     mainContext.restore();
 }
 function drawMonster(character, monster, index) {
+    if (!monster.image) {
+        console.log("Found monster without an image. Last time this happened was because the -enchanged/-imbued version of the image was not being created at load time.");
+        console.log(monster);
+        return;
+    }
     var cameraX = character.cameraX;
     var context = mainContext;
     var fps = ifdefor(monster.base.fpsMultiplier, 1) * 3 * monster.speed / 100;
