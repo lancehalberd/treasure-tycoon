@@ -351,7 +351,7 @@ function updateAdventurer(adventurer) {
     adventurer.onHitEffects = [];
     adventurer.onCritEffects = [];
     var adventurerBonuses = {
-        '+maxHealth': 10 * (adventurer.level + adventurer.job.dexterityBonus + adventurer.job.strengthBonus + adventurer.job.intelligenceBonus),
+        '+maxHealth': 20 * (adventurer.level + adventurer.job.dexterityBonus + adventurer.job.strengthBonus + adventurer.job.intelligenceBonus),
         '+accuracy': 2 * adventurer.level,
         '+evasion': adventurer.level,
         '+block': adventurer.level,

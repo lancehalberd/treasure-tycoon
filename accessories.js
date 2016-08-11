@@ -4,7 +4,7 @@ addItem(1, {'slot': 'back', 'type': 'quiver', 'name': 'Quiver', 'bonuses': {'+bo
 addItem(2, {'slot': 'back', 'type': 'scabbard', 'name': 'Scabbard', 'bonuses': {'+dagger:minDamage': 1, '+dagger:maxDamage': 2, '+sword:minDamage': 2, '+sword:maxDamage': 3, '+greatsword:minDamage': 3, '+greatsword:maxDamage': 4}, icon: 'bag'});
 addItem(3, {'slot': 'back', 'type': 'baldric', 'name': 'Baldric', 'bonuses': {'+axe:minDamage': 2, '+axe:maxDamage': 3, '+polearm:minDamage': 3, '+polearm:maxDamage': 5}, icon: 'bag'});
 addItem(15, {'slot': 'back', 'type': 'cloak', 'name': 'Travelers Cloak', 'bonuses': {'+evasion': 10}, icon: 'bag'});
-addItem(16, {'slot': 'back', 'type': 'cloak', 'name': 'Fur Cloak', 'bonuses': {'+maxHealth': 50}, icon: 'bag'});
+addItem(16, {'slot': 'back', 'type': 'cloak', 'name': 'Fur Cloak', 'bonuses': {'+maxHealth': 60}, icon: 'bag'});
 addItem(17, {'slot': 'back', 'type': 'cloak', 'name': 'Plated Cloak', 'bonuses': {'+armor': 10}, icon: 'bag'});
 addItem(20, {'slot': 'back', 'type': 'amulet', 'name': 'Runed Amulet', 'bonuses': {'+wand:minMagicDamage': 1, '+wand:maxMagicDamage': 2, '+staff:minMagicDamage': 2, '+staff:maxMagicDamage': 3}, icon: 'bag'});
 

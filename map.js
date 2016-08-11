@@ -321,7 +321,7 @@ function completeLevel(character) {
         // This will show the confirm skill button if this character is selected.
         updateConfirmSkillButton();
     }
-    unlockItemLevel(level.level);
+    unlockItemLevel(level.level + 1);
     if (character === state.selectedCharacter) {
         drawMap();
     }
