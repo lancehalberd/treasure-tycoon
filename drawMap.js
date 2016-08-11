@@ -3,9 +3,16 @@
 function drawMap() {
     var context = mainContext;
     // Draw parchment backdrop.
-    var pattern = context.createPattern(images['gfx/oldMap.png'], 'repeat');
-    context.fillStyle = pattern;
-    context.fillRect(0, 0, mapWidth, mapHeight);
+    var width = images['gfx/oldMap.png'].width;
+    var height = images['gfx/oldMap.png'].height;
+    for (var x = -mapLeft % width - width; x < mapWidth; x += width) {
+        if (x <= -width) continue;
+        for (var y = -mapTop % height - height; y < mapHeight; y += height) {
+            if (y <= -height) continue;
+            context.drawImage(images['gfx/oldMap.png'], 0, 0, width, height,
+                              x, y, width, height);
+        }
+    }
     var visibleRectangle = rectangle(mapLeft - 20, mapTop - 20, mapWidth + 40, mapHeight + 50);
 
     visibleNodes = {};
