@@ -101,7 +101,6 @@ function returnToMap(character) {
     character.area = null;
     updateAdventureButtons();
     if (state.selectedCharacter === character) {
-        drawMap();
         refreshStatsPanel(character, $('.js-characterColumn .js-stats'));
     }
     if (character.replay) {
