@@ -57,17 +57,20 @@ function drawMap() {
                 if (editingMap && (selectedMapNodes.indexOf(levelData) >= 0 || selectedMapNodes.indexOf(nextLevelData) >= 0)) {
                     context.strokeStyle = '#f00';
                 }
-                var v = [nextLevelData.left - levelData.left, nextLevelData.top - levelData.top];
-                var mag = Math.sqrt(v[0]*v[0]+v[1] * v[1]);
-                v[0] /= mag;
-                v[1] /= mag;
                 context.moveTo(levelData.left + levelData.width / 2, levelData.top + levelData.height / 2);
-                context.lineTo(nextLevelData.left + nextLevelData.width / 2 - v[0] * 20, nextLevelData.top + nextLevelData.height / 2 - v[1] * 20);
                 // Draw a triangle while editing the map so it is obvious which levels are unlocked by completing a level.
                 if (editingMap) {
+                    var v = [nextLevelData.left - levelData.left, nextLevelData.top - levelData.top];
+                    var mag = Math.sqrt(v[0]*v[0]+v[1] * v[1]);
+                    v[0] /= mag;
+                    v[1] /= mag;
+                    context.lineTo(nextLevelData.left + nextLevelData.width / 2 - v[0] * 17, nextLevelData.top + nextLevelData.height / 2 - v[1] * 17);
+                    context.moveTo(nextLevelData.left + nextLevelData.width / 2 - v[0] * 20, nextLevelData.top + nextLevelData.height / 2 - v[1] * 20);
                     context.lineTo(nextLevelData.left + nextLevelData.width / 2 - v[0] * 30 - v[1] * 5, nextLevelData.top + nextLevelData.height / 2 - v[1] * 30 + v[0] * 5);
                     context.lineTo(nextLevelData.left + nextLevelData.width / 2 - v[0] * 30 + v[1] * 5, nextLevelData.top + nextLevelData.height / 2 - v[1] * 30 - v[0] * 5);
                     context.lineTo(nextLevelData.left + nextLevelData.width / 2 - v[0] * 20, nextLevelData.top + nextLevelData.height / 2 - v[1] * 20);
+                } else {
+                    context.lineTo(nextLevelData.left + nextLevelData.width / 2, nextLevelData.top + nextLevelData.height / 2);
                 }
                 context.stroke();
             }
