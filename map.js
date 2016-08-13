@@ -148,9 +148,6 @@ function getMapPopupTargetProper(x, y) {
     }
     var shrine = newMapTarget;
     var divinityScore = ifdefor(state.selectedCharacter.divinityScores[shrine.level.levelKey], 0);
-    if (!(divinityScore > 0)) {
-        return null;
-    }
     shrine.helptext = ''
     if (state.selectedCharacter.currentLevelKey !== shrine.level.levelKey || !state.selectedCharacter.levelCompleted) {
         shrine.helptext += '<p style="font-size: 12">An adventurer can only visit the shrine for the last adventure they completed.</p><br/>';
@@ -162,7 +159,7 @@ function getMapPopupTargetProper(x, y) {
             shrine.helptext += '<p style="font-size: 12">' + state.selectedCharacter.adventurer.name + ' does not have enough divinity to learn the skill from this shrine.</p><br/>';
         }
         if (state.selectedCharacter.adventurer.abilities.indexOf(skill) < 0) {
-            shrine.helptext += '<p style="font-weight: bold">Spend ' + totalCost + ' divinity at this shrine to learn:</p>' + abilityHelpText(skill, state.selectedCharacter);
+            shrine.helptext += '<p style="font-weight: bold">Spend ' + totalCost + ' divinity at this shrine to level up and learn:</p>' + abilityHelpText(skill, state.selectedCharacter);
         } else {
             shrine.helptext += '<p style="font-size: 12px">' + state.selectedCharacter.adventurer.name + ' has already learned:</p>' + abilityHelpText(skill, state.selectedCharacter);
         }
@@ -177,7 +174,7 @@ function getMapTarget(x, y) {
             target = levelData;
             return false;
         }
-        if (!editingMap && isPointInRect(x, y, levelData.shrine.left, levelData.shrine.top, levelData.shrine.width, levelData.shrine.height)) {
+        if (!editingMap && levelData.shrine && isPointInRect(x, y, levelData.shrine.left, levelData.shrine.top, levelData.shrine.width, levelData.shrine.height)) {
             target = levelData.shrine;
             return false;
         }
@@ -445,8 +442,6 @@ $(document).on('keydown', function(event) {
         $('.js-mainCanvas')[0].getContext('2d').imageSmoothingEnabled = false;
     }
     if (event.which === 76) { // 'l'
-        // state.selectedCharacter.divinity += 10;
-        // state.selectedCharacter.divinity *= 2;
         if (currentMapTarget && currentMapTarget.levelKey) {
             state.selectedCharacter.currentLevelKey = currentMapTarget.levelKey;
             if (!state.selectedCharacter.completionTime) {

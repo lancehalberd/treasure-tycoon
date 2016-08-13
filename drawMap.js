@@ -22,9 +22,12 @@ function drawMap() {
         }
         var levelRectangle = rectangle(levelData.x * 40, levelData.y * 40, 40, 40);
         $.extend(levelData, rectangle(levelData.x * 40 - mapLeft, levelData.y * 40 - mapTop, 40, 40));
-        levelData.shrine = rectangle(levelData.x * 40 - mapLeft - 12, levelData.y * 40 - mapTop - 12, 24, 24);
-        levelData.shrine.isShrine = true;
-        levelData.shrine.level = levelData;
+        var skill = abilities[levelData.skill];
+        if (skill) {
+            levelData.shrine = rectangle(levelData.x * 40 - mapLeft - 12, levelData.y * 40 - mapTop - 12, 24, 24);
+            levelData.shrine.isShrine = true;
+            levelData.shrine.level = levelData;
+        }
         if (rectanglesOverlap(visibleRectangle, levelRectangle)) {
             visibleNodes[levelKey] = levelData;
         }
@@ -86,8 +89,8 @@ function drawMap() {
         var divinityScore = ifdefor(state.selectedCharacter.divinityScores[levelKey], 0);
 
         var skill = abilities[levelData.skill];
-        if (skill && (divinityScore !== 0)) {
-            // Draw the shrine only if the character has completed this level and the level grants a skill.
+        if (skill) {
+            // Draw the shrine only if the level grants a skill.
             context.save();
             // Disable shrine if the character did not just complete this area.
             if (state.selectedCharacter.currentLevelKey !== levelKey || !state.selectedCharacter.levelCompleted) {
