@@ -76,7 +76,7 @@ function updateDamageInfo(character, $statsPanel) {
         sections.push('Total Expected DPS is ' + (expectedPhysicalDPS + expectedMagicDPS).format(1));
     }
     var $damage =  $statsPanel.find('.js-damage');
-    $damage.text( (rawPhysicalDPS + rawMagicDPS).format(1) + ' (' + (expectedPhysicalDPS + expectedMagicDPS).format(1) + ')');
+    $damage.text((expectedPhysicalDPS + expectedMagicDPS).format(1));
     $damage.parent().attr('helptext', sections.join('<br/>'));
 
     attack = dummy.actions[dummy.actions.length - 1];
@@ -124,8 +124,8 @@ function updateDamageInfo(character, $statsPanel) {
         hitPercent = overRollChance + (1 - overRollChance) / 2;
     }
     var $evasion =  $statsPanel.find('.js-evasion');
-    $evasion.text( adventurer.evasion + ' (' + (1 - hitPercent).percent(1) + ')');
-    $evasion.parent().attr('helptext', (1 - hitPercent).percent(1) + ' estimated chance to evade attacks.');
+    $evasion.text((1 - hitPercent).percent(1));
+    $evasion.parent().attr('helptext', adventurer.evasion + ' Evasion<br/><br/>' + (1 - hitPercent).percent(1) + ' estimated chance to evade attacks.');
 }
 
 function createAttackStats(attacker, attack, target) {

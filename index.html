@@ -86,14 +86,22 @@
                     Divinity: <span class="js-divinity">X</span>
                 </div>
                     <div helptext="How famous this adventurer is. Famous adventurers are more powerful but also more expensive.<br/> Hiring and retiring famous adventurers increases the fame of your guild.">Fame: <span class="js-fame">X</span></div>
-                <div helptext="Starting health for each adventure.">Health: <span class="js-maxHealth">X</span></div>
-                <div helptext="How fast your adventurer regenerates health.">Regen: <span class="js-healthRegen">X</span></div>
-                <div>Damage: <span class="js-damage">X</span></div>
-                <div helptext="Higher range will let you attack enemies safely from afar.">Range: <span class="js-range">X</span></div>
-                <div>Evasion: <span class="js-evasion">X</span></div>
-                <div>Protection: <span class="js-protection">X</span></div>
-                <div>Resistance: <span class="js-resistance">X</span></div>
-                <div helptext="How fast your adventurer moves">Speed: <span class="js-speed">X</span></div>
+                <div>
+                    <span class="playerStat"><span helptext="Starting health for each adventure."><span class="icon health"></span> <span class="js-maxHealth">X</span></span>
+                    <span style="font-size: 12px" helptext="How fast your adventurer regenerates health.">(<span class="js-healthRegen" >X</span>)</span></span>
+                </div>
+                <div>
+                    <span class="playerStat"><span class="icon damage"></span> <span class="js-damage">X</span></span>
+                    <span helptext="Higher range will let you attack enemies safely from afar."><span class="icon range"></span> <span class="js-range">X</span></span>
+                </div>
+                <div>
+                    <span  class="playerStat"><span class="icon armor"></span> <span class="js-protection" style="margin-right: 5px;">X</span></span>
+                    <span  class="playerStat"><span class="icon armor"><span class="icon iconLayer magic" style="opacity: .7;"></span></span> <span class="js-resistance">X</span></span>
+                </div>
+                <div>
+                    <span class="playerStat"><span class="icon damage"><span class="icon iconLayer no" style="opacity: .7;"></span></span> <span class="js-evasion">X</span></span>
+                    <span class="playerStat" helptext="How fast your adventurer moves"><span class="icon speed"></span> <span class="js-speed">X</span></span>
+                </div>
                 <div><button class="js-retire" style="display: none;">Retire</button></div>
                 <div class="triStatBox">
                     <div class="js-dexterity dexterity" helptext="Dexterity increases attack speed, evasion and damage with ranged weapons.">X</div>
@@ -135,7 +143,7 @@
                 <div class="js-stats stats playerBox">
                     <div style="position: absolute; left: 5px; top: 0px;">Recruit: <span class="js-playerName controlBarEntry">X</span></div>
                     <canvas class="js-canvas js-previewCanvas" width="64" height="128" style="position: absolute; left: 0px; top: 20px;"></canvas>
-                    <div helptext="Starting health for each adventure.">Health: <span class="js-maxHealth">X</span></div>
+                    <div helptext="Starting health for each adventure."><span class="icon health"></span> <span class="js-maxHealth">X</span></div>
                     <div helptext="How famous this adventurer is. Famous adventurers are more powerful but also more expensive.<br/> Hiring and retiring famous adventurers increases the fame of your guild.">Fame: <span class="js-fame">X</span></div>
                     <div style="position: relative; overflow: hidden; height: 160px; width: 160px;">
                         <canvas class="js-canvas js-skillCanvas" width="360" height="360" style="width: 360px; height: 360px; position: relative; left: -80px; top: -80px;"></canvas>
