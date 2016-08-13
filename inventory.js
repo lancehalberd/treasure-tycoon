@@ -415,31 +415,8 @@ $(document).on('keydown', function(event) {
                 unlockMapLevel(key);
             });
         });
-        drawMap()
-    }
-    if (event.which == 69) { // 'e'
-        editingMap = !editingMap;
-        mapHeight = editingMap ? 600 : 240;
-        $('.js-pointsBar').toggle(!editingMap);
-        $('.js-mainCanvasContainer').css('height', editingMap ? '600px' : '240px');
-        $('.js-mainCanvas').attr('height', editingMap ? '600' : '240');
-        // Image smoothing seems to get enabled again after changing the canvas size, so disable it again.
-        $('.js-mainCanvas')[0].getContext('2d').imageSmoothingEnabled = false;
-        drawMap();
     }
     if (event.which == 76) { // 'l'
-        var visibleLevels = {};
-        // state.selectedCharacter.divinity += 10;
-        // state.selectedCharacter.divinity *= 2;
-        if (currentMapTarget && currentMapTarget.levelKey) {
-            state.selectedCharacter.currentLevelKey = currentMapTarget.levelKey;
-            if (!state.selectedCharacter.completionTime) {
-                state.selectedCharacter.completionTime = 100;
-            } else {
-                state.selectedCharacter.completionTime -= 10;
-            }
-            completeLevel(state.selectedCharacter);
-        }
         updateAdventurer(state.selectedCharacter.adventurer);
         if (overCraftingItem) {
             if (lastCraftedItem) {

@@ -429,8 +429,6 @@ function setSelectedCharacter(character) {
     state.selectedCharacter = character;
     var adventurer = character.adventurer;
     updateAdventurer(adventurer);
-    // update the map.
-    drawMap();
     // update the equipment displayed.
     equipmentSlots.forEach(function (type) {
         //detach any existing item

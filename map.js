@@ -391,9 +391,6 @@ function completeLevel(character) {
         updateConfirmSkillButton();
     }
     unlockItemLevel(level.level + 1);
-    if (character === state.selectedCharacter) {
-        drawMap();
-    }
     saveGame();
 }
 $('body').on('click', '.js-confirmSkill', function (event) {
@@ -412,9 +409,54 @@ $('body').on('click', '.js-confirmSkill', function (event) {
     gainLevel(character.adventurer);
     updateAdventurer(character.adventurer);
     updateConfirmSkillButton();
-    drawMap();
     saveGame();
 });
 function unlockMapLevel(levelKey) {
     state.visibleLevels[levelKey] = true;
 }
+
+function deleteLevel(level) {
+    $.each(map, function (levelKey, otherLevel) {
+        var index = otherLevel.unlocks.indexOf(level.levelKey);
+        if (index >= 0) {
+            otherLevel.unlocks.splice(index, 1);
+        }
+    });
+    delete map[level.levelKey];
+}
+
+$(document).on('keydown', function(event) {
+    if (event.which === 8) {
+        event.preventDefault();
+        if (editingMap) {
+            selectedMapNodes.forEach(function (level) {
+                deleteLevel(level);
+            });
+            selectedMapNodes = [];
+        }
+    }
+    if (event.which === 69) { // 'e'
+        editingMap = !editingMap;
+        mapHeight = editingMap ? 600 : 240;
+        $('.js-pointsBar').toggle(!editingMap);
+        $('.js-mainCanvasContainer').css('height', editingMap ? '600px' : '240px');
+        $('.js-mainCanvas').attr('height', editingMap ? '600' : '240');
+        // Image smoothing seems to get enabled again after changing the canvas size, so disable it again.
+        $('.js-mainCanvas')[0].getContext('2d').imageSmoothingEnabled = false;
+    }
+    if (event.which === 76) { // 'l'
+        // state.selectedCharacter.divinity += 10;
+        // state.selectedCharacter.divinity *= 2;
+        if (currentMapTarget && currentMapTarget.levelKey) {
+            state.selectedCharacter.currentLevelKey = currentMapTarget.levelKey;
+            if (!state.selectedCharacter.completionTime) {
+                state.selectedCharacter.completionTime = 100;
+            } else {
+                state.selectedCharacter.completionTime -= 10;
+            }
+            completeLevel(state.selectedCharacter);
+        }
+        updateAdventurer(state.selectedCharacter.adventurer);
+    }
+    console.log(event.which);
+});
