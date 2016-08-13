@@ -134,7 +134,6 @@ function exportCharacter(character) {
     data.gameSpeed = character.gameSpeed;
     data.divinityScores = character.divinityScores;
     data.fame = character.fame;
-    data.replay = character.replay;
     data.divinity = character.divinity;
     data.currentLevelKey = character.currentLevelKey;
     data.levelCompleted = character.levelCompleted;
@@ -160,7 +159,7 @@ function importCharacter(characterData) {
     character.boardContext = character.boardCanvas.getContext("2d");
     character.time = now();
     character.gameSpeed = characterData.gameSpeed;
-    character.replay = characterData.replay;
+    character.replay = false;
     character.divinityScores = ifdefor(characterData.divinityScores, {});
     character.divinity = ifdefor(characterData.divinity, 0);
     character.currentLevelKey = ifdefor(characterData.currentLevelKey, ifdefor(character.adventurer.job.levelKey, 'meadow'));

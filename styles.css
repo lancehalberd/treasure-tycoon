@@ -183,7 +183,7 @@ button {
     position: relative;
     box-sizing: border-box;
     width: 240px;
-    max-height: 250px;
+    max-height: 270px;
     vertical-align: top;
     margin: 2px;
     margin-right: 1px;
@@ -555,14 +555,6 @@ select {
     width: 240px;
 }
 
-.icon.backButton {
-    background-image: url('gfx/militaryIcons.png');
-    background-size: 406px 410px;
-    width: 32px;
-    height: 32px;
-    background-position: 0px -12px;
-}
-
 .icon.treasure {
     background-image: url('gfx/chest-open.png');
     background-size: 32px 32px;
@@ -588,7 +580,7 @@ select {
 
 .recruitmentColumn {
     width: 560px;
-    height: 300px;
+    height: 330px;
     overflow-x: scroll;
 }
 
@@ -602,4 +594,57 @@ select {
 
 .heroApplicationButton {
     margin: 5px;
+}
+
+.mainCanvasContainer {
+    position: relative;
+    overflow-y: hidden;
+    height: 240px;
+    width: 800px;
+}
+
+.adventureControls {
+    position: absolute;
+    left: 10px;
+    top: 2px;
+}
+
+.adventureControls .adventureButton {
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.adventureControls .adventureButton.disabled {
+    opacity: .5;
+}
+
+/* nielsenIcons.png from Søren Nielsen at http://opengameart.org/content/grayscale-icons */
+
+.icon.backButton {
+    background-image: url('gfx/nielsenIcons.png');
+    background-size: initial;
+    width: 32px;
+    height: 32px;
+    background-position: -32px -128px;
+}
+.icon.repeatButton {
+    background-image: url('gfx/nielsenIcons.png');
+    background-size: initial;
+    width: 32px;
+    height: 32px;
+    background-position: -224px -64px;
+}
+.icon.fastforwardButton {
+    background-image: url('gfx/nielsenIcons.png');
+    background-size: initial;
+    width: 32px;
+    height: 32px;
+    background-position: -160px -160px;
+}
+.icon.slowMotionButton {
+    background-image: url('gfx/nielsenIcons.png');
+    background-size: initial;
+    width: 32px;
+    height: 32px;
+    background-position: -192px -160px;
 }

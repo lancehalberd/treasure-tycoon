@@ -44,7 +44,7 @@ function startArea(character, index) {
     });
     updateActorStats(character.adventurer);
     if (state.selectedCharacter === character) {
-        updateRecallButton();
+        updateAdventureButtons();
         drawAdventure(character);
     }
     saveGame();
@@ -119,7 +119,7 @@ function checkToStartNextWave(character) {
             }
         } else {
             startNextWave(character);
-            updateRecallButton();
+            updateAdventureButtons();
         }
     }
 }

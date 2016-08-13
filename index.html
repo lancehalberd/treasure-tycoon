@@ -69,14 +69,14 @@
                 <span class="icon anima"></span> <span class="js-global-anima anima"></span>
             </div>
         </div>
-        <div class="js-mainCanvasContainer" style="overflow-y: hidden; height: 240px; width: 800px;">
+        <div class="js-mainCanvasContainer mainCanvasContainer">
             <canvas class="js-mainCanvas mainCanvas" width="800" height="240" style="background-color: blue;"></canvas>
-        </div>
-        <div class="playerControlBar js-adventureContext">
-            <button class="js-recall controlBarEntry recallButton">Recall</button>
-            <label class="controlBarEntry"><input type="checkbox" class="js-repeat"> Repeat</label>
-            <label class="controlBarEntry"><input type="checkbox" class="js-fastforward"> Fast Forward</label>
-            <label class="controlBarEntry"><input type="checkbox" class="js-slowMotion"> Slow Motion</label>
+            <div class="js-adventureControls adventureControls" style="display: none;">
+                <span class="js-recallButton icon backButton adventureButton" helptext="Exit to map"></span>
+                <span class="js-repeatButton icon repeatButton adventureButton" helptext="Repeat this adventure"></span>
+                <span class="js-fastforwardButton icon fastforwardButton adventureButton" helptext="Fast Forward"></span>
+                <span class="js-slowMotionButton icon slowMotionButton adventureButton" helptext="Slow Motion"></span>
+            </div>
         </div>
         <div class="js-characterColumn displayColumn characterColumn js-adventureContext js-jewelContext js-itemContext">
             <div class="js-stats stats playerBox">

@@ -387,30 +387,40 @@ $('.js-showCraftingPanel').on('click', function (event) {
 $('.js-showJewelsPanel').on('click', function (event) {
     showContext('jewel');
 });
-$('body').on('click', '.js-recall', function (event) {
+$('body').on('click', '.js-recallButton', function (event) {
     var character = state.selectedCharacter;
     // The last wave of an area is always the bonus treasure chest. In order to prevent
     // the player from missing this chest or opening it without clearing the level,
     // which would allow them to claim the reward again, we disable recall during
     // this wave.
-    if (character.area && character.waveIndex >= character.area.waves.length) {
+    if (!canRecall(character)) {
         return;
     }
-    $('.js-repeat').prop('checked', false);
     character.replay = false;
+    updateAdventureButtons();
     returnToMap(character);
 });
-$('body').on('click', '.js-repeat', function (event) {
-    var $panel = $(this).closest('.js-playerPanel');
-    state.selectedCharacter.replay = $(this).is(':checked');
+$('body').on('click', '.js-repeatButton', function (event) {
+    state.selectedCharacter.replay = !state.selectedCharacter.replay;
+    updateAdventureButtons();
 });
-$('body').on('click', '.js-fastforward', function (event) {
-    var $panel = $(this).closest('.js-playerPanel');
-    state.selectedCharacter.gameSpeed = $(this).is(':checked') ? 3 : 1;
+$('body').on('click', '.js-fastforwardButton', function (event) {
+    if (state.selectedCharacter.gameSpeed !== 3) {
+        state.selectedCharacter.gameSpeed = 3;
+        state.selectedCharacter.loopSkip = 1;
+    } else {
+        state.selectedCharacter.gameSpeed = 1;
+    }
+    updateAdventureButtons();
 });
-$('body').on('click', '.js-slowMotion', function (event) {
-    var $panel = $(this).closest('.js-playerPanel');
-    state.selectedCharacter.loopSkip = $(this).is(':checked') ? 5 : 1;
+$('body').on('click', '.js-slowMotionButton', function (event) {
+    if (state.selectedCharacter.loopSkip !== 5) {
+        state.selectedCharacter.loopSkip = 5;
+        state.selectedCharacter.gameSpeed = 1;
+    } else {
+        state.selectedCharacter.loopSkip = 1;
+    }
+    updateAdventureButtons();
 });
 
 var currentContext;
@@ -443,18 +453,22 @@ function setSelectedCharacter(character) {
     // update stats panel.
     refreshStatsPanel(character, $('.js-characterColumn .js-stats'))
     // update controls:
-    $('.js-repeat').prop('checked', character.replay);
-    $('.js-fastforward').prop('checked', character.gameSpeed === 3);
-    $('.js-slowMotion').prop('checked', character.loopSkip === 5);
     $('.js-jewelBoard .js-skillCanvas').data('character', character);
     character.jewelsCanvas = $('.js-jewelBoard .js-skillCanvas')[0];
     centerMapOnLevel(map[character.currentLevelKey]);
-    updateRecallButton();
+    updateAdventureButtons();
     updateConfirmSkillButton();
 }
-function updateRecallButton() {
-    var enabled = state.selectedCharacter.area && state.selectedCharacter.waveIndex < state.selectedCharacter.area.waves.length;
-    $('.js-recall').prop('disabled', !enabled);
+function updateAdventureButtons() {
+    var character = state.selectedCharacter;
+    $('.js-adventureControls').toggle(!!character.area);
+    $('.js-recallButton').toggleClass('disabled', !canRecall(character));
+    $('.js-repeatButton').toggleClass('disabled', !character.replay);
+    $('.js-fastforwardButton').toggleClass('disabled', character.gameSpeed !== 3);
+    $('.js-slowMotionButton').toggleClass('disabled', character.loopSkip !== 5);
+}
+function canRecall(character) {
+    return character.area && character.waveIndex < character.area.waves.length;
 }
 function updateConfirmSkillButton() {
     $('.js-confirmSkill').toggle(!!state.selectedCharacter.board.boardPreview);
