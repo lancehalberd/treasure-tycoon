@@ -1,5 +1,5 @@
 var editingMap = false;
-var emptyLevelData = ({'name': '-', 'level': 1, 'background': 'field', 'specialLoot': [], 'skill': null, 'board': null, 'enemySkills': [], 'monsters': ['skeleton'], 'events': [['dragon']]});
+var emptyLevelData = ({'unlocks': [], 'level': 1, 'background': 'field', 'specialLoot': [], 'skill': null, 'board': null, 'enemySkills': [], 'monsters': ['skeleton'], 'events': [['dragon']]});
 var map = {
     'grove': {"x":10,"y":-2,"unlocks":["savannah","orchard","cave"],"name":"Grove","level":1,"background":"forest","specialLoot":["simpleEmeraldLoot"],"skill":"minorDexterity","board":"doubleDiamonds","enemySkills":["minorDexterity"],"monsters":["caterpillar","gnome"],"events":[["caterpillar","gnome"],["gnome","gnome"],["caterpillar","caterpillar"],["butterfly"]]},
     'savannah': {"x":8,"y":-3,"unlocks":["range"],"name":"Savannah","level":1,"background":"field","specialLoot":["simpleRubyLoot"],"skill":"pet","board":"smallFangBoard","monsters":["butterfly"],"events":[["caterpillar","caterpillar","caterpillar"],["caterpillar","caterpillar","motherfly"]]},
@@ -186,6 +186,44 @@ function getMapTarget(x, y) {
     return target;
 }
 
+function updateMapKey(oldKey, newKey) {
+    if (!map[oldKey]) return;
+    $.each(map, function (key, level) {
+        level.unlocks.forEach(function (value, index) {
+            if (value === oldKey) {
+                level.unlocks[index] = newKey;
+            }
+        })
+    });
+    var level = map[oldKey];
+    level.levelKey = newKey;
+    delete map[oldKey];
+    map[newKey] = level;
+}
+function updateLevelKey(level) {
+    if (!level) return;
+    updateMapKey(level.levelKey, level.x + '_' + level.y);
+}
+
+function createNewLevel(x, y) {
+    var tx = Math.floor((x + mapLeft) / 40);
+    var ty = Math.floor((y + mapTop) / 40);
+    var key = tx + '_' + ty;
+    newMapTarget = $.extend({'x': tx, 'y': ty, 'levelKey': key, 'name': key}, emptyLevelData);
+    // If there already happens to be a level with this key, update it.
+    updateLevelKey(map[key]);
+    map[key] = newMapTarget;
+    selectedMapNodes = [newMapTarget];
+}
+function toggleLevelLink(levelA, levelB) {
+    var index = levelA.unlocks.indexOf(levelB.levelKey);
+    if (index >= 0) {
+        levelA.unlocks.splice(index, 1);
+    } else {
+        levelA.unlocks.push(levelB.levelKey);
+    }
+}
+
 var mapDragX = mapDragY = null, draggedMap = false;
 var selectionStartPoint = null;
 var originalSelectedNodes = [];
@@ -195,7 +233,14 @@ $('.js-mouseContainer').on('mousedown', '.js-mainCanvas', function (event) {
     draggedMap = false;
     if (editingMap) {
         var newMapTarget = getMapTarget(x, y);
-        if (!event.shiftKey) {
+        if (event.which === 3) {
+            if (!newMapTarget) {
+                createNewLevel(x, y)
+            } else {
+                clickedMapNode = newMapTarget;
+                selectedMapNodes = [newMapTarget];
+            }
+        } else if (!event.shiftKey) {
             if (newMapTarget) {
                 clickedMapNode = newMapTarget;
                 if (selectedMapNodes.indexOf(newMapTarget) < 0) {
@@ -211,8 +256,17 @@ $('.js-mouseContainer').on('mousedown', '.js-mainCanvas', function (event) {
     mapDragY = y;
 });
 $(document).on('mouseup',function (event) {
+    var x = event.pageX - $('.js-mainCanvas').offset().left;
+    var y = event.pageY - $('.js-mainCanvas').offset().top;
     mapDragX = mouseDragY = null;
+    arrowTargetX = arrowTargetY = null;
     if (editingMap) {
+        if (event.which === 3 && clickedMapNode && draggedMap) {
+            var unlockedLevel = getMapTarget(x, y);
+            if (unlockedLevel) {
+                toggleLevelLink(clickedMapNode, unlockedLevel);
+            }
+        }
         selectionStartPoint = null;
         clickedMapNode = null;
     }
@@ -243,38 +297,49 @@ $('.js-mouseContainer').on('click', '.js-mainCanvas', function (event) {
         }
     }
 });
+var arrowTargetX, arrowTargetY;
 $('.js-mouseContainer').on('mousemove', '.js-mainCanvas', function (event) {
     if (!mouseDown) return;
     draggedMap = true;
     var x = event.pageX - $(this).offset().left;
     var y = event.pageY - $(this).offset().top;
-    if (editingMap && selectionStartPoint) {
-        var endPoint = {'x': x, 'y': y};
-        var selectedRectangle = (rectangleFromPoints(selectionStartPoint, endPoint));
-        selectedMapNodes = originalSelectedNodes.slice();
-        $.each(visibleNodes, function (levelKey, levelData) {
-            if (selectedMapNodes.indexOf(levelData) < 0 && rectanglesOverlap(selectedRectangle, levelData)) {
-                selectedMapNodes.push(levelData);
+    var tx = Math.floor((x + mapLeft) / 40);
+    var ty = Math.floor((y + mapTop) / 40);
+    if (editingMap) {
+        if (selectionStartPoint) {
+            var endPoint = {'x': x, 'y': y};
+            var selectedRectangle = (rectangleFromPoints(selectionStartPoint, endPoint));
+            selectedMapNodes = originalSelectedNodes.slice();
+            $.each(visibleNodes, function (levelKey, levelData) {
+                if (selectedMapNodes.indexOf(levelData) < 0 && rectanglesOverlap(selectedRectangle, levelData)) {
+                    selectedMapNodes.push(levelData);
+                }
+            });
+            drawRunningAnts(mainContext, selectedRectangle);
+        } else if (event.which === 3 && clickedMapNode) {
+            arrowTargetX = tx;
+            arrowTargetY = ty;
+        } else if (mapDragX !== null && mapDragY !== null) {
+            if (clickedMapNode) {
+                var dx = tx - clickedMapNode.x;
+                var dy = ty - clickedMapNode.y;
+                selectedMapNodes.forEach(function (mapNode) {
+                    mapNode.x += dx;
+                    mapNode.y += dy;
+                    $.extend(mapNode, rectangle(mapNode.x * 40 - mapLeft, mapNode.y * 40 - mapTop, 40, 40));
+                })
+            } else {
+                mapLeft += (mapDragX - x);
+                mapTop += (mapDragY - y);
+                mapDragX = x;
+                mapDragY = y;
             }
-        });
-        drawRunningAnts(mainContext, selectedRectangle);
-    } else if (mapDragX !== null && mapDragY !== null) {
-        if (editingMap && clickedMapNode) {
-            var nx = Math.floor((x + mapLeft) / clickedMapNode.width);
-            var ny = Math.floor((y + mapTop) / clickedMapNode.height);
-            var dx = nx - clickedMapNode.x;
-            var dy = ny - clickedMapNode.y;
-            selectedMapNodes.forEach(function (mapNode) {
-                mapNode.x += dx;
-                mapNode.y += dy;
-                $.extend(mapNode, rectangle(mapNode.x * 40 - mapLeft, mapNode.y * 40 - mapTop, 40, 40));
-            })
-        } else {
-            mapLeft += (mapDragX - x);
-            mapTop += (mapDragY - y);
-            mapDragX = x;
-            mapDragY = y;
         }
+    } else if (mapDragX !== null && mapDragY !== null) {
+        mapLeft += (mapDragX - x);
+        mapTop += (mapDragY - y);
+        mapDragX = x;
+        mapDragY = y;
     }
 });
 

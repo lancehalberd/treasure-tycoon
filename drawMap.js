@@ -57,22 +57,14 @@ function drawMap() {
                 if (editingMap && (selectedMapNodes.indexOf(levelData) >= 0 || selectedMapNodes.indexOf(nextLevelData) >= 0)) {
                     context.strokeStyle = '#f00';
                 }
-                context.moveTo(levelData.left + levelData.width / 2, levelData.top + levelData.height / 2);
                 // Draw a triangle while editing the map so it is obvious which levels are unlocked by completing a level.
                 if (editingMap) {
-                    var v = [nextLevelData.left - levelData.left, nextLevelData.top - levelData.top];
-                    var mag = Math.sqrt(v[0]*v[0]+v[1] * v[1]);
-                    v[0] /= mag;
-                    v[1] /= mag;
-                    context.lineTo(nextLevelData.left + nextLevelData.width / 2 - v[0] * 17, nextLevelData.top + nextLevelData.height / 2 - v[1] * 17);
-                    context.moveTo(nextLevelData.left + nextLevelData.width / 2 - v[0] * 20, nextLevelData.top + nextLevelData.height / 2 - v[1] * 20);
-                    context.lineTo(nextLevelData.left + nextLevelData.width / 2 - v[0] * 30 - v[1] * 5, nextLevelData.top + nextLevelData.height / 2 - v[1] * 30 + v[0] * 5);
-                    context.lineTo(nextLevelData.left + nextLevelData.width / 2 - v[0] * 30 + v[1] * 5, nextLevelData.top + nextLevelData.height / 2 - v[1] * 30 - v[0] * 5);
-                    context.lineTo(nextLevelData.left + nextLevelData.width / 2 - v[0] * 20, nextLevelData.top + nextLevelData.height / 2 - v[1] * 20);
+                    drawMapArrow(context, levelData, nextLevelData);
                 } else {
+                    context.moveTo(levelData.left + levelData.width / 2, levelData.top + levelData.height / 2);
                     context.lineTo(nextLevelData.left + nextLevelData.width / 2, nextLevelData.top + nextLevelData.height / 2);
+                    context.stroke();
                 }
-                context.stroke();
             }
         });
     });
@@ -149,5 +141,31 @@ function drawMap() {
         }
         return true;
     });
-    return;
+    if (draggedMap && ifdefor(arrowTargetX) !== null && ifdefor(arrowTargetY) !== null && clickedMapNode) {
+        if (clickedMapNode.x === arrowTargetX && clickedMapNode.y === arrowTargetY) return;
+        context.save();
+        context.lineWidth = 5;
+        context.strokeStyle = '#0f0';
+        drawMapArrow(context, clickedMapNode, {'x': arrowTargetX, 'y': arrowTargetY});
+        context.restore();
+    }
+}
+
+function drawMapArrow(context, targetA, targetB) {
+    var sx = targetA.x * 40 + 20 - mapLeft;
+    var sy = targetA.y * 40 + 20 - mapTop;
+    var tx = targetB.x * 40 + 20 - mapLeft;
+    var ty = targetB.y * 40 + 20 - mapTop;
+    var v = [tx - sx, ty - sy];
+    var mag = Math.sqrt(v[0]*v[0]+v[1] * v[1]);
+    v[0] /= mag;
+    v[1] /= mag;
+    context.beginPath();
+    context.moveTo(sx, sy);
+    context.lineTo(tx - v[0] * 17, ty - v[1] * 17);
+    context.moveTo(tx - v[0] * 20, ty - v[1] * 20);
+    context.lineTo(tx - v[0] * 30 - v[1] * 5, ty - v[1] * 30 + v[0] * 5);
+    context.lineTo(tx - v[0] * 30 + v[1] * 5, ty - v[1] * 30 - v[0] * 5);
+    context.lineTo(tx - v[0] * 20, ty - v[1] * 20);
+    context.stroke();
 }
