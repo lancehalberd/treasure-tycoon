@@ -554,10 +554,6 @@ function getStatForAction(actor, dataObject, stat, action) {
             if (key.charAt(0) === '$') {
                 key = key.substring(1);
             }
-            // don't recalculate stats that we have already computed.
-            if (commonActionVariables[key]) {
-                return;
-            }
             subObject[key] = getStatForAction(actor, base, key, action);
         });
         return subObject;
