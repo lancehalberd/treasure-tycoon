@@ -191,7 +191,7 @@ button {
 }
 .stats {
     padding-top: 20px; /* Leave space for "Level X Job Name" abs positioned at top */
-    padding-left: 60px; /* Leave space for preview image on the left */
+    padding-left: 65px; /* Leave space for preview image on the left */
 }
 .triStatBox {
     position: absolute;
@@ -564,7 +564,7 @@ select {
 
 .characterBox {
     position: relative;
-    left: -40px;
+    margin-left: 10px;
 }
 
 .characterBox .character {
