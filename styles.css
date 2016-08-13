@@ -723,3 +723,7 @@ select {
     bottom: 2px;
     cursor: default;
 }
+
+.clickable {
+    cursor: pointer;
+}

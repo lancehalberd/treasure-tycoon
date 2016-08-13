@@ -1,7 +1,7 @@
 function instantiateLevel(levelData, completed) {
     var waves = [];
     var level = levelData.level;
-    var numberOfWaves = Math.floor(5 * Math.sqrt(level));
+    var numberOfWaves = Math.min(20, Math.floor(5 * Math.sqrt(level)));
     // Make sure we have at least enough waves for the required events
     numberOfWaves = Math.max(levelData.events.length, numberOfWaves);
     var minWaveSize = Math.floor(Math.min(4, Math.sqrt(level)) * 10);
@@ -90,6 +90,9 @@ function basicWave(monsters, objects, letter, extraBonuses) {
     };
 }
 function monsterWave(monsters) {
+    if (editingLevel) {
+        return basicWave(monsters, [], 'M');
+    }
     return eventWave(monsters);
 }
 function eventWave(monsters) {

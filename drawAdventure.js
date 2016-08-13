@@ -164,7 +164,7 @@ function drawMinimap(character) {
             context.arc(centerX, centerY, 10, 0, 2 * Math.PI);
             context.fill();
         }
-        var waveCompleted = (i < character.waveIndex - 1)  || (i <= character.waveIndex - 1 && (character.enemies.length + character.objects.length) === 0);
+        var waveCompleted = (i < character.waveIndex - 1)  || (i <= character.waveIndex - 1 && (ifdefor(character.enemies, []).length + ifdefor(character.objects, []).length) === 0);
         area.waves[i].draw(context, waveCompleted, centerX, centerY);
     }
 }

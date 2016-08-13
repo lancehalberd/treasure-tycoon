@@ -124,6 +124,7 @@ function getMapPopupTarget(x, y) {
         updateDamageInfo(state.selectedCharacter, $('.js-characterColumn .js-stats'), level);
     }
     currentMapTarget = newMapTarget;
+    $('.js-mainCanvas').toggleClass('clickable', !!currentMapTarget);
     return currentMapTarget;
 }
 function getMapPopupTargetProper(x, y) {
@@ -271,6 +272,10 @@ $(document).on('mouseup',function (event) {
         selectionStartPoint = null;
         clickedMapNode = null;
     }
+    if (draggedMap) {
+        draggedMap = false;
+        return;
+    }
 });
 $('.js-mouseContainer').on('dblclick', '.js-mainCanvas', function (event) {
     var x = event.pageX - $(this).offset().left;
@@ -288,6 +293,7 @@ $('.js-mouseContainer').on('dblclick', '.js-mainCanvas', function (event) {
             state.selectedCharacter.adventurer.isDead = false;
             state.selectedCharacter.adventurer.timeOfDeath = undefined;
             state.selectedCharacter.finishTime = false;
+            state.selectedCharacter.waveIndex = 0;
         }
     }
 });
@@ -371,6 +377,8 @@ function clickMapHandler(x, y) {
         showContext('jewel');
     } else if (!currentMapTarget.isShrine && currentMapTarget.levelKey) {
         startArea(state.selectedCharacter, currentMapTarget.levelKey);
+        currentMapTarget = null;
+        $('.js-mainCanvas').toggleClass('clickable', false);
     }
 }
 
