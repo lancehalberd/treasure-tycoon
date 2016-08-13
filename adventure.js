@@ -81,6 +81,7 @@ function timeStopLoop(character, delta) {
         checkIfActorDied(enemy);
     }
     checkToStartNextWave(character);
+    if (!character.area) return false;
     expireTimedEffects(character, actor);
     runActorLoop(character, actor);
     moveActor(actor, delta);
@@ -155,6 +156,7 @@ function adventureLoop(character, delta) {
         }
     }
     checkToStartNextWave(character);
+    if (!character.area) return;
     character.allies.forEach(function (actor) {
         runActorLoop(character, actor);
     });

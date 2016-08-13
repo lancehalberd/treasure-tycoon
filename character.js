@@ -91,13 +91,15 @@ function resetCharacterStats(character) {
     character.adventurer.bonusMaxHealth = 0;
     character.adventurer.percentHealth = 1;
     character.adventurer.health = character.adventurer.maxHealth;
+    character.adventurer.timedEffects = [];
+    character.adventurer.fieldEffects = [];
     character.adventurer.attackCooldown = 0;
     character.adventurer.target = null;
     character.adventurer.slow = 0;
 }
 function returnToMap(character) {
-    updateActorStats(character.adventurer);
     resetCharacterStats(character);
+    updateAdventurer(character.adventurer);
     character.area = null;
     updateAdventureButtons();
     if (state.selectedCharacter === character) {

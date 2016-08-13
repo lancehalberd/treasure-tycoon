@@ -3,7 +3,8 @@ function drawAdventure(character) {
     var context = mainContext;
     var cameraX = character.cameraX;
     context.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
-    var background = ifdefor(character.area.background, backgrounds.field);
+    var area = editingLevelInstance ? editingLevelInstance : character.area;
+    var background = ifdefor(area.background, backgrounds.field);
     var cloudX = cameraX + character.time * .5;
     var fullDrawingWidth = Math.ceil(mainCanvas.width / 64) * 64 + 64;
     background.forEach(function(section) {
@@ -23,29 +24,29 @@ function drawAdventure(character) {
         }
         context.globalAlpha = 1;
     });
-    character.objects.forEach(function (object, index) {
+    ifdefor(character.objects, []).forEach(function (object, index) {
         object.draw(context, object.x - cameraX, 240 - 128);
     });
-    character.enemies.forEach(function (actor, index) {
+    ifdefor(character.enemies, []).forEach(function (actor, index) {
         drawActor(character, actor, 1 + character.enemies.length - index)
     });
     drawActor(character, adventurer, 0);
-    character.allies.forEach(function (actor, index) {
+    ifdefor(character.allies, []).forEach(function (actor, index) {
         if (actor == adventurer) return;
         drawActor(character, actor, -index)
     });
     // Draw text popups such as damage dealt, item points gained, and so on.
     context.fillStyle = 'red';
-    for (var i = 0; i < character.treasurePopups.length; i++) {
+    for (var i = 0; i < ifdefor(character.treasurePopups, []).length; i++) {
         character.treasurePopups[i].draw(character);
     }
-    for (var i = 0; i < character.projectiles.length; i++) {
+    for (var i = 0; i < ifdefor(character.projectiles, []).length; i++) {
         character.projectiles[i].draw(character);
     }
-    for (var i = 0; i < character.effects.length; i++) {
+    for (var i = 0; i < ifdefor(character.effects, []).length; i++) {
         character.effects[i].draw(character);
     }
-    for (var i = 0; i < character.textPopups.length; i++) {
+    for (var i = 0; i < ifdefor(character.textPopups, []).length; i++) {
         var textPopup = character.textPopups[i];
         context.fillStyle = ifdefor(textPopup.color, "red");
         context.font = ifdefor(textPopup.font, "20px sans-serif");
@@ -142,9 +143,10 @@ function drawMinimap(character) {
     var x = 10;
     var width = 750;
     var context = mainContext;
-    drawBar(context, x, y, width, height, 'white', 'white', character.waveIndex / character.area.waves.length);
-    for (var i = 0; i < character.area.waves.length; i++) {
-        var centerX = x + (i + 1) * width / character.area.waves.length;
+    var area = editingLevelInstance ? editingLevelInstance : character.area;
+    drawBar(context, x, y, width, height, 'white', 'white', character.waveIndex / area.waves.length);
+    for (var i = 0; i < area.waves.length; i++) {
+        var centerX = x + (i + 1) * width / area.waves.length;
         var centerY = y + height / 2;
         context.fillStyle = 'white';
         context.beginPath();
@@ -152,9 +154,9 @@ function drawMinimap(character) {
         context.fill();
     }
     context.fillStyle = 'orange';
-    context.fillRect(x + 1, y + 1, (width - 2) * (character.waveIndex / character.area.waves.length) - 10, height - 2);
-    for (var i = 0; i < character.area.waves.length; i++) {
-        var centerX = x + (i + 1) * width / character.area.waves.length;
+    context.fillRect(x + 1, y + 1, (width - 2) * (character.waveIndex / area.waves.length) - 10, height - 2);
+    for (var i = 0; i < area.waves.length; i++) {
+        var centerX = x + (i + 1) * width / area.waves.length;
         var centerY = y + height / 2;
         if (i < character.waveIndex) {
             context.fillStyle = 'orange';
@@ -163,6 +165,6 @@ function drawMinimap(character) {
             context.fill();
         }
         var waveCompleted = (i < character.waveIndex - 1)  || (i <= character.waveIndex && (character.enemies.length + character.objects.length) === 0);
-        character.area.waves[i].draw(context, waveCompleted, centerX, centerY);
+        area.waves[i].draw(context, waveCompleted, centerX, centerY);
     }
 }

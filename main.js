@@ -180,7 +180,9 @@ function mainLoop() {
         character.characterContext.drawImage(character.adventurer.personCanvas, walkLoop[frame] * 32, 0 , 32, 64, 0, -10, 32, 64);
     });
     if (currentContext === 'adventure') {
-        if (state.selectedCharacter.area) drawAdventure(state.selectedCharacter);
+        if (editingLevel) {
+            drawAdventure(state.selectedCharacter);
+        } else if (state.selectedCharacter.area) drawAdventure(state.selectedCharacter);
         else {
             updateMap();
             drawMap();

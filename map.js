@@ -1,4 +1,5 @@
 var editingMap = false;
+var editingLevel = null, editingLevelInstance = null;
 var emptyLevelData = ({'unlocks': [], 'level': 1, 'background': 'field', 'specialLoot': [], 'skill': null, 'board': null, 'enemySkills': [], 'monsters': ['skeleton'], 'events': [['dragon']]});
 var map = {
     'grove': {"x":10,"y":-2,"unlocks":["savannah","orchard","cave"],"name":"Grove","level":1,"background":"forest","specialLoot":["simpleEmeraldLoot"],"skill":"minorDexterity","board":"doubleDiamonds","enemySkills":["minorDexterity"],"monsters":["caterpillar","gnome"],"events":[["caterpillar","gnome"],["gnome","gnome"],["caterpillar","caterpillar"],["butterfly"]]},
@@ -126,6 +127,9 @@ function getMapPopupTarget(x, y) {
     return currentMapTarget;
 }
 function getMapPopupTargetProper(x, y) {
+    if (editingLevel) {
+        return null;
+    }
     var newMapTarget = getMapTarget(x, y);
     if (!newMapTarget) {
         return null;
@@ -266,6 +270,20 @@ $(document).on('mouseup',function (event) {
         }
         selectionStartPoint = null;
         clickedMapNode = null;
+    }
+});
+$('.js-mouseContainer').on('dblclick', '.js-mainCanvas', function (event) {
+    var x = event.pageX - $(this).offset().left;
+    var y = event.pageY - $(this).offset().top;
+    if (editingMap) {
+        editingLevel = getMapTarget(x, y);
+        if (editingLevel) {
+            editingMap = false;
+            editingLevelInstance = instantiateLevel(editingLevel, false);
+            state.selectedCharacter.x = 0;
+            state.selectedCharacter.cameraX = -60;
+            state.selectedCharacter.startTime = state.selectedCharacter.time;
+        }
     }
 });
 $('.js-mouseContainer').on('click', '.js-mainCanvas', function (event) {
@@ -423,13 +441,20 @@ function deleteLevel(level) {
 }
 
 $(document).on('keydown', function(event) {
-    if (event.which === 8) {
+    if (event.which === 8) { // delete key
         event.preventDefault();
         if (editingMap) {
             selectedMapNodes.forEach(function (level) {
                 deleteLevel(level);
             });
             selectedMapNodes = [];
+        }
+    }
+    if (event.which === 27) { // escape key
+        event.preventDefault();
+        if (editingLevel) {
+            editingLevel = editingLevelInstance = undefined;
+            editingMap = true;
         }
     }
     if (event.which === 69) { // 'e'
