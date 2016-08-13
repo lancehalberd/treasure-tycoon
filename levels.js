@@ -14,18 +14,17 @@ function instantiateLevel(levelData, completed) {
         // of open waves left (ex)
         var wavesLeft = numberOfWaves - waves.length;
         // This will be 100% chance to include event wave once # events = # waves left
-        var isBossWave = false;
         if ((wavesLeft === 1 || eventsLeft.length > 1) && Math.random() < eventsLeft.length / wavesLeft) {
             wave = eventsLeft.shift();
-            isBossWave = !eventsLeft.length;
+            waves.push(!eventsLeft.length ? bossWave(wave) : eventWave(wave));
         } else {
             // Don't add random mobs to boss waves.
             while (wave.length < waveSize) {
                 wave.push(Random.element(levelData.monsters));
             }
+            waves.push(monsterWave(wave));
         }
 
-        waves.push(isBossWave ? bossWave(wave) : monsterWave(wave));
     };
     var loot = [];
     var pointsFactor = completed ? 1 : 4;
@@ -91,10 +90,33 @@ function basicWave(monsters, objects, letter, extraBonuses) {
     };
 }
 function monsterWave(monsters) {
-    return basicWave(monsters, [], 'M');
+    return eventWave(monsters);
+}
+function eventWave(monsters) {
+    var self =  basicWave(monsters, [], 'M');
+    self.draw = function (context, completed, x, y) {
+        var source = {'image': images['gfx/militaryIcons.png'], 'xOffset': 136, 'yOffset': 23, 'width': 16, 'height': 16};
+        if (completed) {
+            source = {'image': images['gfx/militaryIcons.png'], 'xOffset': 68, 'yOffset': 90, 'width': 16, 'height': 16};
+        }
+        context.drawImage(source.image, source.xOffset, source.yOffset, source.width, source.height,
+                          x - 16, y - 18, 32, 32);
+    }
+    return self;
 }
 function bossWave(monsters) {
-    return basicWave(monsters, [], 'B', bossMonsterBonuses);
+    var self =  basicWave(monsters, [], 'B', bossMonsterBonuses);
+    self.draw = function (context, completed, x, y) {
+        var source = {'image': images['gfx/militaryIcons.png'], 'xOffset': 119, 'yOffset': 23, 'width': 16, 'height': 16};
+        context.drawImage(source.image, source.xOffset, source.yOffset, source.width, source.height,
+                          x - 16, y - 18, 32, 32);
+        if (completed) {
+            source = {'image': images['gfx/militaryIcons.png'], 'xOffset': 51, 'yOffset': 90, 'width': 16, 'height': 16};
+            context.drawImage(source.image, source.xOffset, source.yOffset, source.width, source.height,
+                              x - 16, y - 18, 32, 32);
+        }
+    }
+    return self;
 }
 function chestWave(chest) {
     var self =  basicWave([], [chest], 'T');

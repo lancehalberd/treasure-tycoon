@@ -138,7 +138,7 @@ function drawAdventurer(character, adventurer, index) {
     }
 }
 function drawMinimap(character) {
-    var y = 240 - 18;
+    var y = 240 - 20;
     var height = 6;
     var x = 10;
     var width = 750;
@@ -164,7 +164,7 @@ function drawMinimap(character) {
             context.arc(centerX, centerY, 10, 0, 2 * Math.PI);
             context.fill();
         }
-        var waveCompleted = (i < character.waveIndex - 1)  || (i <= character.waveIndex && (character.enemies.length + character.objects.length) === 0);
+        var waveCompleted = (i < character.waveIndex - 1)  || (i <= character.waveIndex - 1 && (character.enemies.length + character.objects.length) === 0);
         area.waves[i].draw(context, waveCompleted, centerX, centerY);
     }
 }
