@@ -580,15 +580,22 @@ select {
 .recruitmentColumn {
     width: 560px;
     height: 330px;
+    padding: 7px;
     overflow-x: scroll;
+    box-sizing: border-box;
 }
 
 .heroApplication {
     display: inline-block;
-    margin-right: 2px;
+    margin-right: 5px;
     width: 240px;
     height: 300px;
     background-color: burlywood;
+    border: 5px solid #eda;
+    box-sizing: border-box;
+}
+.heroApplication canvas {
+    opacity: .6;
 }
 
 .heroApplicationButton {

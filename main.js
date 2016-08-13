@@ -186,17 +186,6 @@ function mainLoop() {
             drawMap();
         }
     }
-    if (currentContext === 'adventure') {
-        $('.js-heroApplication').each(function () {
-            var $applicationPanel = $(this);
-            var applicantPreviewContext = $applicationPanel.find('.js-previewCanvas')[0].getContext("2d");
-            var character = $applicationPanel.data('character');
-            applicantPreviewContext.imageSmoothingEnabled = false;
-            applicantPreviewContext.clearRect(0, 0, 64, 128);
-            applicantPreviewContext.drawImage(character.adventurer.personCanvas, walkLoop[frame] * 32, 0 , 32, 64, 0, -20, 64, 128);
-            drawBoardJewels(character, $applicationPanel.find('.js-skillCanvas')[0]);
-        })
-     }
     if (currentContext === 'jewel') {
         drawBoardJewels(state.selectedCharacter, jewelsCanvas);
     }
@@ -253,6 +242,7 @@ $('.js-mouseContainer').on('click', '.js-mainCanvas', function (event) {
 });
 $('.js-mouseContainer').on('mouseover mousemove', checkToShowJewelToolTip);
 function checkToShowAdventureToolTip(x, y) {
+    if (ifdefor(x) === null) return;
     if ($popup || currentContext !== 'adventure') {
         return;
     }
