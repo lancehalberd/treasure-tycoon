@@ -81,12 +81,6 @@
 .infoPanel {
     box-sizing: border-box;
 }
-.item.sellItem {
-    position: absolute;
-    left: 2px;
-    bottom: 2px;
-    cursor: default;
-}
 .inventory {
     padding: 4px;
     overflow-x: hidden;
@@ -139,7 +133,7 @@
     vertical-align: top;
 }
 
-.item, .inventory > .inventorySlot {
+.item, .inventory > .inventorySlot, .sellItem {
     position: relative;
     display: inline-block;
     width: 46px;
@@ -169,9 +163,14 @@
 button.item {
     padding: 0px;
 }
-.inventory > .item {
+.inventory > .item, .itemCrafting .item {
+    padding: 1px;
     margin-right: 3px;
     margin-bottom: 3px;
+    border: 2px solid #f88;
+}
+.inventory > .item.equipable, .itemCrafting .item.equipable {
+    border: 2px solid #0f0;
 }
 button {
     cursor: pointer;
@@ -647,4 +646,11 @@ select {
     width: 32px;
     height: 32px;
     background-position: -192px -160px;
+}
+
+.sellItem {
+    position: absolute;
+    left: 2px;
+    bottom: 2px;
+    cursor: default;
 }

@@ -247,6 +247,7 @@ function importItem(itemData) {
     item.$item = $tag('div', 'js-item item', tag('div', 'icon ' + baseItem.icon) + tag('div', 'itemLevel', baseItem.level));
     updateItem(item);
     item.$item.data('item', item);
+    item.$item.attr('helptext', '-').data('helpMethod', getItemHelpText);
     return item;
 }
 function exportAffix(affix) {

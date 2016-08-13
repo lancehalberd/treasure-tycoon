@@ -289,7 +289,7 @@ function checkToShowJewelToolTip() {
         }
     }
     //console.log([event.pageX,event.pageY]);
-    var helpText = jewel.helpMethod ? jewel.helpMethod() : jewel.helpText;
+    var helpText = jewel.helpMethod ? jewel.helpMethod(jewel) : jewel.helpText;
     if (jewel.fixed && !jewel.confirmed) {
         $popup = $tag('div', 'toolTip js-toolTip', 'Drag and rotate to adjust this augmentation.<br/><br/> Click the "Apply" button above when you are done.<br/><br/>' + helpText);
     } else {
@@ -458,6 +458,7 @@ function setSelectedCharacter(character) {
     centerMapOnLevel(map[character.currentLevelKey]);
     updateAdventureButtons();
     updateConfirmSkillButton();
+    updateEquipableItems();
 }
 function updateAdventureButtons() {
     var character = state.selectedCharacter;

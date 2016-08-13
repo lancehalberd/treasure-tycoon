@@ -25,7 +25,11 @@ function itemHelpText(item) {
     if (item.base.tags) {
         sections.push(item.base.tags.map(tagToDisplayName).join(', '));
     }
-    sections.push('Requires level ' + item.level);
+    if (item.level > state.selectedCharacter.adventurer.level) {
+        sections.push('<span style="color: #f00;">Requires level ' + item.level + '</span>');
+    } else {
+        sections.push('Requires level ' + item.level);
+    }
     sections.push('');
     sections.push(bonusHelpText(item.base.bonuses, true, null));
 

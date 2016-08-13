@@ -608,6 +608,7 @@ function gainLevel(adventurer) {
     adventurer.fame += adventurer.level;
     gain('fame', adventurer.level);
     updateActorStats(adventurer);
+    updateEquipableItems();
 }
 function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonus, startingEquipment, jewelLoot, levelKey) {
     var key = name.replace(/\s*/g, '').toLowerCase();

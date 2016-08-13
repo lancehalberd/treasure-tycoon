@@ -45,7 +45,17 @@ function makeItem(base, level) {
     item.$item = $tag('div', 'js-item item', tag('div', 'icon ' + base.icon) + tag('div', 'itemLevel', base.level));
     updateItem(item);
     item.$item.data('item', item);
+    item.$item.attr('helptext', '-').data('helpMethod', getItemHelpText);
+    if (state.selectedCharacter) {
+        item.$item.toggleClass('equipable', item.level <= state.selectedCharacter.adventurer.level);
+    }
     return item;
+}
+function updateEquipableItems() {
+    $('.js-item').each(function () {
+        var item = $(this).data('item');
+        $(this).toggleClass('equipable', item.level <= state.selectedCharacter.adventurer.level);
+    })
 }
 function updateItem(item) {
     var levelRequirement = item.base.level;
@@ -53,7 +63,6 @@ function updateItem(item) {
         levelRequirement = Math.max(levelRequirement, affix.base.level);
     });
     item.level = levelRequirement;
-    item.$item.attr('helpText', itemHelpText(item));
     item.$item.removeClass('imbued').removeClass('enchanted').removeClass('unique');
     var enchantments = item.prefixes.length + item.suffixes.length;
     if (item.unique) {
@@ -63,6 +72,10 @@ function updateItem(item) {
     } else if (enchantments) {
         item.$item.addClass('enchanted');
     }
+}
+function getItemHelpText($item) {
+    var item = $item.data('item');
+    return itemHelpText(item);
 }
 function addToInventory(item) {
     item.$item.detach();
