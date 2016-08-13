@@ -278,11 +278,16 @@ $('.js-mouseContainer').on('dblclick', '.js-mainCanvas', function (event) {
     if (editingMap) {
         editingLevel = getMapTarget(x, y);
         if (editingLevel) {
+            currentMapTarget = null;
             editingMap = false;
             editingLevelInstance = instantiateLevel(editingLevel, false);
             state.selectedCharacter.x = 0;
             state.selectedCharacter.cameraX = -60;
             state.selectedCharacter.startTime = state.selectedCharacter.time;
+            state.selectedCharacter.adventurer.animationTime = 0;
+            state.selectedCharacter.adventurer.isDead = false;
+            state.selectedCharacter.adventurer.timeOfDeath = undefined;
+            state.selectedCharacter.finishTime = false;
         }
     }
 });

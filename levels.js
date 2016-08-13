@@ -15,7 +15,7 @@ function instantiateLevel(levelData, completed) {
         var wavesLeft = numberOfWaves - waves.length;
         // This will be 100% chance to include event wave once # events = # waves left
         var isBossWave = false;
-        if (Math.random() < eventsLeft.length / wavesLeft) {
+        if ((wavesLeft === 1 || eventsLeft.length > 1) && Math.random() < eventsLeft.length / wavesLeft) {
             wave = eventsLeft.shift();
             isBossWave = !eventsLeft.length;
         } else {
