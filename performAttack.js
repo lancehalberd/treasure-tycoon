@@ -1,12 +1,12 @@
 
-function updateDamageInfo(character, $statsPanel) {
+function updateDamageInfo(character, $statsPanel, monsterLevel) {
     var adventurer = character.adventurer;
     if (!adventurer || !adventurer.actions) return;
     var attack = adventurer.actions[adventurer.actions.length - 1];
     // Raw damage numbers.
     var damageMultiplier =  (1 - attack.critChance) + (1 + attack.critDamage) * attack.critChance;
     var accuracyMultiplier = (1 - attack.critChance) + (1 + attack.critAccuracy) * attack.critChance;
-    var physical =  (attack.minDamage + attack.maxDamage) / 2;
+    var physical =  (attack.minDamage + attack.maxDamage) / 2, physicalAfterblock;
     var magic = (attack.minMagicDamage + attack.maxMagicDamage) / 2;
 
     var attackSpeed = Math.min(1 / ifdefor(attack.cooldown, .001), attack.attackSpeed);
@@ -45,7 +45,8 @@ function updateDamageInfo(character, $statsPanel) {
     }
 
     // Expected damage against an 'average' monster of the adventurer's level.
-    var dummy = makeMonster('dummy', adventurer.level, [], true);
+    var level = map[character.currentLevelKey];
+    var dummy = makeMonster('dummy', ifdefor(monsterLevel, level ? level.level : adventurer.level), [], true);
     var hitPercent;
     // tie breaker is given to hitting, so for this calculation use 1 less evasion.
     var evasion = dummy.evasion;
@@ -82,11 +83,16 @@ function updateDamageInfo(character, $statsPanel) {
     attack = dummy.actions[dummy.actions.length - 1];
 
     var $protection =  $statsPanel.find('.js-protection');
-    physical = Math.max(0, attack.maxDamage - adventurer.block / 2);
-    var blockProtection = 1 - physical / attack.maxDamage;
+    physical = attack.maxDamage;
+    if (adventurer.block <= physical) {
+        physicalAfterBlock = physical - adventurer.block / 2;
+    } else {
+        physicalAfterBlock = physical * (physical + 1) / 2 / (adventurer.block + 1);
+    }
+    var blockProtection = 1 - physicalAfterBlock / attack.maxDamage;
     physical = applyArmorToDamage(attack.maxDamage, adventurer.armor);
     var armorProtection = 1 - physical / attack.maxDamage;
-    physical = applyArmorToDamage(Math.max(0, attack.maxDamage - adventurer.block / 2), adventurer.armor);
+    physical = applyArmorToDamage(physicalAfterBlock, adventurer.armor);
     var physicalProtection = 1 - physical / attack.maxDamage;
     $protection.text(physicalProtection.percent(1));
     sections = ['This is an estimate of your physical damage reduction.', '']
@@ -98,9 +104,14 @@ function updateDamageInfo(character, $statsPanel) {
     $protection.parent().attr('helptext', sections.join('<br/>'));
 
     var $resistance =  $statsPanel.find('.js-resistance');
-    magic = Math.max(0, attack.maxMagicDamage - adventurer.magicBlock / 2);
+    var magic = attack.maxMagicDamage;
+    if (adventurer.magicBlock <= magic) {
+        magic = magic - adventurer.magicBlock / 2;
+    } else {
+        magic = (magic) * (magic + 1) / 2 / (adventurer.magicBlock + 1);
+    }
     var magicBlockResistance = 1 - magic / attack.maxMagicDamage;
-    magic = Math.max(0, attack.maxMagicDamage - adventurer.magicBlock / 2) * Math.max(0, 1 - adventurer.magicResist);
+    magic = magic * Math.max(0, 1 - adventurer.magicResist);
     var magicResistance = 1 - magic / attack.maxMagicDamage;
     $resistance.text(magicResistance.percent(1));
     sections = ['This is an estimate of your magic damage reduction.', ''];

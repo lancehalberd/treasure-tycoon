@@ -114,11 +114,15 @@ var selectedMapNodes = [];
 var clickedMapNode = null;
 var currentMapTarget = null;
 function getMapPopupTarget(x, y) {
-    if (draggedMap) {
-        currentMapTarget = null;
-        return null;
+    var newMapTarget = null;
+    if (!draggedMap) {
+        newMapTarget = getMapPopupTargetProper(x, y);
     }
-    currentMapTarget = getMapPopupTargetProper(x, y);
+    if (newMapTarget !== currentMapTarget) {
+        var level = newMapTarget ? (newMapTarget.isShrine ? newMapTarget.level.level : newMapTarget.level) : undefined;
+        updateDamageInfo(state.selectedCharacter, $('.js-characterColumn .js-stats'), level);
+    }
+    currentMapTarget = newMapTarget;
     return currentMapTarget;
 }
 function getMapPopupTargetProper(x, y) {
