@@ -71,6 +71,11 @@
         </div>
         <div class="js-mainCanvasContainer mainCanvasContainer" oncontextmenu="return false;">
             <canvas class="js-mainCanvas mainCanvas" width="800" height="240" style="background-color: blue;"></canvas>
+            <div class="js-editingControls editingControls" style="display: none">
+                <select class="js-levelSelect"></select>
+                <input class="js-levelNameInput" />
+                <select class="js-levelBackgroundSelect"></select>
+            </div>
             <div class="js-adventureControls adventureControls" style="display: none;">
                 <span class="js-recallButton icon backButton adventureButton" helptext="Exit to map"></span>
                 <span class="js-repeatButton icon repeatButton adventureButton" helptext="Repeat this adventure"></span>
@@ -194,7 +199,6 @@
 </div>
 </body>
 <script src="mouse.js"></script>
-<script src="keyboard.js"></script>
 <script src="drawDashedRectangle.js"></script>
 <script src="drawJewel.js"></script>
 <script src="drawBoard.js"></script>
@@ -223,6 +227,7 @@
 <script src="levels.js"></script>
 <script src="drawMap.js"></script>
 <script src="map.js"></script>
+<script src="editLevel.js"></script>
 <script src="polygon.js"></script>
 <script src="backgrounds.js"></script>
 <script src="saveGame.js"></script>

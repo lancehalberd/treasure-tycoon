@@ -117,6 +117,7 @@ async.mapSeries([
     setInterval(mainLoop, 20);
     $('.js-loading').hide();
     $('.js-gameContent').show();
+    initializeLevelEditing();
     var testShape = makeShape(0, 0, 0, shapeDefinitions.triangle[0]).scale(jewelShapeScale);
     var jewelButtonCanvas = $('.js-jewelButtonCanvas')[0];
     centerShapesInRectangle([testShape], rectangle(0, 0, jewelButtonCanvas.width, jewelButtonCanvas.height));

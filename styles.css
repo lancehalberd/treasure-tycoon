@@ -727,3 +727,9 @@ select {
 .clickable {
     cursor: pointer;
 }
+
+.editingControls {
+    position: absolute;
+    left: 5px;
+    top: 2px;
+}

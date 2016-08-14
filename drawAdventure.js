@@ -4,7 +4,7 @@ function drawAdventure(character) {
     var cameraX = character.cameraX;
     context.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
     var area = editingLevelInstance ? editingLevelInstance : character.area;
-    var background = ifdefor(area.background, backgrounds.field);
+    var background = ifdefor(backgrounds[area.background], backgrounds.field);
     var cloudX = cameraX + character.time * .5;
     var fullDrawingWidth = Math.ceil(mainCanvas.width / 64) * 64 + 64;
     background.forEach(function(section) {

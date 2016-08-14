@@ -43,7 +43,7 @@ function instantiateLevel(levelData, completed) {
         'level': level,
         'enemySkills': ifdefor(levelData.enemySkills, []).map(function (abilityKey) { return abilities[abilityKey];}),
         'waves': waves,
-        'background': backgrounds[levelData.background]
+        'background': levelData.background
     };
 }
 function createEndlessLevel(key, level) {
@@ -101,9 +101,12 @@ function eventWave(monsters) {
         var source = {'image': images['gfx/militaryIcons.png'], 'xOffset': 136, 'yOffset': 23, 'width': 16, 'height': 16};
         if (completed) {
             source = {'image': images['gfx/militaryIcons.png'], 'xOffset': 68, 'yOffset': 90, 'width': 16, 'height': 16};
+            context.drawImage(source.image, source.xOffset, source.yOffset, source.width, source.height,
+                              x - 16, y - 18, 32, 32);
+        } else {
+            context.drawImage(source.image, source.xOffset, source.yOffset, source.width, source.height,
+                              x - 16, y - 14, 32, 32);
         }
-        context.drawImage(source.image, source.xOffset, source.yOffset, source.width, source.height,
-                          x - 16, y - 18, 32, 32);
     }
     return self;
 }

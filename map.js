@@ -140,11 +140,11 @@ function getMapPopupTargetProper(x, y) {
         return newMapTarget;
     }
     if (!ifdefor(newMapTarget.isShrine)) {
-        newMapTarget.helptext = '<p>Level ' + newMapTarget.level + ' ' + newMapTarget.name +'</p><br/>';
+        newMapTarget.helptext = '<p style="font-weight: bold">Level ' + newMapTarget.level + ' ' + newMapTarget.name +'</p><br/>';
         var skill = abilities[newMapTarget.skill];
         if (skill) {
             if (state.selectedCharacter.adventurer.abilities.indexOf(skill) < 0) {
-                newMapTarget.helptext += '<p style="font-weight: bold">Visit shrine to learn: ' + skill.name + '</p>';
+                newMapTarget.helptext += '<p style="font-weight: bold; font-size: 14;">Visit shrine to learn: ' + skill.name + '</p>';
             } else {
                 newMapTarget.helptext += '<p style="font-size: 12">' + state.selectedCharacter.adventurer.name + ' has already learned:</p>' + skill.name + '</p>';
             }
@@ -257,6 +257,16 @@ $('.js-mouseContainer').on('mousedown', '.js-mainCanvas', function (event) {
     mapDragX = x;
     mapDragY = y;
 });
+$('.js-mouseContainer').on('dblclick', '.js-mainCanvas', function (event) {
+    var x = event.pageX - $(this).offset().left;
+    var y = event.pageY - $(this).offset().top;
+    if (editingMap) {
+        startEditingLevel(getMapTarget(x, y));
+    }
+});
+/*$('.js-mouseContainer').on('click', '.js-mainCanvas', function (event) {
+    console.log('click');
+});*/
 $(document).on('mouseup',function (event) {
     var x = event.pageX - $('.js-mainCanvas').offset().left;
     var y = event.pageY - $('.js-mainCanvas').offset().top;
@@ -276,35 +286,9 @@ $(document).on('mouseup',function (event) {
         draggedMap = false;
         return;
     }
-});
-$('.js-mouseContainer').on('dblclick', '.js-mainCanvas', function (event) {
-    var x = event.pageX - $(this).offset().left;
-    var y = event.pageY - $(this).offset().top;
-    if (editingMap) {
-        editingLevel = getMapTarget(x, y);
-        if (editingLevel) {
-            currentMapTarget = null;
-            editingMap = false;
-            editingLevelInstance = instantiateLevel(editingLevel, false);
-            state.selectedCharacter.x = 0;
-            state.selectedCharacter.cameraX = -60;
-            state.selectedCharacter.startTime = state.selectedCharacter.time;
-            state.selectedCharacter.adventurer.animationTime = 0;
-            state.selectedCharacter.adventurer.isDead = false;
-            state.selectedCharacter.adventurer.timeOfDeath = undefined;
-            state.selectedCharacter.finishTime = false;
-            state.selectedCharacter.waveIndex = 0;
-        }
-    }
-});
-$('.js-mouseContainer').on('click', '.js-mainCanvas', function (event) {
-    if (draggedMap) {
-        draggedMap = false;
-        return;
-    }
     if (!editingMap) return;
-    var x = event.pageX - $(this).offset().left;
-    var y = event.pageY - $(this).offset().top;
+    var x = event.pageX - $('.js-mainCanvas').offset().left;
+    var y = event.pageY - $('.js-mainCanvas').offset().top;
     var newMapTarget = getMapTarget(x, y);
     if (newMapTarget) {
         if (event.shiftKey) {
@@ -452,11 +436,28 @@ function deleteLevel(level) {
     });
     delete map[level.levelKey];
 }
+function stopMapEditing() {
+    editingMap = false;
+    updateEditingState();
+}
+function startMapEditing() {
+    editingMap = true;
+    updateEditingState();
+}
+function updateEditingState() {
+    var isEditing = editingLevel || editingMap;
+    mapHeight = isEditing ? 600 : 240;
+    $('.js-pointsBar').toggle(!isEditing);
+    $('.js-mainCanvasContainer').css('height', isEditing ? '600px' : '240px');
+    $('.js-mainCanvas').attr('height', isEditing ? '600' : '240');
+    // Image smoothing seems to get enabled again after changing the canvas size, so disable it again.
+    $('.js-mainCanvas')[0].getContext('2d').imageSmoothingEnabled = false;
+}
 
 $(document).on('keydown', function(event) {
     if (event.which === 8) { // delete key
-        event.preventDefault();
         if (editingMap) {
+            event.preventDefault();
             selectedMapNodes.forEach(function (level) {
                 deleteLevel(level);
             });
@@ -465,19 +466,19 @@ $(document).on('keydown', function(event) {
     }
     if (event.which === 27) { // escape key
         event.preventDefault();
-        if (editingLevel) {
-            editingLevel = editingLevelInstance = undefined;
-            editingMap = true;
+        if (editingMap) {
+            stopMapEditing();
         }
     }
     if (event.which === 69) { // 'e'
-        editingMap = !editingMap;
-        mapHeight = editingMap ? 600 : 240;
-        $('.js-pointsBar').toggle(!editingMap);
-        $('.js-mainCanvasContainer').css('height', editingMap ? '600px' : '240px');
-        $('.js-mainCanvas').attr('height', editingMap ? '600' : '240');
-        // Image smoothing seems to get enabled again after changing the canvas size, so disable it again.
-        $('.js-mainCanvas')[0].getContext('2d').imageSmoothingEnabled = false;
+        if (currentMapTarget) {
+            startEditingLevel(currentMapTarget);
+            return;
+        }
+        if (!editingLevel) {
+            editingMap = !editingMap;
+            updateEditingState();
+        }
     }
     if (event.which === 76) { // 'l'
         if (currentMapTarget && currentMapTarget.levelKey) {
@@ -491,5 +492,4 @@ $(document).on('keydown', function(event) {
         }
         updateAdventurer(state.selectedCharacter.adventurer);
     }
-    console.log(event.which);
 });
