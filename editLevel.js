@@ -34,14 +34,18 @@ function startEditingLevel(level) {
     $('.js-levelNameInput').val(editingLevel.name);
     updateEditingState();
 }
+function stopEditingLevel() {
+    $('.js-editingControls').hide();
+    selectedMapNodes = [editingLevel];
+    editingLevel = editingLevelInstance = undefined;
+    editingMap = true;
+}
 
 $(document).on('keydown', function(event) {
     if (event.which === 27) { // escape key
         event.preventDefault();
         if (editingLevel) {
-            $('.js-editingControls').hide();
-            editingLevel = editingLevelInstance = undefined;
-            editingMap = true;
+            stopEditingLevel();
         }
     }
 });
