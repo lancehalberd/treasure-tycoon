@@ -71,10 +71,18 @@
         </div>
         <div class="js-mainCanvasContainer mainCanvasContainer" oncontextmenu="return false;">
             <canvas class="js-mainCanvas mainCanvas" width="800" height="240" style="background-color: blue;"></canvas>
-            <div class="js-editingControls editingControls" style="display: none">
+            <div class="js-editingControls editingControlsTop" style="display: none">
                 <select class="js-levelSelect"></select>
                 <input class="js-levelNameInput" />
                 <select class="js-levelBackgroundSelect"></select>
+                <select class="js-levelSkillSelect"></select>
+            </div>
+            <div class="js-editingControls editingControlsBottom" style="display: none">
+                <div class="levelEditingSection">Monsters: <span class="js-monsters"><select class="js-monsterSelect"></select></span></div>
+                <div class="levelEditingSection">Enemy Skills: <span class="js-enemySkills"><select class="js-enemySkillSelect"></select></span></div>
+                <div class="levelEditingSection">Events:
+                    <div class="js-levelEvents"></div>
+                </div>
             </div>
             <div class="js-adventureControls adventureControls" style="display: none;">
                 <span class="js-recallButton icon backButton adventureButton" helptext="Exit to map"></span>
@@ -226,6 +234,7 @@
 <script src="monsters.js"></script>
 <script src="levels.js"></script>
 <script src="drawMap.js"></script>
+<script src="mapData.js"></script>
 <script src="map.js"></script>
 <script src="editLevel.js"></script>
 <script src="polygon.js"></script>

@@ -385,6 +385,10 @@ function updateAdventurer(adventurer) {
     } else {
         adventurer.tags.push(adventurer.equipment.weapon.base.type);
         adventurer.tags = adventurer.tags.concat(ifdefor(adventurer.equipment.weapon.base.tags, []));
+        // You gain the noOffhand tag if offhand is empty and you are using a one handed weapon.
+        if (!adventurer.equipment.offhand && adventurer.tags.indexOf('twoHanded') < 0) {
+            adventurer.tags.push('noOffhand');
+        }
     }
 
     var sectionWidth = personFrames * 32;

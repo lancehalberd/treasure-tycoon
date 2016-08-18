@@ -1,59 +1,30 @@
 var editingMap = false;
-var editingLevel = null, editingLevelInstance = null;
 var emptyLevelData = ({'unlocks': [], 'level': 1, 'background': 'field', 'specialLoot': [], 'skill': null, 'board': null, 'enemySkills': [], 'monsters': ['skeleton'], 'events': [['dragon']]});
-var map = {
-    'grove': {"x":10,"y":-2,"unlocks":["savannah","orchard","cave"],"name":"Grove","level":1,"background":"forest","specialLoot":["simpleEmeraldLoot"],"skill":"minorDexterity","board":"doubleDiamonds","enemySkills":["minorDexterity"],"monsters":["caterpillar","gnome"],"events":[["caterpillar","gnome"],["gnome","gnome"],["caterpillar","caterpillar"],["butterfly"]]},
-    'savannah': {"x":8,"y":-3,"unlocks":["range"],"name":"Savannah","level":1,"background":"field","specialLoot":["simpleRubyLoot"],"skill":"pet","board":"smallFangBoard","monsters":["butterfly"],"events":[["caterpillar","caterpillar","caterpillar"],["caterpillar","caterpillar","motherfly"]]},
-    'orchard': {"x":12,"y":-3,"unlocks":["crevice"],"name":"Orchard","level":2,"background":"orchard","specialLoot":["simpleEmeraldLoot"],"skill":"sap","board":"spikeBoard","enemySkills":["sap","rangeAndAttackSpeed"],"monsters":["butterfly","gnome"],"events":[["butterfly","butterfly"],["gnome","gnome"],["dragon"]]},
-    'range': {"x":10,"y":-4,"unlocks":["valley"],"name":"Range","level":3,"background":"forest","specialLoot":["simpleEmeraldLoot"],"skill":"finesse","board":"spikeBoard","enemySkills":["finesse"],"monsters":["butterfly","gnome"],"events":[["butterfly","butterfly"],["gnome","gnome"],["dragon"]]},
-    'crevice': {"x":12,"y":-5,"unlocks":["valley"],"name":"Crevice","level":4,"background":"cave","specialLoot":["simpleSaphireLoot"],"skill":"dodge","board":"fangBoard","enemySkills":["dodge"],"monsters":["gnome","butterfly"],"events":[["dragon"]]},
-    'valley': {"x":10,"y":-6,"unlocks":[],"name":"Valley","level":5,"background":"forest","specialLoot":["simpleEmeraldLoot"],"skill":"majorDexterity","board":"crownBoard","enemySkills":["heal","protect","majorDexterity"],"monsters":["motherfly","gnomecromancer"],"events":[["motherfly","motherfly"],["gnomecromancer","gnomecromancer"],["gnomecromancer","gnomeWizard","gnomecromancer"]]},
-    'meadow': {"x":12,"y":1,"unlocks":["garden","road","grove"],"name":"Meadow","level":1,"background":"field","specialLoot":["simpleRubyLoot"],"skill":"minorStrength","board":"smallFangBoard","enemySkills":["minorStrength"],"monsters":["caterpillar","skeleton"],"events":[["skeleton","caterpillar"],["caterpillar","caterpillar"],["skeleton","skeleton"],["dragon"]]},
-    'garden': {"x":14,"y":3,"unlocks":["trail"],"name":"Garden","level":1,"background":"garden","specialLoot":["simpleEmeraldLoot"],"skill":"fistMastery","board":"doubleDiamonds","enemySkills":["ninja"],"monsters":["caterpillar","gnome","butterfly","skeleton"],"events":[["butterfly"],["giantSkeleton"],["dragon"]]},
-    'road': {"x":12,"y":3,"unlocks":["tunnel"],"name":"Road","level":2,"background":"field","specialLoot":["simpleRubyLoot"],"skill":"vitality","board":"halfHexBoard","enemySkills":["vitality"],"monsters":["skeleton"],"events":[["skeleton","undeadWarrior"],["dragon"],["skeleton","undeadWarrior","skeleton","undeadWarrior"],["frostGiant"]]},
-    'trail': {"x":16,"y":3,"unlocks":["mountain"],"name":"Trail","level":3,"background":"field","specialLoot":["simpleRubyLoot"],"skill":"ferocity","board":"halfHexBoard","enemySkills":["ferocity"],"monsters":["caterpillar","butterfly"],"events":[["caterpillar","caterpillar"],["motherfly"],["caterpillar","caterpillar","caterpillar","caterpillar"],["lightningBug","motherfly"]]},
-    'tunnel': {"x":14,"y":5,"unlocks":["mountain"],"name":"Tunnel","level":4,"background":"cave","specialLoot":["simpleSaphireLoot"],"skill":"hook","board":"thirdHexBoard","enemySkills":[],"monsters":["undeadWarrior","giantSkeleton"],"events":[["skeleton","undeadWarrior"],["giantSkeleton","giantSkeleton"],["undeadWarrior","undeadWarrior","dragon"],["frostGiant","frostGiant"]]},
-    'mountain': {"x":17,"y":5,"unlocks":[],"name":"Mountain","level":5,"background":"field","specialLoot":["simpleRubyLoot"],"skill":"majorStrength","board":"pieBoard","enemySkills":["majorStrength"],"monsters":["dragon","giantSkeleton"],"events":[["undeadWarrior","undeadWarrior"],["butcher"],["undeadWarrior","undeadWarrior","dragon"],["butcher","dragon","gnomeWizard"]]},
-    'cave': {"x":8,"y":1,"unlocks":["cemetery","temple","meadow"],"name":"Cave","level":1,"background":"cave","specialLoot":["simpleSaphireLoot"],"skill":"minorIntelligence","board":"tripleTriangles","enemySkills":["minorIntelligence"],"monsters":["gnome","bat"],"events":[["bat","gnome"],["bat","bat"],["gnome","gnome"],["giantSkeleton"]]},
-    'cemetery': {"x":6,"y":1,"unlocks":["crypt"],"name":"Cemetery","level":1,"background":"cemetery","specialLoot":["simpleRubyLoot"],"skill":"raiseDead","board":"smallFangBoard","monsters":["bat"],"events":[["gnomecromancer","gnomecromancer"],["skeleton","skeleton"],["skeleton","skeleton"],["gnomecromancer"],["skeleton","skeleton","skeleton","skeleton"],["gnomecromancer","gnomecromancer"]]},
-    'temple': {"x":7,"y":3,"unlocks":["bayou"],"name":"Temple","level":2,"background":"cave","specialLoot":["simpleSaphireLoot"],"skill":"heal","board":"triforceBoard","enemySkills":["heal"],"monsters":["gnome","butterfly"],"events":[["dragon"]]},
-    'crypt': {"x":4,"y":2,"unlocks":["dungeon"],"name":"Crypt","level":3,"background":"cemetery","specialLoot":["simpleSaphireLoot"],"skill":"resonance","board":"triforceBoard","enemySkills":["resonance"],"monsters":["gnome","butterfly"],"events":[["dragon"],["gnomeWizard"]]},
-    'bayou': {"x":5,"y":4,"unlocks":["dungeon"],"name":"Bayou","level":4,"background":"forest","specialLoot":["simpleEmeraldLoot"],"skill":"protect","board":"petalBoard","enemySkills":["protect","majorIntelligence"],"monsters":["butterfly","bat"],"events":[["butterfly","butterfly"],["bat","bat","bat","bat"],["lightningBug","lightningBug"]]},
-    'dungeon': {"x":3,"y":4,"unlocks":[],"name":"Dungeon","level":5,"background":"cave","specialLoot":["simpleSaphireLoot"],"skill":"majorIntelligence","board":"helmBoard","enemySkills":["majorIntelligence"],"monsters":["gnome","gnomecromancer"],"events":[["frostGiant","lightningBug","dragon"]]},
-    'forestfloor': {"x":5,"y":-2,"unlocks":["shrubbery","mossbed","cave","grove"],"name":"Forest Floor","level":2,"background":"forest","specialLoot":["simpleJewelLoot"],"skill":"majorDexterity","board":"crownBoard","enemySkills":["heal","protect","majorDexterity"],"monsters":["motherfly","gnomecromancer"],"events":[["motherfly","motherfly"],["gnomecromancer","gnomecromancer"],["gnomecromancer","gnomeWizard","gnomecromancer"]]},
-    'shrubbery': {"x":3,"y":-3,"unlocks":["ruins"],"name":"Shrubbery","level":4,"background":"field","specialLoot":["simpleJewelLoot"],"skill":"majorDexterity","board":"crownBoard","enemySkills":["heal","protect","majorDexterity"],"monsters":["motherfly","gnomecromancer"],"events":[["motherfly","motherfly"],["gnomecromancer","gnomecromancer"],["gnomecromancer","gnomeWizard","gnomecromancer"]]},
-    'mossbed': {"x":3,"y":-1,"unlocks":["riverbank"],"name":"Mossbed","level":6,"background":"field","specialLoot":["simpleJewelLoot"],"skill":"majorDexterity","board":"crownBoard","enemySkills":["heal","protect","majorDexterity"],"monsters":["motherfly","gnomecromancer"],"events":[["motherfly","motherfly"],["gnomecromancer","gnomecromancer"],["gnomecromancer","gnomeWizard","gnomecromancer"]]},
-    'riverbank': {"x":1,"y":-1,"unlocks":["ruins"],"name":"Riverbank","level":8,"background":"field","specialLoot":["simpleJewelLoot"],"skill":"majorDexterity","board":"crownBoard","enemySkills":["heal","protect","majorDexterity"],"monsters":["motherfly","gnomecromancer"],"events":[["motherfly","motherfly"],["gnomecromancer","gnomecromancer"],["gnomecromancer","gnomeWizard","gnomecromancer"]]},
-    'ruins': {"x":-1,"y":-3,"unlocks":["canopy","cliff","understory"],"name":"Ruins","level":12,"background":"cemetery","specialLoot":["simpleJewelLoot"],"skill":"majorDexterity","board":"crownBoard","enemySkills":["heal","protect","majorDexterity"],"monsters":["motherfly","gnomecromancer"],"events":[["motherfly","motherfly"],["gnomecromancer","gnomecromancer"],["gnomecromancer","gnomeWizard","gnomecromancer"]]},
-    'understory': {"x":-3,"y":-1,"unlocks":["canopy"],"name":"Understory","level":16,"background":"field","specialLoot":["simpleJewelLoot"],"skill":"majorDexterity","board":"crownBoard","enemySkills":["heal","protect","majorDexterity"],"monsters":["motherfly","gnomecromancer"],"events":[["motherfly","motherfly"],["gnomecromancer","gnomecromancer"],["gnomecromancer","gnomeWizard","gnomecromancer"]]},
-    'canopy': {"x":-5,"y":-3,"unlocks":["emergents"],"name":"Canopy","level":21,"background":"forest","specialLoot":["simpleJewelLoot"],"skill":"majorDexterity","board":"crownBoard","enemySkills":["heal","protect","majorDexterity"],"monsters":["motherfly","gnomecromancer"],"events":[["motherfly","motherfly"],["gnomecromancer","gnomecromancer"],["gnomecromancer","gnomeWizard","gnomecromancer"]]},
-    'cliff': {"x":0,"y":-5,"unlocks":["emergents"],"name":"Cliff","level":25,"background":"field","specialLoot":["simpleJewelLoot"],"skill":"majorDexterity","board":"crownBoard","enemySkills":["heal","protect","majorDexterity"],"monsters":["motherfly","gnomecromancer"],"events":[["motherfly","motherfly"],["gnomecromancer","gnomecromancer"],["gnomecromancer","gnomeWizard","gnomecromancer"]]},
-    'emergents': {"x":-3,"y":-5,"unlocks":["ravine"],"name":"Emergents","level":29,"background":"field","specialLoot":["simpleJewelLoot"],"skill":"majorDexterity","board":"crownBoard","enemySkills":["heal","protect","majorDexterity"],"monsters":["motherfly","gnomecromancer"],"events":[["motherfly","motherfly"],["gnomecromancer","gnomecromancer"],["gnomecromancer","gnomeWizard","gnomecromancer"]]},
-    'ravine': {"x":-1,"y":-7,"unlocks":[],"name":"Ravine","level":33,"background":"garden","specialLoot":["simpleJewelLoot"],"skill":"majorDexterity","board":"crownBoard","enemySkills":["heal","protect","majorDexterity"],"monsters":["motherfly","gnomecromancer"],"events":[["motherfly","motherfly"],["gnomecromancer","gnomecromancer"],["gnomecromancer","gnomeWizard","gnomecromancer"]]},
-    'shore': {"x":15,"y":-2,"unlocks":["oceanside","meadow","grove"],"name":"Shore","level":1,"background":"field","specialLoot":[],"skill":null,"board":null,"enemySkills":[],"monsters":["skeleton"],"events":[["dragon"]]},
-    'oceanside': {"x":15,"y":-4,"unlocks":["wetlands","floodplain"],"name":"Oceanside","level":1,"background":"field","specialLoot":[],"skill":null,"board":null,"enemySkills":[],"monsters":["skeleton"],"events":[["dragon"]]},
-    'wetlands': {"x":17,"y":-4,"unlocks":["meander"],"name":"Wetlands","level":1,"background":"field","specialLoot":[],"skill":null,"board":null,"enemySkills":[],"monsters":["skeleton"],"events":[["dragon"]]},
-    'floodplain': {"x":17,"y":-2,"unlocks":["meander"],"name":"Floodplain","level":1,"background":"field","specialLoot":[],"skill":null,"board":null,"enemySkills":[],"monsters":["skeleton"],"events":[["dragon"]]},
-    'levee': {"x":17,"y":0,"unlocks":["channel"],"name":"Levee","level":1,"background":"field","specialLoot":[],"skill":null,"board":null,"enemySkills":[],"monsters":["skeleton"],"events":[["dragon"]]},
-    'meander': {"x":19,"y":-2,"unlocks":["levee"],"name":"Meander","level":1,"background":"field","specialLoot":[],"skill":null,"board":null,"enemySkills":[],"monsters":["skeleton"],"events":[["dragon"]]},
-    'channel': {"x":20,"y":0,"unlocks":["confluence"],"name":"Channel","level":1,"background":"field","specialLoot":[],"skill":null,"board":null,"enemySkills":[],"monsters":["skeleton"],"events":[["dragon"]]},
-    'confluence': {"x":21,"y":-2,"unlocks":["tributaries"],"name":"Confluence","level":1,"background":"field","specialLoot":[],"skill":null,"board":null,"enemySkills":[],"monsters":["skeleton"],"events":[["dragon"]]},
-    'tributaries': {"x":20,"y":-4,"unlocks":["headwaters"],"name":"Tributaries","level":1,"background":"field","specialLoot":[],"skill":null,"board":null,"enemySkills":[],"monsters":["skeleton"],"events":[["dragon"]]},
-    'headwaters': {"x":23,"y":-4,"unlocks":[],"name":"Headwaters","level":1,"background":"field","specialLoot":[],"skill":null,"board":null,"enemySkills":[],"monsters":["skeleton"],"events":[["dragon"]]}
-};
-$.each(map, function (levelKey, levelData) {
-    levelData.levelKey = levelKey;
-});
 
-var levelExportProperties = ['x', 'y', 'unlocks', 'name', 'level', 'background', 'specialLoot', 'skill', 'board', 'enemySkills', 'monsters', 'events'];
 function exportMap() {
     var lines = [];
-    $.each(map, function (levelKey, levelData) {
-        var exportData = {};
-        for (var key of levelExportProperties) {
-            exportData[key] = levelData[key];
+    Object.keys(map).sort().forEach(function (levelKey) {
+        var levelData = map[levelKey];
+        var levelLines = ["    '" + levelKey+"': {"];
+        levelLines.push("        'name': " + JSON.stringify(levelData.name) + ",");
+        levelLines.push("        'level': " + JSON.stringify(levelData.level) + ",");
+        levelLines.push("        'x': " + JSON.stringify(levelData.x) + ", 'y': " + JSON.stringify(levelData.y) + ",");
+        for (var key of ['background', 'unlocks', 'specialLoot', 'skill', 'board', 'enemySkills', 'monsters']) {
+            levelLines.push("        '" + key + "': " + JSON.stringify(levelData[key]) + ",");
         }
-        lines.push("    '" + levelKey+"': " + JSON.stringify(exportData));
+        var eventLines = [];
+        levelData.events.forEach(function (event) {
+            eventLines.push("            " + JSON.stringify(event));
+        })
+        if (eventLines.length) {
+            levelLines.push("        'events': [");
+            levelLines.push(eventLines.join(",\n"));
+            levelLines.push("        ]");
+        } else {
+            levelLines.push("        'events': []");
+        }
+        levelLines.push("    }");
+        lines.push(levelLines.join("\n"));
     });
     return lines.join(",\n");
 }
@@ -135,41 +106,54 @@ function getMapPopupTargetProper(x, y) {
     if (!newMapTarget) {
         return null;
     }
-    if (editingMap) {
-        newMapTarget.helptext = '<p>Level ' + newMapTarget.level + ' ' + newMapTarget.name +'</p><br/>';
-        return newMapTarget;
+    if (ifdefor(newMapTarget.isShrine)) {
+        newMapTarget.helpMethod = getMapShrineHelpText;
+    } else {
+        newMapTarget.helpMethod = getMapLevelHelpText;
     }
-    if (!ifdefor(newMapTarget.isShrine)) {
-        newMapTarget.helptext = '<p style="font-weight: bold">Level ' + newMapTarget.level + ' ' + newMapTarget.name +'</p><br/>';
-        var skill = abilities[newMapTarget.skill];
-        if (skill) {
-            if (state.selectedCharacter.adventurer.abilities.indexOf(skill) < 0) {
-                newMapTarget.helptext += '<p style="font-weight: bold; font-size: 14;">Visit shrine to learn: ' + skill.name + '</p>';
-            } else {
-                newMapTarget.helptext += '<p style="font-size: 12">' + state.selectedCharacter.adventurer.name + ' has already learned:</p>' + skill.name + '</p>';
-            }
-        }
-        return newMapTarget;
-    }
-    var shrine = newMapTarget;
-    var divinityScore = ifdefor(state.selectedCharacter.divinityScores[shrine.level.levelKey], 0);
-    shrine.helptext = ''
-    if (state.selectedCharacter.currentLevelKey !== shrine.level.levelKey || !state.selectedCharacter.levelCompleted) {
-        shrine.helptext += '<p style="font-size: 12">An adventurer can only visit the shrine for the last adventure they completed.</p><br/>';
-    }
-    var totalCost = totalCostForNextLevel(state.selectedCharacter, shrine.level);
-    var skill = abilities[shrine.level.skill];
-    if (skill) {
-        if (state.selectedCharacter.adventurer.abilities.indexOf(skill) < 0  && state.selectedCharacter.divinity < totalCost) {
-            shrine.helptext += '<p style="font-size: 12">' + state.selectedCharacter.adventurer.name + ' does not have enough divinity to learn the skill from this shrine.</p><br/>';
-        }
-        if (state.selectedCharacter.adventurer.abilities.indexOf(skill) < 0) {
-            shrine.helptext += '<p style="font-weight: bold">Spend ' + totalCost + ' divinity at this shrine to level up and learn:</p>' + abilityHelpText(skill, state.selectedCharacter);
+    return newMapTarget;
+}
+
+function getMapLevelHelpText(level) {
+    var helpText;
+    if (!editingMap) {
+        helpText = '<p style="font-weight: bold">Level ' + level.level + ' ' + level.name + '</p><br/>';
+    } else {
+        helpText = '<p style="font-weight: bold">Level ' + level.level + ' ' + level.name +'(' + level.background +  ')</p><br/>';
+        helpText += '<p><span style="font-weight: bold">Enemies:</span> ' + level.monsters.map(function (monsterKey) { return monsters[monsterKey].name;}).join(', ') + '</p>';
+        if (level.events) {
+            helpText += '<p><span style="font-weight: bold"># Events: </span> ' + level.events.length + '</p>';
+            helpText += '<p><span style="font-weight: bold">Boss Event: </span> ' + level.events[level.events.length - 1].map(function (monsterKey) { return monsters[monsterKey].name;}).join(', ') + '</p>';
         } else {
-            shrine.helptext += '<p style="font-size: 12px">' + state.selectedCharacter.adventurer.name + ' has already learned:</p>' + abilityHelpText(skill, state.selectedCharacter);
+            helpText += '<p style="font-weight: bold; color: red;">No Events!</p>';
+        }
+        helpText += '<p><span style="font-weight: bold">Enemy Skills:</span> ' + ifdefor(level.enemySkills, []).map(function (skillKey) { return abilities[skillKey].name;}).join(', ') + '</p>';
+        helpText += '<br/><p style="font-weight: bold">Teaches:</p>';
+        var skill = abilities[level.skill];
+        if (skill) {
+            helpText += abilityHelpText(skill, state.selectedCharacter);
+        } else {
+            helpText += '<p>No Skill</p>';
         }
     }
-    return shrine;
+    return helpText;
+}
+function getMapShrineHelpText(shrine) {
+    var skill = abilities[shrine.level.skill];
+    var totalCost = totalCostForNextLevel(state.selectedCharacter, shrine.level);
+    var helpText = ''
+    if (state.selectedCharacter.currentLevelKey !== shrine.level.levelKey || !state.selectedCharacter.levelCompleted) {
+        helpText += '<p style="font-size: 12">An adventurer can only visit the shrine for the last adventure they completed.</p><br/>';
+    }
+    if (state.selectedCharacter.adventurer.abilities.indexOf(skill) < 0  && state.selectedCharacter.divinity < totalCost) {
+        helpText += '<p style="font-size: 12">' + state.selectedCharacter.adventurer.name + ' does not have enough divinity to learn the skill from this shrine.</p><br/>';
+    }
+    if (state.selectedCharacter.adventurer.abilities.indexOf(skill) < 0) {
+        helpText += '<p style="font-weight: bold">Spend ' + totalCost + ' divinity at this shrine to level up and learn:</p>' + abilityHelpText(skill, state.selectedCharacter);
+    } else {
+        helpText += '<p style="font-size: 12px">' + state.selectedCharacter.adventurer.name + ' has already learned:</p>' + abilityHelpText(skill, state.selectedCharacter);
+    }
+    return helpText;
 }
 
 function getMapTarget(x, y) {
@@ -446,10 +430,10 @@ function startMapEditing() {
 }
 function updateEditingState() {
     var isEditing = editingLevel || editingMap;
-    mapHeight = isEditing ? 600 : 240;
+    mapHeight = (isEditing && !editingLevel) ? 600 : 240;
     $('.js-pointsBar').toggle(!isEditing);
-    $('.js-mainCanvasContainer').css('height', isEditing ? '600px' : '240px');
-    $('.js-mainCanvas').attr('height', isEditing ? '600' : '240');
+    $('.js-mainCanvasContainer').css('height', (isEditing ? 600 : 240) +'px');
+    $('.js-mainCanvas').attr('height', mapHeight);
     // Image smoothing seems to get enabled again after changing the canvas size, so disable it again.
     $('.js-mainCanvas')[0].getContext('2d').imageSmoothingEnabled = false;
 }

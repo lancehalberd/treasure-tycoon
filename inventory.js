@@ -104,7 +104,8 @@ var tagToCategoryMap = {
     'skill': 'Skills',
     'unarmed': 'While Unarmed',
     'fist': 'Fist Weapons',
-    'minion': 'Minions'
+    'minion': 'Minions',
+    'noOffhand': 'With No Offhand'
 };
 function tagToCategoryDisplayName(tag) {
     return ifdefor(tagToCategoryMap[tag], properCase(tag));

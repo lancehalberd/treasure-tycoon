@@ -21,8 +21,11 @@ var abilities = {
     // how to make chaining apply to basic attack but not double up *throwing:attackSpeed, etc.
     'juggler': {'name': 'Juggling', 'bonuses': {'$throwing:chaining': 'Projectiles ricochet between targets until they miss.'}},
     'minorDexterity': {'name': 'Minor Dexterity', 'bonuses': {'+dexterity': 5}},
-    'throwingPower': {'name': 'Throwing Power', 'bonuses': {'*throwing:damage': 1.4, '+throwing:range': 2}},
-    'throwingMastery': {'name': 'Throwing Mastery', 'bonuses': {'*throwing:attackSpeed': 1.5}},
+    'throwingPower': {'name': 'Throwing Power', 'bonuses': {'*throwing:damage': 1.3, '+throwing:range': 2}},
+    'throwingMastery': {'name': 'Throwing Mastery', 'bonuses': {'*throwing:attackSpeed': 1.3}},
+    'throwingPrecision': {'name': 'Throwing Precision', 'bonuses': {'+throwing:critDamage': .5, '+throwing:critAccuracy': .5}},
+    'dualThrowing': {'name': 'Dual Throwing', 'bonuses': {'*noOffhand:attackSpeed': 2}}, // This should be *noOffhand:throwing:attackSpeed when we support multiple tag restrictions.
+    'evasion': {'name': 'Evasion', 'bonuses': {'%evasion': .5}},
     'sap': {'name': 'Sap', 'bonuses': {'+slowOnHit': .1, '+healthGainOnHit': 1}},
     'dodge': {'name': 'Dodge', 'bonuses': {'+evasion': 2}, 'reaction':
              {'type': 'dodge', 'stats': {'cooldown': 10, 'distance': -128, 'buff': {'stats': {'%evasion': .5, 'duration': 5, 'area': 0}}}, 'helpText': 'Leap back to dodge an attack and gain: {buff}'}},
@@ -58,6 +61,11 @@ var abilities = {
     // Corsair
     'corsair': {'name': 'Venom', 'bonuses': {'+poison': .2}, 'onHitEffect': {'debuff': {'tags': ['debuff'], 'stats': {'*damage': .9, 'area': 0}}},
                     'helpText': "Apply a stacking debuff with every hit that weakens enemies' attacks and deals damage over time."},
+    'meleeDamage': {'name': 'Melee Damage', 'bonuses': {'*melee:damage': 1.3}},
+    'meleeSpeed': {'name': 'Melee Attack Speed', 'bonuses': {'*melee:attackSpeed': 1.3}},
+    'meleeCritical': {'name': 'Melee Critical', 'bonuses': {'+melee:critChance': .05, '+melee:critDamage': .2}},
+    'corsairKeyStone': {'name': 'Corsair Key Stone', 'bonuses': {}},
+    'critChance': {'name': 'Critical Chance', 'bonuses': {'%critChance': .5}},
     'hook': {'name': 'Grappling Hook', 'action': {'type': 'attack',
                     'stats': {'cooldown': 10, 'range': 10, 'dragDamage': 0, 'dragStun': 0, 'rangeDamage': 0, '$alwaysHits': 'Never misses', '$pullsTarget': 'Pulls target'},
                     'helpText': 'Throw a hook to damage and pull enemies closer.'}},
@@ -99,6 +107,9 @@ var abilities = {
     // Tier 3 classes
     // Ranger
     'ranger': {'name': 'Taming', 'bonuses': {'*minion:healthBonus': 2, '*minion:attackSpeedBonus': 1.5, '*minion:speedBonus': 1.5}},
+    'rangedDamage': {'name': 'Ranged Damage', 'bonuses': {'*ranged:damage': 1.3}},
+    'rangedSpeed': {'name': 'Ranged Attack Speed', 'bonuses': {'*ranged:attackSpeed': 1.3}},
+    'rangedCritical': {'name': 'Ranged Critical', 'bonuses': {'+ranged:critChance': .05, '+ranged:critDamage': .2}},
     'finesse':  {'name': 'Finesse', 'bonuses': {'%attackSpeed': .2}},
     'pet': {'name': 'Pet', 'action':
             {'type': 'minion', 'target': 'none', 'tags': ['pet'], 'monsterKey': 'petCaterpillar', 'stats': {'limit': 1, 'cooldown': 30, 'healthBonus': 1, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1},
@@ -109,9 +120,12 @@ var abilities = {
     'net': {'name': 'Net Trap', 'action': {'type': 'effect',
                     'stats': {'cooldown': 10, 'range': 10, 'debuff': {'tags': ['debuff'], 'stats': {'*speed': 0, 'duration': 3, 'area': 0}}},
                     'helpText': 'Throw a net to ensnare a distant enemy.'}},
+    'netArea': {'name': 'Wide Net', 'bonuses': {'+net:area': 5}},
     'sicem': {'name': 'Sic \'em', 'bonuses': {'+dexterity': 10}, 'action': {'type': 'effect',
                     'stats': {'cooldown': [60, '*', [100, '/', [100, '+', '{dexterity}']]], 'range': 10, 'allyBuff': {'stats': {'*speed': 2, '*attackSpeed': 2, '*damage': 2, 'duration': 2, 'area': 0}}},
                     'helpText': 'Incite your allies to fiercely attack the enemy granting them: {allyBuff}'}},
+    'unleashe': {'name': 'unleashe', 'bonuses': {'+sicem:allyBuff:lifeSteal': .1, '+sicem:allyBuff:duration': 2},
+                    'helpText': 'Not Implemented: sicem buff grants life steal and lasts an additional 2 seconds'},
     // Warrior
     'warrior': {'name': 'Cleave', 'bonuses': {'%melee:damage': .5, '+melee:cleave': .6, '+melee:cleaveRange': 3}},
     'ferocity': {'name': 'Ferocity', 'bonuses': {'%damage': .2}},
