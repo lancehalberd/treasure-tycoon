@@ -755,6 +755,11 @@ select {
     border-radius: 3px;
 }
 
+.editEventButton {
+    margin-right: 5px;
+    min-width: 25px;
+}
+
 p {
     margin: 0;
     padding: 0;

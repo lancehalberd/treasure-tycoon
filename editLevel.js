@@ -70,13 +70,35 @@ function initializeLevelEditing() {
         }
         $(this).remove();
     });
-    $('.js-addLevelEvent').on('click', function () {
-        editingLevel.events.push([]);
+    $(document).on('click', '.js-addLevelEvent', function () {
+        var $event = $(this).closest('.js-levelEvent');
+        if ($event.length) {
+            var eventIndex = $event.index();
+            editingLevel.events.splice(eventIndex, 0, []);
+        } else {
+            editingLevel.events.push([]);
+        }
         updateEventMonsters();
     });
     $(document).on('click', '.js-removeLevelEvent', function () {
         var eventIndex = $(this).closest('.js-levelEvent').index();
         editingLevel.events.splice(eventIndex, 1);
+        updateEventMonsters();
+    });
+    $(document).on('click', '.js-moveLevelEventUp', function () {
+        var eventIndex = $(this).closest('.js-levelEvent').index();
+        if (eventIndex === 0) return;
+        var tempEvent = editingLevel.events[eventIndex];
+        editingLevel.events[eventIndex] = editingLevel.events[eventIndex - 1];
+        editingLevel.events[eventIndex - 1] = tempEvent;
+        updateEventMonsters();
+    });
+    $(document).on('click', '.js-moveLevelEventDown', function () {
+        var eventIndex = $(this).closest('.js-levelEvent').index();
+        if (eventIndex >= editingLevel.events.length - 1) return;
+        var tempEvent = editingLevel.events[eventIndex];
+        editingLevel.events[eventIndex] = editingLevel.events[eventIndex + 1];
+        editingLevel.events[eventIndex + 1] = tempEvent;
         updateEventMonsters();
     });
 }
@@ -100,7 +122,10 @@ function updateEventMonsters() {
     editingLevel.events.forEach(function (event) {
         var $eventMonsterSelect = $('.js-monsterSelect').first().clone();
         var $event = $tag('li', 'js-levelEvent').append($tag('span', 'js-eventMonsters')
-                .append($eventMonsterSelect).append($tag('button', 'js-removeLevelEvent', '-')));
+                .append($eventMonsterSelect)
+                .append($tag('button', 'js-moveLevelEventUp editEventButton', ' ^ '))
+                .append($tag('button', 'js-moveLevelEventDown editEventButton', ' V '))
+                .append($tag('button', 'js-removeLevelEvent editEventButton', ' - ')));
         event.forEach(function (monsterKey) {
             var $monster = $tag('span', 'js-monster monster', monsters[monsterKey].name);
             $eventMonsterSelect.before($monster);
