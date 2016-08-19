@@ -34,7 +34,6 @@
         }
     </style>
 
-    <link rel="stylesheet" type="text/css" href="cssReset.css"/>
     <link rel="stylesheet" type="text/css" href="styles.css"/>
     <script src="lib/jquery.min.js"></script>
     <script src="lib/jstorage.min.js"></script>
@@ -81,7 +80,8 @@
                 <div class="levelEditingSection">Monsters: <span class="js-monsters"><select class="js-monsterSelect"></select></span></div>
                 <div class="levelEditingSection">Enemy Skills: <span class="js-enemySkills"><select class="js-enemySkillSelect"></select></span></div>
                 <div class="levelEditingSection">Events:
-                    <div class="js-levelEvents"></div>
+                    <ol class="js-levelEvents"></ol>
+                    <ul><li><button class="js-addLevelEvent">+</button></li></ul>
                 </div>
             </div>
             <div class="js-adventureControls adventureControls" style="display: none;">

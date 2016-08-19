@@ -1,5 +1,5 @@
 
-var editingLevel = null, editingLevelInstance = null, editingEventIndex = 0;
+var editingLevel = null, editingLevelInstance = null;
 function initializeLevelEditing() {
     for (var level = 1; level < 100; level++) {
         $('.js-levelSelect').append($tag('option','', 'Lv ' + level).val(level));
@@ -42,13 +42,14 @@ function initializeLevelEditing() {
         editingLevel.enemySkills.push(newSkill);
         updateEnemySkills();
     });
-    $('.js-monsterSelect').on('change', function () {
+    $(document).on('change', '.js-monsterSelect', function () {
         var monsterKey = $(this).val();
-        if ($('.js-monsterSelect').closest('.js-monsters').length) {
+        if ($(this).closest('.js-monsters').length) {
             editingLevel.monsters.push(monsterKey);
             updateMonsters();
         } else {
-            editingLevel.events[editingEventIndex].push(monsterKey);
+            var eventIndex = $(this).closest('.js-levelEvent').index();
+            editingLevel.events[eventIndex].push(monsterKey);
             updateEventMonsters();
         }
     });
@@ -58,13 +59,25 @@ function initializeLevelEditing() {
         editingLevel.enemySkills.splice(index, 1);
     });
     $(document).on('click', '.js-monster', function () {
-        var index = $(this).index();
-        $(this).remove();
-        if ($('.js-monsterSelect').closest('.js-monsters').length) {
-            editingLevel.monsters.splice(index, 1);
+        var monsterIndex = $(this).index();
+            console.log($(this).closest('.js-monsters').length);
+        if ($(this).closest('.js-monsters').length) {
+            editingLevel.monsters.splice(monsterIndex, 1);
         } else {
-            editingLevel.events[editingEventIndex].splice(index, 1);
+            var $eventDiv = $(this).closest('.js-levelEvent');
+            var eventIndex = $eventDiv.index();
+            editingLevel.events[eventIndex].splice(monsterIndex, 1);
         }
+        $(this).remove();
+    });
+    $('.js-addLevelEvent').on('click', function () {
+        editingLevel.events.push([]);
+        updateEventMonsters();
+    });
+    $(document).on('click', '.js-removeLevelEvent', function () {
+        var eventIndex = $(this).closest('.js-levelEvent').index();
+        editingLevel.events.splice(eventIndex, 1);
+        updateEventMonsters();
     });
 }
 
@@ -82,12 +95,17 @@ function updateMonsters() {
 }
 
 function updateEventMonsters() {
-    $('.js-eventMonsters .js-monsterSelect').prevAll().remove();
+    $('.js-levelEvents').empty();
     editingLevel.events = ifdefor(editingLevel.events, []);
-    editingLevel.events[editingEventIndex] = ifdefor(editingLevel.events[editingEventIndex], []);
-    editingLevel.events[editingEventIndex].forEach(function (monsterKey) {
-        var $monster = $tag('span', 'js-monster monster', monsters[monsterKey].name);
-        $('.js-eventMonsters .js-monsterSelect').before($monster);
+    editingLevel.events.forEach(function (event) {
+        var $eventMonsterSelect = $('.js-monsterSelect').first().clone();
+        var $event = $tag('li', 'js-levelEvent').append($tag('span', 'js-eventMonsters')
+                .append($eventMonsterSelect).append($tag('button', 'js-removeLevelEvent', '-')));
+        event.forEach(function (monsterKey) {
+            var $monster = $tag('span', 'js-monster monster', monsters[monsterKey].name);
+            $eventMonsterSelect.before($monster);
+        });
+        $('.js-levelEvents').append($event);
     });
 
     // <div class="js-levelEvent"><span class="js-eventMonsters"><select class="js-monsterSelect"></select></span></div>
