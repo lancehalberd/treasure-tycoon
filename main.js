@@ -183,6 +183,13 @@ function mainLoop() {
     if (currentContext === 'adventure') {
         if (editingLevel) {
             drawAdventure(state.selectedCharacter);
+            if (editingLevel && editingLevel.board) {
+                var board = boards[editingLevel.board];
+                board = readBoardFromData(board, state.selectedCharacter, abilities[editingLevel.skill], true);
+                centerShapesInRectangle(board.fixed.map(jewelToShape).concat(board.spaces), rectangle(600, 0, 150, 150));
+                drawBoardBackground(mainContext, board);
+                drawBoardJewelsProper(mainContext, [0, 0], board);
+            }
         } else if (state.selectedCharacter.area) drawAdventure(state.selectedCharacter);
         else {
             updateMap();

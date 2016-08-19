@@ -7,10 +7,13 @@ function initializeLevelEditing() {
     $.each(backgrounds, function (backgroundKey) {
         $('.js-levelBackgroundSelect').append($tag('option','', backgroundKey).val(backgroundKey));
     });
-        $('.js-levelSkillSelect').append($tag('option','', 'none').val(''));
+    $('.js-levelSkillSelect').append($tag('option','', 'none').val(''));
     $.each(abilities, function (skillKey, ability) {
         $('.js-levelSkillSelect').append($tag('option','', ability.name).val(skillKey));
         $('.js-enemySkillSelect').append($tag('option','', ability.name).val(skillKey));
+    });
+    $.each(boards, function (boardKey, board) {
+        $('.js-levelBoardSelect').append($tag('option','', boardKey).val(boardKey));
     });
     $.each(monsters, function (monsterKey, monster) {
         $('.js-monsterSelect').append($tag('option','', monster.name).val(monsterKey));
@@ -35,7 +38,19 @@ function initializeLevelEditing() {
         editingLevelInstance.background = editingLevel.background = $(this).val();
     });
     $('.js-levelSkillSelect').on('change', function () {
-        editingLevel.skill = $(this).val();
+        var value = $(this).val();
+        if (!value) {
+            editingLevel.skill = null;
+            editingLevel.board = null;
+            $('.js-levelBoardSelect').hide();
+        } else {
+            editingLevel.skill = value;
+            $('.js-levelBoardSelect').show();
+            editingLevel.board = $('.js-levelBoardSelect').val();
+        }
+    });
+    $('.js-levelBoardSelect').on('change', function () {
+        editingLevel.board = $(this).val();
     });
     $('.js-enemySkillSelect').on('change', function () {
         var newSkill = $(this).val();
@@ -79,11 +94,15 @@ function initializeLevelEditing() {
             editingLevel.events.push([]);
         }
         updateEventMonsters();
+        // Make a new instance to show updated waves.
+        editingLevelInstance = instantiateLevel(editingLevel);
     });
     $(document).on('click', '.js-removeLevelEvent', function () {
         var eventIndex = $(this).closest('.js-levelEvent').index();
         editingLevel.events.splice(eventIndex, 1);
         updateEventMonsters();
+        // Make a new instance to show updated waves.
+        editingLevelInstance = instantiateLevel(editingLevel);
     });
     $(document).on('click', '.js-moveLevelEventUp', function () {
         var eventIndex = $(this).closest('.js-levelEvent').index();
@@ -170,8 +189,16 @@ function startEditingLevel(level) {
     $('.js-levelBackgroundSelect option[value="' + editingLevel.background + '"]').prop('selected', true);
     if (editingLevel.skill) {
         $('.js-levelSkillSelect option[value="' + editingLevel.skill + '"]').prop('selected', true);
+        // Show the board select if a skill is set.
+        $('.js-levelBoardSelect').show();
+        if (!editingLevel.board) editingLevel.board = $('.js-levelSkillSelect').val();
     } else {
         $('.js-levelSkillSelect option').first().prop('selected', true);
+        // Hide the board select if no skill is set.
+        $('.js-levelBoardSelect').hide();
+    }
+    if (editingLevel.board) {
+        $('.js-levelBoardSelect option[value="' + editingLevel.board + '"]').prop('selected', true);
     }
     $('.js-levelNameInput').val(editingLevel.name);
     updateEnemySkills();

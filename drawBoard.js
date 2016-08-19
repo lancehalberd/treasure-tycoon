@@ -32,14 +32,11 @@ function drawBoardBackground(context, board) {
         context.stroke();
     }
 }
-function drawBoardJewels(character, jewelsCanvas) {
-    var lightSource = relativeMousePosition(jewelsCanvas);
+function drawBoardJewels(character, canvas) {
     var context = jewelsCanvas.getContext('2d');
     var board = character.board;
     context.clearRect(0, 0, jewelsCanvas.width, jewelsCanvas.height);
     context.drawImage(character.boardCanvas, 0, 0, character.boardCanvas.width, character.boardCanvas.height);
-    var focusedJewelIsOnBoard = false;
-    var fixedJewels = board.fixed;
     if (draggedJewel && !overVertex) {
         var fillColor = (jewelTierLevels[draggedJewel.tier] > character.adventurer.level) ? '#FF0000' : '#00FF00';
         context.fillStyle = fillColor;
@@ -56,6 +53,11 @@ function drawBoardJewels(character, jewelsCanvas) {
         }
         context.globalAlpha = 1;
     }
+    drawBoardJewelsProper(context, relativeMousePosition(canvas), board);
+}
+function drawBoardJewelsProper(context, lightSource, board) {
+    var focusedJewelIsOnBoard = false;
+    var fixedJewels = board.fixed;
     for (var i = 0; i < fixedJewels.length; i++) {
         var jewel = fixedJewels[i];
         drawJewel(context, jewel.shape, lightSource);
