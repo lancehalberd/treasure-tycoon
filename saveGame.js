@@ -100,7 +100,7 @@ function importState(stateData) {
     });
     stateData.items.forEach(function (itemData) {
         var item = importItem(itemData);
-        $('.js-inventory').append(item.$item);
+        addToInventory(item);
     });
     if (stateData.craftingItems && stateData.craftingItems.length) {
         $('.js-craftingSelectOptions .js-itemSlot').each(function (index) {

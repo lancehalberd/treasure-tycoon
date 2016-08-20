@@ -141,6 +141,19 @@ function collision($div1, $div2) {
     return !(B < t || T > b || R < l || L > r);
 }
 
+// returns the area overlap between two divs.
+function getCollisionArea($div1, $div2) {
+    var T = $div1.offset().top;
+    var L = $div1.offset().left;
+    var B = T + $div1.outerHeight(true);
+    var R = L + $div1.outerWidth(true);
+    var t = $div2.offset().top;
+    var l = $div2.offset().left;
+    var b = t + $div2.outerHeight(true);
+    var r = l + $div2.outerWidth(true);
+    return Math.max(Math.min(B - t, b - T), 0) * Math.max(Math.min(R - l, r - L), 0);
+}
+
 function $getClosestElement($element, $elements, threshold) {
     var closestElement = null;
     var closestDistanceSquared = threshold * threshold;

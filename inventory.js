@@ -331,10 +331,13 @@ function applyDragResults() {
     });
     if (!hit) {
         var $target = null;
+        var largestCollision = 0;
         $('.js-inventory .js-item').each(function (index, element) {
             var $element = $(element);
-            if (collision($dragHelper, $element) && !$element.is($source)) {
+            var collisionArea = getCollisionArea($dragHelper, $element);
+            if (collisionArea > largestCollision && !$element.is($source)) {
                 $target = $element;
+                largestCollision = collisionArea;
             }
         });
         if ($target) {
@@ -342,8 +345,13 @@ function applyDragResults() {
             if (item.actor) {
                 unequipSlot(item.actor, item.base.slot, true);
             }
-            $source.detach();
-            $target.before($source);
+            if ($target.index() < $source.index()) {
+                $source.detach();
+                $target.before($source);
+            } else {
+                $source.detach();
+                $target.after($source);
+            }
         }
     }
     if (!hit && collision($dragHelper, $('.js-inventory'))) {
