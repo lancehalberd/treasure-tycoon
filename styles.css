@@ -187,6 +187,7 @@ button {
     position: relative;
     box-sizing: border-box;
     width: 240px;
+    min-height: 170px;
     max-height: 270px;
     vertical-align: top;
     margin: 2px;
@@ -587,7 +588,7 @@ select {
     width: 560px;
     height: 330px;
     padding: 7px;
-    overflow-x: scroll;
+    overflow-x: auto;
     box-sizing: border-box;
 }
 
@@ -717,6 +718,13 @@ select {
     height: 12px;
     background-position: -13px -180px;
 }
+.icon.divinity {
+    background-image: url('gfx/militaryIcons.png');
+    background-size: 151px 150px;
+    width: 12px;
+    height: 12px;
+    background-position: -76px -91px;
+}
 
 .iconLayer {
     position: absolute;
@@ -725,7 +733,8 @@ select {
 .playerStat {
     display: inline-block;
     width: 80px;
-    height: 25px;
+    min-height: 25px;
+    vertical-align: top;
 }
 
 
