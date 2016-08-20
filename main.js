@@ -486,6 +486,8 @@ function setSelectedCharacter(character) {
     updateAdventureButtons();
     updateConfirmSkillButton();
     updateEquipableItems();
+    // Need to update which crafting levels are drawn in green/red.
+    drawCraftingViewCanvas();
 }
 function updateAdventureButtons() {
     var character = state.selectedCharacter;
