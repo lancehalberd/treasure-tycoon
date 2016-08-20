@@ -69,6 +69,7 @@ function makeMonster(monsterData, level, extraSkills, noRarity) {
     }
     monster.base = baseMonster;
     monster.stationary = ifdefor(baseMonster.stationary);
+    monster.scale = ifdefor(baseMonster.scale, 1);
     /* $.each(baseMonster, function (key, value) {
         monster[key] = value;
     }); */
@@ -235,9 +236,20 @@ function initalizeMonsters() {
     var skeletonGiantSource = {'image': enemySheet('gfx/skeletonGiant.png'), 'offset': 0, 'width': 48, 'flipped': true, frames: 7};
     var dragonSource = {'image': enemySheet('gfx/dragonEastern.png'), 'offset': 0, 'width': 48, 'flipped': false, frames: 5};
     var batSource = {'image': enemySheet('gfx/bat.png'), 'offset': 0, 'width': 32, 'height': 32, 'flipped': false, frames: 5, 'y': 20};
+    var spiderSource = {'image': enemySheet('gfx/spider.png'), 'offset': 0, 'width': 48, 'height': 48, 'flipped': true, 'y': -10,
+            framesPerRow: 10, walkFrames: [4, 5, 6, 7, 8, 9], attackFrames: [2, 3, 0, 1], deathFrames: [10, 11, 12, 13]};
+
     addMonster('dummy', {
         'name': 'Dummy', 'source': caterpillarSource,
         'implicitBonuses': {'+magicDamage': 2}
+    });
+    addMonster('spider', {
+        'name': 'Spider', 'source': spiderSource, 'scale': .75,
+        'implicitBonuses': {'*evasion': 1.2, '*accuracy': .8, '*damage': 1.2, '*speed': 2}
+    });
+    addMonster('gaintSpider', {
+        'name': 'Giant Spider', 'source': spiderSource, 'scale': 1.5,
+        'implicitBonuses': {'*evasion': .8, '*accuracy': .8, '*damage': 1.4, '+critChance': .25}
     });
     addMonster('bat', {
         'name': 'Bat', 'source': batSource,

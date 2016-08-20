@@ -391,11 +391,6 @@ function pointsToRectangle(A, B) {
     return {left: minX, top: minY, width: maxX - minX, height: maxY - minY};
 }
 
-function arrMod(array, index) {
-    return array[(index + array.length) % array.length];
-}
-
-
 function distanceSquared(p1, p2) {
     return (p1[0] - p2[0]) * (p1[0] - p2[0]) + (p1[1] - p2[1]) * (p1[1] - p2[1]);
 }

@@ -227,3 +227,7 @@ function objectIndexOf(object, value, defaultValue) {
     }
     return ifdefor(defaultValue);
 }
+
+function arrMod(array, index) {
+    return array[(index + array.length) % array.length];
+}

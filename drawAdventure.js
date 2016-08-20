@@ -73,26 +73,41 @@ function drawMonster(character, monster, index) {
     }
     var cameraX = character.cameraX;
     var context = mainContext;
-    var fps = ifdefor(monster.base.fpsMultiplier, 1) * 3 * monster.speed / 100;
     var source = monster.base.source;
-    var frame = Math.floor(monster.animationTime * fps) % source.frames;
-    if (monster.pull) {
-        frame = 0;
-    }
+    var frame;
     context.save();
     if (monster.cloaked) {
         context.globalAlpha = .2;
     }
+    monster.width = ifdefor(monster.width, source.width * 2 * ifdefor(monster.scale, 1));
+    monster.height = ifdefor(monster.height, ifdefor(source.height, 64) * 2 * ifdefor(monster.scale, 1));
     monster.left = monster.x - cameraX;
-    monster.top = 240 - ifdefor(source.height, 64) * 2 - 72 - ifdefor(source.y, 0) * 2 - 2 * index;
-    monster.width = source.width * 2;
-    monster.height = ifdefor(source.height, 64) * 2;
+    monster.top = 240 - monster.height - 72 - ifdefor(source.y, 0) * 2 * ifdefor(monster.scale, 1) - 2 * index;
     context.translate(monster.left + monster.width / 2, 0);
     if ((source.flipped && monster.direction < 0) || (!source.flipped && monster.direction > 0)) {
         context.scale(-1, 1);
     }
-    context.drawImage(monster.image, frame * source.width + source.offset, 0 , source.width, ifdefor(source.height, 64),
-                      -monster.width / 2, monster.top, monster.width, monster.height);
+    if (monster.pull) {
+        frame = 0;
+    } else if (ifdefor(source.attackFrames) && monster.target && monster.lastAction && monster.lastAction.attackSpeed) { // attacking loop
+        var attackFps = 1 / ((1 / monster.lastAction.attackSpeed) / source.attackFrames.length);
+        var frame = Math.floor(Math.abs(monster.animationTime - monster.attackCooldown) * attackFps);
+        frame = arrMod(source.attackFrames, frame);
+    } else {
+        var walkFps = ifdefor(monster.base.fpsMultiplier, 1) * 3 * monster.speed / 100;
+        frame = Math.floor(monster.animationTime * walkFps);
+        if (ifdefor(source.walkFrames)) frame = arrMod(source.walkFrames, frame);
+        else frame = frame % source.frames;
+    }
+    var xFrame = frame;
+    var yFrame = 0;
+    // Some images wrap every N frames and will have framesPerRow set on the source.
+    if (ifdefor(source.framesPerRow)) {
+        xFrame = frame % source.framesPerRow;
+        yFrame = Math.floor(frame / source.framesPerRow);
+    }
+    context.drawImage(monster.image, xFrame * source.width + source.offset, yFrame * ifdefor(source.height, 64), source.width, ifdefor(source.height, 64),
+                     -monster.width / 2, monster.top, monster.width, monster.height);
     context.restore();
     // Uncomment to draw a reference of the character to show where left side of monster should be
     // context.drawImage(character.personCanvas, 0 * 32, 0 , 32, 64, monster.x - cameraX, 240 - 128 - 72, 64, 128);
