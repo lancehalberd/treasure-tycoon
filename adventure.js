@@ -222,13 +222,12 @@ function moveActor(actor, delta) {
     }
     // Make sure the main character doesn't run in front of their allies.
     // If the allies are fast enough, this shouldn't be an isse.
-    /*if (actor.isMainCharacter) {
-        for (var i = 0; i < actor.allies.length; i++) {
-            if (actor.allies[i] === actor) continue;
-            if (actor.allies[i].x < actor.x) return;
-        }
-    }*/
     var speedBonus = 1;
+    var xOffset = 0;
+    for (var i = 0; i < actor.allies.length; i++) {
+        xOffset += actor.x - actor.allies[i].x;
+    }
+    speedBonus -= xOffset * actor.direction / 500;
     if (actor.chargeEffect) {
         speedBonus *= actor.chargeEffect.chargeSkill.speedBonus;
         actor.chargeEffect.distance += speedBonus * actor.speed * Math.max(.1, 1 - actor.slow) * delta;

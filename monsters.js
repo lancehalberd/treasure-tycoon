@@ -238,7 +238,8 @@ function initalizeMonsters() {
     var batSource = {'image': enemySheet('gfx/bat.png'), 'offset': 0, 'width': 32, 'height': 32, 'flipped': false, frames: 5, 'y': 20};
     var spiderSource = {'image': enemySheet('gfx/spider.png'), 'offset': 0, 'width': 48, 'height': 48, 'flipped': true, 'y': -10,
             framesPerRow: 10, walkFrames: [4, 5, 6, 7, 8, 9], attackFrames: [2, 3, 0, 1], deathFrames: [10, 11, 12, 13]};
-
+    var wolfSource = {'image': enemySheet('gfx/wolf.png'), 'offset': 0, 'width': 64, 'height': 32, 'flipped': true,
+            framesPerRow: 7, walkFrames: [0, 1, 2, 3], attackFrames: [6, 4, 5, 0], deathFrames: [0, 7, 8, 9]};
     addMonster('dummy', {
         'name': 'Dummy', 'source': caterpillarSource,
         'implicitBonuses': {'+magicDamage': 2}
@@ -246,6 +247,10 @@ function initalizeMonsters() {
     addMonster('spider', {
         'name': 'Spider', 'source': spiderSource, 'scale': .75,
         'implicitBonuses': {'*evasion': 1.2, '*accuracy': .8, '*damage': 1.2, '*speed': 2}
+    });
+    addMonster('wolf', {
+        'name': 'Wolf', 'source': wolfSource, 'scale': .75,
+        'implicitBonuses': {'*maxHealth': 1.5, '*magicDamage': 0, '*accuracy': 1.5, '+critChance': .1, '*speed': 2.5}
     });
     addMonster('giantSpider', {
         'name': 'Giant Spider', 'source': spiderSource, 'scale': 1.5,
@@ -261,11 +266,6 @@ function initalizeMonsters() {
         'implicitBonuses': {'*magicDamage': 0,
                             '*block': .5, '+magicBlock': 4, '*magicBlock': 2, '+magicResist': .5,
                             '*speed': .5}
-    });
-    addMonster('petCaterpillar', {
-        'name': 'Caterpillar', 'source': caterpillarSource,
-        'implicitBonuses': {'*magicDamage': 0,
-                            '*block': .5, '+magicBlock': 4, '*magicBlock': 2, '+magicResist': .5}
     });
     addMonster('gnome', {'name': 'Gnome', 'source': gnomeSource, 'fpsMultiplier': 1.5,
         'implicitBonuses': {'+range': 2, '*attackSpeed': 1.5, '+magicDamage': 2,
@@ -309,7 +309,7 @@ function initalizeMonsters() {
                             '*minDamage': .8, '*maxDamage': .8, '*attackSpeed': .5, '*magicDamage': .5,
                             '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
                             '*speed': .6}, 'tags': ['ranged'],
-        'abilities': [abilities.pet, abilities.summoner]
+        'abilities': [abilities.summonCaterpillar, abilities.summoner]
     });
     addMonster('lightningBug', {'name': 'Lightning Bug', 'source': butterflySource,
         'implicitBonuses': {'*maxHealth': 1.5, '+range': 4, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5, '*accuracy': 2,

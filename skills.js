@@ -112,7 +112,7 @@ var abilities = {
     'rangedCritical': {'name': 'Ranged Critical', 'bonuses': {'+ranged:critChance': .05, '+ranged:critDamage': .2}},
     'finesse':  {'name': 'Finesse', 'bonuses': {'%attackSpeed': .2}},
     'pet': {'name': 'Pet', 'action':
-            {'type': 'minion', 'target': 'none', 'tags': ['pet'], 'monsterKey': 'petCaterpillar', 'stats': {'limit': 1, 'cooldown': 30, 'healthBonus': 1, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1},
+            {'type': 'minion', 'target': 'none', 'tags': ['pet'], 'monsterKey': 'wolf', 'stats': {'limit': 1, 'cooldown': 30, 'healthBonus': 1, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1},
             'helpText': 'Call up to 1 pet to fight with you.'}},
     //'petFood': {'name': 'Pet Food', 'bonuses': {'+pet:cooldown': -3, '+pet:healthBonus': 1}, 'helpText': 'Pet has 50% more health and can be called more frequently.'},
     //'petTraining': {'name': 'Pet Training', 'next': ['whistle'], 'bonuses': {'+pet:cooldown': -3, '+pet:damageBonus': .5}, 'helpText': 'Pet deals 50% more damage and can be called more frequently.'},
@@ -290,8 +290,9 @@ var abilities = {
     // Monster abilities
     'summoner': {'bonuses': {'*minion:limit': 2, '*minion:cooldown': .5, '*minion:healthBonus': 2, '*minion:damageBonus': 2}},
     'summonSkeleton': {'name': 'Summon Skeleton', 'bonuses': {'+intelligence': 5}, 'action':
-            {'type': 'minion', 'target': 'none', 'monsterKey': 'skeleton', 'tags': ['spell'], 'stats': {'limit': 2, 'cooldown': 15, 'healthBonus': .5, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1},
-            'helpText': 'Raise a skeleton to fight for you.'}},
+            {'type': 'minion', 'target': 'none', 'monsterKey': 'skeleton', 'tags': ['spell'], 'stats': {'limit': 2, 'cooldown': 15, 'healthBonus': .5, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1}}},
+    'summonCaterpillar': {'name': 'Spawn', 'action':
+            {'type': 'minion', 'target': 'none', 'tags': ['pet'], 'monsterKey': 'caterpillar', 'stats': {'limit': 3, 'cooldown': 20, 'healthBonus': 1, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1}}},
     'rangeAndAttackSpeed': {'bonuses': {'+range': 2, '+attackSpeed': .5}}
 };
 var testJob;// = 'blackbelt';

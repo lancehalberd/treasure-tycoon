@@ -386,7 +386,7 @@ function getMinionSkillBonuses(minionSkill) {
             '*speed': ifdefor(minionSkill.speedBonus, 1)};
 }
 function getMinionSpeedBonus(actor, minion) {
-    return {'+speed': Math.max(5, actor.speed + 5 - minion.speed)};
+    return {'*speed': Math.max(.5, (actor.speed + 40) /  minion.speed)};
 }
 
 skillDefinitions.clone = {
