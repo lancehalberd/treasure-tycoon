@@ -725,6 +725,24 @@ select {
     height: 12px;
     background-position: -76px -91px;
 }
+.icon.backpack {
+    background-image: url('gfx/militaryIcons.png');
+    background-size: 406px 410px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: -374px -45px;
+}
+.icon.accessory {
+    background-image: url('gfx/militaryIcons.png');
+    background-size: 406px 410px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: -136px -81px;
+}
 
 .iconLayer {
     position: absolute;
