@@ -404,7 +404,7 @@ $(document).on('keydown', function(event) {
             });
         }
     }
-    if (event.which == 68) { // 'd'
+    if (!editingLevel && event.which == 68 && event.shiftKey) { // 'd'
         gain('coins', 1000);
         gain('anima', 1000);
         $.each(itemsByKey, function (key, item) {

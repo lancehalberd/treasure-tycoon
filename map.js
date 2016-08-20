@@ -455,6 +455,9 @@ $(document).on('keydown', function(event) {
         }
     }
     if (event.which === 69) { // 'e'
+        if (currentContext !== 'adventure' || state.selectedCharacter.area) {
+            return;
+        }
         if (currentMapTarget) {
             startEditingLevel(currentMapTarget);
             return;
