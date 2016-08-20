@@ -247,7 +247,7 @@ function initalizeMonsters() {
         'name': 'Spider', 'source': spiderSource, 'scale': .75,
         'implicitBonuses': {'*evasion': 1.2, '*accuracy': .8, '*damage': 1.2, '*speed': 2}
     });
-    addMonster('gaintSpider', {
+    addMonster('giantSpider', {
         'name': 'Giant Spider', 'source': spiderSource, 'scale': 1.5,
         'implicitBonuses': {'*evasion': .8, '*accuracy': .8, '*damage': 1.4, '+critChance': .25}
     });

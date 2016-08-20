@@ -240,10 +240,10 @@ var map = {
         'skill': "minorDexterity",
         'board': "doubleDiamonds",
         'enemySkills': ["minorDexterity"],
-        'monsters': ["caterpillar","gnome"],
+        'monsters': ["caterpillar", "spider"],
         'events': [
-            ["caterpillar","gnome"],
-            ["gnome","gnome"],
+            ["caterpillar","spider"],
+            ["spider","spider"],
             ["caterpillar","caterpillar"],
             ["butterfly"]
         ]

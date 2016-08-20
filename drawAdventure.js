@@ -57,12 +57,13 @@ function drawAdventure(character) {
 }
 function drawActor(character, actor, index) {
     mainContext.save();
-    if (actor.isDead) {
-        actor.animationTime = actor.timeOfDeath;
-        mainContext.globalAlpha = 1 - (actor.time - actor.timeOfDeath);
-    }
-    if (actor.personCanvas) drawAdventurer(character, actor, index);
-    else drawMonster(character, actor, index);
+    if (actor.personCanvas) {
+        if (actor.isDead) {
+            actor.animationTime = actor.timeOfDeath;
+            mainContext.globalAlpha = 1 - (actor.time - actor.timeOfDeath);
+        }
+        drawAdventurer(character, actor, index);
+    } else drawMonster(character, actor, index);
     mainContext.restore();
 }
 function drawMonster(character, monster, index) {
@@ -87,8 +88,17 @@ function drawMonster(character, monster, index) {
     if ((source.flipped && monster.direction < 0) || (!source.flipped && monster.direction > 0)) {
         context.scale(-1, 1);
     }
+
+    if (monster.isDead && !ifdefor(source.deathFrames)) {
+        monster.animationTime = monster.timeOfDeath;
+        mainContext.globalAlpha = 1 - (monster.time - monster.timeOfDeath);
+    }
     if (monster.pull) {
         frame = 0;
+    } else if (monster.isDead && ifdefor(source.deathFrames)) {
+        var deathFps = 1.5 * source.deathFrames.length;
+        frame = Math.min(source.deathFrames.length - 1, Math.floor((monster.time - monster.timeOfDeath) * deathFps));
+        frame = arrMod(source.deathFrames, frame);
     } else if (ifdefor(source.attackFrames) && monster.target && monster.lastAction && monster.lastAction.attackSpeed) { // attacking loop
         var attackFps = 1 / ((1 / monster.lastAction.attackSpeed) / source.attackFrames.length);
         var frame = Math.floor(Math.abs(monster.animationTime - monster.attackCooldown) * attackFps);
