@@ -393,6 +393,9 @@ $('body').on('click', '.js-retire', function (event) {
     if (state.characters.length < 2) {
         return;
     }
+    if (!confirm('Are you sure you want to retire ' + state.selectedCharacter.adventurer.name + '?')) {
+        return;
+    }
     var $panel = $(this).closest('.js-playerPanel');
     // gain('fame', state.selectedCharacter.fame);
     $panel.remove();
