@@ -33,9 +33,9 @@ function drawBoardBackground(context, board) {
     }
 }
 function drawBoardJewels(character, canvas) {
-    var context = jewelsCanvas.getContext('2d');
+    var context = canvas.getContext('2d');
     var board = character.board;
-    context.clearRect(0, 0, jewelsCanvas.width, jewelsCanvas.height);
+    context.clearRect(0, 0, canvas.width, canvas.height);
     context.drawImage(character.boardCanvas, 0, 0, character.boardCanvas.width, character.boardCanvas.height);
     if (draggedJewel && !overVertex) {
         var fillColor = (jewelTierLevels[draggedJewel.tier] > character.adventurer.level) ? '#FF0000' : '#00FF00';
