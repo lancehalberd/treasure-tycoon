@@ -16,8 +16,8 @@ var allActorVariables = [
     'uncontrollable',
     // tracked for debuffs that deal damage over time
     'damageOverTime',
-    // For enemy loot
-    'coins', 'anima'
+    // For enemy loot and color
+    'coins', 'anima', 'tint', 'color'
 ];
 // These are variables that can be targeted by effects on any action.
 var commonActionVariables = {

@@ -92,18 +92,30 @@ function drawMap() {
         if (skill) {
             // Draw the shrine only if the level grants a skill.
             context.save();
-            // Disable shrine if the character did not just complete this area.
-            if (state.selectedCharacter.currentLevelKey !== levelKey || !state.selectedCharacter.levelCompleted) {
-                context.globalAlpha = .5;
-            }
             var shrine = levelData.shrine;
-            context.drawImage(shrineSource.image, shrineSource.xOffset, shrineSource.yOffset, shrineSource.width, shrineSource.height,
-                              shrine.left, shrine.top, shrine.width, shrine.height);
-            if (state.selectedCharacter.adventurer.abilities.indexOf(skill) >= 0) {
+            var levelCompleted = (state.selectedCharacter.currentLevelKey === levelKey) && state.selectedCharacter.levelCompleted;
+            var skillLearned = state.selectedCharacter.adventurer.abilities.indexOf(skill) >= 0;
+            var canAffordSkill = state.selectedCharacter.divinity >= totalCostForNextLevel(state.selectedCharacter, levelData);
+            // Disable shrine if the character did not just complete this area.
+            if (!levelCompleted) {
+                context.globalAlpha = .5;
+            } else {
+                context.globalAlpha = 1;
+            }
+            // Make the shrine flash if the player can currently activate it.
+            if (levelCompleted && !skillLearned && canAffordSkill) {
+                drawTintedImage(context, shrineSource.image, '#ff0', .5 + Math.cos(now() / 100) / 5,
+                            {'left': shrineSource.xOffset, 'top' :shrineSource.yOffset, 'width': shrineSource.width, 'height': shrineSource.height},
+                            shrine);
+            } else {
+                context.drawImage(shrineSource.image, shrineSource.xOffset, shrineSource.yOffset, shrineSource.width, shrineSource.height,
+                                shrine.left, shrine.top, shrine.width, shrine.height);
+            }
+            if (skillLearned) {
                 // If the character has learned the ability for this level, draw a check mark on the shrine.
                 context.drawImage(checkSource.image, checkSource.xOffset, checkSource.yOffset, checkSource.width, checkSource.height,
                                     shrine.left, shrine.top, shrine.width, shrine.height);
-            } else if (state.selectedCharacter.divinity < totalCostForNextLevel(state.selectedCharacter, levelData)) {
+            } else if (!canAffordSkill) {
                 // If the character can't afford the ability for this leve, draw a red circle around the shrine.
                 context.drawImage(circleSource.image, circleSource.xOffset, circleSource.yOffset, circleSource.width, circleSource.height,
                                     shrine.left, shrine.top, shrine.width, shrine.height);

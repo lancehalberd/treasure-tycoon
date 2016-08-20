@@ -1,9 +1,11 @@
 
-var enchantedMonsterBonuses = {'*maxHealth': 1.5, '*damage': 1.5, '*xpValue': 3, '*coins': 2, '*anima': 3};
-var imbuedMonsterBonuses = {'*maxHealth': 2, '*damage': 2, '*xpValue': 10, '*coins': 6, '*anima': 10};
+var enchantedMonsterBonuses = {'*maxHealth': 1.5, '*damage': 1.5, '*xpValue': 3, '*coins': 2, '*anima': 3, '$tint': '#af0', '$color': '#af0'};
+var imbuedMonsterBonuses = {'*maxHealth': 2, '*damage': 2, '*xpValue': 10, '*coins': 6, '*anima': 10, '$tint': '#c6f', '$color': '#c6f'};
 // To make bosses intimidating, give them lots of health and damage, but to keep them from being overwhelming,
 // scale down their health regen, attack speed and critical multiplier.
-var bossMonsterBonuses = {'*maxHealth': 3, '*damage': 2, '*attackSpeed': .75, '*critDamage': .5, '*critChance': .5, '*evasion': .5, '*healthRegen': .3, '*xpValue': 4, '+coins': 2, '*coins': 4, '+anima': 1, '*anima': 4, '$uncontrollable': 'Cannot be controlled.'};
+var bossMonsterBonuses = {'*maxHealth': 3, '*damage': 2, '*attackSpeed': .75, '*critDamage': .5, '*critChance': .5, '*evasion': .5,
+                            '*healthRegen': .3, '*xpValue': 4, '+coins': 2, '*coins': 4, '+anima': 1, '*anima': 4,
+                            '$uncontrollable': 'Cannot be controlled.', '$tint': 'red'};
 var monsterPrefixes = [
     [
         {'name': 'Hawkeye', 'bonuses': {'+accuracy': [5, 10]}},
@@ -134,17 +136,11 @@ function updateMonster(monster) {
         monster.tags.push('melee');
     }
     var enchantments = monster.prefixes.length + monster.suffixes.length;
+    monster.image = monster.base.source.image.normal;
     if (enchantments > 2) {
         monster.bonuses.push(imbuedMonsterBonuses);
-        monster.color= '#c6f';
-        monster.image = monster.base.source.image.imbued;
     } else if (enchantments) {
         monster.bonuses.push(enchantedMonsterBonuses);
-        monster.color = '#af0';
-        monster.image = monster.base.source.image.enchanted;
-    } else {
-        monster.color = 'red';
-        monster.image = monster.base.source.image.normal;
     }
     ifdefor(monster.extraSkills, []).forEach(function (ability) {
         addBonusesAndActions(monster, ability);
@@ -196,8 +192,8 @@ function addMonster(key, data) {
 function enemySheet(key) {
     return {
         'normal': images[key],
-        'enchanted': images[key + '-enchanted'],
-        'imbued': images[key + '-imbued'],
+        //'enchanted': images[key + '-enchanted'],
+        //'imbued': images[key + '-imbued'],
     }
 }
 function getMonsterBonuses(monster) {
@@ -225,7 +221,8 @@ function getMonsterBonuses(monster) {
         '+intelligence': 5 * growth,
         '+dexterity': 5 * growth,
         '+coins': Random.range(1, (growth + 1) * (growth + 1) * 4),
-        '+anima': Random.range(1, (growth + 1) * (growth + 1))
+        '+anima': Random.range(1, (growth + 1) * (growth + 1)),
+        '$color': 'red'
     };
 }
 function initalizeMonsters() {

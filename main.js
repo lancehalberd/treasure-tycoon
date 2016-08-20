@@ -83,10 +83,10 @@ async.mapSeries([
     'gfx/spider.png', // Stephen "Redshrike" Challener as graphic artist and William.Thompsonj as contributor. If reasonable link to this page or the OGA homepage. http://opengameart.org/content/lpc-spider
     'gfx/wolf.png' // Stephen "Redshrike" Challener as graphic artist and William.Thompsonj as contributor. If reasonable link back to this page or the OGA homepage. http://opengameart.org/content/lpc-wolf-animation
 ], loadImage, function(err, results){
-    ['gfx/bat.png', 'gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png', 'gfx/spider.png', 'gfx/wolf.png'].forEach(function (imageKey) {
+    /*['gfx/bat.png', 'gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png', 'gfx/spider.png', 'gfx/wolf.png'].forEach(function (imageKey) {
         images[imageKey + '-enchanted'] = makeTintedImage(images[imageKey], '#af0');
         images[imageKey + '-imbued'] = makeTintedImage(images[imageKey], '#c6f');
-    });
+    });*/
     closedChestSource = {'image': images['gfx/chest-closed.png'], 'xOffset': 0, 'width': 32, 'height': 32};
     openChestSource = {'image': images['gfx/chest-open.png'], 'xOffset': 0, 'width': 32, 'height': 32};
     showContext('adventure');
@@ -143,6 +143,30 @@ function makeTintedImage(image, tint) {
     resultContext.drawImage(tintCanvas, 0, 0, image.width, image.height, 0, 0, image.width, image.height);
     resultContext.globalAlpha = 1;
     return resultCanvas;
+}
+var globalTintCanvas = createCanvas(150, 150);
+var globalTintContext = globalTintCanvas.getContext('2d');
+globalTintContext.imageSmoothingEnabled = false;
+function drawTintedImage(context, image, tint, amount, source, target) {
+    context.save();
+    // First make a solid color in the shape of the image to tint.
+    globalTintContext.save();
+    globalTintContext.fillStyle = tint;
+    globalTintContext.clearRect(0, 0, source.width, source.height);
+    globalTintContext.drawImage(image, source.left, source.top, source.width, source.height, 0, 0, source.width, source.height);
+    globalTintContext.globalCompositeOperation = "source-in";
+    globalTintContext.fillRect(0, 0, source.width, source.height);
+    globalTintContext.restore();
+    // Next draw the untinted image to the target.
+    context.drawImage(image, source.left, source.top, source.width, source.height, target.left, target.top, target.width, target.height);
+    // Finally draw the tint color on top of the target with the desired opacity.
+    context.globalAlpha *= amount; // This needs to be multiplicative since we might be drawing a partially transparent image already.
+    context.drawImage(globalTintCanvas, 0, 0, source.width, source.height, target.left, target.top, target.width, target.height);
+    context.restore();
+}
+function logPixel(context, x, y) {
+    var imgd = context.getImageData(x, y, 1, 1);
+    console.log(imgd.data)
 }
 function mainLoop() {
     var time = now();

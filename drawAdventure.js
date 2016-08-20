@@ -116,15 +116,21 @@ function drawMonster(character, monster, index) {
         xFrame = frame % source.framesPerRow;
         yFrame = Math.floor(frame / source.framesPerRow);
     }
-    context.drawImage(monster.image, xFrame * source.width + source.offset, yFrame * ifdefor(source.height, 64), source.width, ifdefor(source.height, 64),
-                     -monster.width / 2, monster.top, monster.width, monster.height);
+    var frameSource = {'left': xFrame * source.width + source.offset, 'top': yFrame * ifdefor(source.height, 64), 'width': source.width, 'height': ifdefor(source.height, 64)};
+    var target = {'left': -monster.width / 2, 'top': monster.top, 'width': monster.width, 'height': monster.height};
+    if (ifdefor(monster.tint)) {
+        drawTintedImage(context, monster.image, monster.tint, .2 + Math.cos(monster.animationTime * 5) / 10, frameSource, target);
+    } else {
+        context.drawImage(monster.image, frameSource.left, frameSource.top, frameSource.width, frameSource.height,
+                                         target.left, target.top, target.width, target.height);
+    }
     context.restore();
     // Uncomment to draw a reference of the character to show where left side of monster should be
     // context.drawImage(character.personCanvas, 0 * 32, 0 , 32, 64, monster.x - cameraX, 240 - 128 - 72, 64, 128);
     //context.fillRect(monster.x - cameraX, 240 - 128 - 72, 64, 128);
     // life bar
     if (monster.isDead) return;
-    drawBar(context, monster.x - cameraX + monster.width / 2 - 32, 240 - 128 - 36 - 2 * index - ifdefor(source.y, 0) * 2, 64, 4, 'white', monster.color, monster.health / monster.maxHealth);
+    drawBar(context, monster.x - cameraX + monster.width / 2 - 32, 240 - 128 - 36 - 2 * index - ifdefor(source.y, 0) * 2, 64, 4, 'white', ifdefor(monster.color, 'red'), monster.health / monster.maxHealth);
     if (ifdefor(monster.reflectBarrier, 0)) {
         drawBar(context, monster.x - cameraX + monster.width / 2 - 32, 240 - 128 - 36 - 2 * index - 2 - ifdefor(source.y, 0) * 2, 64, 4, 'white', 'blue', monster.reflectBarrier / monster.maxReflectBarrier);
     }
