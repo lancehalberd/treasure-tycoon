@@ -249,7 +249,8 @@ function initalizeMonsters() {
     });
     addMonster('giantSpider', {
         'name': 'Giant Spider', 'source': spiderSource, 'scale': 1.5,
-        'implicitBonuses': {'*evasion': .8, '*accuracy': .8, '*damage': 1.4, '+critChance': .25}
+        'implicitBonuses': {'*evasion': .8, '*accuracy': .8, '*damage': 1.4, '+critChance': .25},
+        'abilities': [abilities.net]
     });
     addMonster('bat', {
         'name': 'Bat', 'source': batSource,
