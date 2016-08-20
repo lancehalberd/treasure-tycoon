@@ -15,16 +15,21 @@
 }
 
 .pointsBar {
-    background-color: #ccc;
-    padding: 4px;
     height: 30px;
     box-sizing: border-box;
+    position: absolute;
+    left: 0px;
+    top: 0px;
 }
 .pointsBar .points {
+    padding: 2px;
     display: inline-block;
-    margin-right: 10px;
+    margin-right: 20px;
     margin-left: 10px;
-    min-width: 150px;
+    width: 80px;
+    background-color: #ccc;
+    border: 2px solid black;
+    border-top: none;
 }
 .fame {
     color: #D80;
@@ -606,14 +611,14 @@ select {
 .mainCanvasContainer {
     position: relative;
     overflow-y: hidden;
-    height: 240px;
+    height: 270px;
     width: 800px;
 }
 
 .adventureControls {
     position: absolute;
     left: 10px;
-    top: 2px;
+    bottom: 32px;
 }
 
 .adventureControls .adventureButton {

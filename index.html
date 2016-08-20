@@ -57,19 +57,8 @@
         }, 200);
     </script>
     <div class="js-gameContent gameContent" style="display: none">
-        <div class="js-pointsBar pointsBar">
-            <div class="points" helptext="The fame of your guild effects how powerful your guild recruits will be and how much you will have to pay to recruit them.<br/><br/>Fame is gained by leveling adventurers and completing new areas.<br/>Hiring famous adventurers also increases the fame of your guild.">
-                Fame: <span class="js-global-fame fame"></span>
-            </div>
-            <div class="points" helptext="Coins are used to create brand new items.<br/>Coins are found in chests and dropped from defeated enemies.">
-                <span class="icon coin"></span> <span class="js-global-coins coins"></span>
-            </div>
-            <div class="points" helptext="Anima is used to enchant items with special powers.<br/>Anima is absorbed from defeated enemies and salvaged from gems.">
-                <span class="icon anima"></span> <span class="js-global-anima anima"></span>
-            </div>
-        </div>
         <div class="js-mainCanvasContainer mainCanvasContainer" oncontextmenu="return false;">
-            <canvas class="js-mainCanvas mainCanvas" width="800" height="240" style="background-color: blue;"></canvas>
+            <canvas class="js-mainCanvas mainCanvas" width="800" height="270" style="background-color: blue;"></canvas>
             <div class="js-editingControls editingControlsTop" style="display: none">
                 <select class="js-levelSelect"></select>
                 <input class="js-levelNameInput" />
@@ -90,6 +79,17 @@
                 <span class="js-repeatButton icon repeatButton adventureButton" helptext="Repeat this adventure"></span>
                 <span class="js-fastforwardButton icon fastforwardButton adventureButton" helptext="Fast Forward"></span>
                 <span class="js-slowMotionButton icon slowMotionButton adventureButton" helptext="Slow Motion"></span>
+            </div>
+        </div>
+        <div class="js-pointsBar pointsBar">
+            <div class="points" helptext="The fame of your guild effects how powerful your guild recruits will be and how much you will have to pay to recruit them.<br/><br/>Fame is gained by leveling adventurers and completing new areas.<br/>Hiring famous adventurers also increases the fame of your guild.">
+                Fame: <span class="js-global-fame fame"></span>
+            </div>
+            <div class="points" helptext="Coins are used to create brand new items.<br/>Coins are found in chests and dropped from defeated enemies.">
+                <span class="icon coin"></span> <span class="js-global-coins coins"></span>
+            </div>
+            <div class="points" helptext="Anima is used to enchant items with special powers.<br/>Anima is absorbed from defeated enemies and salvaged from gems.">
+                <span class="icon anima"></span> <span class="js-global-anima anima"></span>
             </div>
         </div>
         <div class="js-characterColumn displayColumn characterColumn js-adventureContext js-jewelContext js-itemContext">

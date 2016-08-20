@@ -80,7 +80,7 @@ function centerMapOnLevel(levelData, instant) {
     }
 }
 
-var mapLeft = -400, mapTop = -120, mapWidth = 800, mapHeight = 240;
+var mapLeft = -400, mapTop = -120, mapWidth = 800, mapHeight = 270;
 var visibleNodes = {};
 var selectedMapNodes = [];
 var clickedMapNode = null;
@@ -430,9 +430,9 @@ function startMapEditing() {
 }
 function updateEditingState() {
     var isEditing = editingLevel || editingMap;
-    mapHeight = (isEditing && !editingLevel) ? 600 : 240;
+    mapHeight = (isEditing && !editingLevel) ? 600 : 270;
     $('.js-pointsBar').toggle(!isEditing);
-    $('.js-mainCanvasContainer').css('height', (isEditing ? 600 : 240) +'px');
+    $('.js-mainCanvasContainer').css('height', (isEditing ? 600 : 270) +'px');
     $('.js-mainCanvas').attr('height', mapHeight);
     // Image smoothing seems to get enabled again after changing the canvas size, so disable it again.
     $('.js-mainCanvas')[0].getContext('2d').imageSmoothingEnabled = false;

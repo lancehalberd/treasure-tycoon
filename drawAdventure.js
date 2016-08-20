@@ -169,12 +169,14 @@ function drawAdventurer(character, adventurer, index) {
     }
 }
 function drawMinimap(character) {
-    var y = 240 - 20;
+    var y = 270 - 20;
     var height = 6;
     var x = 10;
     var width = 750;
     var context = mainContext;
     var area = editingLevelInstance ? editingLevelInstance : character.area;
+    context.fillStyle = 'black';
+    context.fillRect(0, 240, mainCanvas.width, 30);
     drawBar(context, x, y, width, height, 'white', 'white', character.waveIndex / area.waves.length);
     for (var i = 0; i < area.waves.length; i++) {
         var centerX = x + (i + 1) * width / area.waves.length;
