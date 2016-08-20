@@ -352,6 +352,28 @@ function stopJewelDrag() {
         }
         appendDraggedJewelToElement($craftingSlot);
     }
+    if (!draggedJewel) return;
+    var $target = null;
+    var largestCollision = 0;
+    $('.js-jewel-inventory .js-jewel').each(function (index, element) {
+        var $element = $(element);
+        var collisionArea = getCollisionArea(draggedJewel.$canvas, $element);
+        if (collisionArea > largestCollision) {
+            $target = $element;
+            largestCollision = collisionArea;
+        }
+    });
+    if ($target) {
+        if (!draggedJewel) return;
+        // Code for adding a jewel to the inventory is designed to always append
+        // to the end. To support adding it before a target element, just append
+        // to the end first so we get all the normal logic for cleaning up the
+        // drag operation, then detach the item and place it before the target.
+        var $jewelItem = draggedJewel.$item;
+        appendDraggedJewelToElement($('.js-jewel-inventory'));
+        $target.before($jewelItem.detach());
+    }
+    if (!draggedJewel) return;
     appendDraggedJewelToElement($('.js-jewel-inventory'));
 }
 

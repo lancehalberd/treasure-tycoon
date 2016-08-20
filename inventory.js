@@ -335,12 +335,15 @@ function applyDragResults() {
         $('.js-inventory .js-item').each(function (index, element) {
             var $element = $(element);
             var collisionArea = getCollisionArea($dragHelper, $element);
-            if (collisionArea > largestCollision && !$element.is($source)) {
+            if (collisionArea > largestCollision) {
                 $target = $element;
                 largestCollision = collisionArea;
             }
         });
-        if ($target) {
+        if ($target.is($source)) {
+            // Not need to do anything if the item was dropped where it started.
+            hit = true;
+        } else if ($target) {
             hit = true;
             if (item.actor) {
                 unequipSlot(item.actor, item.base.slot, true);
@@ -352,11 +355,9 @@ function applyDragResults() {
             // Normally we want to place an item before the item they are hovering over since
             // that is what will move the hovered item into that slot.
             if ($source.closest('.js-inventory').length && $target.index() > $source.index()) {
-                $source.detach();
-                $target.after($source);
+                $target.after($source.detach());
             } else {
-                $source.detach();
-                $target.before($source);
+                $target.before($source.detach());
             }
         }
     }
