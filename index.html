@@ -83,7 +83,7 @@
         </div>
         <div class="js-pointsBar pointsBar">
             <div class="points" helptext="The fame of your guild effects how powerful your guild recruits will be and how much you will have to pay to recruit them.<br/><br/>Fame is gained by leveling adventurers and completing new areas.<br/>Hiring famous adventurers also increases the fame of your guild.">
-                Fame: <span class="js-global-fame fame"></span>
+                <span class="icon fame"></span> <span class="js-global-fame fame"></span>
             </div>
             <div class="points" helptext="Coins are used to create brand new items.<br/>Coins are found in chests and dropped from defeated enemies.">
                 <span class="icon coin"></span> <span class="js-global-coins coins"></span>
@@ -99,7 +99,9 @@
                 <div helptext="Divinity can be used at shrines to level up and gain new bonuses and abilities. <br/><br/> Completing new adventures grants divinity and access to the shrine for that area. <br/><br/> Leveling allows you to equip more powerful gear and increases health and basic stats slightly.">
                     Divinity: <span class="js-divinity">X</span>
                 </div>
-                    <div helptext="How famous this adventurer is. Famous adventurers are more powerful but also more expensive.<br/> Hiring and retiring famous adventurers increases the fame of your guild.">Fame: <span class="js-fame">X</span></div>
+                <div helptext="How famous this adventurer is. Famous adventurers are more powerful but also more expensive.<br/> Hiring and retiring famous adventurers increases the fame of your guild.">
+                    <span class="icon fame"></span> <span class="js-fame">X</span>
+                </div>
                 <div>
                     <span class="playerStat"><span helptext="Starting health for each adventure."><span class="icon health"></span> <span class="js-maxHealth">X</span></span>
                     <span style="font-size: 12px" helptext="How fast your adventurer regenerates health.">(<span class="js-healthRegen" >X</span>)</span></span>
@@ -158,8 +160,10 @@
                 <div class="js-stats stats playerBox">
                     <div style="position: absolute; left: 5px; top: 0px;">Recruit: <span class="js-playerName controlBarEntry">X</span></div>
                     <canvas class="js-canvas js-previewCanvas" width="64" height="128" style="position: absolute; left: 0px; top: 20px;"></canvas>
-                    <div helptext="Starting health for each adventure."><span class="icon health"></span> <span class="js-maxHealth">X</span></div>
-                    <div helptext="How famous this adventurer is. Famous adventurers are more powerful but also more expensive.<br/> Hiring and retiring famous adventurers increases the fame of your guild.">Fame: <span class="js-fame">X</span></div>
+                    <span helptext="How famous this adventurer is. Famous adventurers are more powerful but also more expensive.<br/> Hiring and retiring famous adventurers increases the fame of your guild.">
+                        <span class="icon fame"></span> <span class="js-fame">X</span>
+                    </span>
+                    <span helptext="Starting health for each adventure."><span class="icon health"></span> <span class="js-maxHealth">X</span></span>
                     <div style="position: relative; overflow: hidden; height: 160px; width: 160px;">
                         <canvas class="js-canvas js-skillCanvas" width="360" height="360" style="width: 360px; height: 360px; position: relative; left: -80px; top: -80px;"></canvas>
                     </div>

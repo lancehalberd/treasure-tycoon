@@ -666,49 +666,56 @@ select {
     background-size: initial;
     width: 12px;
     height: 12px;
-    background-position: -78px -181px;
+    background-position: -78px -180px;
 }
 .icon.damage {
     background-image: url('gfx/militaryIcons.png');
     background-size: initial;
     width: 12px;
     height: 12px;
-    background-position: -52px -181px;
+    background-position: -52px -180px;
 }
 .icon.range {
     background-image: url('gfx/militaryIcons.png');
     background-size: initial;
     width: 12px;
     height: 12px;
-    background-position: -78px -194px;
+    background-position: -78px -193px;
 }
 .icon.no {
     background-image: url('gfx/militaryIcons.png');
     background-size: initial;
     width: 12px;
     height: 12px;
-    background-position: -27px -168px;
+    background-position: -26px -167px;
 }
 .icon.protection {
     background-image: url('gfx/militaryIcons.png');
     background-size: initial;
     width: 12px;
     height: 12px;
-    background-position: -65px -181px;
+    background-position: -65px -180px;
 }
 .icon.speed {
     background-image: url('gfx/militaryIcons.png');
     background-size: initial;
     width: 12px;
     height: 12px;
-    background-position: -65px -168px;
+    background-position: -65px -167px;
 }
 .icon.magic {
     background-image: url('gfx/militaryIcons.png');
     background-size: initial;
     width: 12px;
     height: 12px;
-    background-position: -40px -181px;
+    background-position: -39px -180px;
+}
+.icon.fame {
+    background-image: url('gfx/militaryIcons.png');
+    background-size: initial;
+    width: 12px;
+    height: 12px;
+    background-position: -13px -180px;
 }
 
 .iconLayer {
