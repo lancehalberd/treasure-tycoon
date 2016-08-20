@@ -345,12 +345,18 @@ function applyDragResults() {
             if (item.actor) {
                 unequipSlot(item.actor, item.base.slot, true);
             }
-            if ($target.index() < $source.index()) {
-                $source.detach();
-                $target.before($source);
-            } else {
+            // If an item is already in the inventory and it is before the item we are dropping
+            // it onto, place it after, not before that item because that item will move
+            // back one slot when the current item is removed, so the slot the player is hovering
+            // over will be after that item.
+            // Normally we want to place an item before the item they are hovering over since
+            // that is what will move the hovered item into that slot.
+            if ($source.closest('.js-inventory').length && $target.index() > $source.index()) {
                 $source.detach();
                 $target.after($source);
+            } else {
+                $source.detach();
+                $target.before($source);
             }
         }
     }
