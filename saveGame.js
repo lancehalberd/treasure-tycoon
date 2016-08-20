@@ -60,7 +60,6 @@ function importState(stateData) {
     $('.js-heroApplication').data('character', null).remove();
     var applications = ifdefor(stateData.applications, []).map(importCharacter);
     while ($('.js-heroApplication').length + applications.length < 2) {
-        console.log('adding application');
         var $applicationPanel = $slot.clone();
         $('.js-recruitmentColumn').append($applicationPanel);
         createNewHeroApplicant($applicationPanel);
@@ -82,6 +81,10 @@ function importState(stateData) {
         state.characters.push(character);
         for (var levelKey of Object.keys(character.divinityScores)) {
             var level = map[levelKey];
+            if (!level) {
+                delete character.divinityScores[levelKey];
+                continue;
+            }
             state.visibleLevels[levelKey] = true;
             for (var nextLevelKey of level.unlocks) {
                 state.visibleLevels[nextLevelKey] = true;
@@ -164,6 +167,10 @@ function importCharacter(characterData) {
     character.divinity = ifdefor(characterData.divinity, 0);
     character.currentLevelKey = ifdefor(characterData.currentLevelKey, ifdefor(character.adventurer.job.levelKey, 'meadow'));
     character.levelCompleted = ifdefor(characterData.levelCompleted, false);
+    if (!map[character.currentLevelKey]) {
+        character.currentLevelKey = ifdefor(character.adventurer.job.levelKey, 'meadow');
+        character.levelCompleted = false;
+    }
     character.board = importJewelBoard(characterData.board, character);
     character.fame = ifdefor(characterData.fame, Math.ceil(character.divinity / 10));
     character.applicationAge = ifdefor(characterData.applicationAge, 0);
