@@ -305,7 +305,7 @@ function spend(pointsType, amount) {
 function changedPoints(pointsType) {
     if (pointsType == 'fame') updateHireButtons();
     else updateCraftingButtons();
-    $('.js-global-' + pointsType).text(state[pointsType]);
+    $('.js-global-' + pointsType).text(state[pointsType].abbreviate());
 }
 function addBonusesAndActions(actor, source) {
     if (ifdefor(source.bonuses)) {
@@ -669,18 +669,6 @@ function divinityToLevelUp(currentLevel) {
 }
 function baseDivinity(level) {
     return 10 * Math.pow(1.25, level - 1);
-}
-function abbreviateDivinity(amount) {
-    if (amount > 1000000000) {
-        return (amount / 1000000000 + '').slice(0, 5) + ' B';
-    }
-    if (amount > 1000000) {
-        return (amount / 1000000 + '').slice(0, 5) + ' M';
-    }
-    if (amount > 1000) {
-        return (amount / 1000 + '').slice(0, 5) + ' K';
-    }
-    return amount;
 }
 
 function totalCostForNextLevel(character, level) {

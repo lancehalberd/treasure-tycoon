@@ -143,7 +143,7 @@ function drawMap() {
             context.fillStyle = 'white';
             context.font = '10px sans-serif';
             context.textAlign = 'center'
-            context.fillText(abbreviateDivinity(divinityScore), levelData.left + 20, levelData.top + 45);
+            context.fillText(divinityScore.abbreviate(), levelData.left + 20, levelData.top + 45);
             source = silverSource;
             var baseScore = Math.round(baseDivinity(levelData.level));
             if (baseScore > divinityScore) {
