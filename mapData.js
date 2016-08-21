@@ -1,4 +1,154 @@
 var map = {
+    'assassin1': {
+        'name': "assassin1",
+        'level': 4,
+        'x': 4, 'y': -11,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': "blinkStrike",
+        'board': "tripleTriangles",
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'assassin10': {
+        'name': "assassin10",
+        'level': 39,
+        'x': 39, 'y': -11,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': "cripple",
+        'board': "pieBoard",
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'assassin2': {
+        'name': "assassin2",
+        'level': 7,
+        'x': 7, 'y': -11,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'assassin3': {
+        'name': "assassin3",
+        'level': 10,
+        'x': 10, 'y': -11,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'assassin4': {
+        'name': "assassin4",
+        'level': 13,
+        'x': 13, 'y': -11,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'assassin5': {
+        'name': "assassin5",
+        'level': 16,
+        'x': 16, 'y': -11,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': "cull",
+        'board': "halfHexBoard",
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'assassin6': {
+        'name': "assassin6",
+        'level': 20,
+        'x': 20, 'y': -11,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'assassin7': {
+        'name': "assassin7",
+        'level': 24,
+        'x': 24, 'y': -11,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'assassin8': {
+        'name': "assassin8",
+        'level': 29,
+        'x': 29, 'y': -11,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'assassin9': {
+        'name': "assassin9",
+        'level': 34,
+        'x': 34, 'y': -11,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
     'bayou': {
         'name': "Bayou",
         'level': 4,
@@ -201,7 +351,7 @@ var map = {
         'unlocks': ["juggler6","ranger5"],
         'specialLoot': [],
         'skill': "deflect",
-        'board': "tripleTriangles",
+        'board': "halfHexBoard",
         'enemySkills': [],
         'monsters': ["skeleton"],
         'events': [
@@ -346,6 +496,156 @@ var map = {
             ["dragon"]
         ]
     },
+    'fool1': {
+        'name': "fool1",
+        'level': 7,
+        'x': 7, 'y': -7,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': "tomFoolery",
+        'board': "tripleTriangles",
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'fool10': {
+        'name': "fool10",
+        'level': 70,
+        'x': 55, 'y': -7,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': "mimic",
+        'board': "pieBoard",
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'fool2': {
+        'name': "fool2",
+        'level': 14,
+        'x': 14, 'y': -7,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'fool3': {
+        'name': "fool3",
+        'level': 21,
+        'x': 21, 'y': -7,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'fool4': {
+        'name': "fool4",
+        'level': 28,
+        'x': 28, 'y': -7,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'fool5': {
+        'name': "fool5",
+        'level': 35,
+        'x': 35, 'y': -7,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': "decoy",
+        'board': "halfHexBoard",
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'fool6': {
+        'name': "fool6",
+        'level': 42,
+        'x': 42, 'y': -7,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'fool7': {
+        'name': "fool7",
+        'level': 49,
+        'x': 49, 'y': -7,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'fool8': {
+        'name': "fool8",
+        'level': 56,
+        'x': 51, 'y': -7,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'fool9': {
+        'name': "fool9",
+        'level': 63,
+        'x': 53, 'y': -7,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
     'forestfloor': {
         'name': "Forest Floor",
         'level': 2,
@@ -436,7 +736,7 @@ var map = {
         'unlocks': ["corsair10"],
         'specialLoot': [],
         'skill': "bullseye",
-        'board': "tripleTriangles",
+        'board': "pieBoard",
         'enemySkills': [],
         'monsters': ["skeleton"],
         'events': [
@@ -496,7 +796,7 @@ var map = {
         'unlocks': ["corsair5"],
         'specialLoot': [],
         'skill': "dodge",
-        'board': "tripleTriangles",
+        'board': "halfHexBoard",
         'enemySkills': [],
         'monsters': ["skeleton"],
         'events': [
@@ -578,6 +878,156 @@ var map = {
             ["dragon"]
         ]
     },
+    'master1': {
+        'name': "master1",
+        'level': 5,
+        'x': 5, 'y': -8,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': "equipmentMastery",
+        'board': "tripleTriangles",
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'master10': {
+        'name': "master10",
+        'level': 50,
+        'x': 50, 'y': -8,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': "abilityMastery",
+        'board': "pieBoard",
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'master2': {
+        'name': "master2",
+        'level': 10,
+        'x': 10, 'y': -8,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'master3': {
+        'name': "master3",
+        'level': 15,
+        'x': 15, 'y': -8,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'master30': {
+        'name': "master30",
+        'level': 30,
+        'x': 30, 'y': -8,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'master4': {
+        'name': "master4",
+        'level': 20,
+        'x': 20, 'y': -8,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'master5': {
+        'name': "master5",
+        'level': 25,
+        'x': 25, 'y': -8,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': "abilityMastery",
+        'board': "halfHexBoard",
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'master7': {
+        'name': "master7",
+        'level': 35,
+        'x': 35, 'y': -8,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'master8': {
+        'name': "master8",
+        'level': 40,
+        'x': 40, 'y': -8,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'master9': {
+        'name': "master9",
+        'level': 45,
+        'x': 45, 'y': -8,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
     'meadow': {
         'name': "Meadow",
         'level': 1,
@@ -644,6 +1094,156 @@ var map = {
             ["butcher"],
             ["undeadWarrior","undeadWarrior","dragon"],
             ["butcher","dragon","gnomeWizard"]
+        ]
+    },
+    'ninja1': {
+        'name': "ninja1",
+        'level': 6,
+        'x': 6, 'y': -9,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': "smokeBomb",
+        'board': "tripleTriangles",
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'ninja10': {
+        'name': "ninja10",
+        'level': 45,
+        'x': 45, 'y': -9,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': "shadowClone",
+        'board': "pieBoard",
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'ninja2': {
+        'name': "ninja2",
+        'level': 9,
+        'x': 9, 'y': -9,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'ninja3': {
+        'name': "ninja3",
+        'level': 12,
+        'x': 12, 'y': -9,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'ninja4': {
+        'name': "ninja4",
+        'level': 15,
+        'x': 15, 'y': -9,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'ninja5': {
+        'name': "ninja5",
+        'level': 20,
+        'x': 20, 'y': -9,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': "throwWeapon",
+        'board': "halfHexBoard",
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'ninja6': {
+        'name': "ninja6",
+        'level': 25,
+        'x': 25, 'y': -9,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'ninja7': {
+        'name': "ninja7",
+        'level': 30,
+        'x': 30, 'y': -9,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'ninja8': {
+        'name': "ninja8",
+        'level': 35,
+        'x': 35, 'y': -9,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'ninja9': {
+        'name': "ninja9",
+        'level': 40,
+        'x': 40, 'y': -9,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
         ]
     },
     'oceanside': {
@@ -718,7 +1318,7 @@ var map = {
         'unlocks': [],
         'specialLoot': [],
         'skill': "sicem",
-        'board': "tripleTriangles",
+        'board': "pieBoard",
         'enemySkills': [],
         'monsters': ["skeleton"],
         'events': [
@@ -778,7 +1378,7 @@ var map = {
         'unlocks': ["corsair6"],
         'specialLoot': [],
         'skill': "net",
-        'board': "tripleTriangles",
+        'board': "halfHexBoard",
         'enemySkills': [],
         'monsters': ["skeleton"],
         'events': [
@@ -833,7 +1433,7 @@ var map = {
     'ranger9': {
         'name': "ranger9",
         'level': 32,
-        'x': 32, 'y': -12,
+        'x': 31, 'y': -12,
         'background': "field",
         'unlocks': ["corsair10"],
         'specialLoot': [],
@@ -960,6 +1560,156 @@ var map = {
             ["motherfly","motherfly"],
             ["gnomecromancer","gnomecromancer"],
             ["gnomecromancer","gnomeWizard","gnomecromancer"]
+        ]
+    },
+    'sniper1': {
+        'name': "sniper1",
+        'level': 5,
+        'x': 5, 'y': -10,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': "powerShot",
+        'board': "tripleTriangles",
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'sniper10': {
+        'name': "sniper10",
+        'level': 42,
+        'x': 42, 'y': -10,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': "snipe",
+        'board': "pieBoard",
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'sniper2': {
+        'name': "sniper2",
+        'level': 8,
+        'x': 8, 'y': -10,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'sniper3': {
+        'name': "sniper3",
+        'level': 11,
+        'x': 11, 'y': -10,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'sniper4': {
+        'name': "sniper4",
+        'level': 14,
+        'x': 14, 'y': -10,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'sniper5': {
+        'name': "sniper5",
+        'level': 18,
+        'x': 18, 'y': -10,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': "aiming",
+        'board': "halfHexBoard",
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'sniper6': {
+        'name': "sniper6",
+        'level': 23,
+        'x': 23, 'y': -10,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'sniper7': {
+        'name': "sniper7",
+        'level': 28,
+        'x': 28, 'y': -10,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'sniper8': {
+        'name': "sniper8",
+        'level': 33,
+        'x': 33, 'y': -10,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'sniper9': {
+        'name': "sniper9",
+        'level': 38,
+        'x': 38, 'y': -10,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
         ]
     },
     'temple': {
