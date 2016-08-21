@@ -1078,6 +1078,3 @@ var map = {
         ]
     }
 };
-$.each(map, function (levelKey, levelData) {
-    levelData.levelKey = levelKey;
-});

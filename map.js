@@ -1,4 +1,7 @@
 var editingMap = false;
+$.each(map, function (levelKey, levelData) {
+    levelData.levelKey = levelKey;
+});
 
 function exportMap() {
     var lines = [];
@@ -25,7 +28,22 @@ function exportMap() {
         levelLines.push("    }");
         lines.push(levelLines.join("\n"));
     });
-    return lines.join(",\n");
+    return "var map = {\n" + lines.join(",\n") + "\n};\n";
+}
+function exportMapToTextArea() {
+    if (!$('textarea').length) {
+        $('body').append($tag('textarea').attr('rows', '5').attr('cols', 30));
+    }
+    $('textarea').val(exportMap());
+
+}
+function exportMapToClipboard() {
+    var $textarea = $tag('textarea');
+    $('body').append($textarea);
+    $textarea.val(exportMap());
+    $textarea[0].select();
+    console.log('Attempting to export map to clipboard: ' + document.execCommand('copy'));
+    $textarea.remove();
 }
 
 var mapCenteringTarget = null;
@@ -452,6 +470,10 @@ $(document).on('keydown', function(event) {
         if (editingMap) {
             stopMapEditing();
         }
+    }
+    if (editingMap && event.which === 67) { // 'c'
+        event.preventDefault();
+        exportMapToClipboard();
     }
     if (event.which === 69) { // 'e'
         if (currentContext !== 'adventure' || state.selectedCharacter.area) {
