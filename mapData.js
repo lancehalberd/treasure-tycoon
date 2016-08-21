@@ -118,6 +118,156 @@ var map = {
             ["dragon"]
         ]
     },
+    'corsair1': {
+        'name': "corsair1",
+        'level': 2,
+        'x': 2, 'y': -13,
+        'background': "field",
+        'unlocks': ["ranger1","juggler2"],
+        'specialLoot': [],
+        'skill': "hook",
+        'board': "tripleTriangles",
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'corsair10': {
+        'name': "corsair10",
+        'level': 33,
+        'x': 33, 'y': -13,
+        'background': "field",
+        'unlocks': ["ranger10"],
+        'specialLoot': [],
+        'skill': "plunder",
+        'board': "tripleTriangles",
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'corsair2': {
+        'name': "corsair2",
+        'level': 4,
+        'x': 4, 'y': -13,
+        'background': "field",
+        'unlocks': ["ranger2","juggler3"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'corsair3': {
+        'name': "corsair3",
+        'level': 6,
+        'x': 6, 'y': -13,
+        'background': "field",
+        'unlocks': ["juggler4"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'corsair4': {
+        'name': "corsair4",
+        'level': 8,
+        'x': 8, 'y': -13,
+        'background': "field",
+        'unlocks': ["ranger3","juggler5"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'corsair5': {
+        'name': "corsair5",
+        'level': 12,
+        'x': 12, 'y': -13,
+        'background': "field",
+        'unlocks': ["juggler6","ranger5"],
+        'specialLoot': [],
+        'skill': "deflect",
+        'board': "tripleTriangles",
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'corsair6': {
+        'name': "corsair6",
+        'level': 16,
+        'x': 16, 'y': -13,
+        'background': "field",
+        'unlocks': ["juggler7","ranger6"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'corsair7': {
+        'name': "corsair7",
+        'level': 21,
+        'x': 21, 'y': -13,
+        'background': "field",
+        'unlocks': ["juggler8","ranger7"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'corsair8': {
+        'name': "corsair8",
+        'level': 25,
+        'x': 25, 'y': -13,
+        'background': "field",
+        'unlocks': ["juggler9","ranger8"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'corsair9': {
+        'name': "corsair9",
+        'level': 29,
+        'x': 29, 'y': -13,
+        'background': "field",
+        'unlocks': ["juggler10","ranger9"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
     'crevice': {
         'name': "Crevice",
         'level': 4,
@@ -240,7 +390,7 @@ var map = {
         'skill': "minorDexterity",
         'board': "doubleDiamonds",
         'enemySkills': ["minorDexterity"],
-        'monsters': ["caterpillar", "spider"],
+        'monsters': ["caterpillar","spider"],
         'events': [
             ["caterpillar","spider"],
             ["spider","spider"],
@@ -257,6 +407,156 @@ var map = {
         'specialLoot': [],
         'skill': null,
         'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'juggler1': {
+        'name': "juggler1",
+        'level': 1,
+        'x': 1, 'y': -14,
+        'background': "field",
+        'unlocks': ["corsair1"],
+        'specialLoot': [],
+        'skill': "sap",
+        'board': "tripleTriangles",
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'juggler10': {
+        'name': "juggler10",
+        'level': 30,
+        'x': 30, 'y': -14,
+        'background': "field",
+        'unlocks': ["corsair10"],
+        'specialLoot': [],
+        'skill': "bullseye",
+        'board': "tripleTriangles",
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'juggler2': {
+        'name': "juggler2",
+        'level': 3,
+        'x': 3, 'y': -14,
+        'background': "field",
+        'unlocks': ["corsair2"],
+        'specialLoot': [],
+        'skill': "throwingPower",
+        'board': "tripleTriangles",
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'juggler3': {
+        'name': "juggler3",
+        'level': 5,
+        'x': 5, 'y': -14,
+        'background': "field",
+        'unlocks': ["corsair3"],
+        'specialLoot': [],
+        'skill': "evasion",
+        'board': "tripleTriangles",
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'juggler4': {
+        'name': "juggler4",
+        'level': 7,
+        'x': 7, 'y': -14,
+        'background': "field",
+        'unlocks': ["corsair4"],
+        'specialLoot': [],
+        'skill': "throwingMastery",
+        'board': "tripleTriangles",
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'juggler5': {
+        'name': "juggler5",
+        'level': 10,
+        'x': 10, 'y': -14,
+        'background': "field",
+        'unlocks': ["corsair5"],
+        'specialLoot': [],
+        'skill': "dodge",
+        'board': "tripleTriangles",
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'juggler6': {
+        'name': "juggler6",
+        'level': 14,
+        'x': 14, 'y': -14,
+        'background': "field",
+        'unlocks': ["corsair6"],
+        'specialLoot': [],
+        'skill': "throwingPrecision",
+        'board': "tripleTriangles",
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'juggler7': {
+        'name': "juggler7",
+        'level': 18,
+        'x': 18, 'y': -14,
+        'background': "field",
+        'unlocks': ["ranger6"],
+        'specialLoot': [],
+        'skill': "acrobatics",
+        'board': "tripleTriangles",
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'juggler8': {
+        'name': "juggler8",
+        'level': 22,
+        'x': 22, 'y': -14,
+        'background': "field",
+        'unlocks': ["corsair8"],
+        'specialLoot': [],
+        'skill': "majorDexterity",
+        'board': "tripleTriangles",
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'juggler9': {
+        'name': "juggler9",
+        'level': 26,
+        'x': 26, 'y': -14,
+        'background': "field",
+        'unlocks': ["corsair9"],
+        'specialLoot': [],
+        'skill': "dualThrowing",
+        'board': "tripleTriangles",
         'enemySkills': [],
         'monsters': ["skeleton"],
         'events': [
@@ -392,6 +692,156 @@ var map = {
         'events': [
             ["butterfly","butterfly"],
             ["gnome","gnome"],
+            ["dragon"]
+        ]
+    },
+    'ranger1': {
+        'name': "ranger1",
+        'level': 3,
+        'x': 3, 'y': -12,
+        'background': "field",
+        'unlocks': ["corsair2"],
+        'specialLoot': [],
+        'skill': "pet",
+        'board': "tripleTriangles",
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'ranger10': {
+        'name': "ranger10",
+        'level': 36,
+        'x': 36, 'y': -12,
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': "sicem",
+        'board': "tripleTriangles",
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'ranger2': {
+        'name': "ranger2",
+        'level': 6,
+        'x': 6, 'y': -12,
+        'background': "field",
+        'unlocks': ["corsair4"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'ranger3': {
+        'name': "ranger3",
+        'level': 9,
+        'x': 9, 'y': -12,
+        'background': "field",
+        'unlocks': ["ranger4"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'ranger4': {
+        'name': "ranger4",
+        'level': 11,
+        'x': 11, 'y': -12,
+        'background': "field",
+        'unlocks': ["corsair5"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'ranger5': {
+        'name': "ranger5",
+        'level': 14,
+        'x': 14, 'y': -12,
+        'background': "field",
+        'unlocks': ["corsair6"],
+        'specialLoot': [],
+        'skill': "net",
+        'board': "tripleTriangles",
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'ranger6': {
+        'name': "ranger6",
+        'level': 19,
+        'x': 19, 'y': -12,
+        'background': "field",
+        'unlocks': ["corsair7"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'ranger7': {
+        'name': "ranger7",
+        'level': 23,
+        'x': 23, 'y': -12,
+        'background': "field",
+        'unlocks': ["corsair8"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'ranger8': {
+        'name': "ranger8",
+        'level': 27,
+        'x': 27, 'y': -12,
+        'background': "field",
+        'unlocks': ["corsair9"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'ranger9': {
+        'name': "ranger9",
+        'level': 32,
+        'x': 32, 'y': -12,
+        'background': "field",
+        'unlocks': ["corsair10"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
             ["dragon"]
         ]
     },
