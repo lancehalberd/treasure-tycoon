@@ -1,5 +1,4 @@
 var editingMap = false;
-var emptyLevelData = ({'unlocks': [], 'level': 1, 'background': 'field', 'specialLoot': [], 'skill': null, 'board': null, 'enemySkills': [], 'monsters': ['skeleton'], 'events': [['dragon']]});
 
 function exportMap() {
     var lines = [];
@@ -195,7 +194,7 @@ function createNewLevel(x, y) {
     var tx = Math.floor((x + mapLeft) / 40);
     var ty = Math.floor((y + mapTop) / 40);
     var key = tx + '_' + ty;
-    newMapTarget = $.extend({'x': tx, 'y': ty, 'levelKey': key, 'name': key}, emptyLevelData);
+    newMapTarget = {'x': tx, 'y': ty, 'levelKey': key, 'name': key, 'unlocks': [], 'level': 1, 'background': 'field', 'specialLoot': [], 'skill': null, 'board': null, 'enemySkills': [], 'monsters': ['skeleton'], 'events': [['dragon']]};
     // If there already happens to be a level with this key, update it.
     updateLevelKey(map[key]);
     map[key] = newMapTarget;
