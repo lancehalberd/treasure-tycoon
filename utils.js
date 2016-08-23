@@ -244,3 +244,7 @@ function objectIndexOf(object, value, defaultValue) {
 function arrMod(array, index) {
     return array[(index + array.length) % array.length];
 }
+
+function fixFloat(f) {
+    return Math.round(1000000 * f) / 1000000;
+}

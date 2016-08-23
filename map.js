@@ -11,6 +11,7 @@ function exportMap() {
         levelLines.push("        'name': " + JSON.stringify(levelData.name) + ",");
         levelLines.push("        'level': " + JSON.stringify(levelData.level) + ",");
         levelLines.push("        'x': " + JSON.stringify(levelData.x) + ", 'y': " + JSON.stringify(levelData.y) + ",");
+        levelLines.push("        'coords': " + JSON.stringify(levelData.coords.map(function (number) { return Number(number.toFixed(0));})) + ",");
         for (var key of ['background', 'unlocks', 'specialLoot', 'skill', 'board', 'enemySkills', 'monsters']) {
             levelLines.push("        '" + key + "': " + JSON.stringify(levelData[key]) + ",");
         }
@@ -51,7 +52,7 @@ function updateMap() {
     if (draggedMap) {
         return;
     }
-    var minX = minY = 1000000, maxX = maxY = -10000000;
+  /*  var minX = minY = 1000000, maxX = maxY = -10000000;
     if (mapCenteringTarget) {
         minX = mapCenteringTarget.x * 40;
         maxX = minX + 40;
@@ -77,24 +78,32 @@ function updateMap() {
     }
     if (mapLeft < minX - mapWidth / 2) {
         mapLeft = (mapLeft * 5 + minX - mapWidth / 2) / 6;
+        movedMap = true;
     }
     if (mapLeft > maxX - mapWidth / 2) {
         mapLeft = (mapLeft * 5 + maxX - mapWidth / 2) / 6;
+        movedMap = true;
     }
     if (mapTop < minY - mapHeight / 2) {
         mapTop = (mapTop * 5 + minY - mapHeight / 2) / 6;
+        movedMap = true;
     }
     if (mapTop > maxY - mapHeight / 2) {
         mapTop = (mapTop * 5 + maxY - mapHeight / 2) / 6;
-    }
+        movedMap = true;
+    }*/
 }
 function centerMapOnLevel(levelData, instant) {
+    mapTop = -300; mapLeft = -400;
+    movedMap = true;
+    return;
     if (ifdefor(instant)) {
         mapLeft = levelData.x * 40 + 20 - mapWidth / 2;
         mapTop = levelData.y * 40 + 20 - mapHeight / 2;
     } else {
         mapCenteringTarget = levelData;
     }
+    movedMap = true;
 }
 
 var mapLeft = -400, mapTop = -120, mapWidth = 800, mapHeight = 270;
@@ -208,11 +217,9 @@ function updateLevelKey(level) {
     updateMapKey(level.levelKey, level.x + '_' + level.y);
 }
 
-function createNewLevel(x, y) {
-    var tx = Math.floor((x + mapLeft) / 40);
-    var ty = Math.floor((y + mapTop) / 40);
-    var key = tx + '_' + ty;
-    newMapTarget = {'x': tx, 'y': ty, 'levelKey': key, 'name': key, 'unlocks': [], 'level': 1, 'background': 'field', 'specialLoot': [], 'skill': null, 'board': null, 'enemySkills': [], 'monsters': ['skeleton'], 'events': [['dragon']]};
+function createNewLevel(coords) {
+    var key = coords.map(function (number) {return number.toFixed(0);}).join('_');
+    newMapTarget = {'x': 0, 'y': 0, 'coords': coords, 'levelKey': key, 'name': key, 'unlocks': [], 'level': 1, 'background': 'field', 'specialLoot': [], 'skill': null, 'board': null, 'enemySkills': [], 'monsters': ['skeleton'], 'events': [['dragon']]};
     // If there already happens to be a level with this key, update it.
     updateLevelKey(map[key]);
     map[key] = newMapTarget;
@@ -233,12 +240,14 @@ var originalSelectedNodes = [];
 $('.js-mouseContainer').on('mousedown', '.js-mainCanvas', function (event) {
     var x = event.pageX - $(this).offset().left;
     var y = event.pageY - $(this).offset().top;
+    //console.log(camera.unprojectPoint(x + mapLeft, y + mapTop, world.radius));
+
     draggedMap = false;
     if (editingMap) {
         var newMapTarget = getMapTarget(x, y);
         if (event.which === 3) {
             if (!newMapTarget) {
-                createNewLevel(x, y)
+                createNewLevel(camera.unprojectPoint(x + mapLeft - 20, y + mapTop - 20, world.radius));
             } else {
                 clickedMapNode = newMapTarget;
                 selectedMapNodes = [newMapTarget];
@@ -272,7 +281,7 @@ $(document).on('mouseup',function (event) {
     var x = event.pageX - $('.js-mainCanvas').offset().left;
     var y = event.pageY - $('.js-mainCanvas').offset().top;
     mapDragX = mouseDragY = null;
-    arrowTargetX = arrowTargetY = null;
+    arrowTargetLeft = arrowTargetTop = null;
     if (editingMap) {
         if (event.which === 3 && clickedMapNode && draggedMap) {
             var unlockedLevel = getMapTarget(x, y);
@@ -308,7 +317,7 @@ $(document).on('mouseup',function (event) {
         }
     }
 });
-var arrowTargetX, arrowTargetY;
+var arrowTargetLeft, arrowTargetTop;
 $('.js-mouseContainer').on('mousemove', '.js-mainCanvas', function (event) {
     if (!mouseDown) return;
     draggedMap = true;
@@ -328,27 +337,34 @@ $('.js-mouseContainer').on('mousemove', '.js-mainCanvas', function (event) {
             });
             drawRunningAnts(mainContext, selectedRectangle);
         } else if (event.which === 3 && clickedMapNode) {
-            arrowTargetX = tx;
-            arrowTargetY = ty;
+            arrowTargetLeft = x - 20;
+            arrowTargetTop = y - 20;
         } else if (mapDragX !== null && mapDragY !== null) {
             if (clickedMapNode) {
-                var dx = tx - clickedMapNode.x;
-                var dy = ty - clickedMapNode.y;
+                var dx = x - (clickedMapNode.left + 20);
+                var dy = y - (clickedMapNode.top + 20);
                 selectedMapNodes.forEach(function (mapNode) {
-                    mapNode.x += dx;
-                    mapNode.y += dy;
-                    $.extend(mapNode, rectangle(mapNode.x * 40 - mapLeft, mapNode.y * 40 - mapTop, 40, 40));
+                    mapNode.left += dx;
+                    mapNode.top += dy;
+                    mapNode.coords = camera.unprojectPoint(mapNode.left + mapLeft, mapNode.top + mapTop, world.radius);
                 })
+                movedMap = true;
             } else {
-                mapLeft += (mapDragX - x);
-                mapTop += (mapDragY - y);
+                //mapLeft += (mapDragX - x);
+                //mapTop += (mapDragY - y);
+                mapLocation.moveRight((mapDragX - x));
+                mapLocation.moveUp(-(mapDragY - y));
+                movedMap = true;
                 mapDragX = x;
                 mapDragY = y;
             }
         }
     } else if (mapDragX !== null && mapDragY !== null) {
-        mapLeft += (mapDragX - x);
-        mapTop += (mapDragY - y);
+        //mapLeft += (mapDragX - x);
+        //mapTop += (mapDragY - y);
+        mapLocation.moveRight((mapDragX - x));
+        mapLocation.moveUp(-(mapDragY - y));
+        movedMap = true;
         mapDragX = x;
         mapDragY = y;
     }
@@ -438,10 +454,12 @@ function deleteLevel(level) {
     delete map[level.levelKey];
 }
 function stopMapEditing() {
+    movedMap = true;
     editingMap = false;
     updateEditingState();
 }
 function startMapEditing() {
+    movedMap = true;
     editingMap = true;
     updateEditingState();
 }
@@ -485,6 +503,7 @@ $(document).on('keydown', function(event) {
         }
         if (!editingLevel) {
             editingMap = !editingMap;
+            movedMap = true;
             updateEditingState();
         }
     }

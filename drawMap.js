@@ -1,37 +1,110 @@
 
+var world = {radius: 600};
+var camera = new Camera(world, 800, 600);
+var mapLocation = new SphereVector(world);
+var movedMap = true;
 
 function drawMap() {
-    var context = mainContext;
-    // Draw parchment backdrop.
-    var width = images['gfx/oldMap.png'].width;
-    var height = images['gfx/oldMap.png'].height;
-    for (var x = -mapLeft % width - width; x < mapWidth; x += width) {
-        if (x <= -width) continue;
-        for (var y = -mapTop % height - height; y < mapHeight; y += height) {
-            if (y <= -height) continue;
-            context.drawImage(images['gfx/oldMap.png'], 0, 0, width, height,
-                              x, y, width, height);
-        }
-    }
-    var visibleRectangle = rectangle(mapLeft - 20, mapTop - 20, mapWidth + 40, mapHeight + 50);
 
-    visibleNodes = {};
-    $.each(map, function (levelKey, levelData) {
-        if (!editingMap && !state.visibleLevels[levelKey]) {
-            return;
+    var context = mainContext;
+
+    movedMap = true;
+    if (movedMap) {
+        // Draw parchment backdrop.
+        var width = images['gfx/oldMap.png'].width;
+        var height = images['gfx/oldMap.png'].height;
+        for (var x = -mapLeft % width - width; x < mapWidth; x += width) {
+            if (x <= -width) continue;
+            for (var y = -mapTop % height - height; y < mapHeight; y += height) {
+                if (y <= -height) continue;
+                context.drawImage(images['gfx/oldMap.png'], 0, 0, width, height,
+                                  x, y, width, height);
+            }
         }
-        var levelRectangle = rectangle(levelData.x * 40, levelData.y * 40, 40, 40);
-        $.extend(levelData, rectangle(levelData.x * 40 - mapLeft, levelData.y * 40 - mapTop, 40, 40));
-        var skill = abilities[levelData.skill];
-        if (skill) {
-            levelData.shrine = rectangle(levelData.x * 40 - mapLeft - 12, levelData.y * 40 - mapTop - 12, 24, 24);
-            levelData.shrine.isShrine = true;
-            levelData.shrine.level = levelData;
+        var visibleRectangle = rectangle(mapLeft - 20, mapTop - 20, mapWidth + 40, mapHeight + 50);
+        camera.position = mapLocation.position.normalize(world.radius * 2);
+        camera.forward = camera.position.normalize(-1);
+        //camera.position = snake.position.normalize(world.radius / 2);
+        //camera.forward = snake.position.normalize(1);
+        camera.fixRightAndUp();
+        camera.updateRotationMatrix();
+        if (true) {
+            var lineColors = [,'#ff0','#8f0','#0f0','#0f8', '#0ff', '#08f', '#00f', '#80f', '#f0f', '#f08', '#f00','#f80'];
+            for (var theta = 0; theta < Math.PI * 2; theta += Math.PI / 6) {
+                context.beginPath();
+                context.strokeStyle = lineColors.pop();
+                var lastPoint = null;
+                for (var rho = 0; rho < Math.PI + .1; rho += Math.PI / 10) {
+                    var z = Math.cos(rho) * world.radius;
+                    var r = Math.sin(rho) * world.radius;
+                    var x = Math.cos(theta) * r;
+                    var y = Math.sin(theta) * r;
+                    //console.log([theta / Math.PI, rho / Math.PI, x,y,z]);
+                    var point = camera.projectPoint([x, y, z]);
+                    if (new Vector([x, y, z]).dotProduct(camera.forward) > 0) {
+                        lastPoint = null;
+                        continue;
+                    }
+                    if (lastPoint) {
+                        context.lineTo(point[0] - mapLeft, point[1] - mapTop);
+                        context.stroke();
+                    } else {
+                        lastPoint = point;
+                        context.moveTo(point[0] - mapLeft, point[1] - mapTop);
+                    }
+                }
+            }
+            context.strokeStyle = '#000';
+            context.beginPath();
+            for (var rho = Math.PI / 10; rho < Math.PI; rho += Math.PI / 10) {
+                var lastPoint = null;
+                for (var theta = 0; theta < Math.PI * 2 + .1; theta += Math.PI / 6) {
+                    var z = Math.cos(rho) * world.radius;
+                    var r = Math.sin(rho) * world.radius;
+                    var x = Math.cos(theta) * r;
+                    var y = Math.sin(theta) * r;
+                    var point = camera.projectPoint([x, y, z]);
+                    //console.log(point);
+                    if (new Vector([x, y, z]).dotProduct(camera.forward) > 0) {
+                        lastPoint = null;
+                        continue;
+                    }
+                    if (lastPoint) {
+                        context.lineTo(point[0] - mapLeft, point[1] - mapTop);
+                    } else {
+                        lastPoint = point;
+                        context.moveTo(point[0] - mapLeft, point[1] - mapTop);
+                    }
+                }
+            }
+            context.stroke();
         }
-        if (rectanglesOverlap(visibleRectangle, levelRectangle)) {
-            visibleNodes[levelKey] = levelData;
-        }
-    });
+        visibleNodes = {};
+        $.each(map, function (levelKey, levelData) {
+            if (!editingMap && !state.visibleLevels[levelKey]) {
+                return;
+            }
+            if (new Vector(levelData.coords).dotProduct(camera.forward) <= 0) {
+                var projectedPoint = camera.projectPoint(levelData.coords);
+                levelData.left = projectedPoint[0] - mapLeft;
+                levelData.top = projectedPoint[1] - mapTop;
+                visibleNodes[levelKey] = levelData;
+                var skill = abilities[levelData.skill];
+                if (skill) {
+                    levelData.shrine = rectangle(levelData.left - 12, levelData.top - 12, 24, 24);
+                    levelData.shrine.isShrine = true;
+                    levelData.shrine.level = levelData;
+                }
+            } else {
+                // Put nodes on the reverse of the sphere
+                levelData.left = levelData.top = 4000;
+            }
+            levelData.width = levelData.height = 40;
+            levelData.right = levelData.left + 40;
+            levelData.bottom = levelData.top + 40;
+        });
+        movedMap = false;
+    }
     context.save();
     // Draw ovals for each node.
     $.each(visibleNodes, function (levelKey, levelData){
@@ -51,9 +124,9 @@ function drawMap() {
     // Draw lines connecting connected nodes.
     context.save();
     context.lineWidth = 5;
-    $.each(map, function (levelKey, levelData){
+    $.each(visibleNodes, function (levelKey, levelData){
         levelData.unlocks.forEach(function (nextLevelKey) {
-            if ((editingMap || (state.visibleLevels[levelKey] && state.visibleLevels[nextLevelKey])) && (visibleNodes[levelKey] || visibleNodes[nextLevelKey])) {
+            if ((editingMap || (state.visibleLevels[levelKey] && state.visibleLevels[nextLevelKey])) && (visibleNodes[levelKey] && visibleNodes[nextLevelKey])) {
                 var nextLevelData = map[nextLevelKey];
                 context.beginPath();
                 context.strokeStyle = 'white';
@@ -84,6 +157,13 @@ function drawMap() {
             var source = closedChestSource;
             context.drawImage(source.image, source.xOffset, 0, source.width, source.height,
                               levelData.left + levelData.width / 2 - 16, levelData.top + levelData.height / 2 - 18, 32, 32);
+            context.fillStyle = new Vector(levelData.coords).dotProduct(camera.forward) >= 0 ? 'red' : 'black';
+            context.fillRect(levelData.left - 30, levelData.top + 34, 100, 15);
+            context.fillStyle = 'white';
+            context.font = '10px sans-serif';
+            context.textAlign = 'center'
+            //context.fillText(levelData.coords.map(function (number) { return number.toFixed(0);}).join(', '), levelData.left + 20, levelData.top + 45);
+            context.fillText(levelData.level + ' ' + levelData.name, levelData.left + 20, levelData.top + 45);
             return true;
         }
         var divinityScore = ifdefor(state.selectedCharacter.divinityScores[levelKey], 0);
@@ -156,21 +236,21 @@ function drawMap() {
         }
         return true;
     });
-    if (draggedMap && ifdefor(arrowTargetX) !== null && ifdefor(arrowTargetY) !== null && clickedMapNode) {
-        if (clickedMapNode.x === arrowTargetX && clickedMapNode.y === arrowTargetY) return;
+    if (draggedMap && ifdefor(arrowTargetLeft) !== null && ifdefor(arrowTargetTop) !== null && clickedMapNode) {
+        //if (clickedMapNode.x === arrowTargetX && clickedMapNode.y === arrowTargetY) return;
         context.save();
         context.lineWidth = 5;
         context.strokeStyle = '#0f0';
-        drawMapArrow(context, clickedMapNode, {'x': arrowTargetX, 'y': arrowTargetY});
+        drawMapArrow(context, clickedMapNode, {'left': arrowTargetLeft, 'top': arrowTargetTop, 'width': 40, 'height': 40});
         context.restore();
     }
 }
 
 function drawMapArrow(context, targetA, targetB) {
-    var sx = targetA.x * 40 + 20 - mapLeft;
-    var sy = targetA.y * 40 + 20 - mapTop;
-    var tx = targetB.x * 40 + 20 - mapLeft;
-    var ty = targetB.y * 40 + 20 - mapTop;
+    var sx = targetA.left + targetA.width / 2;
+    var sy = targetA.top + targetA.height / 2;
+    var tx = targetB.left + targetB.width / 2;
+    var ty = targetB.top + targetB.height / 2;
     var v = [tx - sx, ty - sy];
     var mag = Math.sqrt(v[0]*v[0]+v[1] * v[1]);
     v[0] /= mag;
