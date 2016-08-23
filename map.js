@@ -47,35 +47,46 @@ function exportMapToClipboard() {
     $textarea.remove();
 }
 
-var mapCenteringTarget = null;
+var mapCenteringTarget = null, centerInstantly = false;
 function updateMap() {
     if (draggedMap) {
         return;
     }
-  /*  var minX = minY = 1000000, maxX = maxY = -10000000;
     if (mapCenteringTarget) {
-        minX = mapCenteringTarget.x * 40;
-        maxX = minX + 40;
-        minY = mapCenteringTarget.y * 40;
-        maxY = minY + 40;
-        // remove the mapTarget once we get close enough.
-        if (mapCenteringTarget.left > mapWidth / 2 - 100
-            && mapCenteringTarget.right < mapWidth / 2 + 100
-            && mapCenteringTarget.top > mapHeight / 2 - 100
-            && mapCenteringTarget.bottom < mapHeight / 2 + 100) {
+        var differenceVector = new Vector(mapCenteringTarget.coords).subtract(mapLocation.position);
+        var distance = differenceVector.magnitude();
+        if (distance < 40) {
             mapCenteringTarget = null;
+            return;
         }
-    } else {
-        $.each(map, function (levelKey, levelData){
-            if (!editingMap && !state.visibleLevels[levelKey]) {
-                return;
-            }
-            minX = Math.min(levelData.x * 40, minX);
-            minY = Math.min(levelData.y * 40, minY);
-            maxX = Math.max(levelData.x * 40 + 40, maxX);
-            maxY = Math.max(levelData.y * 40 + 40, maxY);
-        });
+        differenceVector = differenceVector.orthoganalize(mapLocation.position);
+        // In the unlikely event differenceVector is parallel to mapLocation.position,
+        // it will not be valid and we need to choose a random vector
+        if (isNaN(differenceVector.getCoordinate(1))) {
+            differenceVector.orthoganalize(new Vector([Math.random(), Math.random(), Math.random()]));
+        }
+        // This should never happen, so if it does, it probably means I did something wrong.
+        if (isNaN(differenceVector.getCoordinate(1))) {
+            console.log("failed to generate valid difference vector.");
+            return;
+        }
+        differenceVector = differenceVector.normalize(5);
+        var iterations = centerInstantly ? distance / 5 : distance / 50;
+        for (var i = 0; i < iterations; i++) {
+            mapLocation.moveByVector(differenceVector);
+        }
     }
+  /*  var minX = minY = 1000000, maxX = maxY = -10000000;
+
+    $.each(map, function (levelKey, levelData){
+        if (!editingMap && !state.visibleLevels[levelKey]) {
+            return;
+        }
+        minX = Math.min(levelData.x * 40, minX);
+        minY = Math.min(levelData.y * 40, minY);
+        maxX = Math.max(levelData.x * 40 + 40, maxX);
+        maxY = Math.max(levelData.y * 40 + 40, maxY);
+    });
     if (mapLeft < minX - mapWidth / 2) {
         mapLeft = (mapLeft * 5 + minX - mapWidth / 2) / 6;
         movedMap = true;
@@ -94,15 +105,9 @@ function updateMap() {
     }*/
 }
 function centerMapOnLevel(levelData, instant) {
-    mapTop = -300; mapLeft = -400;
-    movedMap = true;
-    return;
-    if (ifdefor(instant)) {
-        mapLeft = levelData.x * 40 + 20 - mapWidth / 2;
-        mapTop = levelData.y * 40 + 20 - mapHeight / 2;
-    } else {
-        mapCenteringTarget = levelData;
-    }
+    mapTop = -mapHeight / 2; mapLeft = -400;
+    centerInstantly = instant;
+    mapCenteringTarget = levelData;
     movedMap = true;
 }
 
