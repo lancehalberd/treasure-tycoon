@@ -346,8 +346,8 @@ $('.js-mouseContainer').on('mousemove', '.js-mainCanvas', function (event) {
             arrowTargetTop = y - 20;
         } else if (mapDragX !== null && mapDragY !== null) {
             if (clickedMapNode) {
-                var dx = x - (clickedMapNode.left + 20);
-                var dy = y - (clickedMapNode.top + 20);
+                var dx = x - (clickedMapNode.left);
+                var dy = y - (clickedMapNode.top);
                 selectedMapNodes.forEach(function (mapNode) {
                     mapNode.left += dx;
                     mapNode.top += dy;

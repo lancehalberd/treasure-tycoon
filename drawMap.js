@@ -86,8 +86,8 @@ function drawMap() {
             }
             if (new Vector(levelData.coords).dotProduct(camera.forward) <= 0) {
                 var projectedPoint = camera.projectPoint(levelData.coords);
-                levelData.left = projectedPoint[0] - mapLeft;
-                levelData.top = projectedPoint[1] - mapTop;
+                levelData.left = projectedPoint[0] - 20 - mapLeft;
+                levelData.top = projectedPoint[1] - 20 - mapTop;
                 visibleNodes[levelKey] = levelData;
                 var skill = abilities[levelData.skill];
                 if (skill) {
