@@ -14,6 +14,10 @@
     height: 570px;
 }
 
+.pointsBarPadding {
+    height: 25px;
+    background-color: #aaa;
+}
 .pointsBar {
     height: 30px;
     box-sizing: border-box;
