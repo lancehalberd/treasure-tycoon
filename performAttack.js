@@ -1,8 +1,17 @@
-
+function getBasicAttack(adventurer) {
+    for (var i = 0; i < adventurer.actions.length; i++) {
+        var attack = adventurer.actions[i];
+        if (attack.base.tags.indexOf('basic') >= 0) {
+            return attack;
+        }
+    }
+    return null;
+}
 function updateDamageInfo(character, $statsPanel, monsterLevel) {
     var adventurer = character.adventurer;
     if (!adventurer || !adventurer.actions) return;
-    var attack = adventurer.actions[adventurer.actions.length - 1];
+    var attack = getBasicAttack(adventurer);
+    if (!attack) return;
     // Raw damage numbers.
     var damageMultiplier =  (1 - attack.critChance) + (1 + attack.critDamage) * attack.critChance;
     var accuracyMultiplier = (1 - attack.critChance) + (1 + attack.critAccuracy) * attack.critChance;
