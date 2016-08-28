@@ -5,13 +5,11 @@ var mapLocation = new SphereVector(world);
 var movedMap = true;
 
 function drawMap() {
-
     var context = mainContext;
 
-    movedMap = true;
-    if (movedMap) {
+    if (true) {
         // Draw parchment backdrop.
-        var width = images['gfx/oldMap.png'].width;
+        /*var width = images['gfx/oldMap.png'].width;
         var height = images['gfx/oldMap.png'].height;
         for (var x = -mapLeft % width - width; x < mapWidth; x += width) {
             if (x <= -width) continue;
@@ -20,7 +18,9 @@ function drawMap() {
                 context.drawImage(images['gfx/oldMap.png'], 0, 0, width, height,
                                   x, y, width, height);
             }
-        }
+        }*/
+        context.fillStyle = '#fea';
+        context.fillRect(0, 0, mapWidth, mapHeight);
         var visibleRectangle = rectangle(mapLeft - 20, mapTop - 20, mapWidth + 40, mapHeight + 50);
         camera.position = mapLocation.position.normalize(world.radius * 2);
         camera.forward = camera.position.normalize(-1);
@@ -40,11 +40,11 @@ function drawMap() {
                     var x = Math.cos(theta) * r;
                     var y = Math.sin(theta) * r;
                     //console.log([theta / Math.PI, rho / Math.PI, x,y,z]);
-                    var point = camera.projectPoint([x, y, z]);
                     if (new Vector([x, y, z]).dotProduct(camera.forward) > 0) {
                         lastPoint = null;
                         continue;
                     }
+                    var point = camera.projectPoint([x, y, z]);
                     if (lastPoint) {
                         context.lineTo(point[0] - mapLeft, point[1] - mapTop);
                         context.stroke();
@@ -63,12 +63,12 @@ function drawMap() {
                     var r = Math.sin(rho) * world.radius;
                     var x = Math.cos(theta) * r;
                     var y = Math.sin(theta) * r;
-                    var point = camera.projectPoint([x, y, z]);
                     //console.log(point);
                     if (new Vector([x, y, z]).dotProduct(camera.forward) > 0) {
                         lastPoint = null;
                         continue;
                     }
+                    var point = camera.projectPoint([x, y, z]);
                     if (lastPoint) {
                         context.lineTo(point[0] - mapLeft, point[1] - mapTop);
                     } else {
