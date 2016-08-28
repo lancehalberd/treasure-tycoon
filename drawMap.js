@@ -216,7 +216,16 @@ function drawMap() {
         context.drawImage(source.image, source.xOffset, 0, source.width, source.height,
                             levelData.left + levelData.width / 2 - 16, levelData.top + levelData.height / 2 - 18, 32, 32);
 
+        context.save();
+        context.fillStyle = 'black';
+        context.globalAlpha = .3;
+        context.fillRect(levelData.left + 9, levelData.top + 19, 22, 15);
+        context.restore();
 
+        context.fillStyle = '#fff';
+        context.font = 'bold 16px sans-serif';
+        context.textAlign = 'center'
+        context.fillText(levelData.level, levelData.left + 20, levelData.top + 32);
         if (divinityScore > 0) {
             context.fillStyle = 'black';
             context.fillRect(levelData.left, levelData.top + 34, 40, 15);
