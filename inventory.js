@@ -340,7 +340,7 @@ function applyDragResults() {
                 largestCollision = collisionArea;
             }
         });
-        if ($target.is($source)) {
+        if ($target && $target.is($source)) {
             // Not need to do anything if the item was dropped where it started.
             hit = true;
         } else if ($target) {
