@@ -202,8 +202,8 @@ function getMonsterBonuses(monster) {
         // Health scales linearly to level 10, then 10% a level.
         '+maxHealth': (growth <= 10) ? (8 + 20 * growth) : 200 * Math.pow(1.1, growth - 10),
         '+range': 1,
-        '+minDamage': Math.round(.9 * (5 + 6 * growth)),
-        '+maxDamage': Math.round(1.1 * (5 + 6 * growth)),
+        '+minPhysicalDamage': Math.round(.9 * (5 + 6 * growth)),
+        '+maxPhysicalDamage': Math.round(1.1 * (5 + 6 * growth)),
         '+minMagicDamage': Math.round(.9 * (1 + 1.5 * growth)),
         '+maxMagicDamage': Math.round(1.1 * (1 + 1.5 * growth)),
         '+critChance': .05,
@@ -283,13 +283,13 @@ function initalizeMonsters() {
     });
     addMonster('skeleton', {'name': 'Skeleton', 'source': skeletonSource,
         // Fast to counter ranged heroes, low range+damage + fast attacks to be weak to armored heroes.
-        'implicitBonuses': {'+range': -.5, '*minDamage': .4, '*maxDamage': .4, '+accuracy': 2, '*attackSpeed': 2, '*magicDamage': 0,
+        'implicitBonuses': {'+range': -.5, '*minPhysicalDamage': .4, '*maxPhysicalDamage': .4, '+accuracy': 2, '*attackSpeed': 2, '*magicDamage': 0,
                             '*block': 0, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': 2}
     });
     addMonster('undeadWarrior', {'name': 'Undead Warrior', 'source': skeletonSource,
         // Fast to counter ranged heroes, low range+damage + fast attacks to be weak to armored heroes.
-        'implicitBonuses': {'+range': -.5, '*minDamage': .4, '*maxDamage': .4, '+accuracy': 2, '*attackSpeed': 2, '*magicDamage': 0,
+        'implicitBonuses': {'+range': -.5, '*minPhysicalDamage': .4, '*maxPhysicalDamage': .4, '+accuracy': 2, '*attackSpeed': 2, '*magicDamage': 0,
                             '*block': 0, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': 2},
         'abilities': [abilities.blinkStrike, abilities.soulStrike, abilities.majorStrength, abilities.vitality]
@@ -303,14 +303,14 @@ function initalizeMonsters() {
     });
     addMonster('motherfly', {'name': 'Motherfly', 'source': butterflySource,
         'implicitBonuses': {'+maxHealth': 20, '*maxHealth': 3, '+range': 5, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5, '*accuracy': 2,
-                            '*minDamage': .8, '*maxDamage': .8, '*attackSpeed': .5, '*magicDamage': .5,
+                            '*minPhysicalDamage': .8, '*maxPhysicalDamage': .8, '*attackSpeed': .5, '*magicDamage': .5,
                             '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
                             '*speed': .6}, 'tags': ['ranged'],
         'abilities': [abilities.summonCaterpillar, abilities.summoner]
     });
     addMonster('lightningBug', {'name': 'Lightning Bug', 'source': butterflySource,
         'implicitBonuses': {'*maxHealth': 1.5, '+range': 4, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5, '*accuracy': 2,
-                            '*minDamage': .8, '*maxDamage': .8, '*attackSpeed': .5, '*magicDamage': .5,
+                            '*minPhysicalDamage': .8, '*maxPhysicalDamage': .8, '*attackSpeed': .5, '*magicDamage': .5,
                             '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
                             '*speed': .6}, 'tags': ['ranged'],
         'abilities': [abilities.storm]

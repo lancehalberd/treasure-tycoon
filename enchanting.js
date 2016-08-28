@@ -16,12 +16,12 @@ addPrefix(32, 'Wily', 'weapon', {'+damageOnMiss': [70, 120]});
 addPrefix(42, 'Sly', 'weapon', {'+damageOnMiss': [100, 160]});
 addPrefix(62, 'Devious', 'weapon', {'+damageOnMiss': [150, 200]});
 
-addPrefix(1, 'Strong', 'weapon', {'+minDamage': 1, '+maxDamage': 2});
-addPrefix(5, 'Brutal', 'weapon', {'+minDamage': [4,6], '+maxDamage': [8,10]});
-addPrefix(15, 'Fierce', 'weapon', {'+minDamage': [12, 14], '+maxDamage': 20});
-addPrefix(30, 'Savage', 'weapon', {'+minDamage': 22, '+maxDamage': 30});
-addPrefix(45, 'Cruel', 'weapon', {'+minDamage': 30, '+maxDamage': 40});
-addPrefix(60, 'Bloody', 'weapon', {'+minDamage': 36, '+maxDamage': [45-50]});
+addPrefix(1, 'Strong', 'weapon', {'+minPhysicalDamage': 1, '+maxPhysicalDamage': 2});
+addPrefix(5, 'Brutal', 'weapon', {'+minPhysicalDamage': [4,6], '+maxPhysicalDamage': [8,10]});
+addPrefix(15, 'Fierce', 'weapon', {'+minPhysicalDamage': [12, 14], '+maxPhysicalDamage': 20});
+addPrefix(30, 'Savage', 'weapon', {'+minPhysicalDamage': 22, '+maxPhysicalDamage': 30});
+addPrefix(45, 'Cruel', 'weapon', {'+minPhysicalDamage': 30, '+maxPhysicalDamage': 40});
+addPrefix(60, 'Bloody', 'weapon', {'+minPhysicalDamage': 36, '+maxPhysicalDamage': [45-50]});
 
 addPrefix(7, 'Angry', 'weapon', {'*damage': [102, 105, 100]});
 addPrefix(17, 'Irate', 'weapon', {'*damage': [106, 112, 100]});

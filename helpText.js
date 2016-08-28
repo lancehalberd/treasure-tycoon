@@ -62,7 +62,7 @@ function bonusHelpText(rawBonuses, implicit, actor, localObject) {
     var bonuses = {};
     var tagBonuses = {};
     $.each(rawBonuses, function (key, value) {
-        // Transform things like {'+bow:minDamage': 1} => 'bow': {'+minDamage': 1}
+        // Transform things like {'+bow:minPhysicalDamage': 1} => 'bow': {'+minPhysicalDamage': 1}
         // so that we can display per tag bonuses.
         if (key.indexOf(':') >= 0) {
             var parts = key.split(':');
@@ -79,9 +79,9 @@ function bonusHelpText(rawBonuses, implicit, actor, localObject) {
         bonuses[key] = evaluateForDisplay(value, actor, localObject);
     });
     var sections = [];
-    if (ifdefor(bonuses['+minDamage'])) {
-        if (implicit) sections.push('Damage: ' + bonuses['+minDamage'].format(1) + ' to ' + bonuses['+maxDamage'].format(1));
-        else sections.push(bonuses['+minDamage'] + ' to ' + bonuses['+maxDamage'] + ' increased damage');
+    if (ifdefor(bonuses['+minPhysicalDamage'])) {
+        if (implicit) sections.push('Damage: ' + bonuses['+minPhysicalDamage'].format(1) + ' to ' + bonuses['+maxPhysicalDamage'].format(1));
+        else sections.push(bonuses['+minPhysicalDamage'] + ' to ' + bonuses['+maxPhysicalDamage'] + ' increased damage');
     }
     if (ifdefor(bonuses['+minMagicDamage'])) {
         if (implicit) sections.push('Magic: ' + bonuses['+minMagicDamage'].format(1) + ' to ' + bonuses['+maxMagicDamage'].format(1));

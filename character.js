@@ -25,8 +25,8 @@ var commonActionVariables = {
     'accuracy': 'Checked against target\'s evasion to determine if this will hit the target.',
     'range': 'How far away this ability can target something.',
     'attackSpeed': 'How many times can this ability be used in one second.',
-    'minDamage': 'The minimum physical damage of this skill.',
-    'maxDamage': 'The maximum physical damage of this skill.',
+    'minPhysicalDamage': 'The minimum physical damage of this skill.',
+    'maxPhysicalDamage': 'The maximum physical damage of this skill.',
     'minMagicDamage': 'The minimum magic damage of this skill.',
     'maxMagicDamage': 'The maximum magic damage of this skill.',
     'critChance': 'The percent chance for this ability to strike critically.',
@@ -375,8 +375,8 @@ function updateAdventurer(adventurer) {
             adventurer.tags.push('unarmed');
         }
         var barehandBonsuses = {
-            '+minDamage': adventurer.level,
-            '+maxDamage': adventurer.level,
+            '+minPhysicalDamage': adventurer.level,
+            '+maxPhysicalDamage': adventurer.level,
             '+range': .5,
             '+attackSpeed': 1,
             '+critChance': .01
@@ -512,8 +512,14 @@ function updateActorHelpText(actor) {
 function getStat(actor, stat) {
     var plus = 0, flatBonus = 0, percent = 1, multiplier = 1, specialValue = false;
     var baseKeys = [stat];
-    if (stat === 'minDamage' || stat === 'maxDamage') baseKeys.push('damage');
-    if (stat === 'minMagicDamage' || stat === 'maxMagicDamage') baseKeys.push('magicDamage');
+    if (stat === 'minPhysicalDamage' || stat === 'maxPhysicalDamage') {
+        baseKeys.push('physicalDamage');
+        baseKeys.push('damage');
+    }
+    if (stat === 'minMagicDamage' || stat === 'maxMagicDamage') {
+        baseKeys.push('magicDamage');
+        baseKeys.push('damage');
+    }
     // For example, when calculating min magic damage for a wand user, we check for all the following:
     // minMagicDamage, magicDamage, wand:minMagicDamage, wand:magicDamage, ranged:minMagicDamage, ranged:magicDamage, etc
     var keys = baseKeys.slice();
@@ -543,8 +549,14 @@ function getStat(actor, stat) {
 function getStatForAction(actor, dataObject, stat, action) {
     var base = evaluateValue(actor, ifdefor(dataObject.stats[stat], 0), action), plus = 0, flatBonus = 0, percent = 1, multiplier = 1, specialValue = ifdefor(dataObject.stats['$' + stat], false);
     var baseKeys = [stat];
-    if (stat === 'minDamage' || stat === 'maxDamage') baseKeys.push('damage');
-    if (stat === 'minMagicDamage' || stat === 'maxMagicDamage') baseKeys.push('magicDamage');
+    if (stat === 'minPhysicalDamage' || stat === 'maxPhysicalDamage') {
+        baseKeys.push('physicalDamage');
+        baseKeys.push('damage');
+    }
+    if (stat === 'minMagicDamage' || stat === 'maxMagicDamage') {
+        baseKeys.push('magicDamage');
+        baseKeys.push('damage');
+    }
     if (typeof base === 'object' && base.constructor != Array) {
         var subObject = {};
         if (!base.stats) {
@@ -597,11 +609,6 @@ function getStatForAction(actor, dataObject, stat, action) {
     if (specialValue) {
         return specialValue;
     }
-   /* if (stat === 'minDamage') {
-        console.log(keys);
-        console.log(ifdefor(dataObject.stats[stat], 0));
-        console.log([base + plus + flatBonus,  percent, multiplier, flatBonus]);
-    }*/
     return (base + plus + flatBonus) * percent * multiplier + flatBonus;
 }
 function gainLevel(adventurer) {

@@ -1,8 +1,8 @@
 
 //Back/Neck/Waist
-addItem(1, {'slot': 'back', 'type': 'quiver', 'name': 'Quiver', 'bonuses': {'+bow:minDamage': 2, '+bow:maxDamage': 4}, icon: 'backpack'});
-addItem(2, {'slot': 'back', 'type': 'scabbard', 'name': 'Scabbard', 'bonuses': {'+dagger:minDamage': 1, '+dagger:maxDamage': 2, '+sword:minDamage': 2, '+sword:maxDamage': 3, '+greatsword:minDamage': 3, '+greatsword:maxDamage': 4}, icon: 'backpack'});
-addItem(3, {'slot': 'back', 'type': 'baldric', 'name': 'Baldric', 'bonuses': {'+axe:minDamage': 2, '+axe:maxDamage': 3, '+polearm:minDamage': 3, '+polearm:maxDamage': 5}, icon: 'backpack'});
+addItem(1, {'slot': 'back', 'type': 'quiver', 'name': 'Quiver', 'bonuses': {'+bow:minPhysicalDamage': 2, '+bow:maxPhysicalDamage': 4}, icon: 'backpack'});
+addItem(2, {'slot': 'back', 'type': 'scabbard', 'name': 'Scabbard', 'bonuses': {'+dagger:minPhysicalDamage': 1, '+dagger:maxPhysicalDamage': 2, '+sword:minPhysicalDamage': 2, '+sword:maxPhysicalDamage': 3, '+greatsword:minPhysicalDamage': 3, '+greatsword:maxPhysicalDamage': 4}, icon: 'backpack'});
+addItem(3, {'slot': 'back', 'type': 'baldric', 'name': 'Baldric', 'bonuses': {'+axe:minPhysicalDamage': 2, '+axe:maxPhysicalDamage': 3, '+polearm:minPhysicalDamage': 3, '+polearm:maxPhysicalDamage': 5}, icon: 'backpack'});
 addItem(15, {'slot': 'back', 'type': 'cloak', 'name': 'Travelers Cloak', 'bonuses': {'+evasion': 10}, icon: 'backpack'});
 addItem(16, {'slot': 'back', 'type': 'cloak', 'name': 'Fur Cloak', 'bonuses': {'+maxHealth': 60}, icon: 'backpack'});
 addItem(17, {'slot': 'back', 'type': 'cloak', 'name': 'Plated Cloak', 'bonuses': {'+armor': 10}, icon: 'backpack'});
@@ -10,7 +10,7 @@ addItem(20, {'slot': 'back', 'type': 'amulet', 'name': 'Runed Amulet', 'bonuses'
 
 
 //Rings
-addItem(1, {'slot': 'ring', 'type': 'ring', 'name': 'Iron Band', 'bonuses': {'+minDamage': 2, '+maxDamage': 4}, icon: 'accessory'});
+addItem(1, {'slot': 'ring', 'type': 'ring', 'name': 'Iron Band', 'bonuses': {'+minPhysicalDamage': 2, '+maxPhysicalDamage': 4}, icon: 'accessory'});
 addItem(2, {'slot': 'ring', 'type': 'ring', 'name': 'Gold Band', 'bonuses': {'+minMagicDamage': 1, '+maxMagicDamage': 2}, icon: 'accessory'});
 addItem(4, {'slot': 'ring', 'type': 'ring', 'name': 'Ruby Ring', 'bonuses': {'+strength': 6}, icon: 'accessory'});
 addItem(5, {'slot': 'ring', 'type': 'ring', 'name': 'Emerald Ring', 'bonuses': {'+dexterity': 6}, icon: 'accessory'});

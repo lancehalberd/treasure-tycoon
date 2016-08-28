@@ -378,8 +378,8 @@ function cloneActor(actor) {
 
 function getMinionSkillBonuses(minionSkill) {
     return {'*maxHealth': ifdefor(minionSkill.healthBonus, 1),
-            '*minDamage': ifdefor(minionSkill.damageBonus, 1),
-            '*maxDamage': ifdefor(minionSkill.damageBonus, 1),
+            '*minPhysicalDamage': ifdefor(minionSkill.damageBonus, 1),
+            '*maxPhysicalDamage': ifdefor(minionSkill.damageBonus, 1),
             '*minMagicDamage': ifdefor(minionSkill.damageBonus, 1),
             '*maxMagicDamage': ifdefor(minionSkill.damageBonus, 1),
             '*attackSpeed': ifdefor(minionSkill.attackSpeedBonus, 1),
