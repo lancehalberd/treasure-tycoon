@@ -74,6 +74,12 @@ function updateMap() {
         var iterations = centerInstantly ? distance / 5 : distance / 50;
         for (var i = 0; i < iterations; i++) {
             mapLocation.moveByVector(differenceVector);
+            // Fix the camera position each step, otherwise the up/right vectors
+            // may not match what is being displayed any more.
+            camera.position = mapLocation.position.normalize(world.radius * 2);
+            camera.forward = camera.position.normalize(-1);
+            camera.fixRightAndUp();
+            camera.updateRotationMatrix();
         }
     }
   /*  var minX = minY = 1000000, maxX = maxY = -10000000;
