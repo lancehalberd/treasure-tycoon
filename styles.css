@@ -364,23 +364,14 @@ button {
 .icon.armor {
     background-position: -20px -20px;
 }
-.icon.bow {
-    background-position: -80px -20px;
-}
 .icon.club {
     background-position: -140px -20px;
 }
 .icon.glove {
     background-position: -200px -20px;
 }
-.icon.shield {
-    background-position: -320px -20px;
-}
-.icon.sword {
+.icon.dagger {
     background-position: -380px -20px;
-}
-.icon.boots {
-    background-position: -440px -20px;
 }
 .icon.bag {
     background-position: -500px -20px;
@@ -738,7 +729,7 @@ select {
     margin-top: 4px;
     background-position: -374px -45px;
 }
-.icon.accessory {
+.icon.ring {
     background-image: url('gfx/militaryIcons.png');
     background-size: 406px 410px;
     width: 32px;
@@ -747,6 +738,307 @@ select {
     margin-top: 4px;
     background-position: -136px -81px;
 }
+
+/* 'game-icons.png' from http://game-icons.net/about.html */
+
+.icon.mageHat {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: 0px 0px;
+}
+.icon.featherHat {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: -32px 0px;
+}
+.icon.helmet {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: -64px 0px;
+}
+.icon.heavyArmor {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: 0px -32px;
+}
+.icon.lightArmor {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: -32px -32px;
+}
+.icon.clothArmor {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: -96px -32px;
+}
+.icon.cloak {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: 0px -64px;
+}
+.icon.quiver {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: -64px -64px;
+}
+.icon.scabbard {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: -96px -64px;
+}
+.icon.gloves {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: 0px -96px;
+}
+.icon.bracers {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: -32px -96px;
+}
+.icon.vambracers {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: -64px -96px;
+}
+.icon.fists {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: 0px -128px;
+}
+.icon.greatSword {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: -32px -128px;
+}
+.icon.throwing {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: -64px -128px;
+}
+.icon.greatAxe {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: -96px -128px;
+}
+.icon.knuckles {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: -128px -128px;
+}
+.icon.sword {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: -160px -128px;
+}
+.icon.bow {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: -192px -128px;
+}
+.icon.staff {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: -224px -128px;
+}
+.icon.shuriken {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: -256px -128px;
+}
+.icon.cudgel {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: -288px -128px;
+}
+.icon.heavyShield {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: 0px -160px;
+}
+.icon.magicShield {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: -64px -160px;
+}
+.icon.lightShield {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: -96px -160px;
+}
+.icon.pants {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: 0px -192px;
+}
+.icon.sabatons {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: -32px -192px;
+}
+.icon.tights {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: -64px -192px;
+}
+.icon.amulet {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: 0px -224px;
+}
+.icon.band {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: -32px -224px;
+}
+.icon.feet {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: 0px -256px;
+}
+.icon.shoes {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: -32px -256px;
+}
+.icon.boots {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: -64px -256px;
+}
+
 
 .iconLayer {
     position: absolute;
