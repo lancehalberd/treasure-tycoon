@@ -477,6 +477,7 @@ function startMapEditing() {
 function updateEditingState() {
     var isEditing = editingLevel || editingMap;
     mapHeight = (isEditing && !editingLevel) ? 600 : 270;
+    mapTop = -mapHeight / 2; mapLeft = -400;
     $('.js-pointsBar').toggle(!isEditing);
     $('.js-mainCanvasContainer').css('height', (isEditing ? 600 : 270) +'px');
     $('.js-mainCanvas').attr('height', mapHeight);
