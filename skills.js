@@ -16,11 +16,101 @@
  * and a revive tag, there is no way to target those individually.
  */
 var abilities = {
-    'throwingPower': {'name': 'Throwing Power', 'bonuses': {'*throwing:damage': 1.3, '+throwing:range': 2}},
-    'throwingMastery': {'name': 'Throwing Mastery', 'bonuses': {'*throwing:attackSpeed': 1.3}},
-    'throwingPrecision': {'name': 'Throwing Precision', 'bonuses': {'+throwing:critDamage': .5, '+throwing:critAccuracy': .5}},
-    'dualThrowing': {'name': 'Dual Throwing', 'bonuses': {'*noOffhand:attackSpeed': 2}}, // This should be *noOffhand:throwing:attackSpeed when we support multiple tag restrictions.
-    
+    'throwingPower': {'name': 'Throwing Power', 'bonuses': {'%throwing:physicalDamage': .3, '+throwing:range': 2}},
+    'throwingDamage': {'name': 'Throwing Mastery', 'bonuses': {'%throwing:physicalDamage': .2, '%throwing:attackSpeed': .2}},
+    'throwingCriticalChance': {'name': 'Throwing Precision', 'bonuses': {'%throwing:critChance': .3, '%throwing:cattackSpeed': .3}},
+    'throwingParadigmShift': {'name': 'Melee Throwing', 'bonuses': {'*throwing:range': .2, '*throwing:damage': 1.3}}, // This should be throwing -> melee with range: 2 then 1.3xdamage and attack speed.
+
+    'rangedAccuracy': {'name': 'Ranged Accuracy', 'bonuses': {'%ranged:accuracy': .3, '+ranged:range': 1}},
+    'rangedDamage': {'name': 'Ranged Damage', 'bonuses': {'%ranged:damage': .2, '+ranged:range': 1}},
+    'rangedAttackSpeed': {'name': 'Ranged Attack Speed', 'bonuses': {'%ranged:attackSpeed': .2, '+ranged:range': 1}},
+    'rangedParadigmShift': {'name': 'Close Quarters', 'bonuses': {'*ranged:range': .5, '*ranged:damage': 1.3, '*ranged:accuracy': 1.3}},
+
+    'bowRange': {'name': 'Bow Range', 'bonuses': {'+bow:range': 3, '+bow:critDamage': .5}},
+    'bowPhysicalDamage': {'name': 'Physical Bow Damage', 'bonuses': {'*bow:physicalDamage': .3, '+bow:critDamage': .3}},
+    'bowDamage': {'name': 'Bow Damage', 'bonuses': {'*bow:damage': .5, '*+bow:critDamage': .3}},
+    //'bowParadigmShift': {'name': 'Bow Shield', 'bonuses': {'*bow:range': .5, '$bow:twoToOneHanded': 'Equipping a bow only uses one hand.'}}, // This doesn't work yet because setting twoToOneHanded needs to happen before we check to hide the offhand slot.
+
+    'fistDamage': {'name': 'Fist Damage', 'bonuses': {'%fist:physicalDamage': .3, '+fist:critDamage': .3}},
+    'fistCriticalChance': {'name': 'Fist Precision', 'bonuses': {'%fist:critChance': .3, '%fist:accuracy': .3}},
+    'fistAttackSpeed': {'name': 'Fist Attack Speed', 'bonuses': {'%fist:attackSpeed': .2, '%fist:physicalDamage': .2}},
+    //'fistParadigmShift': {'name': '', 'bonuses': {}},
+
+    'swordPhysicalDamage': {'name': 'Sword Damage', 'bonuses': {'%sword:physicalDamage': .3, '%sword:critChance': .3}},
+    'swordAccuracy': {'name': 'Sword Accuracy', 'bonuses': {'%sword:accuracy': .5, '*sword:critChance': .2}},
+    'swordAttackSpeed': {'name': 'Sword Attack Speed', 'bonuses': {'%sword:attackSpeed': .2, '%sword:physicalDamage': .2}},
+    'swordParadigmShift': {'name': 'Two Hands', 'bonuses': {'*noOffhand:damage': 1.5, '*noOffhand:attackSpeed': .75}}, // This should be noOffhand:sword
+
+    'greatswordDamage': {'name': 'Greatsword Damage', 'bonuses': {'%greatsword:damage': .3, '%greatsword:critChance': .3}},
+    'greatswordPhysicalDamage': {'name': 'Greatsword Physical Damage', 'bonuses': {'%greatsword:physicalDamage': .4, '%greatsword:accuracy': .2}},
+    'greatswordAccuracy': {'name': 'Greatsword Accuracy', 'bonuses': {'%greatsword:accuracy': .5, '%greatsword:physicalDamage': .2}},
+    'greatswordParadigmShift': {'name': 'Greatsword Wave', 'bonuses': {'*greatsword:range': 2, '*greatsword:attackSpeed': .5}},
+
+    'wandRange': {'name': 'Wand Range', 'bonuses': {'+wand:range': 2, '%wand:magicDamage': .3}},
+    'wandAttackSpeed': {'name': 'Wand Attack Speed', 'bonuses': {'%wand:attackSpeed': .2, '%wand:magicDamage': .2}},
+    'wandCritChance': {'name': 'Want Critical Chance', 'bonuses': {'%wand:critChance': .3, '%wand:magicDamage': .3}},
+    //'wandParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
+
+    'staffDamage': {'name': 'Staff Damage', 'bonuses': {'%staff:damage': .5, '%staff:accuracy': .2}},
+    'staffCritDamage': {'name': 'Staff Crit Damage', 'bonuses': {'+staff:critDamage': .3, '%staff:magicDamage': .3}},
+    'staffAccuracy': {'name': 'Staff Accuracy', 'bonuses': {'%staff:accuracy': .3, '%staff:damage': .3}},
+    //'staffParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
+
+    'spellCDR': {'name': 'Spell Cooldown Reduction', 'bonuses': {'%spell:cooldown': -.1}},
+    'spellPower': {'name': 'Spell Power', 'bonuses': {'%spell:damage': .4, '+spell:range': 2}},
+    'spellPrecision': {'name': 'Spell Precision', 'bonuses': {'%spell:critChance': .3, '+spell:critDamage': .3}},
+    //'spellParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
+
+    'axePhysicalDamage': {'name': 'Axe Physical Damage', 'bonuses': {'%axe:physicalDamage': .4, '%axe:accuracy': .2}},
+    'axeAttackSpeed': {'name': 'Axe Attack Speed', 'bonuses': {'%axe:speed': .4, '%axe:accuracy': .2}},
+    'axeCritDamage': {'name': 'Axe Critical Damage', 'bonuses': {'+axe:critDamage': .3, '%axe:physicalDamage': .3}},
+    //'axeParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
+
+    'criticalDamage': {'name': 'Critical Damage', 'bonuses': {'+critDamage': .5}},
+    'criticalStrikes': {'name': 'Critical Strikes', 'bonuses': {'%critChance': .2, '+critDamage': .3}},
+    'criticalAccuracy': {'name': 'Critical Accuracy', 'bonuses': {'+critAccuracy': .5, '%critChance': .2}},
+    //'criticalParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
+
+    'oneHandedDamage': {'name': 'One Handed Damage', 'bonuses': {'%oneHanded:damage': .2, '%oneHanded:attackSpeed': .2}},
+    'oneHandedCritChance': {'name': 'One Handed Critical Chance', 'bonuses': {'%oneHanded:critChance': .2, '%oneHanded:attackSpeed': .2}},
+    'oneHandedCritDamage': {'name': 'One Handed Critical Damage', 'bonuses': {'%oneHanded:critDamage': .2, '%oneHanded:attackSpeed': .2}},
+    'oneHandedParadigmShift': {'name': 'Dual Wield', 'bonuses': {'*noOffhand:attackSpeed': 1.5, '*noOffhand:damage': .75}},
+
+    'shieldDexterity': {'name': 'Shield Agility', 'bonuses': {'%shield:attackSpeed': .3, '%shield:evasion': .3}},
+    'shieldStrength': {'name': 'Shield Toughness', 'bonuses': {'%shield:damage': .3, '%shield:armor': .3}},
+    'shieldIntelligence': {'name': 'Shield Tactics', 'bonuses': {'%shield:accuracy': .3, '%shield:block': .3, '%shield:magicBlock': .3}},
+    //'shieldParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}}, // Dual wield shields, no basic attack
+
+    'polearmRange': {'name': 'Polearm Range', 'bonuses': {'+polearm:range': 1, '%polearm:physicalDamage': .4}},
+    'polearmAccuracy': {'name': 'Polearm Accuracy', 'bonuses': {'%polearm:accuracy': .3, '%polearm:damage': .3}},
+    'polearmCritDamage': {'name': 'Polearm Critical Damage', 'bonuses': {'+polearm:critDamage': .3, '%polearm:physicalDamage': .3}},
+    //'polearmParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
+
+    'meleeDamage': {'name': 'Melee Damage', 'bonuses': {'%melee:damage': .2, '%melee:accuracy': .2}},
+    'meleeAttackSpeed': {'name': 'Melee Attack Speed', 'bonuses': {'%melee:attackSpeed': .2, '%melee:accuracy': .2}},
+    'meleeCritChance': {'name': 'Melee CriticalChance', 'bonuses': {'%melee:critChance': .2, '%melee:accuracy': .2}},
+    //'meleeParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
+
+    'movementCDR': {'name': 'Movement Cooldown Reduction', 'bonuses': {'%movement:cooldown': -.1, '%movement:range': .1}},
+    'movementDamage': {'name': '', 'bonuses': {'%movement:damage': .3, '%movement:critDamage': .3}},
+    'movementPrecision': {'name': '', 'bonuses': {'%movement:accuracy': .3, '%movement:critChance': .3}},
+    //'movementParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
+
+    'minionToughness': {'name': 'Ally Toughness', 'bonuses': {'%minion:maxHealth': .5, '%minion:armor': .3}},
+    'minionDamage': {'name': 'Ally Damage', 'bonuses': {'%minion:damage': .3, '%minion:accuracy': .3}},
+    'minionFerocity': {'name': 'Ally Ferocity', 'bonuses': {'%minion:attackSpeed': .5, '%minion:critChance': .3}},
+    //'minionParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
+
+    'magicMagicDamage': {'name': 'Magic Weapon Magic Damage', 'bonuses': {'%magic:magicDamage': .3, '%magic:accuracy': .3}},
+    'magicAttackSpeed': {'name': 'Magic Weapon Attack Speed', 'bonuses': {'%magic:attackSpeed': .2, '%magic:critChance': .2}},
+    'magicDamage': {'name': 'Magic Weapon Damage', 'bonuses': {'%magic:damage': .2, '%magic:critDamage': .3}},
+    //'magicParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
+
+    'daggerAttackSpeed': {'name': 'Dagger Attack Speed', 'bonuses': {'%dagger:attackSpeed': .2, '%dagger:critChance': .2}},
+    'daggerCritChance': {'name': 'Dagger Critical Chance', 'bonuses': {'%dagger:critChance': .3, '%dagger:damage': .2}},
+    'daggerDamage': {'name': 'Dagger Damage', 'bonuses': {'%dagger:damage': .2, '%dagger:attackSpeed': .2}},
+    //'daggerParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
+   // 'jugglerIndex': {'name': '---Juggler---'},
     // Tier 1 classes
     // Juggler
     // how to make chaining apply to basic attack but not double up *throwing:attackSpeed, etc.
@@ -206,7 +296,7 @@ var abilities = {
                     'helpText': 'Precisely target an enemies weak spot from any distance ignoring all armor and resistances.'}},
 
     // Samurai
-    'samurai': {'name': 'Great Warrior', 'bonuses': {'*twoHanded:damage': 2}}, /* Damage modifier exists only on the character, not on skills...*/
+    'samurai': {'name': 'Great Warrior', 'bonuses': {'*twoHanded:damage': 2}},
     'majorStrength': {'name': 'Major Strength', 'bonuses': {'+strength': 20}},
     'sideStep': {'name': 'Side Step', 'bonuses': {'+evasion': 2}, 'reaction':
              {'type': 'dodge', 'rangedOnly': true, 'stats': {'cooldown': 10, 'moveDuration': .05, 'distance': 64, 'buff': {'stats': {'+critChance': .2, 'duration': 2, 'area': 0}}},
