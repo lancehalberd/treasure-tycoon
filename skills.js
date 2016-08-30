@@ -16,15 +16,16 @@
  * and a revive tag, there is no way to target those individually.
  */
 var abilities = {
+    'throwingPower': {'name': 'Throwing Power', 'bonuses': {'*throwing:damage': 1.3, '+throwing:range': 2}},
+    'throwingMastery': {'name': 'Throwing Mastery', 'bonuses': {'*throwing:attackSpeed': 1.3}},
+    'throwingPrecision': {'name': 'Throwing Precision', 'bonuses': {'+throwing:critDamage': .5, '+throwing:critAccuracy': .5}},
+    'dualThrowing': {'name': 'Dual Throwing', 'bonuses': {'*noOffhand:attackSpeed': 2}}, // This should be *noOffhand:throwing:attackSpeed when we support multiple tag restrictions.
+    
     // Tier 1 classes
     // Juggler
     // how to make chaining apply to basic attack but not double up *throwing:attackSpeed, etc.
     'juggler': {'name': 'Juggling', 'bonuses': {'$throwing:chaining': 'Projectiles ricochet between targets until they miss.'}},
     'minorDexterity': {'name': 'Minor Dexterity', 'bonuses': {'+dexterity': 5}},
-    'throwingPower': {'name': 'Throwing Power', 'bonuses': {'*throwing:damage': 1.3, '+throwing:range': 2}},
-    'throwingMastery': {'name': 'Throwing Mastery', 'bonuses': {'*throwing:attackSpeed': 1.3}},
-    'throwingPrecision': {'name': 'Throwing Precision', 'bonuses': {'+throwing:critDamage': .5, '+throwing:critAccuracy': .5}},
-    'dualThrowing': {'name': 'Dual Throwing', 'bonuses': {'*noOffhand:attackSpeed': 2}}, // This should be *noOffhand:throwing:attackSpeed when we support multiple tag restrictions.
     'evasion': {'name': 'Evasion', 'bonuses': {'%evasion': .5}},
     'sap': {'name': 'Sap', 'bonuses': {'+slowOnHit': .1, '+healthGainOnHit': 1}},
     'dodge': {'name': 'Dodge', 'bonuses': {'+evasion': 2}, 'reaction':
