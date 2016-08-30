@@ -4,7 +4,7 @@ function equipItem(adventurer, item, skipUpdate) {
         console.log("Tried to equip an item without first unequiping!");
         return;
     }
-    if (item.base.slot === 'offhand' && isTwoHandedWeapon(adventurer.equipment.weapon)) {
+    if (item.base.slot === 'offhand' && isTwoHandedWeapon(adventurer.equipment.weapon) && !ifdefor(adventurer.twoToOneHanded)) {
         console.log("Tried to equip an offhand while wielding a two handed weapon!");
         return;
     }
@@ -297,7 +297,7 @@ function applyDragResults() {
         hit = true
         var currentMain = targetCharacter.adventurer.equipment[item.base.slot];
         var currentSub = null;
-        if (isTwoHandedWeapon(item)) {
+        if (isTwoHandedWeapon(item) && !ifdefor(targetCharacter.adventurer.twoToOneHanded)) {
             currentSub = targetCharacter.adventurer.equipment.offhand;
             unequipSlot(targetCharacter.adventurer, 'offhand');
         }

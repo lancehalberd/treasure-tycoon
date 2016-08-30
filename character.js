@@ -13,7 +13,7 @@ var allActorVariables = [
     // special traits
     'cloaking', 'overHeal', 'increasedDrops', 'increasedExperience', 'cooldownReduction',
     'equipmentMastery', 'invulnerable', 'maxBlock', 'maxMagicBlock', 'maxEvasion',
-    'uncontrollable',
+    'uncontrollable', 'twoToOneHanded',
     // tracked for debuffs that deal damage over time
     'damageOverTime',
     // For enemy loot and color
@@ -408,8 +408,8 @@ function updateAdventurer(adventurer) {
         updateJewelBonuses(adventurer.character);
         adventurer.bonuses.push(adventurer.character.jewelBonuses);
         if (adventurer.character === state.selectedCharacter) {
-            // Don't show the offhand slot if equipped with a two handed weapon.
-            $('.js-offhand').toggle(!isTwoHandedWeapon(adventurer.equipment.weapon));
+            // Don't show the offhand slot if equipped with a two handed weapon unless they have a special ability to allow off hand with two handed weapons.
+            $('.js-offhand').toggle(!isTwoHandedWeapon(adventurer.equipment.weapon) || !!ifdefor(adventurer.twoToOneHanded));
         }
     }
     // Add the adventurer's current equipment to bonuses and graphics
