@@ -295,6 +295,9 @@ function importJewelBoard(jewelBoardData, character) {
     jewelBoard.fixed = [];
     jewelBoardData.fixed.forEach(function (fixedJewelData) {
         var ability = abilities[fixedJewelData.abilityKey];
+        if (!ability) {
+            return;
+        }
         var shape = importShape(fixedJewelData.shape);
         var fixedJewel = makeFixedJewel(shape, character, ability);
         fixedJewel.confirmed = fixedJewelData.confirmed;
