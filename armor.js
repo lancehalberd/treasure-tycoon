@@ -134,19 +134,19 @@ addItem(58, {'slot': 'arms', 'type': 'clothArmor', 'name': 'Blessed Gloves', 'bo
 addItem(68, {'slot': 'arms', 'type': 'clothArmor', 'name': 'Divine Gloves', 'bonuses': {'+block': 100, '+magicBlock': 60, '+armor': 10, '+evasion': 10, '+maxHealth': 60}, icon: 'gloves'});
 
 //Greaves gives armor and health
-//addItem(1, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Corroded Skirt', 'bonuses': {'+armor': 3, '+maxHealth': 10}, icon: 'bag'});
-addItem(6, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Bamboo Skirt', 'bonuses': {'+armor': 12, '+maxHealth': 65}, icon: 'bag'});
-addItem(11, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Copper Skirt', 'bonuses': {'+armor': 21, '+maxHealth': 100}, icon: 'bag'});
-addItem(16, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Bronze Greaves', 'bonuses': {'+armor': 30, '+maxHealth': 145}, icon: 'bag'});
-addItem(21, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Iron Greaves', 'bonuses': {'+armor': 39, '+maxHealth': 190}, icon: 'bag'});
-addItem(26, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Black Greaves', 'bonuses': {'+armor': 48, '+maxHealth': 235}, icon: 'bag'});
-addItem(31, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Forged Greaves', 'bonuses': {'+armor': 57, '+maxHealth': 280}, icon: 'bag'});
-addItem(36, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Steel Greaves', 'bonuses': {'+armor': 66, '+maxHealth': 325}, icon: 'bag'});
-addItem(41, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Stainless Greaves', 'bonuses': {'+armor': 75, '+maxHealth': 370}, icon: 'bag'});
-addItem(46, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Engraved Greaves', 'bonuses': {'+armor': 84, '+maxHealth': 415}, icon: 'bag'});
-addItem(51, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Meteoric Greaves', 'bonuses': {'+armor': 93, '+maxHealth': 460}, icon: 'bag'});
-addItem(61, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Adamantium Greaves', 'bonuses': {'+armor': 110, '+maxHealth': 550, '+evasion': 20, '+block': 20, '+magicBlock': 10, '%speed': -0.1}, icon: 'bag'});
-addItem(71, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Orichalcum Greaves', 'bonuses': {'+armor': 100, '+maxHealth': 550, '+evasion': 20, '+block': 20, '+magicBlock': 20}, icon: 'bag'});
+//addItem(1, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Corroded Skirt', 'bonuses': {'+armor': 3, '+maxHealth': 10}, icon: 'greaves'});
+addItem(6, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Bamboo Skirt', 'bonuses': {'+armor': 12, '+maxHealth': 65}, icon: 'greaves'});
+addItem(11, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Copper Skirt', 'bonuses': {'+armor': 21, '+maxHealth': 100}, icon: 'greaves'});
+addItem(16, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Bronze Greaves', 'bonuses': {'+armor': 30, '+maxHealth': 145}, icon: 'greaves'});
+addItem(21, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Iron Greaves', 'bonuses': {'+armor': 39, '+maxHealth': 190}, icon: 'greaves'});
+addItem(26, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Black Greaves', 'bonuses': {'+armor': 48, '+maxHealth': 235}, icon: 'greaves'});
+addItem(31, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Forged Greaves', 'bonuses': {'+armor': 57, '+maxHealth': 280}, icon: 'greaves'});
+addItem(36, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Steel Greaves', 'bonuses': {'+armor': 66, '+maxHealth': 325}, icon: 'greaves'});
+addItem(41, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Stainless Greaves', 'bonuses': {'+armor': 75, '+maxHealth': 370}, icon: 'greaves'});
+addItem(46, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Engraved Greaves', 'bonuses': {'+armor': 84, '+maxHealth': 415}, icon: 'greaves'});
+addItem(51, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Meteoric Greaves', 'bonuses': {'+armor': 93, '+maxHealth': 460}, icon: 'greaves'});
+addItem(61, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Adamantium Greaves', 'bonuses': {'+armor': 110, '+maxHealth': 550, '+evasion': 20, '+block': 20, '+magicBlock': 10, '%speed': -0.1}, icon: 'greaves'});
+addItem(71, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Orichalcum Greaves', 'bonuses': {'+armor': 100, '+maxHealth': 550, '+evasion': 20, '+block': 20, '+magicBlock': 20}, icon: 'greaves'});
 
 //Pants gives evasion and armor
 //addItem(1, {'slot': 'legs', 'type': 'lightArmor', 'name': 'Worn Kilt', 'bonuses': {'+armor': 2, '+evasion': 3}, icon: 'pants'});

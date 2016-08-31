@@ -975,7 +975,7 @@ select {
     margin-top: 4px;
     background-position: 0px -192px;
 }
-.icon.sabatons {
+.icon.greaves {
     background-image: url('gfx/game-icons.png');
     background-size: 320px 288px;
     width: 32px;
@@ -1019,6 +1019,15 @@ select {
     margin-left: 4px;
     margin-top: 4px;
     background-position: 0px -256px;
+}
+.icon.sabatons {
+    background-image: url('gfx/game-icons.png');
+    background-size: 320px 288px;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    margin-top: 4px;
+    background-position: -32px -256px;
 }
 .icon.shoes {
     background-image: url('gfx/game-icons.png');
