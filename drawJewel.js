@@ -1,5 +1,5 @@
-function drawJewel(context, shape, lightSource, borderColor) {
-    var abmientLightLevel = .3;
+function drawJewel(context, shape, lightSource, borderColor, ambientLightLevel) {
+    abmientLightLevel = ifdefor(ambientLightLevel, .3);
     var points = shape.points;
     context.beginPath();
     context.moveTo(points[0][0], points[0][1]);
@@ -46,9 +46,10 @@ function drawJewel(context, shape, lightSource, borderColor) {
             context.fillStyle = 'black';
             intensity = -intensity;
         }
-        context.globalAlpha = intensity;
+        context.save();
+        context.globalAlpha *= intensity;
         context.fill();
-        context.globalAlpha = 1;
+        context.restore();
         pointA = pointB;
         pointB = averagePoint([points[i], points[i], points[i], nextPoint, nextPoint, nextPoint, nextPoint, nextNextPoint]);
         lightVector = normalize(vector(lightSource, averagePoint([pointA, pointB])));
@@ -73,9 +74,10 @@ function drawJewel(context, shape, lightSource, borderColor) {
             context.fillStyle = 'black';
             intensity = -intensity;
         }
-        context.globalAlpha = intensity;
+        context.save();
+        context.globalAlpha *= intensity;
         context.fill();
-        context.globalAlpha = 1;
+        context.restore();
 
     }
     context.beginPath();
@@ -86,7 +88,8 @@ function drawJewel(context, shape, lightSource, borderColor) {
     context.closePath();
     context.fillStyle = 'white';
     var distance = magnitude(vector(lightSource, averagePoint(points)));
-    context.globalAlpha = Math.min(.6, Math.max(.3, 1 - (distance * distance - 20) / 1000));
+    context.save();
+    context.globalAlpha *= Math.min(.6, Math.max(.3, 1 - (distance * distance - 20) / 1000));
     context.fill();
-    context.globalAlpha = 1;
+    context.restore();
 }

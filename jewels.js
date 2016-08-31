@@ -237,10 +237,15 @@ function makeFixedJewel(shape, character, ability) {
         'shape': shape,
         'jewelType': 0,
         'fixed': true,
+        'disabled': false,
         'character': character,
         'ability': ability,
         'helpMethod': function () {
-            return abilityHelpText(ability, character);
+            var coreHelpText = abilityHelpText(ability, character);
+            if (this.disabled) {
+                return 'Disabled <br> Double click to enable <br><br> ' + coreHelpText;
+            }
+            return coreHelpText + '<br><br>Double click to disable this ability.';
         },
         'adjacentJewels': [],
         'adjacencyBonuses': {}

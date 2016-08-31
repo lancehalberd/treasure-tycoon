@@ -61,6 +61,22 @@ var overVertex = null;
 var overJewel = null;
 var draggedJewel = null;
 var draggingBoardJewel = null;
+$('body').on('dblclick', function (event) {
+    if (overJewel && overJewel.fixed) {
+        overJewel.disabled = !overJewel.disabled;
+        var ability = overJewel.ability;
+        if (!ability) return;
+        if (overJewel.disabled) {
+            var abilityIndex = state.selectedCharacter.adventurer.abilities.indexOf(ability);
+            state.selectedCharacter.adventurer.abilities.splice(abilityIndex, 1);
+        } else {
+            state.selectedCharacter.adventurer.abilities.push(ability);
+        }
+        updateAdventurer(state.selectedCharacter.adventurer);
+        removeToolTip();
+        saveGame();
+    }
+});
 $('body').on('mousedown', function (event) {
     if (draggedJewel || draggingBoardJewel) {
         stopJewelDrag();

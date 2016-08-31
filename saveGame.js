@@ -278,7 +278,8 @@ function exportJewelBoard(board) {
         var fixedData = {
             'abilityKey': fixedJewel.ability.key,
             'shape': exportShape(fixedJewel.shape),
-            'confirmed': fixedJewel.confirmed
+            'confirmed': fixedJewel.confirmed,
+            'disabled': ifdefor(fixedJewel.disabled, false)
         }
         data.fixed.push(fixedData);
     });
@@ -301,7 +302,8 @@ function importJewelBoard(jewelBoardData, character) {
         var shape = importShape(fixedJewelData.shape);
         var fixedJewel = makeFixedJewel(shape, character, ability);
         fixedJewel.confirmed = fixedJewelData.confirmed;
-        if (fixedJewel.confirmed) {
+        fixedJewel.disabled = ifdefor(fixedJewelData.disabled, false);
+        if (fixedJewel.confirmed && !fixedJewel.disabled) {
             character.adventurer.abilities.push(ability);
         }
         jewelBoard.fixed.push(fixedJewel);

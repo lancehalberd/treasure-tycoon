@@ -60,7 +60,16 @@ function drawBoardJewelsProper(context, lightSource, board) {
     var fixedJewels = board.fixed;
     for (var i = 0; i < fixedJewels.length; i++) {
         var jewel = fixedJewels[i];
-        drawJewel(context, jewel.shape, lightSource);
+        if (ifdefor(jewel.disabled)) {
+            context.save();
+            context.globalAlpha = .3;
+            jewel.shape.color = '#fff';
+            drawJewel(context, jewel.shape, lightSource);
+            context.restore();
+        } else {
+            jewel.shape.color = '#333';
+            drawJewel(context, jewel.shape, lightSource);
+        }
     }
     if (board.boardPreview) {
         fixedJewels = board.boardPreview.fixed;
