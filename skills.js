@@ -92,8 +92,8 @@ var abilities = {
     //'meleeParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
 
     'movementCDR': {'name': 'Movement Cooldown Reduction', 'bonuses': {'%movement:cooldown': -.1, '%movement:range': .1}},
-    'movementDamage': {'name': '', 'bonuses': {'%movement:damage': .3, '%movement:critDamage': .3}},
-    'movementPrecision': {'name': '', 'bonuses': {'%movement:accuracy': .3, '%movement:critChance': .3}},
+    'movementDamage': {'name': 'Movement Damage', 'bonuses': {'%movement:damage': .3, '%movement:critDamage': .3}},
+    'movementPrecision': {'name': 'Movement Precision', 'bonuses': {'%movement:accuracy': .3, '%movement:critChance': .3}},
     //'movementParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
 
     'minionToughness': {'name': 'Ally Toughness', 'bonuses': {'%minion:maxHealth': .5, '%minion:armor': .3}},
@@ -110,7 +110,7 @@ var abilities = {
     'daggerCritChance': {'name': 'Dagger Critical Chance', 'bonuses': {'%dagger:critChance': .3, '%dagger:damage': .2}},
     'daggerDamage': {'name': 'Dagger Damage', 'bonuses': {'%dagger:damage': .2, '%dagger:attackSpeed': .2}},
     //'daggerParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
-   // 'jugglerIndex': {'name': '---Juggler---'},
+    'jugglerIndex': {'name': '---Juggler---'},
     // Tier 1 classes
     // Juggler
     // how to make chaining apply to basic attack but not double up *throwing:attackSpeed, etc.
@@ -379,12 +379,12 @@ var abilities = {
     'explode': {'name': 'Decoy Burst', 'reaction':
              {'type': 'explode', 'tags': ['ranged'], 'stats': {'power': '{maxHealth}', '$alwaysHits': 'Shrapnel cannot be evaded'}, 'helpText': 'Explode into shrapnel on death.'}},
     // Monster abilities
-    'summoner': {'bonuses': {'*minion:limit': 2, '*minion:cooldown': .5, '*minion:healthBonus': 2, '*minion:damageBonus': 2}},
+    'summoner': {'name': 'Summoner', 'bonuses': {'*minion:limit': 2, '*minion:cooldown': .5, '*minion:healthBonus': 2, '*minion:damageBonus': 2}},
     'summonSkeleton': {'name': 'Summon Skeleton', 'bonuses': {'+intelligence': 5}, 'action':
             {'type': 'minion', 'target': 'none', 'monsterKey': 'skeleton', 'tags': ['spell'], 'stats': {'limit': 2, 'cooldown': 15, 'healthBonus': .5, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1}}},
     'summonCaterpillar': {'name': 'Spawn', 'action':
             {'type': 'minion', 'target': 'none', 'tags': ['pet'], 'monsterKey': 'caterpillar', 'stats': {'limit': 3, 'cooldown': 20, 'healthBonus': 1, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1}}},
-    'rangeAndAttackSpeed': {'bonuses': {'+range': 2, '+attackSpeed': .5}}
+    'rangeAndAttackSpeed': {'name': 'Range And Attack Speed', 'bonuses': {'+range': 2, '+attackSpeed': .5}}
 };
 var testJob;// = 'blackbelt';
 var testAbilities = [];

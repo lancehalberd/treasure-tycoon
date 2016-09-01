@@ -132,10 +132,16 @@ function bonusHelpText(rawBonuses, implicit, actor, localObject) {
         sections.push('Deals ' + bonuses['+damageOnMiss'] + ' true damage to enemy on miss');
     }
     if (ifdefor(bonuses['%damage'])) {
-        sections.push(bonuses['%damage'].percent(1) + ' increased physical damage');
+        sections.push(bonuses['%damage'].percent(1) + ' increased damage');
     }
     if (ifdefor(bonuses['*damage'], 1) !== 1) {
-        sections.push(bonuses['*damage'].format(1) + 'x physical damage');
+        sections.push(bonuses['*damage'].format(1) + 'x damage');
+    }
+    if (ifdefor(bonuses['%physicalDamage'])) {
+        sections.push(bonuses['%physicalDamage'].percent(1) + ' increased physical damage');
+    }
+    if (ifdefor(bonuses['*physicalDamage'], 1) !== 1) {
+        sections.push(bonuses['*physicalDamage'].format(1) + 'x physical damage');
     }
     if (ifdefor(bonuses['%magicDamage'])) {
         sections.push(bonuses['%magicDamage'].percent(1) + ' increased magic damage');

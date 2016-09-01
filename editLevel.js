@@ -49,6 +49,11 @@ function initializeLevelEditing() {
             editingLevel.board = $('.js-levelBoardSelect').val();
         }
     });
+    $('.js-levelSkillSelect').attr('helpText', '-').data('helpMethod', function ($element) {
+        var value = $element.val();
+        if (!value) return 'No skill selected';
+        return abilityHelpText(abilities[value], state.selectedCharacter);
+    });
     $('.js-levelBoardSelect').on('change', function () {
         editingLevel.board = $(this).val();
     });
