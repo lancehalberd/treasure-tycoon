@@ -115,7 +115,7 @@ var abilities = {
     // Juggler
     // how to make chaining apply to basic attack but not double up *throwing:attackSpeed, etc.
     'juggler': {'name': 'Juggling', 'bonuses': {'$throwing:chaining': 'Projectiles ricochet between targets until they miss.'}},
-    'minorDexterity': {'name': 'Minor Dexterity', 'bonuses': {'+dexterity': 5}},
+    'minorDexterity': {'name': 'Minor Dexterity', 'bonuses': {'+dexterity': 10}},
     'evasion': {'name': 'Evasion', 'bonuses': {'%evasion': .5}},
     'sap': {'name': 'Sap', 'bonuses': {'+slowOnHit': .1, '+healthGainOnHit': 1}},
     'dodge': {'name': 'Dodge', 'bonuses': {'+evasion': 2}, 'reaction':
@@ -127,7 +127,7 @@ var abilities = {
     'blackbelt': {'name': 'Martial Arts', 'bonuses': {'*unarmed:damage': 3, '*unarmed:attackSpeed': 1.5,
                                                         '+unarmed:critChance': .15, '*unarmed:critDamage': 2, '*unarmed:critAccuracy': 2}},
     'fistMastery': {'name': 'Fist Mastery', 'bonuses': {'*fist:damage': 1.5}},
-    'minorStrength': {'name': 'Minor Strength', 'bonuses': {'+strength': 5}},
+    'minorStrength': {'name': 'Minor Strength', 'bonuses': {'+strength': 10}},
     'vitality': {'name': 'Vitality', 'bonuses': {'+healthRegen': ['{strength}', '/', 10], '+strength': 5}},
     'counterAttack': {'name': 'Counter Attack', 'bonuses': {'+strength': 5}, 'reaction':
             {'type': 'counterAttack', 'stats': {'attackPower': 1.5, 'chance': .1}, 'helpText': 'Perform a powerful counter attack.<br/>The chance to counter is lower the further away the attacker is.'}},
@@ -137,7 +137,7 @@ var abilities = {
         {'type': 'attack', 'restrictions': ['fist'], 'stats': {'cooldown': 30, '$alwaysHits': 'Never misses', '$undodgeable': 'Cannot be dodged', 'attackPower': 3, 'distance': 256, '$domino': 'Knocks target away possibly damaging other enemies.'}}},
     // Priest
     'priest': {'name': 'Divine Blessing', 'bonuses': {'*heal:power': 2, '*healthRegen': 2, '*healthGainOnHit': 2}},
-    'minorIntelligence': {'name': 'Minor Intelligence', 'bonuses': {'+intelligence': 5}},
+    'minorIntelligence': {'name': 'Minor Intelligence', 'bonuses': {'+intelligence': 10}},
     'heal': {'name': 'Heal', 'bonuses': {'+intelligence': 5}, 'action':
             {'type': 'heal', 'target': 'allies', 'tags': ['spell'], 'stats': {'power': ['{intelligence}'], 'cooldown': 10}, 'helpText': 'Cast a spell to restore {power} health.'}},
     'reflect': {'name': 'Reflect', 'bonuses': {'+intelligence': 10}, 'action':
@@ -283,7 +283,7 @@ var abilities = {
     // Tier 5 classes
     // Sniper
     'sniper': {'name': 'Sharp Shooter', 'bonuses': {'*bow:critChance': 1.5, '*bow:critDamage': 1.5, '$bow:criticalPiercing': 'Critical strikes hit multiple enemies.'}},
-    'majorDexterity': {'name': 'Major Dexterity', 'bonuses': {'+dexterity': 20}},
+    'majorDexterity': {'name': 'Major Dexterity', 'bonuses': {'+dexterity': 30}},
     'powerShot': {'name': 'Power Shot', 'bonuses': {'+dexterity': 5},
         'action': {'type': 'attack', 'restrictions': ['ranged'], 'bonuses': {'+range': 5, '+critChance': 1},
                     'stats': {'attackPower': 1.5, 'cooldown': 10, '$alwaysHits': 'Never misses'},
@@ -297,7 +297,7 @@ var abilities = {
 
     // Samurai
     'samurai': {'name': 'Great Warrior', 'bonuses': {'*twoHanded:damage': 2}},
-    'majorStrength': {'name': 'Major Strength', 'bonuses': {'+strength': 20}},
+    'majorStrength': {'name': 'Major Strength', 'bonuses': {'+strength': 30}},
     'sideStep': {'name': 'Side Step', 'bonuses': {'+evasion': 2}, 'reaction':
              {'type': 'dodge', 'rangedOnly': true, 'stats': {'cooldown': 10, 'moveDuration': .05, 'distance': 64, 'buff': {'stats': {'+critChance': .2, 'duration': 2, 'area': 0}}},
         'helpText': 'Side step a ranged attack and advance toward enemis gaining: {buff}'}},
@@ -307,7 +307,7 @@ var abilities = {
         'helpText': 'Strike with unparalleled ferocity.'}},
     'armorPenetration': {'name': 'Penetrating Strikes', 'bonuses': {'+strength': 15, '+melee:armorPenetration': .3}},
     // Sorcerer
-    'majorIntelligence': {'name': 'Major Intelligence', 'bonuses': {'+intelligence': 20}},
+    'majorIntelligence': {'name': 'Major Intelligence', 'bonuses': {'+intelligence': 30}},
     'raiseDead': {'name': 'Raise Dead', 'bonuses': {'+intelligence': 5}, 'action':
             {'type': 'minion', 'target': 'enemies', 'targetDeadUnits': true, 'consumeCorpse': true, 'tags': ['spell'], 'stats': {'limit': 10, 'chance': .4, 'cooldown': .5, 'healthBonus': 1, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1},
             'helpText': 'Sometimes raise defeated enemies to fight for you.'}},
