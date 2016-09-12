@@ -121,7 +121,7 @@ var abilities = {
     'dodge': {'name': 'Dodge', 'bonuses': {'+evasion': 2}, 'reaction':
              {'type': 'dodge', 'stats': {'cooldown': 10, 'distance': -128, 'buff': {'stats': {'%evasion': .5, 'duration': 5, 'area': 0}}}, 'helpText': 'Leap back to dodge an attack and gain: {buff}'}},
     'acrobatics': {'name': 'Acrobatics', 'bonuses': {'+evasion': 2, '+dodge:cooldown': -2, '*dodge:distance': 2}},
-    'bullseye': {'name': 'Bullseye', 'action': {'type': 'attack', 'stats': {'attackPower': 2, 'cooldown': 15, '$alwaysHits': 'Never misses', '$undodgeable': 'Cannot be dodged'}}},
+    'bullseye': {'name': 'Bullseye', 'action': {'type': 'attack', 'stats': {'attackPower': 2, 'cooldown': 15, 'alwaysHits': 'Never misses', 'undodgeable': 'Cannot be dodged'}}},
     'bullseyeCritical': {'name': 'Dead On', 'bonuses': {'+bullseye:critChance': 1}, 'helpText': 'Bullseye always strikes critically.'},
     // Black Belt
     'blackbelt': {'name': 'Martial Arts', 'bonuses': {'*unarmed:damage': 3, '*unarmed:attackSpeed': 1.5,
@@ -134,7 +134,7 @@ var abilities = {
     'counterPower': {'name': 'Improved Counter', 'bonuses': {'+strength': 5, '+counterAttack:attackPower': .5, '*counterAttack:accuracy': 1.5}},
     'counterChance': {'name': 'Heightened Reflexes', 'bonuses': {'+dexterity': 5, '+counterAttack:chance': .1}},
     'dragonPunch': {'name': 'Dragon Punch', 'action':
-        {'type': 'attack', 'restrictions': ['fist'], 'stats': {'cooldown': 30, '$alwaysHits': 'Never misses', '$undodgeable': 'Cannot be dodged', 'attackPower': 3, 'distance': 256, '$domino': 'Knocks target away possibly damaging other enemies.'}}},
+        {'type': 'attack', 'restrictions': ['fist'], 'stats': {'cooldown': 30, 'alwaysHits': 'Never misses', 'undodgeable': 'Cannot be dodged', 'attackPower': 3, 'distance': 256, 'domino': 'Knocks target away possibly damaging other enemies.'}}},
     // Priest
     'priest': {'name': 'Divine Blessing', 'bonuses': {'*heal:power': 2, '*healthRegen': 2, '*healthGainOnHit': 2}},
     'minorIntelligence': {'name': 'Minor Intelligence', 'bonuses': {'+intelligence': 10}},
@@ -147,7 +147,7 @@ var abilities = {
             {'type': 'revive', 'tags': ['spell'], 'stats': {'power': ['{intelligence}'], 'cooldown': 120},
             'helpText': 'Upon receiving a lethal blow, cast a spell that brings you back to life with {power} health.'}},
     'reviveInstantCooldown': {'name': 'Miracle', 'bonuses': {'$revive:instantCooldown': 'Reset cooldowns of other abilities'}},
-    'reviveInvulnerability': {'name': 'Halo', 'bonuses': {'$revive:buff': {'tags': ['buff'], 'stats': {'duration': 2, 'area': 0, '$invulnerable': 'Invulnerability'}}}},
+    'reviveInvulnerability': {'name': 'Halo', 'bonuses': {'$revive:buff': {'tags': ['buff'], 'stats': {'duration': 2, 'area': 0, 'invulnerable': 'Invulnerability'}}}},
     // Tier 2 classes
     // Corsair
     'corsair': {'name': 'Venom', 'bonuses': {'+poison': .2}, 'onHitEffect': {'debuff': {'tags': ['debuff'], 'stats': {'*damage': .9, 'area': 0}}},
@@ -155,7 +155,7 @@ var abilities = {
     'corsairKeyStone': {'name': 'Corsair Key Stone', 'bonuses': {}},
     'critChance': {'name': 'Critical Chance', 'bonuses': {'%critChance': .5}},
     'hook': {'name': 'Grappling Hook', 'action': {'type': 'attack',
-                    'stats': {'cooldown': 10, 'range': 10, 'dragDamage': 0, 'dragStun': 0, 'rangeDamage': 0, '$alwaysHits': 'Never misses', '$pullsTarget': 'Pulls target'},
+                    'stats': {'cooldown': 10, 'range': 10, 'dragDamage': 0, 'dragStun': 0, 'rangeDamage': 0, 'alwaysHits': 'Never misses', '$pullsTarget': 'Pulls target'},
                     'helpText': 'Throw a hook to damage and pull enemies closer.'}},
     'hookRange': {'name': 'Long Shot', 'bonuses': {'+hook:range': 5, '+hook:cooldown': -3}},
     'hookDrag': {'name': 'Barbed Wire', 'bonuses': {'+hook:dragDamage': .1}},
@@ -174,18 +174,18 @@ var abilities = {
             {'tags': ['buff'], 'stats': {'+armor': ['{intelligence}'], 'duration': 20, 'area': 0}}}, 'helpText': 'Create a magic barrier that grants: {buff}'}},
     'banishingStrike': {'name': 'Banishing Strike', 'bonuses': {'+intelligence': 5, '+strength': 5}, 'action':
             {'type': 'banish', 'restrictions': ['melee'], 'stats': {'cooldown': 30, 'attackPower': 2, 'distance': [6, '+', ['{strength}' , '/', 20]],
-            '$alwaysHits': 'Never misses', 'purify': 0, 'shockwave': 0,
+            'alwaysHits': 'Never misses', 'purify': 0, 'shockwave': 0,
             'debuff': {'tags': ['debuff'], 'stats': {'*damage': .5, '*magicDamage': .5, 'duration': ['{intelligence}', '/', 20], 'area': 0}},
             'otherDebuff': {'tags': ['debuff'], 'stats': {'*speed': .1, 'duration': ['{intelligence}', '/', 20]}}}, 'helpText': 'Perform a mighty strike that inflicts the enemy with: {debuff} And knocks all other enemies away, slowing them.'}},
     'purify': {'name': 'Purify', 'bonuses': {'+intelligence': 10, '+banishingStrike:purify': 4}, 'helpText': 'Remove all enchantments from enemies hit by banishing strike'},
     'shockwave': {'name': 'Shockwave', 'bonuses': {'+strength': 10, '+banishingStrike:shockwave': 1}, 'helpText': 'Banishing strike also damages knocked back enemies'},
     'aegis': {'name': 'Aegis', 'bonuses': {'+magicBlock': 5, '+block': 10}, 'reaction':
             {'type': 'criticalCounter', 'tags': ['spell'], 'stats': {'cooldown': 60, 'stopAttack': 1,
-            'buff': {'tags': ['buff'], 'stats': {'$maxBlock': 'Block checks are always perfect', '$maxMagicBlock': 'Magic Block checks are always perfect', 'duration': 5, 'area': 0}}},
+            'buff': {'tags': ['buff'], 'stats': {'maxBlock': 'Block checks are always perfect', 'maxMagicBlock': 'Magic Block checks are always perfect', 'duration': 5, 'area': 0}}},
             'helpText': 'If an attack would deal more than half of your remaining life, prevent it and cast an enchantment that grants you: {buff}'}},
     // Dancer
     'dancer': {'name': 'Dancing', 'bonuses': {'+evasion': 3}, 'reaction':
-            {'type': 'evadeAndCounter', 'stats': {'$alwaysHits': 'Never misses', 'range': 1}, 'helpText': 'Counter whenever you successfully evade an attack.'}},
+            {'type': 'evadeAndCounter', 'stats': {'alwaysHits': 'Never misses', 'range': 1}, 'helpText': 'Counter whenever you successfully evade an attack.'}},
     'distract': {'name': 'Distract', 'bonuses': {'+evasion': 3}, 'reaction':
             {'type': 'dodge', 'stats': {'globalDebuff': {'tags': ['debuff'], 'stats': {'*accuracy': .5, 'duration': 2, 'area': 0}}, 'cooldown': 10}, 'helpText': 'Dodge an attack with a distracting flourish that inflicts: {globalDebuff} on all enemies.'}},
     'charm': {'name': 'Charm', 'bonuses': {'+dexterity': 5, '+intelligence': 5}, 'action':
@@ -215,28 +215,28 @@ var abilities = {
     'warrior': {'name': 'Cleave', 'bonuses': {'%melee:damage': .5, '+melee:cleave': .6, '+melee:cleaveRange': 3}},
     'ferocity': {'name': 'Ferocity', 'bonuses': {'%damage': .2}},
     'charge': {'name': 'Charge', 'bonuses': {'+strength': 5}, 'action':
-        {'type': 'charge', 'stats': {'range': 15, 'attackPower': 2, 'cooldown': 30, 'speedBonus': 3, 'stun': .5, 'area': 0, 'rangeDamage': 0, '$alwaysHits': 'Never misses'}, 'helpText': 'Charge at enemies, damaging and stunning them on impact.'}},
+        {'type': 'charge', 'stats': {'range': 15, 'attackPower': 2, 'cooldown': 30, 'speedBonus': 3, 'stun': .5, 'area': 0, 'rangeDamage': 0, 'alwaysHits': 'Never misses'}, 'helpText': 'Charge at enemies, damaging and stunning them on impact.'}},
     'batteringRam': {'name': 'Battering Ram', 'bonuses': {'+charge:rangeDamage': .1}, 'helpText': 'Charge deals more damage from further away.'},
     'impactRadius': {'name': 'Impact Radius', 'bonuses': {'+charge:area': 6}, 'helpText': 'Charge damage and stun applies to nearby enemies.'},
     'overpower': {'name': 'Overpower', 'bonuses': {'+strength': 10, '+melee:knockbackChance': .3, '+melee:knockbackDistance': 3}},
     'armorBreak': {'name': 'Armor Break', 'bonuses': {'+strength': 15}, 'action':
-        {'type': 'attack', 'restrictions': ['melee'], 'stats': {'attackPower': 3, 'cooldown': 30, 'stun': .5, '$alwaysHits': 'Never misses',
+        {'type': 'attack', 'restrictions': ['melee'], 'stats': {'attackPower': 3, 'cooldown': 30, 'stun': .5, 'alwaysHits': 'Never misses',
         'debuff': {'tags': ['debuff'], 'stats': {'-armor': ['{strength}', '/', 2], '-block': ['{strength}', '/', 2], 'area': 0, 'duration': 0 /* 0=forever. help text won't display as buff if duration is unset.*/}}}, 'helpText': 'Deliver a might blow that destroys the targets armor causing: {debuff}'}},
     // Wizard
     'wizard': {'name': 'Arcane Prodigy', 'bonuses': {'*spell:area': 2, '*spell:power': 2}},
     'resonance': {'name': 'Resonance', 'bonuses': {'%magicDamage': .2}},
     'fireball': {'name': 'Fireball', 'bonuses': {'+intelligence': 5}, 'action':
-        {'type': 'spell', 'tags': ['spell', 'ranged'], 'animation': 'fireball', 'size': 32, 'color': 'red', 'stats': {'power': ['{intelligence}'], 'range': 12, 'cooldown': 8, '$alwaysHits': 'Never misses', 'explode': 1, 'area': 3, 'areaCoefficient': .5},
+        {'type': 'spell', 'tags': ['spell', 'ranged'], 'animation': 'fireball', 'size': 32, 'color': 'red', 'stats': {'power': ['{intelligence}'], 'range': 12, 'cooldown': 8, 'alwaysHits': 'Never misses', 'explode': 1, 'area': 3, 'areaCoefficient': .5},
         'helpText': 'Conjure an explosive fireball to hurl at enemies dealing {power} damage.'}},
     'chainReaction': {'name': 'Chain Reaction', 'bonuses': {'+fireball:explode': 1}, 'helpText': 'Fireball explosions will chain an extra time.'},
     'freeze': {'name': 'Freeze', 'bonuses': {'+intelligence': 10}, 'action':
         {'type': 'spell', 'tags': ['spell', 'nova'], 'height': 20, 'color': 'white', 'alpha': .7, 'stats': {'power': ['{intelligence}', '/', 2], 'area': [4, '+', ['{intelligence}', '/', '50']], 'areaCoefficient': 1, 'cooldown': 10,
-        '$alwaysHits': 'Never misses', 'slowOnHit': 1},
+        'alwaysHits': 'Never misses', 'slowOnHit': 1},
         'helpText': 'Emit a blast of icy air that deals {power} damage and slows enemies. The effect is less the further away the enemy is.'}},
     'absoluteZero': {'name': 'Absolute Zero', 'bonuses': {'*freeze:slowOnHit': 2}},
     'storm': {'name': 'Storm', 'bonuses': {'+intelligence': 15}, 'action':
         {'type': 'spell', 'tags': ['spell', 'field'], 'height': 40, 'color': 'yellow', 'alpha': .2, 'stats': {'hitsPerSecond': 2, 'duration': 5, 'power': ['{intelligence}', '/', 4], 'area': [5, '+', ['{intelligence}', '/', '50']], 'cooldown': 20,
-        '$alwaysHits': 'Never misses'},
+        'alwaysHits': 'Never misses'},
         'helpText': 'Create a cloud of static electricity that randomly deals magic damage to nearby enemies.'}},
     'stormFrequency': {'name': 'Lightning Rod', 'bonuses': {'*storm:hitsPerSecond': 2}},
     'stormDuration': {'name': 'Storm Mastery', 'bonuses': {'*storm:duration': 2}},
@@ -244,7 +244,7 @@ var abilities = {
     // Assassin
     'assassin': {'name': 'First Strike', 'bonuses': {'$firstStrike': '100% critical strike chance against enemies with full health.'}},
     'blinkStrike': {'name': 'Blink Strike', 'bonuses': {'+dexterity': 5}, 'action':
-        {'type': 'attack', 'restrictions': ['melee'], 'stats': {'attackPower': 1.5, 'cooldown': 6, '$alwaysHits': 'Never misses', 'teleport': 6}}, 'helpText': 'Instantly teleport to and attack a nearby enemy.'},
+        {'type': 'attack', 'restrictions': ['melee'], 'stats': {'attackPower': 1.5, 'cooldown': 6, 'alwaysHits': 'Never misses', 'teleport': 6}}, 'helpText': 'Instantly teleport to and attack a nearby enemy.'},
     'cull': {'name': 'Cull', 'bonuses': {'+strength': 10, '+cull': .1}},
     'cripple': {'name': 'Cripple', 'bonuses': {'+strength': 10, '+dexterity': 10}, 'onCritEffect': {'debuff': {'tags': ['debuff'], 'stats': {'*speed': .5, '*attackSpeed': .5, 'duration': 5, 'area': 0}}}},
     // Dark Knight
@@ -253,7 +253,7 @@ var abilities = {
         {'type': 'consume', 'target': 'enemies', 'targetDeadUnits': true, 'consumeCorpse': true, 'stats': {'consumeRatio': .2, 'range': 5},
         'helpText': 'Consume the spirits of nearby defeated enemies to regenerate your health.'}},
     'soulStrike': {'name': 'Soul Strike', 'bonuses': {'+strength': 10}, 'action':
-        {'type': 'attack', 'restrictions': ['melee'], 'bonuses': {'+range': 2}, 'stats': {'attackPower': 2, 'cooldown': 15, '$alwaysHits': 'Never misses', 'healthSacrifice': .2, 'cleave': 1}},
+        {'type': 'attack', 'restrictions': ['melee'], 'bonuses': {'+range': 2}, 'stats': {'attackPower': 2, 'cooldown': 15, 'alwaysHits': 'Never misses', 'healthSacrifice': .2, 'cleave': 1}},
         'helpText': 'Sacrifice a portion of your current health to deal a cleaving attack that hits all enemies in an extended range.'},
     'reaper': {'name': 'Reaper', 'bonuses': {'+intelligence': 10, '+strength': 5, '+consume:count': 1, '+consume:duration': 10},
         'helpText': 'Gain the powers of consumed monsters for a short period.'},
@@ -272,7 +272,7 @@ var abilities = {
     'heroSong': {'name': 'Hero\'s Ballade', 'bonuses': {'+intelligence': 10, '+dexterity': 10}, 'action':
         // The stats on this buff should be based on the caster, not the target.
         {'type': 'heroSong', 'tags': ['song', 'field'], 'target': 'allies', 'color': 'gold', 'alpha': .2, 'stats': {'area': 8, 'cooldown':  ['300', '*', [100, '/', [100, '+', '{intelligence}']]], 'duration': [2, '+', ['{dexterity}' , '/', '200']],
-        'buff': {'tags': ['buff'], 'stats': {'$invulnerable': 'Invulnerability', '+healthRegen': ['{intelligence}', '/', 10], '%critChance': ['{dexterity}', '/', 500]}}
+        'buff': {'tags': ['buff'], 'stats': {'invulnerable': 'Invulnerability', '+healthRegen': ['{intelligence}', '/', 10], '%critChance': ['{dexterity}', '/', 500]}}
         }, 'helpText': 'Play a ballade to inspire heroic feats granting all allies in range: {buff}'}},
     // Tier 5 classes
     // Sniper
@@ -280,13 +280,13 @@ var abilities = {
     'majorDexterity': {'name': 'Major Dexterity', 'bonuses': {'+dexterity': 30}},
     'powerShot': {'name': 'Power Shot', 'bonuses': {'+dexterity': 5},
         'action': {'type': 'attack', 'restrictions': ['ranged'], 'bonuses': {'+range': 5, '+critChance': 1},
-                    'stats': {'attackPower': 1.5, 'cooldown': 10, '$alwaysHits': 'Never misses'},
+                    'stats': {'attackPower': 1.5, 'cooldown': 10, 'alwaysHits': 'Never misses'},
                     'helpText': 'Perform a powerful long ranged attack that always strikes critically.'}},
     'aiming': {'name': 'Aiming', 'bonuses': {'*ranged:accuracy': 1.5, '+ranged:critChance': .1, '+ranged:critDamage': .3}},
     'snipe': {'name': 'Snipe', 'bonuses': {'+dexterity': 15},
         'action': {'type': 'attack', 'restrictions': ['ranged'], 'bonuses': {'+range': 10},
-                    'stats': {'attackPower': 2, 'cooldown': 30, '$ignoreArmor': 'Ignore armor and block',
-                    '$ignoreResistance': 'Ignore magic resistance and magic block', '$alwaysHits': 'Never misses'},
+                    'stats': {'attackPower': 2, 'cooldown': 30, 'ignoreArmor': 'Ignore armor and block',
+                    'ignoreResistance': 'Ignore magic resistance and magic block', 'alwaysHits': 'Never misses'},
                     'helpText': 'Precisely target an enemies weak spot from any distance ignoring all armor and resistances.'}},
 
     // Samurai
@@ -297,7 +297,7 @@ var abilities = {
         'helpText': 'Side step a ranged attack and advance toward enemis gaining: {buff}'}},
     'dragonSlayer': {'name': 'Dragon Slayer', 'bonuses': {'+strength': 10},
         'action': {'type': 'attack', 'restrictions': ['melee'], 'bonuses': {'+critDamage': .5, '*critChance': 2},
-                   'stats': {'attackPower': 3, 'cooldown': 20, '$alwaysHits': 'Never misses'},
+                   'stats': {'attackPower': 3, 'cooldown': 20, 'alwaysHits': 'Never misses'},
         'helpText': 'Strike with unparalleled ferocity.'}},
     'armorPenetration': {'name': 'Penetrating Strikes', 'bonuses': {'+strength': 15, '+melee:armorPenetration': .3}},
     // Sorcerer
@@ -308,11 +308,11 @@ var abilities = {
     'drainLife': {'name': 'Drain Life', 'bonuses': {'+intelligence': 10},
         'action': {'type': 'spell', 'tags': ['spell', 'blast'], 'height': 20, 'color': 'green', 'alpha': .5, 'bonuses': {'*power': .5},
                    'stats': {'range': 10, 'power': ['{intelligence}', '/', 2], 'area': [8, '+', ['{intelligence}', '/', '100']], 'areaCoefficient': 1, 'cooldown': 10, 'lifeSteal': 1,
-        '$alwaysHits': 'Never misses'},
+        'alwaysHits': 'Never misses'},
         'helpText': 'Drain life from all enemies in a large area.'}},
     'plague': {'name': 'Plague', 'bonuses': {'+intelligence': 15},
         'action': {'type': 'spell', 'tags': ['spell', 'blast'], 'height': 20, 'color': 'yellow', 'alpha': .4, 'bonuses': {'*power': .1},
-                   'stats': {'range': 10, 'power': ['{intelligence}'], 'area': [8, '+', ['{intelligence}', '/', '100']], 'areaCoefficient': 1, 'cooldown': 20, '$alwaysHits': 'Never misses',
+                   'stats': {'range': 10, 'power': ['{intelligence}'], 'area': [8, '+', ['{intelligence}', '/', '100']], 'areaCoefficient': 1, 'cooldown': 20, 'alwaysHits': 'Never misses',
                              'debuff': {'tags': ['debuff'], 'stats': {'+damageOverTime': ['{this.power}'], 'duration': 0 /* 0=forever. help text won't display as buff if duration is unset.*/}}},
         'helpText': 'Apply a permanent debuff that deals damage over time to effected enemies.'}},
     // Tier 6 classes
@@ -323,7 +323,7 @@ var abilities = {
             'helpText': 'If an attack would deal more than half of your remaining life, dodge it and throw a smoke bomb causing: {globalDebuff} to all enemies.'}},
     'throwWeapon': {'name': 'Throw Weapon', 'bonuses': {'+strength': 10},
         'action': {'type': 'attack', 'restrictions': ['melee'], 'tags': ['ranged'],
-                    'stats': {'range': 12, 'attackPower': 1.5, 'cooldown': 10, '$alwaysHits': 'Never misses'},
+                    'stats': {'range': 12, 'attackPower': 1.5, 'cooldown': 10, 'alwaysHits': 'Never misses'},
                     'helpText': 'Throw a copy of your weapon at a distant enemy.'}},
     'shadowClone': {'name': 'Shadow Clone', 'bonuses': {'+strength': 10, '+dexterity': 10},
         'reaction': {'type': 'clone',  'tags': ['minion'], 'stats': {'limit': 10, 'chance': .1, 'healthBonus': .1, 'damageBonus': .1, 'speedBonus': 1.2},
@@ -347,12 +347,12 @@ var abilities = {
             'helpText': 'If an attack would deal more than half of your remaining life, negate it and cast a spell that stops time for everyone else.'}},
     'dispell': {'name': 'Dispell', 'bonuses': {'+intelligence': 15},
         'action': {'type': 'spell', 'tags': ['spell', 'blast'], 'height': 20, 'color': 'grey', 'alpha': .4, 'bonuses': {'*power': 0},
-                   'stats': {'range': 10, 'power': 0, 'area': [8, '+', ['{intelligence}', '/', '100']], 'cooldown': 15, '$alwaysHits': 'Never misses',
+                   'stats': {'range': 10, 'power': 0, 'area': [8, '+', ['{intelligence}', '/', '100']], 'cooldown': 15, 'alwaysHits': 'Never misses',
                              'debuff': {'tags': ['debuff'], 'stats': {'*magicResist': .5, '*magicBlock': .5, 'duration': 0 /* 0=forever. help text won't display as buff if duration is unset.*/}}},
         'helpText': 'Premanently reduce the magic resistances of all enemies in a large area.'}},
     'meteor': {'name': 'Meteor', 'bonuses': {'+intelligence': 20},
         'action': {'type': 'spell', 'tags': ['spell', 'rain'], 'height': 20, 'color': 'grey', 'alpha': .4, 'size': 20,
-                   'stats': {'count': [1, '+', ['{intelligence}', '/', '100']], 'explode': 1, 'power': ['{intelligence}', '/', 2], 'area': [2, '+', ['{intelligence}', '/', '100']], 'cooldown': 15, '$alwaysHits': 'Never misses'},
+                   'stats': {'count': [1, '+', ['{intelligence}', '/', '100']], 'explode': 1, 'power': ['{intelligence}', '/', 2], 'area': [2, '+', ['{intelligence}', '/', '100']], 'cooldown': 15, 'alwaysHits': 'Never misses'},
         'helpText': 'Rain {count} meteors down on your enemies each dealing {power} damage.'}},
     'meteorShower': {'name': 'Meteor Shower', 'bonuses': {'+intelligence': 10, '+meteor:count': ['{intelligence}', '/', '50'], '-meteor:area': ['{intelligence}', '/', '200'], '-meteor:power': ['{intelligence}', '/', '4']},
         'helpText': 'Summon many more, but less powerful meteors.'},
@@ -364,14 +364,14 @@ var abilities = {
     'abilityMastery': {'name': 'Ability Mastery', 'bonuses': {'+strength': 10, '+dexterity': 10, '+intelligence': 10, '+instantCooldownChance': .1}},
     // Fool
     'tomFoolery': {'name': 'Tom Foolery', 'bonuses': {'+evasion': 5}, 'reaction':
-             {'type': 'dodge', 'stats': {'cooldown': 30, 'buff': {'tags': ['buff'], 'stats': {'*accuracy': 0, '$maxEvasion': 'Evasion checks are always perfect', 'duration': 5, 'area': 0}}}, 'helpText': 'Dodge an attack and gain: {buff}'}},
+             {'type': 'dodge', 'stats': {'cooldown': 30, 'buff': {'tags': ['buff'], 'stats': {'*accuracy': 0, 'maxEvasion': 'Evasion checks are always perfect', 'duration': 5, 'area': 0}}}, 'helpText': 'Dodge an attack and gain: {buff}'}},
     'mimic': {'name': 'Mimic', 'reaction':
              {'type': 'mimic', 'stats': {}, 'helpText': 'Counter an enemy ability with a copy of that ability.'}},
     'decoy': {'name': 'Decoy', 'reaction':
             {'type': 'decoy',  'tags': ['minion'], 'stats': {'cooldown': 60, 'healthBonus': .4, 'damageBonus': .4, 'speedBonus': 1.2},
             'helpText': 'Dodge an attack and leave behind a decoy that explodes on death damaging all enemies.'}},
     'explode': {'name': 'Decoy Burst', 'reaction':
-             {'type': 'explode', 'tags': ['ranged'], 'stats': {'power': '{maxHealth}', '$alwaysHits': 'Shrapnel cannot be evaded'}, 'helpText': 'Explode into shrapnel on death.'}},
+             {'type': 'explode', 'tags': ['ranged'], 'stats': {'power': '{maxHealth}', 'alwaysHits': 'Shrapnel cannot be evaded'}, 'helpText': 'Explode into shrapnel on death.'}},
     // Monster abilities
     'summoner': {'name': 'Summoner', 'bonuses': {'*minion:limit': 2, '*minion:cooldown': .5, '*minion:healthBonus': 2, '*minion:damageBonus': 2}},
     'summonSkeleton': {'name': 'Summon Skeleton', 'bonuses': {'+intelligence': 5}, 'action':

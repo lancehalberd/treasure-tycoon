@@ -184,7 +184,6 @@ function newCharacter(job) {
     });
     draggedJewel = null;
     overJewel = null;
-    removeAdventureEffects(character.adventurer);
     return character;
 }
 function convertShapeDataToShape(shapeData) {
@@ -209,8 +208,14 @@ function makeAdventurer(job, level, equipment) {
         'personContext': personContext,
         'attackCooldown': 0,
         'percentHealth': 1,
-        'isActor': true
+        'isActor': true,
+        'actions': [],
+        'reactions': [],
+        'onHitEffects': [],
+        'onCritEffects': [],
+        'allEffects': []
     };
+    initializeVariableObject(adventurer);
     equipmentSlots.forEach(function (type) {
         adventurer.equipment[type] = null;
     });
@@ -218,9 +223,10 @@ function makeAdventurer(job, level, equipment) {
         item.crafted = true;
         craftingContext.fillStyle = 'green';
         craftingContext.fillRect(item.craftingX, item.craftingY, craftingSlotSize, craftingSlotSize);
-        equipItem(adventurer, makeItem(item, 1), true);
+        equipItem(adventurer, makeItem(item, 1), false);
     });
     drawCraftingViewCanvas();
+    removeAdventureEffects(adventurer);
     updateAdventurer(adventurer);
     return adventurer;
 }
@@ -257,9 +263,11 @@ function changedPoints(pointsType) {
 function addActions(actor, source) {
     if (ifdefor(source.onHitEffect)) {
         actor.onHitEffects.push(source.onHitEffect);
+        actor.variableChildren.push(source.onHitEffect);
     }
     if (ifdefor(source.onCritEffect)) {
         actor.onCritEffects.push(source.onCritEffect);
+        actor.variableChildren.push(source.onCritEffect);
     }
     if (ifdefor(source.action)) {
         var action = {'base': createAction(source.action)}
@@ -289,10 +297,7 @@ function createAction(data) {
 }
 function updateAdventurer(adventurer) {
     // Clear the character's bonuses and graphics.
-    adventurer.bonusSources = [];
-    adventurer.bonusesByTag = {};
-    adventurer.bonusesDependingOn = {};
-    adventurer.dirtyStats = {};
+    initializeVariableObject(adventurer);
     adventurer.actions = [];
     adventurer.reactions = [];
     adventurer.tags = {};
@@ -327,9 +332,9 @@ function updateAdventurer(adventurer) {
         }
     } else {
         adventurer.tags[adventurer.equipment.weapon.base.type] = true;
-        ifdefor(adventurer.equipment.weapon.base.tags, []).forEach(function (tag) {
+        for (var tag of Object.keys(ifdefor(adventurer.equipment.weapon.base.tags, {}))) {
             adventurer.tags[tag] = true;
-        });
+        }
         // You gain the noOffhand tag if offhand is empty and you are using a one handed weapon.
         if (!adventurer.equipment.offhand && !adventurer.tags['twoHanded']) {
             adventurer.tags['noOffhand'] = true;
@@ -337,9 +342,9 @@ function updateAdventurer(adventurer) {
     }
     if (adventurer.equipment.offhand) {
         adventurer.tags[adventurer.equipment.offhand.base.type] = true;
-        ifdefor(adventurer.equipment.offhand.base.tags, []).forEach(function (tag) {
+        for (var tag of Object.keys(ifdefor(adventurer.equipment.offhand.base.tags, {}))) {
             adventurer.tags[tag] = true;
-        });
+        }
     }
     var sectionWidth = personFrames * 32;
     var hat = adventurer.equipment.head;
@@ -356,7 +361,7 @@ function updateAdventurer(adventurer) {
     });
     if (adventurer.character) {
         updateJewelBonuses(adventurer.character);
-        adventurer.bonuses.push(adventurer.character.jewelBonuses);
+        addBonusSourceToObject(adventurer, {'bonuses': adventurer.character.jewelBonuses});
         if (adventurer.character === state.selectedCharacter) {
             // Don't show the offhand slot if equipped with a two handed weapon unless they have a special ability to allow off hand with two handed weapons.
             $('.js-offhand').toggle(!isTwoHandedWeapon(adventurer.equipment.weapon) || !!ifdefor(adventurer.twoToOneHanded));
@@ -369,11 +374,14 @@ function updateAdventurer(adventurer) {
             return;
         }
         addActions(adventurer, equipment.base);
+        addBonusSourceToObject(adventurer, equipment.base);
         equipment.prefixes.forEach(function (affix) {
             addActions(adventurer, affix);
+            addBonusSourceToObject(adventurer, affix);
         })
         equipment.suffixes.forEach(function (affix) {
             addActions(adventurer, affix);
+            addBonusSourceToObject(adventurer, affix);
         })
         if (equipment.base.offset) {
             for (var i = 0; i < personFrames; i++) {
@@ -498,34 +506,19 @@ function getStatForAction(actor, dataObject, stat, action) {
             keys.push(prefix + ':' + baseKey);
         });
     });
-    // sometimes we get duplicate keys, so we use this to avoid processing the same
-    // buff twice. This seems a little better than just trying to remove the keys
-    // and is less work than making sure they aren't added in the first place.
-    actor.bonuses.concat(ifdefor(dataObject.bonuses, [])).concat(ifdefor(actor.allEffects, [])).forEach(function (bonus) {
-        var usedKeys = {};
-        keys.forEach(function (key) {
-            if (usedKeys[key]) return;
-            usedKeys[key] = true;
-            plus += evaluateValue(actor, ifdefor(bonus['+' + key], 0), action);
-            plus -= evaluateValue(actor, ifdefor(bonus['-' + key], 0), action);
-            flatBonus += evaluateValue(actor, ifdefor(bonus['&' + key], 0), action);
-            percent += evaluateValue(actor, ifdefor(bonus['%' + key], 0), action);
-            multiplier *= evaluateValue(actor, ifdefor(bonus['*' + key], 1), action);
-            if (ifdefor(bonus['$' + key])) {
-                specialValue = evaluateValue(actor, bonus['$' + key], action);
-            }
-        });
-    });
-    if (specialValue) {
-        return specialValue;
-    }
     return (base + plus + flatBonus) * percent * multiplier + flatBonus;
 }
 function gainLevel(adventurer) {
     adventurer.level++;
     adventurer.fame += adventurer.level;
     gain('fame', adventurer.level);
-    updateActorStats(adventurer);
+    // We need to update the adventurer from scratch here because we cannot
+    // remove their bonuses based on their level since no reference is stored to it.
+    // One way to avoid this in the future would be to store this as a single bonus
+    // that uses the character level as input. Then if we called setStat(adventurer, 'level', adventurer.level + 1);
+    // All the other stats would be updated as a result. A similar approach could be used to set the base monster bonuses.
+    // The formulate for monster health is too complicated for the bonus system to support at the moment though.
+    updateAdventurer(adventurer);
     updateEquipableItems();
     drawCraftingViewCanvas();
 }

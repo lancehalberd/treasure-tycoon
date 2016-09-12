@@ -1,4 +1,4 @@
-function equipItem(adventurer, item, skipUpdate) {
+function equipItem(adventurer, item, update) {
     //console.log("equip " + item.base.slot);
     if (adventurer.equipment[item.base.slot]) {
         console.log("Tried to equip an item without first unequiping!");
@@ -14,20 +14,38 @@ function equipItem(adventurer, item, skipUpdate) {
     }
     item.actor = adventurer;
     adventurer.equipment[item.base.slot] = item;
-    if (!ifdefor(skipUpdate))updateAdventurer(adventurer);
+    addActions(adventurer, item.base);
+    addBonusSourceToObject(adventurer, item.base, false);
+    item.prefixes.forEach(function (affix) {
+        addActions(adventurer, affix);
+        addBonusSourceToObject(adventurer, affix, false);
+    })
+    item.suffixes.forEach(function (affix) {
+        addActions(adventurer, affix);
+        addBonusSourceToObject(adventurer, affix, false);
+    })
+    if (update) recomputeDirtyStats(adventurer);
 }
 function unequipSlot(actor, slotKey, update) {
     //console.log(new Error("unequip " + slotKey));
     if (actor.equipment[slotKey]) {
         actor.equipment[slotKey].actor = null;
         actor.equipment[slotKey] = null;
-        if (update) {
-            updateAdventurer(actor);
-        }
+        removeActions(adventurer, item.base);
+        removeBonuseSourceFromObject(adventurer, item.base, false);
+        equipment.prefixes.forEach(function (affix) {
+            removeActions(adventurer, affix);
+            removeBonuseSourceFromObject(adventurer, affix, false);
+        })
+        equipment.suffixes.forEach(function (affix) {
+            removeActions(adventurer, affix);
+            removeBonuseSourceFromObject(adventurer, affix, false);
+        })
+        if (update) recomputeDirtyStats(adventurer);
     }
 }
 function isTwoHandedWeapon(item) {
-    return item && ifdefor(item.base.tags, []).indexOf('twoHanded') >= 0;
+    return item && item.base.tags['twoHanded'];
 }
 function sellValue(item) {
     return 4 * item.itemLevel * item.itemLevel * item.itemLevel;
@@ -301,20 +319,20 @@ function applyDragResults() {
             currentSub = targetCharacter.adventurer.equipment.offhand;
             unequipSlot(targetCharacter.adventurer, 'offhand');
         }
-        unequipSlot(targetCharacter.adventurer, item.base.slot);
+        unequipSlot(targetCharacter.adventurer, item.base.slot, false);
         if (sourceCharacter && sourceCharacter !== targetCharacter) {
-            unequipSlot(sourceCharacter.adventurer, item.base.slot);
+            unequipSlot(sourceCharacter.adventurer, item.base.slot, false);
             if (!currentMain && !currentSub) {
                 updateAdventurer(sourceCharacter.adventurer);
             } else {
                 if (currentMain && currentMain.level <= sourceCharacter.adventurer.level) {
                     // Swap the item back to the source character if they can equip it.
-                    equipItem(sourceCharacter.adventurer, currentMain);
+                    equipItem(sourceCharacter.adventurer, currentMain, true);
                     currentMain = null;
                 }
                 if (currentSub && currentSub.level <= sourceCharacter.adventurer.level) {
                     // Swap the item back to the source character if they can equip it.
-                    equipItem(sourceCharacter.adventurer, currentSub);
+                    equipItem(sourceCharacter.adventurer, currentSub, true);
                     currentSub = null;
                 }
             }
@@ -326,7 +344,7 @@ function applyDragResults() {
         if (currentSub) {
             addToInventory(currentSub);
         }
-        equipItem(targetCharacter.adventurer, item);
+        equipItem(targetCharacter.adventurer, item, true);
         return false;
     });
     if (!hit) {
@@ -391,8 +409,9 @@ equipmentSlots.forEach(function (slot) {
 });
 
 function addItem(level, data) {
+    var tags = ifdefor(data.tags, []);
     data.tags = {};
-    for (var tag of ifdefor(data.tags, [])) {
+    for (var tag of tags) {
         data.tags[tag] = true;
     }
     // Assume weapons are one handed melee if not specified

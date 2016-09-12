@@ -125,7 +125,9 @@ function matchingMonsterAffixes(list, monster, alreadyUsed) {
 }
 function updateMonster(monster) {
     // Clear the character's bonuses and graphics.
-    monster.bonuses = [monster.base.implicitBonuses, getMonsterBonuses(monster)];
+    initializeVariableObject(monster);
+    addBonusSourceToObject(monster, monster.base.implicitBonuses);
+    addBonusSourceToObject(monster,getMonsterBonuses(monster));
     monster.actions = [];
     monster.reactions = [];
     monster.tags = {};
@@ -179,7 +181,7 @@ function updateMonster(monster) {
         })
     });
     monster.actions.push({'base': createAction({'tags': monster.tags.concat(['basic'])})});
-    updateActorStats(monster);
+    recomputeDirtyStats(monster);
     //console.log(monster);
 }
 var monsters = {};

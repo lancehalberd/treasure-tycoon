@@ -341,9 +341,8 @@ skillDefinitions.minion = {
         newMonster.enemies = actor.enemies;
         newMonster.time = 0;
         newMonster.animationTime = 0;
-        newMonster.bonuses.push(getMinionSpeedBonus(actor, newMonster));
-        newMonster.bonuses.push(getMinionSkillBonuses(minionSkill));
-        updateActorStats(newMonster);
+        addBonusSourceToObject(newMonster, getMinionSpeedBonus(actor, newMonster), false);
+        addBonusSourceToObject(newMonster, getMinionSkillBonuses(minionSkill), true);
         actor.allies.push(newMonster);
         actor.stunned = actor.time + .3;
     }
@@ -376,16 +375,16 @@ function cloneActor(actor) {
 }
 
 function getMinionSkillBonuses(minionSkill) {
-    return {'*maxHealth': ifdefor(minionSkill.healthBonus, 1),
+    return {'bonuses': {'*maxHealth': ifdefor(minionSkill.healthBonus, 1),
             '*minPhysicalDamage': ifdefor(minionSkill.damageBonus, 1),
             '*maxPhysicalDamage': ifdefor(minionSkill.damageBonus, 1),
             '*minMagicDamage': ifdefor(minionSkill.damageBonus, 1),
             '*maxMagicDamage': ifdefor(minionSkill.damageBonus, 1),
             '*attackSpeed': ifdefor(minionSkill.attackSpeedBonus, 1),
-            '*speed': ifdefor(minionSkill.speedBonus, 1)};
+            '*speed': ifdefor(minionSkill.speedBonus, 1)}};
 }
 function getMinionSpeedBonus(actor, minion) {
-    return {'*speed': Math.max(.5, (actor.speed + 40) /  minion.speed)};
+    return {'bonuses': {'*speed': Math.max(.5, (actor.speed + 40) /  minion.speed)}};
 }
 
 skillDefinitions.clone = {
@@ -400,10 +399,10 @@ skillDefinitions.clone = {
         var clone = cloneActor(actor);
         clone.source = cloneSkill;
         clone.name = actor.name + ' shadow clone';
-        clone.bonuses.push(getMinionSpeedBonus(actor, clone));
-        clone.bonuses.push(getMinionSkillBonuses(cloneSkill));
+        addBonusSourceToObject(clone, getMinionSpeedBonus(actor, clone), false);
+        addBonusSourceToObject(clone, getMinionSkillBonuses(cloneSkill), true);
         clone.percentHealth = actor.percentHealth;
-        updateActorStats(clone);
+        clone.health = clone.percentHealth * clone.maxHealth;
         actor.allies.push(clone);
         actor.stunned = actor.time + .3;
     }
@@ -421,14 +420,13 @@ skillDefinitions.decoy = {
         var clone = cloneActor(actor);
         clone.source = decoySkill;
         clone.name = actor.name + ' decoy';
-        clone.bonuses.push(getMinionSpeedBonus(actor, clone));
-        clone.bonuses.push(getMinionSkillBonuses(decoySkill));
+        addBonusSourceToObject(clone, getMinionSpeedBonus(actor, clone), false);
+        addBonusSourceToObject(clone, getMinionSkillBonuses(decoySkill), true);
         addActions(clone, abilities.explode);
-        updateActorStats(clone);
         actor.allies.push(clone);
         actor.stunned = actor.time + .3;
-        // Clone has same percent health as creator.
-        clone.health = Math.max(1, clone.maxHealth * actor.health / actor.maxHealth);
+        clone.health = Math.max(1, clone.maxHealth * actor.percentHealth);
+        clone.percentHealth = clone.health / clone.maxHealth;
     }
 };
 
@@ -676,8 +674,7 @@ skillDefinitions.charm = {
     use: function (actor, charmSkill, target) {
         target.allies = actor.allies;
         target.enemies = actor.enemies;
-        target.bonuses.push(getMinionSpeedBonus(actor, target));
-        updateActorStats(target);
+        addBonusSourceToObject(target, getMinionSpeedBonus(actor, target), true);
         actor.enemies.splice(actor.enemies.indexOf(target), 1);
         actor.allies.push(target);
         target.direction = actor.direction;

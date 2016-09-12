@@ -53,7 +53,21 @@ function parseBonuses(bonusSource) {
     }
     return bonusSource.parsedBonuses;
 }
+function initializeVariableObject(object) {
+    object.bonusSources = [];
+    object.bonusesByTag = {};
+    object.bonusesDependingOn = {};
+    object.dirtyStats = {};
+    object.variableChildren = [];
+    for (var baseStat of Object.keys(ifdefor(object.base, {}))) {
+        object[baseStat] = object.base[baseStat];
+    }
+}
 function addBonusSourceToObject(object, bonusSource, triggerComputation) {
+    // Bonuses apply recursively to all the children of this object (actions of actors, buffs on actions, bonuses on buffs, etc).
+    for (var variableChild of object.variableChildren) {
+        addBonusSourceToObject(variableChild, bonusSource, triggerComputation);
+    }
     // Throw an error if bonusSource has already been applied to object. Each bonusSource on an object should be unique.
     object.bonusSources.push(bonusSource);
     var bonuses = parseBonuses(bonusSource);
@@ -81,6 +95,10 @@ function addBonusSourceToObject(object, bonusSource, triggerComputation) {
     }
 }
 function removeBonusSourceFromObject(object, bonusSource, triggerComputation) {
+    // Bonuses apply recursively to all the children of this object (actions of actors, buffs on actions, bonuses on buffs, etc).
+    for (var variableChild of object.variableChildren) {
+        removeBonusSourceFromObject(variableChild, bonusSource, triggerComputation);
+    }
     var index = object.bonusSources.indexOf(bonusSource);
     if (index < 0) {
         console.log('tried to remove bonusSource that was not found on object:');
@@ -200,13 +218,16 @@ function recomputeDirtyStats(object) {
 }
 function recomputeStat(object, statKey) {
     var statOps = ifdefor(object[statKey + 'Ops'], {'stat': statKey});
+    // Typically objects like actions and buffs have some initial values for stats
+    // which are either base totals for something like range or duration or strings
+    // for special flags like 'alwaysHits'.
+    var newValue = ifdefor(ifdefor(object.base, {})[statKey], 0);
     // Special values override all of the normal arithmetic for stats.
-    var newValue;
     if (ifdefor(statOps['$'], []).length) {
         newValue = statOps['$'][statOps['$'].length - 1];
     } else {
         //console.log(statOps);
-        newValue = ifdefor(statOps['+'], 0) * ifdefor(statOps['%'], 1) * ifdefor(statOps['*'], 1) + ifdefor(statOps['&'], 0);
+        newValue = (newValue + ifdefor(statOps['+'], 0)) * ifdefor(statOps['%'], 1) * ifdefor(statOps['*'], 1) + ifdefor(statOps['&'], 0);
         if (allRoundedVariables[statKey]) {
             newValue = Math.round(newValue);
         }

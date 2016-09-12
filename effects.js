@@ -300,16 +300,18 @@ function expireTimedEffects(character, actor) {
 function addTimedEffect(actor, effect) {
     if (actor.isDead ) return;
     var area = ifdefor(effect.area);
-    effect = copy(effect);
-    effect.area = 0;
+    // Copy the effect because each timed effect has a distinct expirationTime.
+    // Also setting the area here to 0 allows us to call this method again for
+    // allies within the area of effect without recursing infinitely.
+    effect = {
+        'bonuses': effect.bonuses,
+        'duration': effect.duration,
+        'area': 0
+    };
     if (area) {
         actor.allies.forEach(function (ally) {
-            if (ally === actor) {
-                return;
-            }
-            if (getDistance(actor, ally) < area * 32) {
-                addTimedEffect(ally, effect);
-            }
+            if (ally === actor) return;
+            if (getDistance(actor, ally) < area * 32) addTimedEffect(ally, effect);
         });
     }
     // effects without duration last indefinitely.

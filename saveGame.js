@@ -181,7 +181,8 @@ function importCharacter(characterData) {
     });
     // centerShapesInRectangle(character.board.fixed.map(jewelToShape).concat(character.board.spaces), rectangle(0, 0, character.boardCanvas.width, character.boardCanvas.height));
     drawBoardBackground(character.boardContext, character.board);
-    removeAdventureEffects(character.adventurer);
+    removeAdventureEffects(adventurer);
+    updateAdventurer(character.adventurer);
     return character;
 }
 function exportAdventurer(adventurer) {
@@ -220,9 +221,7 @@ function importAdventurer(adventurerData) {
         adventurer.equipment[type] = null;
     });
     $.each(adventurerData.equipment, function (key, itemData) {
-        if (itemData) {
-            equipItem(adventurer, importItem(itemData), true);
-        }
+        if (itemData) equipItem(adventurer, importItem(itemData), false);
     });
     return adventurer;
 }
