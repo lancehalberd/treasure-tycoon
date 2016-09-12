@@ -20,13 +20,7 @@ function songEffect(attackStats) {
             self.currentFrame++;
             if (followTarget.time > endTime) {
                 self.done = true;
-                while (effectedTargets.length) {
-                    var target = effectedTargets.pop();
-                    var effectIndex = target.fieldEffects.indexOf(self.attackStats.attack.buff);
-                    target.fieldEffects.splice(effectIndex, 1);
-                    // console.log("removing " + self.attackStats.attack.base.name + ' from ' + target.name);
-                    updateActorStats(target);
-                }
+                while (effectedTargets.length) removeEffectFromActor(effectedTargets.pop(), self.attackStats.attack.buff, true);
                 return;
             }
             var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
@@ -45,17 +39,11 @@ function songEffect(attackStats) {
                     // are no longer being targeted.
                     oldTargets.splice(oldIndex, 1);
                 } else {
-                    target.fieldEffects.push(self.attackStats.attack.buff);
-                    updateActorStats(target);
+                    addEffectToActor(target, self.attackStats.attack.buff, true);
                 }
             }
-            while (oldTargets.length) {
-                var target = oldTargets.pop();
-                var effectIndex = target.fieldEffects.indexOf(self.attackStats.attack.buff);
-                target.fieldEffects.splice(effectIndex, 1);
-                // console.log("removing " + self.attackStats.attack.base.name + ' from ' + target.name);
-                updateActorStats(target);
-            }
+            while (oldTargets.length) removeEffectFromActor(oldTargets.pop(), self.attackStats.attack.buff, true);
+
             effectedTargets = currentTargets;
         },
         'draw': function (character) {
@@ -127,7 +115,6 @@ function explosionEffect(attackStats, x, y) {
     return self;
 }
 
-
 function fieldEffect(attackStats, followTarget) {
     var color = ifdefor(attackStats.attack.base.color, 'red');
     var alpha = ifdefor(attackStats.attack.base.alpha, .5);
@@ -198,7 +185,7 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
             self.x += self.vx;
             self.y += self.vy;
             var hit = false;
-            if (attackStats.attack.base.tags.indexOf('rain') >= 0) {
+            if (attackStats.attack.base.tags['rain'] >= 0) {
                 var speed = Math.sqrt(self.vx * self.vx + self.vy * self.vy);
                 self.vx = tx - self.x;
                 self.vy = Math.max(self.vy, ty - self.y);
@@ -295,4 +282,45 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
     };
     self.attackStats.projectile = self;
     return self;
+}
+
+
+function expireTimedEffects(character, actor) {
+    if (actor.isDead ) return;
+    var changed = false;
+    for (var i = 0; i < actor.allEffects.length; i++) {
+        var effect = actor.allEffects[i];
+        if (effect.expirationTime && effect.expirationTime < actor.time) {
+            actor.allEffects.splice(i, 1);
+            removeBonuseSourceFromObject(actor, effect, false);
+        }
+    }
+    if (changed) recomputeDirtyStats(actor);
+}
+function addTimedEffect(actor, effect) {
+    if (actor.isDead ) return;
+    var area = ifdefor(effect.area);
+    effect = copy(effect);
+    effect.area = 0;
+    if (area) {
+        actor.allies.forEach(function (ally) {
+            if (ally === actor) {
+                return;
+            }
+            if (getDistance(actor, ally) < area * 32) {
+                addTimedEffect(ally, effect);
+            }
+        });
+    }
+    // effects without duration last indefinitely.
+    if (effect.duration) effect.expirationTime = actor.time + effect.duration;
+    addEffectToActor(actor, effect, true);
+}
+function addEffectToActor(actor, effect, triggerComputation) {
+    actor.allEffects.push(effect);
+    addBonusSourceToObject(actor, effect, triggerComputation);
+}
+function removeEffectFromActor(actor, effect, triggerComputation) {
+    actor.allEffects.splice(actor.allEffects.indexOf(effect), 1);
+    removeBonuseSourceFromObject(actor, effect, triggerComputation);
 }

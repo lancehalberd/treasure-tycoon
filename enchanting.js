@@ -198,15 +198,8 @@ function matchingAffixes(list, item, alreadyUsed) {
 function affixMatchesItem(baseItem, affix) {
     var tags = ifdefor(affix.tags, []);
     tags = Array.isArray(tags) ? tags : [tags];
-    if (!tags.length) {
-        return true;
-    }
-    var itemTags = ifdefor(baseItem.tags, []).concat([baseItem.slot, baseItem.type]);
-    for (var i = 0; i < tags.length; i++) {
-        if (itemTags.indexOf(tags[i]) >= 0) {
-            return true;
-        }
-    }
+    if (!tags.length) return true;
+    for (var tag of tags) if (itemTags[tag]) return true;
     return false;
 }
 $('.js-resetEnchantments').on('click', resetItem);

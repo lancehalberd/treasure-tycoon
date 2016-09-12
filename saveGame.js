@@ -181,8 +181,7 @@ function importCharacter(characterData) {
     });
     // centerShapesInRectangle(character.board.fixed.map(jewelToShape).concat(character.board.spaces), rectangle(0, 0, character.boardCanvas.width, character.boardCanvas.height));
     drawBoardBackground(character.boardContext, character.board);
-    updateAdventurer(character.adventurer);
-    resetCharacterStats(character);
+    removeAdventureEffects(character.adventurer);
     return character;
 }
 function exportAdventurer(adventurer) {

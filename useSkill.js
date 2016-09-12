@@ -30,15 +30,15 @@ function useSkill(actor, skill, target) {
         return false;
     }
     for (var i = 0; i < ifdefor(skill.base.restrictions, []).length; i++) {
-        if (actor.tags.indexOf(skill.base.restrictions[i]) < 0) {
+        if (!actor.tags[skill.base.restrictions[i]]) {
             return false;
         }
     }
-    var isNova = skill.base.tags.indexOf('nova') >= 0; // AOE centered on player (freeze)
-    var isField = skill.base.tags.indexOf('field') >= 0; // AOE with duration centered on player (thunderstorm)
-    var isBlast = skill.base.tags.indexOf('blast') >= 0; // AOE centered on target (plague, dispell, drain life)
-    var isRain = skill.base.tags.indexOf('rain') >= 0; // Projectiles fall from the sky at targets (meteor)
-    var isSpell = skill.base.tags.indexOf('spell');
+    var isNova = skill.base.tags['nova']; // AOE centered on player (freeze)
+    var isField = skill.base.tags['field']; // AOE with duration centered on player (thunderstorm)
+    var isBlast = skill.base.tags['blast']; // AOE centered on target (plague, dispell, drain life)
+    var isRain = skill.base.tags['rain']; // Projectiles fall from the sky at targets (meteor)
+    var isSpell = skill.base.tags['spell'];
     var isAOE = skill.cleave || isNova || isField || isBlast || isRain;
     // Action skills have targets and won't activate if that target is out of range or not of the correct type.
     if (actionIndex >= 0) {
@@ -117,7 +117,7 @@ function useSkill(actor, skill, target) {
     skill.readyAt = actor.time + ifdefor(skill.cooldown, 0) * (1 - cdr);
     // Show the name of the skill used if it isn't a basic attack. When skills have distinct
     // visible animations, we should probably remove this.
-    if (skill.base.tags.indexOf('basic') < 0) {
+    if (!skill.base.tags['basic']) {
         var hitText = {x: actor.x + 32, y: 240 - 170, color: 'white', font: "15px sans-serif"};
         hitText.value = skill.base.name;
         actor.character.textPopups.push(hitText);
@@ -146,12 +146,12 @@ function useSkill(actor, skill, target) {
 function getEnemiesInRange(actor, skill, skillTarget) {
     var targets = [], distance;
     // Rain targets everything on the field.
-    if (skill.base.tags.indexOf('rain') >= 0) {
+    if (skill.base.tags['rain']) {
         return actor.enemies.slice();
     }
     for (var i = 0; i < actor.enemies.length; i++) {
         var target = actor.enemies[i];
-        if (skill.base.tags.indexOf('blast') >= 0) {
+        if (skill.base.tags['blast']) {
             distance = getDistance(skillTarget, target);
             if (distance < skill.area * 32) {
                 targets.push(target);
@@ -159,7 +159,7 @@ function getEnemiesInRange(actor, skill, skillTarget) {
             }
         }
         distance = getDistance(actor, target);
-        if (skill.base.tags.indexOf('nova') >= 0 || skill.base.tags.indexOf('field') >= 0) {
+        if (skill.base.tags['nova'] || skill.base.tags['field']) {
             if (distance < skill.area * 32) {
                 targets.push(target);
                 continue;
@@ -177,7 +177,7 @@ function getPower(actor, skill) {
     return skill.power;
     // This is now done when calculating stats so that *power can effect power from magic damage.
     /*var power = skill.power;
-    if (skill.base.tags.indexOf('spell') >= 0) {
+    if (skill.base.tags['spell']) {
         power += Random.range(actor.minMagicDamage, actor.maxMagicDamage);
     }
     return power;*/
@@ -371,8 +371,7 @@ function cloneActor(actor) {
     clone.pull = null;
     clone.time = 0;
     clone.animationTime = 0;
-    clone.timedEffects = [];
-    clone.fieldEffects = [];
+    clone.allEffects = [];
     return clone;
 }
 
@@ -424,7 +423,7 @@ skillDefinitions.decoy = {
         clone.name = actor.name + ' decoy';
         clone.bonuses.push(getMinionSpeedBonus(actor, clone));
         clone.bonuses.push(getMinionSkillBonuses(decoySkill));
-        addBonusesAndActions(clone, abilities.explode);
+        addActions(clone, abilities.explode);
         updateActorStats(clone);
         actor.allies.push(clone);
         actor.stunned = actor.time + .3;
@@ -560,7 +559,7 @@ skillDefinitions.deflect = {
     isValid: function (actor, deflectSkill, attackStats) {
         if (attackStats.evaded) return false;
         // Only non-spell, projectile attacks can be deflected.
-        return attackStats.projectile && attackStats.attack.base.tags.indexOf('spell') < 0;
+        return attackStats.projectile && !attackStats.attack.base.tags['spell'];
     },
     use: function (actor, counterAttackSkill, attackStats) {
         var projectile = attackStats.projectile;
@@ -592,7 +591,7 @@ skillDefinitions.evadeAndCounter = {
 skillDefinitions.mimic = {
     isValid: function (actor, counterAttackSkill, attackStats) {
         // Only non basic attacks can be mimicked.
-        return attackStats.attack.base.tags.indexOf('basic') < 0;
+        return !attackStats.attack.base.tags['basic'];
     },
     use: function (actor, counterAttackSkill, attackStats) {
         performAttack(actor, attackStats.attack, attackStats.source);
@@ -626,9 +625,11 @@ function stealAffixes(actor, target, skill) {
         var affix = Random.element(allAffixes);
         if (target.prefixes.indexOf(affix) >= 0) target.prefixes.splice(target.prefixes.indexOf(affix), 1);
         if (target.suffixes.indexOf(affix) >= 0) target.suffixes.splice(target.suffixes.indexOf(affix), 1);
-        var bonuses = affix.bonuses;
-        bonuses['duration'] = skill.duration;
-        addTimedEffect(actor, bonuses);
+        var effect = {
+            'bonuses': affix.bonuses,
+            'duration': skill.duration
+        };
+        addTimedEffect(actor, effect);
         allAffixes = target.prefixes.concat(target.suffixes);
     }
     updateMonster(target);

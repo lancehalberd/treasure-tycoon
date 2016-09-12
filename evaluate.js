@@ -5,9 +5,11 @@ function evaluateValue(actor, value, localObject) {
     }
     if (typeof value === 'string' && value.charAt(0) === '{') {
         if (value.indexOf('this.') >= 0) {
-            return localObject[value.substring(6, value.length - 1)];
+            return ifdefor(localObject[value.substring(6, value.length - 1)], 0);
         }
-        return actor[value.substring(1, value.length - 1)];
+        var statKey = value.substring(1, value.length - 1);
+        // console.log(statKey + ':' + actor[statKey]);
+        return ifdefor(actor[statKey], 0);
     }
     // If this is an object, just return it for further processing.
     if (value.constructor !== Array) {

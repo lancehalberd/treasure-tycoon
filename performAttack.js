@@ -1,7 +1,7 @@
 function getBasicAttack(adventurer) {
     for (var i = 0; i < adventurer.actions.length; i++) {
         var attack = adventurer.actions[i];
-        if (attack.base.tags.indexOf('basic') >= 0) {
+        if (attack.base.tags['basic']) {
             return attack;
         }
     }
@@ -233,17 +233,17 @@ function performAttackProper(attackStats, target) {
             attacker.x = Math.min(attacker.x + teleport, Math.max(attacker.x - teleport, target.x + target.width + attackStats.attack.range * 32));
         }
     }
-    if (attackStats.attack.base.tags.indexOf('song') >= 0) {
+    if (attackStats.attack.base.tags['song']) {
         attacker.character.effects.push(songEffect(attackStats));
-    } else if (attackStats.attack.base.tags.indexOf('field') >= 0) {
+    } else if (attackStats.attack.base.tags['field']) {
         attacker.character.effects.push(fieldEffect(attackStats, attacker));
-    } else if (attackStats.attack.base.tags.indexOf('nova') >= 0) {
+    } else if (attackStats.attack.base.tags['nova']) {
         // attackStats.explode--;
         attacker.character.effects.push(explosionEffect(attackStats, attacker.x + attacker.width / 2 + attacker.direction * attacker.width / 4, 120));
-    } else if (attackStats.attack.base.tags.indexOf('blast') >= 0) {
+    } else if (attackStats.attack.base.tags['blast']) {
         // attackStats.explode--;
         attacker.character.effects.push(explosionEffect(attackStats, target.x + target.width / 2 + target.direction * target.width / 4, 120));
-    } else if (attackStats.attack.base.tags.indexOf('rain') >= 0) {
+    } else if (attackStats.attack.base.tags['rain']) {
         // attackStats.explode--;
         var targets = [];
         var count = Math.floor(ifdefor(attackStats.attack.count, 1));
@@ -260,7 +260,7 @@ function performAttackProper(attackStats, target) {
                 attackStats, x, y, vx, vy, currentTarget, i * 10, // delay is in frames
                 attackStats.isCritical ? 'yellow' : 'red', ifdefor(attackStats.attack.base.size, 10) * (attackStats.isCritical ? 1.5 : 1)));
         }
-    } else if (attackStats.attack.base.tags.indexOf('ranged') >= 0) {
+    } else if (attackStats.attack.base.tags['ranged']) {
         var distance = getDistance(attacker, target);
         attacker.character.projectiles.push(projectile(
             attackStats, attacker.x + attacker.width / 2 + attacker.direction * attacker.width / 4, 240 - 128,
@@ -418,7 +418,7 @@ function applyAttackToTarget(attackStats, target) {
         }
         attacker.health += ifdefor(attack.lifeSteal, 0) * totalDamage
         if (ifdefor(attack.poison)) {
-            addTimedEffect(target, {'+damageOverTime': totalDamage * attack.poison});
+            addTimedEffect(target, {'bonuses': {'+damageOverTime': totalDamage * attack.poison}});
         }
         // Some attacks pull the target towards the attacker
         if (attack.stun) {

@@ -16,10 +16,6 @@ function startArea(character, index) {
     character.adventurer.x = 0;
     character.adventurer.stunned = 0;
     character.adventurer.pull = null;
-    character.adventurer.timedEffects = [];
-    character.adventurer.fieldEffects = [];
-    character.adventurer.percentHealth = 1;
-    character.adventurer.health = character.adventurer.maxHealth;
     character.adventurer.time = 0;
     character.adventurer.animationTime = 0;
     character.adventurer.isDead = false;
@@ -34,15 +30,12 @@ function startArea(character, index) {
     character.allies = [character.adventurer];
     character.adventurer.allies = character.allies;
     character.adventurer.enemies = character.enemies;
-    character.adventurer.slow = 0;
-    character.adventurer.bonusMaxHealth = 0;
     character.treasurePopups = [];
     character.textPopups = [];
     character.timeStopEffect = null;
     character.adventurer.actions.concat(character.adventurer.reactions).forEach(function (action) {
         action.readyAt = 0;
     });
-    updateActorStats(character.adventurer);
     if (state.selectedCharacter === character) {
         updateAdventureButtons();
         drawAdventure(character);
@@ -233,43 +226,6 @@ function moveActor(actor, delta) {
         actor.chargeEffect.distance += speedBonus * actor.speed * Math.max(.1, 1 - actor.slow) * delta;
     }
     actor.x += speedBonus * actor.speed * actor.direction * Math.max(.1, 1 - actor.slow) * delta;
-}
-function expireTimedEffects(character, actor) {
-    if (actor.isDead ) return;
-    var changed = false;
-    for (var i = 0; i < actor.timedEffects.length; i++) {
-        if (actor.timedEffects[i].expirationTime && actor.timedEffects[i].expirationTime < actor.time) {
-            actor.timedEffects.splice(i--);
-            changed = true;
-        }
-    }
-    if (changed) {
-        updateActorStats(actor);
-    }
-}
-function addTimedEffect(actor, effect) {
-    if (actor.isDead ) return;
-    var area = ifdefor(effect.area);
-    effect = copy(effect);
-    effect.area = 0;
-    if (area) {
-        actor.allies.forEach(function (ally) {
-            if (ally === actor) {
-                return;
-            }
-            if (getDistance(actor, ally) < area * 32) {
-                addTimedEffect(ally, effect);
-            }
-        });
-    }
-    // effects without duration last indefinitely.
-    if (effect.duration) {
-        effect.expirationTime = actor.time + effect.duration;
-    } else {
-        effect.expirationTime = false;
-    }
-    actor.timedEffects.push(effect);
-    updateActorStats(actor);
 }
 function startNextWave(character) {
     var wave = character.area.waves[character.waveIndex];

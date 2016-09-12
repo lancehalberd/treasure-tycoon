@@ -98,8 +98,7 @@ function makeMonster(monsterData, level, extraSkills, noRarity) {
             addMonsterSuffix(monster);
         }
     }
-    monster.timedEffects = [];
-    monster.fieldEffects = [];
+    monster.allEffects = [];
     updateMonster(monster);
     return monster;
 }
@@ -129,12 +128,11 @@ function updateMonster(monster) {
     monster.bonuses = [monster.base.implicitBonuses, getMonsterBonuses(monster)];
     monster.actions = [];
     monster.reactions = [];
-    monster.tags = ifdefor(monster.base.tags, []);
+    monster.tags = {};
     monster.onHitEffects = [];
     monster.onCritEffects = [];
-    if (monster.tags.indexOf('ranged') < 0) {
-        monster.tags.push('melee');
-    }
+    for (var tag of ifdefor(monster.base.tags, [])) monster.tags[tag] = true;
+    if (monster.tags['ranged']) monster.tags['melee'] = true;
     var enchantments = monster.prefixes.length + monster.suffixes.length;
     monster.image = monster.base.source.image.normal;
     if (enchantments > 2) {
@@ -143,16 +141,16 @@ function updateMonster(monster) {
         monster.bonuses.push(enchantedMonsterBonuses);
     }
     ifdefor(monster.extraSkills, []).forEach(function (ability) {
-        addBonusesAndActions(monster, ability);
+        addActions(monster, ability);
     });
     ifdefor(monster.base.abilities, []).forEach(function (ability) {
-        addBonusesAndActions(monster, ability);
+        addActions(monster, ability);
     });
     var name =  monster.base.name;
     var prefixNames = [];
     monster.prefixes.forEach(function (affix) {
         prefixNames.push(affix.base.name);
-        addBonusesAndActions(monster, affix);
+        addActions(monster, affix);
     });
     if (prefixNames.length) {
         name = prefixNames.join(', ') + ' ' + name;
@@ -160,7 +158,7 @@ function updateMonster(monster) {
     var suffixNames = []
     monster.suffixes.forEach(function (affix) {
         suffixNames.push(affix.base.name);
-        addBonusesAndActions(monster, affix);
+        addActions(monster, affix);
     });
     if (suffixNames.length) {
         name = name + ' of ' + suffixNames.join(' and ');
@@ -172,12 +170,12 @@ function updateMonster(monster) {
         if (!equipment) {
             return;
         }
-        addBonusesAndActions(monster, equipment.base);
+        addActions(monster, equipment.base);
         equipment.prefixes.forEach(function (affix) {
-            addBonusesAndActions(monster, affix);
+            addActions(monster, affix);
         })
         equipment.suffixes.forEach(function (affix) {
-            addBonusesAndActions(monster, affix);
+            addActions(monster, affix);
         })
     });
     monster.actions.push({'base': createAction({'tags': monster.tags.concat(['basic'])})});

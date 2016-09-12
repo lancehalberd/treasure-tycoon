@@ -391,16 +391,17 @@ equipmentSlots.forEach(function (slot) {
 });
 
 function addItem(level, data) {
-    data.tags = ifdefor(data.tags, []);
+    data.tags = {};
+    for (var tag of ifdefor(data.tags, [])) {
+        data.tags[tag] = true;
+    }
     // Assume weapons are one handed melee if not specified
     if (data.slot === 'weapon') {
-        if (data.tags.indexOf('ranged') < 0 && data.tags.indexOf('melee') < 0) {
-            data.tags.unshift('melee');
-        }
-        if (data.tags.indexOf('twoHanded') < 0 && data.tags.indexOf('oneHanded') < 0) {
-            data.tags.unshift('oneHanded');
-        }
+        if (!data.tags['ranged']) data.tags['melee'] = true;
+        if (!data.tags['twoHanded']) data.tags['oneHanded'] = true;
     }
+    data.tags[data.slot] = true;
+    data.tags[data.type] = true;
     items[level] = ifdefor(items[level], []);
     itemsBySlotAndLevel[data.slot][level] = ifdefor(itemsBySlotAndLevel[data.slot][level], []);
     data.level = level;

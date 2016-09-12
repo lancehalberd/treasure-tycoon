@@ -152,9 +152,6 @@ var abilities = {
     // Corsair
     'corsair': {'name': 'Venom', 'bonuses': {'+poison': .2}, 'onHitEffect': {'debuff': {'tags': ['debuff'], 'stats': {'*damage': .9, 'area': 0}}},
                     'helpText': "Apply a stacking debuff with every hit that weakens enemies' attacks and deals damage over time."},
-    'meleeDamage': {'name': 'Melee Damage', 'bonuses': {'*melee:damage': 1.3}},
-    'meleeSpeed': {'name': 'Melee Attack Speed', 'bonuses': {'*melee:attackSpeed': 1.3}},
-    'meleeCritical': {'name': 'Melee Critical', 'bonuses': {'+melee:critChance': .05, '+melee:critDamage': .2}},
     'corsairKeyStone': {'name': 'Corsair Key Stone', 'bonuses': {}},
     'critChance': {'name': 'Critical Chance', 'bonuses': {'%critChance': .5}},
     'hook': {'name': 'Grappling Hook', 'action': {'type': 'attack',
@@ -198,9 +195,6 @@ var abilities = {
     // Tier 3 classes
     // Ranger
     'ranger': {'name': 'Taming', 'bonuses': {'*minion:healthBonus': 2, '*minion:attackSpeedBonus': 1.5, '*minion:speedBonus': 1.5}},
-    'rangedDamage': {'name': 'Ranged Damage', 'bonuses': {'*ranged:damage': 1.3}},
-    'rangedSpeed': {'name': 'Ranged Attack Speed', 'bonuses': {'*ranged:attackSpeed': 1.3}},
-    'rangedCritical': {'name': 'Ranged Critical', 'bonuses': {'+ranged:critChance': .05, '+ranged:critDamage': .2}},
     'finesse':  {'name': 'Finesse', 'bonuses': {'%attackSpeed': .2}},
     'pet': {'name': 'Pet', 'action':
             {'type': 'minion', 'target': 'none', 'tags': ['pet'], 'monsterKey': 'wolf', 'stats': {'limit': 1, 'cooldown': 30, 'healthBonus': 1, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1},
