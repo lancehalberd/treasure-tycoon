@@ -12,14 +12,9 @@ function startArea(character, index) {
     character.currentLevelKey = index;
     var levelCompleted = ifdefor(character.divinityScores[index], 0) !== 0;
     character.area = instantiateLevel(map[index], levelCompleted);
+    initializeActorForAdventure(character.adventurer);
     character.waveIndex = 0;
     character.adventurer.x = 0;
-    character.adventurer.stunned = 0;
-    character.adventurer.pull = null;
-    character.adventurer.time = 0;
-    character.adventurer.animationTime = 0;
-    character.adventurer.isDead = false;
-    character.adventurer.timeOfDeath = undefined;
     character.finishTime = false;
     character.startTime = character.time;
     character.cameraX = -60;
@@ -231,8 +226,9 @@ function startNextWave(character) {
     var wave = character.area.waves[character.waveIndex];
     var x = character.adventurer.x + 800;
     wave.monsters.forEach(function (entityData) {
-        var extraSkills = ifdefor(character.area.enemySkills, []).concat({'bonuses' : wave.extraBonuses});
+        var extraSkills = ifdefor(character.area.enemySkills, []).concat(wave.extraBonuses);
         var newMonster = makeMonster(entityData, character.area.level, extraSkills, !!wave.extraBonuses);
+        initializeActorForAdventure(newMonster);
         newMonster.x = x;
         newMonster.time = 0;
         newMonster.animationTime = newMonster.x;

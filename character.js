@@ -103,15 +103,24 @@ var coreStatBonusSource = {'bonuses': {
 
 function removeAdventureEffects(adventurer) {
     setStat(adventurer, 'bonusMaxHealth', 0);
-    adventurer.percentHealth = 1;
-    adventurer.health = adventurer.maxHealth;
     while (adventurer.allEffects.length) {
         removeEffectFromActor(adventurer, adventurer.allEffects.pop(), false);
     }
-    adventurer.attackCooldown = 0;
-    adventurer.target = null;
-    adventurer.slow = 0;
+    initializeActorForAdventure(adventurer);
     recomputeDirtyStats(adventurer);
+}
+function initializeActorForAdventure(actor) {
+    actor.percentHealth = 1;
+    actor.health = actor.maxHealth;
+    actor.stunned = 0;
+    actor.pull = null;
+    actor.time = 0;
+    actor.animationTime = 0;
+    actor.isDead = false;
+    actor.timeOfDeath = undefined;
+    actor.attackCooldown = 0;
+    actor.target = null;
+    actor.slow = 0;
 }
 function returnToMap(character) {
     removeAdventureEffects(character.adventurer);
@@ -314,6 +323,11 @@ function removeActions(actor, source) {
 function updateAdventurer(adventurer) {
     // Clear the character's bonuses and graphics.
     initializeVariableObject(adventurer, {'variableObjectType': 'actor'});
+    for (var stat of Object.keys(adventurer)) {
+        if (stat.indexOf('Ops') === stat.length - 3) {
+            delete adventurer[stat];
+        }
+    }
     adventurer.actions = [];
     adventurer.reactions = [];
     adventurer.onHitEffects = [];

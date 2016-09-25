@@ -181,7 +181,7 @@ function mainLoop() {
     var fps = Math.floor(3 * 5 / 3);
     var frame = Math.floor(now() * fps / 1000) % walkLoop.length;
     state.characters.forEach(function (character) {
-        if (character.area) {
+        if (character.area && !character.paused) {
             character.loopCount = ifdefor(character.loopCount) + 1;
             if (character.loopCount % ifdefor(character.loopSkip)) {
                 return;
@@ -437,6 +437,12 @@ $('body').on('click', '.js-repeatButton', function (event) {
     state.selectedCharacter.replay = !state.selectedCharacter.replay;
     updateAdventureButtons();
 });
+$('body').on('click', '.js-pauseButton', function (event) {
+    console.log('pausing')
+    console.log(state.selectedCharacter.paused )
+    state.selectedCharacter.paused = !state.selectedCharacter.paused;
+    updateAdventureButtons();
+});
 $('body').on('click', '.js-fastforwardButton', function (event) {
     if (state.selectedCharacter.gameSpeed !== 3) {
         state.selectedCharacter.gameSpeed = 3;
@@ -472,6 +478,7 @@ function updateAdventureButtons() {
     $('.js-adventureControls').toggle(!!character.area);
     $('.js-recallButton').toggleClass('disabled', !canRecall(character));
     $('.js-repeatButton').toggleClass('disabled', !character.replay);
+    $('.js-pauseButton').toggleClass('disabled', !character.paused);
     $('.js-fastforwardButton').toggleClass('disabled', character.gameSpeed !== 3);
     $('.js-slowMotionButton').toggleClass('disabled', character.loopSkip !== 5);
 }

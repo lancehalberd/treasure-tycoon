@@ -62,25 +62,26 @@ var overJewel = null;
 var draggedJewel = null;
 var draggingBoardJewel = null;
 $('body').on('dblclick', function (event) {
-    if (overJewel && overJewel.fixed) {
-        overJewel.disabled = !overJewel.disabled;
-        var ability = overJewel.ability;
-        if (!ability) return;
-        if (overJewel.disabled) {
-            var abilityIndex = state.selectedCharacter.adventurer.abilities.indexOf(ability);
-            state.selectedCharacter.adventurer.abilities.splice(abilityIndex, 1);
-            removeActions(state.selectedCharacter.adventurer, ability);
-            removeBonusSourceFromObject(state.selectedCharacter.adventurer, ability, true);
-            refreshStatsPanel();
-        } else {
-            state.selectedCharacter.adventurer.abilities.push(ability);
-            addActions(state.selectedCharacter.adventurer, ability);
-            addBonusSourceToObject(state.selectedCharacter.adventurer, ability, true);
-            refreshStatsPanel();
-        }
-        removeToolTip();
-        saveGame();
+    if (!overJewel || !overJewel.fixed) return; // dblclick action only applies to fixed jewels
+    // Cannot interact with jewel boards of characters that are not in your guild yet.
+    if (overJewel.character && state.characters.indexOf(overJewel.character) < 0) return;
+    overJewel.disabled = !overJewel.disabled;
+    var ability = overJewel.ability;
+    if (!ability) return;
+    if (overJewel.disabled) {
+        var abilityIndex = state.selectedCharacter.adventurer.abilities.indexOf(ability);
+        state.selectedCharacter.adventurer.abilities.splice(abilityIndex, 1);
+        removeActions(state.selectedCharacter.adventurer, ability);
+        removeBonusSourceFromObject(state.selectedCharacter.adventurer, ability, true);
+        refreshStatsPanel();
+    } else {
+        state.selectedCharacter.adventurer.abilities.push(ability);
+        addActions(state.selectedCharacter.adventurer, ability);
+        addBonusSourceToObject(state.selectedCharacter.adventurer, ability, true);
+        refreshStatsPanel();
     }
+    removeToolTip();
+    saveGame();
 });
 $('body').on('mousedown', function (event) {
     if (draggedJewel || draggingBoardJewel) {
