@@ -1,11 +1,11 @@
 
-var enchantedMonsterBonuses = {'*maxHealth': 1.5, '*damage': 1.5, '*xpValue': 3, '*coins': 2, '*anima': 3, '$tint': '#af0', '$color': '#af0'};
-var imbuedMonsterBonuses = {'*maxHealth': 2, '*damage': 2, '*xpValue': 10, '*coins': 6, '*anima': 10, '$tint': '#c6f', '$color': '#c6f'};
+var enchantedMonsterBonuses = {'bonuses': {'*maxHealth': 1.5, '*damage': 1.5, '*xpValue': 3, '*coins': 2, '*anima': 3, '$tint': '#af0', '$color': '#af0'}};
+var imbuedMonsterBonuses = {'bonuses': {'*maxHealth': 2, '*damage': 2, '*xpValue': 10, '*coins': 6, '*anima': 10, '$tint': '#c6f', '$color': '#c6f'}};
 // To make bosses intimidating, give them lots of health and damage, but to keep them from being overwhelming,
 // scale down their health regen, attack speed and critical multiplier.
-var bossMonsterBonuses = {'*maxHealth': 3, '*damage': 2, '*attackSpeed': .75, '*critDamage': .5, '*critChance': .5, '*evasion': .5,
+var bossMonsterBonuses = {'bonuses': {'*maxHealth': 3, '*damage': 2, '*attackSpeed': .75, '*critDamage': .5, '*critChance': .5, '*evasion': .5,
                             '*healthRegen': .3, '*xpValue': 4, '+coins': 2, '*coins': 4, '+anima': 1, '*anima': 4,
-                            '$uncontrollable': 'Cannot be controlled.', '$tint': 'red'};
+                            '$uncontrollable': 'Cannot be controlled.', '$tint': 'red'}};
 var monsterPrefixes = [
     [
         {'name': 'Hawkeye', 'bonuses': {'+accuracy': [5, 10]}},
@@ -125,12 +125,11 @@ function matchingMonsterAffixes(list, monster, alreadyUsed) {
 }
 function updateMonster(monster) {
     // Clear the character's bonuses and graphics.
-    initializeVariableObject(monster);
-    addBonusSourceToObject(monster, monster.base.implicitBonuses);
-    addBonusSourceToObject(monster,getMonsterBonuses(monster));
+    initializeVariableObject(monster, monster.base);
+    addBonusSourceToObject(monster, {'bonuses': monster.base.implicitBonuses});
+    addBonusSourceToObject(monster, {'bonuses': getMonsterBonuses(monster)});
     monster.actions = [];
     monster.reactions = [];
-    monster.tags = {};
     monster.onHitEffects = [];
     monster.onCritEffects = [];
     for (var tag of ifdefor(monster.base.tags, [])) monster.tags[tag] = true;
@@ -138,20 +137,19 @@ function updateMonster(monster) {
     var enchantments = monster.prefixes.length + monster.suffixes.length;
     monster.image = monster.base.source.image.normal;
     if (enchantments > 2) {
-        monster.bonuses.push(imbuedMonsterBonuses);
+        addBonusSourceToObject(monster, imbuedMonsterBonuses);
     } else if (enchantments) {
-        monster.bonuses.push(enchantedMonsterBonuses);
+        addBonusSourceToObject(monster, enchantedMonsterBonuses);
     }
-    ifdefor(monster.extraSkills, []).forEach(function (ability) {
-        addActions(monster, ability);
-    });
-    ifdefor(monster.base.abilities, []).forEach(function (ability) {
+    ifdefor(monster.extraSkills, []).concat(ifdefor(monster.base.abilities, [])).forEach(function (ability) {
+        addBonusSourceToObject(monster, ability);
         addActions(monster, ability);
     });
     var name =  monster.base.name;
     var prefixNames = [];
     monster.prefixes.forEach(function (affix) {
         prefixNames.push(affix.base.name);
+        addBonusSourceToObject(monster, affix);
         addActions(monster, affix);
     });
     if (prefixNames.length) {
@@ -160,6 +158,7 @@ function updateMonster(monster) {
     var suffixNames = []
     monster.suffixes.forEach(function (affix) {
         suffixNames.push(affix.base.name);
+        addBonusSourceToObject(monster, affix);
         addActions(monster, affix);
     });
     if (suffixNames.length) {
@@ -172,21 +171,25 @@ function updateMonster(monster) {
         if (!equipment) {
             return;
         }
+        addBonusSourceToObject(monster, equipment.base);
         addActions(monster, equipment.base);
         equipment.prefixes.forEach(function (affix) {
+            addBonusSourceToObject(monster, affix);
             addActions(monster, affix);
         })
         equipment.suffixes.forEach(function (affix) {
+            addBonusSourceToObject(monster, affix);
             addActions(monster, affix);
         })
     });
-    monster.actions.push({'base': createAction({'tags': monster.tags.concat(['basic'])})});
+    addActions(monster, abilities.basicAttack);
     recomputeDirtyStats(monster);
     //console.log(monster);
 }
 var monsters = {};
 function addMonster(key, data) {
     data.key = key;
+    data.variableObjectType = 'actor';
     monsters[key] = data;
 }
 function enemySheet(key) {

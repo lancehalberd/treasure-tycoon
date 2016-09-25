@@ -303,7 +303,7 @@ function checkToShowCraftingToopTip() {
     if (overCraftingItem.crafted) {
         sections = [overCraftingItem.name];
         if (overCraftingItem.tags) {
-            sections.push(overCraftingItem.tags.map(tagToDisplayName).join(', '));
+            sections.push(Object.keys(overCraftingItem.tags).map(tagToDisplayName).join(', '));
         }
         sections.push('Requires level ' + overCraftingItem.level);
         sections.push('');

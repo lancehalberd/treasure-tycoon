@@ -1,7 +1,7 @@
 function getBasicAttack(adventurer) {
     for (var i = 0; i < adventurer.actions.length; i++) {
         var attack = adventurer.actions[i];
-        if (attack.base.tags['basic']) {
+        if (attack.tags['basic']) {
             return attack;
         }
     }
@@ -71,7 +71,7 @@ function updateDamageInfo(character, $statsPanel, monsterLevel) {
     if (ifdefor(attack.alwaysHits)) {
         hitPercent = 1;
     }
-    var expectedPhysical = Math.max(0, damageMultiplier *physical - dummy.block / 2);
+    var expectedPhysical = Math.max(0, damageMultiplier * physical - dummy.block / 2);
     expectedPhysical = applyArmorToDamage(expectedPhysical, dummy.armor);
     var expectedMagic = Math.max(0, damageMultiplier * magic - dummy.magicBlock / 2);
     expectedMagic = expectedMagic * Math.max(0, (1 - dummy.magicResist));
@@ -89,7 +89,7 @@ function updateDamageInfo(character, $statsPanel, monsterLevel) {
     $damage.text((expectedPhysicalDPS + expectedMagicDPS).format(1));
     $damage.parent().attr('helptext', sections.join('<br/>'));
 
-    attack = dummy.actions[dummy.actions.length - 1];
+    attack = getBasicAttack(dummy);
 
     var $protection =  $statsPanel.find('.js-protection');
     physical = attack.maxPhysicalDamage;
@@ -396,8 +396,7 @@ function applyAttackToTarget(attackStats, target) {
     if (attackStats.isCritical) {
         effects = effects.concat(ifdefor(attacker.onCritEffects, []));
     }
-    for (var i = 0; i < effects.length; i++) {
-        var effect = effects[i];
+    for (var effect of effects) {
         // Some abilities like corsairs venom add a stacking debuff to the target every hit.
         if (ifdefor(effect.debuff)) {
             addTimedEffect(target, effect.debuff);
@@ -459,5 +458,5 @@ function applyArmorToDamage(damage, armor) {
     //This equation looks a bit funny but is designed to have the following properties:
     //100% when armor = 0, 50% when armor = damage, 25% when armor = 2 * damage
     //1/(2^N) damage when armor is N times base damage
-    return Math.max(1, damage / Math.pow(2, armor / damage));
+    return damage / Math.pow(2, armor / damage);
 }

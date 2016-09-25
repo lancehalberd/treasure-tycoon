@@ -447,7 +447,6 @@ $('body').on('click', '.js-confirmSkill', function (event) {
     character.board.boardPreview = null;
     drawBoardBackground(character.boardContext, character.board);
     gainLevel(character.adventurer);
-    updateAdventurer(character.adventurer);
     updateConfirmSkillButton();
     saveGame();
 });
@@ -529,6 +528,5 @@ $(document).on('keydown', function(event) {
             }
             completeLevel(state.selectedCharacter);
         }
-        updateAdventurer(state.selectedCharacter.adventurer);
     }
 });

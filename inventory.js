@@ -1,47 +1,58 @@
-function equipItem(adventurer, item, update) {
+function equipItem(actor, item, update) {
     //console.log("equip " + item.base.slot);
-    if (adventurer.equipment[item.base.slot]) {
+    if (actor.equipment[item.base.slot]) {
         console.log("Tried to equip an item without first unequiping!");
         return;
     }
-    if (item.base.slot === 'offhand' && isTwoHandedWeapon(adventurer.equipment.weapon) && !ifdefor(adventurer.twoToOneHanded)) {
+    if (item.base.slot === 'offhand' && isTwoHandedWeapon(actor.equipment.weapon) && !ifdefor(actor.twoToOneHanded)) {
         console.log("Tried to equip an offhand while wielding a two handed weapon!");
         return;
     }
     item.$item.detach();
-    if (state.selectedCharacter && state.selectedCharacter.adventurer === adventurer) {
+    if (state.selectedCharacter && state.selectedCharacter.adventurer === actor) {
         $('.js-equipment .js-' + item.base.slot).append(item.$item);
     }
-    item.actor = adventurer;
-    adventurer.equipment[item.base.slot] = item;
-    addActions(adventurer, item.base);
-    addBonusSourceToObject(adventurer, item.base, false);
+    item.actor = actor;
+    actor.equipment[item.base.slot] = item;
+    addActions(actor, item.base);
+    addBonusSourceToObject(actor, item.base, false);
     item.prefixes.forEach(function (affix) {
-        addActions(adventurer, affix);
-        addBonusSourceToObject(adventurer, affix, false);
+        addActions(actor, affix);
+        addBonusSourceToObject(actor, affix, false);
     })
     item.suffixes.forEach(function (affix) {
-        addActions(adventurer, affix);
-        addBonusSourceToObject(adventurer, affix, false);
+        addActions(actor, affix);
+        addBonusSourceToObject(actor, affix, false);
     })
-    if (update) recomputeDirtyStats(adventurer);
+    if (update) {
+        updateTags(actor, recomputActorTags(actor), true);
+        if (state.selectedCharacter === actor.character) {
+            refreshStatsPanel(actor.character, $('.js-characterColumn .js-stats'));
+        }
+    }
 }
 function unequipSlot(actor, slotKey, update) {
     //console.log(new Error("unequip " + slotKey));
     if (actor.equipment[slotKey]) {
-        actor.equipment[slotKey].actor = null;
+        var item = actor.equipment[slotKey]
+        item.actor = null;
         actor.equipment[slotKey] = null;
-        removeActions(adventurer, item.base);
-        removeBonuseSourceFromObject(adventurer, item.base, false);
-        equipment.prefixes.forEach(function (affix) {
-            removeActions(adventurer, affix);
-            removeBonuseSourceFromObject(adventurer, affix, false);
+        removeActions(actor, item.base);
+        removeBonusSourceFromObject(actor, item.base, false);
+        item.prefixes.forEach(function (affix) {
+            removeActions(actor, affix);
+            removeBonusSourceFromObject(actor, affix, false);
         })
-        equipment.suffixes.forEach(function (affix) {
-            removeActions(adventurer, affix);
-            removeBonuseSourceFromObject(adventurer, affix, false);
+        item.suffixes.forEach(function (affix) {
+            removeActions(actor, affix);
+            removeBonusSourceFromObject(actor, affix, false);
         })
-        if (update) recomputeDirtyStats(adventurer);
+        if (update) {
+            updateTags(actor, recomputActorTags(actor), true);
+            if (state.selectedCharacter === actor.character) {
+                refreshStatsPanel(actor.character, $('.js-characterColumn .js-stats'));
+            }
+        }
     }
 }
 function isTwoHandedWeapon(item) {
@@ -323,7 +334,9 @@ function applyDragResults() {
         if (sourceCharacter && sourceCharacter !== targetCharacter) {
             unequipSlot(sourceCharacter.adventurer, item.base.slot, false);
             if (!currentMain && !currentSub) {
-                updateAdventurer(sourceCharacter.adventurer);
+                // The source character won't have additional items equipped to them,
+                // so go ahead and recompute stats now.
+                recomputeDirtyStats(sourceCharacter.adventurer);
             } else {
                 if (currentMain && currentMain.level <= sourceCharacter.adventurer.level) {
                     // Swap the item back to the source character if they can equip it.
@@ -465,7 +478,6 @@ $(document).on('keydown', function(event) {
         });
     }
     if (event.which == 76) { // 'l'
-        updateAdventurer(state.selectedCharacter.adventurer);
         if (overCraftingItem) {
             if (lastCraftedItem) {
                 craftingContext.fillStyle = ifdefor(lastCraftedItem.craftedUnique ? '#44ccff' : 'green');

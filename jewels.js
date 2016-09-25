@@ -218,17 +218,17 @@ function updateAdjacencyBonuses(jewel) {
     jewel.helpText = jewelHelpText(jewel);
 }
 function updateJewelBonuses(character) {
-    character.jewelBonuses = {};
+    character.jewelBonuses = {'bonuses': {}};
     character.board.jewels.forEach(function (jewel) {
         $.each(jewel.bonuses, function (bonusKey, bonusValue) {
-            character.jewelBonuses[bonusKey] = bonusValue + ifdefor(character.jewelBonuses[bonusKey], 0);
+            character.jewelBonuses.bonuses[bonusKey] = bonusValue + ifdefor(character.jewelBonuses.bonuses[bonusKey], 0);
         })
         $.each(jewel.adjacencyBonuses, function (bonusKey, bonusValue) {
-            character.jewelBonuses[bonusKey] = bonusValue + ifdefor(character.jewelBonuses[bonusKey], 0);
+            character.jewelBonuses.bonuses[bonusKey] = bonusValue + ifdefor(character.jewelBonuses.bonuses[bonusKey], 0);
         })
     });
     if (character === state.selectedCharacter) {
-        $('.js-jewelBonuses .js-content').empty().append(bonusHelpText(character.jewelBonuses, false, character.adventurer,character.adventurer));
+        $('.js-jewelBonuses .js-content').empty().append(bonusHelpText(character.jewelBonuses.bonuses, false, character.adventurer,character.adventurer));
     }
 }
 function makeFixedJewel(shape, character, ability) {

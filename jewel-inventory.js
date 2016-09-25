@@ -69,10 +69,15 @@ $('body').on('dblclick', function (event) {
         if (overJewel.disabled) {
             var abilityIndex = state.selectedCharacter.adventurer.abilities.indexOf(ability);
             state.selectedCharacter.adventurer.abilities.splice(abilityIndex, 1);
+            removeActions(state.selectedCharacter.adventurer, ability);
+            removeBonusSourceFromObject(state.selectedCharacter.adventurer, ability, true);
+            refreshStatsPanel();
         } else {
             state.selectedCharacter.adventurer.abilities.push(ability);
+            addActions(state.selectedCharacter.adventurer, ability);
+            addBonusSourceToObject(state.selectedCharacter.adventurer, ability, true);
+            refreshStatsPanel();
         }
-        updateAdventurer(state.selectedCharacter.adventurer);
         removeToolTip();
         saveGame();
     }
@@ -301,10 +306,17 @@ $('body').on('mouseup', function (event) {
 function removeFromBoard(jewel) {
     if (!jewel.character) return;
     var jewels = jewel.character.board.jewels;
+    var adventurer = jewel.character.adventurer;
     var index = jewels.indexOf(jewel);
     if (index >= 0) {
+        // To properly update a character when the jewel board changes, we remove
+        // the bonus as it is, then update it after removing the jewel and add
+        // the bonus back again and trigger the stat update for the adventurer.
         jewels.splice(index, 1);
-        updateAdventurer(jewel.character.adventurer);
+        removeBonusSourceFromObject(adventurer, adventurer.character.jewelBonuses, false);
+        updateJewelBonuses(adventurer.character);
+        addBonusSourceToObject(adventurer, adventurer.character.jewelBonuses, true);
+        refreshStatsPanel();
     }
 }
 function returnToInventory(jewel) {
@@ -323,7 +335,7 @@ function stopJewelDrag() {
         overVertex = null;
         if (draggedJewel.character) {
             removeFromBoard(draggedJewel);
-            if (equipJewel(draggedJewel.character)) {
+            if (equipJewel(draggedJewel.character, false, true)) {
                 checkToShowJewelToolTip();
                 return;
             }
@@ -349,7 +361,7 @@ function stopJewelDrag() {
         if (collision(draggedJewel.$canvas, $(element))) {
             var relativePosition = relativeMousePosition(jewelsCanvas);
             draggedJewel.shape.setCenterPosition(relativePosition[0], relativePosition[1]);
-            if (equipJewel(state.selectedCharacter, true)) {
+            if (equipJewel(state.selectedCharacter, true, true)) {
                 checkToShowJewelToolTip();
                 updateJewelCraftingOptions();
                 return false;
@@ -414,7 +426,7 @@ function appendJewelToElement(jewel, $element) {
     $element.append(jewel.$item);
     jewel.$canvas.css('position', '');
 }
-function equipJewel(character, replace, skipUpdate) {
+function equipJewel(character, replace, updateAdventurer) {
     if (jewelTierLevels[draggedJewel.tier] <= character.adventurer.level
         && snapToBoard(draggedJewel, character.board, replace)) {
         draggedJewel.character = character;
@@ -425,7 +437,13 @@ function equipJewel(character, replace, skipUpdate) {
         updateAdjacentJewels(draggedJewel);
         draggedJewel = null;
         $dragHelper = null;
-        if (!ifdefor(skipUpdate)) updateAdventurer(character.adventurer);
+        if (updateAdventurer) {
+            var adventurer = character.adventurer;
+            removeBonusSourceFromObject(adventurer, adventurer.character.jewelBonuses, false);
+            updateJewelBonuses(adventurer.character);
+            addBonusSourceToObject(adventurer, adventurer.character.jewelBonuses, true);
+            refreshStatsPanel();
+        }
         return true;
     }
     updateAdjacentJewels(draggedJewel);

@@ -23,7 +23,7 @@ function itemHelpText(item) {
     }
     var sections = [name];
     if (item.base.tags) {
-        sections.push(item.base.tags.map(tagToDisplayName).join(', '));
+        sections.push(Object.keys(item.base.tags).map(tagToDisplayName).join(', '));
     }
     if (item.level > state.selectedCharacter.adventurer.level) {
         sections.push('<span style="color: #f00;">Requires level ' + item.level + '</span>');
@@ -303,9 +303,6 @@ function bonusHelpText(rawBonuses, implicit, actor, localObject) {
     if (ifdefor(bonuses['*distance'])) {
         sections.push((bonuses['*distance']).format(1) + 'x distance');
     }
-    if (ifdefor(bonuses['+attackPower'])) {
-        sections.push(bonuses['+attackPower'].format(2) + 'x increased attack power');
-    }
     if (ifdefor(bonuses['+chance'])) {
         sections.push(bonuses['+chance'].percent() + ' increased chance');
     }
@@ -352,7 +349,7 @@ function bonusHelpText(rawBonuses, implicit, actor, localObject) {
 function abilityHelpText(ability, character) {
     var action = ifdefor(ability.action, ability.reaction);
     function evaluateActionStat(key) {
-        return evaluateForDisplay(action.stats[key], character.adventurer, action);
+        return evaluateForDisplay(action.bonuses[key], character.adventurer, action);
     }
     var sections = [ability.name, ''];
     if (ifdefor(ability.helpText)) {
@@ -376,10 +373,7 @@ function abilityHelpText(ability, character) {
         for (var i = 0; i < ifdefor(action.restrictions, []).length; i++) {
             actionSections.push(properCase(action.restrictions[i]) + ' only');
         }
-        if (ifdefor(action.stats.attackPower)) {
-            actionSections.push(evaluateForDisplay(action.stats.attackPower, character.adventurer, action).format(2) + 'x power');
-        }
-        $.each(action.stats, function (key, value) {
+        $.each(action.bonuses, function (key, value) {
             if (key.charAt(0) === '$') {
                 actionSections.push(value);
             }
@@ -387,40 +381,40 @@ function abilityHelpText(ability, character) {
         if (ifdefor(action.monsterKey)) {
             actionSections.push('Summons a ' + monsters[action.monsterKey].name);
         }
-        if (ifdefor(action.stats.healthBonus, 1) !== 1) {
+        if (ifdefor(action.bonuses.healthBonus, 1) !== 1) {
             actionSections.push(evaluateActionStat('healthBonus').format(1) + 'x health');
         }
-        if (ifdefor(action.stats.damageBonus, 1) !== 1) {
+        if (ifdefor(action.bonuses.damageBonus, 1) !== 1) {
             actionSections.push(evaluateActionStat('damageBonus').format(1) + 'x damage');
         }
-        if (ifdefor(action.stats.attackSpeedBonus, 1) !== 1) {
+        if (ifdefor(action.bonuses.attackSpeedBonus, 1) !== 1) {
             actionSections.push(evaluateActionStat('attackSpeedBonus').format(1) + 'x attack speed');
         }
-        if (ifdefor(action.stats.speedBonus, 1) !== 1) {
+        if (ifdefor(action.bonuses.speedBonus, 1) !== 1) {
             actionSections.push(evaluateActionStat('speedBonus').format(1) + 'x movement speed');
         }
-        if (ifdefor(action.stats.range)) {
+        if (ifdefor(action.bonuses.range)) {
             actionSections.push('Range ' + evaluateActionStat('range').format(1));
         }
-        if (ifdefor(action.stats.area)) {
+        if (ifdefor(action.bonuses.area)) {
             actionSections.push('Area ' + evaluateActionStat('area').format(1));
         }
-        if (ifdefor(action.stats.cleave)) {
+        if (ifdefor(action.bonuses.cleave)) {
             actionSections.push(evaluateActionStat('cleave').percent() + ' splash damage to all enemies in range');
         }
-        if (ifdefor(action.stats.cleaveRange)) {
+        if (ifdefor(action.bonuses.cleaveRange)) {
             actionSections.push(evaluateActionStat('cleaveRange').format(1) + ' increased range for splash damage');
         }
-        if (ifdefor(action.stats.chance)) {
+        if (ifdefor(action.bonuses.chance)) {
             actionSections.push(evaluateActionStat('chance').percent() + ' chance');
         }
-        if (ifdefor(action.stats.consumeRatio)) {
+        if (ifdefor(action.bonuses.consumeRatio)) {
             actionSections.push('Absorb '  + evaluateActionStat('consumeRatio').percent() + ' of the target\'s max health');
         }
-        if (ifdefor(action.stats.duration)) {
+        if (ifdefor(action.bonuses.duration)) {
             actionSections.push('lasts ' + evaluateActionStat('duration').format(1) + ' seconds');
         }
-        if (ifdefor(action.stats.cooldown)) {
+        if (ifdefor(action.bonuses.cooldown)) {
             actionSections.push('Cooldown: ' + evaluateActionStat('cooldown').format(1) + ' seconds');
         }
         sections.push(tag('div', 'abilityText', actionSections.join('<br/>')));

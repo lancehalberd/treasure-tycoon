@@ -1,15 +1,17 @@
-function loadOrCreateSavedData() {
+function loadSavedData() {
     /** @type Object */
-    var importedSaveData = $.jStorage.get("savedGame");
+    var importedSaveData = null;//$.jStorage.get("savedGame");
     if (importedSaveData) {
         console.log("loading saved data");
         importState(importedSaveData);
+        return true;
     }
+    return false;
 }
 
 function saveGame() {
     console.log("saving game data");
-    $.jStorage.set("savedGame", exportState(state));
+    //$.jStorage.set("savedGame", exportState(state));
 }
 
 function exportState(state) {
@@ -181,7 +183,6 @@ function importCharacter(characterData) {
     });
     // centerShapesInRectangle(character.board.fixed.map(jewelToShape).concat(character.board.spaces), rectangle(0, 0, character.boardCanvas.width, character.boardCanvas.height));
     drawBoardBackground(character.boardContext, character.board);
-    removeAdventureEffects(adventurer);
     updateAdventurer(character.adventurer);
     return character;
 }
@@ -217,6 +218,7 @@ function importAdventurer(adventurerData) {
         'attackCooldown': 0,
         'percentHealth': 1
     };
+    initializeVariableObject(adventurer, {'variableObjectType': 'actor'});
     equipmentSlots.forEach(function (type) {
         adventurer.equipment[type] = null;
     });

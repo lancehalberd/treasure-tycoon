@@ -105,18 +105,8 @@ async.mapSeries([
     jewelsContext = jewelsCanvas.getContext("2d");
     previewContext = $('.js-characterColumn .js-previewCanvas')[0].getContext("2d")
     previewContext.imageSmoothingEnabled = false;
-    gainJewel(makeJewel(1, 'triangle', [90, 5, 5], 1.1));
-    gainJewel(makeJewel(1, 'triangle', [5, 90, 5], 1.1));
-    gainJewel(makeJewel(1, 'triangle', [5, 5, 90], 1.1));
-    gain('fame', 1);
-    gain('coins', 50);
-    gain('anima', 0);
-    hireCharacter(newCharacter(characterClasses[jobKey]));
-    $('.js-heroApplication').after($('.js-heroApplication').clone());
-    $('.js-heroApplication').each(function () {
-        createNewHeroApplicant($(this));
-    });
     setInterval(mainLoop, 20);
+    //mainLoop();
     $('.js-loading').hide();
     $('.js-gameContent').show();
     initializeLevelEditing();
@@ -124,7 +114,21 @@ async.mapSeries([
     var jewelButtonCanvas = $('.js-jewelButtonCanvas')[0];
     centerShapesInRectangle([testShape], rectangle(0, 0, jewelButtonCanvas.width, jewelButtonCanvas.height));
     drawJewel(jewelButtonCanvas.getContext('2d'), testShape, [0, 0], 'black');
-    loadOrCreateSavedData();
+    if (!loadSavedData()) {
+        gainJewel(makeJewel(1, 'triangle', [90, 5, 5], 1.1));
+        gainJewel(makeJewel(1, 'triangle', [5, 90, 5], 1.1));
+        gainJewel(makeJewel(1, 'triangle', [5, 5, 90], 1.1));
+        gain('fame', 1);
+        gain('coins', 50);
+        gain('anima', 0);
+        var startingCharacter = newCharacter(characterClasses[jobKey]);
+        updateAdventurer(startingCharacter.adventurer);
+        hireCharacter(startingCharacter);
+        $('.js-heroApplication').after($('.js-heroApplication').clone());
+        $('.js-heroApplication').each(function () {
+            createNewHeroApplicant($(this));
+        });
+    }
     centerMapOnLevel(map[state.selectedCharacter.currentLevelKey], true);
     drawMap();
 });
@@ -462,32 +466,6 @@ function showContext(context) {
     }
     $('.js-adventureContext, .js-jewelContext, .js-itemContext').not('.js-' + context + 'Context').hide();
     $('.js-' + context + 'Context').show();
-}
-
-function setSelectedCharacter(character) {
-    state.selectedCharacter = character;
-    var adventurer = character.adventurer;
-    updateAdventurer(adventurer);
-    // update the equipment displayed.
-    equipmentSlots.forEach(function (type) {
-        //detach any existing item
-        $('.js-equipment .js-' + type + ' .js-item').detach();
-        var equipment = adventurer.equipment[type];
-        if (equipment) {
-            $('.js-equipment .js-' + type).append(equipment.$item);
-        }
-    });
-    // update stats panel.
-    refreshStatsPanel(character, $('.js-characterColumn .js-stats'))
-    // update controls:
-    $('.js-jewelBoard .js-skillCanvas').data('character', character);
-    character.jewelsCanvas = $('.js-jewelBoard .js-skillCanvas')[0];
-    centerMapOnLevel(map[character.currentLevelKey]);
-    updateAdventureButtons();
-    updateConfirmSkillButton();
-    updateEquipableItems();
-    // Need to update which crafting levels are drawn in green/red.
-    drawCraftingViewCanvas();
 }
 function updateAdventureButtons() {
     var character = state.selectedCharacter;

@@ -13,6 +13,8 @@ var allActorVariables = {
     'maxHealth': '.',
     'healthRegen': '.',
     'speed': '.',
+    // This is not used directly, but is included as a factor in any skills based on the range of equipped weapon.
+    'weaponRange': '.',
     // defensive stats
     'evasion': '.',
     'block': '.', 'magicBlock': '.', 'armor': '.', 'magicResist': '.',
@@ -40,6 +42,7 @@ var commonActionVariables = {
     'critAccuracy': 'The percentage of bonus accuracy critical strikes gain.',
     // common skill stats
     'cooldown': 'How long you have to wait before this skill can be used again.',
+    'power': 'How powerful a spell is',
     'duration': 'How long this effect lasts.',
     'area': 'The radius of this skill\'s effect.',
     'buff': 'Some skills buff the user or allies.',
@@ -85,17 +88,17 @@ var allRoundedVariables = {
 var coreStatBonusSource = {'bonuses': {
     '%evasion': [.002, '*', '{dexterity}'],
     '%attackSpeed': [.002, '*', '{dexterity}'],
-    '+ranged:damage': ['{dexterity}', '/', 10],
+    '+ranged:physicalDamage': ['{dexterity}', '/', 10],
     '%maxHealth': [.002, '*', '{strength}'],
-    '%damage': [.002, '*', '{strength}'],
-    '+melee:damage': ['{strength}', '/', 10],
+    '%physicalDamage': [.002, '*', '{strength}'],
+    '+melee:physicalDamage': ['{strength}', '/', 10],
     '%block': [.002, '*', '{intelligence}'],
     '%magicBlock': [.002, '*', '{intelligence}'],
     '%accuracy': [.002, '*', '{intelligence}'],
     '+magic:magicDamage': ['{intelligence}', '/', 10],
     '&maxHealth': '{bonusMaxHealth}',
     '+healthRegen': ['{maxHealth}', '/', 100],
-    '+spell:power': [['{this.minMagicDamage}', '+' ,'{this.maxMagicDamage}'], '/' , 2]
+    '+spell:power': ['{intelligence}', '+', [['{this.minMagicDamage}', '+' ,'{this.maxMagicDamage}'], '/' , 2]]
 }};
 
 function removeAdventureEffects(adventurer) {
@@ -122,6 +125,8 @@ function returnToMap(character) {
     }
 }
 function refreshStatsPanel(character, $statsPanel) {
+    character = ifdefor(character, state.selectedCharacter);
+    $statsPanel = ifdefor($statsPanel, $('.js-characterColumn .js-stats'));
     var adventurer = character.adventurer;
     $statsPanel.find('.js-playerName').text(adventurer.job.name + ' ' + adventurer.name);
     $statsPanel.find('.js-playerLevel').text(adventurer.level);
@@ -178,7 +183,7 @@ function newCharacter(job) {
         // so as long as this doesn't fail, that should not matter.
         draggedJewel = loot.generateLootDrop().gainLoot(character);
         draggedJewel.shape.setCenterPosition(jewelsCanvas.width / 2, jewelsCanvas.width / 2);
-        if (!equipJewel(character, false, true)) {
+        if (!equipJewel(character, false, false)) {
             console.log("Failed to place jewel on starting board.");
         }
     });
@@ -215,7 +220,7 @@ function makeAdventurer(job, level, equipment) {
         'onCritEffects': [],
         'allEffects': []
     };
-    initializeVariableObject(adventurer);
+    initializeVariableObject(adventurer, {'variableObjectType': 'actor'});
     equipmentSlots.forEach(function (type) {
         adventurer.equipment[type] = null;
     });
@@ -226,7 +231,6 @@ function makeAdventurer(job, level, equipment) {
         equipItem(adventurer, makeItem(item, 1), false);
     });
     drawCraftingViewCanvas();
-    removeAdventureEffects(adventurer);
     updateAdventurer(adventurer);
     return adventurer;
 }
@@ -260,47 +264,58 @@ function changedPoints(pointsType) {
     else updateCraftingButtons();
     $('.js-global-' + pointsType).text(state[pointsType].abbreviate());
 }
+
 function addActions(actor, source) {
+    var effect, action;
     if (ifdefor(source.onHitEffect)) {
-        actor.onHitEffects.push(source.onHitEffect);
-        actor.variableChildren.push(source.onHitEffect);
+        effect = initializeVariableObject({}, source.onHitEffect);
+        actor.onHitEffects.push(effect);
+        addVariableChildToObject(actor, effect);
     }
     if (ifdefor(source.onCritEffect)) {
-        actor.onCritEffects.push(source.onCritEffect);
-        actor.variableChildren.push(source.onCritEffect);
+        effect = initializeVariableObject({}, source.onCritEffect);
+        actor.onCritEffects.push(effect);
+        addVariableChildToObject(actor, effect);
     }
     if (ifdefor(source.action)) {
-        var action = {'base': createAction(source.action)}
-        if (source.action.type === 'attack') {
-            action.base.tags = action.base.tags.concat(actor.tags);
-        }
+        action = initializeVariableObject({}, source.action);
         actor.actions.push(action);
+        addVariableChildToObject(actor, action);
     }
     if (ifdefor(source.reaction)) {
-        var action = {'base': createAction(source.reaction)}
-        if (source.reaction.type === 'attack') {
-            action.base.tags = action.base.tags.concat(actor.tags);
-        }
+        action = initializeVariableObject({}, source.reaction);
         actor.reactions.push(action);
+        addVariableChildToObject(actor, action);
     }
 }
-function createAction(data) {
-    var stats = ifdefor(data.stats, {});
-    var action =  {'type': 'attack', 'tags': [], 'helpText': 'A basic attack.', 'stats': {}};
-    $.each(data, function (key, value) {
-        action[key] = copy(value);
-    });
-    $.each(stats, function (stat, value) {
-        action.stats[stat] = value;
-    });
-    return action;
+function removeActions(actor, source) {
+    var variableChild;
+    if (ifdefor(source.onHitEffect)) {
+        variableChild = findVariableChildForBaseObject(actor, source.onHitEffect);
+        removeElementFromArray(actor.onHitEffects, variableChild);
+        removeElementFromArray(actor.variableChildren, variableChild);
+    }
+    if (ifdefor(source.onCritEffect)) {
+        variableChild = findVariableChildForBaseObject(actor, source.onCritEffect);
+        removeElementFromArray(actor.onCritEffects, variableChild);
+        removeElementFromArray(actor.variableChildren, variableChild);
+    }
+    if (ifdefor(source.action)) {
+        variableChild = findVariableChildForBaseObject(actor, source.action);
+        removeElementFromArray(actor.actions, variableChild);
+        removeElementFromArray(actor.variableChildren, variableChild);
+    }
+    if (ifdefor(source.reaction)) {
+        variableChild = findVariableChildForBaseObject(actor, source.reaction);
+        removeElementFromArray(actor.reactions, variableChild);
+        removeElementFromArray(actor.variableChildren, variableChild);
+    }
 }
 function updateAdventurer(adventurer) {
     // Clear the character's bonuses and graphics.
-    initializeVariableObject(adventurer);
+    initializeVariableObject(adventurer, {'variableObjectType': 'actor'});
     adventurer.actions = [];
     adventurer.reactions = [];
-    adventurer.tags = {};
     adventurer.onHitEffects = [];
     adventurer.onCritEffects = [];
     adventurer.allEffects = [];
@@ -316,36 +331,16 @@ function updateAdventurer(adventurer) {
         '+critDamage': .5,
         '+critAccuracy': .5,
         '+speed': 250,
-        '+unarmed:minPhysicalDamage': adventurer.level,
-        '+unarmed:maxPhysicalDamage': adventurer.level,
-        '+unarmed:range': .5,
-        '+unarmed:attackSpeed': 1,
-        '+unarmed:critChance': .01
+        '+weaponless:minPhysicalDamage': adventurer.level,
+        '+weaponless:maxPhysicalDamage': adventurer.level,
+        '+weaponless:range': .5,
+        // You are weaponless if you have no weapon equipped.
+        '+weaponless:attackSpeed': .5,
+        // You are unarmed if you have no weapon or offhand equipped.
+        '+unarmed:attackSpeed': .5,
+        '+weaponless:critChance': .01
     };
-    if (!adventurer.equipment.weapon) {
-        // Fighting unarmed is considered using a fist weapon.
-        adventurer.tags['fist'] = true;
-        adventurer.tags['melee'] = true;
-        // You gain the unarmed tag if both hands are free.
-        if (!adventurer.equipment.offhand) {
-            adventurer.tags['unarmed'] = true;
-        }
-    } else {
-        adventurer.tags[adventurer.equipment.weapon.base.type] = true;
-        for (var tag of Object.keys(ifdefor(adventurer.equipment.weapon.base.tags, {}))) {
-            adventurer.tags[tag] = true;
-        }
-        // You gain the noOffhand tag if offhand is empty and you are using a one handed weapon.
-        if (!adventurer.equipment.offhand && !adventurer.tags['twoHanded']) {
-            adventurer.tags['noOffhand'] = true;
-        }
-    }
-    if (adventurer.equipment.offhand) {
-        adventurer.tags[adventurer.equipment.offhand.base.type] = true;
-        for (var tag of Object.keys(ifdefor(adventurer.equipment.offhand.base.tags, {}))) {
-            adventurer.tags[tag] = true;
-        }
-    }
+    adventurer.tags = recomputActorTags(adventurer);
     var sectionWidth = personFrames * 32;
     var hat = adventurer.equipment.head;
     var hideHair = hat ? ifdefor(hat.base.hideHair, false) : false;
@@ -356,12 +351,14 @@ function updateAdventurer(adventurer) {
             adventurer.personContext.drawImage(images['gfx/person.png'], i * 32 + adventurer.hairOffset * sectionWidth, 0 , 32, 64, i * 32, 0, 32, 64);
         }
     }
+    addActions(adventurer, abilities.basicAttack);
     adventurer.abilities.forEach(function (ability) {
         addActions(adventurer, ability);
+        if (ability.bonuses) addBonusSourceToObject(adventurer, ability);
     });
     if (adventurer.character) {
         updateJewelBonuses(adventurer.character);
-        addBonusSourceToObject(adventurer, {'bonuses': adventurer.character.jewelBonuses});
+        addBonusSourceToObject(adventurer, adventurer.character.jewelBonuses);
         if (adventurer.character === state.selectedCharacter) {
             // Don't show the offhand slot if equipped with a two handed weapon unless they have a special ability to allow off hand with two handed weapons.
             $('.js-offhand').toggle(!isTwoHandedWeapon(adventurer.equipment.weapon) || !!ifdefor(adventurer.twoToOneHanded));
@@ -389,64 +386,39 @@ function updateAdventurer(adventurer) {
             }
         }
     });
-    adventurer.actions.push({'base': createAction({'tags': $.extend(adventurer.tags, {'basic': true})})});
     addBonusSourceToObject(adventurer, {'bonuses': adventurerBonuses});
     addBonusSourceToObject(adventurer, coreStatBonusSource);
-    adventurer.abilities.forEach(function (ability) {
-        if (ability.bonuses) addBonusSourceToObject(adventurer, ability);
-    });
     recomputeDirtyStats(adventurer);
-    console.log(adventurer);
+    //console.log(adventurer);
 }
-function updateActorStats(actor) {
-    actor.percentHealth = ifdefor(actor.health, 1) / ifdefor(actor.maxHealth, 1);
-    actor.actions.concat(actor.reactions).forEach(function (action) {
-        $.each(commonActionVariables, function (stat) {
-            action[stat] = getStatForAction(actor, action.base, stat, action);
-        });
-        // Make sure to compute stats that appear specifically on this action
-        // but that aren't included on commonActionVariables. At some point we
-        // may just do away with this entirely or split the variables more
-        // efficiently between these two. Right now commonActionVariables includes
-        // a lot of effects which will not often appear.
-        $.each(action.base.stats, function (stat) {
-            if (stat.charAt(0) === '$') {
-                stat = stat.substring(1);
-            }
-            // don't recalculate stats that we have already computed.
-            if (commonActionVariables[stat]) {
-                return;
-            }
-            action[stat] = getStatForAction(actor, action.base, stat, action);
-        })
-    });
-    // Collect all buffs/debuffs from onHit/onCritEffects
-    var effects = [];
-    actor.onHitEffects.concat(actor.onCritEffects).forEach(function (effect) {
-        if (ifdefor(effect.buff)) effects.push(effect.buff);
-        if (ifdefor(effect.debuff)) effects.push(effect.debuff);
-    });
-    // Calculate variables for all buff/debuffs from onHit/onCritEffects.
-    effects.forEach(function (effect) {
-        $.each(commonActionVariables, function (stat) {
-            effect[stat] = getStatForAction(actor, effect, stat, effect);
-        });
-        $.each(effect.stats, function (stat) {
-            if (stat.charAt(0) === '$') {
-                stat = stat.substring(1);
-            }
-            // don't recalculate stats that we have already computed.
-            if (commonActionVariables[stat]) {
-                return;
-            }
-            effect[stat] = getStatForAction(actor, effect, stat, effect);
-        });
-    });
-    actor.health = actor.percentHealth * actor.maxHealth;
-    if (ifdefor(actor.isMainCharacter) && actor.character === state.selectedCharacter) {
-        refreshStatsPanel(actor.character, $('.js-characterColumn .js-stats'));
+function recomputActorTags(actor) {
+    var tags = {};
+    if (!actor.equipment.weapon) {
+        // Fighting unarmed is considered using a fist weapon.
+        tags['fist'] = true;
+        tags['melee'] = true;
+        tags['weaponless'] = true;
+        // You gain the unarmed tag if both hands are free.
+        if (!actor.equipment.offhand) {
+            tags['unarmed'] = true;
+        }
+    } else {
+        tags[actor.equipment.weapon.base.type] = true;
+        for (var tag of Object.keys(ifdefor(actor.equipment.weapon.base.tags, {}))) {
+            tags[tag] = true;
+        }
+        // You gain the noOffhand tag if offhand is empty and you are using a one handed weapon.
+        if (!actor.equipment.offhand && !tags['twoHanded']) {
+            tags['noOffhand'] = true;
+        }
     }
-    updateActorHelpText(actor);
+    if (actor.equipment.offhand) {
+        tags[actor.equipment.offhand.base.type] = true;
+        for (var tag of Object.keys(ifdefor(actor.equipment.offhand.base.tags, {}))) {
+            tags[tag] = true;
+        }
+    }
+    return tags;
 }
 function updateActorHelpText(actor) {
     var sections = [actor.name + ' ' + Math.ceil(actor.health) + '/' + Math.ceil(actor.maxHealth), ''];
@@ -463,50 +435,6 @@ function updateActorHelpText(actor) {
     if ($popup && canvasPopupTarget === actor) {
         $popup.html(canvasPopupTarget.helptext);
     }
-}
-function getStatForAction(actor, dataObject, stat, action) {
-    var base = evaluateValue(actor, ifdefor(dataObject.stats[stat], 0), action), plus = 0, flatBonus = 0, percent = 1, multiplier = 1, specialValue = ifdefor(dataObject.stats['$' + stat], false);
-    var baseKeys = [stat];
-    if (stat === 'minPhysicalDamage' || stat === 'maxPhysicalDamage') {
-        baseKeys.push('physicalDamage');
-        baseKeys.push('damage');
-    }
-    if (stat === 'minMagicDamage' || stat === 'maxMagicDamage') {
-        baseKeys.push('magicDamage');
-        baseKeys.push('damage');
-    }
-    if (typeof base === 'object' && base.constructor != Array) {
-        var subObject = {};
-        if (!base.stats) {
-            console.log(base);
-            throw new Error("Found buff with undefined stats");
-        }
-        // Don't think I need to do common action variables for buffs...
-        /*$.each(commonActionVariables, function (key) {
-            subObject[key] = getStatForAction(actor, base, key, action);
-        });*/
-        $.each(base.stats, function (key, value) {
-            if (key.charAt(0) === '$') {
-                key = key.substring(1);
-            }
-            subObject[key] = getStatForAction(actor, base, key, action);
-        });
-        return subObject;
-    }
-    var keys = baseKeys.slice();
-    var extraTags = [];
-    if (dataObject.type) {
-        extraTags.push(dataObject.type);
-    }
-    if (dataObject.key && dataObject.type !== dataObject.key) {
-        extraTags.push(dataObject.key)
-    }
-    ifdefor(dataObject.tags, []).concat(extraTags).forEach(function (prefix) {
-        baseKeys.forEach(function(baseKey) {
-            keys.push(prefix + ':' + baseKey);
-        });
-    });
-    return (base + plus + flatBonus) * percent * multiplier + flatBonus;
 }
 function gainLevel(adventurer) {
     adventurer.level++;
@@ -538,7 +466,6 @@ function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonu
         'levelKey': ifdefor(levelKey, 'meadow')
     };
 }
-
 
 var characterClasses = {};
 addCharacterClass('Fool', 0, 0, 0);
@@ -588,4 +515,29 @@ function totalCostForNextLevel(character, level) {
         totalDivinityCost += Math.ceil(ifdefor(level.skill.costCoefficient, 1) * baseDivinity(level.level));
     }
     return totalDivinityCost;
+}
+function setSelectedCharacter(character) {
+    state.selectedCharacter = character;
+    var adventurer = character.adventurer;
+    // update the equipment displayed.
+    equipmentSlots.forEach(function (type) {
+        //detach any existing item
+        $('.js-equipment .js-' + type + ' .js-item').detach();
+        var equipment = adventurer.equipment[type];
+        if (equipment) {
+            $('.js-equipment .js-' + type).append(equipment.$item);
+        }
+    });
+    // update stats panel.
+    refreshStatsPanel(character, $('.js-characterColumn .js-stats'))
+    // update controls:
+    $('.js-jewelBoard .js-skillCanvas').data('character', character);
+    character.jewelsCanvas = $('.js-jewelBoard .js-skillCanvas')[0];
+    $('.js-jewelBonuses .js-content').empty().append(bonusHelpText(character.jewelBonuses.bonuses, false, character.adventurer,character.adventurer));
+    centerMapOnLevel(map[character.currentLevelKey]);
+    updateAdventureButtons();
+    updateConfirmSkillButton();
+    updateEquipableItems();
+    // Need to update which crafting levels are drawn in green/red.
+    drawCraftingViewCanvas();
 }
