@@ -185,7 +185,7 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
             self.x += self.vx;
             self.y += self.vy;
             var hit = false;
-            if (attackStats.attack.base.tags['rain'] >= 0) {
+            if (attackStats.attack.tags['rain'] >= 0) {
                 var speed = Math.sqrt(self.vx * self.vx + self.vy * self.vy);
                 self.vx = tx - self.x;
                 self.vy = Math.max(self.vy, ty - self.y);

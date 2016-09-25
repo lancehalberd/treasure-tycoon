@@ -125,7 +125,7 @@ function matchingMonsterAffixes(list, monster, alreadyUsed) {
 }
 function updateMonster(monster) {
     // Clear the character's bonuses and graphics.
-    initializeVariableObject(monster, monster.base);
+    initializeVariableObject(monster, monster.base, monster);
     addBonusSourceToObject(monster, {'bonuses': monster.base.implicitBonuses});
     addBonusSourceToObject(monster, {'bonuses': getMonsterBonuses(monster)});
     monster.actions = [];

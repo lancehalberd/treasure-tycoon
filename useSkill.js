@@ -34,11 +34,11 @@ function useSkill(actor, skill, target) {
             return false;
         }
     }
-    var isNova = skill.base.tags['nova']; // AOE centered on player (freeze)
-    var isField = skill.base.tags['field']; // AOE with duration centered on player (thunderstorm)
-    var isBlast = skill.base.tags['blast']; // AOE centered on target (plague, dispell, drain life)
-    var isRain = skill.base.tags['rain']; // Projectiles fall from the sky at targets (meteor)
-    var isSpell = skill.base.tags['spell'];
+    var isNova = skill.tags['nova']; // AOE centered on player (freeze)
+    var isField = skill.tags['field']; // AOE with duration centered on player (thunderstorm)
+    var isBlast = skill.tags['blast']; // AOE centered on target (plague, dispell, drain life)
+    var isRain = skill.tags['rain']; // Projectiles fall from the sky at targets (meteor)
+    var isSpell = skill.tags['spell'];
     var isAOE = skill.cleave || isNova || isField || isBlast || isRain;
     // Action skills have targets and won't activate if that target is out of range or not of the correct type.
     if (actionIndex >= 0) {
@@ -117,7 +117,7 @@ function useSkill(actor, skill, target) {
     skill.readyAt = actor.time + ifdefor(skill.cooldown, 0) * (1 - cdr);
     // Show the name of the skill used if it isn't a basic attack. When skills have distinct
     // visible animations, we should probably remove this.
-    if (!skill.base.tags['basic']) {
+    if (!skill.tags['basic']) {
         var hitText = {x: actor.x + 32, y: 240 - 170, color: 'white', font: "15px sans-serif"};
         hitText.value = skill.base.name;
         actor.character.textPopups.push(hitText);
@@ -146,12 +146,12 @@ function useSkill(actor, skill, target) {
 function getEnemiesInRange(actor, skill, skillTarget) {
     var targets = [], distance;
     // Rain targets everything on the field.
-    if (skill.base.tags['rain']) {
+    if (skill.tags['rain']) {
         return actor.enemies.slice();
     }
     for (var i = 0; i < actor.enemies.length; i++) {
         var target = actor.enemies[i];
-        if (skill.base.tags['blast']) {
+        if (skill.tags['blast']) {
             distance = getDistance(skillTarget, target);
             if (distance < skill.area * 32) {
                 targets.push(target);
@@ -159,7 +159,7 @@ function getEnemiesInRange(actor, skill, skillTarget) {
             }
         }
         distance = getDistance(actor, target);
-        if (skill.base.tags['nova'] || skill.base.tags['field']) {
+        if (skill.tags['nova'] || skill.tags['field']) {
             if (distance < skill.area * 32) {
                 targets.push(target);
                 continue;
@@ -177,7 +177,7 @@ function getPower(actor, skill) {
     return skill.power;
     // This is now done when calculating stats so that *power can effect power from magic damage.
     /*var power = skill.power;
-    if (skill.base.tags['spell']) {
+    if (skill.tags['spell']) {
         power += Random.range(actor.minMagicDamage, actor.maxMagicDamage);
     }
     return power;*/
@@ -557,7 +557,7 @@ skillDefinitions.deflect = {
     isValid: function (actor, deflectSkill, attackStats) {
         if (attackStats.evaded) return false;
         // Only non-spell, projectile attacks can be deflected.
-        return attackStats.projectile && !attackStats.attack.base.tags['spell'];
+        return attackStats.projectile && !attackStats.attack.tags['spell'];
     },
     use: function (actor, counterAttackSkill, attackStats) {
         var projectile = attackStats.projectile;
@@ -589,7 +589,7 @@ skillDefinitions.evadeAndCounter = {
 skillDefinitions.mimic = {
     isValid: function (actor, counterAttackSkill, attackStats) {
         // Only non basic attacks can be mimicked.
-        return !attackStats.attack.base.tags['basic'];
+        return !attackStats.attack.tags['basic'];
     },
     use: function (actor, counterAttackSkill, attackStats) {
         performAttack(actor, attackStats.attack, attackStats.source);

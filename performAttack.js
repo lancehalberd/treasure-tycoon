@@ -233,17 +233,17 @@ function performAttackProper(attackStats, target) {
             attacker.x = Math.min(attacker.x + teleport, Math.max(attacker.x - teleport, target.x + target.width + attackStats.attack.range * 32));
         }
     }
-    if (attackStats.attack.base.tags['song']) {
+    if (attackStats.attack.tags['song']) {
         attacker.character.effects.push(songEffect(attackStats));
-    } else if (attackStats.attack.base.tags['field']) {
+    } else if (attackStats.attack.tags['field']) {
         attacker.character.effects.push(fieldEffect(attackStats, attacker));
-    } else if (attackStats.attack.base.tags['nova']) {
+    } else if (attackStats.attack.tags['nova']) {
         // attackStats.explode--;
         attacker.character.effects.push(explosionEffect(attackStats, attacker.x + attacker.width / 2 + attacker.direction * attacker.width / 4, 120));
-    } else if (attackStats.attack.base.tags['blast']) {
+    } else if (attackStats.attack.tags['blast']) {
         // attackStats.explode--;
         attacker.character.effects.push(explosionEffect(attackStats, target.x + target.width / 2 + target.direction * target.width / 4, 120));
-    } else if (attackStats.attack.base.tags['rain']) {
+    } else if (attackStats.attack.tags['rain']) {
         // attackStats.explode--;
         var targets = [];
         var count = Math.floor(ifdefor(attackStats.attack.count, 1));
@@ -260,7 +260,7 @@ function performAttackProper(attackStats, target) {
                 attackStats, x, y, vx, vy, currentTarget, i * 10, // delay is in frames
                 attackStats.isCritical ? 'yellow' : 'red', ifdefor(attackStats.attack.base.size, 10) * (attackStats.isCritical ? 1.5 : 1)));
         }
-    } else if (attackStats.attack.base.tags['ranged']) {
+    } else if (attackStats.attack.tags['ranged']) {
         var distance = getDistance(attacker, target);
         attacker.character.projectiles.push(projectile(
             attackStats, attacker.x + attacker.width / 2 + attacker.direction * attacker.width / 4, 240 - 128,
@@ -403,7 +403,6 @@ function applyAttackToTarget(attackStats, target) {
         }
         // Some abilities like dancer's whirling dervish add a stacking buff to the attacker every hit.
         if (ifdefor(effect.buff)) {
-            console.log("BUFFED");
             addTimedEffect(attacker, effect.buff);
         }
     }

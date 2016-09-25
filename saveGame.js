@@ -218,7 +218,7 @@ function importAdventurer(adventurerData) {
         'attackCooldown': 0,
         'percentHealth': 1
     };
-    initializeVariableObject(adventurer, {'variableObjectType': 'actor'});
+    initializeVariableObject(adventurer, {'variableObjectType': 'actor'}, adventurer);
     equipmentSlots.forEach(function (type) {
         adventurer.equipment[type] = null;
     });

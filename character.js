@@ -124,6 +124,7 @@ function initializeActorForAdventure(actor) {
 }
 function returnToMap(character) {
     removeAdventureEffects(character.adventurer);
+    character.paused = false;
     character.area = null;
     updateAdventureButtons();
     if (state.selectedCharacter === character) {
@@ -229,7 +230,7 @@ function makeAdventurer(job, level, equipment) {
         'onCritEffects': [],
         'allEffects': []
     };
-    initializeVariableObject(adventurer, {'variableObjectType': 'actor'});
+    initializeVariableObject(adventurer, {'variableObjectType': 'actor'}, adventurer);
     equipmentSlots.forEach(function (type) {
         adventurer.equipment[type] = null;
     });
@@ -277,22 +278,22 @@ function changedPoints(pointsType) {
 function addActions(actor, source) {
     var effect, action;
     if (ifdefor(source.onHitEffect)) {
-        effect = initializeVariableObject({}, source.onHitEffect);
+        effect = initializeVariableObject({}, source.onHitEffect, actor);
         actor.onHitEffects.push(effect);
         addVariableChildToObject(actor, effect);
     }
     if (ifdefor(source.onCritEffect)) {
-        effect = initializeVariableObject({}, source.onCritEffect);
+        effect = initializeVariableObject({}, source.onCritEffect, actor);
         actor.onCritEffects.push(effect);
         addVariableChildToObject(actor, effect);
     }
     if (ifdefor(source.action)) {
-        action = initializeVariableObject({}, source.action);
+        action = initializeVariableObject({}, source.action, actor);
         actor.actions.push(action);
         addVariableChildToObject(actor, action);
     }
     if (ifdefor(source.reaction)) {
-        action = initializeVariableObject({}, source.reaction);
+        action = initializeVariableObject({}, source.reaction, actor);
         actor.reactions.push(action);
         addVariableChildToObject(actor, action);
     }
@@ -322,7 +323,7 @@ function removeActions(actor, source) {
 }
 function updateAdventurer(adventurer) {
     // Clear the character's bonuses and graphics.
-    initializeVariableObject(adventurer, {'variableObjectType': 'actor'});
+    initializeVariableObject(adventurer, {'variableObjectType': 'actor'}, adventurer);
     for (var stat of Object.keys(adventurer)) {
         if (stat.indexOf('Ops') === stat.length - 3) {
             delete adventurer[stat];
@@ -335,7 +336,7 @@ function updateAdventurer(adventurer) {
     adventurer.allEffects = [];
     var adventurerBonuses = {
         '+maxHealth': 20 * (adventurer.level + adventurer.job.dexterityBonus + adventurer.job.strengthBonus + adventurer.job.intelligenceBonus),
-        '+accuracy': 2 * adventurer.level,
+        '+accuracy': 1 + 2 * adventurer.level,
         '+evasion': adventurer.level,
         '+block': adventurer.level,
         '+magicBlock': adventurer.level / 2,
@@ -461,6 +462,7 @@ function gainLevel(adventurer) {
     // All the other stats would be updated as a result. A similar approach could be used to set the base monster bonuses.
     // The formulate for monster health is too complicated for the bonus system to support at the moment though.
     updateAdventurer(adventurer);
+    refreshStatsPanel();
     updateEquipableItems();
     drawCraftingViewCanvas();
 }

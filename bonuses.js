@@ -53,9 +53,11 @@ function parseBonuses(bonusSource) {
     }
     return bonusSource.parsedBonuses;
 }
-function initializeVariableObject(object, baseObject) {
+function initializeVariableObject(object, baseObject, actor) {
     if (!baseObject) throw new Error('No base object provided for new variable object');
     if (!baseObject.variableObjectType) throw new Error('variableObjectType was not set on a variable object base object');
+    if (!actor) throw new Error('No actor was provided for a new variable object. This must be provided for some implicit bonuses to work correctly, like range: {weaponRange} on attacks.');
+    object.actor = actor;
     object.base = baseObject;
     object.tags = {};
     for (var tag of ifdefor(object.base.tags, [])) {
@@ -176,10 +178,8 @@ function removeBonusSourceFromObject(object, bonusSource, triggerComputation) {
     }
 }
 function addBonusToObject(object, bonus, isImplicit) {
-    // Ignore stats that don't apply to the object.
-    if (!isImplicit && object['isActor'] && !allActorVariables[bonus.stats[0]]) return;
-    // A stat applies to an action if it is already on the action stats or it is a common action variable.
-    if (!isImplicit && object['isAction'] && !(ifdefor(object[bonus.stats[0]]) !== null || commonActionVariables[bonus.stats[0]])) return;
+    // Ignore this bonus for this object if the stat doesn't apply to it.
+    if (!doesStatApplyToObject(bonus.stats[0], object)) return;
     // Do nothing if bonus tags are not all present on the object.
     if (!object.tags)console.log(object);
     for (var tag of bonus.tags) if (!object.tags[tag]) return;
@@ -212,10 +212,8 @@ function addBonusToObject(object, bonus, isImplicit) {
     }
 }
 function removeBonusFromObject(object, bonus) {
-    // Ignore stats that don't apply to the object.
-    if (object['isActor'] && !allActorVariables[bonus.stats[0]]) return;
-    // A stat applies to an action if it is already on the action stats or it is a common action variable.
-    if (!object['isActor'] && !(ifdefor(object[bonus.stats[0]]) !== null || commonActionVariables[bonus.stats[0]])) return;
+    // Ignore this bonus for this object if the stat doesn't apply to it.
+    if (!doesStatApplyToObject(bonus.stats[0], object)) return;
     // Do nothing if bonus tags are not all present on the object.
     for (var tag of bonus.tags) if (!object.tags[tag]) return;
     var value = evaluateValue(ifdefor(object.actor, object), bonus.value, object);
@@ -246,6 +244,21 @@ function removeBonusFromObject(object, bonus) {
         object.dirtyStats[statKey] = true;
     }
 }
+var operations = {'*': true, '+': true, '-': true, '%': true, '$': true, '&': true};
+function doesStatApplyToObject(stat, object) {
+    switch (object.base.variableObjectType) {
+        case 'actor':
+            return allActorVariables[stat];
+        case 'action':
+            return ifdefor(object[stat]) !== null || commonActionVariables[stat];
+        case 'effect':
+            return stat === 'duration' || stat === 'area' || operations[stat.charAt(0)];
+        case 'trigger':
+            return false;
+        default:
+            throw new Error('Unexpected object base variableObjectType: ' + object.base.variableObjectType);
+    }
+}
 function recomputeDirtyStats(object) {
     for (var statKey of Object.keys(object.dirtyStats)) {
         recomputeStat(object, statKey);
@@ -269,7 +282,7 @@ function recomputeStat(object, statKey) {
             if (object.bonusSources.length > 100) {
                 throw new Error('too many bonus sources on object');
             }
-            newValue = initializeVariableObject({}, newValue);
+            newValue = initializeVariableObject({}, newValue, object.actor);
         }
     } else if (typeof(newValue) === 'number') {
         //console.log(statOps);
