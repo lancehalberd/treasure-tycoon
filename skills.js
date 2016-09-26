@@ -27,6 +27,9 @@ function attackAction(type, action, bonuses, helpText) {
 function spellAction(type, action, bonuses, helpText) {
     action.type = type;
     action.variableObjectType = 'action';
+    if (typeof(bonuses['+power']) === 'undefined') {
+        bonuses['+power'] = ['{intelligence}', '+', [['{this.minMagicDamage}', '+' ,'{this.maxMagicDamage}'], '/' , 2]];
+    }
     action.bonuses = bonuses;
     action.helpText = helpText;
     action.tags = ifdefor(action.tags, []);
@@ -46,7 +49,7 @@ function buffEffect(effect, bonuses) {
 var skills = {
     // Movement actions
     'dodge': movementAction('dodge', {}, {'+cooldown': 10, '+distance': -128, '$buff': buffEffect({}, {'%evasion': .5, '+duration': 5})},
-                            'Leap back to dodge an attack and gain: {buff}'),
+                            'Leap back to dodge an attack and gain: {$buff}'),
 
     // Attack actions
     'basicAttack': attackAction('attack', {'tags': ['basic']}, {}, 'A basic attack'),
@@ -57,9 +60,9 @@ var skills = {
                               {'*damage': 3, '+cooldown': 30, '$alwaysHits': 'Never misses', '$undodgeable': 'Cannot be dodged',
                                         '+distance': 256, '$domino': 'Knocks target away possibly damaging other enemies.'}),
     // Spell actions
-    'heal': spellAction('heal', {'target': 'allies'}, {'+cooldown': 10}, 'Cast a spell to restore {power} health.'),
+    'heal': spellAction('heal', {'target': 'allies'}, {'+cooldown': 10}, 'Cast a spell to restore {+power} health.'),
     'reflect': spellAction('reflect', {'target': 'self'}, {'+cooldown': 20},
-            'Create a magical barrier that will reflect projectile attacks until it breaks after taking {power} damage. Further casting strengthens the barrier.'),
+            'Create a magical barrier that will reflect projectile attacks until it breaks after taking {+power} damage. Further casting strengthens the barrier.'),
     'revive': spellAction('revive', {}, {'+cooldown': 120},
-            'Upon receiving a lethal blow, cast a spell that brings you back to life with {power} health.')
+            'Upon receiving a lethal blow, cast a spell that brings you back to life with {+power} health.')
 };

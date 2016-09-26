@@ -45,7 +45,7 @@ function evaluateValue(actor, value, localObject) {
 }
 function evaluateForDisplay(value, actor, localObject) {
     if (typeof value === 'undefined') {
-        throw new Error('Value was undefined');
+        throw new Error('value was undefined');
     }
     if (!actor && actor !== null) {
         throw new Error('Forgot to pass actor to evaluateForDisplay.');
@@ -60,8 +60,8 @@ function evaluateForDisplay(value, actor, localObject) {
         return value;
     }
     if (value.constructor !== Array) {
-        if (value.stats) {
-            return bonusHelpText(value.stats, false, actor);
+        if (value.bonuses) {
+            return bonusHelpText(value.bonuses, ifdefor(value.variableObjectType) !== null, actor);
         }
         return value;
     }

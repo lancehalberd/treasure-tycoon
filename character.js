@@ -82,7 +82,7 @@ var allRoundedVariables = {
 
 // All actors receive these bonuses, which give various benefits based on the core stats:
 // dexterity, strength, and intelligence. Bonuses for bonusMaxHealth and healthRegen are included
-// here but they could probably be added separately. BonuseMaxHealth is used to track
+// here but they could probably be added separately. BonusMaxHealth is used to track
 // overhealing which increases maxHealth for the duration of one adventure, and healthRegen
 // is the passive healthRegen that all actors are given.
 var coreStatBonusSource = {'bonuses': {
@@ -97,8 +97,7 @@ var coreStatBonusSource = {'bonuses': {
     '%accuracy': [.002, '*', '{intelligence}'],
     '+magic:magicDamage': ['{intelligence}', '/', 10],
     '&maxHealth': '{bonusMaxHealth}',
-    '+healthRegen': ['{maxHealth}', '/', 100],
-    '+spell:power': ['{intelligence}', '+', [['{this.minMagicDamage}', '+' ,'{this.maxMagicDamage}'], '/' , 2]]
+    '+healthRegen': ['{maxHealth}', '/', 100]
 }};
 
 function removeAdventureEffects(adventurer) {
@@ -407,7 +406,7 @@ function updateAdventurer(adventurer) {
     //console.log(adventurer);
 }
 function recomputActorTags(actor) {
-    var tags = {};
+    var tags = {'actor': true};
     if (!actor.equipment.weapon) {
         // Fighting unarmed is considered using a fist weapon.
         tags['fist'] = true;

@@ -78,6 +78,11 @@ function initializeVariableObject(object, baseObject, actor) {
                 object.dirtyStats[actionStat] = true;
             }
             break;
+        case 'effect':
+            for (var actionStat of ['duration', 'area']) {
+                object.dirtyStats[actionStat] = true;
+            }
+            break;
     }
     object.variableChildren = [];
     if (object.base.bonuses) {
@@ -179,7 +184,7 @@ function removeBonusSourceFromObject(object, bonusSource, triggerComputation) {
 }
 function addBonusToObject(object, bonus, isImplicit) {
     // Ignore this bonus for this object if the stat doesn't apply to it.
-    if (!doesStatApplyToObject(bonus.stats[0], object)) return;
+    if (!isImplicit && !doesStatApplyToObject(bonus.stats[0], object)) return;
     // Do nothing if bonus tags are not all present on the object.
     if (!object.tags)console.log(object);
     for (var tag of bonus.tags) if (!object.tags[tag]) return;
@@ -253,6 +258,8 @@ function doesStatApplyToObject(stat, object) {
             return ifdefor(object[stat]) !== null || commonActionVariables[stat];
         case 'effect':
             return stat === 'duration' || stat === 'area' || operations[stat.charAt(0)];
+        case 'minionBonus':
+            return operations[stat.charAt(0)];
         case 'trigger':
             return false;
         default:
@@ -269,10 +276,7 @@ function recomputeDirtyStats(object) {
 }
 function recomputeStat(object, statKey) {
     var statOps = ifdefor(object[statKey + 'Ops'], {'stat': statKey});
-    // Typically objects like actions and buffs have some initial values for stats
-    // which are either base totals for something like range or duration or strings
-    // for special flags like 'alwaysHits'.
-    var newValue = ifdefor(ifdefor(object.base.stats, {})[statKey], 0);
+    var newValue = 0;
     // Special values override all of the normal arithmetic for stats.
     if (ifdefor(statOps['$'], []).length) {
         newValue = statOps['$'][statOps['$'].length - 1];
@@ -395,6 +399,13 @@ function recomputeChildTags(parentObject, child) {
         // check if it is explicitly set to false.
         tags[parentTag] = true;
     }
+    // Each object exclusively uses its variableObjectType as a tag. Unset all other possible values and then set its tag.
+    delete tags['actor'];
+    delete tags['action'];
+    delete tags['effect'];
+    delete tags['trigger'];
+    delete tags['minionBonus'];
+    tags[child.base.variableObjectType] = true;
     return tags;
 }
 

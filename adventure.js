@@ -81,8 +81,7 @@ function capHealth(actor) {
     // Apply overhealing if the actor is over their health cap and possesses overhealing.
     if (ifdefor(actor.overHeal, 0) && actor.health > actor.maxHealth) {
         var bonusMaxHealth = actor.overHeal * (actor.health - actor.maxHealth);
-        actor.bonusMaxHealth = ifdefor(actor.bonusMaxHealth, 0) + bonusMaxHealth
-        actor.maxHealth += bonusMaxHealth;
+        setStat(actor, 'bonusMaxHealth', ifdefor(actor.bonusMaxHealth, 0) + bonusMaxHealth);
     }
     actor.health = Math.min(actor.maxHealth, Math.max(0, actor.health));
     actor.percentHealth = actor.health / actor.maxHealth;
@@ -186,7 +185,7 @@ function adventureLoop(character, delta) {
         }
         // Since damage can be dealt at various points in the frame, it is difficult to pin point what damage was dealt
         // since the last action check. To this end, we keep track of their health over the last five frames and use
-        // these values to determine how much damage has accrued recendebug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);tly for abilities that trigger when a character
+        // these values to determine how much damage has accrued recently for abilities that trigger when a character
         // is in danger.
         capHealth(actor);
         updateActorHelpText(actor);

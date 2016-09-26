@@ -353,7 +353,7 @@ function abilityHelpText(ability, character) {
     }
     var sections = [ability.name, ''];
     if (ifdefor(ability.helpText)) {
-        sections.push(ability.helpText.replace(/\{(\w+)\}/, function (match, key) {
+        sections.push(ability.helpText.replace(/\{(.+)\}/, function (match, key) {
             return evaluateForDisplay(ability.bonuses[key], character.adventurer, ability);
         }));
         sections.push('');
@@ -366,7 +366,7 @@ function abilityHelpText(ability, character) {
     if (action) {
         var actionSections = [];
         if (ifdefor(action.helpText)) {
-            actionSections.push(action.helpText.replace(/\{(\w+)\}/, function (match, key) {
+            actionSections.push(action.helpText.replace(/\{(.+)\}/, function (match, key) {
                 return evaluateActionStat(key);
             }));
         }
