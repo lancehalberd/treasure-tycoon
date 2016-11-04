@@ -142,25 +142,19 @@ var abilities = {
     'reviveInvulnerability': {'name': 'Halo', 'bonuses': {'$revive:buff': buffEffect({}, {'+duration': 2, '$invulnerable': 'Invulnerability'})}},
     // Tier 2 classes
     // Corsair
-    /*'corsair': {'name': 'Venom', 'bonuses': {'+poison': .2}, 'onHitEffect': {'debuff': {'tags': ['debuff'], 'bonuses': {'*damage': .9, 'area': 0}}},
+    'corsair': {'name': 'Venom', 'bonuses': {'+poison': .2}, 'onHitEffect': debuffEffect({}, {'*damage': .9}),
                     'helpText': "Apply a stacking debuff with every hit that weakens enemies' attacks and deals damage over time."},
-    'corsairKeyStone': {'name': 'Corsair Key Stone', 'bonuses': {}},
-    'critChance': {'name': 'Critical Chance', 'bonuses': {'%critChance': .5}},
-    'hook': {'name': 'Grappling Hook', 'action': {'type': 'attack',
-                    'bonuses': {'cooldown': 10, 'range': 10, 'dragDamage': 0, 'dragStun': 0, 'rangeDamage': 0, 'alwaysHits': 'Never misses', '$pullsTarget': 'Pulls target'},
-                    'helpText': 'Throw a hook to damage and pull enemies closer.'}},
+    'hook': {'name': 'Grappling Hook', 'action': skills.hook},
     'hookRange': {'name': 'Long Shot', 'bonuses': {'+hook:range': 5, '+hook:cooldown': -3}},
     'hookDrag': {'name': 'Barbed Wire', 'bonuses': {'+hook:dragDamage': .1}},
     'hookStun': {'name': 'Tazer Wire', 'bonuses': {'+hook:dragStun': .1}},
     'hookPower': {'name': 'Power Shot', 'bonuses': {'+hook:rangeDamage': .1}},
-    'deflect': {'name': 'Deflect', 'bonuses': {'+dexterity': 10, '+strength': 5}, 'reaction':
-            {'type': 'deflect', 'bonuses': {'attackPower': [.5, '+', ['{strength}', '/', 100]], 'cooldown': ['20', '*', [100, '/', [100, '+', '{dexterity}']]], 'chance': 1}, 'helpText': 'Deflect ranged attacks back at enemies.'}},
-    'plunder': {'name': 'Plunder', 'bonuses': {'+dexterity': 5, '+strength': 10}, 'action':
-            {'type': 'plunder', 'bonuses': {'range': 2, 'count': 1, 'duration': ['{strength}', '/', 10], 'cooldown': ['40', '*', [100, '/', [100, '+', '{dexterity}']]]}, 'helpText': 'Steal an enemies enchantment for yourself.'}},
+    'deflect': {'name': 'Deflect', 'bonuses': {'+dexterity': 10, '+strength': 5}, 'reaction': skills.deflect},
+    'plunder': {'name': 'Plunder', 'bonuses': {'+dexterity': 5, '+strength': 10}, 'action': skills.plunder},
     'deepPockets': {'name': 'Deep Pockets', 'bonuses': {'+dexterity': 10, '+plunder:count': 1}, 'helpText': 'Steal an additional enchantment when you use plunder.'},
     'robBlind': {'name': 'Rob Blind', 'bonuses': {'+strength': 10, '+plunder:count': 2}, 'helpText': 'Steal two additional enchantments when you use plunder.'},
     // Paladin
-    'paladin': {'name': 'Faith', 'bonuses': {'*buff:duration': 2}},
+    /*'paladin': {'name': 'Faith', 'bonuses': {'*buff:duration': 2}},
     'protect': {'name': 'Protect', 'bonuses': {'+intelligence': 5}, 'action':
             {'type': 'effect', 'tags': ['spell'], 'target': 'self', 'bonuses': {'cooldown': 30, 'buff':
             {'tags': ['buff'], 'bonuses': {'+armor': ['{intelligence}'], 'duration': 20, 'area': 0}}}, 'helpText': 'Create a magic barrier that grants: {buff}'}},

@@ -82,8 +82,8 @@ function initializeVariableObject(object, baseObject, actor) {
             }
             break;
         case 'effect':
-            for (var actionStat of ['duration', 'area']) {
-                object.dirtyStats[actionStat] = true;
+            for (var effectStat of ['duration', 'area']) {
+                object.dirtyStats[effectStat] = true;
             }
             break;
     }
