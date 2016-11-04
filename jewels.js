@@ -211,8 +211,9 @@ function updateAdjacencyBonuses(jewel) {
             jewel.adjacencyBonuses['%magicDamage'] = contrastBonus / 100;
             break;
         case 7:
-            jewel.adjacencyBonuses['+increasedExperience'] = resonanceBonus / 100;
-            jewel.adjacencyBonuses['+increasedDrops'] = contrastBonus / 100;
+            // This used to be increased experience, but we don't have xp any more
+            jewel.adjacencyBonuses['+increasedDrops'] = resonanceBonus / 100;
+            jewel.adjacencyBonuses['+increasedDrops'] += contrastBonus / 100;
             break;
     }
     jewel.helpText = jewelHelpText(jewel);
@@ -241,7 +242,7 @@ function makeFixedJewel(shape, character, ability) {
         'character': character,
         'ability': ability,
         'helpMethod': function () {
-            var coreHelpText = abilityHelpText(ability, character);
+            var coreHelpText = abilityHelpText(ability, character.adventurer);
             if (this.disabled) {
                 return 'Disabled <br> Double click to enable <br><br> ' + coreHelpText;
             }

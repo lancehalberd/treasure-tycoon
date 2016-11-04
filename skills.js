@@ -28,7 +28,7 @@ function spellAction(type, action, bonuses, helpText) {
     action.type = type;
     action.variableObjectType = 'action';
     if (typeof(bonuses['+power']) === 'undefined') {
-        bonuses['+power'] = ['{intelligence}', '+', [['{this.minMagicDamage}', '+' ,'{this.maxMagicDamage}'], '/' , 2]];
+        bonuses['+power'] = ['{magicPower}'];
     }
     action.bonuses = bonuses;
     action.helpText = helpText;

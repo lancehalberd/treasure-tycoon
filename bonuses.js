@@ -32,6 +32,9 @@ function getStatDependencies(bonusValue, dependencies) {
     }
     if (bonusValue.constructor !== Array) return dependencies;
     switch (bonusValue.length) {
+        case 1:
+            return getStatDependencies(bonusValue[0], dependencies);
+            break;
         case 2: // Unary operators like ['-', '{intelligence}']
             return getStatDependencies(bonusValue[1], dependencies);
             break;
@@ -344,6 +347,13 @@ function addVariableChildToObject(parentObject, child, triggerComputation) {
     if (triggerComputation) {
         recomputeDirtyStats(child);
     }
+}
+function applyParentToVariableChild(parentObject, child) {
+    child.tags = recomputeChildTags(parentObject, child);
+    for (var bonusSource of parentObject.bonusSources) {
+        addBonusSourceToObject(child, bonusSource);
+    }
+    recomputeDirtyStats(child);
 }
 
 // Adding and removing tags from an object is not a reversible procedure since

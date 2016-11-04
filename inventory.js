@@ -64,6 +64,7 @@ function sellValue(item) {
 function makeItem(base, level) {
     var item = {
         'base': base,
+        'hasImplictBonuses': true,
         'prefixes': [],
         'suffixes': [],
         // level is used to represent the required level, itemLevel is used

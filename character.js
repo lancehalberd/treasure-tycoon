@@ -13,13 +13,14 @@ var allActorVariables = {
     'maxHealth': '.',
     'healthRegen': '.',
     'speed': '.',
+    'magicPower': '.',
     // This is not used directly, but is included as a factor in any skills based on the range of equipped weapon.
     'weaponRange': '.',
     // defensive stats
     'evasion': '.',
     'block': '.', 'magicBlock': '.', 'armor': '.', 'magicResist': '.',
     // special traits
-    'cloaking': '.', 'overHeal': '.', 'increasedDrops': '.', 'increasedExperience': '.', 'cooldownReduction': '.',
+    'cloaking': '.', 'overHeal': '.', 'increasedDrops': '.', 'cooldownReduction': '.',
     'equipmentMastery': '.', 'invulnerable': '.', 'maxBlock': '.', 'maxMagicBlock': '.', 'maxEvasion': '.',
     'uncontrollable': '.', 'twoToOneHanded': '.',
     // tracked for debuffs that deal damage over time
@@ -97,7 +98,8 @@ var coreStatBonusSource = {'bonuses': {
     '%accuracy': [.002, '*', '{intelligence}'],
     '+magic:magicDamage': ['{intelligence}', '/', 10],
     '&maxHealth': '{bonusMaxHealth}',
-    '+healthRegen': ['{maxHealth}', '/', 100]
+    '+healthRegen': ['{maxHealth}', '/', 100],
+    '+magicPower': ['{intelligence}', '+', [['{this.minMagicDamage}', '+' ,'{this.maxMagicDamage}'], '/' , 2]]
 }};
 
 function removeAdventureEffects(adventurer) {

@@ -21,7 +21,9 @@ function evaluateValue(actor, value, localObject) {
     }
     formula = formula.slice();
 
-    if (formula.length == 2 && formula[0] === '-') {
+    if (formula.length == 1) {
+        value = evaluateValue(actor, formula.shift(), localObject);
+    } else if (formula.length == 2 && formula[0] === '-') {
         formula.shift()
         value = -1 * evaluateValue(actor, formula.shift(), localObject);
     } else {
@@ -61,7 +63,8 @@ function evaluateForDisplay(value, actor, localObject) {
     }
     if (value.constructor !== Array) {
         if (value.bonuses) {
-            return bonusHelpText(value.bonuses, ifdefor(value.variableObjectType) !== null, actor);
+            return bonusSourceHelpText(value, actor, localObject);
+            // return bonusHelpText(value.bonuses, ifdefor(value.variableObjectType) !== null, actor);
         }
         return value;
     }
@@ -70,7 +73,9 @@ function evaluateForDisplay(value, actor, localObject) {
         throw new Error('Expected "formula" to be an array, but value is: ' + JSON.stringify(fullFormula));
     }
     formula = fullFormula.slice();
-    if (formula.length == 2 && formula[0] === '-') {
+    if (formula.length === 1) {
+        value = evaluateForDisplay(formula.shift(), null, localObject);
+    } else if (formula.length == 2 && formula[0] === '-') {
         formula.shift();
         value = '-' + evaluateForDisplay(formula.shift(), null, localObject);
     } else {
