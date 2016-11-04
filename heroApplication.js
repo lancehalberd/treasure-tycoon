@@ -10,9 +10,10 @@ var jobRanks = [
 ];
 
 function createNewHeroApplicant($applicationPanel) {
+    var fameRoll = Math.round(state.fame / 2 + Math.random() * state.fame * 2 / 3);
     // Log is base e, so we need to divide by log(10) to get log10 value.
-    var fameRoll = 1 + Math.round(Math.random() * state.fame);
-    var jobRank = Math.min(Math.floor(Math.log(fameRoll) / Math.log(10)), jobRanks.length);
+    var maxRank = Math.min(Math.log(fameRoll) / Math.log(10), jobRanks.length);
+    var jobRank = Math.floor(Math.random() * maxRank);
     var jobKey = Random.element(jobRanks[jobRank]);
     var character = newCharacter(characterClasses[jobKey]);
     character.fame = fameRoll;
