@@ -229,7 +229,8 @@ function makeAdventurer(job, level, equipment) {
         'reactions': [],
         'onHitEffects': [],
         'onCritEffects': [],
-        'allEffects': []
+        'allEffects': [],
+        'helpMethod': actorHelpText
     };
     initializeVariableObject(adventurer, {'variableObjectType': 'actor'}, adventurer);
     equipmentSlots.forEach(function (type) {
@@ -437,20 +438,22 @@ function recomputActorTags(actor) {
     return tags;
 }
 function updateActorHelpText(actor) {
+    if ($popup && canvasPopupTarget === actor) {
+        $popup.html(actorHelpText(actor));
+    }
+}
+function actorHelpText(actor) {
     var sections = [actor.name + ' ' + Math.ceil(actor.health) + '/' + Math.ceil(actor.maxHealth), ''];
-    ifdefor(actor.allEffects, []).forEach(function (effect) {
-        sections.push(bonusHelpText(effect, false, actor));
-    });
     ifdefor(actor.prefixes, []).forEach(function (affix) {
-        sections.push(bonusHelpText(affix.bonuses, false, actor));
+        sections.push(bonusSourceHelpText(affix, actor));
     });
     ifdefor(actor.suffixes, []).forEach(function (affix) {
-        sections.push(bonusHelpText(affix.bonuses, false, actor));
+        sections.push(bonusSourceHelpText(affix, actor));
     });
-    actor.helptext = sections.join('<br/>');
-    if ($popup && canvasPopupTarget === actor) {
-        $popup.html(canvasPopupTarget.helptext);
-    }
+    ifdefor(actor.allEffects, []).forEach(function (effect) {
+        sections.push(bonusSourceHelpText(effect, actor));
+    });
+    return sections.join('<br/>');
 }
 function gainLevel(adventurer) {
     adventurer.level++;
@@ -550,7 +553,7 @@ function setSelectedCharacter(character) {
     // update controls:
     $('.js-jewelBoard .js-skillCanvas').data('character', character);
     character.jewelsCanvas = $('.js-jewelBoard .js-skillCanvas')[0];
-    $('.js-jewelBonuses .js-content').empty().append(bonusHelpText(character.jewelBonuses.bonuses, false, character.adventurer,character.adventurer));
+    $('.js-jewelBonuses .js-content').empty().append(bonusSourceHelpText(character.jewelBonuses, character.adventurer));
     centerMapOnLevel(map[character.currentLevelKey]);
     updateAdventureButtons();
     updateConfirmSkillButton();

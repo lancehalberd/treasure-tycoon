@@ -50,7 +50,8 @@ function makeMonster(monsterData, level, extraSkills, noRarity) {
         'prefixes': [],
         'suffixes': [],
         'extraSkills': ifdefor(extraSkills, []),
-        'percentHealth': 1
+        'percentHealth': 1,
+        'helpMethod': actorHelpText
     };
     var baseMonster;
     if (typeof(monsterData) == 'string') {

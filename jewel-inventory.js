@@ -30,9 +30,9 @@ function jewelHelpText(jewel) {
     sections.push('Quality ' + jewel.quality.format(2));
     sections.push('Balance ' + [(300 * jewel.components[0]).format(0), (300 * jewel.components[1]).format(0), (300 * jewel.components[2]).format(0)].join('/'));
     sections.push('');
-    sections.push(bonusHelpText(jewel.bonuses, false, null));
+    sections.push(bonusSourceHelpText(jewel, state.selectedCharacter.adventurer));
     sections.push('');
-    var adjacencyBonusText = bonusHelpText(jewel.adjacencyBonuses, false, null);
+    var adjacencyBonusText = bonusSourceHelpText({'bonuses': jewel.adjacencyBonuses}, state.selectedCharacter.adventurer);
     if (adjacencyBonusText.length) {
         sections.push(adjacencyBonusText);
         sections.push('');

@@ -107,7 +107,7 @@ function makeJewelProper(tier, shape, components, quality) {
     $.each(jewel.bonuses, function (key, value) {
         jewel.bonuses[key] = value * bonusMultiplier;
     });
-    jewel.helpText = jewelHelpText(jewel);
+    jewel.helpMethod = jewelHelpText;
     return jewel;
 }
 function clearAdjacentJewels(jewel) {
@@ -216,7 +216,6 @@ function updateAdjacencyBonuses(jewel) {
             jewel.adjacencyBonuses['+increasedDrops'] += contrastBonus / 100;
             break;
     }
-    jewel.helpText = jewelHelpText(jewel);
 }
 function updateJewelBonuses(character) {
     character.jewelBonuses = {'bonuses': {}};
@@ -229,7 +228,7 @@ function updateJewelBonuses(character) {
         })
     });
     if (character === state.selectedCharacter) {
-        $('.js-jewelBonuses .js-content').empty().append(bonusHelpText(character.jewelBonuses.bonuses, false, character.adventurer,character.adventurer));
+        $('.js-jewelBonuses .js-content').empty().append(bonusSourceHelpText(character.jewelBonuses, character.adventurer));
     }
 }
 function makeFixedJewel(shape, character, ability) {

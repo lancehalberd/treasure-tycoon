@@ -64,7 +64,6 @@ function sellValue(item) {
 function makeItem(base, level) {
     var item = {
         'base': base,
-        'hasImplictBonuses': true,
         'prefixes': [],
         'suffixes': [],
         // level is used to represent the required level, itemLevel is used
@@ -102,10 +101,6 @@ function updateItem(item) {
     } else if (enchantments) {
         item.$item.addClass('enchanted');
     }
-}
-function getItemHelpText($item) {
-    var item = $item.data('item');
-    return itemHelpText(item);
 }
 function addToInventory(item) {
     item.$item.detach();
@@ -440,6 +435,7 @@ function addItem(level, data) {
     data.level = level;
     data.craftingWeight = 5 * level * level;
     data.crafted = false;
+    data.hasImplictBonuses = true;
     items[level].push(data);
     itemsBySlotAndLevel[data.slot][level].push(data);
     var key = data.name.replace(/\s*/g, '').toLowerCase();

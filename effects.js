@@ -292,7 +292,7 @@ function expireTimedEffects(character, actor) {
         var effect = actor.allEffects[i];
         if (effect.expirationTime && effect.expirationTime < actor.time) {
             actor.allEffects.splice(i, 1);
-            removeBonuseSourceFromObject(actor, effect, false);
+            removeBonusSourceFromObject(actor, effect, false);
         }
     }
     if (changed) recomputeDirtyStats(actor);
@@ -324,5 +324,5 @@ function addEffectToActor(actor, effect, triggerComputation) {
 }
 function removeEffectFromActor(actor, effect, triggerComputation) {
     actor.allEffects.splice(actor.allEffects.indexOf(effect), 1);
-    removeBonuseSourceFromObject(actor, effect, triggerComputation);
+    removeBonusSourceFromObject(actor, effect, triggerComputation);
 }

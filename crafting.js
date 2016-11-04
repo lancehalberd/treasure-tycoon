@@ -307,7 +307,7 @@ function checkToShowCraftingToopTip() {
         }
         sections.push('Requires level ' + overCraftingItem.level);
         sections.push('');
-        sections.push(bonusHelpText(overCraftingItem.bonuses, true, null));
+        sections.push(bonusSourceHelpText(overCraftingItem, state.selectedCharacter.adventurer));
         if (ifdefor(overCraftingItem.craftedUnique)) {
             sections.push(tag('div', 'uniqueText', 'Unique Variant: </br>' + overCraftingItem.unique.displayName + '<br/>' + (100 * overCraftingItem.unique.chance).format(1) + '% chance'));
         }

@@ -64,7 +64,6 @@ function evaluateForDisplay(value, actor, localObject) {
     if (value.constructor !== Array) {
         if (value.bonuses) {
             return bonusSourceHelpText(value, actor, localObject);
-            // return bonusHelpText(value.bonuses, ifdefor(value.variableObjectType) !== null, actor);
         }
         return value;
     }
