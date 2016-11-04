@@ -24,7 +24,7 @@ function attackAction(type, action, bonuses, helpText) {
     action.variableObjectType = 'action';
     // Range of an attack action is the weaponRange unless otherwise specified.
     if (typeof(bonuses['+range']) === 'undefined') {
-        bonuses['+range'] = '{weaponRange}';
+        bonuses['+range'] = ['{weaponRange}'];
     }
     action.bonuses = bonuses;
     action.helpText = helpText;
@@ -78,15 +78,25 @@ var skills = {
                                         '+distance': 256, '$domino': 'Knocks target away possibly damaging other enemies.'}),
     'hook':  attackAction('attack', {}, {'+cooldown': 10, '+range': 10, '+dragDamage': 0, '+dragStun': 0, '+rangeDamage': 0, '$alwaysHits': 'Never misses', '$pullsTarget': 'Pulls target'},
                             'Throw a hook to damage and pull enemies closer.'),
-    // Reactions:
+    'banishingStrike': attackAction('banish', {'restrictions': ['melee']}, {'+cooldown': 30, '+attackPower': 2, '+distance': [6, '+', ['{strength}' , '/', 20]],
+                '$alwaysHits': 'Never misses', '+purify': 0, '+shockwave': 0,
+                '$debuff': debuffEffect({}, {'*damage': .5, '*magicDamage': .5, '+duration': ['{intelligence}', '/', 20]}),
+                '$otherDebuff': debuffEffect({}, {'*speed': .1, '+duration': ['{intelligence}', '/', 20]})},
+                'Perform a mighty strike that inflicts the enemy with: {$debuff} And knocks all other enemies away, slowing them.'),
+    // Generic actions:
     'deflect': genericAction('deflect', {}, {'+attackPower': [.5, '+', ['{strength}', '/', 100]], '+cooldown': ['20', '*', [100, '/', [100, '+', '{dexterity}']]], '+chance': 1},
                              'Deflect ranged attacks back at enemies.'),
     'plunder': genericAction('plunder', {}, {'+range': 2, '+count': 1, '+duration': ['{strength}', '/', 10], '+cooldown': ['40', '*', [100, '/', [100, '+', '{dexterity}']]]},
                              'Steal an enemies enchantment for yourself.'),
     // Spell actions
     'heal': spellAction('heal', {'target': 'allies'}, {'+cooldown': 10}, 'Cast a spell to restore {+power} health.'),
-    'reflect': spellAction('reflect', {'target': 'self'}, {'+cooldown': 20},
+    'reflect': spellAction('reflect', {'target': 'allies'}, {'+cooldown': 20},
             'Create a magical barrier that will reflect projectile attacks until it breaks after taking {+power} damage. Further casting strengthens the barrier.'),
     'revive': spellAction('revive', {}, {'+cooldown': 120},
-            'Upon receiving a lethal blow, cast a spell that brings you back to life with {+power} health.')
+            'Upon receiving a lethal blow, cast a spell that brings you back to life with {+power} health.'),
+    'protect': spellAction('effect', {'target': 'allies'}, {'+cooldown': 30, '$buff': buffEffect({}, {'+armor': ['{intelligence}'], '+duration': 20})},
+                           'Create a magic barrier that grants: {$buff}'),
+    'aegis': spellAction('criticalCounter', {}, {'+cooldown': 60, '+stopAttack': 1,
+                '$buff': buffEffect({}, {'$maxBlock': 'Block checks are always perfect', '$maxMagicBlock': 'Magic Block checks are always perfect', '+duration': 5})},
+                'If an attack would deal more than half of your remaining life, prevent it and cast an enchantment that grants you: {$buff}')
 };

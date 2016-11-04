@@ -133,6 +133,7 @@ function abilityHelpText(ability, actor) {
     if (action) {
         var actionInstance = initializeVariableObject({}, action, actor);
         applyParentToVariableChild(actor, actionInstance);
+        // TODO: display action restrictions, if any.
         sections.push(tag('div', 'abilityText', bonusSourceHelpText(action, actor, actionInstance)));
     }
     return sections.join('<br/>');
