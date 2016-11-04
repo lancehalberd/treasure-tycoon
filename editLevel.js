@@ -52,7 +52,7 @@ function initializeLevelEditing() {
     $('.js-levelSkillSelect').attr('helpText', '-').data('helpMethod', function ($element) {
         var value = $element.val();
         if (!value) return 'No skill selected';
-        return abilityHelpText(abilities[value], state.selectedCharacter);
+        return abilityHelpText(abilities[value], state.selectedCharacter.adventurer);
     });
     $('.js-levelBoardSelect').on('change', function () {
         editingLevel.board = $(this).val();
@@ -134,7 +134,7 @@ function updateMonsters() {
         var $monster = $tag('span', 'js-monster monster', monsters[monsterKey].name);
         /*$enemySkill.attr('helpText', '-');
         $enemySkill.data('helpMethod', function () {
-            return abilityHelpText(abilities[skillKey], state.selectedCharacter);
+            return abilityHelpText(abilities[skillKey], state.selectedCharacter.adventurer);
         })*/
         $('.js-monsters .js-monsterSelect').before($monster);
     });
@@ -167,7 +167,7 @@ function updateEnemySkills() {
         var $enemySkill = $tag('span', 'js-enemySkill enemySkill', abilities[skillKey].name);
         $enemySkill.attr('helpText', '-');
         $enemySkill.data('helpMethod', function () {
-            return abilityHelpText(abilities[skillKey], state.selectedCharacter);
+            return abilityHelpText(abilities[skillKey], state.selectedCharacter.adventurer);
         })
         $('.js-enemySkillSelect').before($enemySkill);
     });

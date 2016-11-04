@@ -168,7 +168,7 @@ function getMapLevelHelpText(level) {
         helpText += '<br/><p style="font-weight: bold">Teaches:</p>';
         var skill = abilities[level.skill];
         if (skill) {
-            helpText += abilityHelpText(skill, state.selectedCharacter);
+            helpText += abilityHelpText(skill, state.selectedCharacter.adventurer);
         } else {
             helpText += '<p>No Skill</p>';
         }
@@ -186,9 +186,9 @@ function getMapShrineHelpText(shrine) {
         helpText += '<p style="font-size: 12">' + state.selectedCharacter.adventurer.name + ' does not have enough divinity to learn the skill from this shrine.</p><br/>';
     }
     if (state.selectedCharacter.adventurer.abilities.indexOf(skill) < 0) {
-        helpText += '<p style="font-weight: bold">Spend ' + totalCost + ' divinity at this shrine to level up and learn:</p>' + abilityHelpText(skill, state.selectedCharacter);
+        helpText += '<p style="font-weight: bold">Spend ' + totalCost + ' divinity at this shrine to level up and learn:</p>' + abilityHelpText(skill, state.selectedCharacter.adventurer);
     } else {
-        helpText += '<p style="font-size: 12px">' + state.selectedCharacter.adventurer.name + ' has already learned:</p>' + abilityHelpText(skill, state.selectedCharacter);
+        helpText += '<p style="font-size: 12px">' + state.selectedCharacter.adventurer.name + ' has already learned:</p>' + abilityHelpText(skill, state.selectedCharacter.adventurer);
     }
     return helpText;
 }
