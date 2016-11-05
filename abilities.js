@@ -158,7 +158,6 @@ var abilities = {
         'purify': {'name': 'Purify', 'bonuses': {'+intelligence': 10, '+banishingStrike:purify': 4}, 'helpText': 'Remove all enchantments from enemies hit by banishing strike'},
         'shockwave': {'name': 'Shockwave', 'bonuses': {'+strength': 10, '+banishingStrike:shockwave': 1}, 'helpText': 'Banishing strike also damages knocked back enemies'},
         'aegis': {'name': 'Aegis', 'bonuses': {'+magicBlock': 5, '+block': 10}, 'reaction': skills.aegis},
-    // Dancer
     'dancerIndex': {'name': '---Dancer---'},
         'dancer': {'name': 'Dancing', 'bonuses': {'+evasion': 3}, 'reaction': skills.evadeAndCounter},
         'distract': {'name': 'Distract', 'bonuses': {'+evasion': 3}, 'reaction': skills.distract},
@@ -188,7 +187,6 @@ var abilities = {
             'helpText': 'Charge damage and stun applies to nearby enemies.'},
         'overpower': {'name': 'Overpower', 'bonuses': {'+strength': 10, '+melee:knockbackChance': .3, '+melee:knockbackDistance': 3}},
         'armorBreak': {'name': 'Armor Break', 'bonuses': {'+strength': 15}, 'action': skills.armorBreak},
-    // Wizard
     'wizardIndex': {'name': '---Wizard---'},
         'wizard': {'name': 'Arcane Prodigy', 'bonuses': {'*spell:area': 2, '*magicPower': 2}},
         'resonance': {'name': 'Resonance', 'bonuses': {'%magicDamage': .2}},
@@ -199,7 +197,6 @@ var abilities = {
         'storm': {'name': 'Storm', 'bonuses': {'+intelligence': 15}, 'action': skills.storm},
         'stormFrequency': {'name': 'Lightning Rod', 'bonuses': {'*storm:hitsPerSecond': 2}},
         'stormDuration': {'name': 'Storm Mastery', 'bonuses': {'*storm:duration': 2}},
-    // Tier 4 classes
 'tier4Index': {'name': '------Tier 4------'},
     'assassinIndex': {'name': '---Assassin---'},
         'assassin': {'name': 'First Strike', 'bonuses': {'$firstStrike': '100% critical strike chance against enemies with full health.'}},
@@ -218,23 +215,15 @@ var abilities = {
         'attackSong': {'name': 'Furious Tocatta', 'bonuses': {'+dexterity': 10}, 'action': skills.attackSong},
         'defenseSong': {'name': 'Rondo of Hope', 'bonuses': {'+intelligence': 10}, 'action': skills.defenseSong},
         'heroSong': {'name': 'Hero\'s Ballade', 'bonuses': {'+intelligence': 10, '+dexterity': 10}, 'action': skills.heroSong},
-    // Tier 5 classes
-    // Sniper
-    /*'sniper': {'name': 'Sharp Shooter', 'bonuses': {'*bow:critChance': 1.5, '*bow:critDamage': 1.5, '$bow:criticalPiercing': 'Critical strikes hit multiple enemies.'}},
-    'majorDexterity': {'name': 'Major Dexterity', 'bonuses': {'+dexterity': 30}},
-    'powerShot': {'name': 'Power Shot', 'bonuses': {'+dexterity': 5},
-        'action': {'type': 'attack', 'restrictions': ['ranged'],
-                    'bonuses': {'+range': 5, '+critChance': 1, 'attackPower': 1.5, 'cooldown': 10, 'alwaysHits': 'Never misses'},
-                    'helpText': 'Perform a powerful long ranged attack that always strikes critically.'}},
-    'aiming': {'name': 'Aiming', 'bonuses': {'*ranged:accuracy': 1.5, '+ranged:critChance': .1, '+ranged:critDamage': .3}},
-    'snipe': {'name': 'Snipe', 'bonuses': {'+dexterity': 15},
-        'action': {'type': 'attack', 'restrictions': ['ranged'],
-                    'bonuses': {'+range': 10, 'attackPower': 2, 'cooldown': 30, 'ignoreArmor': 'Ignore armor and block',
-                    'ignoreResistance': 'Ignore magic resistance and magic block', 'alwaysHits': 'Never misses'},
-                    'helpText': 'Precisely target an enemies weak spot from any distance ignoring all armor and resistances.'}},
-
+'tier5Index': {'name': '------Tier 5------'},
+    'sniperIndex': {'name': '---Sniper---'},
+        'sniper': {'name': 'Sharp Shooter', 'bonuses': {'*bow:critChance': 1.5, '*bow:critDamage': 1.5, '$bow:criticalPiercing': 'Critical strikes hit multiple enemies.'}},
+        'majorDexterity': {'name': 'Major Dexterity', 'bonuses': {'+dexterity': 30}},
+        'powerShot': {'name': 'Power Shot', 'bonuses': {'+dexterity': 5}, 'action': skills.powerShot},
+        'aiming': {'name': 'Aiming', 'bonuses': {'*ranged:accuracy': 1.5, '+ranged:critChance': .1, '+ranged:critDamage': .3}},
+        'snipe': {'name': 'Snipe', 'bonuses': {'+dexterity': 15}, 'action': skills.snipe},
     // Samurai
-    'samurai': {'name': 'Great Warrior', 'bonuses': {'*twoHanded:damage': 2}},
+    /*'samurai': {'name': 'Great Warrior', 'bonuses': {'*twoHanded:damage': 2}},
     'majorStrength': {'name': 'Major Strength', 'bonuses': {'+strength': 30}},
     'sideStep': {'name': 'Side Step', 'bonuses': {'+evasion': 2}, 'reaction':
              {'type': 'dodge', 'rangedOnly': true, 'bonuses': {'cooldown': 10, 'moveDuration': .05, 'distance': 64, 'buff': {'bonuses': {'+critChance': .2, 'duration': 2, 'area': 0}}},

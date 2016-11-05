@@ -158,8 +158,6 @@ function createAttackStats(attacker, attack, target) {
     var sacrificedHealth = Math.floor(attacker.health * ifdefor(attack.healthSacrifice, 0));
     damage += sacrificedHealth;
     var accuracy = Math.random() * attack.accuracy;
-    damage *= ifdefor(attack.attackPower, 1);
-    magicDamage *= ifdefor(attack.attackPower, 1);
     if (isCritical) {
         damage *= (1 + attack.critDamage);
         magicDamage *= (1 + attack.critDamage);

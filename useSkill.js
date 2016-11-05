@@ -566,8 +566,8 @@ skillDefinitions.deflect = {
         projectile.hit = false;
         projectile.target = attackStats.source;
         attackStats.source = actor;
-        attackStats.damage *= counterAttackSkill.attackPower;
-        attackStats.magicDamage *= counterAttackSkill.attackPower;
+        attackStats.damage *= counterAttackSkill.damageRatio;
+        attackStats.magicDamage *= counterAttackSkill.damageRatio;
         attackStats.vx = -attackStats.vx;
         attackStats.vy = -getDistance(actor, projectile.target) / 200;
         // This prevents the attack in progress from hitting the deflector.
