@@ -179,71 +179,48 @@ var abilities = {
         'unleashe': {'name': 'unleashe', 'bonuses': {'+sicem:buff:+lifeSteal': .1, '+sicem:buff:duration': 2},
                         'helpText': 'Sicem buff grants life steal and lasts an additional 2 seconds'},
     'warriorIndex': {'name': '---Warrior---'},
-    /*'warrior': {'name': 'Cleave', 'bonuses': {'%melee:damage': .5, '+melee:cleave': .6, '+melee:cleaveRange': 3}},
-    'ferocity': {'name': 'Ferocity', 'bonuses': {'%physicalDamage': .2}},
-    'charge': {'name': 'Charge', 'bonuses': {'+strength': 5}, 'action':
-        {'type': 'charge', 'bonuses': {'range': 15, 'attackPower': 2, 'cooldown': 30, 'speedBonus': 3, 'stun': .5, 'area': 0, 'rangeDamage': 0, 'alwaysHits': 'Never misses'}, 'helpText': 'Charge at enemies, damaging and stunning them on impact.'}},
-    'batteringRam': {'name': 'Battering Ram', 'bonuses': {'+charge:rangeDamage': .1}, 'helpText': 'Charge deals more damage from further away.'},
-    'impactRadius': {'name': 'Impact Radius', 'bonuses': {'+charge:area': 6}, 'helpText': 'Charge damage and stun applies to nearby enemies.'},
-    'overpower': {'name': 'Overpower', 'bonuses': {'+strength': 10, '+melee:knockbackChance': .3, '+melee:knockbackDistance': 3}},
-    'armorBreak': {'name': 'Armor Break', 'bonuses': {'+strength': 15}, 'action':
-        {'type': 'attack', 'restrictions': ['melee'], 'bonuses': {'attackPower': 3, 'cooldown': 30, 'stun': .5, 'alwaysHits': 'Never misses',
-        'debuff': {'tags': ['debuff'], 'bonuses': {'-armor': ['{strength}', '/', 2], '-block': ['{strength}', '/', 2], 'area': 0, 'duration': 0}}}, 'helpText': 'Deliver a might blow that destroys the targets armor causing: {debuff}'}},
+        'warrior': {'name': 'Cleave', 'bonuses': {'%melee:damage': .5, '+melee:cleave': .6, '+melee:cleaveRange': 3}},
+        'ferocity': {'name': 'Ferocity', 'bonuses': {'%physicalDamage': .2}},
+        'charge': {'name': 'Charge', 'bonuses': {'+strength': 5}, 'action': skills.charge},
+        'batteringRam': {'name': 'Battering Ram', 'bonuses': {'+charge:rangeDamage': .1},
+            'helpText': 'Charge deals more damage from further away.'},
+        'impactRadius': {'name': 'Impact Radius', 'bonuses': {'+charge:area': 6},
+            'helpText': 'Charge damage and stun applies to nearby enemies.'},
+        'overpower': {'name': 'Overpower', 'bonuses': {'+strength': 10, '+melee:knockbackChance': .3, '+melee:knockbackDistance': 3}},
+        'armorBreak': {'name': 'Armor Break', 'bonuses': {'+strength': 15}, 'action': skills.armorBreak},
     // Wizard
-    'wizard': {'name': 'Arcane Prodigy', 'bonuses': {'*spell:area': 2, '*spell:power': 2}},
-    'resonance': {'name': 'Resonance', 'bonuses': {'%magicDamage': .2}},
-    'fireball': {'name': 'Fireball', 'bonuses': {'+intelligence': 5}, 'action':
-        {'type': 'spell', 'tags': ['spell', 'ranged'], 'animation': 'fireball', 'size': 32, 'color': 'red', 'bonuses': {'power': ['{intelligence}'], 'range': 12, 'cooldown': 8, 'alwaysHits': 'Never misses', 'explode': 1, 'area': 3, 'areaCoefficient': .5},
-        'helpText': 'Conjure an explosive fireball to hurl at enemies dealing {power} damage.'}},
-    'chainReaction': {'name': 'Chain Reaction', 'bonuses': {'+fireball:explode': 1}, 'helpText': 'Fireball explosions will chain an extra time.'},
-    'freeze': {'name': 'Freeze', 'bonuses': {'+intelligence': 10}, 'action':
-        {'type': 'spell', 'tags': ['spell', 'nova'], 'height': 20, 'color': 'white', 'alpha': .7, 'bonuses': {'power': ['{intelligence}', '/', 2], 'area': [4, '+', ['{intelligence}', '/', '50']], 'areaCoefficient': 1, 'cooldown': 10,
-        'alwaysHits': 'Never misses', 'slowOnHit': 1},
-        'helpText': 'Emit a blast of icy air that deals {power} damage and slows enemies. The effect is less the further away the enemy is.'}},
-    'absoluteZero': {'name': 'Absolute Zero', 'bonuses': {'*freeze:slowOnHit': 2}},
-    'storm': {'name': 'Storm', 'bonuses': {'+intelligence': 15}, 'action':
-        {'type': 'spell', 'tags': ['spell', 'field'], 'height': 40, 'color': 'yellow', 'alpha': .2, 'bonuses': {'hitsPerSecond': 2, 'duration': 5, 'power': ['{intelligence}', '/', 4], 'area': [5, '+', ['{intelligence}', '/', '50']], 'cooldown': 20,
-        'alwaysHits': 'Never misses'},
-        'helpText': 'Create a cloud of static electricity that randomly deals magic damage to nearby enemies.'}},
-    'stormFrequency': {'name': 'Lightning Rod', 'bonuses': {'*storm:hitsPerSecond': 2}},
-    'stormDuration': {'name': 'Storm Mastery', 'bonuses': {'*storm:duration': 2}},
+    'wizardIndex': {'name': '---Wizard---'},
+        'wizard': {'name': 'Arcane Prodigy', 'bonuses': {'*spell:area': 2, '*magicPower': 2}},
+        'resonance': {'name': 'Resonance', 'bonuses': {'%magicDamage': .2}},
+        'fireball': {'name': 'Fireball', 'bonuses': {'+intelligence': 5}, 'action': skills.fireball},
+        'chainReaction': {'name': 'Chain Reaction', 'bonuses': {'+fireball:explode': 1}, 'helpText': 'Fireball explosions will chain an extra time.'},
+        'freeze': {'name': 'Freeze', 'bonuses': {'+intelligence': 10}, 'action': skills.freeze},
+        'absoluteZero': {'name': 'Absolute Zero', 'bonuses': {'*freeze:slowOnHit': 2}},
+        'storm': {'name': 'Storm', 'bonuses': {'+intelligence': 15}, 'action': skills.storm},
+        'stormFrequency': {'name': 'Lightning Rod', 'bonuses': {'*storm:hitsPerSecond': 2}},
+        'stormDuration': {'name': 'Storm Mastery', 'bonuses': {'*storm:duration': 2}},
     // Tier 4 classes
-    // Assassin
-    'assassin': {'name': 'First Strike', 'bonuses': {'$firstStrike': '100% critical strike chance against enemies with full health.'}},
-    'blinkStrike': {'name': 'Blink Strike', 'bonuses': {'+dexterity': 5}, 'action':
-        {'type': 'attack', 'restrictions': ['melee'], 'bonuses': {'attackPower': 1.5, 'cooldown': 6, 'alwaysHits': 'Never misses', 'teleport': 6}}, 'helpText': 'Instantly teleport to and attack a nearby enemy.'},
-    'cull': {'name': 'Cull', 'bonuses': {'+strength': 10, '+cull': .1}},
-    'cripple': {'name': 'Cripple', 'bonuses': {'+strength': 10, '+dexterity': 10}, 'onCritEffect': {'debuff': {'tags': ['debuff'], 'bonuses': {'*speed': .5, '*attackSpeed': .5, 'duration': 5, 'area': 0}}}},
-    // Dark Knight
-    'darkknight': {'name': 'Blood Lust', 'bonuses': {'+overHeal': .5, '+lifeSteal': .05}},
-    'consume': {'name': 'Consume', 'bonuses': {'+intelligence': 5, 'duration': 0, 'count': 0}, 'action':
-        {'type': 'consume', 'target': 'enemies', 'targetDeadUnits': true, 'consumeCorpse': true, 'bonuses': {'consumeRatio': .2, 'range': 5},
-        'helpText': 'Consume the spirits of nearby defeated enemies to regenerate your health.'}},
-    'soulStrike': {'name': 'Soul Strike', 'bonuses': {'+strength': 10}, 'action':
-        {'type': 'attack', 'restrictions': ['melee'], 'bonuses': {'+range': 2, 'attackPower': 2, 'cooldown': 15, 'alwaysHits': 'Never misses', 'healthSacrifice': .2, 'cleave': 1}},
-        'helpText': 'Sacrifice a portion of your current health to deal a cleaving attack that hits all enemies in an extended range.'},
-    'reaper': {'name': 'Reaper', 'bonuses': {'+intelligence': 10, '+strength': 5, '+consume:count': 1, '+consume:duration': 10},
-        'helpText': 'Gain the powers of consumed monsters for a short period.'},
-    // Bard
-    'bard': {'name': 'Charisma', 'bonuses': {'*minion:cooldown': .6, '+minion:limit': 1, '*song:duration': 1.5, '+buff:area': 8}},
-    'attackSong': {'name': 'Furious Tocatta', 'bonuses': {'+dexterity': 10}, 'action':
-        // The stats on this buff should be based on the caster, not the target.
-        {'type': 'song', 'tags': ['song', 'field'], 'target': 'allies', 'color': 'orange', 'alpha': .2, 'bonuses': {'area': 8, 'cooldown': 30, 'duration': 10,
-        'buff': {'tags': ['buff'], 'bonuses': {'%attackSpeed': [.2, '+', ['{dexterity}', '/', 1000]], '%accuracy': [.2, '+', ['{intelligence}', '/', 1000]], '%damage': [.2, '+', ['{strength}', '/', 1000]]}}
-        }, 'helpText': 'Play a tune that inspires you and your allies to attack more fiercely, granting all allies in range: {buff}'}},
-    'defenseSong': {'name': 'Rondo of Hope', 'bonuses': {'+intelligence': 10}, 'action':
-        // The stats on this buff should be based on the caster, not the target.
-        {'type': 'song', 'tags': ['song', 'field'], 'target': 'allies', 'color': 'purple', 'alpha': .2, 'bonuses': {'area': 10, 'cooldown': 45, 'duration': 20,
-        'buff': {'tags': ['buff'], 'bonuses': {'%evasion': [.2, '+', ['{dexterity}', '/', 1000]], '%block': [.2, '+', ['{intelligence}', '/', 1000]], '%maxHealth': [.2, '+', ['{strength}', '/', 1000]]}}
-        }, 'helpText': 'Play an uplifting rondo that steels you and your allies defenses for battle, granting all allies in range: {buff}'}},
-    'heroSong': {'name': 'Hero\'s Ballade', 'bonuses': {'+intelligence': 10, '+dexterity': 10}, 'action':
-        // The stats on this buff should be based on the caster, not the target.
-        {'type': 'heroSong', 'tags': ['song', 'field'], 'target': 'allies', 'color': 'gold', 'alpha': .2, 'bonuses': {'area': 8, 'cooldown':  ['300', '*', [100, '/', [100, '+', '{intelligence}']]], 'duration': [2, '+', ['{dexterity}' , '/', '200']],
-        'buff': {'tags': ['buff'], 'bonuses': {'invulnerable': 'Invulnerability', '+healthRegen': ['{intelligence}', '/', 10], '%critChance': ['{dexterity}', '/', 500]}}
-        }, 'helpText': 'Play a ballade to inspire heroic feats granting all allies in range: {buff}'}},
+'tier4Index': {'name': '------Tier 4------'},
+    'assassinIndex': {'name': '---Assassin---'},
+        'assassin': {'name': 'First Strike', 'bonuses': {'$firstStrike': '100% critical strike chance against enemies with full health.'}},
+        'blinkStrike': {'name': 'Blink Strike', 'bonuses': {'+dexterity': 5}, 'action': skills.blinkStrike},
+        'cull': {'name': 'Cull', 'bonuses': {'+strength': 10, '+cull': .1}},
+        'cripple': {'name': 'Cripple', 'bonuses': {'+strength': 10, '+dexterity': 10},
+                'onCritEffect': {'debuff': debuffEffect({}, {'*speed': .5, '*attackSpeed': .5, '+duration': 5})}},
+    'darkknightIndex': {'name': '---Dark Knight---'},
+        'darkknight': {'name': 'Blood Lust', 'bonuses': {'+overHeal': .5, '+lifeSteal': .05}},
+        'consume': {'name': 'Consume', 'bonuses': {'+intelligence': 5}, 'action': skills.consume},
+        'soulStrike': {'name': 'Soul Strike', 'bonuses': {'+strength': 10}, 'action': skills.soulStrike},
+        'reaper': {'name': 'Reaper', 'bonuses': {'+intelligence': 10, '+strength': 5, '+consume:count': 1, '+consume:duration': 10},
+            'helpText': 'Gain the powers of consumed monsters for a short period.'},
+    'bardIndex': {'name': '---Bard---'},
+        'bard': {'name': 'Charisma', 'bonuses': {'*minion:cooldown': .6, '+minion:limit': 1, '*song:duration': 1.5, '+buff:area': 8}},
+        'attackSong': {'name': 'Furious Tocatta', 'bonuses': {'+dexterity': 10}, 'action': skills.attackSong},
+        'defenseSong': {'name': 'Rondo of Hope', 'bonuses': {'+intelligence': 10}, 'action': skills.defenseSong},
+        'heroSong': {'name': 'Hero\'s Ballade', 'bonuses': {'+intelligence': 10, '+dexterity': 10}, 'action': skills.heroSong},
     // Tier 5 classes
     // Sniper
-    'sniper': {'name': 'Sharp Shooter', 'bonuses': {'*bow:critChance': 1.5, '*bow:critDamage': 1.5, '$bow:criticalPiercing': 'Critical strikes hit multiple enemies.'}},
+    /*'sniper': {'name': 'Sharp Shooter', 'bonuses': {'*bow:critChance': 1.5, '*bow:critDamage': 1.5, '$bow:criticalPiercing': 'Critical strikes hit multiple enemies.'}},
     'majorDexterity': {'name': 'Major Dexterity', 'bonuses': {'+dexterity': 30}},
     'powerShot': {'name': 'Power Shot', 'bonuses': {'+dexterity': 5},
         'action': {'type': 'attack', 'restrictions': ['ranged'],
