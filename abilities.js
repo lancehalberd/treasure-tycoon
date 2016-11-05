@@ -245,7 +245,7 @@ var abilities = {
         'enhanceArmor': {'name': 'Enhance Armor', 'bonuses': {'+strength': 5, '+intelligence': 10}, 'action': skills.enhanceArmor},
         'enhanceAbility': {'name': 'Enhance Ability', 'bonuses': {'+strength': 10, '+intelligence': 10}, 'action': skills.enhanceAbility},
     'sageIndex': {'name': '---Sage---'},
-        'stopTime': {'name': 'Stop Time', 'bonuses': {'+intelligence': 10}, 'reaction': skill.stopTime},
+        'stopTime': {'name': 'Stop Time', 'bonuses': {'+intelligence': 10}, 'reaction': skills.stopTime},
         'dispell': {'name': 'Dispell', 'bonuses': {'+intelligence': 15}, 'action': skills.dispell},
         'meteor': {'name': 'Meteor', 'bonuses': {'+intelligence': 20}, 'action': skills.meteor},
         'meteorShower': {'name': 'Meteor Shower', 'bonuses': {'+intelligence': 10, '+meteor:count': ['{magicPower}', '/', '50'],
@@ -256,20 +256,15 @@ var abilities = {
                         'helpText': 'Summon fewer, but much more powerful meteors.'},
 'tier7Index': {'name': '------Tier 7------'},
     'masterIndex': {'name': '---Master---'},
-    /*'equipmentMastery': {'name': 'Equipment Mastery', 'bonuses': {'+strength': 5, '+dexterity': 5, '+intelligence': 5, '$equipmentMastery': 'Equip gear beyond your level for a 5% penalty per level.'}},
-    'abilityMastery': {'name': 'Ability Mastery', 'bonuses': {'+strength': 10, '+dexterity': 10, '+intelligence': 10, '+instantCooldownChance': .1}},
-    // Fool
-    'tomFoolery': {'name': 'Tom Foolery', 'bonuses': {'+evasion': 5}, 'reaction':
-             {'type': 'dodge', 'bonuses': {'cooldown': 30, 'buff': {'tags': ['buff'], 'bonuses': {'*accuracy': 0, 'maxEvasion': 'Evasion checks are always perfect', 'duration': 5, 'area': 0}}}, 'helpText': 'Dodge an attack and gain: {buff}'}},
-    'mimic': {'name': 'Mimic', 'reaction':
-             {'type': 'mimic', 'bonuses': {}, 'helpText': 'Counter an enemy ability with a copy of that ability.'}},
-    'decoy': {'name': 'Decoy', 'reaction':
-            {'type': 'decoy',  'tags': ['minion'], 'bonuses': {'cooldown': 60, 'healthBonus': .4, 'damageBonus': .4, 'speedBonus': 1.2},
-            'helpText': 'Dodge an attack and leave behind a decoy that explodes on death damaging all enemies.'}},
-    'explode': {'name': 'Decoy Burst', 'reaction':
-             {'type': 'explode', 'tags': ['ranged'], 'bonuses': {'power': '{maxHealth}', 'alwaysHits': 'Shrapnel cannot be evaded'}, 'helpText': 'Explode into shrapnel on death.'}},
-    */
-    // Monster abilities
+        'equipmentMastery': {'name': 'Equipment Mastery', 'bonuses': {'+strength': 5, '+dexterity': 5, '+intelligence': 5, '$equipmentMastery': 'Equip gear beyond your level for a 10% penalty per level.'}},
+        'abilityMastery': {'name': 'Ability Mastery', 'bonuses': {'+strength': 10, '+dexterity': 10, '+intelligence': 10, '+instantCooldownChance': .1}},
+    'foolIndex': {'name': '---Fool---'},
+        'tomFoolery': {'name': 'Tom Foolery', 'bonuses': {'+evasion': 5}, 'reaction': skills.tomFoolery},
+        'mimic': {'name': 'Mimic', 'reaction': skills.mimic},
+        'decoy': {'name': 'Decoy', 'reaction': skills.decoy,
+                    'minionBonuses': {'*decoy:maxHealth': .4, '*decoy:damage': .4, '*decoy:speed': 1.2}},
+        'explode': {'name': 'Decoy Burst', 'reaction': skills.explode},
+'enemyIndex': {'name': '---Enemies---'},
     'summoner': {'name': 'Summoner', 'bonuses': {'*minion:limit': 2, '*minion:cooldown': .5},
             'minionBonuses': {'*maxHealth': 2, '*damage': 2}},
     'summonSkeleton': {'name': 'Summon Skeleton', 'action': skills.summonSkeleton},

@@ -65,7 +65,7 @@ function debuffEffect(effect, bonuses) {
 
 var skills = {
     // Movement actions
-    'dodge': movementAction('dodge', {}, {'+cooldown': 10, '+distance': -128, '$buff': buffEffect({}, {'%evasion': .5, '+duration': 5})},
+    'dodge': movementAction('dodge', {}, {'+cooldown': 10, '+distance': -128, '$buff': buffEffect({}, {'+%evasion': .5, '+duration': 5})},
                             'Leap back to dodge an attack and gain: {$buff}'),
     'sideStep': movementAction('dodge', {'rangedOnly': true}, {'+cooldown': 10, '+moveDuration': .05, '+distance': 64,
                                         '$buff': buffEffect({}, {'+critChance': .2, '+duration': 2})},
@@ -175,6 +175,14 @@ var skills = {
     'raiseDead': genericAction('minion', {'target': 'enemies', 'targetDeadUnits': true, 'consumeCorpse': true, 'tags': ['spell']},
                                {'+limit': 10, '+chance': .4, '+cooldown': .5},
                                 'Chance to raise defeated enemies to fight for you.'),
+    'tomFoolery': genericAction('dodge', {}, {'+cooldown': 30, '$buff': buffEffect({}, {
+                '*accuracy': 0, '$maxEvasion': 'Evasion checks are always perfect', '+duration': 5})},
+                'Dodge an attack and gain: {$buff}'),
+    'mimic': genericAction('mimic', {}, {}, 'Counter an enemy ability with a copy of that ability.'),
+    'decoy': genericAction('decoy', {'tags': ['minion']}, {'+cooldown': 60},
+                'Dodge an attack and leave behind a decoy that explodes on death damaging all enemies.'),
+    'explode': genericAction('explode', {'tags': ['ranged']}, {'+power': ['{maxHealth}'], '$alwaysHits': 'Shrapnel cannot be evaded'},
+                             'Explode into shrapnel on death.'),
     // Spell actions
     'heal': spellAction('heal', {'target': 'allies'}, {'+cooldown': 10}, 'Cast a spell to restore {+power} health.'),
     'reflect': spellAction('reflect', {'target': 'allies'}, {'+cooldown': 20},
