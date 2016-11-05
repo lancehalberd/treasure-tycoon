@@ -220,8 +220,10 @@ function mainLoop() {
                 drawBoardBackground(mainContext, board);
                 drawBoardJewelsProper(mainContext, [0, 0], board);
             }
-        } else if (state.selectedCharacter.area) drawAdventure(state.selectedCharacter);
-        else {
+        } else if (state.selectedCharacter.area) {
+            drawAdventure(state.selectedCharacter);
+            refreshStatsPanel(state.selectedCharacter, $('.js-characterColumn .js-stats'))
+        } else {
             updateMap();
             drawMap();
         }

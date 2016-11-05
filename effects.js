@@ -293,6 +293,7 @@ function expireTimedEffects(character, actor) {
         if (effect.expirationTime && effect.expirationTime < actor.time) {
             actor.allEffects.splice(i, 1);
             removeBonusSourceFromObject(actor, effect, false);
+            changed = true;
         }
     }
     if (changed) recomputeDirtyStats(actor);
