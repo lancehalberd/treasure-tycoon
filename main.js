@@ -105,8 +105,6 @@ async.mapSeries([
     jewelsContext = jewelsCanvas.getContext("2d");
     previewContext = $('.js-characterColumn .js-previewCanvas')[0].getContext("2d")
     previewContext.imageSmoothingEnabled = false;
-    setInterval(mainLoop, 20);
-    //mainLoop();
     $('.js-loading').hide();
     $('.js-gameContent').show();
     initializeLevelEditing();
@@ -131,6 +129,13 @@ async.mapSeries([
     }
     centerMapOnLevel(map[state.selectedCharacter.currentLevelKey], true);
     drawMap();
+    // The main loop will throw errors constantly if an error prevented selectedCharacter
+    // from being set, so instead, just throw an error before running setInterval.
+    if (!state.selectedCharacter) {
+        throw new Error('No selected character found');
+    }
+    setInterval(mainLoop, 20);
+    //mainLoop();
 });
 function makeTintedImage(image, tint) {
     var tintCanvas = createCanvas(image.width, image.height);

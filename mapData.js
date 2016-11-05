@@ -758,7 +758,7 @@ var map = {
         'background': "garden",
         'unlocks': ["road","tributaries"],
         'specialLoot': ["simpleEmeraldLoot"],
-        'skill': "fistMastery",
+        'skill': "fistDamage",
         'board': "doubleDiamonds",
         'enemySkills': ["ninja"],
         'monsters': ["caterpillar","gnome","butterfly","skeleton"],
