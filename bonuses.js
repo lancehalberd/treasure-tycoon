@@ -268,6 +268,8 @@ function doesStatApplyToObject(stat, object) {
             return ifdefor(object[stat]) !== null || commonActionVariables[stat];
         case 'effect':
             return stat === 'duration' || stat === 'area' || operations[stat.charAt(0)];
+        case 'trigger':
+            return false;
         default:
             throw new Error('Unexpected object base variableObjectType: ' + object.base.variableObjectType);
     }
@@ -421,6 +423,7 @@ function recomputeChildTags(parentObject, child) {
     delete tags['actor'];
     delete tags['action'];
     delete tags['effect'];
+    delete tags['trigger'];
     tags[child.base.variableObjectType] = true;
     return tags;
 }
