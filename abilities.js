@@ -140,7 +140,7 @@ var abilities = {
         'reviveInvulnerability': {'name': 'Halo', 'bonuses': {'$revive:buff': buffEffect({}, {'+duration': 2, '$invulnerable': 'Invulnerability'})}},
 'tier2Index': {'name': '------Tier 2------'},
     'corsairIndex': {'name': '---Corsair---'},
-        'corsair': {'name': 'Venom', 'bonuses': {'+poison': .2}, 'onHitEffect': debuffEffect({}, {'*damage': .9}),
+        'corsair': {'name': 'Venom', 'bonuses': {'+poison': .2}, 'onHitEffect': {'debuff': debuffEffect({}, {'*damage': .9})},
                         'helpText': "Apply a stacking debuff with every hit that weakens enemies' attacks and deals damage over time."},
         'hook': {'name': 'Grappling Hook', 'action': skills.hook},
         'hookRange': {'name': 'Long Shot', 'bonuses': {'+hook:range': 5, '+hook:cooldown': -3}},
@@ -159,35 +159,27 @@ var abilities = {
         'shockwave': {'name': 'Shockwave', 'bonuses': {'+strength': 10, '+banishingStrike:shockwave': 1}, 'helpText': 'Banishing strike also damages knocked back enemies'},
         'aegis': {'name': 'Aegis', 'bonuses': {'+magicBlock': 5, '+block': 10}, 'reaction': skills.aegis},
     // Dancer
-    /*'dancer': {'name': 'Dancing', 'bonuses': {'+evasion': 3}, 'reaction':
-            {'type': 'evadeAndCounter', 'bonuses': {'alwaysHits': 'Never misses', 'range': 1}, 'helpText': 'Counter whenever you successfully evade an attack.'}},
-    'distract': {'name': 'Distract', 'bonuses': {'+evasion': 3}, 'reaction':
-            {'type': 'dodge', 'bonuses': {'globalDebuff': {'tags': ['debuff'], 'bonuses': {'*accuracy': .5, 'duration': 2, 'area': 0}}, 'cooldown': 10}, 'helpText': 'Dodge an attack with a distracting flourish that inflicts: {globalDebuff} on all enemies.'}},
-    'charm': {'name': 'Charm', 'bonuses': {'+dexterity': 5, '+intelligence': 5}, 'action':
-            {'type': 'charm', 'tags': ['minion'], 'bonuses': {'range': 1, 'cooldown': ['240', '*', [100, '/', [100, '+', '{intelligence}']]]}, 'helpText': 'Steal an enemies heart, turning them into an ally.'}},
-    'dervish': {'name': 'Whirling Dervish', 'bonuses': {'+dexterity': 15}, 'onHitEffect': {'buff': {'tags': ['buff'], 'bonuses': {'%attackSpeed': .05, '%speed': .05, 'duration': 2, 'area': 0}}},
-                'helpText': "Gain momentum with each hit you land granting increased attack speed and movement speed."},
-    // Tier 3 classes
-    // Ranger
-    'ranger': {'name': 'Taming', 'bonuses': {'*minion:healthBonus': 2, '*minion:attackSpeedBonus': 1.5, '*minion:speedBonus': 1.5}},
-    'finesse':  {'name': 'Finesse', 'bonuses': {'%attackSpeed': .2}},
-    'pet': {'name': 'Pet', 'action':
-            {'type': 'minion', 'target': 'none', 'tags': ['pet'], 'monsterKey': 'wolf', 'bonuses': {'limit': 1, 'cooldown': 30, 'healthBonus': 1, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1},
-            'helpText': 'Call up to 1 pet to fight with you.'}},
-    //'petFood': {'name': 'Pet Food', 'bonuses': {'+pet:cooldown': -3, '+pet:healthBonus': 1}, 'helpText': 'Pet has 50% more health and can be called more frequently.'},
-    //'petTraining': {'name': 'Pet Training', 'next': ['whistle'], 'bonuses': {'+pet:cooldown': -3, '+pet:damageBonus': .5}, 'helpText': 'Pet deals 50% more damage and can be called more frequently.'},
-    //'whistle': {'name': 'Whistle', 'bonuses': {'+pet:cooldown': -10}, 'helpText': 'Greatly reduces the cooldown for calling your pet.'},
-    'net': {'name': 'Net Trap', 'action': {'type': 'effect',
-                    'bonuses': {'cooldown': 10, 'range': 10, 'debuff': {'tags': ['debuff'], 'bonuses': {'*speed': 0, 'duration': 3, 'area': 0}}},
-                    'helpText': 'Throw a net to ensnare a distant enemy.'}},
-    'netArea': {'name': 'Wide Net', 'bonuses': {'+net:area': 5}},
-    'sicem': {'name': 'Sic \'em', 'bonuses': {'+dexterity': 10}, 'action': {'type': 'effect',
-                    'bonuses': {'cooldown': [60, '*', [100, '/', [100, '+', '{dexterity}']]], 'range': 10, 'allyBuff': {'bonuses': {'*speed': 2, '*attackSpeed': 2, '*damage': 2, 'duration': 2, 'area': 0}}},
-                    'helpText': 'Incite your allies to fiercely attack the enemy granting them: {allyBuff}'}},
-    'unleashe': {'name': 'unleashe', 'bonuses': {'+sicem:allyBuff:lifeSteal': .1, '+sicem:allyBuff:duration': 2},
-                    'helpText': 'Not Implemented: sicem buff grants life steal and lasts an additional 2 seconds'},
-    // Warrior
-    'warrior': {'name': 'Cleave', 'bonuses': {'%melee:damage': .5, '+melee:cleave': .6, '+melee:cleaveRange': 3}},
+    'dancerIndex': {'name': '---Dancer---'},
+        'dancer': {'name': 'Dancing', 'bonuses': {'+evasion': 3}, 'reaction': skills.evadeAndCounter},
+        'distract': {'name': 'Distract', 'bonuses': {'+evasion': 3}, 'reaction': skills.distract},
+        'charm': {'name': 'Charm', 'bonuses': {'+dexterity': 5, '+intelligence': 5}, 'action': skills.charm},
+        'dervish': {'name': 'Whirling Dervish', 'bonuses': {'+dexterity': 15}, 'onHitEffect': {'buff': buffEffect({}, {'%attackSpeed': .05, '%speed': .05, 'duration': 2, 'area': 0})},
+                    'helpText': "Gain momentum with each hit you land granting increased attack speed and movement speed."},
+'tier3Index': {'name': '------Tier 3------'},
+    'rangerIndex': {'name': '---Ranger---'},
+        'ranger': {'name': 'Taming', 'minionBonuses': {'*maxHealth': 2, '*attackSpeed': 1.5, '*speed': 1.5},
+        'finesse':  {'name': 'Finesse', 'bonuses': {'%attackSpeed': .2}},
+        'pet': {'name': 'Pet', 'action': skills.pet}},
+        'petFood': {'name': 'Pet Food', 'bonuses': {'-pet:cooldown': 3}, 'minionBonuses': {'*pet:maxHealth': 1.5}},
+        'petTraining': {'name': 'Pet Training', 'bonuses': {'-pet:cooldown': 3}, 'minionBonuses': {'*pet:damage': 1.5}},
+        'whistle': {'name': 'Whistle', 'bonuses': {'*pet:cooldown': .5}},
+        'net': {'name': 'Net Trap', 'action': skills.net},
+        'netArea': {'name': 'Wide Net', 'bonuses': {'+net:area': 5}},
+        'sicem': {'name': 'Sic \'em', 'bonuses': {'+dexterity': 10}, 'action': skills.sicem},
+        'unleashe': {'name': 'unleashe', 'bonuses': {'+sicem:buff:+lifeSteal': .1, '+sicem:buff:duration': 2},
+                        'helpText': 'Sicem buff grants life steal and lasts an additional 2 seconds'},
+    'warriorIndex': {'name': '---Warrior---'},
+    /*'warrior': {'name': 'Cleave', 'bonuses': {'%melee:damage': .5, '+melee:cleave': .6, '+melee:cleaveRange': 3}},
     'ferocity': {'name': 'Ferocity', 'bonuses': {'%physicalDamage': .2}},
     'charge': {'name': 'Charge', 'bonuses': {'+strength': 5}, 'action':
         {'type': 'charge', 'bonuses': {'range': 15, 'attackPower': 2, 'cooldown': 30, 'speedBonus': 3, 'stun': .5, 'area': 0, 'rangeDamage': 0, 'alwaysHits': 'Never misses'}, 'helpText': 'Charge at enemies, damaging and stunning them on impact.'}},
@@ -349,11 +341,10 @@ var abilities = {
              {'type': 'explode', 'tags': ['ranged'], 'bonuses': {'power': '{maxHealth}', 'alwaysHits': 'Shrapnel cannot be evaded'}, 'helpText': 'Explode into shrapnel on death.'}},
     */
     // Monster abilities
-    'summoner': {'name': 'Summoner', 'bonuses': {'*minion:limit': 2, '*minion:cooldown': .5, '*minion:healthBonus': 2, '*minion:damageBonus': 2}},
-    'summonSkeleton': {'name': 'Summon Skeleton', 'bonuses': {'+intelligence': 5}, 'action':
-            {'type': 'minion', 'target': 'none', 'monsterKey': 'skeleton', 'tags': ['spell'], 'bonuses': {'limit': 2, 'cooldown': 15, 'healthBonus': .5, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1}}},
-    'summonCaterpillar': {'name': 'Spawn', 'action':
-            {'type': 'minion', 'target': 'none', 'tags': ['pet'], 'monsterKey': 'caterpillar', 'bonuses': {'limit': 3, 'cooldown': 20, 'healthBonus': 1, 'damageBonus': 1, 'attackSpeedBonus': 1, 'speedBonus': 1}}},
+    'summoner': {'name': 'Summoner', 'bonuses': {'*minion:limit': 2, '*minion:cooldown': .5},
+            'minionBonuses': {'*maxHealth': 2, '*damage': 2}},
+    'summonSkeleton': {'name': 'Summon Skeleton', 'action': skills.summonSkeleton},
+    'summonCaterpillar': {'name': 'Spawn', 'action': skills.summonCaterpillar},
     'rangeAndAttackSpeed': {'name': 'Range And Attack Speed', 'bonuses': {'+range': 2, '+attackSpeed': .5}}
 };
 var testJob;// = 'blackbelt';

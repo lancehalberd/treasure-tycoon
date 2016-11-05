@@ -176,7 +176,7 @@ var bonusMap = {
     '%physicalDamage': '%1 increased physical damage',
     '*magicDamage': '$1x magic damage',
     '%magicDamageamage': '%1 increased magic damage',
-    '*attackSpeed': '%1x attack speed',
+    '*attackSpeed': '$1x attack speed',
     '%attackSpeed': '%1 increased attack speed',
     '+critChance': '+%1 chance to critical strike',
     '*critChance': '$1x critical chance',
@@ -239,8 +239,5 @@ var bonusMap = {
     '+lifeSteal': '%1 of damage dealt is gained as life',
     '+duration': '+$1s duration',
     '*duration': '$1x duration',
-    '+count': '+$1 enchantment(s) stolen',
-    '$buff': function (bonusSource, actor) {
-        return 'Gain: foo';// + bonusSourceHelpText(bonusSource.bonuses['$buff'], actor);
-    }
+    '+count': '+$1 enchantment(s) stolen'
 };
