@@ -82,6 +82,7 @@ function initializeVariableObject(object, baseObject, actor) {
             }
             break;
         case 'effect':
+            object.bonuses = {};
             for (var effectStat of ['duration', 'area']) {
                 object.dirtyStats[effectStat] = true;
             }
@@ -115,6 +116,9 @@ function addBonusSourceToObject(object, bonusSource, triggerComputation, isImpli
     }
     var bonuses = parseBonuses(bonusSource);
     for (var bonus of bonuses) {
+        // Don't bother adding dependencies or tag information to bonuses that do not
+        // even apply to this kind of object.
+        if (!isImplicit && !doesStatApplyToObject(bonus.stats[0], object)) continue;
         for (var tag of bonus.tags) {
             object.bonusesByTag[tag] = ifdefor(object.bonusesByTag[tag], []);
             object.bonusesByTag[tag].push(bonus);
@@ -153,6 +157,9 @@ function removeBonusSourceFromObject(object, bonusSource, triggerComputation) {
     object.bonusSources.splice(index, 1);
     var bonuses = parseBonuses(bonusSource);
     for (var bonus of bonuses) {
+        // Don't bother adding dependencies or tag information to bonuses that do not
+        // even apply to this kind of object.
+        if (!doesStatApplyToObject(bonus.stats[0], object)) continue;
         for (var tag of bonus.tags) {
             var index = object.bonusesByTag[tag].indexOf(bonus);
             object.bonusesByTag[tag].splice(index, 1);
@@ -261,10 +268,6 @@ function doesStatApplyToObject(stat, object) {
             return ifdefor(object[stat]) !== null || commonActionVariables[stat];
         case 'effect':
             return stat === 'duration' || stat === 'area' || operations[stat.charAt(0)];
-        case 'minionBonus':
-            return operations[stat.charAt(0)];
-        case 'trigger':
-            return false;
         default:
             throw new Error('Unexpected object base variableObjectType: ' + object.base.variableObjectType);
     }
@@ -315,14 +318,19 @@ function setStat(object, statKey, newValue) {
         }
         object.variableChildren.splice(index, 1);
     }
+    // Remove all bonuses depending on the old value of this stat, if any.
     for (var dependency of ifdefor(object.bonusesDependingOn[statKey], [])) {
         removeBonusFromObject(dependency.object, dependency.bonus);
     }
     object[statKey] = newValue;
+    if (object.base.variableObjectType === 'effect' && operations[statKey[0]]) {
+        object.bonuses[statKey] = newValue;
+    }
     // If the new value is a variable object, add it to variable children.
     if (typeof object[statKey] === 'object' && object[statKey].base) {
         addVariableChildToObject(object, object[statKey], true);
     }
+    // Now that the stat is updated, add all bonuses back that depend on this stat.
     for (var dependency of ifdefor(object.bonusesDependingOn[statKey], [])) {
         addBonusToObject(dependency.object, dependency.bonus);
         for (var dependentStat of dependency.bonus.stats) {
@@ -413,8 +421,6 @@ function recomputeChildTags(parentObject, child) {
     delete tags['actor'];
     delete tags['action'];
     delete tags['effect'];
-    delete tags['trigger'];
-    delete tags['minionBonus'];
     tags[child.base.variableObjectType] = true;
     return tags;
 }
