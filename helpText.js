@@ -63,6 +63,10 @@ function bonusSourceHelpText(bonusSource, actor, localObject) {
     if (bonusSource.helpText) {
         sections.push(bonusSource.helpText.replace(/\{(.+)\}/, function (match, key) {
             displayedStats[key] = true;
+            if (typeof bonusSource.bonuses[key] === 'undefined') {
+                console.log(bonusSource);
+                throw new Error('helpText contained ' + key + ' but was not found among bonuses');
+            }
             return evaluateForDisplay(bonusSource.bonuses[key], actor, localObject);
         }));
         //sections.push(bonusSource.helpText);

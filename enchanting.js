@@ -199,7 +199,7 @@ function affixMatchesItem(baseItem, affix) {
     var tags = ifdefor(affix.tags, []);
     tags = Array.isArray(tags) ? tags : [tags];
     if (!tags.length) return true;
-    for (var tag of tags) if (itemTags[tag]) return true;
+    for (var tag of tags) if (baseItem.tags[tag]) return true;
     return false;
 }
 $('.js-resetEnchantments').on('click', resetItem);

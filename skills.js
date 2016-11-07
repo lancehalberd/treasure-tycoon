@@ -117,7 +117,7 @@ var skills = {
     'plunder': genericAction('plunder', {}, {'+range': 2, '+count': 1, '+duration': ['{strength}', '/', 10], '+cooldown': ['40', '*', [100, '/', [100, '+', '{dexterity}']]]},
                              'Steal an enemies enchantment for yourself.'),
     'distract': genericAction('dodge', {}, {'$globalDebuff': debuffEffect({}, {'+*accuracy': .5, '+duration': 2}), '+cooldown': 10},
-                              'Dodge an attack with a distracting flourish that inflicts: {globalDebuff} on all enemies.'),
+                              'Dodge an attack with a distracting flourish that inflicts: {$globalDebuff} on all enemies.'),
     'charm': genericAction('charm', {'tags': ['minion']}, {'+range': 1, '+cooldown': ['240', '*', [100, '/', [100, '+', '{intelligence}']]]},
                            'Steal an enemies heart, turning them into an ally.'),
     'pet': genericAction('minion', {'target': 'none', 'tags': ['minion'], 'monsterKey': 'wolf'}, {'+limit': 1, '+cooldown': 30},

@@ -106,6 +106,9 @@ function importState(stateData) {
     });
     if (stateData.craftingItems && stateData.craftingItems.length) {
         $('.js-craftingSelectOptions .js-itemSlot').each(function (index) {
+            // Don't throw errors just because there are only 1-2 items when
+            // we expect 3. Just show however many we have.
+            if (!stateData.craftingItems[index]) return;
             var item = importItem(stateData.craftingItems[index]);
             $(this).append(item.$item);
         });
