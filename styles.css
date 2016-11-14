@@ -614,7 +614,7 @@ select {
 
 .mainCanvasContainer {
     position: relative;
-    overflow-y: hidden;
+    overflow: hidden;
     height: 270px;
     width: 800px;
 }
@@ -1096,6 +1096,8 @@ select {
 .editingControlsBottom {
     background-color: #bbb;
     white-space: normal;
+    overflow-y: scroll;
+    height: 330px;
 }
 .levelEditingSection {
     margin-bottom: 15px;
