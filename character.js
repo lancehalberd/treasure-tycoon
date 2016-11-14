@@ -214,7 +214,6 @@ function makeAdventurer(job, level, equipment) {
         'equipment': {},
         'job': job,
         'width': 64,
-        'bonuses': [],
         'unlockedAbilities': {},
         'abilities': [], //abilities.hook, abilities.hookRange1, abilities.hookRange2, abilities.hookDrag1, abilities.hookDrag2, abilities.hookPower
         'name': Random.element(names),
@@ -299,6 +298,9 @@ function addActions(actor, source) {
         actor.reactions.push(action);
         addVariableChildToObject(actor, action);
     }
+    if (ifdefor(source.minionBonuses)) {
+        actor.minionBonusSources.push({'bonuses': source.minionBonuses});
+    }
 }
 function removeActions(actor, source) {
     var variableChild;
@@ -322,6 +324,13 @@ function removeActions(actor, source) {
         removeElementFromArray(actor.reactions, variableChild);
         removeElementFromArray(actor.variableChildren, variableChild);
     }
+    if (ifdefor(source.minionBonuses)) {
+        for (var bonusSource of actor.minionBonusSources) {
+            if (bonusSource.bonuses === source.minionBonuses) {
+                removeElementFromArray(actor.minionBonusSources, bonusSource);
+            }
+        }
+    }
 }
 function updateAdventurer(adventurer) {
     // Clear the character's bonuses and graphics.
@@ -336,6 +345,7 @@ function updateAdventurer(adventurer) {
     adventurer.onHitEffects = [];
     adventurer.onCritEffects = [];
     adventurer.allEffects = [];
+    adventurer.minionBonusSources = [];
     var adventurerBonuses = {
         '+maxHealth': 20 * (adventurer.level + adventurer.job.dexterityBonus + adventurer.job.strengthBonus + adventurer.job.intelligenceBonus),
         '+accuracy': 1 + 2 * adventurer.level,

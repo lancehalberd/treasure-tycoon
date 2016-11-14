@@ -52,13 +52,20 @@ function bonusSourceHelpText(bonusSource, actor, localObject) {
     // Implicit bonuses are on: equipment, actions, effects and buffs.
     var isImplicit = bonusSource.hasImplictBonuses ||
                     (bonusSource.variableObjectType &&
-                     (bonusSource.variableObjectType === 'action'
-                      || bonusSource.variableObjectType === 'effect'));
+                     (bonusSource.variableObjectType === 'action'));
     //console.log(isImplicit);
     //console.log(bonusSource);
     // Some stats are displayed in the helptext. In this case, we don't display
     // them a second time as implicit/regular bonuses.
     var displayedStats = {};
+    // Hack to prevent effect area/duration from being displayed as non-implicit.
+    // Basically we want +armor/+damage to show as non-implicit on effects, but
+    // duration should be implicit, so we have to split it into both implicit
+    // and non-implicit somehow.
+    if (bonusSource.variableObjectType === 'effect') {
+        displayedStats['+area'] = true;
+        displayedStats['+duration'] = true;
+    }
     var sections = [];
     if (bonusSource.helpText) {
         sections.push(bonusSource.helpText.replace(/\{(.+)\}/, function (match, key) {
@@ -74,39 +81,15 @@ function bonusSourceHelpText(bonusSource, actor, localObject) {
     for (var bonus in bonusMap) {
         if (displayedStats[bonus]) continue;
         // If this is an implicit bonus, don't display it as a regular bonus.
-        if (isImplicit && implicitBonusMap[bonus]) continue;
-        if (!bonusSource.bonuses[bonus]) continue;
-        var textOrFunction = bonusMap[bonus];
-        if (typeof textOrFunction === 'function') {
-            sections.push(textOrFunction(bonusSource, actor));
-            continue;
-        }
-        var text = textOrFunction;
-        var wildcard = text.match(/(\$|\%)\d/)[0];
-        if (!wildcard) throw new Error('No wildcard found in ' + text);
-        var value = evaluateForDisplay(bonusSource.bonuses[bonus], actor, localObject);
-        var digits = Number(wildcard[1]);
-        if (wildcard[0] === '%') value = value.percent(digits);
-        else value = value.format(digits);
-        sections.push(text.split(wildcard).join(value));
+        if (isImplicit && bonusMap[bonus]) continue;
+        var bonusText = renderBonusText(bonusMap, bonus, bonusSource, actor, localObject);
+        if (bonusText) sections.push(bonusText);
     }
     if (isImplicit) {
         for (var bonus in implicitBonusMap) {
             if (displayedStats[bonus]) continue;
-            if (!bonusSource.bonuses[bonus]) continue;
-            var textOrFunction = implicitBonusMap[bonus];
-            if (typeof textOrFunction === 'function') {
-                sections.push(textOrFunction(bonusSource, actor));
-                continue;
-            }
-            var text = textOrFunction;
-            var wildcard = text.match(/(\$|\%)\d/)[0];
-            if (!wildcard) throw new Error('No wildcard found in ' + text);
-            var value = evaluateForDisplay(bonusSource.bonuses[bonus], actor, localObject);
-            var digits = Number(wildcard[1]);
-            if (wildcard[0] === '%') value = value.percent(digits);
-            else value = value.format(digits);
-            sections.push(text.split(wildcard).join(value));
+            var implicitBonusText = renderBonusText(implicitBonusMap, bonus, bonusSource, actor, localObject);
+            if (implicitBonusText) sections.push(implicitBonusText);
         }
     }
     var tagBonusSources = {};
@@ -126,9 +109,27 @@ function bonusSourceHelpText(bonusSource, actor, localObject) {
         sections.push(tag('div', 'tagText', tags.split(':').map(tagToCategoryDisplayName).join(',') + ':<br/>' + bonusSourceHelpText(tagBonusSource, actor)));
     });
     if (bonusSource.variableObjectType === 'effect') {
+        if (bonusSource.bonuses['+area']) sections.push(renderBonusText(implicitBonusMap, '+area', bonusSource, actor, localObject));
+        if (bonusSource.bonuses['+duration']) sections.push(renderBonusText(implicitBonusMap, '+duration', bonusSource, actor, localObject));
+
         return tag('div', 'effectText', sections.join('<br/>'));
     }
     return sections.join('<br/>');
+}
+function renderBonusText(bonusMap, bonusKey, bonusSource, actor, localObject) {
+    var rawValue = bonusSource.bonuses[bonusKey] || bonusSource.bonuses['+' + bonusKey];
+    if (!rawValue) return null;
+    var textOrFunction = bonusMap[bonusKey];
+    if (typeof textOrFunction === 'function') return textOrFunction(bonusSource, actor);
+    var text = textOrFunction;
+    var wildcard = text.match(/(\$|\%)\d/)[0];
+    if (!wildcard) throw new Error('No wildcard found in ' + text);
+    var renderedValue = evaluateForDisplay(rawValue, actor, localObject);
+    var digits = Number(wildcard[1]);
+    if (wildcard[0] === '%') renderedValue = renderedValue.percent(digits);
+    else renderedValue = renderedValue.format(digits);
+    return text.split(wildcard).join(renderedValue);
+
 }
 function abilityHelpText(ability, actor) {
     var sections = [ability.name, ''];

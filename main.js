@@ -445,8 +445,6 @@ $('body').on('click', '.js-repeatButton', function (event) {
     updateAdventureButtons();
 });
 $('body').on('click', '.js-pauseButton', function (event) {
-    console.log('pausing')
-    console.log(state.selectedCharacter.paused )
     state.selectedCharacter.paused = !state.selectedCharacter.paused;
     updateAdventureButtons();
 });

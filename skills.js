@@ -125,7 +125,7 @@ var skills = {
     'summonCaterpillar': genericAction('minion', {'target': 'none', 'tags': ['minion'], 'monsterKey': 'caterpillar'}, {'+limit': 3, '+cooldown': 20},
                          'Call up to 1 pet to fight with you.'),
     'summonSkeleton': genericAction('minion', {'target': 'none', 'tags': ['minion'], 'monsterKey': 'skeleton'}, {'+limit': 2, '+cooldown': 15},
-                         'Call up to 1 pet to fight with you.'),
+                         'Summon up to {+limit} skeletons to fight for you.'),
     'net': genericAction('effect', {}, {'+cooldown': 10, '+range': 10, '$debuff': debuffEffect({}, {'+*speed': 0, '+duration': 3})},
                          'Throw a net to ensnare a distant enemy.'),
     'sicem': genericAction('effect', {}, {'+cooldown': [60, '*', [100, '/', [100, '+', '{dexterity}']]],
@@ -196,11 +196,11 @@ var skills = {
                 'If an attack would deal more than half of your remaining life, prevent it and cast an enchantment that grants you: {$buff}'),
     'fireball': spellAction('spell', {'tags': ['ranged'], 'animation': 'fireball', 'size': 32, 'color': 'red'},
                                     {'+range': 12, '+cooldown': 8, '$alwaysHits': 'Never misses', '+explode': 1, '+area': 3, '+areaCoefficient': .5},
-                            'Conjure an explosive fireball to hurl at enemies dealing {power} damage.'),
+                            'Conjure an explosive fireball to hurl at enemies dealing {+power} damage.'),
     'freeze': spellAction('spell', {'tags': ['nova'], 'height': 20, 'color': 'white', 'alpha': .7},
                                     {'+power': ['{magicPower}', '/', 2], '+area': [4, '+', ['{magicPower}', '/', '50']],
                                     '+areaCoefficient': 1, '+cooldown': 10, '$alwaysHits': 'Never misses', '+slowOnHit': 1},
-                        'Emit a blast of icy air that deals {power} damage and slows enemies. The effect is less the further away the enemy is.'),
+                        'Emit a blast of icy air that deals {+power} damage and slows enemies. The effect is less the further away the enemy is.'),
     'storm': spellAction('spell', {'tags': ['field'], 'height': 40, 'color': 'yellow', 'alpha': .2},
                          {'+hitsPerSecond': 2, '+duration': 5, '+power': ['{magicPower}', '/', 4],
                          '+area': [5, '+', ['{magicPower}', '/', '50']], '+cooldown': 20, '$alwaysHits': 'Never misses'},
@@ -212,7 +212,7 @@ var skills = {
     'plague': spellAction('spell', {'tags': ['blast'], 'height': 20, 'color': 'yellow', 'alpha': .4},
                         {'+power': ['{magicPower}', '/', 10], '+range': 10, '+area': [8, '+', ['{magicPower}', '/', '100']],
                         '+areaCoefficient': 1, '+cooldown': 20, '$alwaysHits': 'Never misses',
-                        '$debuff': debuffEffect({}, {'++damageOverTime': ['{this.power}'], '+duration': 0})},
+                        '$debuff': debuffEffect({}, {'++damageOverTime': ['{magicPower}', '/', 10], '+duration': 0})},
                         'Apply a permanent debuff that deals damage over time to effected enemies.'),
     'stopTime': spellAction('stop', {}, {'+duration': ['{magicPower}' , '/', '50'], '+cooldown': 120},
                 'If an attack would deal more than half of your remaining life, negate it and cast a spell that stops time for everyone else.'),
@@ -223,5 +223,9 @@ var skills = {
     'meteor': spellAction('spell', {'tags': ['rain'], 'height': 20, 'color': 'grey', 'alpha': .4, 'size': 20},
                        {'+count': [1, '+', ['{magicPower}', '/', '100']], '+explode': 1, '+power': ['{magicPower}', '/', 2],
                        '+area': [2, '+', ['{magicPower}', '/', '100']], '+cooldown': 15, '$alwaysHits': 'Never misses'},
-                        'Rain {count} meteors down on your enemies each dealing {power} damage.')
+                        'Rain {count} meteors down on your enemies each dealing {+power} damage.')
 };
+// The skill key should be applied as a tag to each skill.
+for (var skillKey in skills) {
+    skills[skillKey].tags.unshift(skillKey);
+}

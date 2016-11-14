@@ -46,7 +46,6 @@ function makeMonster(monsterData, level, extraSkills, noRarity) {
         'slow': 0,
         'equipment': {},
         'attackCooldown': 0,
-        'bonuses': [],
         'prefixes': [],
         'suffixes': [],
         'extraSkills': ifdefor(extraSkills, []),
@@ -100,6 +99,7 @@ function makeMonster(monsterData, level, extraSkills, noRarity) {
         }
     }
     monster.allEffects = [];
+    monster.minionBonusSources = [];
     updateMonster(monster);
     return monster;
 }

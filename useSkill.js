@@ -341,14 +341,14 @@ skillDefinitions.minion = {
         newMonster.enemies = actor.enemies;
         newMonster.time = 0;
         newMonster.animationTime = 0;
-        addBonusSourceToObject(newMonster, getMinionSpeedBonus(actor, newMonster), false);
-        addBonusSourceToObject(newMonster, getMinionSkillBonuses(minionSkill), true);
+        addMinionBonuses(actor, minionSkill, newMonster);
+        initializeActorForAdventure(newMonster);
         actor.allies.push(newMonster);
         actor.stunned = actor.time + .3;
     }
 };
 
-function cloneActor(actor) {
+function cloneActor(actor, skill) {
     var clone;
     if (actor.personCanvas) {
         clone = makeAdventurer(actor.job, actor.level, {});
@@ -358,7 +358,10 @@ function cloneActor(actor) {
     } else {
         clone = makeMonster({'key': actor.base.key}, actor.level, [], true);
     }
-    clone.bonuses = actor.bonuses.slice();
+    initializeActorForAdventure(clone);
+    for (var bonusSource of actor.bonusSources) {
+        addBonusSourceToObject(clone, bonusSource, false);
+    }
     actor.pull = {'x': actor.x - actor.direction * 64, 'time': actor.time + .3, 'damage': 0};
     clone.x = actor.x + actor.direction * 32;
     clone.character = actor.character;
@@ -371,18 +374,19 @@ function cloneActor(actor) {
     clone.time = 0;
     clone.animationTime = 0;
     clone.allEffects = [];
+    addMinionBonuses(actor, skill, clone);
     return clone;
 }
-
-function getMinionSkillBonuses(minionSkill) {
-    return {'bonuses': {'*maxHealth': ifdefor(minionSkill.healthBonus, 1),
-            '*minPhysicalDamage': ifdefor(minionSkill.damageBonus, 1),
-            '*maxPhysicalDamage': ifdefor(minionSkill.damageBonus, 1),
-            '*minMagicDamage': ifdefor(minionSkill.damageBonus, 1),
-            '*maxMagicDamage': ifdefor(minionSkill.damageBonus, 1),
-            '*attackSpeed': ifdefor(minionSkill.attackSpeedBonus, 1),
-            '*speed': ifdefor(minionSkill.speedBonus, 1)}};
+function addMinionBonuses(actor, skill, minion) {
+    for (var tag in skill.tags) {
+        if (tag != 'melee' && tag != 'ranged') minion.tags[tag] = true;
+    }
+    for (var minionBonusSource of actor.minionBonusSources) {
+        addBonusSourceToObject(minion, minionBonusSource, false);
+    }
+    addBonusSourceToObject(minion, getMinionSpeedBonus(actor, minion), true);
 }
+
 function getMinionSpeedBonus(actor, minion) {
     return {'bonuses': {'*speed': Math.max(.5, (actor.speed + 40) /  minion.speed)}};
 }
@@ -396,11 +400,9 @@ skillDefinitions.clone = {
         return count < cloneSkill.limit && Math.random() < cloneSkill.chance;
     },
     use: function (actor, cloneSkill, attackStats) {
-        var clone = cloneActor(actor);
+        var clone = cloneActor(actor, cloneSkill);
         clone.source = cloneSkill;
         clone.name = actor.name + ' shadow clone';
-        addBonusSourceToObject(clone, getMinionSpeedBonus(actor, clone), false);
-        addBonusSourceToObject(clone, getMinionSkillBonuses(cloneSkill), true);
         clone.percentHealth = actor.percentHealth;
         clone.health = clone.percentHealth * clone.maxHealth;
         actor.allies.push(clone);
@@ -417,11 +419,9 @@ skillDefinitions.decoy = {
         return count < ifdefor(decoySkill.limit, 10);
     },
     use: function (actor, decoySkill, attackStats) {
-        var clone = cloneActor(actor);
+        var clone = cloneActor(actor, decoySkill);
         clone.source = decoySkill;
         clone.name = actor.name + ' decoy';
-        addBonusSourceToObject(clone, getMinionSpeedBonus(actor, clone), false);
-        addBonusSourceToObject(clone, getMinionSkillBonuses(decoySkill), true);
         addActions(clone, abilities.explode);
         actor.allies.push(clone);
         actor.stunned = actor.time + .3;
