@@ -360,7 +360,7 @@ function updateAdventurer(adventurer) {
         '+speed': 250,
         '+weaponless:minPhysicalDamage': adventurer.level,
         '+weaponless:maxPhysicalDamage': adventurer.level,
-        '+weaponless:range': .5,
+        '+weaponless:weaponRange': .5,
         // You are weaponless if you have no weapon equipped.
         '+weaponless:attackSpeed': .5,
         // You are unarmed if you have no weapon or offhand equipped.
