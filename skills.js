@@ -129,7 +129,7 @@ var skills = {
     'net': genericAction('effect', {}, {'+cooldown': 10, '+range': 10, '$debuff': debuffEffect({}, {'+*speed': 0, '+duration': 3})},
                          'Throw a net to ensnare a distant enemy.'),
     'sicem': genericAction('effect', {}, {'+cooldown': [60, '*', [100, '/', [100, '+', '{dexterity}']]],
-                            '+range': 10, '$allyBuff': {'bonuses': {'*speed': 2, '*attackSpeed': 2, '*damage': 2, '+duration': 2}}},
+                            '+range': 10, '$allyBuff': buffEffect({}, {'*speed': 2, '*attackSpeed': 2, '*damage': 2, '+duration': 2})},
                             'Incite your allies to fiercely attack the enemy granting them: {$allyBuff}'),
     'consume': genericAction('consume', {'target': 'enemies', 'targetDeadUnits': true, 'consumeCorpse': true},
                              {'+consumeRatio': .2, '+range': 5, '+count': 0, '+duration': 0},

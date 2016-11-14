@@ -144,6 +144,9 @@ function abilityHelpText(ability, actor) {
         // TODO: display action restrictions, if any.
         sections.push(tag('div', 'abilityText', bonusSourceHelpText(action, actor, actionInstance)));
     }
+    if (ability.minionBonuses) {
+        sections.push(bonusSourceHelpText({'bonuses': ability.minionBonuses}, actor));
+    }
     return sections.join('<br/>');
 }
 var implicitBonusMap = {
