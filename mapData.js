@@ -715,7 +715,7 @@ var map = {
         'enemySkills': ["powerShot"],
         'monsters': ["gnome","butterfly"],
         'events': [
-            ["butterfly","butterfly","motherfly"]
+            ["motherfly"]
         ]
     },
     'fortress': {

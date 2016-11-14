@@ -177,6 +177,7 @@ var implicitBonusMap = {
 // Use this mapping for stats that are not implicity on an item or ability.
 var bonusMap = {
     // Offensive stats
+    '+damage': '+$1 damage',
     '*damage': '$1x damage',
     '%damage': '%1 increased damage',
     '+minPhysicalDamage': function (bonusSource, actor) {
@@ -185,8 +186,10 @@ var bonusMap = {
     '+minMagicDamage': function (bonusSource, actor) {
         return bonusSource.bonuses['+minMagicDamage'].format(1) + ' to ' + bonusSource.bonuses['+maxMagicDamage'].format(1) + ' increased magic damage';
     },
+    '+physicalDamage': '+$1 physical damage',
     '*physicalDamage': '$1x physical damage',
     '%physicalDamage': '%1 increased physical damage',
+    '+magicDamage': '+$1 magic damage',
     '*magicDamage': '$1x magic damage',
     '%magicDamageamage': '%1 increased magic damage',
     '*attackSpeed': '$1x attack speed',

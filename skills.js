@@ -140,7 +140,7 @@ var skills = {
     'shadowClone': genericAction('clone', {'tags': ['minion']}, {'+limit': 10, '+chance': .1},
                         'Chance to summon a weak clone of yourself on taking damage'),
     'enhanceWeapon': genericAction('effect', {'tags': ['spell'], 'target': 'self'}, {'+cooldown': 20, '$buff': buffEffect({}, {
-                            '++damage': ['{strength}', '/', 10], '++magicDamage': ['{intelligence}', '/', 10],
+                            '++physicalDamage': ['{strength}', '/', 10], '++magicDamage': ['{intelligence}', '/', 10],
                             '++critDamage': ['{dexterity}', '/', 500], '+duration': 5})},
                     'Enhance the strength of your weapon granting: {$buff}'),
     'enhanceArmor': genericAction('effect', {'tags': ['spell'], 'target': 'self'}, {'+cooldown': 30, '$buff': buffEffect({}, {
