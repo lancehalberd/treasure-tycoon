@@ -162,7 +162,7 @@ var abilities = {
         'dancer': {'name': 'Dancing', 'bonuses': {'+evasion': 3}, 'reaction': skills.evadeAndCounter},
         'distract': {'name': 'Distract', 'bonuses': {'+evasion': 3}, 'reaction': skills.distract},
         'charm': {'name': 'Charm', 'bonuses': {'+dexterity': 5, '+intelligence': 5}, 'action': skills.charm},
-        'dervish': {'name': 'Whirling Dervish', 'bonuses': {'+dexterity': 15}, 'onHitEffect': {'variableObjectType': 'trigger', 'buff': buffEffect({}, {'+%attackSpeed': .05, '+%speed': .05, '+duration': 2})},
+        'dervish': {'name': 'Whirling Dervish', 'bonuses': {'+dexterity': 15}, 'onHitEffect': {'variableObjectType': 'trigger', 'bonuses': {'$buff': buffEffect({}, {'+%attackSpeed': .05, '+%speed': .05, '+duration': 2})}},
                     'helpText': "Gain momentum with each hit you land granting increased attack speed and movement speed."},
 'tier3Index': {'name': '------Tier 3------'},
     'rangerIndex': {'name': '---Ranger---'},

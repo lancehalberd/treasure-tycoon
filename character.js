@@ -460,9 +460,15 @@ function actorHelpText(actor) {
     ifdefor(actor.suffixes, []).forEach(function (affix) {
         sections.push(bonusSourceHelpText(affix, actor));
     });
+    var countMap = {};
     ifdefor(actor.allEffects, []).forEach(function (effect) {
-        sections.push(bonusSourceHelpText(effect, actor));
+        var effectText = bonusSourceHelpText(effect, actor);
+        countMap[effectText] = ifdefor(countMap[effectText], 0) + 1;
     });
+    for (var text in countMap) {
+        if (countMap[text] > 1) text += tag('div', 'effectCounter', 'x' + countMap[text]);
+        sections.push(tag('div', 'effectText', text));
+    }
     return sections.join('<br/>');
 }
 function gainLevel(adventurer) {

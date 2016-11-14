@@ -11,7 +11,7 @@ function loadSavedData() {
 
 function saveGame() {
     console.log("saving game data");
-    $.jStorage.set("savedGame", exportState(state));
+    //$.jStorage.set("savedGame", exportState(state));
 }
 
 function exportState(state) {
@@ -219,7 +219,8 @@ function importAdventurer(adventurerData) {
         'personCanvas': personCanvas,
         'personContext': personContext,
         'attackCooldown': 0,
-        'percentHealth': 1
+        'percentHealth': 1,
+        'helpMethod': actorHelpText
     };
     initializeVariableObject(adventurer, {'variableObjectType': 'actor'}, adventurer);
     equipmentSlots.forEach(function (type) {

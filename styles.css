@@ -513,9 +513,17 @@ button.disabled {
 }
 
 .effectText {
+    position: relative;
     padding: 5px;
     background-color: rgba(200, 200, 50, .9);
     border: 1px solid white;
+}
+.effectCounter {
+    color: white;
+    font-weight: bold;
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
 }
 .abilityText {
     padding: 5px;

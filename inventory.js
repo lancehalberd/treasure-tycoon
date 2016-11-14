@@ -126,14 +126,26 @@ var tagToCategoryMap = {
     'melee': 'Melee Attacks',
     'magic': 'Magic Attacks',
     'throwing': 'Throwing Weapons',
-    'skill': 'Skills',
     'unarmed': 'While Unarmed',
     'fist': 'Fist Weapons',
-    'minion': 'Minions',
     'noOffhand': 'With No Offhand'
 };
 function tagToCategoryDisplayName(tag) {
     return ifdefor(tagToCategoryMap[tag], properCase(tag));
+}
+var restrictionToCategoryMap = {
+    'twoHanded': '2-handed Weapons',
+    'oneHanded': '1-handed Weapons',
+    'ranged': 'Ranged Weapons',
+    'melee': 'Melee Weapons',
+    'magic': 'Magic Weapons',
+    'throwing': 'Throwing Weapons',
+    'unarmed': 'Unarmed',
+    'fist': 'Fist Weapons',
+    'noOffhand': 'With No Offhand'
+};
+function restrictionToCategoryDisplayName(tag) {
+    return ifdefor(restrictionToCategoryMap[tag], properCase(tag));
 }
 // Wrapper for toFixed that strips trailing '0's and '.'s.
 // Foundt at http://stackoverflow.com/questions/7312468/javascript-round-to-a-number-of-decimal-places-but-strip-extra-zeros

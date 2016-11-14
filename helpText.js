@@ -67,6 +67,9 @@ function bonusSourceHelpText(bonusSource, actor, localObject) {
         displayedStats['+duration'] = true;
     }
     var sections = [];
+    for (var restriction of ifdefor(bonusSource.restrictions, [])) {
+        sections.push(tag('u', '', restrictionToCategoryDisplayName(restriction) + ' Only'));
+    }
     if (bonusSource.helpText) {
         sections.push(bonusSource.helpText.replace(/\{([^\}]+)\}/g, function (match, key) {
             displayedStats[key] = true;
@@ -81,7 +84,7 @@ function bonusSourceHelpText(bonusSource, actor, localObject) {
     for (var bonus in bonusMap) {
         if (displayedStats[bonus]) continue;
         // If this is an implicit bonus, don't display it as a regular bonus.
-        if (isImplicit && bonusMap[bonus]) continue;
+        if (isImplicit && implicitBonusMap[bonus]) continue;
         var bonusText = renderBonusText(bonusMap, bonus, bonusSource, actor, localObject);
         if (bonusText) sections.push(bonusText);
     }
@@ -220,6 +223,7 @@ var bonusMap = {
     '+damageOnMiss': 'Deals $1 true damage to enemy on miss',
     '+slowOnHit': 'Slow targets by %0 on hit',
     '+speed': '+$1 speed',
+    '%speed': '%1 increased speed',
     '+increasedDrops': 'Gain %1 more coins and anima',
     // Ability specific bonuses
     '+area': '+$1 area offect',
