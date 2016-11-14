@@ -166,6 +166,7 @@ var implicitBonusMap = {
     '+area': 'Area: $1',
     '+chance': '%1 chance',
     '+consumeRatio': 'Absorb %1 of the target\'s max health',
+    '+limit': 'Limit: $1',
     '+cooldown': 'Cooldown: $1 seconds',
     '+duration': 'Lasts $1 seconds'
 };
