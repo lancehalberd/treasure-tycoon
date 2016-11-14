@@ -11,7 +11,7 @@ function loadSavedData() {
 
 function saveGame() {
     console.log("saving game data");
-    //$.jStorage.set("savedGame", exportState(state));
+    $.jStorage.set("savedGame", exportState(state));
 }
 
 function exportState(state) {
