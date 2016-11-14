@@ -68,7 +68,7 @@ function bonusSourceHelpText(bonusSource, actor, localObject) {
     }
     var sections = [];
     if (bonusSource.helpText) {
-        sections.push(bonusSource.helpText.replace(/\{(.+)\}/, function (match, key) {
+        sections.push(bonusSource.helpText.replace(/\{([^\}]+)\}/g, function (match, key) {
             displayedStats[key] = true;
             if (typeof bonusSource.bonuses[key] === 'undefined') {
                 console.log(bonusSource);

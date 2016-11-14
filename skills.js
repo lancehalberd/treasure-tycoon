@@ -223,7 +223,7 @@ var skills = {
     'meteor': spellAction('spell', {'tags': ['rain'], 'height': 20, 'color': 'grey', 'alpha': .4, 'size': 20},
                        {'+count': [1, '+', ['{magicPower}', '/', '100']], '+explode': 1, '+power': ['{magicPower}', '/', 2],
                        '+area': [2, '+', ['{magicPower}', '/', '100']], '+cooldown': 15, '$alwaysHits': 'Never misses'},
-                        'Rain {count} meteors down on your enemies each dealing {+power} damage.')
+                        'Rain {+count} meteors down on your enemies each dealing {+power} damage.')
 };
 // The skill key should be applied as a tag to each skill.
 for (var skillKey in skills) {
