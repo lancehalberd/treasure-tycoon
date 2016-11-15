@@ -1,3 +1,4 @@
+var maxIndex = 9;
 function drawAdventure(character) {
     var adventurer = character.adventurer;
     var context = mainContext;
@@ -83,7 +84,7 @@ function drawMonster(character, monster, index) {
     monster.width = ifdefor(monster.width, source.width * 2 * ifdefor(monster.scale, 1));
     monster.height = ifdefor(monster.height, ifdefor(source.height, 64) * 2 * ifdefor(monster.scale, 1));
     monster.left = monster.x - cameraX;
-    monster.top = 240 - monster.height - 72 - ifdefor(source.y, 0) * 2 * ifdefor(monster.scale, 1) - 2 * index;
+    monster.top = 240 - monster.height - 72 - ifdefor(source.y, 0) * 2 * ifdefor(monster.scale, 1) - 2 * (index % maxIndex);
     context.translate(monster.left + monster.width / 2, 0);
     if ((source.flipped && monster.direction < 0) || (!source.flipped && monster.direction > 0)) {
         context.scale(-1, 1);
@@ -132,15 +133,15 @@ function drawMonster(character, monster, index) {
     //context.fillRect(monster.x - cameraX, 240 - 128 - 72, 64, 128);
     // life bar
     if (monster.isDead) return;
-    drawBar(context, monster.x - cameraX + monster.width / 2 - 32, 240 - 128 - 36 - 2 * index - ifdefor(source.y, 0) * 2, 64, 4, 'white', ifdefor(monster.color, 'red'), monster.health / monster.maxHealth);
+    drawBar(context, monster.x - cameraX + monster.width / 2 - 32, 240 - 128 - 36 - 2 * (index % maxIndex) - ifdefor(source.y, 0) * 2, 64, 4, 'white', ifdefor(monster.color, 'red'), monster.health / monster.maxHealth);
     if (ifdefor(monster.reflectBarrier, 0)) {
-        drawBar(context, monster.x - cameraX + monster.width / 2 - 32, 240 - 128 - 36 - 2 * index - 2 - ifdefor(source.y, 0) * 2, 64, 4, 'white', 'blue', monster.reflectBarrier / monster.maxReflectBarrier);
+        drawBar(context, monster.x - cameraX + monster.width / 2 - 32, 240 - 128 - 36 - 2 * (index % maxIndex) - 2 - ifdefor(source.y, 0) * 2, 64, 4, 'white', 'blue', monster.reflectBarrier / monster.maxReflectBarrier);
     }
 }
 function drawAdventurer(character, adventurer, index) {
     var cameraX = character.cameraX;
     adventurer.left = adventurer.x - cameraX;
-    adventurer.top = 240 - 128 - 72 - 2 * index;
+    adventurer.top = 240 - 128 - 72 - 2 * (index % maxIndex);
     adventurer.width = 64;
     adventurer.height = 128;
     //draw character
@@ -177,9 +178,9 @@ function drawAdventurer(character, adventurer, index) {
     //mainContext.fillRect(adventurer.x - cameraX, 240 - 128 - 72, 64, 128);
     // life bar
     if (adventurer.isDead) return;
-    drawBar(mainContext, adventurer.x - cameraX, 240 - 128 - 36 - 2 * index, 64, 4, 'white', 'red', adventurer.health / adventurer.maxHealth);
+    drawBar(mainContext, adventurer.x - cameraX, 240 - 128 - 36 - 2 * (index % maxIndex), 64, 4, 'white', 'red', adventurer.health / adventurer.maxHealth);
     if (ifdefor(adventurer.reflectBarrier, 0)) {
-        drawBar(mainContext, adventurer.x - cameraX, 240 - 128 - 36 - 2 * index - 2, 64, 4, 'white', 'blue', adventurer.reflectBarrier / adventurer.maxReflectBarrier);
+        drawBar(mainContext, adventurer.x - cameraX, 240 - 128 - 36 - 2 * (index % maxIndex) - 2, 64, 4, 'white', 'blue', adventurer.reflectBarrier / adventurer.maxReflectBarrier);
     }
 }
 function drawMinimap(character) {
