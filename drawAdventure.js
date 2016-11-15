@@ -118,8 +118,10 @@ function drawMonster(character, monster, index) {
     }
     var frameSource = {'left': xFrame * source.width + source.offset, 'top': yFrame * ifdefor(source.height, 64), 'width': source.width, 'height': ifdefor(source.height, 64)};
     var target = {'left': -monster.width / 2, 'top': monster.top, 'width': monster.width, 'height': monster.height};
-    if (ifdefor(monster.tint)) {
+    if (ifdefor(monster.tint) && !(monster.slow > .3)) {
         drawTintedImage(context, monster.image, monster.tint, .2 + Math.cos(monster.animationTime * 5) / 10, frameSource, target);
+    } else if (monster.slow > 0) {
+        drawTintedImage(context, monster.image, '#fff', Math.min(1, monster.slow), frameSource, target);
     } else {
         context.drawImage(monster.image, frameSource.left, frameSource.top, frameSource.width, frameSource.height,
                                          target.left, target.top, target.width, target.height);
@@ -146,8 +148,14 @@ function drawAdventurer(character, adventurer, index) {
         var attackSpeed = adventurer.lastAction.attackSpeed;
         var attackFps = 1 / ((1 / attackSpeed) / fightLoop.length);
         var frame = Math.floor(Math.abs(adventurer.animationTime - adventurer.attackCooldown) * attackFps) % fightLoop.length;
-        mainContext.drawImage(adventurer.personCanvas, fightLoop[frame] * 32, 0 , 32, 64,
-                        adventurer.x - cameraX, 240 - 128 - 72, 64, 128);
+        if (adventurer.slow > 0) {
+            drawTintedImage(mainContext, adventurer.personCanvas, '#fff', Math.min(1, adventurer.slow),
+                        {'left': fightLoop[frame] * 32, 'top': 0 , 'width': 32, 'height': 64},
+                        {'left': adventurer.x - cameraX, 'top': 240 - 128 - 72, 'width': 64, 'height': 128});
+        } else {
+            mainContext.drawImage(adventurer.personCanvas, fightLoop[frame] * 32, 0 , 32, 64,
+                            adventurer.x - cameraX, 240 - 128 - 72, 64, 128);
+        }
     } else { // walking loop
         if (adventurer.cloaked) {
             mainContext.globalAlpha = .2;
@@ -157,8 +165,14 @@ function drawAdventurer(character, adventurer, index) {
         if (adventurer.pull || adventurer.stunned) {
             frame = 0;
         }
-        mainContext.drawImage(adventurer.personCanvas, walkLoop[frame] * 32, 0 , 32, 64,
+        if (adventurer.slow > 0) {
+            drawTintedImage(mainContext, adventurer.personCanvas, '#fff', Math.min(1, adventurer.slow),
+                        {'left': walkLoop[frame] * 32, 'top': 0 , 'width': 32, 'height': 64},
+                        {'left': adventurer.x - cameraX, 'top': 240 - 128 - 72, 'width': 64, 'height': 128});
+        } else {
+            mainContext.drawImage(adventurer.personCanvas, walkLoop[frame] * 32, 0 , 32, 64,
                         adventurer.x - cameraX, 240 - 128 - 72, 64, 128);
+        }
     }
     //mainContext.fillRect(adventurer.x - cameraX, 240 - 128 - 72, 64, 128);
     // life bar
