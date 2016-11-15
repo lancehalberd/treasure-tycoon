@@ -214,7 +214,8 @@ function moveActor(actor, delta) {
     for (var i = 0; i < actor.allies.length; i++) {
         xOffset += actor.x - actor.allies[i].x;
     }
-    speedBonus -= xOffset * actor.direction / 500;
+    speedBonus -= actor.direction * xOffset / 1000;
+    speedBonus = Math.min(1.25, Math.max(speedBonus, .5));
     if (actor.chargeEffect) {
         speedBonus *= actor.chargeEffect.chargeSkill.speedBonus;
         actor.chargeEffect.distance += speedBonus * actor.speed * Math.max(.1, 1 - actor.slow) * delta;
