@@ -187,33 +187,33 @@ function updateAdjacencyBonuses(jewel) {
     var contrastBonus = coefficient * [0, 1, 2, 3, 5, 8, 13, 21, 34][uniqueTypes];
     switch(jewel.jewelType) {
         case 1:
-            jewel.adjacencyBonuses['%maxHealth'] = resonanceBonus / 100;
-            jewel.adjacencyBonuses['%damage'] = contrastBonus / 100;
+            if (resonanceBonus) jewel.adjacencyBonuses['%maxHealth'] = resonanceBonus / 100;
+            if (contrastBonus) jewel.adjacencyBonuses['%damage'] = contrastBonus / 100;
             break;
         case 2:
-            jewel.adjacencyBonuses['%evasion'] = resonanceBonus / 100;
-            jewel.adjacencyBonuses['%attackSpeed'] = contrastBonus / 100;
+            if (resonanceBonus) jewel.adjacencyBonuses['%evasion'] = resonanceBonus / 100;
+            if (contrastBonus) jewel.adjacencyBonuses['%attackSpeed'] = contrastBonus / 100;
             break;
         case 4:
-            jewel.adjacencyBonuses['%block'] = resonanceBonus / 100;
-            jewel.adjacencyBonuses['%accuracy'] = contrastBonus / 100;
+            if (resonanceBonus) jewel.adjacencyBonuses['%block'] = resonanceBonus / 100;
+            if (contrastBonus) jewel.adjacencyBonuses['%accuracy'] = contrastBonus / 100;
             break;
         case 3:
-            jewel.adjacencyBonuses['%critChance'] = resonanceBonus / 100;
-            jewel.adjacencyBonuses['+critDamage'] = contrastBonus / 100;
+            if (resonanceBonus) jewel.adjacencyBonuses['%critChance'] = resonanceBonus / 100;
+            if (contrastBonus) jewel.adjacencyBonuses['+critDamage'] = contrastBonus / 100;
             break;
         case 5:
-            jewel.adjacencyBonuses['+healthRegen'] = resonanceBonus / 10;
-            jewel.adjacencyBonuses['+healthGainOnHit'] = contrastBonus / 10;
+            if (resonanceBonus) jewel.adjacencyBonuses['+healthRegen'] = resonanceBonus / 10;
+            if (contrastBonus) jewel.adjacencyBonuses['+healthGainOnHit'] = contrastBonus / 10;
             break;
         case 6:
-            jewel.adjacencyBonuses['%magicBlock'] = resonanceBonus / 100;
-            jewel.adjacencyBonuses['%magicDamage'] = contrastBonus / 100;
+            if (resonanceBonus) jewel.adjacencyBonuses['%magicBlock'] = resonanceBonus / 100;
+            if (contrastBonus) jewel.adjacencyBonuses['%magicDamage'] = contrastBonus / 100;
             break;
         case 7:
             // This used to be increased experience, but we don't have xp any more
-            jewel.adjacencyBonuses['+increasedDrops'] = resonanceBonus / 100;
-            jewel.adjacencyBonuses['+increasedDrops'] += contrastBonus / 100;
+            if (resonanceBonus) jewel.adjacencyBonuses['+increasedDrops'] = resonanceBonus / 100;
+            if (contrastBonus) jewel.adjacencyBonuses['+increasedDrops'] += contrastBonus / 100;
             break;
     }
 }

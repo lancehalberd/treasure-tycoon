@@ -156,6 +156,7 @@ var implicitBonusMap = {
     '+minMagicDamage': function (bonusSource, actor) {
         return 'Magic: ' + bonusSource.bonuses['+minMagicDamage'].format(1) + ' to ' + bonusSource.bonuses['+maxMagicDamage'].format(1);
     },
+    '+weaponRange': 'Range: $1',
     '+range': 'Range: $1',
     '+attackSpeed': 'Attack Speed: $1',
     '+critChance': '%1 critical strike chance',
@@ -177,7 +178,7 @@ var implicitBonusMap = {
 var bonusMap = {
     // Offensive stats
     '+damage': '+$1 damage',
-    '*damage': '$1x damage',
+    '*damage': '$3x damage',
     '%damage': '%1 increased damage',
     '+minPhysicalDamage': function (bonusSource, actor) {
         return bonusSource.bonuses['+minPhysicalDamage'].format(1) + ' to ' + bonusSource.bonuses['+maxPhysicalDamage'].format(1) + ' increased physical damage';
@@ -186,10 +187,10 @@ var bonusMap = {
         return bonusSource.bonuses['+minMagicDamage'].format(1) + ' to ' + bonusSource.bonuses['+maxMagicDamage'].format(1) + ' increased magic damage';
     },
     '+physicalDamage': '+$1 physical damage',
-    '*physicalDamage': '$1x physical damage',
+    '*physicalDamage': '$3x physical damage',
     '%physicalDamage': '%1 increased physical damage',
     '+magicDamage': '+$1 magic damage',
-    '*magicDamage': '$1x magic damage',
+    '*magicDamage': '$3x magic damage',
     '%magicDamageamage': '%1 increased magic damage',
     '*attackSpeed': '$1x attack speed',
     '%attackSpeed': '%1 increased attack speed',
@@ -255,5 +256,6 @@ var bonusMap = {
     '+lifeSteal': '%1 of damage dealt is gained as life',
     '+duration': '+$1s duration',
     '*duration': '$1x duration',
-    '+count': '+$1 enchantment(s) stolen'
+    '+count': '+$1 enchantment(s) stolen',
+    '+weaponRange': '+$1 increased range',
 };
