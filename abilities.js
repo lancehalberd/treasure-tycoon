@@ -19,7 +19,7 @@ var abilities = {
     'basicAttack': {'name': 'Basic Attack', 'action': skills.basicAttack},
     'throwingPower': {'name': 'Throwing Power', 'bonuses': {'%throwing:physicalDamage': .3, '+throwing:range': 2}},
     'throwingDamage': {'name': 'Throwing Mastery', 'bonuses': {'%throwing:physicalDamage': .2, '%throwing:attackSpeed': .2}},
-    'throwingCriticalChance': {'name': 'Throwing Precision', 'bonuses': {'%throwing:critChance': .3, '%throwing:cattackSpeed': .3}},
+    'throwingCriticalChance': {'name': 'Throwing Precision', 'bonuses': {'%throwing:critChance': .3, '%throwing:attackSpeed': .3}},
     'throwingParadigmShift': {'name': 'Melee Throwing', 'bonuses': {'*throwing:range': .2, '*throwing:damage': 1.3}}, // This should be throwing -> melee with range: 2 then 1.3xdamage and attack speed.
 
     'rangedAccuracy': {'name': 'Ranged Accuracy', 'bonuses': {'%ranged:accuracy': .3, '+ranged:range': 1}},
