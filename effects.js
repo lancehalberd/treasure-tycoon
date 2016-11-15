@@ -324,6 +324,7 @@ function addEffectToActor(actor, effect, triggerComputation) {
     addBonusSourceToObject(actor, effect, triggerComputation);
 }
 function removeEffectFromActor(actor, effect, triggerComputation) {
-    actor.allEffects.splice(actor.allEffects.indexOf(effect), 1);
+    var index = actor.allEffects.indexOf(effect);
+    if (index >= 0) actor.allEffects.splice(index, 1);
     removeBonusSourceFromObject(actor, effect, triggerComputation);
 }

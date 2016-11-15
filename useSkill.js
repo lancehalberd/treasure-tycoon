@@ -182,6 +182,13 @@ function getPower(actor, skill) {
     }
     return power;*/
 }
+function closestEnemyDistance(actor) {
+    var distance = 2000;
+    for (var enemy of actor.enemies) {
+        distance = Math.min(distance, getDistance(actor, enemy));
+    }
+    return distance;
+}
 
 /**
  * Hash of skill methods that causes an actor to perform a skill on the given target.
@@ -229,7 +236,7 @@ skillDefinitions.consume = {
 };
 skillDefinitions.song = {
     isValid: function (actor, songSkill, target) {
-        return true;
+        return closestEnemyDistance(actor) < 500;
     },
     use: function (actor, songSkill, target) {
         var attackStats = createSpellStats(actor, songSkill, target);
@@ -467,6 +474,9 @@ skillDefinitions.heal = {
 
 skillDefinitions.effect = {
     isValid: function (actor, effectSkill, target) {
+        if (closestEnemyDistance(actor) >= 500) {
+            return false;
+        }
         if (effectSkill.allyBuff) {
             return actor.allies.length > 1;
         }

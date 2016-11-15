@@ -1564,8 +1564,8 @@ var map = {
         'specialLoot': ["simpleJewelLoot"],
         'skill': "banishingStrike",
         'board': "fangBoard",
-        'enemySkills': ["heal","protect","majorDexterity"],
-        'monsters': ["motherfly","gnomecromancer"],
+        'enemySkills': ["heal","protect"],
+        'monsters': ["butterfly","gnomeWizard"],
         'events': [
             ["motherfly","motherfly"],
             ["gnomecromancer","gnomecromancer"],

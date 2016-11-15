@@ -227,11 +227,13 @@ function mainLoop() {
             }
         } else if (state.selectedCharacter.area) {
             drawAdventure(state.selectedCharacter);
-            refreshStatsPanel(state.selectedCharacter, $('.js-characterColumn .js-stats'))
         } else {
             updateMap();
             drawMap();
         }
+    }
+    if (state.selectedCharacter.area) {
+        refreshStatsPanel(state.selectedCharacter, $('.js-characterColumn .js-stats'))
     }
     if (currentContext === 'jewel') {
         drawBoardJewels(state.selectedCharacter, jewelsCanvas);

@@ -105,7 +105,8 @@ var coreStatBonusSource = {'bonuses': {
 function removeAdventureEffects(adventurer) {
     setStat(adventurer, 'bonusMaxHealth', 0);
     while (adventurer.allEffects.length) {
-        removeEffectFromActor(adventurer, adventurer.allEffects.pop(), false);
+        var effect = adventurer.allEffects.pop();
+        removeEffectFromActor(adventurer, effect, false);
     }
     initializeActorForAdventure(adventurer);
     recomputeDirtyStats(adventurer);

@@ -120,8 +120,8 @@ function bonusSourceHelpText(bonusSource, actor, localObject) {
     return sections.join('<br/>');
 }
 function renderBonusText(bonusMap, bonusKey, bonusSource, actor, localObject) {
-    var rawValue = bonusSource.bonuses[bonusKey] || bonusSource.bonuses['+' + bonusKey];
-    if (!rawValue) return null;
+    var rawValue = ifdefor(bonusSource.bonuses[bonusKey], bonusSource.bonuses['+' + bonusKey]);
+    if (rawValue === null) return null;
     var textOrFunction = bonusMap[bonusKey];
     if (typeof textOrFunction === 'function') return textOrFunction(bonusSource, actor);
     var text = textOrFunction;
@@ -132,7 +132,6 @@ function renderBonusText(bonusMap, bonusKey, bonusSource, actor, localObject) {
     if (wildcard[0] === '%') renderedValue = renderedValue.percent(digits);
     else renderedValue = renderedValue.format(digits);
     return text.split(wildcard).join(renderedValue);
-
 }
 function abilityHelpText(ability, actor) {
     var sections = [ability.name, ''];
