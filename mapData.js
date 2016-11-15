@@ -1927,8 +1927,8 @@ var map = {
         'specialLoot': ["simpleEmeraldLoot"],
         'skill': "throwingDamage",
         'board': "crownBoard",
-        'enemySkills': ["heal","protect","majorDexterity"],
-        'monsters': ["motherfly","gnomecromancer"],
+        'enemySkills': ["heal"],
+        'monsters': ["spider","wolf"],
         'events': [
             ["motherfly","motherfly"],
             ["gnomecromancer","gnomecromancer"],
