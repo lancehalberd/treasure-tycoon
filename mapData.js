@@ -790,7 +790,7 @@ var map = {
         'x': 10, 'y': -2,
         'coords': [-2,-183,-571],
         'background': "forest",
-        'unlocks': ["savannah","orchard","tunnel","village"],
+        'unlocks': ["savannah","orchard","shipgraveyard","village"],
         'specialLoot': ["simpleEmeraldLoot"],
         'skill': "sap",
         'board': "doubleDiamonds",
@@ -1115,7 +1115,7 @@ var map = {
         'x': 12, 'y': 1,
         'coords': [162,96,-570],
         'background': "field",
-        'unlocks': ["garden","temple","trail","tunnel"],
+        'unlocks': ["garden","temple","trail","shipgraveyard"],
         'specialLoot': ["simpleRubyLoot"],
         'skill': "vitality",
         'board': "tripleTriangles",
@@ -1589,6 +1589,25 @@ var map = {
             ["caterpillar","caterpillar","motherfly"]
         ]
     },
+    'shipgraveyard': {
+        'name': "Ship Graveyard",
+        'level': 2,
+        'x': 14, 'y': 5,
+        'coords': [183,-105,-561],
+        'background': "cemetery",
+        'unlocks': ["garden","wetlands","tributaries"],
+        'specialLoot': ["simpleSaphireLoot"],
+        'skill': "hook",
+        'board': "doubleDiamonds",
+        'enemySkills': [],
+        'monsters': ["bat","spider"],
+        'events': [
+            ["skeletalBuccaneer"],
+            ["spider","spider","skeletalBuccaneer"],
+            ["skeletalBuccaneer","skeletalBuccaneer"],
+            ["skeletonOger"]
+        ]
+    },
     'shore': {
         'name': "Shore",
         'level': 12,
@@ -1864,25 +1883,6 @@ var map = {
         'monsters': ["skeleton"],
         'events': [
             ["dragon"]
-        ]
-    },
-    'tunnel': {
-        'name': "Tunnel",
-        'level': 2,
-        'x': 14, 'y': 5,
-        'coords': [183,-105,-561],
-        'background': "cave",
-        'unlocks': ["garden","wetlands","tributaries"],
-        'specialLoot': ["simpleSaphireLoot"],
-        'skill': "hook",
-        'board': "doubleDiamonds",
-        'enemySkills': [],
-        'monsters': ["undeadWarrior","giantSkeleton"],
-        'events': [
-            ["skeleton","undeadWarrior"],
-            ["giantSkeleton","giantSkeleton"],
-            ["undeadWarrior","undeadWarrior","dragon"],
-            ["frostGiant","frostGiant"]
         ]
     },
     'understory': {

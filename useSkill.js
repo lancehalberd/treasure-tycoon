@@ -125,6 +125,20 @@ function useSkill(actor, skill, target) {
     // Run shared code for using any action, which does not contain logic specific
     // for an actor using a skill they possess.
     skillDefinition.use(actor, skill, target);
+    // Apply instant cooldown if it is set.
+    if (skill.instantCooldown) {
+        // * is wild card meaning all other skills
+        for(var otherSkill of ifdefor(actor.actions, [])) {
+            if ((skill !== otherSkill && skill.instantCooldown === '*') || otherSkill.tags[skill.instantCooldown]) {
+                otherSkill.readyAt = actor.time;
+            }
+        }
+        for(var otherSkill of ifdefor(actor.reactions, [])) {
+            if ((skill !== otherSkill && skill.instantCooldown === '*') || otherSkill.tags[skill.instantCooldown]) {
+                otherSkill.readyAt = actor.time;
+            }
+        }
+    }
 
     actor.lastAction = skill;
     actor.target = target;
@@ -287,20 +301,6 @@ skillDefinitions.revive = {
         actor.stunned = actor.time + .3;
         if (reviveSkill.buff) {
             addTimedEffect(actor, reviveSkill.buff);
-        }
-        if (reviveSkill.instantCooldown) {
-            for(var i = 0; i < ifdefor(actor.actions, []).length; i++) {
-                var skill = actor.actions[i];
-                if (skill !== reviveSkill) {
-                    skill.readyAt = actor.time;
-                }
-            }
-            for(var i = 0; i < ifdefor(actor.reactions, []).length; i++) {
-                var skill = actor.reactions[i];
-                if (skill !== reviveSkill) {
-                    skill.readyAt = actor.time;
-                }
-            }
         }
     }
 };

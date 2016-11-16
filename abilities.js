@@ -136,7 +136,7 @@ var abilities = {
         'heal': {'name': 'Heal', 'bonuses': {'+intelligence': 5}, 'action': skills.heal},
         'reflect': {'name': 'Reflect', 'bonuses': {'+intelligence': 10}, 'action': skills.reflect},
         'revive': {'name': 'Revive', 'bonuses': {'+intelligence': 10}, 'reaction': skills.revive},
-        'reviveInstantCooldown': {'name': 'Miracle', 'bonuses': {'$revive:instantCooldown': 'Reset cooldowns of other abilities'}},
+        'reviveInstantCooldown': {'name': 'Miracle', 'bonuses': {'$revive:instantCooldown': '*'}},
         'reviveInvulnerability': {'name': 'Halo', 'bonuses': {'$revive:buff': buffEffect({}, {'+duration': 2, '$$invulnerable': 'Invulnerability'})}},
 'tier2Index': {'name': '------Tier 2------'},
     'corsairIndex': {'name': '---Corsair---'},
@@ -245,6 +245,7 @@ var abilities = {
         'enhanceArmor': {'name': 'Enhance Armor', 'bonuses': {'+strength': 5, '+intelligence': 10}, 'action': skills.enhanceArmor},
         'enhanceAbility': {'name': 'Enhance Ability', 'bonuses': {'+strength': 10, '+intelligence': 10}, 'action': skills.enhanceAbility},
     'sageIndex': {'name': '---Sage---'},
+        'sage': {'name': 'Profound Insight', 'bonuses': {'%cooldown': -.5}},
         'stopTime': {'name': 'Stop Time', 'bonuses': {'+intelligence': 10}, 'reaction': skills.stopTime},
         'dispell': {'name': 'Dispell', 'bonuses': {'+intelligence': 15}, 'action': skills.dispell},
         'meteor': {'name': 'Meteor', 'bonuses': {'+intelligence': 20}, 'action': skills.meteor},
@@ -269,7 +270,8 @@ var abilities = {
             'minionBonuses': {'*maxHealth': 2, '*damage': 2}},
     'summonSkeleton': {'name': 'Summon Skeleton', 'action': skills.summonSkeleton},
     'summonCaterpillar': {'name': 'Spawn', 'action': skills.summonCaterpillar},
-    'rangeAndAttackSpeed': {'name': 'Range And Attack Speed', 'bonuses': {'+range': 2, '+attackSpeed': .5}}
+    'rangeAndAttackSpeed': {'name': 'Range And Attack Speed', 'bonuses': {'+range': 2, '+attackSpeed': .5}},
+    'dodgeHook': {'name': 'Dodge then Hook', 'bonuses': {'$dodge:instantCooldown': 'hook'}}
 };
 var testJob;// = 'blackbelt';
 var testAbilities = [];

@@ -121,6 +121,8 @@ function bonusSourceHelpText(bonusSource, actor, localObject) {
 }
 function renderBonusText(bonusMap, bonusKey, bonusSource, actor, localObject) {
     var rawValue = ifdefor(bonusSource.bonuses[bonusKey], bonusSource.bonuses['+' + bonusKey]);
+    // Don't show help text like +0 accuracy or 0% increased accuracy, but do show 0x accuracy.
+    if (rawValue === 0 && bonusKey.charAt(0) !== '*') return null;
     if (rawValue === null) return null;
     var textOrFunction = bonusMap[bonusKey];
     if (typeof textOrFunction === 'function') return textOrFunction(bonusSource, actor);

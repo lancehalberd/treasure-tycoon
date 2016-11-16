@@ -282,12 +282,15 @@ function processStatusEffects(character, target, delta) {
             var dx = (target.pull.x - target.x) * Math.min(1, delta / timeLeft);
             var damage = target.pull.damage * Math.min(1, delta / timeLeft);
             target.pull.damage -= damage;
-            if (!target.blocked) {
+            // Don't let target be pulled past enemies. Do let them jump away from enemies.
+            if (!target.blocked || dx * target.direction < 0) {
                 target.x += dx;
                 target.health -= damage;
             }
         } else {
-            if (!target.blocked) {
+            var dx = target.pull.x - target.x;
+            // Don't let target be pulled past enemies. Do let them jump away from enemies.
+            if (!target.blocked || dx * target.direction < 0) {
                 target.x = target.pull.x;
                 target.health -= target.pull.damage;
             }

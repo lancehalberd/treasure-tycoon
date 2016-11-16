@@ -291,6 +291,13 @@ function initalizeMonsters() {
                             '*block': 0, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': 2}
     });
+    addMonster('skeletalBuccaneer', {'name': 'Skeletal Buccaneer', 'source': skeletonSource, 'scale': 1.5,
+        // Deflect to counter ranged champions.
+        'implicitBonuses': {'+range': -.5, '*minPhysicalDamage': .4, '*maxPhysicalDamage': .4, '+accuracy': 2, '*attackSpeed': 2, '*magicDamage': 0,
+                            '*block': 0, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
+                            '*speed': 1},
+        'abilities': [abilities.deflect, abilities.sage, abilities.majorDexterity]
+    });
     addMonster('undeadWarrior', {'name': 'Undead Warrior', 'source': skeletonSource,
         // Fast to counter ranged heroes, low range+damage + fast attacks to be weak to armored heroes.
         'implicitBonuses': {'+range': -.5, '*minPhysicalDamage': .4, '*maxPhysicalDamage': .4, '+accuracy': 2, '*attackSpeed': 2, '*magicDamage': 0,
@@ -322,6 +329,11 @@ function initalizeMonsters() {
     addMonster('giantSkeleton', {'name': 'Skelegiant', 'source': skeletonGiantSource,
         'implicitBonuses': {'*maxHealth': 2, '+critDamage': .5, '*magicDamage': 0, '*accuracy': 2,
                             '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 0, '*magicResist': 0}
+    });
+    addMonster('skeletonOger', {'name': 'Skeleton Ogre', 'source': skeletonGiantSource,
+        'implicitBonuses': {'*maxHealth': 3, '+critDamage': .5, '*magicDamage': 0, '*accuracy': 2,
+                            '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 0, '*magicResist': 0},
+        'abilities': [abilities.hook, abilities.hookRange, abilities.hookStun, abilities.dodge, abilities.acrobatics, abilities.acrobatics, abilities.dodgeHook, abilities.deflect]
     });
     addMonster('butcher', {'name': 'Butcher', 'source': skeletonGiantSource,
         'implicitBonuses': {'*maxHealth': 3, '+critDamage': .5, '*magicDamage': 0, '*accuracy': 2,
