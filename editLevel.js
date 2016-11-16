@@ -192,8 +192,18 @@ function startEditingLevel(level) {
     $('.js-editingControls').show();
     $('.js-levelSelect option').eq(editingLevel.level - 1).prop('selected', true);
     $('.js-levelBackgroundSelect option[value="' + editingLevel.background + '"]').prop('selected', true);
+
+    $('.js-levelSkillSelect option').show();
+    // Hide skills already used by other levels.
+    for (var otherLevel of Object.values(map)) {
+        if (otherLevel.skill) $('.js-levelSkillSelect option[value="' + otherLevel.skill + '"]').hide();
+    }
+    // Hide class skills, they cannot be granted by levels.
+    for (var classSkill in characterClasses) {
+        $('.js-levelSkillSelect option[value="' + classSkill + '"]').hide();
+    }
     if (editingLevel.skill) {
-        $('.js-levelSkillSelect option[value="' + editingLevel.skill + '"]').prop('selected', true);
+        $('.js-levelSkillSelect option[value="' + editingLevel.skill + '"]').show().prop('selected', true);
         // Show the board select if a skill is set.
         $('.js-levelBoardSelect').show();
         if (!editingLevel.board) editingLevel.board = $('.js-levelSkillSelect').val();

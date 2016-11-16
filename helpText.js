@@ -178,6 +178,13 @@ var implicitBonusMap = {
 };
 // Use this mapping for stats that are not implicity on an item or ability.
 var bonusMap = {
+    '$setRange': function (bonusSource, actor) {
+        if (bonusSource.bonuses['$setRange'] === 'melee') return 'Attacks become melee';
+        if (bonusSource.bonuses['$setRange'] === 'ranged') return 'Attacks become ranged';
+        console.log(bonusSource);
+        throw new Error('unexpected value ' + bonusSource.bonuses['$setRange']);
+    },
+    '$weaponRange': 'Weapon range is always $1',
     // Offensive stats
     '+damage': '+$1 damage',
     '*damage': '$3x damage',
@@ -259,5 +266,5 @@ var bonusMap = {
     '+duration': '+$1s duration',
     '*duration': '$1x duration',
     '+count': '+$1 enchantment(s) stolen',
-    '+weaponRange': '+$1 increased range',
+    '+weaponRange': '+$1 increased range'
 };

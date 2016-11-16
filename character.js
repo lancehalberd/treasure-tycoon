@@ -23,6 +23,8 @@ var allActorVariables = {
     'cloaking': '.', 'overHeal': '.', 'increasedDrops': '.', 'cooldownReduction': '.',
     'equipmentMastery': '.', 'invulnerable': '.', 'maxBlock': '.', 'maxMagicBlock': '.', 'maxEvasion': '.',
     'uncontrollable': '.', 'twoToOneHanded': '.',
+    // Used by Throwing Paradigm Shift which turns throwing weapons into melee weapons.
+    'setRange': 'Override melee/ranged tags and weaponRange to specific values',
     // tracked for debuffs that deal damage over time
     'damageOverTime': '.',
     // For enemy loot and color
@@ -438,6 +440,15 @@ function recomputActorTags(actor) {
         // You gain the noOffhand tag if offhand is empty and you are using a one handed weapon.
         if (!actor.equipment.offhand && !tags['twoHanded']) {
             tags['noOffhand'] = true;
+        }
+    }
+    if (actor.setRange) {
+        if (actor.setRange === 'ranged') {
+            tags['ranged'] = true;
+            delete tags['melee'];
+        } else {
+            tags['melee'] = true;
+            delete tags['ranged'];
         }
     }
     if (actor.equipment.offhand) {

@@ -339,6 +339,15 @@ function setStat(object, statKey, newValue) {
             recomputeStat(dependency.object, dependentStat);
         }
     }
+    // Changing the value of setRange changes the tags for the actor, so we need to trigger
+    // and update here.
+    if (statKey === 'setRange') {
+        if (object.actor !== object) {
+            console.log(object);
+            throw new Error('setRange was set on a non-actor');
+        }
+        updateTags(object, recomputActorTags(object), true);
+    }
 }
 
 function findVariableChildForBaseObject(parentObject, baseObject) {
@@ -410,7 +419,7 @@ function recomputeChildTags(parentObject, child) {
         tags[tag] = true;
     }
     // Child objects inherit tags from parent objects.
-    for (var parentTag of Object.keys(parentObject.tags)) {
+    for (var parentTag in parentObject.tags) {
         // melee and ranged tags are exclusive. If a child has one set, it should
         // not inherit the opposite one from the parent.
         if (parentTag === 'melee' && tags['ranged']) continue;

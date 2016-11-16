@@ -158,12 +158,18 @@ function drawMap() {
             context.drawImage(source.image, source.xOffset, 0, source.width, source.height,
                               levelData.left + levelData.width / 2 - 16, levelData.top + levelData.height / 2 - 18, 32, 32);
             context.fillStyle = new Vector(levelData.coords).dotProduct(camera.forward) >= 0 ? 'red' : 'black';
-            context.fillRect(levelData.left - 30, levelData.top + 34, 100, 15);
+            context.fillRect(levelData.left - 30, levelData.top + 19, 100, 15);
             context.fillStyle = 'white';
             context.font = '10px sans-serif';
             context.textAlign = 'center'
             //context.fillText(levelData.coords.map(function (number) { return number.toFixed(0);}).join(', '), levelData.left + 20, levelData.top + 45);
-            context.fillText(levelData.level + ' ' + levelData.name, levelData.left + 20, levelData.top + 45);
+            context.fillText(levelData.level + ' ' + levelData.name, levelData.left + 20, levelData.top + 30);
+            if (levelData.skill) {
+                context.fillStyle = new Vector(levelData.coords).dotProduct(camera.forward) >= 0 ? 'red' : 'black';
+                context.fillRect(levelData.left - 30, levelData.top + 34, 100, 15);
+                context.fillStyle = 'white';
+                context.fillText(levelData.skill, levelData.left + 20, levelData.top + 45);
+            }
             return true;
         }
         var divinityScore = ifdefor(state.selectedCharacter.divinityScores[levelKey], 0);

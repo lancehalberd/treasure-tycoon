@@ -212,7 +212,7 @@ function importAdventurer(adventurerData) {
         'width': 64,
         'bonuses': [],
         'unlockedAbilities': {},
-        'abilities': [], //abilities.hook, abilities.hookRange1, abilities.hookRange2, abilities.hookDrag1, abilities.hookDrag2, abilities.hookPower
+        'abilities': [],
         'name': adventurerData.name,
         'hairOffset': adventurerData.hairOffset,
         'level': adventurerData.level,
@@ -222,6 +222,10 @@ function importAdventurer(adventurerData) {
         'percentHealth': 1,
         'helpMethod': actorHelpText
     };
+    for (var i = 0; i < ifdefor(window.testAbilities, []).length; i++) {
+        adventurer.abilities.push(testAbilities[i]);
+        console.log(abilityHelpText(testAbilities[i], adventurer));
+    }
     initializeVariableObject(adventurer, {'variableObjectType': 'actor'}, adventurer);
     equipmentSlots.forEach(function (type) {
         adventurer.equipment[type] = null;

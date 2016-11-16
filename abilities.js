@@ -17,20 +17,20 @@
  */
 var abilities = {
     'basicAttack': {'name': 'Basic Attack', 'action': skills.basicAttack},
-    'throwingPower': {'name': 'Throwing Power', 'bonuses': {'%throwing:physicalDamage': .3, '+throwing:range': 2}},
+    'throwingPower': {'name': 'Throwing Power', 'bonuses': {'%throwing:physicalDamage': .3, '+throwing:weaponRange': 2}},
     'throwingDamage': {'name': 'Throwing Mastery', 'bonuses': {'%throwing:physicalDamage': .2, '%throwing:attackSpeed': .2}},
     'throwingCriticalChance': {'name': 'Throwing Precision', 'bonuses': {'%throwing:critChance': .3, '%throwing:attackSpeed': .3}},
-    'throwingParadigmShift': {'name': 'Melee Throwing', 'bonuses': {'*throwing:range': .2, '*throwing:damage': 1.3}}, // This should be throwing -> melee with range: 2 then 1.3xdamage and attack speed.
+    'throwingParadigmShift': {'name': 'Melee Throwing', 'bonuses': {'$throwing:setRange': 'melee', '$throwing:weaponRange': 1, '*throwing:damage': 1.3, '*throwing:attackSpeed': 1.3}},
 
     'rangedAccuracy': {'name': 'Ranged Accuracy', 'bonuses': {'%ranged:accuracy': .3, '+ranged:range': 1}},
     'rangedDamage': {'name': 'Ranged Damage', 'bonuses': {'%ranged:damage': .2, '+ranged:range': 1}},
     'rangedAttackSpeed': {'name': 'Ranged Attack Speed', 'bonuses': {'%ranged:attackSpeed': .2, '+ranged:range': 1}},
     'rangedParadigmShift': {'name': 'Close Quarters', 'bonuses': {'*ranged:range': .5, '*ranged:damage': 1.3, '*ranged:accuracy': 1.3}},
 
-    'bowRange': {'name': 'Bow Range', 'bonuses': {'+bow:range': 3, '+bow:critDamage': .5}},
+    'bowRange': {'name': 'Bow Range', 'bonuses': {'+bow:weaponRange': 3, '+bow:critDamage': .5}},
     'bowPhysicalDamage': {'name': 'Physical Bow Damage', 'bonuses': {'*bow:physicalDamage': .3, '+bow:critDamage': .3}},
     'bowDamage': {'name': 'Bow Damage', 'bonuses': {'*bow:damage': .5, '*+bow:critDamage': .3}},
-    //'bowParadigmShift': {'name': 'Bow Shield', 'bonuses': {'*bow:range': .5, '$bow:twoToOneHanded': 'Equipping a bow only uses one hand.'}}, // This doesn't work yet because setting twoToOneHanded needs to happen before we check to hide the offhand slot.
+    //'bowParadigmShift': {'name': 'Bow Shield', 'bonuses': {'*bow:weaponRange': .5, '$bow:twoToOneHanded': 'Equipping a bow only uses one hand.'}}, // This doesn't work yet because setting twoToOneHanded needs to happen before we check to hide the offhand slot.
 
     'fistDamage': {'name': 'Fist Damage', 'bonuses': {'%fist:physicalDamage': .3, '+fist:critDamage': .3}},
     'fistCriticalChance': {'name': 'Fist Precision', 'bonuses': {'%fist:critChance': .3, '%fist:accuracy': .3}},
@@ -45,9 +45,9 @@ var abilities = {
     'greatswordDamage': {'name': 'Greatsword Damage', 'bonuses': {'%greatsword:damage': .3, '%greatsword:critChance': .3}},
     'greatswordPhysicalDamage': {'name': 'Greatsword Physical Damage', 'bonuses': {'%greatsword:physicalDamage': .4, '%greatsword:accuracy': .2}},
     'greatswordAccuracy': {'name': 'Greatsword Accuracy', 'bonuses': {'%greatsword:accuracy': .5, '%greatsword:physicalDamage': .2}},
-    'greatswordParadigmShift': {'name': 'Greatsword Wave', 'bonuses': {'*greatsword:range': 2, '*greatsword:attackSpeed': .5}},
+    'greatswordParadigmShift': {'name': 'Greatsword Wave', 'bonuses': {'*greatsword:weaponRange': 2, '*greatsword:attackSpeed': .5}},
 
-    'wandRange': {'name': 'Wand Range', 'bonuses': {'+wand:range': 2, '%wand:magicDamage': .3}},
+    'wandRange': {'name': 'Wand Range', 'bonuses': {'+wand:weaponRange': 2, '%wand:magicDamage': .3}},
     'wandAttackSpeed': {'name': 'Wand Attack Speed', 'bonuses': {'%wand:attackSpeed': .2, '%wand:magicDamage': .2}},
     'wandCritChance': {'name': 'Want Critical Chance', 'bonuses': {'%wand:critChance': .3, '%wand:magicDamage': .3}},
     //'wandParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
@@ -82,7 +82,7 @@ var abilities = {
     'shieldIntelligence': {'name': 'Shield Tactics', 'bonuses': {'%shield:accuracy': .3, '%shield:block': .3, '%shield:magicBlock': .3}},
     //'shieldParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}}, // Dual wield shields, no basic attack
 
-    'polearmRange': {'name': 'Polearm Range', 'bonuses': {'+polearm:range': 1, '%polearm:physicalDamage': .4}},
+    'polearmRange': {'name': 'Polearm Range', 'bonuses': {'+polearm:weaponRange': 1, '%polearm:physicalDamage': .4}},
     'polearmAccuracy': {'name': 'Polearm Accuracy', 'bonuses': {'%polearm:accuracy': .3, '%polearm:damage': .3}},
     'polearmCritDamage': {'name': 'Polearm Critical Damage', 'bonuses': {'+polearm:critDamage': .3, '%polearm:physicalDamage': .3}},
     //'polearmParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
@@ -92,7 +92,7 @@ var abilities = {
     'meleeCritChance': {'name': 'Melee CriticalChance', 'bonuses': {'%melee:critChance': .2, '%melee:accuracy': .2}},
     //'meleeParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
 
-    'movementCDR': {'name': 'Movement Cooldown Reduction', 'bonuses': {'%movement:cooldown': -.1, '%movement:range': .1}},
+    'movementCDR': {'name': 'Movement Cooldown Reduction', 'bonuses': {'%movement:cooldown': -.1, '%movement:distance': .1}},
     'movementDamage': {'name': 'Movement Damage', 'bonuses': {'%movement:damage': .3, '%movement:critDamage': .3}},
     'movementPrecision': {'name': 'Movement Precision', 'bonuses': {'%movement:accuracy': .3, '%movement:critChance': .3}},
     //'movementParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
