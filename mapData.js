@@ -3328,3 +3328,4 @@ var map = {
         ]
     }
 };
+var mapKeys = Object.keys(map);

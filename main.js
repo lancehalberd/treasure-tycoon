@@ -232,6 +232,59 @@ function mainLoop() {
             drawMap();
         }
     }
+    if (editingMap && distributingMapNodes) {
+        /*for (var selectedNode of selectedMapNodes) {
+            var coordinateSum = [0, 0, 0];
+            var sumCount = 0;
+            for (var key in map) {
+                var otherNode = map[key];
+                var delta = [otherNode.coords[0] - selectedNode.coords[0], otherNode.coords[1] - selectedNode.coords[1], otherNode.coords[2] - selectedNode.coords[2]];
+                if (delta[0] * delta[0] + delta[1] * delta[1] + delta[2] * delta[2] < 20000) {
+                    coordinateSum[0] += otherNode.coords[0];
+                    coordinateSum[1] += otherNode.coords[1];
+                    coordinateSum[2] += otherNode.coords[2];
+                    sumCount++;
+                }
+            }
+            console.log(sumCount);
+            if (sumCount > 3) {
+                selectedNode.coords[0] = coordinateSum[0] / sumCount;
+                selectedNode.coords[1] = coordinateSum[1] / sumCount;
+                selectedNode.coords[2] = coordinateSum[2] / sumCount;
+                var C = 600 / Math.sqrt(selectedNode.coords[0] * selectedNode.coords[0] + selectedNode.coords[1]*selectedNode.coords[1] + selectedNode.coords[2]*selectedNode.coords[2]);
+                selectedNode.coords[0] *= C;
+                selectedNode.coords[1] *= C;
+                selectedNode.coords[2] *= C;
+            }
+        }*/
+        /*for (var key in map) {
+            var level = map[key];
+            if (selectedMapNodes.indexOf(level) >= 0 && level.v) {
+                level.coords[0] += level.v[0];
+                level.coords[1] += level.v[1];
+                level.coords[2] += level.v[2];
+                var C = 600 / Math.sqrt(level.coords[0] * level.coords[0] + level.coords[1]*level.coords[1] + level.coords[2]*level.coords[2]);
+                level.coords[0] *= C;
+                level.coords[1] *= C;
+                level.coords[2] *= C;
+            }
+            level.v = [0, 0, 0];
+        }
+        for (var i = 0; i < mapKeys.length; i++) {
+            var level1 = map[mapKeys[i]];
+            for (var j = i + 1; j < mapKeys.length; j++) {
+                var level2 = map[mapKeys[j]];
+                var delta = [level2.coords[0] - level1.coords[0], level2.coords[1] - level1.coords[1], level2.coords[2] - level1.coords[2]];
+                var mag = (delta[0] * delta[0] * delta[0] + delta[1] * delta[1] * delta[1] + delta[2] * delta[2] * delta[2]) / 500;
+                level1.v[0] -= delta[0] / mag;
+                level1.v[1] -= delta[1] / mag;
+                level1.v[2] -= delta[2] / mag;
+                level2.v[0] += delta[0] / mag;
+                level2.v[1] += delta[1] / mag;
+                level2.v[2] += delta[2] / mag;
+            }
+        }*/
+    }
     if (state.selectedCharacter.area) {
         refreshStatsPanel(state.selectedCharacter, $('.js-characterColumn .js-stats'))
     }

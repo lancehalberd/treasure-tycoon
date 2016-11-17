@@ -248,6 +248,7 @@ function toggleLevelLink(levelA, levelB) {
 var mapDragX = mapDragY = null, draggedMap = false;
 var selectionStartPoint = null;
 var originalSelectedNodes = [];
+var distributingMapNodes = false;
 $('.js-mouseContainer').on('mousedown', '.js-mainCanvas', function (event) {
     var x = event.pageX - $(this).offset().left;
     var y = event.pageY - $(this).offset().top;
@@ -517,6 +518,9 @@ $(document).on('keydown', function(event) {
             movedMap = true;
             updateEditingState();
         }
+    }
+    if (editingMap && event.which === 70) { // 'f' float
+        distributingMapNodes = !distributingMapNodes;
     }
     if (event.which === 76) { // 'l'
         if (currentMapTarget && currentMapTarget.levelKey) {
