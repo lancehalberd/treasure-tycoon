@@ -434,7 +434,7 @@ var map = {
         'x': 0, 'y': 0,
         'coords': [504,174,-276],
         'background': "field",
-        'unlocks': ["foothills"],
+        'unlocks': ["foothills","monk6"],
         'specialLoot': [],
         'skill': "counterAttack",
         'board': "fangBoard",
@@ -756,7 +756,7 @@ var map = {
         'x': 14, 'y': 3,
         'coords': [350,-3,-487],
         'background': "garden",
-        'unlocks': ["road","tributaries"],
+        'unlocks': ["road","tributaries","monk3"],
         'specialLoot': ["simpleEmeraldLoot"],
         'skill': "fistDamage",
         'board': "doubleDiamonds",
@@ -1160,6 +1160,54 @@ var map = {
             ["dragon"]
         ]
     },
+    'monk3': {
+        'name': "Monk 3",
+        'level': 5,
+        'x': 0, 'y': 0,
+        'coords': [451,39,-394],
+        'background': "field",
+        'unlocks': ["monk4"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'monk4': {
+        'name': "Monk 4",
+        'level': 7,
+        'x': 0, 'y': 0,
+        'coords': [481,107,-342],
+        'background': "field",
+        'unlocks': ["desert"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'monk6': {
+        'name': "Monk 6",
+        'level': 14,
+        'x': 0, 'y': 0,
+        'coords': [578,98,-129],
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
     'mossbed': {
         'name': "Mossbed",
         'level': 17,
@@ -1475,7 +1523,7 @@ var map = {
         'name': "ranger8",
         'level': 27,
         'x': 27, 'y': -12,
-        'coords': [-159,-498,294],
+        'coords': [-156,-515,265],
         'background': "field",
         'unlocks': ["sniper7"],
         'specialLoot': [],
@@ -1921,7 +1969,7 @@ var map = {
         'name': "Valley",
         'level': 22,
         'x': 10, 'y': -6,
-        'coords': [173,-562,121],
+        'coords': [180,-561,115],
         'background': "forest",
         'unlocks': ["juggler9","sniper6"],
         'specialLoot': ["simpleEmeraldLoot"],
