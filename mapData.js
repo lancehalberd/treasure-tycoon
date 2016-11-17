@@ -288,7 +288,7 @@ var map = {
         'x': 0, 'y': -5,
         'coords': [419,241,355],
         'background': "field",
-        'unlocks': ["tundra"],
+        'unlocks': ["warrior9","samurai8"],
         'specialLoot': ["simpleJewelLoot"],
         'skill': "dragonPunch",
         'board': "crownBoard",
@@ -352,7 +352,7 @@ var map = {
         'name': "corsair6",
         'level': 16,
         'x': 16, 'y': -13,
-        'coords': [565,-198,-33],
+        'coords': [589,-101,-59],
         'background': "field",
         'unlocks': ["ninja5","corsair7"],
         'specialLoot': [],
@@ -368,9 +368,9 @@ var map = {
         'name': "corsair7",
         'level': 21,
         'x': 21, 'y': -13,
-        'coords': [564,-178,100],
+        'coords': [585,-120,63],
         'background': "field",
-        'unlocks': ["corsair8"],
+        'unlocks': ["corsair8","monk8"],
         'specialLoot': [],
         'skill': null,
         'board': null,
@@ -400,7 +400,7 @@ var map = {
         'name': "corsair9",
         'level': 29,
         'x': 29, 'y': -13,
-        'coords': [495,-80,329],
+        'coords': [479,-91,350],
         'background': "field",
         'unlocks': ["corsair10","ninja7"],
         'specialLoot': [],
@@ -434,7 +434,7 @@ var map = {
         'x': 0, 'y': 0,
         'coords': [504,174,-276],
         'background': "field",
-        'unlocks': ["foothills","monk6"],
+        'unlocks': ["monk6","samurai3"],
         'specialLoot': [],
         'skill': "counterAttack",
         'board': "fangBoard",
@@ -676,7 +676,7 @@ var map = {
         'x': 0, 'y': 0,
         'coords': [464,364,-109],
         'background': "field",
-        'unlocks': ["mountain"],
+        'unlocks': ["mountain","warrior6"],
         'specialLoot': [],
         'skill': "overpower",
         'board': "crownBoard",
@@ -1164,9 +1164,9 @@ var map = {
         'name': "Monk 3",
         'level': 5,
         'x': 0, 'y': 0,
-        'coords': [451,39,-394],
+        'coords': [449,35,-397],
         'background': "field",
-        'unlocks': ["monk4"],
+        'unlocks': ["monk4","oceanside"],
         'specialLoot': [],
         'skill': null,
         'board': null,
@@ -1180,7 +1180,7 @@ var map = {
         'name': "Monk 4",
         'level': 7,
         'x': 0, 'y': 0,
-        'coords': [481,107,-342],
+        'coords': [466,118,-359],
         'background': "field",
         'unlocks': ["desert"],
         'specialLoot': [],
@@ -1196,9 +1196,57 @@ var map = {
         'name': "Monk 6",
         'level': 14,
         'x': 0, 'y': 0,
-        'coords': [578,98,-129],
+        'coords': [584,49,-128],
         'background': "field",
-        'unlocks': [],
+        'unlocks': ["monk7","corsair6"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'monk7': {
+        'name': "Monk 7",
+        'level': 18,
+        'x': 0, 'y': 0,
+        'coords': [587,124,1],
+        'background': "field",
+        'unlocks': ["monk8"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'monk8': {
+        'name': "Monk 8",
+        'level': 22,
+        'x': 0, 'y': 0,
+        'coords': [591,53,92],
+        'background': "field",
+        'unlocks': ["corsair8","samurai6"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'monk9': {
+        'name': "Monk 9",
+        'level': 26,
+        'x': 0, 'y': 0,
+        'coords': [513,189,247],
+        'background': "field",
+        'unlocks': ["samurai7"],
         'specialLoot': [],
         'skill': null,
         'board': null,
@@ -1230,7 +1278,7 @@ var map = {
         'x': 17, 'y': 5,
         'coords': [521,298,4],
         'background': "field",
-        'unlocks': ["oldbattlefield"],
+        'unlocks': ["oldbattlefield","samurai6"],
         'specialLoot': ["simpleRubyLoot"],
         'skill': "dragonSlayer",
         'board': "pieBoard",
@@ -1343,9 +1391,9 @@ var map = {
         'name': "Oceanside",
         'level': 8,
         'x': 8, 'y': -13,
-        'coords': [506,-150,-285],
+        'coords': [514,-77,-299],
         'background': "field",
-        'unlocks': ["headwaters"],
+        'unlocks': ["headwaters","shore"],
         'specialLoot': [],
         'skill': null,
         'board': null,
@@ -1361,7 +1409,7 @@ var map = {
         'x': 0, 'y': 0,
         'coords': [453,344,191],
         'background': "cemetery",
-        'unlocks': ["cliff"],
+        'unlocks': ["cliff","warrior8","monk9"],
         'specialLoot': [],
         'skill': "ferocity",
         'board': "crownBoard",
@@ -1587,9 +1635,9 @@ var map = {
         'name': "Road",
         'level': 5,
         'x': 12, 'y': 3,
-        'coords': [380,217,-411],
+        'coords': [368,209,-425],
         'background': "field",
-        'unlocks': ["desert"],
+        'unlocks': ["warrior2","monk4"],
         'specialLoot': ["simpleRubyLoot"],
         'skill': "sideStep",
         'board': "tripleTriangles",
@@ -1618,6 +1666,118 @@ var map = {
             ["motherfly","motherfly"],
             ["gnomecromancer","gnomecromancer"],
             ["gnomecromancer","gnomeWizard","gnomecromancer"]
+        ]
+    },
+    'samurai2': {
+        'name': "Samurai 2",
+        'level': 8,
+        'x': 0, 'y': 0,
+        'coords': [441,253,-319],
+        'background': "field",
+        'unlocks': ["desert"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'samurai3': {
+        'name': "Samurai 3",
+        'level': 11,
+        'x': 0, 'y': 0,
+        'coords': [489,274,-213],
+        'background': "field",
+        'unlocks': ["samurai4","foothills"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'samurai4': {
+        'name': "Samurai 4",
+        'level': 14,
+        'x': 0, 'y': 0,
+        'coords': [557,203,-94],
+        'background': "field",
+        'unlocks': ["mountain","monk7"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'samurai6': {
+        'name': "Samurai 6",
+        'level': 23,
+        'x': 0, 'y': 0,
+        'coords': [563,144,147],
+        'background': "field",
+        'unlocks': ["monk9"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'samurai7': {
+        'name': "Samurai 7",
+        'level': 28,
+        'x': 0, 'y': 0,
+        'coords': [497,69,329],
+        'background': "field",
+        'unlocks': ["corsair9","samurai8"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'samurai8': {
+        'name': "Samurai 8",
+        'level': 33,
+        'x': 0, 'y': 0,
+        'coords': [397,120,434],
+        'background': "field",
+        'unlocks': ["samurai9"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'samurai9': {
+        'name': "Samurai 9",
+        'level': 38,
+        'x': 0, 'y': 0,
+        'coords': [310,63,510],
+        'background': "field",
+        'unlocks': ["ninja10","wasteland"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
         ]
     },
     'savannah': {
@@ -1660,9 +1820,9 @@ var map = {
         'name': "Shore",
         'level': 12,
         'x': 12, 'y': -13,
-        'coords': [539,-192,-182],
+        'coords': [557,-111,-194],
         'background': "field",
-        'unlocks': ["corsair6","channel"],
+        'unlocks': ["channel","monk6"],
         'specialLoot': [],
         'skill': "deflect",
         'board': "halfHexBoard",
@@ -1921,9 +2081,9 @@ var map = {
         'name': "Tundra",
         'level': 36,
         'x': 0, 'y': 0,
-        'coords': [343,63,488],
+        'coords': [248,247,488],
         'background': "field",
-        'unlocks': ["wasteland","ninja9"],
+        'unlocks': ["wasteland"],
         'specialLoot': [],
         'skill': "armorBreak",
         'board': "crownBoard",
@@ -1999,11 +2159,123 @@ var map = {
             ["dragon"]
         ]
     },
+    'warrior2': {
+        'name': "Warrior 2",
+        'level': 6,
+        'x': 0, 'y': 0,
+        'coords': [302,373,-360],
+        'background': "field",
+        'unlocks': ["samurai2","warrior3"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'warrior3': {
+        'name': "Warrior 3",
+        'level': 9,
+        'x': 0, 'y': 0,
+        'coords': [395,366,-266],
+        'background': "field",
+        'unlocks': ["samurai3","warrior4"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'warrior4': {
+        'name': "Warrior 4",
+        'level': 12,
+        'x': 0, 'y': 0,
+        'coords': [364,440,-184],
+        'background': "field",
+        'unlocks': ["foothills"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'warrior6': {
+        'name': "Warrior 6",
+        'level': 18,
+        'x': 0, 'y': 0,
+        'coords': [380,464,0],
+        'background': "field",
+        'unlocks': ["warrior7"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'warrior7': {
+        'name': "Warrior 7",
+        'level': 22,
+        'x': 0, 'y': 0,
+        'coords': [373,448,143],
+        'background': "field",
+        'unlocks': ["oldbattlefield"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'warrior8': {
+        'name': "Warrior 8",
+        'level': 27,
+        'x': 0, 'y': 0,
+        'coords': [352,398,279],
+        'background': "field",
+        'unlocks': ["cliff","warrior9"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'warrior9': {
+        'name': "Warrior 9",
+        'level': 32,
+        'x': 0, 'y': 0,
+        'coords': [343,286,401],
+        'background': "field",
+        'unlocks': ["tundra"],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
     'wasteland': {
         'name': "Wasteland",
         'level': 42,
         'x': 0, 'y': 0,
-        'coords': [230,133,538],
+        'coords': [242,140,531],
         'background': "field",
         'unlocks': ["master3"],
         'specialLoot': [],
