@@ -3,7 +3,7 @@ var map = {
         'name': "Academy",
         'level': 6,
         'x': 0, 'y': 0,
-        'coords': [-292,-297,-432],
+        'coords': [-313,-363,-361],
         'background': "cave",
         'unlocks': ["camp"],
         'specialLoot': [],
@@ -128,6 +128,118 @@ var map = {
             ["dragon"]
         ]
     },
+    'bard2': {
+        'name': "Bard 2",
+        'level': 7,
+        'x': 0, 'y': 0,
+        'coords': [-485,-119,-333],
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'bard3': {
+        'name': "Bard 3",
+        'level': 10,
+        'x': 0, 'y': 0,
+        'coords': [-531,-127,-249],
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'bard4': {
+        'name': "Bard 4",
+        'level': 13,
+        'x': 0, 'y': 0,
+        'coords': [-568,-142,-133],
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'bard6': {
+        'name': "Bard 6",
+        'level': 20,
+        'x': 0, 'y': 0,
+        'coords': [-576,-147,83],
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'bard7': {
+        'name': "Bard 7",
+        'level': 24,
+        'x': 0, 'y': 0,
+        'coords': [-546,-147,199],
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'bard8': {
+        'name': "Bard 8",
+        'level': 29,
+        'x': 0, 'y': 0,
+        'coords': [-471,-125,350],
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'bard9': {
+        'name': "Bard 9",
+        'level': 34,
+        'x': 0, 'y': 0,
+        'coords': [-392,-99,444],
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
     'barracks': {
         'name': "Barracks",
         'level': 4,
@@ -148,7 +260,7 @@ var map = {
         'name': "Bayou",
         'level': 4,
         'x': 5, 'y': 4,
-        'coords': [-298,-98,-511],
+        'coords': [-367,-111,-461],
         'background': "forest",
         'unlocks': ["cemetery","academy"],
         'specialLoot': ["simpleEmeraldLoot"],
@@ -424,6 +536,118 @@ var map = {
         'board': "fangBoard",
         'enemySkills': ["dodge"],
         'monsters': ["gnome","butterfly"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'dancer2': {
+        'name': "Dancer 2",
+        'level': 4,
+        'x': 0, 'y': 0,
+        'coords': [-275,-270,-460],
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'dancer3': {
+        'name': "Dancer 3",
+        'level': 6,
+        'x': 0, 'y': 0,
+        'coords': [-419,-242,-355],
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'dancer4': {
+        'name': "Dancer 4",
+        'level': 8,
+        'x': 0, 'y': 0,
+        'coords': [-478,-228,-282],
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'dancer6': {
+        'name': "Dancer 6",
+        'level': 16,
+        'x': 0, 'y': 0,
+        'coords': [-444,-396,-79],
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'dancer7': {
+        'name': "Dancer 7",
+        'level': 21,
+        'x': 0, 'y': 0,
+        'coords': [-436,-396,114],
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'dancer8': {
+        'name': "Dancer 8",
+        'level': 25,
+        'x': 0, 'y': 0,
+        'coords': [-413,-378,215],
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'dancer9': {
+        'name': "Dancer 9",
+        'level': 29,
+        'x': 0, 'y': 0,
+        'coords': [-377,-330,331],
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
         'events': [
             ["dragon"]
         ]
@@ -1113,7 +1337,7 @@ var map = {
         'name': "Library",
         'level': 20,
         'x': 0, 'y': 0,
-        'coords': [-507,-295,125],
+        'coords': [-510,-302,91],
         'background': "field",
         'unlocks': ["university"],
         'specialLoot': [],
@@ -2114,6 +2338,118 @@ var map = {
             ["motherfly","motherfly"],
             ["gnomecromancer","gnomecromancer"],
             ["gnomecromancer","gnomeWizard","gnomecromancer"]
+        ]
+    },
+    'sage2': {
+        'name': "Sage 2",
+        'level': 9,
+        'x': 0, 'y': 0,
+        'coords': [-340,-447,-212],
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'sage3': {
+        'name': "Sage 3",
+        'level': 12,
+        'x': 0, 'y': 0,
+        'coords': [-373,-463,-79],
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'sage4': {
+        'name': "Sage 4",
+        'level': 15,
+        'x': 0, 'y': 0,
+        'coords': [-373,-467,56],
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'sage6': {
+        'name': "Sage 6",
+        'level': 25,
+        'x': 0, 'y': 0,
+        'coords': [-347,-442,212],
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'sage7': {
+        'name': "Sage 7",
+        'level': 30,
+        'x': 0, 'y': 0,
+        'coords': [-326,-397,310],
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'sage8': {
+        'name': "Sage 8 ",
+        'level': 35,
+        'x': 0, 'y': 0,
+        'coords': [-288,-323,416],
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
+        ]
+    },
+    'sage9': {
+        'name': "Sage 9 ",
+        'level': 40,
+        'x': 0, 'y': 0,
+        'coords': [-145,-204,545],
+        'background': "field",
+        'unlocks': [],
+        'specialLoot': [],
+        'skill': null,
+        'board': null,
+        'enemySkills': [],
+        'monsters': ["skeleton"],
+        'events': [
+            ["dragon"]
         ]
     },
     'samurai2': {
