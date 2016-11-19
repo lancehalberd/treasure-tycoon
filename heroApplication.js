@@ -18,6 +18,7 @@ function createNewHeroApplicant($applicationPanel) {
     var character = newCharacter(characterClasses[jobKey]);
     character.fame = fameRoll;
     character.applicationAge = 0;
+    updateJewelBonuses(character);
     setHeroApplication($applicationPanel, character);
 }
 

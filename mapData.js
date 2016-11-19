@@ -256,6 +256,22 @@ var map = {
             ["dragon"]
         ]
     },
+    'batcave': {
+        'name': "Bat Cave",
+        'level': 2,
+        'x': 0, 'y': 0,
+        'coords': [-183,-103,-562],
+        'background': "cave",
+        'unlocks': ["bayou","savannah","grove","cave","dancer2"],
+        'specialLoot': [],
+        'skill': "distract",
+        'board': "doubleDiamonds",
+        'enemySkills': ["dancer","sap","meleeDamage","evasion"],
+        'monsters': ["bat"],
+        'events': [
+            ["vampireBat"]
+        ]
+    },
     'bayou': {
         'name': "Bayou",
         'level': 4,
@@ -344,7 +360,7 @@ var map = {
         'x': 8, 'y': 1,
         'coords': [-159,93,-571],
         'background': "cave",
-        'unlocks': ["temple","traininggrounds","village","priest2"],
+        'unlocks': ["gnometemple","traininggrounds","batcave","priest2"],
         'specialLoot': ["simpleSaphireLoot"],
         'skill': "heal",
         'board': "tripleTriangles",
@@ -1216,6 +1232,25 @@ var map = {
             ["dragon"]
         ]
     },
+    'gnometemple': {
+        'name': "Gnome Temple",
+        'level': 2,
+        'x': 7, 'y': 3,
+        'coords': [-7,216,-560],
+        'background': "cave",
+        'unlocks': ["trail","barracks","meadow","priest2"],
+        'specialLoot': ["simpleSaphireLoot"],
+        'skill': "protect",
+        'board': "doubleDiamonds",
+        'enemySkills': ["slowSpells","slowSpells"],
+        'monsters': ["bat","gnome"],
+        'events': [
+            ["bat","bat","gnomeCleric"],
+            ["skeleton","skeleton","gnomeCleric"],
+            ["wolf","wolf","gnomeCleric"],
+            ["gnomeCleric","gnomeCleric"]
+        ]
+    },
     'grandcathedral': {
         'name': "Grand Cathedral",
         'level': 33,
@@ -1238,10 +1273,10 @@ var map = {
         'x': 10, 'y': -2,
         'coords': [-2,-183,-571],
         'background': "forest",
-        'unlocks': ["savannah","orchard","shipgraveyard","village"],
+        'unlocks': ["savannah","orchard","shipgraveyard","batcave"],
         'specialLoot': ["simpleEmeraldLoot"],
         'skill': "sap",
-        'board': "doubleDiamonds",
+        'board': "tripleTriangles",
         'enemySkills': ["minorDexterity"],
         'monsters': ["caterpillar","spider"],
         'events': [
@@ -1563,7 +1598,7 @@ var map = {
         'x': 12, 'y': 1,
         'coords': [162,96,-570],
         'background': "field",
-        'unlocks': ["garden","temple","trail","shipgraveyard"],
+        'unlocks': ["garden","gnometemple","trail","shipgraveyard"],
         'specialLoot': ["simpleRubyLoot"],
         'skill': "vitality",
         'board': "tripleTriangles",
@@ -2569,7 +2604,7 @@ var map = {
         'name': "Ship Graveyard",
         'level': 2,
         'x': 14, 'y': 5,
-        'coords': [183,-105,-561],
+        'coords': [188,-110,-559],
         'background': "cemetery",
         'unlocks': ["garden","wetlands","tributaries","meadow","grove"],
         'specialLoot': ["simpleSaphireLoot"],
@@ -2856,22 +2891,6 @@ var map = {
             ["dragon"]
         ]
     },
-    'temple': {
-        'name': "Temple",
-        'level': 2,
-        'x': 7, 'y': 3,
-        'coords': [1,212,-561],
-        'background': "cave",
-        'unlocks': ["trail","barracks","meadow","priest2"],
-        'specialLoot': ["simpleSaphireLoot"],
-        'skill': "protect",
-        'board': "halfHexBoard",
-        'enemySkills': ["heal"],
-        'monsters': ["gnome","butterfly"],
-        'events': [
-            ["dragon"]
-        ]
-    },
     'tomb': {
         'name': "Tomb",
         'level': 14,
@@ -3021,22 +3040,6 @@ var map = {
             ["motherfly","motherfly"],
             ["gnomecromancer","gnomecromancer"],
             ["gnomecromancer","gnomeWizard","gnomecromancer"]
-        ]
-    },
-    'village': {
-        'name': "Village",
-        'level': 2,
-        'x': 0, 'y': 0,
-        'coords': [-183,-103,-562],
-        'background': "cave",
-        'unlocks': ["bayou","savannah","grove","cave","dancer2"],
-        'specialLoot': [],
-        'skill': "distract",
-        'board': "tripleTriangles",
-        'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
         ]
     },
     'warrior2': {

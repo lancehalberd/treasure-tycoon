@@ -65,7 +65,7 @@ function drawActor(character, actor, index) {
         }
         drawAdventurer(character, actor, index);
     } else drawMonster(character, actor, index);
-    if (actor.stunned) {
+    if (!actor.isDead && actor.stunned) {
         for (var i = 0; i < 3; i++ ) {
             var theta = 2 * Math.PI * (i + 3 * actor.time) / 3;
             var shrineSource = {'image': images['gfx/militaryIcons.png'], 'xOffset': 102, 'yOffset': 125, 'width': 16, 'height': 16};

@@ -186,6 +186,15 @@ function getEnemiesInRange(actor, skill, skillTarget) {
     }
     return targets;
 }
+function getActorsInRange(source, range, targets) {
+    var targetsInRange = [];
+    for (var target of targets) {
+        if (target !== source && getDistance(source, target) < range* 32) {
+            targetsInRange.push(target);
+        }
+    }
+    return targetsInRange;
+}
 
 function getPower(actor, skill) {
     return skill.power;
@@ -468,13 +477,18 @@ skillDefinitions.heal = {
     },
     use: function (actor, healSkill, target) {
         target.health += getPower(actor, healSkill);
+        if (healSkill.area > 0) {
+            for (target of getActorsInRange(target, healSkill.area, target.allies)) {
+                target.health += getPower(actor, healSkill);
+            }
+        }
         actor.stunned = actor.time + .3;
     }
 };
 
 skillDefinitions.effect = {
     isValid: function (actor, effectSkill, target) {
-        if (closestEnemyDistance(actor) >= 500) {
+        if (closestEnemyDistance(target) >= 500) {
             return false;
         }
         if (effectSkill.allyBuff) {
@@ -569,15 +583,17 @@ skillDefinitions.deflect = {
         // Only non-spell, projectile attacks can be deflected.
         return attackStats.projectile && !attackStats.attack.tags['spell'];
     },
-    use: function (actor, counterAttackSkill, attackStats) {
+    use: function (actor, deflectSkill, attackStats) {
         var projectile = attackStats.projectile;
         // mark the projectile as having not hit so it can hit again now that it
         // has been deflected.
         projectile.hit = false;
         projectile.target = attackStats.source;
         attackStats.source = actor;
-        attackStats.damage *= counterAttackSkill.damageRatio;
-        attackStats.magicDamage *= counterAttackSkill.damageRatio;
+        // Make the deflected projectiles extra accurate so they have greater impact
+        attackStats.accuracy += deflectSkill.accuracy;
+        attackStats.damage *= deflectSkill.damageRatio;
+        attackStats.magicDamage *= deflectSkill.damageRatio;
         attackStats.vx = -attackStats.vx;
         attackStats.vy = -getDistance(actor, projectile.target) / 200;
         // This prevents the attack in progress from hitting the deflector.

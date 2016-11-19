@@ -42,7 +42,7 @@ addItem(58, {'slot': 'weapon', 'type': 'dagger',  'name': 'Runed Dirk', 'bonuses
 addItem(68, {'slot': 'weapon', 'type': 'dagger',  'name': 'Etched Dragon Fang', 'bonuses': {'+minPhysicalDamage': 190, '+maxPhysicalDamage': 286,  '+attackSpeed': 2,'+weaponRange': 1.8, '+critChance': .05, '+minMagicDamage': 9, '+maxMagicDamage': 13 }, 'icon': 'dagger'});
 
 //Fists low damage, high attack speed, melee range, low crit chance
-addItem(1, {'slot': 'weapon', 'type': 'fist',  'name': 'Rock', 'bonuses': {'+minPhysicalDamage': 2, '+maxPhysicalDamage': 3,  '+attackSpeed': 1.5,'+weaponRange': 1, '+critChance': .03 }, 'icon': 'fists'});
+addItem(1, {'slot': 'weapon', 'type': 'fist',  'name': 'Rock', 'bonuses': {'+minPhysicalDamage': 4, '+maxPhysicalDamage': 6,  '+attackSpeed': 1.5,'+weaponRange': 1, '+critChance': .03 }, 'icon': 'fists'});
 addItem(2, {'slot': 'weapon', 'type': 'fist',  'name': 'Cestus', 'bonuses': {'+minPhysicalDamage': 14, '+maxPhysicalDamage': 20,  '+attackSpeed': 1.6,'+weaponRange': 1, '+critChance': .03 }, 'icon': 'fists'});
 addItem(7, {'slot': 'weapon', 'type': 'fist',  'name': 'Bronze Weights', 'bonuses': {'+minPhysicalDamage': 43, '+maxPhysicalDamage': 65,  '+attackSpeed': 1.6,'+weaponRange': 1, '+critChance': .03 }, 'icon': 'fists'});
 addItem(12, {'slot': 'weapon', 'type': 'fist',  'name': 'Iron Weights', 'bonuses': {'+minPhysicalDamage': 62, '+maxPhysicalDamage': 94,  '+attackSpeed': 1.6,'+weaponRange': 1, '+critChance': .03 }, 'icon': 'fists'});
@@ -57,7 +57,7 @@ addItem(57, {'slot': 'weapon', 'type': 'fist',  'name': 'Runed Claws', 'bonuses'
 addItem(67, {'slot': 'weapon', 'type': 'fist',  'name': 'Adamantine Claws', 'bonuses': {'+minPhysicalDamage': 256, '+maxPhysicalDamage': 384,  '+attackSpeed': 1.5,'+weaponRange': 1.4, '+critChance': .04, '+minMagicDamage': 13, '+maxMagicDamage': 19 }, 'icon': 'knuckles'});
 
 //Wands magic damage, medium attack speed, medium range, low crit chance
-addItem(1, {'slot': 'weapon', 'type': 'wand', 'tags': ['ranged', 'magic'],  'name': 'Stick', 'bonuses': {'+minMagicDamage': 3, '+maxMagicDamage': 5,  '+attackSpeed': 1,'+weaponRange': 7, '+critChance': .03 }, 'icon': 'wand'});
+addItem(1, {'slot': 'weapon', 'type': 'wand', 'tags': ['ranged', 'magic'],  'name': 'Stick', 'bonuses': {'+minMagicDamage': 6, '+maxMagicDamage': 10,  '+attackSpeed': 1,'+weaponRange': 7, '+critChance': .03 }, 'icon': 'wand'});
 addItem(5, {'slot': 'weapon', 'type': 'wand', 'tags': ['ranged', 'magic'],  'name': 'Balsa Wand', 'bonuses': {'+minMagicDamage': 14, '+maxMagicDamage': 22,  '+attackSpeed': 1.3,'+weaponRange': 7, '+critChance': .03 }, 'icon': 'wand'});
 addItem(10, {'slot': 'weapon', 'type': 'wand', 'tags': ['ranged', 'magic'],  'name': 'Juniper Wand', 'bonuses': {'+minMagicDamage': 25, '+maxMagicDamage': 37,  '+attackSpeed': 1.4,'+weaponRange': 7, '+critChance': .03 }, 'icon': 'wand'});
 addItem(15, {'slot': 'weapon', 'type': 'wand', 'tags': ['ranged', 'magic'],  'name': 'Pine Wand', 'bonuses': {'+minMagicDamage': 34, '+maxMagicDamage': 50,  '+attackSpeed': 1.5,'+weaponRange': 8, '+critChance': .03 }, 'icon': 'wand'});
@@ -72,7 +72,7 @@ addItem(60, {'slot': 'weapon', 'type': 'wand', 'tags': ['ranged', 'magic'],  'na
 addItem(70, {'slot': 'weapon', 'type': 'wand', 'tags': ['ranged', 'magic'],  'name': 'Orichalcum Wand', 'bonuses': {'+minMagicDamage': 101, '+maxMagicDamage': 151,  '+attackSpeed': 1.9,'+weaponRange': 14, '+critChance': .04, '+minPhysicalDamage': 20, '+maxPhysicalDamage': 30 }, 'icon': 'wand'});
 
 //Thrown medium damage, medium attack speed, medium range, medium crit chance
-addItem(1, {'slot': 'weapon', 'type': 'thrown', 'tags': ['ranged', 'throwing'], 'name': 'Ball', 'bonuses': {'+minPhysicalDamage': 2, '+maxPhysicalDamage': 3,  '+attackSpeed': 1.1,'+weaponRange': 8, '+critChance': .04 }, 'icon': 'throwing'});
+addItem(1, {'slot': 'weapon', 'type': 'thrown', 'tags': ['ranged', 'throwing'], 'name': 'Ball', 'bonuses': {'+minPhysicalDamage': 4, '+maxPhysicalDamage': 6,  '+attackSpeed': 1.1,'+weaponRange': 8, '+critChance': .04 }, 'icon': 'throwing'});
 addItem(4, {'slot': 'weapon', 'type': 'thrown', 'tags': ['ranged', 'throwing'], 'name': 'Pilum', 'bonuses': {'+minPhysicalDamage': 34, '+maxPhysicalDamage': 52,  '+attackSpeed': 1.1,'+weaponRange': 9, '+critChance': .04 }, 'icon': 'throwing'});
 addItem(9, {'slot': 'weapon', 'type': 'thrown', 'tags': ['ranged', 'throwing'], 'name': 'Throwing Knife', 'bonuses': {'+minPhysicalDamage': 58, '+maxPhysicalDamage': 86,  '+attackSpeed': 1.2,'+weaponRange': 9, '+critChance': .04 }, 'icon': 'throwing'});
 addItem(14, {'slot': 'weapon', 'type': 'thrown', 'tags': ['ranged', 'throwing'], 'name': 'Throwing Club', 'bonuses': {'+minPhysicalDamage': 83, '+maxPhysicalDamage': 125,  '+attackSpeed': 1.2,'+weaponRange': 10, '+critChance': .04 }, 'icon': 'throwing'});

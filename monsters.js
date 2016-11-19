@@ -129,6 +129,7 @@ function updateMonster(monster) {
     initializeVariableObject(monster, monster.base, monster);
     addBonusSourceToObject(monster, {'bonuses': monster.base.implicitBonuses});
     addBonusSourceToObject(monster, {'bonuses': getMonsterBonuses(monster)});
+    addBonusSourceToObject(monster, coreStatBonusSource);
     monster.actions = [];
     monster.reactions = [];
     monster.onHitEffects = [];
@@ -204,7 +205,7 @@ function getMonsterBonuses(monster) {
     var growth = monster.level - 1;
     return {
         // Health scales linearly to level 10, then 10% a level.
-        '+maxHealth': (growth <= 10) ? (8 + 20 * growth) : 200 * Math.pow(1.1, growth - 10),
+        '+maxHealth': (growth <= 10) ? (15 + 20 * growth) : 200 * Math.pow(1.1, growth - 10),
         '+range': 1,
         '+minPhysicalDamage': Math.round(.9 * (5 + 6 * growth)),
         '+maxPhysicalDamage': Math.round(1.1 * (5 + 6 * growth)),
@@ -260,7 +261,12 @@ function initalizeMonsters() {
     });
     addMonster('bat', {
         'name': 'Bat', 'source': batSource,
-        'implicitBonuses': {'*evasion': 1.2, '*accuracy': 1.2, '*damage': .4, '*speed': 2.5}
+        'implicitBonuses': {'*evasion': 1.2, '*accuracy': 1.2, '*damage': .5, '*speed': 2.5}
+    });
+    addMonster('vampireBat', {
+        'name': 'Vampire Bat', 'source': batSource, 'scale': 1.25,
+        'implicitBonuses': {'*evasion': 1.2, '*accuracy': 1.2, '*damage': .6, '*speed': 2.5},
+        'abilities': [abilities.darkknight, abilities.distract, abilities.drainLife]
     });
     addMonster('caterpillar', {
         'name': 'Caterpillar', 'source': caterpillarSource,
@@ -271,18 +277,25 @@ function initalizeMonsters() {
     addMonster('gnome', {'name': 'Gnome', 'source': gnomeSource, 'fpsMultiplier': 1.5,
         'implicitBonuses': {'+range': 2, '*attackSpeed': 1.5, '+magicDamage': 2,
                             '*block': .5, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
-                            '*speed': .3}, 'tags': ['ranged']
+                            '*speed': .4}, 'tags': ['ranged']
     });
     addMonster('gnomecromancer', {'name': 'Gnomecromancer', 'source': gnomeSource, 'fpsMultiplier': 1.5,
         'implicitBonuses': {'+range': 2, '*attackSpeed': 1.5, '+magicDamage': 2,
                             '*block': .5, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
-                            '*speed': .3},
+                            '*speed': .4},
         'abilities': [abilities.summonSkeleton, abilities.summoner], 'tags': ['ranged']
+    });
+    addMonster('gnomeCleric', {'name': 'Gnome Cleric', 'source': gnomeSource, 'fpsMultiplier': 1.5,
+        'implicitBonuses': {'+range': 2, '*attackSpeed': 1.5, '+magicDamage': 2,
+                            '*intelligence': 2,
+                            '*block': .5, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
+                            '*speed': .4},
+        'abilities': [abilities.spellAOE, abilities.protect, abilities.heal, abilities.minorIntelligence], 'tags': ['ranged']
     });
     addMonster('gnomeWizard', {'name': 'Gnome Wizard', 'source': gnomeSource, 'fpsMultiplier': 1.5,
         'implicitBonuses': {'+range': 2, '*attackSpeed': 1.5, '+magicDamage': 2,
                             '*block': .5, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
-                            '*speed': .3},
+                            '*speed': .4},
         'abilities': [abilities.fireball, abilities.freeze, abilities.wizard], 'tags': ['ranged']
     });
     addMonster('skeleton', {'name': 'Skeleton', 'source': skeletonSource,
@@ -296,7 +309,7 @@ function initalizeMonsters() {
         'implicitBonuses': {'+range': -.5, '*minPhysicalDamage': .4, '*maxPhysicalDamage': .4, '+accuracy': 2, '*attackSpeed': 2, '*magicDamage': 0,
                             '*block': 0, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': 1},
-        'abilities': [abilities.deflect, abilities.sage, abilities.majorDexterity]
+        'abilities': [abilities.deflect, abilities.deflectDamage, abilities.sage, abilities.majorDexterity]
     });
     addMonster('undeadWarrior', {'name': 'Undead Warrior', 'source': skeletonSource,
         // Fast to counter ranged heroes, low range+damage + fast attacks to be weak to armored heroes.

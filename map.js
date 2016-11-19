@@ -29,7 +29,7 @@ function exportMap() {
         levelLines.push("    }");
         lines.push(levelLines.join("\n"));
     });
-    return "var map = {\n" + lines.join(",\n") + "\n};\n";
+    return "var map = {\n" + lines.join(",\n") + "\n};\nvar mapKeys = Object.keys(map);\n";
 }
 function exportMapToTextArea() {
     if (!$('textarea').length) {
