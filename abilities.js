@@ -274,7 +274,8 @@ var abilities = {
     'rangeAndAttackSpeed': {'name': 'Range And Attack Speed', 'bonuses': {'+range': 2, '+attackSpeed': .5}},
     'dodgeHook': {'name': 'Dodge then Hook', 'bonuses': {'$dodge:instantCooldown': 'hook'}},
     'spellAOE': {'name': 'Spell AOE', 'bonuses': {'+spell:area': 20}},
-    'slowSpells': {'name': 'Slow Spells', 'bonuses': {'*spell:cooldown': 1.2}}
+    'slowSpells': {'name': 'Slow Spells', 'bonuses': {'*spell:cooldown': 1.2}},
+    'chargeKnockback': {'name': 'Charge Knockback', 'bonuses': {'+charge:knockbackChance': 1, '+charge:knockbackDistance': 10}},
 };
 var testJob;// = 'blackbelt';
 var testAbilities = [];

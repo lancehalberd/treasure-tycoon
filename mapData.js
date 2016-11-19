@@ -2933,13 +2933,13 @@ var map = {
         'specialLoot': ["simpleRubyLoot"],
         'skill': "charge",
         'board': "tripleTriangles",
-        'enemySkills': ["ferocity"],
-        'monsters': ["caterpillar","butterfly"],
+        'enemySkills': ["charge","chargeKnockback"],
+        'monsters': ["skeleton"],
         'events': [
-            ["caterpillar","caterpillar"],
-            ["motherfly"],
-            ["caterpillar","caterpillar","caterpillar","caterpillar"],
-            ["lightningBug","motherfly"]
+            ["skeleton","skeletalBuccaneer"],
+            ["skeleton","skeleton","skeletalBuccaneer"],
+            ["skeleton","skeletalBuccaneer","skeletalBuccaneer"],
+            ["undeadPaladin"]
         ]
     },
     'traininggrounds': {

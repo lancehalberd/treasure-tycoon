@@ -311,6 +311,13 @@ function initalizeMonsters() {
                             '*speed': 1},
         'abilities': [abilities.deflect, abilities.deflectDamage, abilities.sage, abilities.majorDexterity]
     });
+    addMonster('undeadPaladin', {'name': 'Undead Paladin', 'source': skeletonSource, 'scale': 1.5,
+        // Deflect to counter ranged champions.
+        'implicitBonuses': {'*minPhysicalDamage': .4, '*maxPhysicalDamage': .4, '+accuracy': 2, '*attackSpeed': 2,
+                            '*block': 1.5, '+armor': 2, '*magicBlock': 1.5, '*magicResist': 0,
+                            '*speed': 1},
+        'abilities': [abilities.reflect, abilities.majorIntelligence, abilities.aegis, abilities.heal]
+    });
     addMonster('undeadWarrior', {'name': 'Undead Warrior', 'source': skeletonSource,
         // Fast to counter ranged heroes, low range+damage + fast attacks to be weak to armored heroes.
         'implicitBonuses': {'+range': -.5, '*minPhysicalDamage': .4, '*maxPhysicalDamage': .4, '+accuracy': 2, '*attackSpeed': 2, '*magicDamage': 0,
