@@ -2952,12 +2952,13 @@ var map = {
         'specialLoot': [],
         'skill': "fireball",
         'board': "tripleTriangles",
-        'enemySkills': ["fireball"],
-        'monsters': ["gnome"],
+        'enemySkills': [],
+        'monsters': ["skeleton","gnomeWizard"],
         'events': [
-            ["gnomeWizard"],
-            ["gnomecromancer"],
-            ["gnomecromancer","gnomeWizard"]
+            ["gnomeWizard","gnomeCleric"],
+            ["gnomeWizard","gnomecromancer"],
+            ["gnomeWizard","gnomeWizard"],
+            ["frostGiant","gnomeWizard"]
         ]
     },
     'tributaries': {
