@@ -65,6 +65,17 @@ function drawActor(character, actor, index) {
         }
         drawAdventurer(character, actor, index);
     } else drawMonster(character, actor, index);
+    if (actor.stunned) {
+        for (var i = 0; i < 3; i++ ) {
+            var theta = 2 * Math.PI * (i + 3 * actor.time) / 3;
+            var shrineSource = {'image': images['gfx/militaryIcons.png'], 'xOffset': 102, 'yOffset': 125, 'width': 16, 'height': 16};
+            var yPosition = 240 - 128 - 36 - 2 * (index % maxIndex);
+            if (actor.source) yPosition -= ifdefor(actor.source.y, 0) * 2;
+            mainContext.drawImage(shrineSource.image, shrineSource.xOffset, shrineSource.yOffset, shrineSource.width, shrineSource.height,
+                                    actor.left + (actor.width - shrineSource.width) / 2 + Math.cos(theta) * 30,
+                                    yPosition + Math.sin(theta) * 10, shrineSource.width, shrineSource.height);
+        }
+    }
     mainContext.restore();
 }
 function drawMonster(character, monster, index) {
