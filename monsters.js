@@ -330,7 +330,7 @@ function initalizeMonsters() {
         'implicitBonuses': {'*maxHealth': 2, '+critDamage': .5, '*magicDamage': 0, '*accuracy': 2,
                             '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 0, '*magicResist': 0}
     });
-    addMonster('skeletonOger', {'name': 'Skeleton Ogre', 'source': skeletonGiantSource,
+    addMonster('skeletonOgre', {'name': 'Skeleton Ogre', 'source': skeletonGiantSource,
         'implicitBonuses': {'*maxHealth': 3, '+critDamage': .5, '*magicDamage': 0, '*accuracy': 2,
                             '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 0, '*magicResist': 0},
         'abilities': [abilities.hook, abilities.hookRange, abilities.hookStun, abilities.hookPower, abilities.dodge, abilities.acrobatics, abilities.acrobatics, abilities.dodgeHook, abilities.deflect]

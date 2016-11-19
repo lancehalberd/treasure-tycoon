@@ -2581,7 +2581,7 @@ var map = {
             ["skeletalBuccaneer"],
             ["spider","spider","skeletalBuccaneer"],
             ["skeletalBuccaneer","skeletalBuccaneer"],
-            ["skeletonOger"]
+            ["skeletonOgre"]
         ]
     },
     'shore': {
