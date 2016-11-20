@@ -594,8 +594,8 @@ skillDefinitions.deflect = {
         attackStats.accuracy += deflectSkill.accuracy;
         attackStats.damage *= deflectSkill.damageRatio;
         attackStats.magicDamage *= deflectSkill.damageRatio;
-        attackStats.vx = -attackStats.vx;
-        attackStats.vy = -getDistance(actor, projectile.target) / 200;
+        projectile.vx = -projectile.vx;
+        projectile.vy = -getDistance(actor, projectile.target) / 200;
         // This prevents the attack in progress from hitting the deflector.
         attackStats.deflected = true;
     }
