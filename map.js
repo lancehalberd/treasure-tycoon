@@ -479,7 +479,7 @@ function updateEditingState() {
     mapHeight = (isEditing && !editingLevel) ? 600 : 270;
     mapTop = -mapHeight / 2; mapLeft = -400;
     $('.js-pointsBar').toggle(!isEditing);
-    $('.js-mainCanvasContainer').css('height', (isEditing ? 600 : 270) +'px');
+    $('.js-mainCanvasContainer').css('height', ((isEditing && !testingLevel) ? 600 : 270) +'px');
     $('.js-mainCanvas').attr('height', mapHeight);
     // Image smoothing seems to get enabled again after changing the canvas size, so disable it again.
     $('.js-mainCanvas')[0].getContext('2d').imageSmoothingEnabled = false;
@@ -499,15 +499,20 @@ $(document).on('keydown', function(event) {
         event.preventDefault();
         if (editingMap) {
             stopMapEditing();
-        } else {
+        } else if (!testingLevel) {
             if (currentContext !== 'adventure') {
                 showContext('adventure');
+            } else if (state.selectedCharacter.area) {
+                recallSelectedCharacter();
             }
         }
     }
     if (editingMap && event.which === 67) { // 'c'
         event.preventDefault();
         exportMapToClipboard();
+    }
+    if (!editingLevel && !editingLevel && event.which === 67) { // 'c'
+        pasteCharacterToClipBoard(state.selectedCharacter);
     }
     if (event.which === 69) { // 'e'
         if (currentContext !== 'adventure' || state.selectedCharacter.area) {

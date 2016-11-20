@@ -1,5 +1,5 @@
 
-var editingLevel = null, editingLevelInstance = null;
+var editingLevel = null, editingLevelInstance = null, testingLevel = false;
 function initializeLevelEditing() {
     for (var level = 1; level < 100; level++) {
         $('.js-levelSelect').append($tag('option','', 'Lv ' + level).val(level));
@@ -80,7 +80,6 @@ function initializeLevelEditing() {
     });
     $(document).on('click', '.js-monster', function () {
         var monsterIndex = $(this).index();
-            console.log($(this).closest('.js-monsters').length);
         if ($(this).closest('.js-monsters').length) {
             editingLevel.monsters.splice(monsterIndex, 1);
         } else {
@@ -124,6 +123,12 @@ function initializeLevelEditing() {
         editingLevel.events[eventIndex] = editingLevel.events[eventIndex + 1];
         editingLevel.events[eventIndex + 1] = tempEvent;
         updateEventMonsters();
+    });
+    $(document).on('click', '.js-testLevel', function(event) {
+        var characterJson = $('.js-testCharacters').val();
+        if (!characterJson) return;
+        var character = importCharacter(JSON.parse(characterJson));
+        startTestingLevel(character);
     });
 }
 
@@ -194,6 +199,15 @@ function startEditingLevel(level) {
     $('.js-levelBackgroundSelect option[value="' + editingLevel.background + '"]').prop('selected', true);
 
     $('.js-levelSkillSelect option').show();
+    $('.js-testCharacters').empty();
+    for (var characterData of testCharacters) {
+        var job = characterClasses[characterData.adventurer.jobKey];
+        $('.js-testCharacters').append($tag('option','', ['Lv',characterData.adventurer.level, job.name, characterData.adventurer.name].join(' ')).val(JSON.stringify(characterData)));
+    }
+    $('.js-testCharacters').append($tag('option','', '--Characters from Save--').val(null));
+    for (var character of state.characters) {
+        $('.js-testCharacters').append($tag('option','', ['Lv',character.adventurer.level, character.adventurer.job.name, character.adventurer.name].join(' ')).val(JSON.stringify(exportCharacter(character))));
+    }
     // Hide skills already used by other levels.
     for (var otherLevel of Object.values(map)) {
         if (otherLevel.skill) $('.js-levelSkillSelect option[value="' + otherLevel.skill + '"]').hide();
@@ -233,8 +247,27 @@ function stopEditingLevel() {
 $(document).on('keydown', function(event) {
     if (event.which === 27) { // escape key
         event.preventDefault();
-        if (editingLevel) {
+        if (testingLevel) {
+            console.log("stop testing");
+            stopTestingLevel();
+        } else if (editingLevel) {
+            console.log("stop editing");
             stopEditingLevel();
         }
     }
 });
+function startTestingLevel(character) {
+    $('.js-editingControls').hide();
+    state.lastSelectedCharacter = state.selectedCharacter;
+    state.selectedCharacter = character;
+    startArea(state.selectedCharacter, editingLevel.levelKey);
+    testingLevel = true;
+    updateEditingState();
+}
+function stopTestingLevel() {
+    $('.js-editingControls').show();
+    state.selectedCharacter = state.lastSelectedCharacter;
+    testingLevel = false;
+    updateEditingState();
+    updateAdventureButtons();
+}

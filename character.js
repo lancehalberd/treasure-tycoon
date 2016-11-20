@@ -136,6 +136,8 @@ function returnToMap(character) {
     }
     if (character.replay) {
         startArea(character, character.currentLevelKey);
+    } else if (testingLevel) {
+        stopTestingLevel();
     }
 }
 function refreshStatsPanel(character, $statsPanel) {

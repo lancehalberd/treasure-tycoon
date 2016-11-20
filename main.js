@@ -185,7 +185,8 @@ function mainLoop() {
     }
     var fps = Math.floor(3 * 5 / 3);
     var frame = Math.floor(now() * fps / 1000) % walkLoop.length;
-    state.characters.forEach(function (character) {
+    var characters = testingLevel ? [state.selectedCharacter] : state.characters;
+    for (var character of characters) {
         if (character.area && !character.paused) {
             character.loopCount = ifdefor(character.loopCount) + 1;
             if (character.loopCount % ifdefor(character.loopSkip)) {
@@ -214,9 +215,9 @@ function mainLoop() {
         //character.characterContext.fillStyle = 'white';
         character.characterContext.clearRect(0, 0, 32, 64);
         character.characterContext.drawImage(character.adventurer.personCanvas, walkLoop[frame] * 32, 0 , 32, 64, 0, -10, 32, 64);
-    });
+    }
     if (currentContext === 'adventure') {
-        if (editingLevel) {
+        if (editingLevel && !testingLevel) {
             drawAdventure(state.selectedCharacter);
             if (editingLevel && editingLevel.board) {
                 var board = boards[editingLevel.board];
@@ -482,7 +483,8 @@ $('.js-showCraftingPanel').on('click', function (event) {
 $('.js-showJewelsPanel').on('click', function (event) {
     showContext('jewel');
 });
-$('body').on('click', '.js-recallButton', function (event) {
+$('body').on('click', '.js-recallButton', recallSelectedCharacter);
+function recallSelectedCharacter() {
     var character = state.selectedCharacter;
     // The last wave of an area is always the bonus treasure chest. In order to prevent
     // the player from missing this chest or opening it without clearing the level,
@@ -494,7 +496,7 @@ $('body').on('click', '.js-recallButton', function (event) {
     character.replay = false;
     updateAdventureButtons();
     returnToMap(character);
-});
+}
 $('body').on('click', '.js-repeatButton', function (event) {
     state.selectedCharacter.replay = !state.selectedCharacter.replay;
     updateAdventureButtons();

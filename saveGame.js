@@ -76,7 +76,6 @@ function importState(stateData) {
     state.characters = [];
     state.visibleLevels = copy(ifdefor(stateData.visibleLevels, {}));
     state.maxCraftingLevel = stateData.maxCraftingLevel;
-    state.characters = [];
     $('.js-charactersBox').empty();
     var characters = stateData.characters.map(importCharacter);
     characters.forEach(function (character) {
@@ -129,7 +128,7 @@ function importState(stateData) {
     changedPoints('fame');
     updateItemCrafting();
     updateRetireButtons();
-    var selectedCharacterIndex = Math.min(ifdefor(stateData.selectedCharacterIndex, 0), stateData.characters.length - 1);
+    var selectedCharacterIndex = Math.max(0, Math.min(ifdefor(stateData.selectedCharacterIndex, 0), state.characters.length - 1));
     setSelectedCharacter(state.characters[selectedCharacterIndex]);
     // Update crafting view canvas in case new items were imported.
     drawCraftingViewCanvas();

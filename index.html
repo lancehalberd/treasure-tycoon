@@ -67,20 +67,21 @@
                 <select class="js-levelSkillSelect"></select>
                 <select class="js-levelBoardSelect"></select>
             </div>
-            <div class="js-editingControls editingControlsBottom" style="display: none">
-                <div class="levelEditingSection">Monsters: <span class="js-monsters"><select class="js-monsterSelect"></select></span></div>
-                <div class="levelEditingSection">Enemy Skills: <span class="js-enemySkills"><select class="js-enemySkillSelect"></select></span></div>
-                <div class="levelEditingSection">Events:
-                    <ol class="js-levelEvents"></ol>
-                    <ul><li><button class="js-addLevelEvent editEventButton">+</button></li></ul>
-                </div>
-            </div>
             <div class="js-adventureControls adventureControls" style="display: none;">
                 <span class="js-recallButton icon backButton adventureButton" helptext="Exit to map"></span>
                 <span class="js-repeatButton icon repeatButton adventureButton" helptext="Repeat this adventure"></span>
                 <span class="js-fastforwardButton icon fastforwardButton adventureButton" helptext="Fast Forward"></span>
                 <span class="js-pauseButton icon pauseButton adventureButton" helptext="Pause this adventure"></span>
                 <span class="js-slowMotionButton icon slowMotionButton adventureButton" helptext="Slow Motion"></span>
+            </div>
+            <div class="js-editingControls editingControlsBottom" style="display: none">
+                <div class="levelEditingSection">Test Characters: <select class="js-testCharacters"></select><button class="js-testLevel">Test</button></div>
+                <div class="levelEditingSection">Monsters: <span class="js-monsters"><select class="js-monsterSelect"></select></span></div>
+                <div class="levelEditingSection">Enemy Skills: <span class="js-enemySkills"><select class="js-enemySkillSelect"></select></span></div>
+                <div class="levelEditingSection">Events:
+                    <ol class="js-levelEvents"></ol>
+                    <ul><li><button class="js-addLevelEvent editEventButton">+</button></li></ul>
+                </div>
             </div>
         </div>
         <div class="js-characterColumn displayColumn characterColumn js-adventureContext js-jewelContext js-itemContext">
@@ -251,6 +252,7 @@
 <script src="editLevel.js"></script>
 <script src="polygon.js"></script>
 <script src="backgrounds.js"></script>
+<script src="testCharacters.js"></script>
 <script src="saveGame.js"></script>
 <script src="main.js"></script>
 </html>
