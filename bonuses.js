@@ -216,7 +216,7 @@ function addBonusToObject(object, bonus, isImplicit) {
                 statOps['%'] = ifdefor(statOps['%'], 1) + value;
                 break;
             case '*':
-                statOps['*'] = ifdefor(statOps['$'], []);
+                statOps['*'] = ifdefor(statOps['*'], []);
                 statOps['*'].push(value);
                 break;
             case '$':
