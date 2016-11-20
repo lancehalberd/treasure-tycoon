@@ -134,11 +134,11 @@ function drawCraftingViewCanvas() {
 var itemsFilteredByType = [];
 var selectedCraftingWeight = 0;
 function updateItemCrafting() {
-    var levelMultiplier = state.craftingLevel * state.craftingLevel * state.craftingLevel;
-    $('.js-itemCraftingOption.js-allOption').attr('helptext', 'For an item of any type, offer ' + points('coins', 5 * levelMultiplier * 1));
-    $('.js-itemCraftingOption.js-armorOption').attr('helptext', 'For armor, offer ' + points('coins', 5 * levelMultiplier * 2));
-    $('.js-itemCraftingOption.js-weaponOption').attr('helptext', 'For a weapon, offer ' + points('coins', 5 * levelMultiplier * 3));
-    $('.js-itemCraftingOption.js-accessoryOption').attr('helptext', 'For an accessory, offer ' + points('coins', 5 * levelMultiplier * 5));
+    var levelMultiplier = getLevelCostMultipler();
+    $('.js-itemCraftingOption.js-allOption').attr('helptext', 'For an item of any type, offer ' + points('coins', levelMultiplier * 1));
+    $('.js-itemCraftingOption.js-armorOption').attr('helptext', 'For armor, offer ' + points('coins', levelMultiplier * 2));
+    $('.js-itemCraftingOption.js-weaponOption').attr('helptext', 'For a weapon, offer ' + points('coins', levelMultiplier * 3));
+    $('.js-itemCraftingOption.js-accessoryOption').attr('helptext', 'For an accessory, offer ' + points('coins', levelMultiplier * 5));
     $('.js-reforge').attr('helptext', 'Drag one of the 3 items to your inventory or click here to offer ' + points('coins', getCurrentCraftingCost() / 5) + ' for 3 new choices.');
     updateCraftingButtons();
     var itemsFilteredByLevel = [];
@@ -152,16 +152,16 @@ function updateItemCrafting() {
         });
     }
     $('.js-craftingLevel').text(state.craftingLevel);
-    $('.js-levelMultiplier').html((levelMultiplier * 5).coins());
+    $('.js-levelMultiplier').html((levelMultiplier).coins());
     updateSelectedCraftingWeight();
     drawCraftingViewCanvas();
 }
 function updateCraftingButtons() {
-    var levelMultiplier = state.craftingLevel * state.craftingLevel * state.craftingLevel;
-    $('.js-itemCraftingOption.js-allOption').toggleClass('disabled', state.coins < 5 * levelMultiplier * 1);
-    $('.js-itemCraftingOption.js-armorOption').toggleClass('disabled', state.coins < 5 * levelMultiplier * 2);
-    $('.js-itemCraftingOption.js-weaponOption').toggleClass('disabled', state.coins < 5 * levelMultiplier * 3);
-    $('.js-itemCraftingOption.js-accessoryOption').toggleClass('disabled', state.coins < 5 * levelMultiplier * 5);
+    var levelMultiplier = getLevelCostMultipler();
+    $('.js-itemCraftingOption.js-allOption').toggleClass('disabled', state.coins < levelMultiplier * 1);
+    $('.js-itemCraftingOption.js-armorOption').toggleClass('disabled', state.coins < levelMultiplier * 2);
+    $('.js-itemCraftingOption.js-weaponOption').toggleClass('disabled', state.coins < levelMultiplier * 3);
+    $('.js-itemCraftingOption.js-accessoryOption').toggleClass('disabled', state.coins < levelMultiplier * 5);
     $('.js-reforge').toggleClass('disabled', state.coins < levelMultiplier);
 }
 function updateSelectedCraftingWeight() {
@@ -182,8 +182,11 @@ $('.js-itemCraftingOption').on('mouseout', function () {
         updateItemCrafting();
     }
 });
+function getLevelCostMultipler() {
+    return Math.floor(5 * (state.craftingLevel * state.craftingLevel * state.craftingLevel + Math.pow(1.3, state.craftingLevel)));
+}
 function getCurrentCraftingCost(filter) {
-    var levelMultiplier = state.craftingLevel * state.craftingLevel * state.craftingLevel;
+    var levelMultiplier = getLevelCostMultipler();
     var typeMultiplier = 1;
     switch (state.craftingTypeFilter) {
         case 'weapon':
@@ -196,7 +199,7 @@ function getCurrentCraftingCost(filter) {
             typeMultiplier = 5;
             break;
     }
-    return 5 * levelMultiplier * typeMultiplier;
+    return levelMultiplier * typeMultiplier;
 }
 $('.js-itemCraftingOption').on('click', function () {
     state.craftingTypeFilter = $(this).data('filter');

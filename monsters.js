@@ -223,8 +223,8 @@ function getMonsterBonuses(monster) {
         '+strength': 5 * growth,
         '+intelligence': 5 * growth,
         '+dexterity': 5 * growth,
-        '+coins': Random.range(1, (growth + 1) * (growth + 1) * 4),
-        '+anima': Random.range(1, (growth + 1) * (growth + 1)),
+        '+coins': Random.range(1, Math.floor(Math.pow(1.25, growth + 1) * 4)),
+        '+anima': Random.range(1, Math.floor(Math.pow(1.25, growth + 1))),
         '$color': 'red',
         '+scale': 1
     };

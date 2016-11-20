@@ -59,7 +59,7 @@ function isTwoHandedWeapon(item) {
     return item && item.base.tags['twoHanded'];
 }
 function sellValue(item) {
-    return 4 * item.itemLevel * item.itemLevel * item.itemLevel;
+    return Math.floor(4 * (item.itemLevel * item.itemLevel * item.itemLevel + Math.pow(1.3, item.itemLevel)));
 }
 function makeItem(base, level) {
     var item = {
