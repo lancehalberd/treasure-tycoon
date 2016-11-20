@@ -3197,10 +3197,13 @@ var map = {
         'specialLoot': [],
         'skill': "blinkStrike",
         'board': "tripleTriangles",
-        'enemySkills': ["blinkStrike"],
-        'monsters': ["spider","skeleton","caterpillar"],
+        'enemySkills': [],
+        'monsters': ["spider","jumpingSpider"],
         'events': [
-            ["giantSkeleton"]
+            ["jumpingSpider","stealthyCateripllar"],
+            ["jumpingSpider","jumpingSpider","stealthyCateripllar"],
+            ["jumpingSpider","jumpingSpider","stealthyCateripllar","stealthyCateripllar"],
+            ["giantSpider"]
         ]
     },
     'wizard2': {

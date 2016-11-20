@@ -92,8 +92,8 @@ function drawMonster(character, monster, index) {
     if (monster.cloaked) {
         context.globalAlpha = .2;
     }
-    monster.width = ifdefor(monster.width, source.width * 2 * ifdefor(monster.scale, 1));
-    monster.height = ifdefor(monster.height, ifdefor(source.height, 64) * 2 * ifdefor(monster.scale, 1));
+    monster.width = source.width * 2 * ifdefor(monster.scale, 1);
+    monster.height = ifdefor(source.height, 64) * 2 * ifdefor(monster.scale, 1);
     monster.left = monster.x - cameraX;
     monster.top = 240 - monster.height - 72 - ifdefor(source.y, 0) * 2 * ifdefor(monster.scale, 1) - 2 * (index % maxIndex);
     context.translate(monster.left + monster.width / 2, 0);

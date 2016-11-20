@@ -28,7 +28,7 @@ var allActorVariables = {
     // tracked for debuffs that deal damage over time
     'damageOverTime': '.',
     // For enemy loot and color
-    'coins': '.', 'anima': '.', 'tint': '.', 'color': '.'
+    'coins': '.', 'anima': '.', 'tint': '.', 'color': '.', 'scale': '.'
 };
 // These are variables that can be targeted by effects on any action.
 var commonActionVariables = {

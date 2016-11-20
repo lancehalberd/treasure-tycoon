@@ -71,7 +71,6 @@ function makeMonster(monsterData, level, extraSkills, noRarity) {
     }
     monster.base = baseMonster;
     monster.stationary = ifdefor(baseMonster.stationary);
-    monster.scale = ifdefor(baseMonster.scale, 1);
     /* $.each(baseMonster, function (key, value) {
         monster[key] = value;
     }); */
@@ -227,7 +226,8 @@ function getMonsterBonuses(monster) {
         '+dexterity': 5 * growth,
         '+coins': Random.range(1, (growth + 1) * (growth + 1) * 4),
         '+anima': Random.range(1, (growth + 1) * (growth + 1)),
-        '$color': 'red'
+        '$color': 'red',
+        '+scale': 1
     };
 }
 function initalizeMonsters() {
@@ -247,25 +247,31 @@ function initalizeMonsters() {
         'implicitBonuses': {'+magicDamage': 2}
     });
     addMonster('spider', {
-        'name': 'Spider', 'source': spiderSource, 'scale': .75,
-        'implicitBonuses': {'*evasion': 1.2, '*accuracy': .8, '*damage': 1.2, '*speed': 2}
+        'name': 'Spider', 'source': spiderSource,
+        'implicitBonuses': {'*evasion': 1.2, '*accuracy': .8, '*damage': 1.2, '*speed': 2, '*scale': .75}
+    });
+    addMonster('jumpingSpider', {
+        'name': 'Jumping Spider', 'source': spiderSource,
+        'implicitBonuses': {'*evasion': 1.2, '*accuracy': .8, '*damage': 1.4, '*speed': 2, '*scale': .75},
+        'abilities': [abilities.blinkStrike]
     });
     addMonster('wolf', {
-        'name': 'Wolf', 'source': wolfSource, 'scale': .75,
-        'implicitBonuses': {'*maxHealth': 1.5, '*magicDamage': 0, '*accuracy': 1.5, '+critChance': .1, '*speed': 2.5}
+        'name': 'Wolf', 'source': wolfSource,
+        'implicitBonuses': {'*maxHealth': 1.5, '*magicDamage': 0, '*accuracy': 1.5, '+critChance': .1, '*speed': 2.5, '*scale': .75}
     });
     addMonster('giantSpider', {
-        'name': 'Giant Spider', 'source': spiderSource, 'scale': 1.5,
-        'implicitBonuses': {'*evasion': .8, '*accuracy': .8, '*damage': 1.4, '+critChance': .25},
-        'abilities': [abilities.net]
+        'name': 'Giant Spider', 'source': spiderSource,
+        'implicitBonuses': {'*evasion': .8, '*accuracy': .8, '*damage': 1.4, '+critChance': .25, '*scale': 1.15},
+        'tags': ['ranged'],
+        'abilities': [abilities.net, abilities.corsair]
     });
     addMonster('bat', {
         'name': 'Bat', 'source': batSource,
         'implicitBonuses': {'*evasion': 1.2, '*accuracy': 1.2, '*damage': .5, '*speed': 2.5}
     });
     addMonster('vampireBat', {
-        'name': 'Vampire Bat', 'source': batSource, 'scale': 1.25,
-        'implicitBonuses': {'*evasion': 1.2, '*accuracy': 1.2, '*damage': .6, '*speed': 2.5},
+        'name': 'Vampire Bat', 'source': batSource,
+        'implicitBonuses': {'*evasion': 1.2, '*accuracy': 1.2, '*damage': .6, '*speed': 2.5, '*scale': 1.25},
         'abilities': [abilities.darkknight, abilities.distract, abilities.drainLife]
     });
     addMonster('caterpillar', {
@@ -273,6 +279,13 @@ function initalizeMonsters() {
         'implicitBonuses': {'*magicDamage': 0,
                             '*block': .5, '+magicBlock': 4, '*magicBlock': 2, '+magicResist': .5,
                             '*speed': .5}
+    });
+    addMonster('stealthyCateripllar', {
+        'name': 'The Very Stealth Caterpillar', 'source': caterpillarSource,
+        'implicitBonuses': {'*magicDamage': 0, '*scale': .1, '+scale': ['{maxHealth}', '/', ['{level}', '*', '10']],
+                            '*block': .5, '+magicBlock': 4, '*magicBlock': 2, '+magicResist': .5,
+                            '*speed': .2},
+        'abilities': [abilities.stealth, abilities.darkknight, abilities.vitality, abilities.vitality, abilities.majorStrength]
     });
     addMonster('gnome', {'name': 'Gnome', 'source': gnomeSource, 'fpsMultiplier': 1.5,
         'implicitBonuses': {'+range': 2, '*attackSpeed': 1.5, '+magicDamage': 2,
@@ -304,18 +317,18 @@ function initalizeMonsters() {
                             '*block': 0, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': 2}
     });
-    addMonster('skeletalBuccaneer', {'name': 'Skeletal Buccaneer', 'source': skeletonSource, 'scale': 1.5,
+    addMonster('skeletalBuccaneer', {'name': 'Skeletal Buccaneer', 'source': skeletonSource,
         // Deflect to counter ranged champions.
         'implicitBonuses': {'+range': -.5, '*minPhysicalDamage': .4, '*maxPhysicalDamage': .4, '+accuracy': 2, '*attackSpeed': 2, '*magicDamage': 0,
                             '*block': 0, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
-                            '*speed': 1},
+                            '*speed': 1, 'scale': 1.5},
         'abilities': [abilities.deflect, abilities.deflectDamage, abilities.sage, abilities.majorDexterity]
     });
-    addMonster('undeadPaladin', {'name': 'Undead Paladin', 'source': skeletonSource, 'scale': 1.5,
+    addMonster('undeadPaladin', {'name': 'Undead Paladin', 'source': skeletonSource,
         // Deflect to counter ranged champions.
         'implicitBonuses': {'*minPhysicalDamage': .4, '*maxPhysicalDamage': .4, '+accuracy': 2, '*attackSpeed': 2,
                             '*block': 1.5, '+armor': 2, '*magicBlock': 1.5, '*magicResist': 0,
-                            '*speed': 1},
+                            '*speed': 1, '*scale': 1.5},
         'abilities': [abilities.reflect, abilities.majorIntelligence, abilities.aegis, abilities.heal]
     });
     addMonster('undeadWarrior', {'name': 'Undead Warrior', 'source': skeletonSource,
