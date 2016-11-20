@@ -241,6 +241,7 @@ var bonusMap = {
     '+slowOnHit': 'Slow targets by %0 on hit',
     '+speed': '+$1 speed',
     '%speed': '%1 increased speed',
+    '*speed': '$1x speed',
     '+increasedDrops': 'Gain %1 more coins and anima',
     // Ability specific bonuses
     '+area': '+$1 area offect',
@@ -266,5 +267,6 @@ var bonusMap = {
     '+duration': '+$1s duration',
     '*duration': '$1x duration',
     '+count': '+$1 enchantment(s) stolen',
-    '+weaponRange': '+$1 increased range'
+    '+weaponRange': '+$1 increased range',
+    '+damageOverTime': 'Taking $1 damage per second'
 };

@@ -277,7 +277,8 @@ var abilities = {
     'slowSpells': {'name': 'Slow Spells', 'bonuses': {'*spell:cooldown': 1.2}},
     'chargeKnockback': {'name': 'Charge Knockback', 'bonuses': {'+charge:knockbackChance': 1, '+charge:knockbackDistance': 10}},
     'stealth': {'name': 'Stealth', 'bonuses':{'$cloaking': 'Invisible while moving'}},
-    'dodgeNetReflect': {'name': 'Dodge then Hook', 'bonuses': {'$dodge:instantCooldown': 'net', '$net:instantCooldown': 'reflect'}}
+    'dodgeNetReflect': {'name': 'Dodge then Hook', 'bonuses': {'$dodge:instantCooldown': 'net', '$net:instantCooldown': 'reflect'}},
+    'poison': {'onHitEffect': {'variableObjectType': 'trigger', 'bonuses': {'$debuff': debuffEffect({}, {'+*healthRegen': 0, '++damageOverTime': '{level}', '+duration': 3})}}}
 };
 var testJob;// = 'blackbelt';
 var testAbilities = [];

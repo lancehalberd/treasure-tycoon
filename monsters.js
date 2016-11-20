@@ -262,7 +262,7 @@ function initalizeMonsters() {
         'name': 'Giant Spider', 'source': spiderSource,
         'implicitBonuses': {'+weaponRange': 12, '*evasion': .8, '*accuracy': .8, '*damage': 1.4, '+critChance': .25, '*scale': 1.15},
         'tags': ['ranged'],
-        'abilities': [abilities.net, abilities.dodge, abilities.reflect, abilities.dodgeNetReflect, abilities.corsair]
+        'abilities': [abilities.net, abilities.dodge, abilities.acrobatics, abilities.reflect, abilities.dodgeNetReflect, abilities.poison]
     });
     addMonster('bat', {
         'name': 'Bat', 'source': batSource,
