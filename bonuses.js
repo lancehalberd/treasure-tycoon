@@ -216,7 +216,8 @@ function addBonusToObject(object, bonus, isImplicit) {
                 statOps['%'] = ifdefor(statOps['%'], 1) + value;
                 break;
             case '*':
-                statOps['*'] = ifdefor(statOps['*'], 1) * value;
+                statOps['*'] = ifdefor(statOps['$'], []);
+                statOps['*'].push(value);
                 break;
             case '$':
                 statOps['$'] = ifdefor(statOps['$'], []);
@@ -249,7 +250,8 @@ function removeBonusFromObject(object, bonus) {
                 statOps['%'] = ifdefor(statOps['%'], 1) - value;
                 break;
             case '*':
-                statOps['*'] = ifdefor(statOps['*'], 1) / value;
+                var index = statOps['*'].indexOf(value);
+                statOps['*'].splice(index, 1);
                 break;
             case '$':
                 var index = statOps['$'].indexOf(value);
@@ -298,7 +300,11 @@ function recomputeStat(object, statKey) {
         }
     } else if (typeof(newValue) === 'number') {
         //console.log(statOps);
-        newValue = (newValue + ifdefor(statOps['+'], 0)) * ifdefor(statOps['%'], 1) * ifdefor(statOps['*'], 1) + ifdefor(statOps['&'], 0);
+        newValue = (newValue + ifdefor(statOps['+'], 0)) * ifdefor(statOps['%'], 1);
+        for (var factor of ifdefor(statOps['*'], [])) {
+            newValue *= factor;
+        }
+        newValue += ifdefor(statOps['&'], 0);
         if (allRoundedVariables[statKey]) {
             newValue = Math.round(newValue);
         }
@@ -308,7 +314,8 @@ function recomputeStat(object, statKey) {
 }
 function setStat(object, statKey, newValue) {
     delete object.dirtyStats[statKey];
-    if (object[statKey] === newValue) return;
+    var oldValue = object[statKey];
+    if (oldValue === newValue) return;
     // If the old value was a variable child, remove it since it is either gone or
     // going to be replaced by a new version of the variable child.
     if (typeof object[statKey] === 'object' && object[statKey].base) {
@@ -341,7 +348,7 @@ function setStat(object, statKey, newValue) {
     }
     // Changing the value of setRange changes the tags for the actor, so we need to trigger
     // and update here.
-    if (statKey === 'setRange') {
+    if (statKey === 'setRange' && (oldValue || newValue)) {
         if (object.actor !== object) {
             console.log(object);
             throw new Error('setRange was set on a non-actor');

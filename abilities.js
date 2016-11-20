@@ -276,7 +276,8 @@ var abilities = {
     'spellAOE': {'name': 'Spell AOE', 'bonuses': {'+spell:area': 20}},
     'slowSpells': {'name': 'Slow Spells', 'bonuses': {'*spell:cooldown': 1.2}},
     'chargeKnockback': {'name': 'Charge Knockback', 'bonuses': {'+charge:knockbackChance': 1, '+charge:knockbackDistance': 10}},
-    'stealth': {'name': 'Stealth', 'bonuses':{'$cloaking': 'Invisible while moving'}}
+    'stealth': {'name': 'Stealth', 'bonuses':{'$cloaking': 'Invisible while moving'}},
+    'dodgeNetReflect': {'name': 'Dodge then Hook', 'bonuses': {'$dodge:instantCooldown': 'net', '$net:instantCooldown': 'reflect'}}
 };
 var testJob;// = 'blackbelt';
 var testAbilities = [];

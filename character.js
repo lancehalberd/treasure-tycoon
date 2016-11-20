@@ -423,24 +423,37 @@ function updateAdventurer(adventurer) {
 }
 function recomputActorTags(actor) {
     var tags = {'actor': true};
-    if (!actor.equipment.weapon) {
-        // Fighting unarmed is considered using a fist weapon.
-        tags['fist'] = true;
-        tags['melee'] = true;
-        tags['weaponless'] = true;
-        // You gain the unarmed tag if both hands are free.
-        if (!actor.equipment.offhand) {
-            tags['unarmed'] = true;
+    if (actor.equipment) {
+        if (!actor.equipment.weapon) {
+            // Fighting unarmed is considered using a fist weapon.
+            tags['fist'] = true;
+            tags['melee'] = true;
+            tags['weaponless'] = true;
+            // You gain the unarmed tag if both hands are free.
+            if (!actor.equipment.offhand) {
+                tags['unarmed'] = true;
+            }
+        } else {
+            tags[actor.equipment.weapon.base.type] = true;
+            for (var tag of Object.keys(ifdefor(actor.equipment.weapon.base.tags, {}))) {
+                tags[tag] = true;
+            }
+            // You gain the noOffhand tag if offhand is empty and you are using a one handed weapon.
+            if (!actor.equipment.offhand && !tags['twoHanded']) {
+                tags['noOffhand'] = true;
+            }
         }
-    } else {
-        tags[actor.equipment.weapon.base.type] = true;
-        for (var tag of Object.keys(ifdefor(actor.equipment.weapon.base.tags, {}))) {
-            tags[tag] = true;
+        if (actor.equipment.offhand) {
+            tags[actor.equipment.offhand.base.type] = true;
+            for (var tag of Object.keys(ifdefor(actor.equipment.offhand.base.tags, {}))) {
+                tags[tag] = true;
+            }
         }
-        // You gain the noOffhand tag if offhand is empty and you are using a one handed weapon.
-        if (!actor.equipment.offhand && !tags['twoHanded']) {
-            tags['noOffhand'] = true;
-        }
+    }
+    if (actor.base && actor.base.tags) {
+        for (var tag of ifdefor(actor.base.tags, [])) tags[tag] = true;
+        if (tags['ranged']) delete tags['melee'];
+        else tags['melee'] = true;
     }
     if (actor.setRange) {
         if (actor.setRange === 'ranged') {
@@ -449,12 +462,6 @@ function recomputActorTags(actor) {
         } else {
             tags['melee'] = true;
             delete tags['ranged'];
-        }
-    }
-    if (actor.equipment.offhand) {
-        tags[actor.equipment.offhand.base.type] = true;
-        for (var tag of Object.keys(ifdefor(actor.equipment.offhand.base.tags, {}))) {
-            tags[tag] = true;
         }
     }
     return tags;

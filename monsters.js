@@ -9,7 +9,7 @@ var bossMonsterBonuses = {'bonuses': {'*maxHealth': 3, '*damage': 2, '*attackSpe
 var monsterPrefixes = [
     [
         {'name': 'Hawkeye', 'bonuses': {'+accuracy': [5, 10]}},
-        {'name': 'Giant', 'bonuses': {'*maxHealth': 2}}
+        {'name': 'Giant', 'bonuses': {'*maxHealth': 2, '*scale': 1.3}}
     ],
     [
         {'name': 'Eldritch', 'bonuses': {'+magicDamage': [1, 2], '*magicDamage': [2, 3]}}
@@ -133,8 +133,7 @@ function updateMonster(monster) {
     monster.reactions = [];
     monster.onHitEffects = [];
     monster.onCritEffects = [];
-    for (var tag of ifdefor(monster.base.tags, [])) monster.tags[tag] = true;
-    if (monster.tags['ranged']) monster.tags['melee'] = true;
+    monster.tags = recomputActorTags(monster);
     var enchantments = monster.prefixes.length + monster.suffixes.length;
     monster.image = monster.base.source.image.normal;
     if (enchantments > 2) {
@@ -261,9 +260,9 @@ function initalizeMonsters() {
     });
     addMonster('giantSpider', {
         'name': 'Giant Spider', 'source': spiderSource,
-        'implicitBonuses': {'*evasion': .8, '*accuracy': .8, '*damage': 1.4, '+critChance': .25, '*scale': 1.15},
+        'implicitBonuses': {'+weaponRange': 12, '*evasion': .8, '*accuracy': .8, '*damage': 1.4, '+critChance': .25, '*scale': 1.15},
         'tags': ['ranged'],
-        'abilities': [abilities.net, abilities.corsair]
+        'abilities': [abilities.net, abilities.dodge, abilities.reflect, abilities.dodgeNetReflect, abilities.corsair]
     });
     addMonster('bat', {
         'name': 'Bat', 'source': batSource,
@@ -288,38 +287,38 @@ function initalizeMonsters() {
         'abilities': [abilities.stealth, abilities.darkknight, abilities.vitality, abilities.vitality, abilities.majorStrength]
     });
     addMonster('gnome', {'name': 'Gnome', 'source': gnomeSource, 'fpsMultiplier': 1.5,
-        'implicitBonuses': {'+range': 2, '*attackSpeed': 1.5, '+magicDamage': 2,
+        'implicitBonuses': {'+weaponRange': 2, '*attackSpeed': 1.5, '+magicDamage': 2,
                             '*block': .5, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': .4}, 'tags': ['ranged']
     });
     addMonster('gnomecromancer', {'name': 'Gnomecromancer', 'source': gnomeSource, 'fpsMultiplier': 1.5,
-        'implicitBonuses': {'+range': 2, '*attackSpeed': 1.5, '+magicDamage': 2,
+        'implicitBonuses': {'+weaponRange': 2, '*attackSpeed': 1.5, '+magicDamage': 2,
                             '*block': .5, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': .4},
         'abilities': [abilities.summonSkeleton, abilities.summoner], 'tags': ['ranged']
     });
     addMonster('gnomeCleric', {'name': 'Gnome Cleric', 'source': gnomeSource, 'fpsMultiplier': 1.5,
-        'implicitBonuses': {'+range': 2, '*attackSpeed': 1.5, '+magicDamage': 2,
+        'implicitBonuses': {'+weaponRange': 2, '*attackSpeed': 1.5, '+magicDamage': 2,
                             '*intelligence': 2,
                             '*block': .5, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': .4},
         'abilities': [abilities.spellAOE, abilities.protect, abilities.heal, abilities.minorIntelligence], 'tags': ['ranged']
     });
     addMonster('gnomeWizard', {'name': 'Gnome Wizard', 'source': gnomeSource, 'fpsMultiplier': 1.5,
-        'implicitBonuses': {'+range': 2, '*attackSpeed': 1.5, '+magicDamage': 2,
+        'implicitBonuses': {'+weaponRange': 2, '*attackSpeed': 1.5, '+magicDamage': 2,
                             '*block': .5, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': .4},
         'abilities': [abilities.fireball, abilities.freeze, abilities.wizard], 'tags': ['ranged']
     });
     addMonster('skeleton', {'name': 'Skeleton', 'source': skeletonSource,
         // Fast to counter ranged heroes, low range+damage + fast attacks to be weak to armored heroes.
-        'implicitBonuses': {'+range': -.5, '*minPhysicalDamage': .4, '*maxPhysicalDamage': .4, '+accuracy': 2, '*attackSpeed': 2, '*magicDamage': 0,
+        'implicitBonuses': {'+weaponRange': -.5, '*minPhysicalDamage': .4, '*maxPhysicalDamage': .4, '+accuracy': 2, '*attackSpeed': 2, '*magicDamage': 0,
                             '*block': 0, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': 2}
     });
     addMonster('skeletalBuccaneer', {'name': 'Skeletal Buccaneer', 'source': skeletonSource,
         // Deflect to counter ranged champions.
-        'implicitBonuses': {'+range': -.5, '*minPhysicalDamage': .4, '*maxPhysicalDamage': .4, '+accuracy': 2, '*attackSpeed': 2, '*magicDamage': 0,
+        'implicitBonuses': {'+weaponRange': -.5, '*minPhysicalDamage': .4, '*maxPhysicalDamage': .4, '+accuracy': 2, '*attackSpeed': 2, '*magicDamage': 0,
                             '*block': 0, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': 1, 'scale': 1.5},
         'abilities': [abilities.deflect, abilities.deflectDamage, abilities.sage, abilities.majorDexterity]
@@ -333,27 +332,27 @@ function initalizeMonsters() {
     });
     addMonster('undeadWarrior', {'name': 'Undead Warrior', 'source': skeletonSource,
         // Fast to counter ranged heroes, low range+damage + fast attacks to be weak to armored heroes.
-        'implicitBonuses': {'+range': -.5, '*minPhysicalDamage': .4, '*maxPhysicalDamage': .4, '+accuracy': 2, '*attackSpeed': 2, '*magicDamage': 0,
+        'implicitBonuses': {'+weaponRange': -.5, '*minPhysicalDamage': .4, '*maxPhysicalDamage': .4, '+accuracy': 2, '*attackSpeed': 2, '*magicDamage': 0,
                             '*block': 0, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': 2},
         'abilities': [abilities.blinkStrike, abilities.soulStrike, abilities.majorStrength, abilities.vitality]
     });
     //console.log(JSON.stringify(makeMonster('skeleton', 1)));
     addMonster('butterfly', {'name': 'Butterfly', 'source': butterflySource,
-        'implicitBonuses': {'*maxHealth': 1.5, '+range': 4, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5, '*accuracy': 2,
+        'implicitBonuses': {'*maxHealth': 1.5, '+weaponRange': 4, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5, '*accuracy': 2,
                             '*magicDamage': .5,
                             '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
                             '*speed': .6}, 'tags': ['ranged']
     });
     addMonster('motherfly', {'name': 'Motherfly', 'source': butterflySource,
-        'implicitBonuses': {'+maxHealth': 20, '*maxHealth': 3, '+range': 5, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5, '*accuracy': 2,
+        'implicitBonuses': {'+maxHealth': 20, '*maxHealth': 3, '+weaponRange': 5, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5, '*accuracy': 2,
                             '*minPhysicalDamage': .8, '*maxPhysicalDamage': .8, '*attackSpeed': .5, '*magicDamage': .5,
                             '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
                             '*speed': .6}, 'tags': ['ranged'],
         'abilities': [abilities.summonCaterpillar, abilities.summoner]
     });
     addMonster('lightningBug', {'name': 'Lightning Bug', 'source': butterflySource,
-        'implicitBonuses': {'*maxHealth': 1.5, '+range': 4, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5, '*accuracy': 2,
+        'implicitBonuses': {'*maxHealth': 1.5, '+weaponRange': 4, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5, '*accuracy': 2,
                             '*minPhysicalDamage': .8, '*maxPhysicalDamage': .8, '*attackSpeed': .5, '*magicDamage': .5,
                             '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
                             '*speed': .6}, 'tags': ['ranged'],
@@ -379,7 +378,7 @@ function initalizeMonsters() {
         'abilities': [abilities.freeze]
     });
     addMonster('dragon', {'name': 'Dragon', 'source': dragonSource, 'stationary': true, // speed still effects animation
-        'implicitBonuses': {'*maxHealth': 1.6, '+range': 8, '+critChance': .15, '*accuracy': 2,
+        'implicitBonuses': {'*maxHealth': 1.6, '+weaponRange': 8, '+critChance': .15, '*accuracy': 2,
                             '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 2, '+magicResist': .5,
                             '*speed': 2}, 'tags': ['ranged'],
         'abilities': [abilities.fireball, abilities.sideStep]
