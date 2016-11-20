@@ -499,6 +499,10 @@ $(document).on('keydown', function(event) {
         event.preventDefault();
         if (editingMap) {
             stopMapEditing();
+        } else {
+            if (currentContext !== 'adventure') {
+                showContext('adventure');
+            }
         }
     }
     if (editingMap && event.which === 67) { // 'c'

@@ -83,7 +83,7 @@ function basicWave(monsters, objects, letter, extraBonuses) {
     return {
         'monsters': monsters,
         'objects': objects,
-        'extraBonuses': ifdefor(extraBonuses, {}),
+        'extraBonuses': extraBonuses,
         'draw': function (context, completed, x, y) {
             if (!completed) drawLetter(context, letter, x, y);
         }
