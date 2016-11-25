@@ -3,7 +3,7 @@ var enchantedMonsterBonuses = {'bonuses': {'*maxHealth': 1.5, '*damage': 1.5, '*
 var imbuedMonsterBonuses = {'bonuses': {'*maxHealth': 2, '*damage': 2, '*xpValue': 10, '*coins': 6, '*anima': 10, '$tint': '#c6f', '$color': '#c6f'}};
 // To make bosses intimidating, give them lots of health and damage, but to keep them from being overwhelming,
 // scale down their health regen, attack speed and critical multiplier.
-var bossMonsterBonuses = {'bonuses': {'*maxHealth': 3, '*damage': 2, '*attackSpeed': .75, '*critDamage': .5, '*critChance': .5, '*evasion': .5,
+var bossMonsterBonuses = {'bonuses': {'*maxHealth': [2.5, '+', ['{level}', '/', 2]], '*damage': 2, '*attackSpeed': .75, '*critDamage': .5, '*critChance': .5, '*evasion': .5,
                             '*healthRegen': .3, '*xpValue': 4, '+coins': 2, '*coins': 4, '+anima': 1, '*anima': 4,
                             '$uncontrollable': 'Cannot be controlled.', '$tint': 'red'}};
 var monsterPrefixes = [
