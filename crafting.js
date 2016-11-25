@@ -139,7 +139,7 @@ function updateItemCrafting() {
     $('.js-itemCraftingOption.js-armorOption').attr('helptext', 'For armor, offer ' + points('coins', levelMultiplier * 2));
     $('.js-itemCraftingOption.js-weaponOption').attr('helptext', 'For a weapon, offer ' + points('coins', levelMultiplier * 3));
     $('.js-itemCraftingOption.js-accessoryOption').attr('helptext', 'For an accessory, offer ' + points('coins', levelMultiplier * 5));
-    $('.js-reforge').attr('helptext', 'Drag one of the 3 items to your inventory or click here to offer ' + points('coins', getCurrentCraftingCost() / 5) + ' for 3 new choices.');
+    $('.js-reforge').attr('helptext', 'Drag one of the 3 items to your inventory or click here to offer ' + points('coins', Math.floor(getCurrentCraftingCost() / 5)) + ' for 3 new choices.');
     updateCraftingButtons();
     var itemsFilteredByLevel = [];
     itemsFilteredByType = [];
@@ -217,7 +217,7 @@ $('.js-itemCraftingOption').on('click', function () {
     saveGame();
 });
 $('.js-reforge').on('click', function () {
-    if (!spend('coins', getCurrentCraftingCost() / 5)) {
+    if (!spend('coins', Math.floor(getCurrentCraftingCost() / 5))) {
         return;
     }
     $('.js-craftingSelectOptions .js-itemSlot').empty();
