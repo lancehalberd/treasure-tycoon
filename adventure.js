@@ -207,6 +207,10 @@ function moveActor(actor, delta) {
     if (actor.isDead || actor.stunned || actor.blocked || actor.target || actor.pull || ifdefor(actor.stationary)) {
         return;
     }
+    // If an enemy ends up behind the adventurer, have them appear in front of them.
+    if (actor.x < actor.character.adventurer.x - 800) {
+        actor.x = actor.character.adventurer.x + 1200;
+    }
     // Make sure the main character doesn't run in front of their allies.
     // If the allies are fast enough, this shouldn't be an isse.
     var speedBonus = 1;
