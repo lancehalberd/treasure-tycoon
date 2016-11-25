@@ -235,6 +235,7 @@ $('body').on('mouseup', function (event) {
     if (dragged) {
         stopDrag();
     }
+    dragged = false;
 });
 $('body').on('mousedown', '.js-item', function (event) {
     if ($dragHelper) {
