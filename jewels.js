@@ -212,8 +212,7 @@ function updateAdjacencyBonuses(jewel) {
             break;
         case 7:
             // This used to be increased experience, but we don't have xp any more
-            if (resonanceBonus) jewel.adjacencyBonuses['+increasedDrops'] = resonanceBonus / 100;
-            if (contrastBonus) jewel.adjacencyBonuses['+increasedDrops'] += contrastBonus / 100;
+            if (resonanceBonus || contrastBonus) jewel.adjacencyBonuses['+increasedDrops'] = (ifdefor(resonanceBonus, 0) + ifdefor(contrastBonus, 0)) / 100;
             break;
     }
 }
