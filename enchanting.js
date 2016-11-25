@@ -1,12 +1,17 @@
 var prefixes = [];
+var allEnchantments = [];
 function addPrefix(level, name, tags, bonuses) {
+    var affix = {name:name, tags:tags, bonuses: bonuses};
     prefixes[level] = ifdefor(prefixes[level], []);
-    prefixes[level].push({name:name, tags:tags, bonuses: bonuses});
+    prefixes[level].push(affix);
+    allEnchantments.push(affix)
 }
 var suffixes = [];
 function addSuffix(level, name, tags, bonuses) {
+    var affix = {name:name, tags:tags, bonuses: bonuses};
     suffixes[level] = ifdefor(suffixes[level], []);
-    suffixes[level].push({name:name, tags:tags, bonuses: bonuses});
+    suffixes[level].push(affix);
+    allEnchantments.push(affix)
 }
 
 addPrefix(2, 'Tricky', 'weapon', {'+damageOnMiss': [10, 20]});
@@ -59,6 +64,27 @@ addPrefix(31, 'Refined', armorSlots, {'%armor': [10, 15, 100]});
 addPrefix(41, 'Hardened', armorSlots, {'%armor': [15, 20, 100]});
 addPrefix(51, 'Petrified', armorSlots, {'%armor': [20, 25, 100]});
 addPrefix(71, 'Indomitable', armorSlots, {'%armor': [25, 30, 100]});
+
+addPrefix(11, 'E1', armorSlots, {'%evasion': [2, 6, 100]});
+addPrefix(21, 'E2', armorSlots, {'%evasion': [5, 10, 100]});
+addPrefix(31, 'E3', armorSlots, {'%evasion': [10, 15, 100]});
+addPrefix(41, 'E4', armorSlots, {'%evasion': [15, 20, 100]});
+addPrefix(51, 'E5', armorSlots, {'%evasion': [20, 25, 100]});
+addPrefix(71, 'E6', armorSlots, {'%evasion': [25, 30, 100]});
+
+addPrefix(11, 'B1', armorSlots, {'%block': [2, 6, 100]});
+addPrefix(21, 'B2', armorSlots, {'%block': [5, 10, 100]});
+addPrefix(31, 'B3', armorSlots, {'%block': [10, 15, 100]});
+addPrefix(41, 'B4', armorSlots, {'%block': [15, 20, 100]});
+addPrefix(51, 'B5', armorSlots, {'%block': [20, 25, 100]});
+addPrefix(71, 'B6', armorSlots, {'%block': [25, 30, 100]});
+
+addPrefix(11, 'M1', armorSlots, {'%magicBlock': [2, 6, 100]});
+addPrefix(21, 'M2', armorSlots, {'%magicBlock': [5, 10, 100]});
+addPrefix(31, 'M3', armorSlots, {'%magicBlock': [10, 15, 100]});
+addPrefix(41, 'M4', armorSlots, {'%magicBlock': [15, 20, 100]});
+addPrefix(51, 'M5', armorSlots, {'%magicBlock': [20, 25, 100]});
+addPrefix(71, 'M6', armorSlots, {'%magicBlock': [25, 30, 100]});
 
 addPrefix(1, 'Hardy', 'body', {'+maxHealth': [20, 30]});
 addPrefix(10, 'Fit', 'body', {'+maxHealth': [40, 60]});
@@ -192,13 +218,25 @@ function makeAffix(baseAffix) {
 function addPrefixToItem(item) {
     var alreadyUsed = [];
     item.prefixes.forEach(function (affix) {alreadyUsed.push(affix.base);});
-    var newAffix = makeAffix(Random.element(matchingAffixes(prefixes, item, alreadyUsed)));
+    var possibleAffixes = matchingAffixes(prefixes, item, alreadyUsed);
+    if (possibleAffixes.length === 0) {
+        console.log('No prefixes available for this item:');
+        console.log(item);
+        return;
+    }
+    var newAffix = makeAffix(Random.element(possibleAffixes));
     item.prefixes.push(newAffix);
 }
 function addSuffixToItem(item) {
     var alreadyUsed = [];
     item.suffixes.forEach(function (affix) {alreadyUsed.push(affix.base);});
-    var newAffix = makeAffix(Random.element(matchingAffixes(suffixes, item, alreadyUsed)));
+    var possibleAffixes = matchingAffixes(suffixes, item, alreadyUsed);
+    if (possibleAffixes.length === 0) {
+        console.log('No suffixes available for this item:');
+        console.log(item);
+        return;
+    }
+    var newAffix = makeAffix(Random.element(possibleAffixes));
     item.suffixes.push(newAffix);
 }
 function matchingAffixes(list, item, alreadyUsed) {
