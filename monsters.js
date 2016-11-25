@@ -347,7 +347,7 @@ function initalizeMonsters() {
     //console.log(JSON.stringify(makeMonster('skeleton', 1)));
     addMonster('butterfly', {'name': 'Butterfly', 'source': butterflySource,
         'implicitBonuses': {'*maxHealth': 1.5, '+weaponRange': 4, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5, '*accuracy': 2,
-                            '*magicDamage': .5,
+                            '*magicDamage': .4, '*damage': .8,
                             '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
                             '*speed': .6}, 'tags': ['ranged']
     });

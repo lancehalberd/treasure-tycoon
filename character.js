@@ -353,7 +353,7 @@ function updateAdventurer(adventurer) {
     adventurer.minionBonusSources = [];
     var adventurerBonuses = {
         '+maxHealth': 20 * (adventurer.level + adventurer.job.dexterityBonus + adventurer.job.strengthBonus + adventurer.job.intelligenceBonus),
-        '+accuracy': 1 + 2 * adventurer.level,
+        '+accuracy': 2 + 2 * adventurer.level,
         '+evasion': adventurer.level,
         '+block': adventurer.level,
         '+magicBlock': adventurer.level / 2,
