@@ -215,7 +215,7 @@ function getMonsterBonuses(monster) {
         '+attackSpeed': 1 + .05 * growth,
         '+speed': 100,
         '+accuracy': 4 + 5 * growth,
-        '+evasion': 1 + growth * .5,
+        '+evasion': 1 + growth,
         '+block': 2 * growth,
         '+magicBlock': growth,
         '+armor': 2 * growth,

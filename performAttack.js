@@ -341,7 +341,12 @@ function applyAttackToTarget(attackStats, target) {
     attackStats.evaded = false;
     if (!ifdefor(attack.alwaysHits)) {
         var evasionRoll = (target.maxEvasion ? 1 : Math.random()) * target.evasion;
-        if (attackStats.accuracy < evasionRoll) {
+        // Chaining attack accuracy is reduced by the evasion roll of each target hit.
+        // This is to keep attack from chaining forever.
+        if (attackStats.attack.chaining) {
+            attackStats.accuracy -= evasionRoll;
+        }
+        if (attackStats.accuracy - evasionRoll < 0) {
             hitText.value = 'miss';
             if (ifdefor(attack.damageOnMiss)) {
                 var damageOnMiss = Math.round(attack.damageOnMiss * effectiveness);

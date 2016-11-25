@@ -255,7 +255,6 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                                 self.vx = -self.vx;
                             }
                             if (self.y > 240 - 128) self.vy = -distance / 200;
-                            self.attackStats.accuracy *= .95;
                             break;
                         }
                     } else if (ifdefor(self.attackStats.piercing)) {
