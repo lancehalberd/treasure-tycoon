@@ -221,6 +221,7 @@ var abilities = {
         'sniper': {'name': 'Sharp Shooter', 'bonuses': {'*bow:critChance': 1.5, '*bow:critDamage': 1.5, '$bow:criticalPiercing': 'Critical strikes hit multiple enemies.'}},
         'majorDexterity': {'name': 'Major Dexterity', 'bonuses': {'+dexterity': 30, '*dexterity': 1.1}},
         'powerShot': {'name': 'Power Shot', 'bonuses': {'+dexterity': 5}, 'action': skills.powerShot},
+        'powerShotKnockback': {'name': 'Power Shot Knockback', 'bonuses': {'+dexterity': 5, '+strength': 5, '+powerShot:knockbackChance': 1, '+powerShot:knockbackDistance': 5}},
         'aiming': {'name': 'Aiming', 'bonuses': {'*ranged:accuracy': 1.5, '+ranged:critChance': .1, '+ranged:critDamage': .3}},
         'snipe': {'name': 'Snipe', 'bonuses': {'+dexterity': 15}, 'action': skills.snipe},
     'samuraiIndex': {'name': '---Samurai---'},

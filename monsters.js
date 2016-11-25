@@ -279,6 +279,13 @@ function initalizeMonsters() {
                             '*block': .5, '+magicBlock': 4, '*magicBlock': 2, '+magicResist': .5,
                             '*speed': .5}
     });
+    addMonster('spongeyCateripllar', {
+        'name': 'Armorpede', 'source': caterpillarSource,
+        'implicitBonuses': {'*magicDamage': 0, '*damage': 0.5, '*maxHealth': 3,
+                            '*armor': 1.5, '+magicBlock': 6, '*magicBlock': 2, '+magicResist': 0.6,
+                            '*speed': 0.5},
+        'abilities': [abilities.vitality, abilities.majorStrength]
+    });
     addMonster('stealthyCateripllar', {
         'name': 'The Very Stealth Caterpillar', 'source': caterpillarSource,
         'implicitBonuses': {'*magicDamage': 0, '*scale': .1, '+scale': ['{maxHealth}', '/', ['{level}', '*', '10']],
@@ -343,6 +350,13 @@ function initalizeMonsters() {
                             '*magicDamage': .5,
                             '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
                             '*speed': .6}, 'tags': ['ranged']
+    });
+    addMonster('battlefly', {'name': 'Battlefly', 'source': butterflySource,
+        'implicitBonuses': {'*maxHealth': 2, '+weaponRange': 5, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5, '*accuracy': 2,
+                            '*magicDamage': 0,
+                            '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
+                            '*speed': .6}, 'tags': ['ranged'],
+        'abilities': [abilities.powerShot, abilities.powerShotKnockback]
     });
     addMonster('motherfly', {'name': 'Motherfly', 'source': butterflySource,
         'implicitBonuses': {'+maxHealth': 20, '*maxHealth': 3, '+weaponRange': 5, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5, '*accuracy': 2,

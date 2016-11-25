@@ -511,7 +511,7 @@ $(document).on('keydown', function(event) {
         event.preventDefault();
         exportMapToClipboard();
     }
-    if (!editingLevel && !editingLevel && event.which === 67) { // 'c'
+    if (!editingMap && !editingLevel && event.which === 67) { // 'c'
         pasteCharacterToClipBoard(state.selectedCharacter);
     }
     if (event.which === 69) { // 'e'

@@ -1176,10 +1176,14 @@ var map = {
         'specialLoot': [],
         'skill': "powerShot",
         'board': "tripleTriangles",
-        'enemySkills': ["powerShot"],
-        'monsters': ["gnome","butterfly"],
+        'enemySkills': [],
+        'monsters': ["caterpillar","spongeyCateripllar","butterfly"],
         'events': [
-            ["motherfly"]
+            ["battlefly"],
+            ["spongeyCateripllar","battlefly"],
+            ["spongeyCateripllar","battlefly","battlefly"],
+            ["spongeyCateripllar","spongeyCateripllar","battlefly","battlefly"],
+            ["skeletonOgre","battlefly"]
         ]
     },
     'fortress': {
