@@ -60,13 +60,6 @@ addPrefix(41, 'Hardened', armorSlots, {'%armor': [15, 20, 100]});
 addPrefix(51, 'Petrified', armorSlots, {'%armor': [20, 25, 100]});
 addPrefix(71, 'Indomitable', armorSlots, {'%armor': [25, 30, 100]});
 
-addPrefix(1, 'Polished', armorSlots, {'+magicBlock': [3, 5]});
-addPrefix(9, 'Glowing', armorSlots, {'+magicBlock': [6, 9]});
-addPrefix(24, 'Lustrous', armorSlots, {'+magicBlock': [10, 14]});
-addPrefix(39, 'Shining', armorSlots, {'+magicBlock': [15, 21]});
-addPrefix(54, 'Glorious', armorSlots, {'+magicBlock': [22, 29]});
-addPrefix(69, 'Radiant', armorSlots, {'+magicBlock': [30, 40]});
-
 addPrefix(1, 'Hardy', 'body', {'+maxHealth': [20, 30]});
 addPrefix(10, 'Fit', 'body', {'+maxHealth': [40, 60]});
 addPrefix(25, 'Powerful', 'body', {'+maxHealth': [70, 90]});
@@ -116,9 +109,33 @@ addSuffix(31, 'The Marksman', 'weapon', {'+accuracy': [15, 21]});
 addSuffix(41, 'Precision', 'weapon', {'+accuracy': [22, 29]});
 addSuffix(51, 'The Sniper', 'weapon', {'+accuracy': [30, 40]});
 
-addSuffix(1, 'Toughness', armorSlots, {'+armor': [3, 5]});
-addSuffix(1, 'Deflecting', armorSlots, {'+block': [3, 5]});
-addSuffix(1, 'Evasion', armorSlots, {'+evasion': [3, 6]});
+addSuffix(1, 'Shininess', armorSlots, {'+magicBlock': [1, 3]});
+addSuffix(9, 'Brightness', armorSlots, {'+magicBlock': [4, 6]});
+addSuffix(24, 'Lustrousness', armorSlots, {'+magicBlock': [7, 10]});
+addSuffix(39, 'Glory', armorSlots, {'+magicBlock': [11, 15]});
+addSuffix(54, 'The Moon', armorSlots, {'+magicBlock': [16, 22]});
+addSuffix(69, 'The Sun', armorSlots, {'+magicBlock': [23, 30]});
+
+addSuffix(1, 'Toughness', armorSlots, {'+armor': [2, 6]});
+addSuffix(10, 'Durability', armorSlots, {'+armor': [8, 12]});
+addSuffix(20, 'Permanence', armorSlots, {'+armor': [14, 20]});
+addSuffix(30, 'The Mountain', armorSlots, {'+armor': [22, 30]});
+addSuffix(40, 'The Paladin', armorSlots, {'+armor': [32, 44]});
+addSuffix(50, 'Indestructibility', armorSlots, {'+armor': [46, 60]});
+
+addSuffix(1, 'Deflecting', armorSlots, {'+block': [2, 6]});
+addSuffix(11, 'Intercepting', armorSlots, {'+block': [8, 12]});
+addSuffix(21, 'Blocking', armorSlots, {'+block': [14, 20]});
+addSuffix(31, 'Guarding', armorSlots, {'+block': [22, 30]});
+addSuffix(41, 'Protecting', armorSlots, {'+block': [32, 44]});
+addSuffix(51, 'The Wall', armorSlots, {'+block': [46, 60]});
+
+addSuffix(1, 'Mitigation', armorSlots, {'+evasion': [2, 6]});
+addSuffix(12, 'Dodging', armorSlots, {'+evasion': [8, 12]});
+addSuffix(22, 'Evasion', armorSlots, {'+evasion': [14, 20]});
+addSuffix(32, 'Avoidance', armorSlots, {'+evasion': [22, 30]});
+addSuffix(42, 'Illusion', armorSlots, {'+evasion': [32, 44]});
+addSuffix(52, 'Vanishing', armorSlots, {'+evasion': [46, 60]});
 
 addSuffix(1, 'Minor Strength', accessorySlots, {'+strength': [3, 6]});
 addSuffix(1, 'Minor Dexterity', accessorySlots, {'+dexterity': [3, 6]});
