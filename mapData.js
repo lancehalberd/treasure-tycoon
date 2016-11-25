@@ -2352,12 +2352,12 @@ var map = {
         'specialLoot': ["simpleRubyLoot"],
         'skill': "sideStep",
         'board': "tripleTriangles",
-        'enemySkills': ["vitality"],
-        'monsters': ["skeleton"],
+        'enemySkills': ["vitality","sideStep"],
+        'monsters': ["skeletalBuccaneer","giantSkeleton","undeadPaladin"],
         'events': [
-            ["skeleton","undeadWarrior"],
-            ["dragon"],
-            ["skeleton","undeadWarrior","skeleton","undeadWarrior"],
+            ["undeadWarrior","skeletalBuccaneer"],
+            ["dragon","undeadPaladin","undeadPaladin"],
+            ["undeadWarrior","skeletalBuccaneer","undeadWarrior","skeletalBuccaneer"],
             ["frostGiant"]
         ]
     },
