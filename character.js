@@ -391,10 +391,6 @@ function updateAdventurer(adventurer) {
     if (adventurer.character) {
         updateJewelBonuses(adventurer.character);
         addBonusSourceToObject(adventurer, adventurer.character.jewelBonuses);
-        if (adventurer.character === state.selectedCharacter) {
-            // Don't show the offhand slot if equipped with a two handed weapon unless they have a special ability to allow off hand with two handed weapons.
-            $('.js-offhand').toggle(!isTwoHandedWeapon(adventurer.equipment.weapon) || !!ifdefor(adventurer.twoToOneHanded));
-        }
     }
     // Add the adventurer's current equipment to bonuses and graphics
     equipmentSlots.forEach(function (type) {
@@ -586,7 +582,8 @@ function setSelectedCharacter(character) {
         }
     });
     // update stats panel.
-    refreshStatsPanel(character, $('.js-characterColumn .js-stats'))
+    refreshStatsPanel(character, $('.js-characterColumn .js-stats'));
+    updateOffhandDisplay();
     // update controls:
     $('.js-jewelBoard .js-skillCanvas').data('character', character);
     character.jewelsCanvas = $('.js-jewelBoard .js-skillCanvas')[0];
