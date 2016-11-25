@@ -226,7 +226,7 @@ function startNextWave(character) {
     var wave = character.area.waves[character.waveIndex];
     var x = character.adventurer.x + 800;
     wave.monsters.forEach(function (entityData) {
-        var extraSkills = ifdefor(character.area.enemySkills, []);
+        var extraSkills = ifdefor(character.area.enemySkills, []).slice();
         if (wave.extraBonuses) extraSkills.push(wave.extraBonuses);
         var newMonster = makeMonster(entityData, character.area.level, extraSkills, !!wave.extraBonuses);
         initializeActorForAdventure(newMonster);
