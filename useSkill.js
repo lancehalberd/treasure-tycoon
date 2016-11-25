@@ -473,7 +473,7 @@ skillDefinitions.heal = {
         // Only heal allies.
         if (actor.allies.indexOf(target) < 0) return false;
         // Don't use a heal ability unless none of it will be wasted or the actor is below half life.
-        return (target.health + getPower(actor, healSkill) <= target.maxHealth) || (target.health <= target.maxHealth / 2);
+        return ifdefor(target.overHeal, 0) || (target.health + getPower(actor, healSkill) <= target.maxHealth) || (target.health <= target.maxHealth / 2);
     },
     use: function (actor, healSkill, target) {
         target.health += getPower(actor, healSkill);
