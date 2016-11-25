@@ -256,8 +256,8 @@ function importItem(itemData) {
         'itemLevel': itemData.itemLevel,
         'unique': itemData.unique
     };
-    item.prefixes = itemData.prefixes.map(importAffix);
-    item.suffixes = itemData.suffixes.map(importAffix);
+    item.prefixes = itemData.prefixes.map(importAffix).filter(function (value) { return value;});
+    item.suffixes = itemData.suffixes.map(importAffix).filter(function (value) { return value;});
     item.$item = $tag('div', 'js-item item', tag('div', 'icon ' + baseItem.icon) + tag('div', 'itemLevel', baseItem.level));
     updateItem(item);
     item.$item.data('item', item);
@@ -272,6 +272,7 @@ function exportAffix(affix) {
 }
 function importAffix(affixData) {
     var baseAffix = affixesByKey[affixData.affixKey];
+    if (!baseAffix) return null;
     var affix = {
         'base': baseAffix,
         'bonuses': affixData.bonuses
