@@ -127,6 +127,10 @@ async.mapSeries([
             createNewHeroApplicant($(this));
         });
     }
+    for (var tier1JobKey of jobRanks[0]) {
+        var job = characterClasses[tier1JobKey];
+        unlockMapLevel(job.levelKey);
+    }
     centerMapOnLevel(map[state.selectedCharacter.currentLevelKey], true);
     drawMap();
     // The main loop will throw errors constantly if an error prevented selectedCharacter
