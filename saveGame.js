@@ -48,14 +48,18 @@ function exportState(state) {
     data.selectedCharacterIndex = state.characters.indexOf(state.selectedCharacter);
     return data;
 }
+function fixNumber(number) {
+    number = parseInt(number);
+    return isNaN(number) ? 0 : number;
+}
 function importState(stateData) {
     var $helperSlot = $('.js-inventory .js-inventorySlot').detach();
     $('.js-inventory').empty().append($helperSlot);
     $('.js-jewel-inventory').empty();
     state = {};
-    state.fame = stateData.fame;
-    state.coins = stateData.coins;
-    state.anima = stateData.anima;
+    state.fame = fixNumber(stateData.fame);
+    state.coins = fixNumber(stateData.coins);
+    state.anima = fixNumber(stateData.anima);
     // Grab one slot to serve as the template for the applications we will add.
     var $slot = $('.js-heroApplication').first().detach();
     // Clean up all the slots on the page.
