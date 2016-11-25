@@ -341,11 +341,6 @@ function applyAttackToTarget(attackStats, target) {
     attackStats.evaded = false;
     if (!ifdefor(attack.alwaysHits)) {
         var evasionRoll = (target.maxEvasion ? 1 : Math.random()) * target.evasion;
-        // Chaining attack accuracy is reduced by the evasion roll of each target hit.
-        // This is to keep attack from chaining forever.
-        if (attackStats.attack.chaining) {
-            attackStats.accuracy -= evasionRoll;
-        }
         if (attackStats.accuracy - evasionRoll < 0) {
             hitText.value = 'miss';
             if (ifdefor(attack.damageOnMiss)) {
@@ -358,6 +353,11 @@ function applyAttackToTarget(attackStats, target) {
             hitText.font, "15px sans-serif"
             character.textPopups.push(hitText);
             attackStats.evaded = true;
+        }
+        // Chaining attack accuracy is reduced by the evasion roll of each target hit.
+        // This is to keep attack from chaining forever.
+        if (attackStats.attack.chaining) {
+            attackStats.accuracy -= evasionRoll;
         }
     }
     // Apply block reduction
