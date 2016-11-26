@@ -203,7 +203,7 @@ function getMonsterBonuses(monster) {
     var growth = monster.level - 1;
     return {
         // Health scales linearly to level 10, then 10% a level.
-        '+maxHealth': (growth <= 10) ? (15 + 20 * growth) : 200 * Math.pow(1.1, growth - 10),
+        '+maxHealth': (growth <= 10) ? (10 + 20 * growth) : 200 * Math.pow(1.1, growth - 10),
         '+range': 1,
         '+minPhysicalDamage': Math.round(.9 * (5 + 6 * growth)),
         '+maxPhysicalDamage': Math.round(1.1 * (5 + 6 * growth)),
@@ -275,14 +275,14 @@ function initalizeMonsters() {
     });
     addMonster('caterpillar', {
         'name': 'Caterpillar', 'source': caterpillarSource,
-        'implicitBonuses': {'*magicDamage': 0,
-                            '*block': .5, '+magicBlock': 4, '*magicBlock': 2, '+magicResist': .5,
+        'implicitBonuses': {'*magicDamage': 0, '+damage': 1,
+                            '*block': .5, '+magicBlock': 6, '*magicBlock': 2, '+magicResist': .66,
                             '*speed': .5}
     });
     addMonster('spongeyCateripllar', {
         'name': 'Armorpede', 'source': caterpillarSource,
         'implicitBonuses': {'*magicDamage': 0, '*damage': 0.5, '*maxHealth': 3,
-                            '*armor': 1.5, '+magicBlock': 6, '*magicBlock': 2, '+magicResist': 0.6,
+                            '*armor': 1.5, '+magicBlock': 6, '*magicBlock': 2, '+magicResist': 0.75,
                             '*speed': 0.5},
         'abilities': [abilities.vitality, abilities.majorStrength]
     });
@@ -293,27 +293,29 @@ function initalizeMonsters() {
                             '*speed': .2},
         'abilities': [abilities.stealth, abilities.darkknight, abilities.vitality, abilities.vitality, abilities.majorStrength]
     });
+    // Gnomes are vulnerable to magic damage, strong against physical damage, and deal ranged magic damage.
+    // Designed to favor mage classes.
     addMonster('gnome', {'name': 'Gnome', 'source': gnomeSource, 'fpsMultiplier': 1.5,
-        'implicitBonuses': {'+weaponRange': 2, '*attackSpeed': 1.5, '+magicDamage': 2,
-                            '*block': .5, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
+        'implicitBonuses': {'+weaponRange': 4, '*attackSpeed': 1.5, '+magicDamage': 4,
+                            '+block': 3, '+armor': 3, '*armor': 1.5, '*block': 1.5, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': .4}, 'tags': ['ranged']
     });
     addMonster('gnomecromancer', {'name': 'Gnomecromancer', 'source': gnomeSource, 'fpsMultiplier': 1.5,
-        'implicitBonuses': {'+weaponRange': 2, '*attackSpeed': 1.5, '+magicDamage': 2,
-                            '*block': .5, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
+        'implicitBonuses': {'+weaponRange': 2, '*attackSpeed': 1.5, '+magicDamage': 4,
+                            '+block': 3, '+armor': 3, '*armor': 2, '*block': 2, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': .4},
         'abilities': [abilities.summonSkeleton, abilities.summoner], 'tags': ['ranged']
     });
     addMonster('gnomeCleric', {'name': 'Gnome Cleric', 'source': gnomeSource, 'fpsMultiplier': 1.5,
-        'implicitBonuses': {'+weaponRange': 2, '*attackSpeed': 1.5, '+magicDamage': 2,
+        'implicitBonuses': {'+weaponRange': 2, '*attackSpeed': 1.5, '+magicDamage': 4,
                             '*intelligence': 2,
-                            '*block': .5, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
+                            '+block': 3, '+armor': 3, '*armor': 2, '*block': 2, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': .4},
         'abilities': [abilities.spellAOE, abilities.protect, abilities.heal, abilities.minorIntelligence], 'tags': ['ranged']
     });
     addMonster('gnomeWizard', {'name': 'Gnome Wizard', 'source': gnomeSource, 'fpsMultiplier': 1.5,
-        'implicitBonuses': {'+weaponRange': 2, '*attackSpeed': 1.5, '+magicDamage': 2,
-                            '*block': .5, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
+        'implicitBonuses': {'+weaponRange': 2, '*attackSpeed': 1.5, '+magicDamage': 4,
+                            '+block': 3, '+armor': 3, '*armor': 2, '*block': 2, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': .4},
         'abilities': [abilities.fireball, abilities.freeze, abilities.wizard], 'tags': ['ranged']
     });
@@ -321,7 +323,8 @@ function initalizeMonsters() {
         // Fast to counter ranged heroes, low range+damage + fast attacks to be weak to armored heroes.
         'implicitBonuses': {'+weaponRange': -.5, '*minPhysicalDamage': .4, '*maxPhysicalDamage': .4, '+accuracy': 2, '*attackSpeed': 2, '*magicDamage': 0,
                             '*block': 0, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
-                            '*speed': 2}
+                            '*speed': 2},
+        'abilities': [abilities.sideStep]
     });
     addMonster('skeletalBuccaneer', {'name': 'Skeletal Buccaneer', 'source': skeletonSource,
         // Deflect to counter ranged champions.

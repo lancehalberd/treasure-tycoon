@@ -86,7 +86,7 @@ var skills = {
                 '$debuff': debuffEffect({}, {'+*damage': .5, '+*magicDamage': .5, '+duration': ['{intelligence}', '/', 20]}),
                 '$otherDebuff': debuffEffect({}, {'+*speed': .1, '+duration': ['{intelligence}', '/', 20]})},
                 'Perform a mighty strike that inflicts the enemy with: {$debuff} And knocks all other enemies away, slowing them.'),
-    'evadeAndCounter': attackAction('evadeAndCounter', {}, {'$alwaysHits': 'Never misses', '+range': 1}, 'Counter whenever you successfully evade an attack.'),
+    'evadeAndCounter': attackAction('evadeAndCounter', {'restrictions': ['melee']}, {'$alwaysHits': 'Never misses'}, 'Counter whenever you successfully evade an attack.'),
     'charge': attackAction('charge', {'tags': ['movement']}, {'+range': 15, '*damage': 2, '+cooldown': 30, '+speedBonus': 3, '+stun': .5,
                                             '+rangeDamage': 0, '$alwaysHits': 'Never misses'},
                                         'Charge at enemies, damaging and stunning them briefly on impact.'),

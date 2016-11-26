@@ -367,9 +367,9 @@ var map = {
         'enemySkills': ["minorIntelligence"],
         'monsters': ["gnome","bat"],
         'events': [
-            ["bat","gnome"],
+            ["gnome"],
             ["bat","bat"],
-            ["gnome","gnome"],
+            ["gnome"],
             ["giantSkeleton"]
         ]
     },

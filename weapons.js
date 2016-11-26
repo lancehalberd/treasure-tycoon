@@ -72,7 +72,7 @@ addItem(60, {'slot': 'weapon', 'type': 'wand', 'tags': ['ranged', 'magic'],  'na
 addItem(70, {'slot': 'weapon', 'type': 'wand', 'tags': ['ranged', 'magic'],  'name': 'Orichalcum Wand', 'bonuses': {'+minMagicDamage': 101, '+maxMagicDamage': 151,  '+attackSpeed': 1.9,'+weaponRange': 14, '+critChance': 0.04, '+minPhysicalDamage': 20, '+maxPhysicalDamage': 30 }, 'icon': 'wand'});
 
 //Thrown medium damage, medium attack speed, medium range, medium crit chance
-addItem(1, {'slot': 'weapon', 'type': 'thrown', 'tags': ['ranged', 'throwing'], 'name': 'Ball', 'bonuses': {'+minPhysicalDamage': 4, '+maxPhysicalDamage': 6,  '+attackSpeed': 1.1,'+weaponRange': 8, '+critChance': 0.04 }, 'icon': 'throwing'});
+addItem(1, {'slot': 'weapon', 'type': 'thrown', 'tags': ['ranged', 'throwing'], 'name': 'Ball', 'bonuses': {'+minPhysicalDamage': 3, '+maxPhysicalDamage': 5,  '+attackSpeed': 1.1,'+weaponRange': 8, '+critChance': 0.04 }, 'icon': 'throwing'});
 addItem(4, {'slot': 'weapon', 'type': 'thrown', 'tags': ['ranged', 'throwing'], 'name': 'Pilum', 'bonuses': {'+minPhysicalDamage': 34, '+maxPhysicalDamage': 52,  '+attackSpeed': 1.1,'+weaponRange': 9, '+critChance': 0.04 }, 'icon': 'throwing'});
 addItem(9, {'slot': 'weapon', 'type': 'thrown', 'tags': ['ranged', 'throwing'], 'name': 'Throwing Knife', 'bonuses': {'+minPhysicalDamage': 58, '+maxPhysicalDamage': 86,  '+attackSpeed': 1.2,'+weaponRange': 9, '+critChance': 0.04 }, 'icon': 'throwing'});
 addItem(14, {'slot': 'weapon', 'type': 'thrown', 'tags': ['ranged', 'throwing'], 'name': 'Throwing Club', 'bonuses': {'+minPhysicalDamage': 83, '+maxPhysicalDamage': 125,  '+attackSpeed': 1.2,'+weaponRange': 10, '+critChance': 0.04 }, 'icon': 'throwing'});
