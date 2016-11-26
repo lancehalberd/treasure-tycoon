@@ -266,7 +266,7 @@ var map = {
         'specialLoot': [],
         'skill': "distract",
         'board': "doubleDiamonds",
-        'enemySkills': ["dancer","sap","meleeDamage"],
+        'enemySkills': ["sap","meleeDamage","enemyDancing","evasion"],
         'monsters': ["bat"],
         'events': [
             ["vampireBat"]

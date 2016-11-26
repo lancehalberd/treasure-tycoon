@@ -279,7 +279,8 @@ var abilities = {
     'chargeKnockback': {'name': 'Charge Knockback', 'bonuses': {'+charge:knockbackChance': 1, '+charge:knockbackDistance': 10}},
     'stealth': {'name': 'Stealth', 'bonuses':{'$cloaking': 'Invisible while moving'}},
     'dodgeNetReflect': {'name': 'Dodge then Hook', 'bonuses': {'$dodge:instantCooldown': 'net', '$net:instantCooldown': 'reflect'}},
-    'poison': {'onHitEffect': {'variableObjectType': 'trigger', 'bonuses': {'$debuff': debuffEffect({}, {'+*healthRegen': 0, '++damageOverTime': '{level}', '+duration': 3})}}}
+    'poison': {'name': 'Poison', 'onHitEffect': {'variableObjectType': 'trigger', 'bonuses': {'$debuff': debuffEffect({}, {'+*healthRegen': 0, '++damageOverTime': '{level}', '+duration': 3})}}},
+    'enemyDancing': {'name': 'Dancing', 'reaction': skills.evadeAndCounter},
 };
 var testJob;// = 'blackbelt';
 var testAbilities = [];

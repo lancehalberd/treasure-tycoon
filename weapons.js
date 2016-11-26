@@ -28,7 +28,7 @@ addItem(60, {'slot': 'weapon', 'type': 'sword',  'name': 'Runed Saber', 'bonuses
 addItem(70, {'slot': 'weapon', 'type': 'sword',  'name': 'Etched Dragon Horn', 'bonuses': {'+minPhysicalDamage': 198, '+maxPhysicalDamage': 298,  '+attackSpeed': 1.9,'+weaponRange': 2.5, '+critChance': 0.06, '+minMagicDamage': 10, '+maxMagicDamage': 14 }, 'icon': 'sword'});
 
 //Daggers low damage, high attack speed, melee range, low crit chance
-addItem(3, {'slot': 'weapon', 'type': 'dagger',  'name': 'Pugio', 'bonuses': {'+minPhysicalDamage': 26, '+maxPhysicalDamage': 38,  '+attackSpeed': 1.5,'+weaponRange': 1.2, '+critChance': 0.03 }, 'icon': 'dagger'});
+addItem(3, {'slot': 'weapon', 'type': 'dagger',  'name': 'Pugio', 'bonuses': {'+minPhysicalDamage': 26, '+maxPhysicalDamage': 38,  '+attackSpeed': 1.5,'+weaponRange': 1.2, '+critChance': 0.03}, 'icon': 'dagger'});
 addItem(8, {'slot': 'weapon', 'type': 'dagger',  'name': 'Hewing Knife', 'bonuses': {'+minPhysicalDamage': 46, '+maxPhysicalDamage': 70,  '+attackSpeed': 1.5,'+weaponRange': 1.2, '+critChance': 0.03 }, 'icon': 'dagger'});
 addItem(13, {'slot': 'weapon', 'type': 'dagger',  'name': 'Cross-hilt Dagger', 'bonuses': {'+minPhysicalDamage': 67, '+maxPhysicalDamage': 101,  '+attackSpeed': 1.5,'+weaponRange': 1.2, '+critChance': 0.03 }, 'icon': 'dagger'});
 addItem(18, {'slot': 'weapon', 'type': 'dagger',  'name': 'Tanto', 'bonuses': {'+minPhysicalDamage': 82, '+maxPhysicalDamage': 124,  '+attackSpeed': 1.6,'+weaponRange': 1.2, '+critChance': 0.03 }, 'icon': 'dagger'});

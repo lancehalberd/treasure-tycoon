@@ -266,11 +266,11 @@ function initalizeMonsters() {
     });
     addMonster('bat', {
         'name': 'Bat', 'source': batSource,
-        'implicitBonuses': {'*evasion': 1.2, '*accuracy': 1.2, '*damage': .5, '*speed': 2.5}
+        'implicitBonuses': {'*evasion': 1.2, '*accuracy': 1.2, '*damage': .6, '*speed': 2.5}
     });
     addMonster('vampireBat', {
         'name': 'Vampire Bat', 'source': batSource,
-        'implicitBonuses': {'*evasion': 1.2, '*accuracy': 1.2, '*damage': .6, '*speed': 2.5, '*scale': 1.25},
+        'implicitBonuses': {'*evasion': 1.2, '*accuracy': 1.2, '*damage': .8, '*speed': 2.5, '*scale': 1.25},
         'abilities': [abilities.darkknight, abilities.distract, abilities.drainLife]
     });
     addMonster('caterpillar', {
