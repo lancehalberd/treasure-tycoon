@@ -1346,7 +1346,7 @@ var map = {
         'x': 26, 'y': -14,
         'coords': [148,-515,269],
         'background': "field",
-        'unlocks': ["sniper7","assassin8"],
+        'unlocks': ["killingfields","assassin8"],
         'specialLoot': [],
         'skill': "throwingCriticalChance",
         'board': "tripleTriangles",
@@ -2284,7 +2284,7 @@ var map = {
         'x': 27, 'y': -12,
         'coords': [-186,-507,263],
         'background': "field",
-        'unlocks': ["sniper7","dancer9"],
+        'unlocks': ["killingfields","dancer9"],
         'specialLoot': [],
         'skill': null,
         'board': null,
@@ -2735,20 +2735,21 @@ var map = {
             ["dragon"]
         ]
     },
-    'sniper7': {
-        'name': "sniper7",
+    'killingfields': {
+        'name': "Killing Fields",
         'level': 28,
         'x': 28, 'y': -10,
         'coords': [-1,-506,323],
         'background': "field",
         'unlocks': ["ranger9","juggler10","sniper8"],
         'specialLoot': [],
-        'skill': null,
-        'board': null,
-        'enemySkills': [],
-        'monsters': ["skeleton"],
+        'skill': "majorDexterity",
+        'board': "crownBoard",
+        'enemySkills': ["majorDexterity"],
+        'monsters': ["skeleton","gnome"],
         'events': [
-            ["dragon"]
+            ["giantSkeleton","giantSkeleton","gnome","gnome","battlefly"],
+            ["giantSkeleton","butterfly"]
         ]
     },
     'sniper8': {
