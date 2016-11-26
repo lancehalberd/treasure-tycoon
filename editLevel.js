@@ -259,7 +259,7 @@ $(document).on('keydown', function(event) {
 function startTestingLevel(character) {
     $('.js-editingControls').hide();
     state.lastSelectedCharacter = state.selectedCharacter;
-    state.selectedCharacter = character;
+    setSelectedCharacter(character);
     startArea(state.selectedCharacter, editingLevel.levelKey);
     testingLevel = true;
     updateEditingState();

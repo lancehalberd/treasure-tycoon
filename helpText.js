@@ -127,12 +127,14 @@ function renderBonusText(bonusMap, bonusKey, bonusSource, actor, localObject) {
     var textOrFunction = bonusMap[bonusKey];
     if (typeof textOrFunction === 'function') return textOrFunction(bonusSource, actor);
     var text = textOrFunction;
-    var wildcard = text.match(/(\$|\%)\d/)[0];
-    if (!wildcard) throw new Error('No wildcard found in ' + text);
-    var renderedValue = evaluateForDisplay(rawValue, actor, localObject);
-    var digits = Number(wildcard[1]);
-    if (wildcard[0] === '%') renderedValue = renderedValue.percent(digits);
-    else renderedValue = renderedValue.format(digits);
+    var matches = text.match(/(\$|\%)\d/);
+    if (matches) {
+        var wildcard = matches[0];
+        var renderedValue = evaluateForDisplay(rawValue, actor, localObject);
+        var digits = Number(wildcard[1]);
+        if (wildcard[0] === '%') renderedValue = renderedValue.percent(digits);
+        else renderedValue = renderedValue.format(digits);
+    }
     return text.split(wildcard).join(renderedValue);
 }
 function abilityHelpText(ability, actor) {
