@@ -314,7 +314,7 @@ var map = {
         'background': "field",
         'unlocks': ["sniper4","mossbed"],
         'specialLoot': [],
-        'skill': "throwingPrecision",
+        'skill': "throwingCriticalChance",
         'board': "tripleTriangles",
         'enemySkills': [],
         'monsters': ["skeleton"],
