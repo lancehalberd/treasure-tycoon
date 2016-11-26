@@ -368,8 +368,8 @@ var map = {
         'monsters': ["gnome","bat"],
         'events': [
             ["gnome"],
-            ["bat","bat"],
-            ["gnome"],
+            ["gnome","bat"],
+            ["gnome","bat","bat"],
             ["giantSkeleton"]
         ]
     },

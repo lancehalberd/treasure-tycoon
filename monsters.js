@@ -297,33 +297,33 @@ function initalizeMonsters() {
     // Gnomes are vulnerable to magic damage, strong against physical damage, and deal ranged magic damage.
     // Designed to favor mage classes.
     addMonster('gnome', {'name': 'Gnome', 'source': gnomeSource, 'fpsMultiplier': 1.5,
-        'implicitBonuses': {'+weaponRange': 4, '*attackSpeed': 1.5, '+magicDamage': 4,
-                            '+block': 3, '+armor': 3, '*armor': 1.5, '*block': 1.5, '*magicBlock': 0, '*magicResist': 0,
+        'implicitBonuses': {'+weaponRange': 4, '*attackSpeed': 1.5, '+magicDamage': 4, '*magicDamage': 1.5,
+                            '+block': 3, '+armor': 4, '*armor': 2, '*block': 2, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': .4}, 'tags': ['ranged']
     });
     addMonster('gnomecromancer', {'name': 'Gnomecromancer', 'source': gnomeSource, 'fpsMultiplier': 1.5,
-        'implicitBonuses': {'+weaponRange': 2, '*attackSpeed': 1.5, '+magicDamage': 4,
-                            '+block': 3, '+armor': 3, '*armor': 2, '*block': 2, '*magicBlock': 0, '*magicResist': 0,
+        'implicitBonuses': {'+weaponRange': 2, '*attackSpeed': 1.5, '+magicDamage': 4, '*magicDamage': 1.5,
+                            '+block': 4, '+armor': 4, '*armor': 2, '*block': 2, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': .4},
         'abilities': [abilities.summonSkeleton, abilities.summoner], 'tags': ['ranged']
     });
     addMonster('gnomeCleric', {'name': 'Gnome Cleric', 'source': gnomeSource, 'fpsMultiplier': 1.5,
-        'implicitBonuses': {'+weaponRange': 2, '*attackSpeed': 1.5, '+magicDamage': 4,
+        'implicitBonuses': {'+weaponRange': 2, '*attackSpeed': 1.5, '+magicDamage': 4, '*magicDamage': 1.5,
                             '*intelligence': 2,
-                            '+block': 3, '+armor': 3, '*armor': 2, '*block': 2, '*magicBlock': 0, '*magicResist': 0,
+                            '+block': 4, '+armor': 4, '*armor': 2, '*block': 2, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': .4},
         'abilities': [abilities.spellAOE, abilities.protect, abilities.heal, abilities.minorIntelligence], 'tags': ['ranged']
     });
     addMonster('gnomeWizard', {'name': 'Gnome Wizard', 'source': gnomeSource, 'fpsMultiplier': 1.5,
-        'implicitBonuses': {'+weaponRange': 2, '*attackSpeed': 1.5, '+magicDamage': 4,
-                            '+block': 3, '+armor': 3, '*armor': 2, '*block': 2, '*magicBlock': 0, '*magicResist': 0,
+        'implicitBonuses': {'+weaponRange': 2, '*attackSpeed': 1.5, '+magicDamage': 4, '*magicDamage': 1.5,
+                            '+block': 4, '+armor': 4, '*armor': 2, '*block': 2, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': .4},
         'abilities': [abilities.fireball, abilities.freeze, abilities.wizard], 'tags': ['ranged']
     });
     addMonster('skeleton', {'name': 'Skeleton', 'source': skeletonSource,
         // Fast to counter ranged heroes, low range+damage + fast attacks to be weak to armored heroes.
         'implicitBonuses': {'+weaponRange': -.5, '+accuracy': 2, '*attackSpeed': 2, '*magicDamage': 0,
-                            '+evasion': 1, '*magicBlock': 0, '*magicResist': 0,
+                            '+evasion': 0, '*evasion': 1.5, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': 2},
         'abilities': [abilities.sideStep]
     });
