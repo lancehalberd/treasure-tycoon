@@ -360,7 +360,7 @@ var map = {
         'x': 8, 'y': 1,
         'coords': [-159,93,-571],
         'background': "cave",
-        'unlocks': ["gnometemple","traininggrounds","batcave","priest2"],
+        'unlocks': ["gnometemple","traininggrounds","batcave","lostshrine"],
         'specialLoot': ["simpleSaphireLoot"],
         'skill': "heal",
         'board': "tripleTriangles",
@@ -1224,25 +1224,28 @@ var map = {
         'x': 14, 'y': 3,
         'coords': [350,-3,-487],
         'background': "garden",
-        'unlocks': ["road","tributaries","monk3"],
+        'unlocks': ["road","tributaries","monastery"],
         'specialLoot': ["simpleEmeraldLoot"],
-        'skill': "fistDamage",
-        'board': "doubleDiamonds",
-        'enemySkills': ["ninja"],
-        'monsters': ["caterpillar","gnome","butterfly","skeleton"],
+        'skill': "minorStrength",
+        'board': "spikeBoard",
+        'enemySkills': ["minorStrength"],
+        'monsters': ["caterpillar","skeletalBuccaneer","skeleton"],
         'events': [
-            ["butterfly"],
-            ["giantSkeleton"],
-            ["dragon"]
+            ["caterpillar","caterpillar","skeleton","skeleton"],
+            ["skeletalBuccaneer","caterpillar","caterpillar"],
+            ["caterpillar","caterpillar","skeletalBuccaneer"],
+            ["caterpillar","skeletalBuccaneer","caterpillar","skeleton"],
+            ["skeletalBuccaneer","skeletalBuccaneer","caterpillar","caterpillar"],
+            ["caterpillar","skeletalBuccaneer"]
         ]
     },
     'gnometemple': {
         'name': "Gnome Temple",
         'level': 2,
         'x': 7, 'y': 3,
-        'coords': [-7,216,-560],
+        'coords': [2,218,-559],
         'background': "cave",
-        'unlocks': ["trail","barracks","meadow","priest2"],
+        'unlocks': ["trail","barracks","meadow","lostshrine"],
         'specialLoot': ["simpleSaphireLoot"],
         'skill': "protect",
         'board': "doubleDiamonds",
@@ -1356,6 +1359,23 @@ var map = {
             ["dragon"]
         ]
     },
+    'killingfields': {
+        'name': "Killing Fields",
+        'level': 28,
+        'x': 28, 'y': -10,
+        'coords': [-1,-506,323],
+        'background': "field",
+        'unlocks': ["ranger9","juggler10","sniper8"],
+        'specialLoot': [],
+        'skill': "majorDexterity",
+        'board': "crownBoard",
+        'enemySkills': ["majorDexterity"],
+        'monsters': ["skeleton","gnome"],
+        'events': [
+            ["giantSkeleton","giantSkeleton","gnome","gnome","battlefly"],
+            ["giantSkeleton","butterfly"]
+        ]
+    },
     'levee': {
         'name': "Levee",
         'level': 6,
@@ -1386,6 +1406,26 @@ var map = {
         'monsters': ["skeleton"],
         'events': [
             ["dragon"]
+        ]
+    },
+    'lostshrine': {
+        'name': "Lost Shrine",
+        'level': 3,
+        'x': 0, 'y': 0,
+        'coords': [-139,246,-529],
+        'background': "cave",
+        'unlocks': ["priest3","paladin2"],
+        'specialLoot': [],
+        'skill': "minorIntelligence",
+        'board': "spikeBoard",
+        'enemySkills': ["heal"],
+        'monsters': ["gnome","bat"],
+        'events': [
+            ["gnome","bat","bat"],
+            ["gnome","gnome","bat"],
+            ["gnome","bat","bat"],
+            ["gnome","gnome","bat"],
+            ["vampireBat","gnomeCleric"]
         ]
     },
     'master1': {
@@ -1647,20 +1687,26 @@ var map = {
             ["dragon"]
         ]
     },
-    'monk3': {
-        'name': "Monk 3",
+    'monastery': {
+        'name': "Monastery",
         'level': 5,
         'x': 0, 'y': 0,
         'coords': [458,2,-387],
-        'background': "field",
+        'background': "garden",
         'unlocks': ["monk4","oceanside"],
         'specialLoot': [],
-        'skill': null,
-        'board': null,
-        'enemySkills': [],
-        'monsters': ["skeleton"],
+        'skill': "fistDamage",
+        'board': "doubleDiamonds",
+        'enemySkills': ["vitality","hook"],
+        'monsters': ["skeletalBuccaneer","caterpillar"],
         'events': [
-            ["dragon"]
+            ["caterpillar","caterpillar","skeletalBuccaneer","skeletalBuccaneer","caterpillar"],
+            ["caterpillar","caterpillar","caterpillar","skeletalBuccaneer","skeletalBuccaneer"],
+            ["caterpillar","caterpillar","skeletalBuccaneer","skeletalBuccaneer","skeletalBuccaneer"],
+            ["caterpillar","skeletalBuccaneer","caterpillar","skeletalBuccaneer","caterpillar","skeletalBuccaneer"],
+            ["caterpillar","caterpillar","skeletalBuccaneer","skeletalBuccaneer"],
+            ["caterpillar","caterpillar","caterpillar","skeletalBuccaneer","skeletalBuccaneer","skeletalBuccaneer"],
+            ["caterpillar","skeletalBuccaneer","dragon"]
         ]
     },
     'monk4': {
@@ -2052,22 +2098,6 @@ var map = {
             ["dragon"]
         ]
     },
-    'priest2': {
-        'name': "Priest 2",
-        'level': 3,
-        'x': 0, 'y': 0,
-        'coords': [-114,257,-530],
-        'background': "field",
-        'unlocks': ["priest3","paladin2"],
-        'specialLoot': [],
-        'skill': null,
-        'board': null,
-        'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
-    },
     'priest3': {
         'name': "Priest 3",
         'level': 5,
@@ -2361,6 +2391,24 @@ var map = {
             ["frostGiant"]
         ]
     },
+    'ruinedfortress': {
+        'name': "Ruined Fortress",
+        'level': 28,
+        'x': 0, 'y': 0,
+        'coords': [497,69,329],
+        'background': "cemetery",
+        'unlocks': ["corsair9","samurai8"],
+        'specialLoot': [],
+        'skill': "majorStrength",
+        'board': "crownBoard",
+        'enemySkills': ["majorStrength"],
+        'monsters': ["undeadWarrior","skeleton"],
+        'events': [
+            ["skeletonOgre"],
+            ["butcher"],
+            ["frostGiant"]
+        ]
+    },
     'ruins': {
         'name': "Ruins",
         'level': 12,
@@ -2537,24 +2585,6 @@ var map = {
         'monsters': ["skeleton"],
         'events': [
             ["dragon"]
-        ]
-    },
-    'ruinedfortress': {
-        'name': "Ruined Fortress",
-        'level': 28,
-        'x': 0, 'y': 0,
-        'coords': [497,69,329],
-        'background': "cemetery",
-        'unlocks': ["corsair9","samurai8"],
-        'specialLoot': [],
-        'skill': "majorStrength",
-        'board': "crownBoard",
-        'enemySkills': ["majorStrength"],
-        'monsters': ["undeadWarrior","skeleton"],
-        'events': [
-            ["skeletonOgre"],
-            ["butcher"],
-            ["frostGiant"]
         ]
     },
     'samurai8': {
@@ -2735,23 +2765,6 @@ var map = {
         'monsters': ["skeleton"],
         'events': [
             ["dragon"]
-        ]
-    },
-    'killingfields': {
-        'name': "Killing Fields",
-        'level': 28,
-        'x': 28, 'y': -10,
-        'coords': [-1,-506,323],
-        'background': "field",
-        'unlocks': ["ranger9","juggler10","sniper8"],
-        'specialLoot': [],
-        'skill': "majorDexterity",
-        'board': "crownBoard",
-        'enemySkills': ["majorDexterity"],
-        'monsters': ["skeleton","gnome"],
-        'events': [
-            ["giantSkeleton","giantSkeleton","gnome","gnome","battlefly"],
-            ["giantSkeleton","butterfly"]
         ]
     },
     'sniper8': {

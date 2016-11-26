@@ -144,10 +144,22 @@ function drawMonster(character, monster, index) {
     //context.fillRect(monster.x - cameraX, 240 - 128 - 72, 64, 128);
     // life bar
     if (monster.isDead) return;
-    drawBar(context, monster.x - cameraX + monster.width / 2 - 32, 240 - 128 - 36 - 2 * (index % maxIndex) - ifdefor(source.y, 0) * 2, 64, 4, 'white', ifdefor(monster.color, 'red'), monster.health / monster.maxHealth);
+    var x = monster.x - cameraX + monster.width / 2 - 32;
+    var y = 240 - 128 - 36 - 2 * (index % maxIndex) - ifdefor(source.y, 0) * 2;
+    drawBar(context, x, y, 64, 4, 'white', ifdefor(monster.color, 'red'), monster.health / monster.maxHealth);
+    if (monster.bonusMaxHealth >= 1 && monster.health >= monster.maxHealth - monster.bonusMaxHealth) {
+        // This logic is kind of a mess but it is to make sure the % of the bar that is due to bonusMaxHealth
+        // is drawn as orange instead of red.
+        var totalWidth = 62 * monster.health / monster.maxHealth;
+        var normalWidth = Math.floor(62 * (monster.maxHealth - monster.bonusMaxHealth) / monster.maxHealth);
+        var bonusWidth = Math.min(totalWidth - normalWidth,
+                                  Math.ceil((totalWidth - normalWidth) * (monster.bonusMaxHealth - (monster.health - monster.maxHealth)) / monster.bonusMaxHealth));
+        mainContext.fillStyle = 'orange';
+        mainContext.fillRect(x + 1 + normalWidth, y + 1, bonusWidth, 2);
+    }
     if (ifdefor(monster.reflectBarrier, 0) >= 1) {
         var width = Math.ceil(Math.min(1, monster.maxReflectBarrier / monster.maxHealth) * 64);
-        drawBar(context, monster.x - cameraX + monster.width / 2 - 32, 240 - 128 - 36 - 2 * (index % maxIndex) - 2 - ifdefor(source.y, 0) * 2, width, 4, 'white', 'blue', monster.reflectBarrier / monster.maxReflectBarrier);
+        drawBar(context, x, y, width, 4, 'white', 'blue', monster.reflectBarrier / monster.maxReflectBarrier);
     }
 }
 function drawAdventurer(character, adventurer, index) {
@@ -190,10 +202,22 @@ function drawAdventurer(character, adventurer, index) {
     //mainContext.fillRect(adventurer.x - cameraX, 240 - 128 - 72, 64, 128);
     // life bar
     if (adventurer.isDead) return;
-    drawBar(mainContext, adventurer.x - cameraX, 240 - 128 - 36 - 2 * (index % maxIndex), 64, 4, 'white', 'red', adventurer.health / adventurer.maxHealth);
+    var x = adventurer.x - cameraX;
+    var y = 240 - 128 - 36 - 2 * (index % maxIndex);
+    drawBar(mainContext, x, y, 64, 4, 'white', 'red', adventurer.health / adventurer.maxHealth);
+    if (adventurer.bonusMaxHealth >= 1 && adventurer.health >= adventurer.maxHealth - adventurer.bonusMaxHealth) {
+        // This logic is kind of a mess but it is to make sure the % of the bar that is due to bonusMaxHealth
+        // is drawn as orange instead of red.
+        var totalWidth = 62 * adventurer.health / adventurer.maxHealth;
+        var normalWidth = Math.floor(62 * (adventurer.maxHealth - adventurer.bonusMaxHealth) / adventurer.maxHealth);
+        var bonusWidth = Math.min(totalWidth - normalWidth,
+                                  Math.ceil((totalWidth - normalWidth) * (adventurer.bonusMaxHealth - (adventurer.health - adventurer.maxHealth)) / adventurer.bonusMaxHealth));
+        mainContext.fillStyle = 'orange';
+        mainContext.fillRect(x + 1 + normalWidth, y + 1, bonusWidth, 2);
+    }
     if (ifdefor(adventurer.reflectBarrier, 0) >= 1) {
         var width = Math.ceil(Math.min(1, adventurer.maxReflectBarrier / adventurer.maxHealth) * 64);
-        drawBar(mainContext, adventurer.x - cameraX, 240 - 128 - 36 - 2 * (index % maxIndex) - 2, width, 4, 'white', 'blue', adventurer.reflectBarrier / adventurer.maxReflectBarrier);
+        drawBar(mainContext, x, y - 2, width, 4, 'white', 'blue', adventurer.reflectBarrier / adventurer.maxReflectBarrier);
     }
 }
 function drawMinimap(character) {
