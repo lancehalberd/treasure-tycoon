@@ -1733,7 +1733,7 @@ var map = {
         'x': 0, 'y': 0,
         'coords': [513,189,247],
         'background': "field",
-        'unlocks': ["samurai7"],
+        'unlocks': ["ruinedfortress"],
         'specialLoot': [],
         'skill': null,
         'board': null,
@@ -2539,20 +2539,22 @@ var map = {
             ["dragon"]
         ]
     },
-    'samurai7': {
-        'name': "Samurai 7",
+    'ruinedfortress': {
+        'name': "Ruined Fortress",
         'level': 28,
         'x': 0, 'y': 0,
         'coords': [497,69,329],
-        'background': "field",
+        'background': "cemetery",
         'unlocks': ["corsair9","samurai8"],
         'specialLoot': [],
-        'skill': null,
-        'board': null,
-        'enemySkills': [],
-        'monsters': ["skeleton"],
+        'skill': "majorStrength",
+        'board': "crownBoard",
+        'enemySkills': ["majorStrength"],
+        'monsters': ["undeadWarrior","skeleton"],
         'events': [
-            ["dragon"]
+            ["skeletonOgre"],
+            ["butcher"],
+            ["frostGiant"]
         ]
     },
     'samurai8': {
