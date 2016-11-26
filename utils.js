@@ -257,3 +257,10 @@ function removeElementFromArray(array, element, throwErrorIfMissing) {
     }
     array.splice(index, 1);
 }
+function countInstancesOfElementInArray(array, element) {
+    var count = 0;
+    for (var arrayElement of array) {
+        if (arrayElement === element) count++;
+    }
+    return count;
+}

@@ -69,6 +69,7 @@ function initializeVariableObject(object, baseObject, actor) {
     object.bonusSources = [];
     object.bonusesByTag = {};
     object.bonusesDependingOn = {};
+    object.allBonuses = [];
     object.dirtyStats = {};
     switch (baseObject.variableObjectType){
         case 'actor':
@@ -177,7 +178,7 @@ function removeBonusSourceFromObject(object, bonusSource, triggerComputation) {
             } else {
                 var stat = dependencyString;
                 var dependencySource = ifdefor(object.actor, object);
-                for (var i = 0; i <  dependencySource.bonusesDependingOn[stat].length; i++) {
+                for (var i = 0; i < dependencySource.bonusesDependingOn[stat].length; i++) {
                     var dependency = dependencySource.bonusesDependingOn[stat][i];
                     if (dependency.object === object && dependency.bonus === bonus) {
                         dependencySource.bonusesDependingOn[stat].splice(i, 1);
@@ -198,6 +199,9 @@ function addBonusToObject(object, bonus, isImplicit) {
     // Do nothing if bonus tags are not all present on the object.
     if (!object.tags)console.log(object);
     for (var tag of bonus.tags) if (!object.tags[tag]) return;
+    object.allBonuses.push(bonus);
+    // Useful log for tracking occurences of particular bonuses.
+    // console.log(new Error('Adding ' + bonus.shortHand + ' ' + countInstancesOfElementInArray(object.allBonuses, bonus)));
     var value = evaluateValue(ifdefor(object.actor, object), bonus.value, object);
     for (var statKey of bonus.stats) {
         var statOps = object[statKey + 'Ops'] = ifdefor(object[statKey + 'Ops'], {'stat': statKey});
@@ -205,9 +209,13 @@ function addBonusToObject(object, bonus, isImplicit) {
         switch (bonus.operator) {
             case '+':
                 statOps['+'] = ifdefor(statOps['+'], 0) + value;
+                //statOps['+'] = ifdefor(statOps['+'], []);
+                //statOps['+'].push(value);
                 break;
             case '-':
                 statOps['+'] = ifdefor(statOps['+'], 0) - value;
+                //statOps['+'] = ifdefor(statOps['+'], []);
+                //statOps['+'].push(-value);
                 break;
             case '&':
                 statOps['&'] = ifdefor(statOps['&'], 0) + value;
@@ -232,6 +240,11 @@ function removeBonusFromObject(object, bonus) {
     if (!doesStatApplyToObject(bonus.stats[0], object)) return;
     // Do nothing if bonus tags are not all present on the object.
     for (var tag of bonus.tags) if (!object.tags[tag]) return;
+    // Passing true here will throw an error if a bonus is removed that wasn't present.
+    // This is good to do as this may cause bonuses to double up if it happens.
+    removeElementFromArray(object.allBonuses, bonus, true);
+    // Useful log for tracking occurences of particular bonuses.
+    // console.log(new Error('Removing ' + bonus.shortHand + ' ' + countInstancesOfElementInArray(object.allBonuses, bonus)));
     var value = evaluateValue(ifdefor(object.actor, object), bonus.value, object);
     for (var statKey of bonus.stats) {
         var statOps = object[statKey + 'Ops'] = ifdefor(object[statKey + 'Ops'], {'stat': statKey});
@@ -239,9 +252,13 @@ function removeBonusFromObject(object, bonus) {
         switch (bonus.operator) {
             case '+':
                 statOps['+'] = ifdefor(statOps['+'], 0) - value;
+                //var index = statOps['+'].indexOf(value);
+                //statOps['+'].splice(index, 1);
                 break;
             case '-':
                 statOps['+'] = ifdefor(statOps['+'], 0) + value;
+                //var index = statOps['+'].indexOf(-value);
+                //statOps['+'].splice(index, 1);
                 break;
             case '&':
                 statOps['&'] = ifdefor(statOps['&'], 0) - value;
@@ -300,7 +317,11 @@ function recomputeStat(object, statKey) {
         }
     } else if (typeof(newValue) === 'number') {
         //console.log(statOps);
-        newValue = (newValue + ifdefor(statOps['+'], 0)) * ifdefor(statOps['%'], 1);
+        newValue = newValue + ifdefor(statOps['+'], 0);
+        /*for (var sum of ifdefor(statOps['+'], [])) {
+            newValue += sum;
+        }*/
+        newValue *= ifdefor(statOps['%'], 1);
         for (var factor of ifdefor(statOps['*'], [])) {
             newValue *= factor;
         }
@@ -342,9 +363,6 @@ function setStat(object, statKey, newValue) {
     // Now that the stat is updated, add all bonuses back that depend on this stat.
     for (var dependency of ifdefor(object.bonusesDependingOn[statKey], [])) {
         addBonusToObject(dependency.object, dependency.bonus);
-        for (var dependentStat of dependency.bonus.stats) {
-            recomputeStat(dependency.object, dependentStat);
-        }
     }
     // Changing the value of setRange changes the tags for the actor, so we need to trigger
     // and update here.
@@ -354,6 +372,15 @@ function setStat(object, statKey, newValue) {
             throw new Error('setRange was set on a non-actor');
         }
         updateTags(object, recomputActorTags(object), true);
+    }
+    // Recompute stat dependencies only after we've finished actually updating
+    // applicable bonuses. Otherwise we might make too many updates or apply
+    // updates in an incorrect order, such as attempting to remove the same bonus
+    // again before it has been added back yet.
+    for (var dependency of ifdefor(object.bonusesDependingOn[statKey], [])) {
+        for (var dependentStat of dependency.bonus.stats) {
+            recomputeStat(dependency.object, dependentStat);
+        }
     }
 }
 
