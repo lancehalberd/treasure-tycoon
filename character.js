@@ -369,8 +369,9 @@ function updateAdventurer(adventurer) {
         '+critDamage': .5,
         '+critAccuracy': .5,
         '+speed': 250,
+        '+weaponless:accuracy': 1 + 2 * adventurer.level,
         '+weaponless:minPhysicalDamage': adventurer.level,
-        '+weaponless:maxPhysicalDamage': adventurer.level,
+        '+weaponless:maxPhysicalDamage': 1 + adventurer.level,
         '+weaponless:weaponRange': .5,
         // You are weaponless if you have no weapon equipped.
         '+weaponless:attackSpeed': .5,

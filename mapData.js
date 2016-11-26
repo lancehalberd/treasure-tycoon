@@ -1282,11 +1282,11 @@ var map = {
         'skill': "sap",
         'board': "tripleTriangles",
         'enemySkills': ["minorDexterity"],
-        'monsters': ["caterpillar","spider"],
+        'monsters': ["spider"],
         'events': [
-            ["caterpillar","spider"],
-            ["spider","spider"],
-            ["caterpillar","caterpillar"],
+            ["caterpillar","spider","spider"],
+            ["spider","spider","spider"],
+            ["caterpillar","caterpillar","spider"],
             ["butterfly"]
         ]
     },
@@ -1607,11 +1607,11 @@ var map = {
         'skill': "vitality",
         'board': "tripleTriangles",
         'enemySkills': ["minorStrength"],
-        'monsters': ["caterpillar","skeleton"],
+        'monsters': ["skeleton"],
         'events': [
+            ["skeleton"],
             ["skeleton","caterpillar"],
-            ["caterpillar","caterpillar"],
-            ["skeleton","skeleton"],
+            ["caterpillar","skeleton"],
             ["dragon"]
         ]
     },

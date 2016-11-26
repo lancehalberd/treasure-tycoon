@@ -247,16 +247,17 @@ function initalizeMonsters() {
     });
     addMonster('spider', {
         'name': 'Spider', 'source': spiderSource,
-        'implicitBonuses': {'*evasion': 1.2, '*accuracy': .8, '*damage': 1.2, '*speed': 2, '*scale': .75}
+        'implicitBonuses': {'*evasion': 1.2, '*accuracy': .8, '*damage': 1.2, '+range': .5, '*speed': 1.3, '*scale': .75},
+        'abilities': [abilities.poison]
     });
     addMonster('jumpingSpider', {
         'name': 'Jumping Spider', 'source': spiderSource,
-        'implicitBonuses': {'*evasion': 1.2, '*accuracy': .8, '*damage': 1.4, '*speed': 2, '*scale': .75},
+        'implicitBonuses': {'*evasion': 1.2, '*accuracy': .8, '*damage': 1.4, '*speed': 1.5, '*scale': .75},
         'abilities': [abilities.blinkStrike]
     });
     addMonster('wolf', {
         'name': 'Wolf', 'source': wolfSource,
-        'implicitBonuses': {'*maxHealth': 1.5, '*magicDamage': 0, '*accuracy': 1.5, '+critChance': .1, '*speed': 2.5, '*scale': .75}
+        'implicitBonuses': {'*maxHealth': 1.5, '*magicDamage': 0, '*accuracy': 1.5, '+critChance': .1, '*speed': 2, '*scale': .75}
     });
     addMonster('giantSpider', {
         'name': 'Giant Spider', 'source': spiderSource,
@@ -321,8 +322,8 @@ function initalizeMonsters() {
     });
     addMonster('skeleton', {'name': 'Skeleton', 'source': skeletonSource,
         // Fast to counter ranged heroes, low range+damage + fast attacks to be weak to armored heroes.
-        'implicitBonuses': {'+weaponRange': -.5, '*minPhysicalDamage': .4, '*maxPhysicalDamage': .4, '+accuracy': 2, '*attackSpeed': 2, '*magicDamage': 0,
-                            '*block': 0, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
+        'implicitBonuses': {'+weaponRange': -.5, '+accuracy': 2, '*attackSpeed': 2, '*magicDamage': 0,
+                            '+evasion': 1, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': 2},
         'abilities': [abilities.sideStep]
     });
