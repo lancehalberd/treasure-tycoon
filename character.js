@@ -14,6 +14,8 @@ var allActorVariables = {
     'healthRegen': '.',
     'speed': '.',
     'magicPower': '.',
+    // These are only used to calculate magicPower. The damage values actually used are put directly on actions.
+    'minMagicDamage': '.', 'maxMagicDamage': '.',
     // This is not used directly, but is included as a factor in any skills based on the range of equipped weapon.
     'weaponRange': '.',
     // defensive stats
@@ -23,6 +25,9 @@ var allActorVariables = {
     'cloaking': '.', 'overHeal': '.', 'increasedDrops': '.', 'cooldownReduction': '.',
     'equipmentMastery': '.', 'invulnerable': '.', 'maxBlock': '.', 'maxMagicBlock': '.', 'maxEvasion': '.',
     'uncontrollable': '.', 'twoToOneHanded': '.',
+    'overHealReflection': '.',
+    'healOnCast': '.',
+    'castKnockBack': '.',
     // Used by Throwing Paradigm Shift which turns throwing weapons into melee weapons.
     'setRange': 'Override melee/ranged tags and weaponRange to specific values',
     // tracked for debuffs that deal damage over time
@@ -100,8 +105,8 @@ var coreStatBonusSource = {'bonuses': {
     '%accuracy': [.002, '*', '{intelligence}'],
     '+magic:magicDamage': ['{intelligence}', '/', 10],
     '&maxHealth': '{bonusMaxHealth}',
-    '+healthRegen': ['{maxHealth}', '/', 100],
-    '+magicPower': ['{intelligence}', '+', [['{this.minMagicDamage}', '+' ,'{this.maxMagicDamage}'], '/' , 2]]
+    '+healthRegen': ['{maxHealth}', '/', 50],
+    '+magicPower': ['{intelligence}', '+', [['{minMagicDamage}', '+' ,'{maxMagicDamage}'], '/', 2]]
 }};
 
 function removeAdventureEffects(adventurer) {
@@ -115,6 +120,7 @@ function removeAdventureEffects(adventurer) {
 }
 function initializeActorForAdventure(actor) {
     actor.percentHealth = 1;
+    actor.maxReflectBarrier = actor.reflectBarrier = 0;
     actor.health = actor.maxHealth;
     actor.stunned = 0;
     actor.pull = null;
@@ -470,7 +476,11 @@ function updateActorHelpText(actor) {
     }
 }
 function actorHelpText(actor) {
-    var sections = [actor.name + ' ' + Math.ceil(actor.health) + '/' + Math.ceil(actor.maxHealth), ''];
+    var sections = [actor.name + ' ' + Math.ceil(actor.health) + '/' + Math.ceil(actor.maxHealth)];
+    if (actor.reflectBarrier >= 1) {
+        sections.push('Reflect: ' + actor.reflectBarrier.format(0));
+    }
+    sections.push('');
     ifdefor(actor.prefixes, []).forEach(function (affix) {
         sections.push(bonusSourceHelpText(affix, actor));
     });

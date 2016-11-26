@@ -145,8 +145,9 @@ function drawMonster(character, monster, index) {
     // life bar
     if (monster.isDead) return;
     drawBar(context, monster.x - cameraX + monster.width / 2 - 32, 240 - 128 - 36 - 2 * (index % maxIndex) - ifdefor(source.y, 0) * 2, 64, 4, 'white', ifdefor(monster.color, 'red'), monster.health / monster.maxHealth);
-    if (ifdefor(monster.reflectBarrier, 0)) {
-        drawBar(context, monster.x - cameraX + monster.width / 2 - 32, 240 - 128 - 36 - 2 * (index % maxIndex) - 2 - ifdefor(source.y, 0) * 2, 64, 4, 'white', 'blue', monster.reflectBarrier / monster.maxReflectBarrier);
+    if (ifdefor(monster.reflectBarrier, 0) >= 1) {
+        var width = Math.ceil(Math.min(1, monster.maxReflectBarrier / monster.maxHealth) * 64);
+        drawBar(context, monster.x - cameraX + monster.width / 2 - 32, 240 - 128 - 36 - 2 * (index % maxIndex) - 2 - ifdefor(source.y, 0) * 2, width, 4, 'white', 'blue', monster.reflectBarrier / monster.maxReflectBarrier);
     }
 }
 function drawAdventurer(character, adventurer, index) {
@@ -190,8 +191,9 @@ function drawAdventurer(character, adventurer, index) {
     // life bar
     if (adventurer.isDead) return;
     drawBar(mainContext, adventurer.x - cameraX, 240 - 128 - 36 - 2 * (index % maxIndex), 64, 4, 'white', 'red', adventurer.health / adventurer.maxHealth);
-    if (ifdefor(adventurer.reflectBarrier, 0)) {
-        drawBar(mainContext, adventurer.x - cameraX, 240 - 128 - 36 - 2 * (index % maxIndex) - 2, 64, 4, 'white', 'blue', adventurer.reflectBarrier / adventurer.maxReflectBarrier);
+    if (ifdefor(adventurer.reflectBarrier, 0) >= 1) {
+        var width = Math.ceil(Math.min(1, adventurer.maxReflectBarrier / adventurer.maxHealth) * 64);
+        drawBar(mainContext, adventurer.x - cameraX, 240 - 128 - 36 - 2 * (index % maxIndex) - 2, width, 4, 'white', 'blue', adventurer.reflectBarrier / adventurer.maxReflectBarrier);
     }
 }
 function drawMinimap(character) {

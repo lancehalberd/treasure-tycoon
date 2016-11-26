@@ -88,7 +88,7 @@ function useSkill(actor, skill, target) {
             var attackStats = isSpell ? createSpellStats(actor, skill, target) : createAttackStats(actor, skill, target);
             // Any life gained by this attack should be considered in the calculation as well in favor of using the attack.
             var possibleLifeGain = (attackStats.damage + attackStats.magicDamage) * ifdefor(skill.lifeSteal, 0);
-            var actualLifeGain = Math.min(actor.maxHealth - actor.health, possibleLifeGain);
+            var actualLifeGain = actorCanOverHeal(actor) ? possibleLifeGain : Math.min(actor.maxHealth - actor.health, possibleLifeGain);
             // console.log([ifdefor(skill.lifeSteal, 0), possibleLifeGain, actualLifeGain]);
             // Make sure the total health of the target/combined targets is at least
             // the damage output of the attack.
@@ -138,6 +138,14 @@ function useSkill(actor, skill, target) {
                 otherSkill.readyAt = actor.time;
             }
         }
+    }
+    if (skill.tags.spell && actor.castKnockBack) {
+        for (var enemy of getActorsInRange(actor, actor.castKnockBack, actor.enemies)) {
+            banishTarget(actor, enemy, actor.castKnockBack);
+        }
+    }
+    if (skill.tags.spell && actor.healOnCast) {
+        actor.health += actor.maxHealth * actor.healOnCast;
     }
 
     actor.lastAction = skill;
@@ -196,15 +204,6 @@ function getActorsInRange(source, range, targets) {
     return targetsInRange;
 }
 
-function getPower(actor, skill) {
-    return skill.power;
-    // This is now done when calculating stats so that *power can effect power from magic damage.
-    /*var power = skill.power;
-    if (skill.tags['spell']) {
-        power += Random.range(actor.minMagicDamage, actor.maxMagicDamage);
-    }
-    return power;*/
-}
 function closestEnemyDistance(actor) {
     var distance = 2000;
     for (var enemy of actor.enemies) {
@@ -305,7 +304,7 @@ skillDefinitions.revive = {
     },
     use: function (actor, reviveSkill, attackStats) {
         attackStats.stopped = true;
-        actor.health = getPower(actor, reviveSkill);
+        actor.health = reviveSkill.power;
         actor.percentHealth = actor.health / actor.maxHealth;
         actor.stunned = actor.time + .3;
         if (reviveSkill.buff) {
@@ -473,13 +472,13 @@ skillDefinitions.heal = {
         // Only heal allies.
         if (actor.allies.indexOf(target) < 0) return false;
         // Don't use a heal ability unless none of it will be wasted or the actor is below half life.
-        return ifdefor(target.overHeal, 0) || (target.health + getPower(actor, healSkill) <= target.maxHealth) || (target.health <= target.maxHealth / 2);
+        return actorCanOverHeal(actor) || (target.health + healSkill.power <= target.maxHealth) || (target.health <= target.maxHealth / 2);
     },
     use: function (actor, healSkill, target) {
-        target.health += getPower(actor, healSkill);
+        target.health += healSkill.power;
         if (healSkill.area > 0) {
             for (target of getActorsInRange(target, healSkill.area, target.allies)) {
-                target.health += getPower(actor, healSkill);
+                target.health += healSkill.power;
             }
         }
         actor.stunned = actor.time + .3;
@@ -627,10 +626,14 @@ skillDefinitions.reflect = {
         return true;
     },
     use: function (actor, reflectSkill, target) {
-        actor.reflectBarrier = ifdefor(actor.reflectBarrier, 0) + getPower(actor, reflectSkill);
-        actor.maxReflectBarrier = actor.reflectBarrier;
+        gainReflectionBarrier(target, reflectSkill.power);
     }
 };
+
+function gainReflectionBarrier(actor, amount) {
+        actor.reflectBarrier = ifdefor(actor.reflectBarrier, 0) + amount;
+        actor.maxReflectBarrier = Math.max(ifdefor(actor.maxReflectBarrier, 0), actor.reflectBarrier);
+}
 
 skillDefinitions.plunder = {
     isValid: function (actor, plunderSkill, target) {
@@ -677,10 +680,7 @@ skillDefinitions.banish = {
             }
             var distance = getDistance(actor, enemy);
             if (distance < 32 * banishSkill.distance) {
-                // Adding the delay here creates a shockwave effect where the enemies
-                // all get pushed from a certain point at the same time, rather than
-                // them all immediately moving towards the point initially.
-                enemy.pull = {'x': actor.x + actor.direction * (64 + 32 * banishSkill.distance), 'delay': enemy.time + distance * .02 / 32, 'time': enemy.time + banishSkill.distance * .02, 'damage': 0};
+                banishTarget(actor, enemy, banishSkill.distance);
                 // The shockwave upgrade applies the same damage to the targets hit by the shockwave.
                 if (banishSkill.shockwave) {
                     enemy.pull.attackStats = attackStats;
@@ -692,6 +692,12 @@ skillDefinitions.banish = {
         });
     }
 };
+function banishTarget(actor, target, range) {
+    // Adding the delay here creates a shockwave effect where the enemies
+    // all get pushed from a certain point at the same time, rather than
+    // them all immediately moving towards the point initially.
+    target.pull = {'x': actor.x + actor.direction * (64 + 32 * range), 'delay': target.time +  getDistance(actor, target) * .02 / 32, 'time': target.time + range * .02, 'damage': 0};
+}
 
 skillDefinitions.charm = {
     isValid: function (actor, charmSkill, target) {

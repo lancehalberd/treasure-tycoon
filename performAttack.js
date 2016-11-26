@@ -184,7 +184,7 @@ function createSpellStats(attacker, spell, target) {
     if (ifdefor(spell.firstStrike)) {
         isCritical = isCritical || target.health >= target.maxHealth;
     }
-    var magicDamage = getPower(attacker, spell);
+    var magicDamage = spell.power;
     var sacrificedHealth = Math.floor(attacker.health * ifdefor(spell.healthSacrifice, 0));
     magicDamage += sacrificedHealth;
     if (isCritical) {

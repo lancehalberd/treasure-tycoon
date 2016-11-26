@@ -77,11 +77,17 @@ function timeStopLoop(character, delta) {
     updateActorHelpText(actor);
     return true;
 }
+function actorCanOverHeal(actor) {
+    return ifdefor(actor.overHeal, 0) + ifdefor(actor.overHealReflection, 0) > 0;
+}
 function capHealth(actor) {
     // Apply overhealing if the actor is over their health cap and possesses overhealing.
-    if (ifdefor(actor.overHeal, 0) && actor.health > actor.maxHealth) {
-        var bonusMaxHealth = actor.overHeal * (actor.health - actor.maxHealth);
-        setStat(actor, 'bonusMaxHealth', ifdefor(actor.bonusMaxHealth, 0) + bonusMaxHealth);
+    var excessHealth = actor.health - actor.maxHealth;
+    if (actor.overHeal && excessHealth > 0) {
+        setStat(actor, 'bonusMaxHealth', ifdefor(actor.bonusMaxHealth, 0) + actor.overHeal * excessHealth);
+    }
+    if (actor.overHealReflection && excessHealth > 0) {
+        gainReflectionBarrier(actor, actor.overHealReflection * excessHealth);
     }
     actor.health = Math.min(actor.maxHealth, Math.max(0, actor.health));
     actor.percentHealth = actor.health / actor.maxHealth;
