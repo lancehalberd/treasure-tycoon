@@ -308,6 +308,7 @@ function importJewelBoard(jewelBoardData, character) {
     jewelBoard.fixed = [];
     jewelBoardData.fixed.forEach(function (fixedJewelData) {
         var ability = abilities[fixedJewelData.abilityKey];
+        character.adventurer.unlockedAbilities[fixedJewelData.abilityKey] = true;
         if (!ability) {
             return;
         }

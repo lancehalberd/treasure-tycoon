@@ -417,7 +417,7 @@ function completeLevel(character) {
     character.levelCompleted = true;
 
     // This code will be used when they activate a shrine
-    if (level.board && character.adventurer.abilities.indexOf(level.skill) < 0 && character.divinity >= totalCostForNextLevel(character, level)) {
+    if (level.board && character.adventurer.unlockedAbilities[level.skill] < 0 && character.divinity >= totalCostForNextLevel(character, level)) {
         if (!boards[level.board]) {
             throw new Error("Could not find board: " + level.board);
         }
@@ -440,6 +440,7 @@ $('body').on('click', '.js-confirmSkill', function (event) {
     var skill = character.board.boardPreview.fixed[0].ability;
     character.divinity -= totalCostForNextLevel(character, level);
     character.adventurer.abilities.push(skill);
+    character.adventurer.unlockedAbilities[skill.key] = true;
     character.board.spaces = character.board.spaces.concat(character.board.boardPreview.spaces);
     character.board.boardPreview.fixed.forEach(function (jewel) {
         jewel.confirmed = true;

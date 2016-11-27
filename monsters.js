@@ -323,7 +323,7 @@ function initalizeMonsters() {
     addMonster('skeleton', {'name': 'Skeleton', 'source': skeletonSource,
         // Fast to counter ranged heroes, low range+damage + fast attacks to be weak to armored heroes.
         'implicitBonuses': {'+weaponRange': -.5, '+accuracy': 2, '*attackSpeed': 2, '*magicDamage': 0,
-                            '+evasion': 0, '*evasion': 1.5, '*magicBlock': 0, '*magicResist': 0,
+                            '*evasion': 1.5, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': 2},
         'abilities': [abilities.sideStep]
     });
