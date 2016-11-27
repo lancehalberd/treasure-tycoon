@@ -247,9 +247,8 @@ function makeAdventurer(job, level, equipment) {
         adventurer.equipment[type] = null;
     });
     $.each(equipment, function (key, item) {
-        item.crafted = true;
-        craftingContext.fillStyle = 'green';
-        craftingContext.fillRect(item.craftingX, item.craftingY, craftingSlotSize, craftingSlotSize);
+        state.craftedItems[item.key] = ifdefor(state.craftedItems[item.key], 0) | CRAFTED_NORMAL;
+        updateCraftingContext(item);
         equipItem(adventurer, makeItem(item, 1), false);
     });
     drawCraftingViewCanvas();

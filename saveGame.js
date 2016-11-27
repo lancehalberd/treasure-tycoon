@@ -22,6 +22,8 @@ function exportState(state) {
     data.characters = state.characters.map(exportCharacter);
     data.visibleLevels = copy(state.visibleLevels);
     data.maxCraftingLevel = state.maxCraftingLevel;
+    data.craftedItems = state.craftedItems;
+    data.craftingLevel = state.craftingLevel;
     data.applications = [];
     $('.js-heroApplication').each(function () {
         var application = $(this).data('character');
@@ -43,7 +45,6 @@ function exportState(state) {
     } else if ($('.js-enchantmentSlot .js-item').length) {
         data.enchantmentItem = exportItem($('.js-enchantmentSlot .js-item').data('item'));
     }
-    data.craftingLevel = state.craftingLevel;
     data.craftingTypeFilter = state.craftingTypeFilter;
     data.selectedCharacterIndex = state.characters.indexOf(state.selectedCharacter);
     return data;
@@ -80,6 +81,8 @@ function importState(stateData) {
     state.characters = [];
     state.visibleLevels = copy(ifdefor(stateData.visibleLevels, {}));
     state.maxCraftingLevel = stateData.maxCraftingLevel;
+    state.craftedItems = ifdefor(stateData.craftedItems, {});
+    redrawCraftingContext();
     $('.js-charactersBox').empty();
     var characters = stateData.characters.map(importCharacter);
     characters.forEach(function (character) {
@@ -249,12 +252,6 @@ function exportItem(item) {
 }
 function importItem(itemData) {
     var baseItem = itemsByKey[itemData.itemKey];
-    baseItem.crafted = true;
-    if (itemData.unique) {
-        baseItem.craftedUnique = true;
-    }
-    craftingContext.fillStyle = baseItem.craftedUnique ? '#44ccff' : 'green';
-    craftingContext.fillRect(baseItem.craftingX, baseItem.craftingY, craftingSlotSize, craftingSlotSize);
     var item = {
         'base': baseItem,
         'itemLevel': itemData.itemLevel,

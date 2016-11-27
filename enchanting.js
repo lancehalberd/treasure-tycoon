@@ -173,8 +173,8 @@ addSuffix(31, 'Major Strength', accessorySlots, {'+strength': [16, 30]});
 addSuffix(31, 'Major Dexterity', accessorySlots, {'+dexterity': [16, 30]});
 addSuffix(31, 'Major Intelligence', accessorySlots, {'+intelligence': [16, 30]});
 addSuffix(61, 'Unsurpassed Strength', accessorySlots, {'+strength': [31, 50]});
-addSuffix(61, 'Unsurpassed  Dexterity', accessorySlots, {'+dexterity': [31, 50]});
-addSuffix(61, 'Unsurpassed  Intelligence', accessorySlots, {'+intelligence': [31, 50]});
+addSuffix(61, 'Unsurpassed Dexterity', accessorySlots, {'+dexterity': [31, 50]});
+addSuffix(61, 'Unsurpassed Intelligence', accessorySlots, {'+intelligence': [31, 50]});
 
 var affixesByKey = {};
 $.each(prefixes, function (level, levelAffixes) {

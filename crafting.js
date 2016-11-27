@@ -1,4 +1,5 @@
-
+var CRAFTED_NORMAL = 1;
+var CRAFTED_UNIQUE = 2;
 var overCraftingItem = null;
 var craftingCanvasYOffset = 0;
 var lastCraftedItem = null;
@@ -257,7 +258,7 @@ function craftItem() {
     // this base type.
     checkToMakeItemUnique(item);
     if (item.unique) {
-        craftedItem.craftedUnique = true;
+        state.craftedItems[craftedItem.key] |= ifdefor(state.craftedItems[craftedItem.key], 0) | CRAFTED_UNIQUE;
     } else {
         // Items created below the specified crafting level are automatically enchanted.
         // This way getting low level items is less disappointing.
@@ -271,13 +272,22 @@ function craftItem() {
             }
         }
     }
-    craftedItem.crafted = true;
-    craftingContext.fillStyle = ifdefor(craftedItem.craftedUnique) ? '#44ccff' : 'green';
-    craftingContext.fillRect(craftedItem.craftingX, craftedItem.craftingY, craftingSlotSize, craftingSlotSize);
+    state.craftedItems[craftedItem.key] |= ifdefor(state.craftedItems[craftedItem.key], 0) | CRAFTED_NORMAL;
+    updateCraftingContext(craftedItem);
     drawCraftingViewCanvas();
     updateItem(item);
     lastCraftedItem = craftedItem;
     return item;
+}
+
+function redrawCraftingContext() {
+    for (var itemKey of Object.keys(state.craftedItems)) {
+        updateCraftingContext(itemsByKey[itemKey]);
+    }
+}
+function updateCraftingContext(craftedItem) {
+    craftingContext.fillStyle = (state.craftedItems[craftedItem.key] & CRAFTED_UNIQUE) ? '#44ccff' : 'green';
+    craftingContext.fillRect(craftedItem.craftingX, craftedItem.craftingY, craftingSlotSize, craftingSlotSize);
 }
 
 function itemMatchesFilter(item, typeFilter) {
@@ -303,7 +313,7 @@ function checkToShowCraftingToopTip() {
         else $popup.remove();
     }
     var sections;
-    if (overCraftingItem.crafted) {
+    if (state.craftedItems[overCraftingItem.key]) {
         sections = [overCraftingItem.name];
         if (overCraftingItem.tags) {
             sections.push(Object.keys(overCraftingItem.tags).map(tagToDisplayName).join(', '));

@@ -31,6 +31,7 @@ var state = {
     coins: 0,
     anima: 0,
     maxCraftingLevel: 1,
+    craftedItems: {},
     craftingLevel: 1,
     craftingTypeFilter: 'all',
     applicationSlots: 2
