@@ -578,7 +578,7 @@ var map = {
         'x': 0, 'y': 0,
         'coords': [-308,-359,-369],
         'background': "field",
-        'unlocks': ["dancer4","ranger3"],
+        'unlocks': ["dancer4","forestlair"],
         'specialLoot': [],
         'skill': null,
         'board': null,
@@ -658,7 +658,7 @@ var map = {
         'x': 0, 'y': 0,
         'coords': [-303,-409,318],
         'background': "field",
-        'unlocks': ["carnival","ranger9"],
+        'unlocks': ["carnival","impenetrableforest"],
         'specialLoot': [],
         'skill': null,
         'board': null,
@@ -1365,7 +1365,7 @@ var map = {
         'x': 28, 'y': -10,
         'coords': [-1,-506,323],
         'background': "field",
-        'unlocks': ["ranger9","juggler10","sniper8"],
+        'unlocks': ["impenetrableforest","juggler10","sniper8"],
         'specialLoot': [],
         'skill': "majorDexterity",
         'board': "crownBoard",
@@ -2200,7 +2200,7 @@ var map = {
         'x': 10, 'y': -4,
         'coords': [-136,-457,-365],
         'background': "forest",
-        'unlocks': ["ranger3","sniper2"],
+        'unlocks': ["forestlair","sniper2"],
         'specialLoot': ["simpleEmeraldLoot"],
         'skill': "finesse",
         'board': "spikeBoard",
@@ -2228,20 +2228,21 @@ var map = {
             ["dragon"]
         ]
     },
-    'ranger3': {
-        'name': "ranger3",
+    'forestlair': {
+        'name': "Forest Lair",
         'level': 9,
         'x': 9, 'y': -12,
         'coords': [-230,-488,-263],
-        'background': "field",
+        'background': "forest",
         'unlocks': ["ranger4","camp"],
         'specialLoot': [],
-        'skill': null,
-        'board': null,
-        'enemySkills': [],
-        'monsters': ["skeleton"],
+        'skill': "rangedAccuracy",
+        'board': "doubleDiamonds",
+        'enemySkills': ["rangedAccuracy"],
+        'monsters': ["caterpillar","butterfly","gnome"],
         'events': [
-            ["dragon"]
+            ["caterpillar","caterpillar","gnomeWizard"],
+            ["caterpillar","caterpillar","dragon"]
         ]
     },
     'ranger4': {
@@ -2266,7 +2267,7 @@ var map = {
         'x': 14, 'y': -12,
         'coords': [-203,-557,-96],
         'background': "field",
-        'unlocks': ["sniper4","ranger6"],
+        'unlocks': ["sniper4","oldforest"],
         'specialLoot': [],
         'skill': "net",
         'board': "halfHexBoard",
@@ -2276,20 +2277,20 @@ var map = {
             ["dragon"]
         ]
     },
-    'ranger6': {
-        'name': "ranger6",
+    'oldforest': {
+        'name': "Old Forest",
         'level': 18,
         'x': 19, 'y': -12,
         'coords': [-249,-546,-3],
         'background': "field",
         'unlocks': ["ranger7","dancer7"],
         'specialLoot': [],
-        'skill': null,
-        'board': null,
-        'enemySkills': [],
-        'monsters': ["skeleton"],
+        'skill': "rangedDamage",
+        'board': "doubleDiamonds",
+        'enemySkills': ["rangedDamage","rangedAccuracy"],
+        'monsters': ["caterpillar","gnome","gnomecromancer","butterfly"],
         'events': [
-            ["dragon"]
+            ["dragon","dragon"]
         ]
     },
     'ranger7': {
@@ -2298,7 +2299,7 @@ var map = {
         'x': 23, 'y': -12,
         'coords': [-221,-536,154],
         'background': "field",
-        'unlocks': ["ranger8","dancer8"],
+        'unlocks': ["ancientforest","dancer8"],
         'specialLoot': [],
         'skill': null,
         'board': null,
@@ -2308,36 +2309,36 @@ var map = {
             ["dragon"]
         ]
     },
-    'ranger8': {
-        'name': "ranger8",
+    'ancientforest': {
+        'name': "Ancient Forest",
         'level': 27,
         'x': 27, 'y': -12,
         'coords': [-186,-507,263],
-        'background': "field",
+        'background': "forest",
         'unlocks': ["killingfields","dancer9"],
         'specialLoot': [],
-        'skill': null,
-        'board': null,
-        'enemySkills': [],
-        'monsters': ["skeleton"],
+        'skill': "rangedAttackSpeed",
+        'board': "crownBoard",
+        'enemySkills': ["rangedDamage","rangedAccuracy","rangedAttackSpeed"],
+        'monsters': ["caterpillar","spider","giantSpider","butterfly"],
         'events': [
-            ["dragon"]
+            ["battlefly","motherfly"]
         ]
     },
-    'ranger9': {
-        'name': "ranger9",
+    'impenetrableforest': {
+        'name': "Impenetrable Forest",
         'level': 32,
         'x': 31, 'y': -12,
         'coords': [-123,-435,395],
-        'background': "field",
+        'background': "forest",
         'unlocks': ["ranger10"],
         'specialLoot': [],
-        'skill': null,
-        'board': null,
-        'enemySkills': [],
-        'monsters': ["skeleton"],
+        'skill': "rangedParadigmShift",
+        'board': "pieBoard",
+        'enemySkills': ["rangedAccuracy","rangedDamage","rangedAttackSpeed","rangedParadigmShift"],
+        'monsters': ["spider","jumpingSpider","giantSpider","motherfly"],
         'events': [
-            ["dragon"]
+            ["jumpingSpider","jumpingSpider","giantSpider"]
         ]
     },
     'ravine': {
@@ -2757,7 +2758,7 @@ var map = {
         'x': 23, 'y': -10,
         'coords': [1,-570,189],
         'background': "field",
-        'unlocks': ["ranger8","juggler9"],
+        'unlocks': ["ancientforest","juggler9"],
         'specialLoot': [],
         'skill': null,
         'board': null,
