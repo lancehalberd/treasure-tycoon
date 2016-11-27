@@ -1121,6 +1121,10 @@ select {
     min-width: 25px;
 }
 
+.levelSkillSelect {
+    width: 150px;
+}
+
 p {
     margin: 0;
     padding: 0;
