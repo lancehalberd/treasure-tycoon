@@ -178,6 +178,15 @@ function drawTintedImage(context, image, tint, amount, source, target) {
     context.drawImage(globalTintCanvas, 0, 0, source.width, source.height, target.left, target.top, target.width, target.height);
     context.restore();
 }
+var globalCompositeCanvas = createCanvas(150, 150);
+var globalCompositeContext = globalCompositeCanvas.getContext('2d');
+function prepareTintedImage() {
+    globalCompositeContext.clearRect(0, 0, globalCompositeCanvas.width, globalCompositeCanvas.height);
+}
+function getTintedImage(image, tint, amount, sourceRectangle) {
+    drawTintedImage(globalCompositeContext, image, tint, amount, sourceRectangle, {'left': 0, 'top': 0, 'width': sourceRectangle.width, 'height': sourceRectangle.height});
+    return globalCompositeCanvas;
+}
 function logPixel(context, x, y) {
     var imgd = context.getImageData(x, y, 1, 1);
     console.log(imgd.data)
