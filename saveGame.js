@@ -228,11 +228,11 @@ function importAdventurer(adventurerData) {
         'percentHealth': 1,
         'helpMethod': actorHelpText
     };
+    initializeVariableObject(adventurer, {'variableObjectType': 'actor'}, adventurer);
     for (var i = 0; i < ifdefor(window.testAbilities, []).length; i++) {
         adventurer.abilities.push(testAbilities[i]);
         console.log(abilityHelpText(testAbilities[i], adventurer));
     }
-    initializeVariableObject(adventurer, {'variableObjectType': 'actor'}, adventurer);
     equipmentSlots.forEach(function (type) {
         adventurer.equipment[type] = null;
     });
