@@ -370,13 +370,16 @@ function cloneActor(actor, skill) {
         clone.hairOffset = actor.hairOffset;
         clone.equipment = actor.equipment;
         updateAdventurer(clone);
+        // Add bonuses from source character's abilities/jewel board.
+        // Note that we don't give the clone the source character's actions.
+        for (var ability of actor.abilities) {
+            if (ability.bonuses) addBonusSourceToObject(clone, ability);
+        }
+        if (actor.character) addBonusSourceToObject(clone, actor.character.jewelBonuses);
     } else {
         clone = makeMonster({'key': actor.base.key}, actor.level, [], true);
     }
     initializeActorForAdventure(clone);
-    for (var bonusSource of actor.bonusSources) {
-        addBonusSourceToObject(clone, bonusSource, false);
-    }
     actor.pull = {'x': actor.x - actor.direction * 64, 'time': actor.time + .3, 'damage': 0};
     clone.x = actor.x + actor.direction * 32;
     clone.character = actor.character;
@@ -393,9 +396,14 @@ function cloneActor(actor, skill) {
     return clone;
 }
 function addMinionBonuses(actor, skill, minion) {
+    var newTags = {};
+    // Add skill tags to the clone's tags. This is how minion bonuses can target minion's
+    // produced by specific skills like '*shadowClone:damage': .1
+    for (var tag of Object.keys(minion.tags)) newTags[tag] = true;
     for (var tag in skill.tags) {
-        if (tag != 'melee' && tag != 'ranged') minion.tags[tag] = true;
+        if (tag != 'melee' && tag != 'ranged') newTags[tag] = true;
     }
+    updateTags(minion, newTags, true);
     for (var minionBonusSource of actor.minionBonusSources) {
         addBonusSourceToObject(minion, minionBonusSource, false);
     }
@@ -649,7 +657,7 @@ function stealAffixes(actor, target, skill) {
     }
     var allAffixes = target.prefixes.concat(target.suffixes);
     if (!allAffixes.length) return;
-    var originalBonus = allAffixes.length > 2 ? imbuedMonsterBonuses : enchantedMonsterBonuses;
+    var originalBonus = (allAffixes.length > 2) ? imbuedMonsterBonuses : enchantedMonsterBonuses;
     for (var i = 0; i < skill.count && allAffixes.length; i++) {
         var affix = Random.element(allAffixes);
         if (target.prefixes.indexOf(affix) >= 0) target.prefixes.splice(target.prefixes.indexOf(affix), 1);

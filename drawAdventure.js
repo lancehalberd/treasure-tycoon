@@ -175,7 +175,11 @@ function drawAdventurer(character, adventurer, index) {
         var attackSpeed = adventurer.lastAction.attackSpeed;
         var attackFps = 1 / ((1 / attackSpeed) / fightLoop.length);
         var frame = Math.floor(Math.abs(adventurer.animationTime - adventurer.attackCooldown) * attackFps) % fightLoop.length;
-        if (adventurer.slow > 0) {
+        if (ifdefor(adventurer.tint) && !(adventurer.slow > .3)) {
+            drawTintedImage(mainContext, adventurer.personCanvas, adventurer.tint, .2 + Math.cos(adventurer.animationTime * 5) / 10,
+                        {'left': fightLoop[frame] * 32, 'top': 0 , 'width': 32, 'height': 64},
+                        adventurer);
+        } else if (adventurer.slow > 0) {
             drawTintedImage(mainContext, adventurer.personCanvas, '#fff', Math.min(1, adventurer.slow),
                         {'left': fightLoop[frame] * 32, 'top': 0 , 'width': 32, 'height': 64},
                         adventurer);
@@ -192,7 +196,11 @@ function drawAdventurer(character, adventurer, index) {
         if (adventurer.pull || adventurer.stunned) {
             frame = 0;
         }
-        if (adventurer.slow > 0) {
+        if (ifdefor(adventurer.tint) && !(adventurer.slow > .3)) {
+            drawTintedImage(mainContext, adventurer.personCanvas, adventurer.tint, .2 + Math.cos(adventurer.animationTime * 5) / 10,
+                        {'left': walkLoop[frame] * 32, 'top': 0 , 'width': 32, 'height': 64},
+                        adventurer);
+        } else if (adventurer.slow > 0) {
             drawTintedImage(mainContext, adventurer.personCanvas, '#fff', Math.min(1, adventurer.slow),
                         {'left': walkLoop[frame] * 32, 'top': 0 , 'width': 32, 'height': 64},
                         adventurer);

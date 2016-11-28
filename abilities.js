@@ -241,7 +241,7 @@ var abilities = {
         'smokeBomb': {'name': 'Smoke Bomb', 'bonuses': {'+dexterity': 10}, 'reaction': skills.smokeBomb},
         'throwWeapon': {'name': 'Throw Weapon', 'bonuses': {'+strength': 10}, 'action': skills.throwWeapon},
         'shadowClone': {'name': 'Shadow Clone', 'bonuses': {'+strength': 10, '+dexterity': 10}, 'reaction': skills.shadowClone,
-            'minionBonuses': {'*shadowClone:maxHealth': .1, '*shadowClone:damage': .1, '*shadowClone:speed': 1.2}},
+            'minionBonuses': {'*shadowClone:maxHealth': .1, '*shadowClone:damage': .1, '$shadowClone:tint': 'black'}},
     'enhancerIndex': {'name': '---Enhancer---'},
         'enhanceWeapon': {'name': 'Enhance Weapon', 'bonuses': {'+strength': 10, '+intelligence': 5}, 'action': skills.enhanceWeapon},
         'enhanceArmor': {'name': 'Enhance Armor', 'bonuses': {'+strength': 5, '+intelligence': 10}, 'action': skills.enhanceArmor},
