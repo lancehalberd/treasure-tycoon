@@ -145,26 +145,15 @@ function updateMonster(monster) {
         addBonusSourceToObject(monster, ability);
         addActions(monster, ability);
     });
-    var name =  monster.base.name;
-    var prefixNames = [];
     monster.prefixes.forEach(function (affix) {
-        prefixNames.push(affix.base.name);
         addBonusSourceToObject(monster, affix);
         addActions(monster, affix);
     });
-    if (prefixNames.length) {
-        name = prefixNames.join(', ') + ' ' + name;
-    }
-    var suffixNames = []
     monster.suffixes.forEach(function (affix) {
-        suffixNames.push(affix.base.name);
         addBonusSourceToObject(monster, affix);
         addActions(monster, affix);
     });
-    if (suffixNames.length) {
-        name = name + ' of ' + suffixNames.join(' and ');
-    }
-    monster.name = name;
+    monster.name = monster.base.name;
     // Add the character's current equipment to bonuses and graphics
     equipmentSlots.forEach(function (type) {
         var equipment = ifdefor(monster.equipment[type]);
@@ -225,8 +214,7 @@ function getMonsterBonuses(monster) {
         '+dexterity': 5 * growth,
         '+coins': Random.range(1, Math.floor(Math.pow(1.25, growth + 1) * 4)),
         '+anima': Random.range(1, Math.floor(Math.pow(1.25, growth + 1))),
-        '$color': 'red',
-        '+scale': 1
+        '$color': 'red'
     };
 }
 function initalizeMonsters() {

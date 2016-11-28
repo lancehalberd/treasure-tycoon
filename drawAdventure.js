@@ -163,11 +163,13 @@ function drawMonster(character, monster, index) {
     }
 }
 function drawAdventurer(character, adventurer, index) {
+    var scale = ifdefor(adventurer.scale, 1);
     var cameraX = character.cameraX;
     adventurer.left = adventurer.x - cameraX;
-    adventurer.top = 240 - 128 - 72 - 2 * (index % maxIndex);
-    adventurer.width = 64;
-    adventurer.height = 128;
+    adventurer.top = 240 - 128 * scale - 72 - 2 * (index % maxIndex);
+    adventurer.width = 64 * scale;
+    adventurer.height = 128 * scale;
+    // console.log([adventurer.left, adventurer.top, adventurer.width, adventurer.height]);
     //draw character
     if (adventurer.target && adventurer.lastAction && adventurer.lastAction.attackSpeed) { // attacking loop
         var attackSpeed = adventurer.lastAction.attackSpeed;
@@ -176,10 +178,10 @@ function drawAdventurer(character, adventurer, index) {
         if (adventurer.slow > 0) {
             drawTintedImage(mainContext, adventurer.personCanvas, '#fff', Math.min(1, adventurer.slow),
                         {'left': fightLoop[frame] * 32, 'top': 0 , 'width': 32, 'height': 64},
-                        {'left': adventurer.x - cameraX, 'top': 240 - 128 - 72, 'width': 64, 'height': 128});
+                        adventurer);
         } else {
             mainContext.drawImage(adventurer.personCanvas, fightLoop[frame] * 32, 0 , 32, 64,
-                            adventurer.x - cameraX, 240 - 128 - 72, 64, 128);
+                            adventurer.left, adventurer.top, adventurer.width, adventurer.height);
         }
     } else { // walking loop
         if (adventurer.cloaked) {
@@ -193,10 +195,10 @@ function drawAdventurer(character, adventurer, index) {
         if (adventurer.slow > 0) {
             drawTintedImage(mainContext, adventurer.personCanvas, '#fff', Math.min(1, adventurer.slow),
                         {'left': walkLoop[frame] * 32, 'top': 0 , 'width': 32, 'height': 64},
-                        {'left': adventurer.x - cameraX, 'top': 240 - 128 - 72, 'width': 64, 'height': 128});
+                        adventurer);
         } else {
             mainContext.drawImage(adventurer.personCanvas, walkLoop[frame] * 32, 0 , 32, 64,
-                        adventurer.x - cameraX, 240 - 128 - 72, 64, 128);
+                        adventurer.left, adventurer.top, adventurer.width, adventurer.height);
         }
     }
     //mainContext.fillRect(adventurer.x - cameraX, 240 - 128 - 72, 64, 128);

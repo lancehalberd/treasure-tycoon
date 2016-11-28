@@ -648,6 +648,8 @@ function stealAffixes(actor, target, skill) {
         return;
     }
     var allAffixes = target.prefixes.concat(target.suffixes);
+    if (!allAffixes.length) return;
+    var originalBonus = allAffixes.length > 2 ? imbuedMonsterBonuses : enchantedMonsterBonuses;
     for (var i = 0; i < skill.count && allAffixes.length; i++) {
         var affix = Random.element(allAffixes);
         if (target.prefixes.indexOf(affix) >= 0) target.prefixes.splice(target.prefixes.indexOf(affix), 1);
@@ -658,8 +660,17 @@ function stealAffixes(actor, target, skill) {
         };
         addTimedEffect(actor, effect);
         allAffixes = target.prefixes.concat(target.suffixes);
+        removeBonusSourceFromObject(target, affix);
     }
-    updateMonster(target);
+    if (allAffixes.length >= 2) {
+        // Do nothing, monster is still imbued
+    } else if (allAffixes.length > 0 && originalBonus !== enchantedMonsterBonuses) {
+        removeBonusSourceFromObject(target, originalBonus);
+        addBonusSourceToObject(target, enchantedMonsterBonuses);
+    } else if (allAffixes.length === 0) {
+        removeBonusSourceFromObject(target, originalBonus);
+    }
+    recomputeDirtyStats(target);
 }
 
 skillDefinitions.banish = {

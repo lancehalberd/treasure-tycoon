@@ -106,7 +106,8 @@ var coreStatBonusSource = {'bonuses': {
     '+magic:magicDamage': ['{intelligence}', '/', 10],
     '&maxHealth': '{bonusMaxHealth}',
     '+healthRegen': ['{maxHealth}', '/', 50],
-    '+magicPower': ['{intelligence}', '+', [['{minMagicDamage}', '+' ,'{maxMagicDamage}'], '/', 2]]
+    '+magicPower': ['{intelligence}', '+', [['{minMagicDamage}', '+' ,'{maxMagicDamage}'], '/', 2]],
+    '+scale': 1
 }};
 
 function removeAdventureEffects(adventurer) {
@@ -476,7 +477,14 @@ function updateActorHelpText(actor) {
     }
 }
 function actorHelpText(actor) {
-    var sections = [actor.name + ' ' + Math.ceil(actor.health) + '/' + Math.ceil(actor.maxHealth)];
+    var name = actor.name;
+    var prefixNames = [];
+    var suffixNames = [];
+    for (var prefix of ifdefor(actor.prefixes, [])) prefixNames.push(prefix.base.name);
+    for (var suffix of ifdefor(actor.suffixes, [])) suffixNames.push(suffix.base.name);
+    if (prefixNames.length) name = prefixNames.join(', ') + ' ' + name;
+    if (suffixNames.length) name = name + ' of ' + suffixNames.join(' and ');
+    var sections = [name + ' ' + Math.ceil(actor.health) + '/' + Math.ceil(actor.maxHealth)];
     if (actor.reflectBarrier >= 1) {
         sections.push('Reflect: ' + actor.reflectBarrier.format(0));
     }
