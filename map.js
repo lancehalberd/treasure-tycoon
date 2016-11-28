@@ -182,10 +182,11 @@ function getMapShrineHelpText(shrine) {
     if (state.selectedCharacter.currentLevelKey !== shrine.level.levelKey || !state.selectedCharacter.levelCompleted) {
         helpText += '<p style="font-size: 12">An adventurer can only visit the shrine for the last adventure they completed.</p><br/>';
     }
-    if (state.selectedCharacter.adventurer.abilities.indexOf(skill) < 0  && state.selectedCharacter.divinity < totalCost) {
+    var skillAlreadyLearned = state.selectedCharacter.adventurer.unlockedAbilities[skill.key];
+    if (!skillAlreadyLearned && state.selectedCharacter.divinity < totalCost) {
         helpText += '<p style="font-size: 12">' + state.selectedCharacter.adventurer.name + ' does not have enough divinity to learn the skill from this shrine.</p><br/>';
     }
-    if (state.selectedCharacter.adventurer.abilities.indexOf(skill) < 0) {
+    if (!skillAlreadyLearned) {
         helpText += '<p style="font-weight: bold">Spend ' + totalCost + ' divinity at this shrine to level up and learn:</p>' + abilityHelpText(skill, state.selectedCharacter.adventurer);
     } else {
         helpText += '<p style="font-size: 12px">' + state.selectedCharacter.adventurer.name + ' has already learned:</p>' + abilityHelpText(skill, state.selectedCharacter.adventurer);
@@ -417,7 +418,7 @@ function completeLevel(character) {
     character.levelCompleted = true;
 
     // This code will be used when they activate a shrine
-    if (level.board && character.adventurer.unlockedAbilities[level.skill] < 0 && character.divinity >= totalCostForNextLevel(character, level)) {
+    if (level.board && !character.adventurer.unlockedAbilities[level.skill] && character.divinity >= totalCostForNextLevel(character, level)) {
         if (!boards[level.board]) {
             throw new Error("Could not find board: " + level.board);
         }

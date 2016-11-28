@@ -180,7 +180,7 @@ function drawMap() {
             context.save();
             var shrine = levelData.shrine;
             var levelCompleted = (state.selectedCharacter.currentLevelKey === levelKey) && state.selectedCharacter.levelCompleted;
-            var skillLearned = state.selectedCharacter.adventurer.abilities.indexOf(skill) >= 0;
+            var skillLearned = state.selectedCharacter.adventurer.unlockedAbilities[skill.key];
             var canAffordSkill = state.selectedCharacter.divinity >= totalCostForNextLevel(state.selectedCharacter, levelData);
             // Disable shrine if the character did not just complete this area.
             if (!levelCompleted) {

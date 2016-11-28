@@ -15,6 +15,22 @@ var map = {
             ["dragon"]
         ]
     },
+    'ancientforest': {
+        'name': "Ancient Forest",
+        'level': 27,
+        'x': 27, 'y': -12,
+        'coords': [-186,-507,263],
+        'background': "forest",
+        'unlocks': ["killingfields","dancer9"],
+        'specialLoot': [],
+        'skill': "rangedAttackSpeed",
+        'board': "crownBoard",
+        'enemySkills': ["rangedDamage","rangedAccuracy","rangedAttackSpeed"],
+        'monsters': ["caterpillar","spider","giantSpider","butterfly"],
+        'events': [
+            ["battlefly","motherfly"]
+        ]
+    },
     'ancientlibrary': {
         'name': "Ancient Library",
         'level': 24,
@@ -249,7 +265,7 @@ var map = {
         'unlocks': ["dojo","warrior2"],
         'specialLoot': [],
         'skill': "consume",
-        'board': "tripleTriangles",
+        'board': "parallelDiamonds",
         'enemySkills': [],
         'monsters': ["skeleton"],
         'events': [
@@ -281,7 +297,7 @@ var map = {
         'unlocks': ["cemetery","bard2","academy"],
         'specialLoot': ["simpleEmeraldLoot"],
         'skill': "attackSong",
-        'board': "petalBoard",
+        'board': "parallelDiamonds",
         'enemySkills': ["protect","majorIntelligence"],
         'monsters': ["butterfly","bat"],
         'events': [
@@ -377,12 +393,12 @@ var map = {
         'name': "Cemetery",
         'level': 5,
         'x': 6, 'y': 1,
-        'coords': [-417,101,-420],
+        'coords': [-411,91,-428],
         'background': "cemetery",
         'unlocks': ["academy","wizard2"],
         'specialLoot': ["simpleRubyLoot"],
         'skill': "raiseDead",
-        'board': "doubleDiamonds",
+        'board': "parallelDiamonds",
         'enemySkills': [],
         'monsters': ["bat"],
         'events': [
@@ -805,7 +821,7 @@ var map = {
         'unlocks': ["darkknight2","paladin3"],
         'specialLoot': [],
         'skill': "enhanceWeapon",
-        'board': "tripleTriangles",
+        'board': "parallelDiamonds",
         'enemySkills': [],
         'monsters': ["skeleton"],
         'events': [
@@ -1175,7 +1191,7 @@ var map = {
         'unlocks': ["shrubbery","range"],
         'specialLoot': [],
         'skill': "powerShot",
-        'board': "tripleTriangles",
+        'board': "parallelDiamonds",
         'enemySkills': [],
         'monsters': ["caterpillar","spongeyCateripllar","butterfly"],
         'events': [
@@ -1184,6 +1200,23 @@ var map = {
             ["spongeyCateripllar","battlefly","battlefly"],
             ["spongeyCateripllar","spongeyCateripllar","battlefly","battlefly"],
             ["skeletonOgre","battlefly"]
+        ]
+    },
+    'forestlair': {
+        'name': "Forest Lair",
+        'level': 9,
+        'x': 9, 'y': -12,
+        'coords': [-230,-488,-263],
+        'background': "forest",
+        'unlocks': ["ranger4","camp"],
+        'specialLoot': [],
+        'skill': "rangedAccuracy",
+        'board': "doubleDiamonds",
+        'enemySkills': ["rangedAccuracy"],
+        'monsters': ["caterpillar","butterfly","gnome"],
+        'events': [
+            ["caterpillar","caterpillar","gnomeWizard"],
+            ["caterpillar","caterpillar","dragon"]
         ]
     },
     'fortress': {
@@ -1227,7 +1260,7 @@ var map = {
         'unlocks': ["road","tributaries","monastery"],
         'specialLoot': ["simpleEmeraldLoot"],
         'skill': "minorStrength",
-        'board': "spikeBoard",
+        'board': "radiationBoard",
         'enemySkills': ["minorStrength"],
         'monsters': ["caterpillar","skeletalBuccaneer","skeleton"],
         'events': [
@@ -1327,6 +1360,22 @@ var map = {
             ["dragon","lightningBug"]
         ]
     },
+    'impenetrableforest': {
+        'name': "Impenetrable Forest",
+        'level': 32,
+        'x': 31, 'y': -12,
+        'coords': [-123,-435,395],
+        'background': "forest",
+        'unlocks': ["ranger10"],
+        'specialLoot': [],
+        'skill': "rangedParadigmShift",
+        'board': "pieBoard",
+        'enemySkills': ["rangedAccuracy","rangedDamage","rangedAttackSpeed","rangedParadigmShift"],
+        'monsters': ["spider","jumpingSpider","giantSpider","motherfly"],
+        'events': [
+            ["jumpingSpider","jumpingSpider","giantSpider"]
+        ]
+    },
     'juggler10': {
         'name': "juggler10",
         'level': 30,
@@ -1417,7 +1466,7 @@ var map = {
         'unlocks': ["priest3","paladin2"],
         'specialLoot': [],
         'skill': "minorIntelligence",
-        'board': "spikeBoard",
+        'board': "radiationBoard",
         'enemySkills': ["heal"],
         'monsters': ["gnome","bat"],
         'events': [
@@ -1696,7 +1745,7 @@ var map = {
         'unlocks': ["monk4","oceanside"],
         'specialLoot': [],
         'skill': "fistDamage",
-        'board': "doubleDiamonds",
+        'board': "parallelDiamonds",
         'enemySkills': ["vitality","hook"],
         'monsters': ["skeletalBuccaneer","caterpillar"],
         'events': [
@@ -1952,6 +2001,22 @@ var map = {
             ["dragon"]
         ]
     },
+    'oldforest': {
+        'name': "Old Forest",
+        'level': 18,
+        'x': 19, 'y': -12,
+        'coords': [-249,-546,-3],
+        'background': "field",
+        'unlocks': ["ranger7","dancer7"],
+        'specialLoot': [],
+        'skill': "rangedDamage",
+        'board': "doubleDiamonds",
+        'enemySkills': ["rangedDamage","rangedAccuracy"],
+        'monsters': ["caterpillar","gnome","gnomecromancer","butterfly"],
+        'events': [
+            ["dragon","dragon"]
+        ]
+    },
     'orchard': {
         'name': "Orchard",
         'level': 3,
@@ -1961,7 +2026,7 @@ var map = {
         'unlocks': ["shrubbery","wetlands"],
         'specialLoot': ["simpleEmeraldLoot"],
         'skill': "minorDexterity",
-        'board': "spikeBoard",
+        'board': "radiationBoard",
         'enemySkills': ["sap","rangeAndAttackSpeed"],
         'monsters': ["butterfly","gnome"],
         'events': [
@@ -2228,23 +2293,6 @@ var map = {
             ["dragon"]
         ]
     },
-    'forestlair': {
-        'name': "Forest Lair",
-        'level': 9,
-        'x': 9, 'y': -12,
-        'coords': [-230,-488,-263],
-        'background': "forest",
-        'unlocks': ["ranger4","camp"],
-        'specialLoot': [],
-        'skill': "rangedAccuracy",
-        'board': "doubleDiamonds",
-        'enemySkills': ["rangedAccuracy"],
-        'monsters': ["caterpillar","butterfly","gnome"],
-        'events': [
-            ["caterpillar","caterpillar","gnomeWizard"],
-            ["caterpillar","caterpillar","dragon"]
-        ]
-    },
     'ranger4': {
         'name': "ranger4",
         'level': 11,
@@ -2277,22 +2325,6 @@ var map = {
             ["dragon"]
         ]
     },
-    'oldforest': {
-        'name': "Old Forest",
-        'level': 18,
-        'x': 19, 'y': -12,
-        'coords': [-249,-546,-3],
-        'background': "field",
-        'unlocks': ["ranger7","dancer7"],
-        'specialLoot': [],
-        'skill': "rangedDamage",
-        'board': "doubleDiamonds",
-        'enemySkills': ["rangedDamage","rangedAccuracy"],
-        'monsters': ["caterpillar","gnome","gnomecromancer","butterfly"],
-        'events': [
-            ["dragon","dragon"]
-        ]
-    },
     'ranger7': {
         'name': "ranger7",
         'level': 23,
@@ -2307,38 +2339,6 @@ var map = {
         'monsters': ["skeleton"],
         'events': [
             ["dragon"]
-        ]
-    },
-    'ancientforest': {
-        'name': "Ancient Forest",
-        'level': 27,
-        'x': 27, 'y': -12,
-        'coords': [-186,-507,263],
-        'background': "forest",
-        'unlocks': ["killingfields","dancer9"],
-        'specialLoot': [],
-        'skill': "rangedAttackSpeed",
-        'board': "crownBoard",
-        'enemySkills': ["rangedDamage","rangedAccuracy","rangedAttackSpeed"],
-        'monsters': ["caterpillar","spider","giantSpider","butterfly"],
-        'events': [
-            ["battlefly","motherfly"]
-        ]
-    },
-    'impenetrableforest': {
-        'name': "Impenetrable Forest",
-        'level': 32,
-        'x': 31, 'y': -12,
-        'coords': [-123,-435,395],
-        'background': "forest",
-        'unlocks': ["ranger10"],
-        'specialLoot': [],
-        'skill': "rangedParadigmShift",
-        'board': "pieBoard",
-        'enemySkills': ["rangedAccuracy","rangedDamage","rangedAttackSpeed","rangedParadigmShift"],
-        'monsters': ["spider","jumpingSpider","giantSpider","motherfly"],
-        'events': [
-            ["jumpingSpider","jumpingSpider","giantSpider"]
         ]
     },
     'ravine': {
@@ -2382,7 +2382,7 @@ var map = {
         'unlocks': ["warrior2","monk4"],
         'specialLoot': ["simpleRubyLoot"],
         'skill': "sideStep",
-        'board': "tripleTriangles",
+        'board': "parallelDiamonds",
         'enemySkills': ["vitality","sideStep"],
         'monsters': ["skeletalBuccaneer","giantSkeleton","undeadPaladin"],
         'events': [
@@ -2629,7 +2629,7 @@ var map = {
         'unlocks': ["forestfloor","dancer2"],
         'specialLoot': ["simpleRubyLoot"],
         'skill': "pet",
-        'board': "smallFangBoard",
+        'board': "radiationBoard",
         'enemySkills': [],
         'monsters': ["butterfly"],
         'events': [
@@ -2681,7 +2681,7 @@ var map = {
         'unlocks': ["forestfloor","understory","levee"],
         'specialLoot': [],
         'skill': "evasion",
-        'board': "doubleDiamonds",
+        'board': "parallelDiamonds",
         'enemySkills': [],
         'monsters': ["skeleton"],
         'events': [
@@ -2953,7 +2953,7 @@ var map = {
         'unlocks': ["road","barracks"],
         'specialLoot': ["simpleRubyLoot"],
         'skill': "charge",
-        'board': "tripleTriangles",
+        'board': "radiationBoard",
         'enemySkills': ["charge","chargeKnockback"],
         'monsters': ["skeleton"],
         'events': [
@@ -2972,7 +2972,7 @@ var map = {
         'unlocks': ["priest3","cemetery","bayou"],
         'specialLoot': [],
         'skill': "fireball",
-        'board': "tripleTriangles",
+        'board': "radiationBoard",
         'enemySkills': [],
         'monsters': ["skeleton","gnomeWizard"],
         'events': [
@@ -3217,7 +3217,7 @@ var map = {
         'unlocks': ["levee","shrubbery"],
         'specialLoot': [],
         'skill': "blinkStrike",
-        'board': "tripleTriangles",
+        'board': "parallelDiamonds",
         'enemySkills': [],
         'monsters': ["spider","jumpingSpider"],
         'events': [
