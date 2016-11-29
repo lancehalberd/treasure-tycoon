@@ -63,6 +63,9 @@ function debuffEffect(effect, bonuses) {
     return effect;
 }
 
+var effectSourceUp = ['gfx/militaryIcons.png', 17, 23, 16, 16, 0, 0];
+var effectSourceArmor = ['gfx/militaryIcons.png', 65, 180, 12, 12, 8, 8];
+var effectSourceSword = ['gfx/militaryIcons.png', 52, 180, 12, 12, 8, 8];
 var skills = {
     // Movement actions
     'dodge': movementAction('dodge', {}, {'+cooldown': 10, '+distance': -128, '$buff': buffEffect({}, {'+%evasion': .5, '+duration': 5})},
@@ -139,11 +142,11 @@ var skills = {
                 'If an attack would deal more than half of your remaining life, dodge it and throw a smoke bomb causing: {$globalDebuff} to all enemies.'),
     'shadowClone': genericAction('clone', {'tags': ['minion']}, {'+limit': 10, '+chance': .1},
                         'Chance to summon a weak clone of yourself on taking damage'),
-    'enhanceWeapon': genericAction('effect', {'tags': ['spell'], 'target': 'self'}, {'+cooldown': 20, '$buff': buffEffect({}, {
+    'enhanceWeapon': genericAction('effect', {'tags': ['spell'], 'target': 'self'}, {'+cooldown': 20, '$buff': buffEffect({'icons': [effectSourceUp, effectSourceSword]}, {
                             '++physicalDamage': ['{strength}', '/', 10], '++magicDamage': ['{intelligence}', '/', 10],
                             '++critDamage': ['{dexterity}', '/', 500], '+duration': 5})},
                     'Enhance the strength of your weapon granting: {$buff}'),
-    'enhanceArmor': genericAction('effect', {'tags': ['spell'], 'target': 'self'}, {'+cooldown': 30, '$buff': buffEffect({}, {
+    'enhanceArmor': genericAction('effect', {'tags': ['spell'], 'target': 'self'}, {'+cooldown': 30, '$buff': buffEffect({'icons': [effectSourceUp, effectSourceArmor]}, {
                             '++armor': ['{strength}', '/', 10], '++magicBlock': ['{intelligence}', '/', 20],
                             '++block': ['{intelligence}', '/', 10], '++evasion': ['{dexterity}', '/', 10], '+duration': 15})},
                     'Enhance the strength of your armor granting: {$buff}'),
@@ -154,13 +157,13 @@ var skills = {
                     'Enhance your own abilities granting: {$buff}'),
     // Song buffs should be based on the singer's stats, not the stats of the targets. Not sure if this is the case or not.
     'attackSong': genericAction('song', {'tags': ['song', 'field'], 'target': 'allies', 'color': 'orange', 'alpha': .2},
-                                {'+area': 8, '+cooldown': 30, '+duration': 10, '$buff': buffEffect({}, {
+                                {'+area': 8, '+cooldown': 30, '+duration': 10, '$buff': buffEffect({'icons': [effectSourceUp, effectSourceSword]}, {
                                     '+%attackSpeed': [.2, '+', ['{dexterity}', '/', 1000]],
                                     '+%accuracy': [.2, '+', ['{intelligence}', '/', 1000]],
                                     '+%damage': [.2, '+', ['{strength}', '/', 1000]]})},
             'Play a tune that inspires you and your allies to attack more fiercely, granting all allies in range: {$buff}'),
     'defenseSong': genericAction('song', {'tags': ['song', 'field'], 'target': 'allies', 'color': 'purple', 'alpha': .2},
-                                 {'+area': 10, '+cooldown': 45, '+duration': 20, '$buff': buffEffect({}, {
+                                 {'+area': 10, '+cooldown': 45, '+duration': 20, '$buff': buffEffect({'icons': [effectSourceUp, effectSourceArmor]}, {
                                     '+%evasion': [.2, '+', ['{dexterity}', '/', 1000]],
                                     '+%block': [.2, '+', ['{intelligence}', '/', 1000]],
                                     '+%magicBlock': [.2, '+', ['{intelligence}', '/', 1000]],
@@ -190,7 +193,7 @@ var skills = {
             'Create a magical barrier that will reflect projectile attacks until it breaks after taking {+power} damage. Further casting strengthens the barrier.'),
     'revive': spellAction('revive', {}, {'+cooldown': 120},
             'Upon receiving a lethal blow, cast a spell that brings you back to life with {+power} health.'),
-    'protect': spellAction('effect', {'target': 'allies'}, {'+cooldown': 30, '+range': 10, '$buff': buffEffect({}, {'++armor': ['{intelligence}'], '+duration': 20})},
+    'protect': spellAction('effect', {'target': 'allies'}, {'+cooldown': 30, '+range': 10, '$buff': buffEffect({'icons': [effectSourceUp, effectSourceArmor]}, {'++armor': ['{intelligence}'], '+duration': 20})},
                            'Create a magic barrier that grants: {$buff}'),
     'aegis': spellAction('criticalCounter', {}, {'+cooldown': 60, '+stopAttack': 1,
                 '$buff': buffEffect({}, {'$$maxBlock': 'Block checks are always perfect', '$$maxMagicBlock': 'Magic Block checks are always perfect', '+duration': 5})},

@@ -167,8 +167,9 @@ function drawMonster(character, monster, index) {
     }
     if (ifdefor(monster.reflectBarrier, 0) >= 1) {
         var width = Math.ceil(Math.min(1, monster.maxReflectBarrier / monster.maxHealth) * 64);
-        drawBar(context, x, y, width, 4, 'white', 'blue', monster.reflectBarrier / monster.maxReflectBarrier);
+        drawBar(context, x, y - 2, width, 4, 'white', 'blue', monster.reflectBarrier / monster.maxReflectBarrier);
     }
+    drawEffectIcons(monster, x, y);
 }
 // Get array of tint effects to apply when drawing the given actor.
 function getActorTints(actor) {
@@ -182,6 +183,9 @@ function getActorTints(actor) {
     }
     if (actor.slow > 0) tints.push(['#fff', Math.min(1, actor.slow)]);
     return tints;
+}
+function drawImage(context, image, source, target) {
+    context.drawImage(image, source.left, source.top, source.width, source.height, target.left, target.top, target.width, target.height);
 }
 function drawAdventurer(character, adventurer, index) {
     var scale = ifdefor(adventurer.scale, 1);
@@ -239,6 +243,24 @@ function drawAdventurer(character, adventurer, index) {
     if (ifdefor(adventurer.reflectBarrier, 0) >= 1) {
         var width = Math.ceil(Math.min(1, adventurer.maxReflectBarrier / adventurer.maxHealth) * 64);
         drawBar(mainContext, x, y - 2, width, 4, 'white', 'blue', adventurer.reflectBarrier / adventurer.maxReflectBarrier);
+    }
+    drawEffectIcons(adventurer, x, y);
+}
+function drawEffectIcons(actor, x, y) {
+    var effectXOffset = 0;
+    var effectYOffset = 2;
+    for (var effect of actor.allEffects) {
+        var icons = effect.base ? ifdefor(effect.base.icons, []) : [];
+        for (var iconData of icons) {
+            var source = {'image': images[iconData[0]], 'left': iconData[1], 'top': iconData[2], 'width': iconData[3], 'height': iconData[4]};
+            var xOffset = effectXOffset + iconData[5], yOffset = effectYOffset + iconData[6];
+            drawImage(mainContext, source.image, source, {'left': x + xOffset, 'top': y + yOffset, 'width': source.width, 'height': source.height});
+        }
+        effectXOffset += 16;
+        if (effectXOffset + 16 > actor.width) {
+            effectXOffset = 0;
+            effectYOffset += 20;
+        }
     }
 }
 function drawMinimap(character) {

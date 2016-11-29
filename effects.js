@@ -304,6 +304,7 @@ function addTimedEffect(actor, effect) {
     // Also setting the area here to 0 allows us to call this method again for
     // allies within the area of effect without recursing infinitely.
     effect = {
+        'base': effect.base,
         'bonuses': effect.bonuses,
         'duration': effect.duration,
         'area': 0
