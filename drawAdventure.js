@@ -87,20 +87,25 @@ function drawMonster(character, monster, index) {
     var cameraX = character.cameraX;
     var context = mainContext;
     var source = monster.base.source;
+    var scale = 2 * ifdefor(monster.scale, 1);
     var frame;
     context.save();
     if (monster.cloaked) {
         context.globalAlpha = .2;
     }
-    monster.width = source.width * 2 * ifdefor(monster.scale, 1);
-    monster.height = ifdefor(source.height, 64) * 2 * ifdefor(monster.scale, 1);
+    monster.width = source.width * scale;
+    monster.height = ifdefor(source.height, 64) * scale;
     monster.left = monster.x - cameraX;
-    monster.top = 240 - monster.height - 72 - ifdefor(source.y, 0) * 2 * ifdefor(monster.scale, 1) - 2 * (index % maxIndex);
-    context.translate(monster.left + monster.width / 2, 0);
+    monster.top = 240 - monster.height - 72 - ifdefor(source.y, 0) * scale - 2 * (index % maxIndex);
+    var xCenter = ifdefor(source.xCenter, source.width / 2) * scale;
+    var yCenter = ifdefor(source.yCenter, ifdefor(source.height, 64) / 2) * scale;
+    context.translate(monster.left + xCenter, monster.top + yCenter);
+    if (ifdefor(monster.rotation)) {
+        context.rotate(monster.rotation * Math.PI/180);
+    }
     if ((source.flipped && monster.direction < 0) || (!source.flipped && monster.direction > 0)) {
         context.scale(-1, 1);
     }
-
     if (monster.isDead && !ifdefor(source.deathFrames)) {
         monster.animationTime = monster.timeOfDeath;
         mainContext.globalAlpha = 1 - (monster.time - monster.timeOfDeath);
@@ -128,8 +133,8 @@ function drawMonster(character, monster, index) {
         xFrame = frame % source.framesPerRow;
         yFrame = Math.floor(frame / source.framesPerRow);
     }
-    var frameSource = {'left': xFrame * source.width + source.offset, 'top': yFrame * ifdefor(source.height, 64), 'width': source.width, 'height': ifdefor(source.height, 64)};
-    var target = {'left': -monster.width / 2, 'top': monster.top, 'width': monster.width, 'height': monster.height};
+    var frameSource = {'left': xFrame * source.width + source.xOffset, 'top': yFrame * ifdefor(source.height, 64) + ifdefor(source.yOffset, 0), 'width': source.width, 'height': ifdefor(source.height, 64)};
+    var target = {'left': -xCenter, 'top': -yCenter, 'width': monster.width, 'height': monster.height};
 
     var tints = getActorTints(monster), sourceRectangle;
     if (tints.length) {
@@ -190,10 +195,20 @@ function drawImage(context, image, source, target) {
 function drawAdventurer(character, adventurer, index) {
     var scale = ifdefor(adventurer.scale, 1);
     var cameraX = character.cameraX;
+    var context = mainContext;
     adventurer.left = adventurer.x - cameraX;
     adventurer.top = 240 - 128 * scale - 72 - 2 * (index % maxIndex);
     adventurer.width = 64 * scale;
     adventurer.height = 128 * scale;
+    var xCenter = 16 * 2 * scale;
+    var yCenter = 44 * 2 * scale;
+    context.translate(adventurer.left + xCenter, adventurer.top + yCenter);
+    if (ifdefor(adventurer.rotation)) {
+        context.rotate(adventurer.rotation * Math.PI/180);
+    }
+    if (adventurer.direction < 0) {
+        context.scale(-1, 1);
+    }
     // console.log([adventurer.left, adventurer.top, adventurer.width, adventurer.height]);
     //draw character
     var tints = getActorTints(adventurer), sourceRectangle;
@@ -218,13 +233,14 @@ function drawAdventurer(character, adventurer, index) {
         }
         mainContext.drawImage(tintedImage,
                     0, 0, sourceRectangle.width, sourceRectangle.height,
-                    adventurer.left, adventurer.top, adventurer.width, adventurer.height);
+                    -xCenter, -yCenter, adventurer.width, adventurer.height);
     } else {
         mainContext.drawImage(adventurer.personCanvas,
                     sourceRectangle.left, sourceRectangle.top , sourceRectangle.width, sourceRectangle.height,
-                    adventurer.left, adventurer.top, adventurer.width, adventurer.height);
+                    -xCenter, -yCenter, adventurer.width, adventurer.height);
     }
     //mainContext.fillRect(adventurer.x - cameraX, 240 - 128 - 72, 64, 128);
+    context.restore();
     // life bar
     if (adventurer.isDead) return;
     var x = adventurer.x - cameraX;

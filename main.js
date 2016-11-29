@@ -215,7 +215,7 @@ function mainLoop() {
                 // Original this branch was designed to make the camera change for opening the treasure
                 // But it actually applies to both the chest and the boss, which turned out to be fine.
                 if (character.waveIndex < character.area.waves.length - 1) {
-                    character.cameraX = (character.cameraX * 10 + character.adventurer.x - 50) / 11;
+                    character.cameraX = (character.cameraX * 10 + character.adventurer.x - 100) / 11;
                 } else if (character.cameraX < character.adventurer.x - 200 || character.cameraX > character.adventurer.x) {
                     character.cameraX = (character.cameraX * 10 + character.adventurer.x - 200) / 11;
                 }

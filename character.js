@@ -65,6 +65,7 @@ var commonActionVariables = {
     'cleaveRange': '.',
     'knockbackChance': '.',
     'knockbackDistance': '.',
+    'knockbackRotation': 'How much to rotate targets that are knocked back.',
     'cull': '.',
     'armorPenetration': '.',
     'instantCooldownChance': '.', // %chance to ignore cooldown for an action

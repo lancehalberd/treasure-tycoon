@@ -141,7 +141,7 @@ function useSkill(actor, skill, target) {
     }
     if (skill.tags.spell && actor.castKnockBack) {
         for (var enemy of getActorsInRange(actor, actor.castKnockBack, actor.enemies)) {
-            banishTarget(actor, enemy, actor.castKnockBack);
+            banishTarget(actor, enemy, actor.castKnockBack, 30);
         }
     }
     if (skill.tags.spell && actor.healOnCast) {
@@ -699,7 +699,7 @@ skillDefinitions.banish = {
             }
             var distance = getDistance(actor, enemy);
             if (distance < 32 * banishSkill.distance) {
-                banishTarget(actor, enemy, banishSkill.distance);
+                banishTarget(actor, enemy, banishSkill.distance, ifdefor(banishSkill.knockbackRotation, 30));
                 // The shockwave upgrade applies the same damage to the targets hit by the shockwave.
                 if (banishSkill.shockwave) {
                     enemy.pull.attackStats = attackStats;
@@ -711,11 +711,12 @@ skillDefinitions.banish = {
         });
     }
 };
-function banishTarget(actor, target, range) {
+function banishTarget(actor, target, range, rotation) {
     // Adding the delay here creates a shockwave effect where the enemies
     // all get pushed from a certain point at the same time, rather than
     // them all immediately moving towards the point initially.
     target.pull = {'x': actor.x + actor.direction * (64 + 32 * range), 'delay': target.time +  getDistance(actor, target) * .02 / 32, 'time': target.time + range * .02, 'damage': 0};
+    target.rotation = actor.direction * rotation;
 }
 
 skillDefinitions.charm = {

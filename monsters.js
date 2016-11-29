@@ -220,16 +220,16 @@ function getMonsterBonuses(monster) {
     };
 }
 function initalizeMonsters() {
-    var caterpillarSource = {'image': enemySheet('gfx/caterpillar.png'), 'offset': 0, 'width': 48, 'flipped': true, frames: 4};
-    var gnomeSource = {'image': enemySheet('gfx/gnome.png'), 'offset': 0, 'width': 32, 'flipped': false, frames: 4};
-    var skeletonSource = {'image': enemySheet('gfx/skeletonSmall.png'), 'offset': 0, 'width': 48, 'flipped': true, frames: 7};
-    var butterflySource = {'image': enemySheet('gfx/caterpillar.png'), 'offset': 4 * 48, 'width': 48, 'flipped': true, frames: 4};
-    var skeletonGiantSource = {'image': enemySheet('gfx/skeletonGiant.png'), 'offset': 0, 'width': 48, 'flipped': true, frames: 7};
-    var dragonSource = {'image': enemySheet('gfx/dragonEastern.png'), 'offset': 0, 'width': 48, 'flipped': false, frames: 5};
-    var batSource = {'image': enemySheet('gfx/bat.png'), 'offset': 0, 'width': 32, 'height': 32, 'flipped': false, frames: 5, 'y': 20};
-    var spiderSource = {'image': enemySheet('gfx/spider.png'), 'offset': 0, 'width': 48, 'height': 48, 'flipped': true, 'y': -10,
+    var caterpillarSource = {'image': enemySheet('gfx/caterpillar.png'), 'xOffset': 0, 'width': 48,  'height': 24, 'yOffset': 40, 'flipped': true, frames: 4};
+    var gnomeSource = {'image': enemySheet('gfx/gnome.png'), 'xOffset': 0, 'width': 32, 'height': 38, 'yOffset': 26, 'flipped': false, frames: 4};
+    var skeletonSource = {'image': enemySheet('gfx/skeletonSmall.png'), 'xOffset': 0, 'width': 48, 'height': 38, 'yOffset': 26, 'flipped': true, frames: 7};
+    var butterflySource = {'image': enemySheet('gfx/caterpillar.png'), 'xOffset': 4 * 48, 'width': 48, 'flipped': true, frames: 4};
+    var skeletonGiantSource = {'image': enemySheet('gfx/skeletonGiant.png'), 'xOffset': 0, 'width': 48, 'flipped': true, frames: 7};
+    var dragonSource = {'image': enemySheet('gfx/dragonEastern.png'), 'xOffset': 0, 'width': 48, 'xCenter': 25, 'yCenter': 48, 'flipped': false, frames: 5};
+    var batSource = {'image': enemySheet('gfx/bat.png'), 'xOffset': 0, 'width': 32, 'height': 32, 'flipped': false, frames: 5, 'y': 20};
+    var spiderSource = {'image': enemySheet('gfx/spider.png'), 'xOffset': 0, 'width': 48, 'height': 48, 'flipped': true, 'y': -10,
             framesPerRow: 10, walkFrames: [4, 5, 6, 7, 8, 9], attackFrames: [2, 3, 0, 1], deathFrames: [10, 11, 12, 13]};
-    var wolfSource = {'image': enemySheet('gfx/wolf.png'), 'offset': 0, 'width': 64, 'height': 32, 'flipped': true,
+    var wolfSource = {'image': enemySheet('gfx/wolf.png'), 'xOffset': 0, 'width': 64, 'height': 32, 'flipped': true,
             framesPerRow: 7, walkFrames: [0, 1, 2, 3], attackFrames: [6, 4, 5, 0], deathFrames: [0, 7, 8, 9]};
     addMonster('dummy', {
         'name': 'Dummy', 'source': caterpillarSource,

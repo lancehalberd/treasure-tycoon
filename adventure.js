@@ -291,6 +291,8 @@ function processStatusEffects(character, target, delta) {
         var timeLeft = (target.pull.time - target.time);
         if (timeLeft > 0) {
             var dx = (target.pull.x - target.x) * Math.min(1, delta / timeLeft);
+            var dr = (0 - target.rotation) * Math.min(1, delta / timeLeft);
+            target.rotation += dr;
             var damage = target.pull.damage * Math.min(1, delta / timeLeft);
             target.pull.damage -= damage;
             // Don't let target be pulled past enemies. Do let them jump away from enemies.
@@ -300,6 +302,7 @@ function processStatusEffects(character, target, delta) {
             }
         } else {
             var dx = target.pull.x - target.x;
+            target.rotation = 0;
             // Don't let target be pulled past enemies. Do let them jump away from enemies.
             if (!target.blocked || dx * target.direction < 0) {
                 target.x = target.pull.x;

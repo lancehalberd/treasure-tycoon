@@ -277,7 +277,7 @@ var abilities = {
     'dodgeHook': {'name': 'Dodge then Hook', 'bonuses': {'$dodge:instantCooldown': 'hook'}},
     'spellAOE': {'name': 'Spell AOE', 'bonuses': {'+spell:area': 20}},
     'slowSpells': {'name': 'Slow Spells', 'bonuses': {'*spell:cooldown': 1.2}},
-    'chargeKnockback': {'name': 'Charge Knockback', 'bonuses': {'+charge:knockbackChance': 1, '+charge:knockbackDistance': 10}},
+    'chargeKnockback': {'name': 'Charge Knockback', 'bonuses': {'+charge:knockbackChance': 1, '+charge:knockbackDistance': 10, '+charge:knockbackRotation': 30}},
     'stealth': {'name': 'Stealth', 'bonuses':{'$cloaking': 'Invisible while moving'}},
     'dodgeNetReflect': {'name': 'Dodge then Hook', 'bonuses': {'$dodge:instantCooldown': 'net', '$net:instantCooldown': 'reflect'}},
     'poison': {'name': 'Poison', 'onHitEffect': {'variableObjectType': 'trigger', 'bonuses': {'$debuff': debuffEffect({}, {'+*healthRegen': 0, '++damageOverTime': '{level}', '+duration': 3})}}},
