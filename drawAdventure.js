@@ -131,9 +131,7 @@ function drawMonster(character, monster, index) {
     var frameSource = {'left': xFrame * source.width + source.offset, 'top': yFrame * ifdefor(source.height, 64), 'width': source.width, 'height': ifdefor(source.height, 64)};
     var target = {'left': -monster.width / 2, 'top': monster.top, 'width': monster.width, 'height': monster.height};
 
-    var tints = [], sourceRectangle;
-    if (ifdefor(monster.tint)) tints.push([monster.tint, .2 + Math.cos(monster.animationTime * 5) / 10]);
-    if (monster.slow > 0) tints.push(['#fff', Math.min(1, monster.slow)]);
+    var tints = getActorTints(monster), sourceRectangle;
     if (tints.length) {
         prepareTintedImage();
         var tint = tints.pop();
@@ -172,6 +170,19 @@ function drawMonster(character, monster, index) {
         drawBar(context, x, y, width, 4, 'white', 'blue', monster.reflectBarrier / monster.maxReflectBarrier);
     }
 }
+// Get array of tint effects to apply when drawing the given actor.
+function getActorTints(actor) {
+    var tints = [];
+    if (ifdefor(actor.tint)) {
+        var min = ifdefor(actor.tintMinAlpha, .5);
+        var max = ifdefor(actor.tintMaxAlpha, .5);
+        var center = (min + max) / 2;
+        var radius = (max - min) / 2;
+        tints.push([actor.tint, center + Math.cos(actor.animationTime * 5) * radius]);
+    }
+    if (actor.slow > 0) tints.push(['#fff', Math.min(1, actor.slow)]);
+    return tints;
+}
 function drawAdventurer(character, adventurer, index) {
     var scale = ifdefor(adventurer.scale, 1);
     var cameraX = character.cameraX;
@@ -181,9 +192,7 @@ function drawAdventurer(character, adventurer, index) {
     adventurer.height = 128 * scale;
     // console.log([adventurer.left, adventurer.top, adventurer.width, adventurer.height]);
     //draw character
-    var tints = [], sourceRectangle;
-    if (ifdefor(adventurer.tint)) tints.push([adventurer.tint, .2 + Math.cos(adventurer.animationTime * 5) / 10]);
-    if (adventurer.slow > 0) tints.push(['#fff', Math.min(1, adventurer.slow)]);
+    var tints = getActorTints(adventurer), sourceRectangle;
     if (adventurer.target && adventurer.lastAction && adventurer.lastAction.attackSpeed) { // attacking loop
         var attackSpeed = adventurer.lastAction.attackSpeed;
         var attackFps = 1 / ((1 / attackSpeed) / fightLoop.length);
