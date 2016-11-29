@@ -107,7 +107,7 @@ addPrefix(40, 'Boosted', smallArmorSlots.concat(accessorySlots), {'+maxHealth': 
 addPrefix(55, 'Amplified', smallArmorSlots.concat(accessorySlots), {'+maxHealth': [84, 96]});
 addPrefix(70, 'Maximized', smallArmorSlots.concat(accessorySlots), {'+maxHealth': [108, 120]});
 
-addPrefix(2, 'Relaxing', smallArmorSlots.concat(accessorySlots), {'+healthRegen': [10, 20, 10]});
+addPrefix(1, 'Relaxing', smallArmorSlots.concat(accessorySlots), {'+healthRegen': [10, 20, 10]});
 addPrefix(12, 'Relieving', smallArmorSlots.concat(accessorySlots), {'+healthRegen': [20, 50, 10]});
 addPrefix(24, 'Soothing', smallArmorSlots.concat(accessorySlots), {'+healthRegen': [50, 80, 10]});
 addPrefix(36, 'Restoring', smallArmorSlots.concat(accessorySlots), {'+healthRegen': [80, 120, 10]});
@@ -283,8 +283,8 @@ function updateEnchantmentOptions() {
     var total = prefixes + suffixes;
     var value = sellValue(item);
     if (total > 0) {
-        $('.js-resetEnchantments').toggleClass('disabled', state.coins < value * 10)
-            .attr('helptext', 'Offer ' + points('coins', value * 10) + ' to remove all enchantments from an item.<br/>This will allow you to enchant it again differently.');
+        $('.js-resetEnchantments').toggleClass('disabled', state.coins < resetCost(item))
+            .attr('helptext', 'Offer ' + points('coins', resetCost(item)) + ' to remove all enchantments from an item.<br/>This will allow you to enchant it again differently.');
     } else {
         $('.js-resetEnchantments').addClass('disabled').attr('helptext', 'This item has no enchantments on it.');
     }
@@ -295,28 +295,43 @@ function updateEnchantmentOptions() {
         return;
     }
     if (total == 0) {
-        $('.js-enchant').toggleClass('disabled', state.anima < value * 10)
-            .attr('helptext', 'Offer ' + points('anima', (value * 10)) + ' to add up to two magical properties to this item');
-        $('.js-imbue').toggleClass('disabled', state.anima < value * 50)
-            .attr('helptext', 'Offer ' + points('anima', (value * 50)) + ' to add three to four magical properties to this item');
+        $('.js-enchant').toggleClass('disabled', state.anima < enchantCost(item))
+            .attr('helptext', 'Offer ' + points('anima', enchantCost(item)) + ' to add up to two magical properties to this item');
+        $('.js-imbue').toggleClass('disabled', state.anima < imbueCost(item))
+            .attr('helptext', 'Offer ' + points('anima', imbueCost(item)) + ' to add three to four magical properties to this item');
         return;
     }
     $('.js-enchant,.js-imbue').hide();
     $('.js-augment,.js-mutate').show();
     if (total < 4) {
-        var augmentPrice = (total < 2) ? value  * 20 : value * 100;
+        var augmentPrice = augmentCost(item);
         $('.js-augment').toggleClass('disabled', state.anima < augmentPrice)
             .attr('helptext', 'Offer ' + points('anima', augmentPrice) + ' to add another magical property to this item.');
     } else {
         $('.js-augment').addClass('disabled').attr('helptext', 'This item cannot hold any more enchantments.');
     }
-    var mutationPrice = (total < 3) ? value  * 12 : value * 60;
+    var mutationPrice = mutateCost(item);
     $('.js-mutate').toggleClass('disabled', state.anima < mutationPrice)
         .attr('helptext', 'Offer ' + points('anima', mutationPrice) + ' to randomize the magical properties of this item.');
 }
+function resetCost(item) {
+    return sellValue(item) * 10;
+}
+function enchantCost(item) {
+    return sellValue(item) * 5;
+}
+function imbueCost(item) {
+    return sellValue(item) * 25;
+}
+function augmentCost(item) {
+    return sellValue(item) * ((item.prefixes.length && item.suffixes.length) ? 50 : 10);
+}
+function mutateCost(item) {
+    return sellValue(item) * ((item.prefixes.length < 2 && item.suffixes.length < 2) ? 6 : 30);
+}
 function resetItem() {
     var item = $('.js-enchantmentSlot').find('.js-item').data('item');
-    if (!spend('coins', sellValue(item) * 10)) {
+    if (!spend('coins', resetCost(item))) {
         return;
     }
     item.prefixes = [];
@@ -329,9 +344,7 @@ function resetItem() {
 }
 function enchantItem() {
     var item = $('.js-enchantmentSlot').find('.js-item').data('item');
-    if (!spend('anima', sellValue(item) * 10)) {
-        return;
-    }
+    if (!spend('anima', enchantCost(item))) return;
     enchantItemProper(item);
     saveGame();
 }
@@ -350,9 +363,7 @@ function enchantItemProper(item) {
 }
 function imbueItem() {
     var item = $('.js-enchantmentSlot').find('.js-item').data('item');
-    if (!spend('anima', sellValue(item) * 50)) {
-        return;
-    }
+    if (!spend('anima', imbueCost(item))) return;
     imbueItemProper(item);
     saveGame();
 }
@@ -373,22 +384,11 @@ function imbueItemProper(item) {
 }
 function augmentItem() {
     var item = $('.js-enchantmentSlot').find('.js-item').data('item');
-    if (item.prefixes.length + item.suffixes.length >= 4) {
-        return;
-    }
-    if (!item.prefixes.length || !item.suffixes.length) {
-        if (spend('anima', sellValue(item) * 20)) {
-            augmentItemProper(item);
-            updateEnchantmentOptions();
-            saveGame();
-        }
-        return;
-    }
-    if (spend('anima', sellValue(item) * 100)) {
-        augmentItemProper(item);
-        updateEnchantmentOptions();
-        saveGame();
-    }
+    if (item.prefixes.length + item.suffixes.length >= 4) return;
+    if (!spend('anima', augmentCost(item))) return;
+    augmentItemProper(item);
+    updateEnchantmentOptions();
+    saveGame();
 }
 function augmentItemProper(item) {
     if (!item.prefixes.length && !item.suffixes.length) {
@@ -416,16 +416,10 @@ function augmentItemProper(item) {
 }
 function mutateItem() {
     var item = $('.js-enchantmentSlot').find('.js-item').data('item');
-    if (item.prefixes.length < 2 && item.suffixes.length < 2) {
-        if (!spend('anima', sellValue(item) * 12)) {
-            return;
-        }
-        enchantItemProper(item);
-    } else {
-        if (!spend('anima', sellValue(item) * 60)) {
-            return;
-        }
-        imbueItemProper(item);
+    if (!spend('anima', mutateCost(item))) {
+        return;
     }
+    if (item.prefixes.length < 2 && item.suffixes.length < 2) enchantItemProper(item);
+    else imbueItemProper(item);
     saveGame();
 }
