@@ -270,7 +270,7 @@ var abilities = {
         'explode': {'name': 'Decoy Burst', 'reaction': skills.explode},
 'enemyIndex': {'name': '---Enemies---'},
     'summoner': {'name': 'Summoner', 'bonuses': {'*minion:limit': 2, '*minion:cooldown': .5},
-            'minionBonuses': {'*maxHealth': 2, '*damage': 2}},
+            'minionBonuses': {'*maxHealth': 1.5, '*damage': 1.2}},
     'summonSkeleton': {'name': 'Summon Skeleton', 'action': skills.summonSkeleton},
     'summonCaterpillar': {'name': 'Spawn', 'action': skills.summonCaterpillar},
     'rangeAndAttackSpeed': {'name': 'Range And Attack Speed', 'bonuses': {'+range': 2, '+attackSpeed': .5}},
