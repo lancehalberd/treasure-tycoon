@@ -140,7 +140,7 @@ var abilities = {
         'reviveInvulnerability': {'name': 'Halo', 'bonuses': {'$revive:buff': buffEffect({}, {'+duration': 2, '$$invulnerable': 'Invulnerability'})}},
 'tier2Index': {'name': '------Tier 2------'},
     'corsairIndex': {'name': '---Corsair---'},
-        'corsair': {'name': 'Venom', 'bonuses': {'+poison': .2}, 'onHitEffect': {'variableObjectType': 'trigger', 'bonuses': {'$debuff': debuffEffect({}, {'+*damage': .9})}},
+        'corsair': {'name': 'Venom', 'bonuses': {'+poison': .2}, 'onHitEffect': {'variableObjectType': 'trigger', 'bonuses': {'$debuff': debuffEffect({'icons':[effectSourcePoison]}, {'+*damage': .9, '+duration': 2})}},
                         'helpText': "Apply a stacking debuff with every hit that weakens enemies' attacks and deals damage over time."},
         'hook': {'name': 'Grappling Hook', 'action': skills.hook},
         'hookRange': {'name': 'Long Shot', 'bonuses': {'+hook:range': 5, '+hook:cooldown': -3}},

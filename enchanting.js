@@ -23,10 +23,17 @@ addPrefix(62, 'Devious', 'weapon', {'+damageOnMiss': [150, 200]});
 
 addPrefix(1, 'Strong', 'weapon', {'+minPhysicalDamage': 1, '+maxPhysicalDamage': 2});
 addPrefix(5, 'Brutal', 'weapon', {'+minPhysicalDamage': [4,6], '+maxPhysicalDamage': [8,10]});
-addPrefix(15, 'Fierce', 'weapon', {'+minPhysicalDamage': [12, 14], '+maxPhysicalDamage': 20});
-addPrefix(30, 'Savage', 'weapon', {'+minPhysicalDamage': 22, '+maxPhysicalDamage': 30});
-addPrefix(45, 'Cruel', 'weapon', {'+minPhysicalDamage': 30, '+maxPhysicalDamage': 40});
-addPrefix(60, 'Bloody', 'weapon', {'+minPhysicalDamage': 36, '+maxPhysicalDamage': [45-50]});
+addPrefix(15, 'Fierce', 'weapon', {'+minPhysicalDamage': [12, 14], '+maxPhysicalDamage': [20, 22]});
+addPrefix(30, 'Savage', 'weapon', {'+minPhysicalDamage': [22, 24], '+maxPhysicalDamage': [30, 32]});
+addPrefix(45, 'Cruel', 'weapon', {'+minPhysicalDamage': [32, 34], '+maxPhysicalDamage': [40, 42]});
+addPrefix(60, 'Bloody', 'weapon', {'+minPhysicalDamage': [35, 40], '+maxPhysicalDamage': [45, 50]});
+
+addPrefix(1, 'Priest\'s', 'weapon', {'+minMagicDamage': 1, '+maxMagicDamage': 2});
+addPrefix(6, 'Magic', 'weapon', {'+minMagicDamage': [2,3], '+maxMagicDamage': [6,8]});
+addPrefix(16, 'Wizard\'s', 'weapon', {'+minMagicDamage': [8, 10], '+maxMagicDamage': [12, 14]});
+addPrefix(31, 'Imbued', 'weapon', {'+minMagicDamage': [14, 16], '+maxMagicDamage': [20, 22]});
+addPrefix(46, 'Sorcerer\'s', 'weapon', {'+minMagicDamage': [20, 22], '+maxMagicDamage': [26, 28]});
+addPrefix(61, 'Diabolic', 'weapon', {'+minMagicDamage': [25, 30], '+maxMagicDamage': [30, 35]});
 
 addPrefix(7, 'Angry', 'weapon', {'*damage': [102, 105, 100]});
 addPrefix(17, 'Irate', 'weapon', {'*damage': [106, 112, 100]});

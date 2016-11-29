@@ -251,13 +251,14 @@ function drawEffectIcons(actor, x, y) {
     var effectYOffset = 2;
     for (var effect of actor.allEffects) {
         var icons = effect.base ? ifdefor(effect.base.icons, []) : [];
+        if (!icons.length) continue;
         for (var iconData of icons) {
             var source = {'image': images[iconData[0]], 'left': iconData[1], 'top': iconData[2], 'width': iconData[3], 'height': iconData[4]};
             var xOffset = effectXOffset + iconData[5], yOffset = effectYOffset + iconData[6];
             drawImage(mainContext, source.image, source, {'left': x + xOffset, 'top': y + yOffset, 'width': source.width, 'height': source.height});
         }
         effectXOffset += 16;
-        if (effectXOffset + 16 > actor.width) {
+        if (effectXOffset + 16 > Math.min(actor.width, 64)) {
             effectXOffset = 0;
             effectYOffset += 20;
         }
