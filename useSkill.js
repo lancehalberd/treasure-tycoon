@@ -634,13 +634,16 @@ skillDefinitions.reflect = {
         return true;
     },
     use: function (actor, reflectSkill, target) {
+        // Reset reflection barrier back to 0 when using the reflection barrier spell.
+        // It may be negative from when it was broken.
+        actor.reflectBarrier = Math.max(0, ifdefor(actor.reflectBarrier, 0));
         gainReflectionBarrier(target, reflectSkill.power);
     }
 };
 
 function gainReflectionBarrier(actor, amount) {
-        actor.reflectBarrier = ifdefor(actor.reflectBarrier, 0) + amount;
-        actor.maxReflectBarrier = Math.max(ifdefor(actor.maxReflectBarrier, 0), actor.reflectBarrier);
+    actor.reflectBarrier = ifdefor(actor.reflectBarrier, 0) + amount;
+    actor.maxReflectBarrier = Math.max(ifdefor(actor.maxReflectBarrier, 0), actor.reflectBarrier);
 }
 
 skillDefinitions.plunder = {

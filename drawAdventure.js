@@ -170,7 +170,7 @@ function drawMonster(character, monster, index) {
         mainContext.fillStyle = 'orange';
         mainContext.fillRect(x + 1 + normalWidth, y + 1, bonusWidth, 2);
     }
-    if (ifdefor(monster.reflectBarrier, 0) >= 1) {
+    if (ifdefor(monster.reflectBarrier, 0) > 0) {
         var width = Math.ceil(Math.min(1, monster.maxReflectBarrier / monster.maxHealth) * 64);
         drawBar(context, x, y - 2, width, 4, 'white', 'blue', monster.reflectBarrier / monster.maxReflectBarrier);
     }
@@ -256,7 +256,7 @@ function drawAdventurer(character, adventurer, index) {
         mainContext.fillStyle = 'orange';
         mainContext.fillRect(x + 1 + normalWidth, y + 1, bonusWidth, 2);
     }
-    if (ifdefor(adventurer.reflectBarrier, 0) >= 1) {
+    if (ifdefor(adventurer.reflectBarrier, 0) > 0) {
         var width = Math.ceil(Math.min(1, adventurer.maxReflectBarrier / adventurer.maxHealth) * 64);
         drawBar(mainContext, x, y - 2, width, 4, 'white', 'blue', adventurer.reflectBarrier / adventurer.maxReflectBarrier);
     }

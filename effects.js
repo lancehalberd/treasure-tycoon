@@ -218,8 +218,9 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
             self.attackStats.distance += Math.sqrt(self.vx * self.vx + self.vy * self.vy);
             if (hit) {
                 self.hit = true;
-                if (ifdefor(self.target.reflectBarrier, 0)) {
-                    self.target.reflectBarrier = Math.max(0, self.target.reflectBarrier - self.attackStats.magicDamage - self.attackStats.damage);
+                if (ifdefor(self.target.reflectBarrier, 0) > 0) {
+                    // Allow reflect barrier to become negative so that it can take time to restore after being hit by a much more powerful attack.
+                    self.target.reflectBarrier = self.target.reflectBarrier - self.attackStats.magicDamage - self.attackStats.damage;
                     self.hit = false;
                     var newTarget = self.attackStats.source;
                     self.attackStats.source = self.target;

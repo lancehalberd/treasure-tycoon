@@ -487,7 +487,7 @@ function actorHelpText(actor) {
     if (prefixNames.length) name = prefixNames.join(', ') + ' ' + name;
     if (suffixNames.length) name = name + ' of ' + suffixNames.join(' and ');
     var sections = [name + ' ' + Math.ceil(actor.health) + '/' + Math.ceil(actor.maxHealth)];
-    if (actor.reflectBarrier >= 1) {
+    if (actor.reflectBarrier > 0) {
         sections.push('Reflect: ' + actor.reflectBarrier.format(0));
     }
     sections.push('');

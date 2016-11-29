@@ -163,7 +163,7 @@ function updateCraftingButtons() {
     $('.js-itemCraftingOption.js-armorOption').toggleClass('disabled', state.coins < levelMultiplier * 2);
     $('.js-itemCraftingOption.js-weaponOption').toggleClass('disabled', state.coins < levelMultiplier * 3);
     $('.js-itemCraftingOption.js-accessoryOption').toggleClass('disabled', state.coins < levelMultiplier * 5);
-    $('.js-reforge').toggleClass('disabled', state.coins < levelMultiplier);
+    $('.js-reforge').toggleClass('disabled', state.coins < Math.floor(getCurrentCraftingCost() / 5));
 }
 function updateSelectedCraftingWeight() {
     selectedCraftingWeight = 0;
