@@ -65,7 +65,8 @@ function debuffEffect(effect, bonuses) {
 
 var effectSourceUp = ['gfx/militaryIcons.png', 17, 23, 16, 16, 0, 0];
 var effectSourceArmor = ['gfx/militaryIcons.png', 65, 180, 12, 12, 8, 8];
-var effectSourceSword = ['gfx/militaryIcons.png', 52, 180, 12, 12, 8, 8];
+//var effectSourceSword = ['gfx/militaryIcons.png', 52, 180, 12, 12, 8, 8];
+var effectSourceSword = ['gfx/militaryIcons.png', 85, 74, 16, 16, 6, 4];
 var skills = {
     // Movement actions
     'dodge': movementAction('dodge', {}, {'+cooldown': 10, '+distance': -128, '$buff': buffEffect({}, {'+%evasion': .5, '+duration': 5})},
