@@ -78,7 +78,7 @@ function makeMonster(monsterData, level, extraSkills, noRarity) {
     }); */
 
     if (!ifdefor(noRarity)) {
-        var rarity = (Math.random() < .25) ? (Math.random() * level * .6) : 0;
+        var rarity = (Math.random() < .25) ? (Math.random() * (level - 1) * .6) : 0;
         if (rarity < 1) {
 
         } else if (rarity < 3) {
@@ -287,25 +287,25 @@ function initalizeMonsters() {
     // Gnomes are vulnerable to magic damage, strong against physical damage, and deal ranged magic damage.
     // Designed to favor mage classes.
     addMonster('gnome', {'name': 'Gnome', 'source': gnomeSource, 'fpsMultiplier': 1.5,
-        'implicitBonuses': {'+weaponRange': 4, '*attackSpeed': 1.3, '+magicDamage': 4, '*magicDamage': 1.3,
+        'implicitBonuses': {'+weaponRange': 4, '*attackSpeed': 1, '+magicDamage': 4, '*magicDamage': 1.3,
                             '+block': 4, '+armor': 4, '*armor': 1.5, '*block': 1.5, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': .4}, 'tags': ['ranged']
     });
     addMonster('gnomecromancer', {'name': 'Gnomecromancer', 'source': gnomeSource, 'fpsMultiplier': 1.5,
-        'implicitBonuses': {'+weaponRange': 4, '*attackSpeed': 1.3, '+magicDamage': 4, '*magicDamage': 1.3,
+        'implicitBonuses': {'+weaponRange': 4, '*attackSpeed': 1, '+magicDamage': 4, '*magicDamage': 1.3,
                             '+block': 4, '+armor': 4, '*armor': 1.5, '*block': 1.5, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': .4},
         'abilities': [abilities.summonSkeleton, abilities.summoner], 'tags': ['ranged']
     });
     addMonster('gnomeCleric', {'name': 'Gnome Cleric', 'source': gnomeSource, 'fpsMultiplier': 1.5,
-        'implicitBonuses': {'+weaponRange': 4, '*attackSpeed': 1.3, '+magicDamage': 4, '*magicDamage': 1.3,
+        'implicitBonuses': {'+weaponRange': 4, '*attackSpeed': 1, '+magicDamage': 4, '*magicDamage': 1.3,
                             '*intelligence': 2,
                             '+block': 4, '+armor': 4, '*armor': 1.5, '*block': 1.5, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': .4},
         'abilities': [abilities.spellAOE, abilities.protect, abilities.heal, abilities.minorIntelligence], 'tags': ['ranged']
     });
     addMonster('gnomeWizard', {'name': 'Gnome Wizard', 'source': gnomeSource, 'fpsMultiplier': 1.5,
-        'implicitBonuses': {'+weaponRange': 4, '*attackSpeed': 1.3, '+magicDamage': 4, '*magicDamage': 1.3,
+        'implicitBonuses': {'+weaponRange': 4, '*attackSpeed': 1, '+magicDamage': 4, '*magicDamage': 1.3,
                             '+block': 4, '+armor': 4, '*armor': 1.5, '*block': 1.5, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': .4},
         'abilities': [abilities.fireball, abilities.freeze, abilities.wizard], 'tags': ['ranged']
