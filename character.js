@@ -134,6 +134,7 @@ function initializeActorForAdventure(actor) {
     actor.attackCooldown = 0;
     actor.target = null;
     actor.slow = 0;
+    actor.rotation = 0;
 }
 function returnToMap(character) {
     removeAdventureEffects(character.adventurer);
