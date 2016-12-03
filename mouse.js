@@ -15,6 +15,9 @@ $(document).on('mouseup', function (event) {
     if (event.which == 1) mouseDown = false;
     else if (event.which == 3) rightMouseDown = false;
 });
+$(document).on('contextmenu', function (event) {
+    mouseDown = rightMouseDown = false;
+});
 function relativeMousePosition(element) {
     var elementOffset = $(element).offset();
     var containerOffset = $('.js-mouseContainer').offset();
