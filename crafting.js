@@ -64,7 +64,7 @@ function initializeCraftingImage() {
             setCraftingLevel(level);
         }
     });
-    $(craftingViewCanvas).on('click', function () {
+    $(craftingViewCanvas).on('click', function (event) {
         var offset = relativeMousePosition($(this));
         var ty = Math.floor((offset[1] - 2) / craftingSlotTotal);
         var level = Math.floor((offset[0] - 2) / craftingSlotTotal) + 1;

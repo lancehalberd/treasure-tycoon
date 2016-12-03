@@ -245,6 +245,7 @@ $('body').on('mouseup', function (event) {
     dragged = false;
 });
 $('body').on('mousedown', '.js-item', function (event) {
+    if (event.which != 1) return; // Handle only left click.
     if ($dragHelper) {
         stopDrag();
         return;
@@ -277,7 +278,7 @@ function updateDragHelper() {
     dragged = true;
 }
 
-$(document).on("mousemove", function (event) {
+$(document).on('mousemove', function (event) {
     updateDragHelper();
 });
 function stopDrag() {

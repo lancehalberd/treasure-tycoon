@@ -6,11 +6,14 @@ $(document).on("mousemove", function (event) {
                      event.pageY - $(".js-mouseContainer").offset().top];
 });
 var mouseDown = false;
-$(document).on('mousedown', function() {
-    mouseDown = true;
+var rightMouseDown = false;
+$(document).on('mousedown', function (event) {
+    if (event.which == 1) mouseDown = true;
+    else if (event.which == 3) rightMouseDown = true;
 });
-$(document).on('mouseup', function() {
-    mouseDown = false;
+$(document).on('mouseup', function (event) {
+    if (event.which == 1) mouseDown = false;
+    else if (event.which == 3) rightMouseDown = false;
 });
 function relativeMousePosition(element) {
     var elementOffset = $(element).offset();

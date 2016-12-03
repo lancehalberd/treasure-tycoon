@@ -250,12 +250,16 @@ var mapDragX = mapDragY = null, draggedMap = false;
 var selectionStartPoint = null;
 var originalSelectedNodes = [];
 var distributingMapNodes = false;
+
+// Disable context menu while editing the map because the right click is used for making nodes and edges.
+$('.js-mouseContainer').on('contextmenu', '.js-mainCanvas', function (event) {
+    return !editingMap;
+});
 $('.js-mouseContainer').on('mousedown', '.js-mainCanvas', function (event) {
     var x = event.pageX - $(this).offset().left;
     var y = event.pageY - $(this).offset().top;
     //console.log(camera.unprojectPoint(x + mapLeft, y + mapTop, world.radius));
 
-    draggedMap = false;
     if (editingMap) {
         var newMapTarget = getMapTarget(x, y);
         if (event.which === 3) {
@@ -277,6 +281,8 @@ $('.js-mouseContainer').on('mousedown', '.js-mainCanvas', function (event) {
             selectionStartPoint = {'x': x, 'y': y};
         }
     }
+    if (event.which != 1) return; // Handle only left click.
+    draggedMap = false;
     mapDragX = x;
     mapDragY = y;
 });
@@ -332,7 +338,7 @@ $(document).on('mouseup',function (event) {
 });
 var arrowTargetLeft, arrowTargetTop;
 $('.js-mouseContainer').on('mousemove', '.js-mainCanvas', function (event) {
-    if (!mouseDown) return;
+    if (!mouseDown && !rightMouseDown) return;
     draggedMap = true;
     var x = event.pageX - $(this).offset().left;
     var y = event.pageY - $(this).offset().top;

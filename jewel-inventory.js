@@ -84,6 +84,7 @@ $('body').on('dblclick', function (event) {
     saveGame();
 });
 $('body').on('mousedown', function (event) {
+    if (event.which != 1) return; // Handle only left click.
     if (draggedJewel || draggingBoardJewel) {
         stopJewelDrag();
         return;
