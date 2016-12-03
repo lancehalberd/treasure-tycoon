@@ -288,7 +288,7 @@ function stopDrag() {
             $('.js-craftingSelectOptions .js-itemSlot').empty();
             $('.js-craftingSelectOptions').hide();
             $('.js-craftingOptions').show();
-            craftingTypeFilter = 'all';
+            state.craftingTypeFilter = 'all';
             updateItemCrafting();
             saveGame();
         }
