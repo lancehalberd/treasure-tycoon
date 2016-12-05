@@ -72,26 +72,26 @@ addPrefix(41, 'Hardened', armorSlots, {'%armor': [15, 20, 100]});
 addPrefix(51, 'Petrified', armorSlots, {'%armor': [20, 25, 100]});
 addPrefix(71, 'Indomitable', armorSlots, {'%armor': [25, 30, 100]});
 
-addPrefix(11, 'E1', armorSlots, {'%evasion': [2, 6, 100]});
-addPrefix(21, 'E2', armorSlots, {'%evasion': [5, 10, 100]});
-addPrefix(31, 'E3', armorSlots, {'%evasion': [10, 15, 100]});
-addPrefix(41, 'E4', armorSlots, {'%evasion': [15, 20, 100]});
-addPrefix(51, 'E5', armorSlots, {'%evasion': [20, 25, 100]});
-addPrefix(71, 'E6', armorSlots, {'%evasion': [25, 30, 100]});
+addPrefix(11, 'Circumspect', armorSlots, {'%evasion': [2, 6, 100]});
+addPrefix(21, 'Disguised', armorSlots, {'%evasion': [5, 10, 100]});
+addPrefix(31, 'Evasive', armorSlots, {'%evasion': [10, 15, 100]});
+addPrefix(41, 'Elusive', armorSlots, {'%evasion': [15, 20, 100]});
+addPrefix(51, 'Hidden', armorSlots, {'%evasion': [20, 25, 100]});
+addPrefix(71, 'Invisible', armorSlots, {'%evasion': [25, 30, 100]});
 
-addPrefix(11, 'B1', armorSlots, {'%block': [2, 6, 100]});
-addPrefix(21, 'B2', armorSlots, {'%block': [5, 10, 100]});
-addPrefix(31, 'B3', armorSlots, {'%block': [10, 15, 100]});
-addPrefix(41, 'B4', armorSlots, {'%block': [15, 20, 100]});
-addPrefix(51, 'B5', armorSlots, {'%block': [20, 25, 100]});
-addPrefix(71, 'B6', armorSlots, {'%block': [25, 30, 100]});
+addPrefix(11, 'Hindering', armorSlots, {'%block': [2, 6, 100]});
+addPrefix(21, 'Impeding', armorSlots, {'%block': [5, 10, 100]});
+addPrefix(31, 'Obstructing', armorSlots, {'%block': [10, 15, 100]});
+addPrefix(41, 'Halting', armorSlots, {'%block': [15, 20, 100]});
+addPrefix(51, 'Arresting', armorSlots, {'%block': [20, 25, 100]});
+addPrefix(71, 'Sequestering', armorSlots, {'%block': [25, 30, 100]});
 
-addPrefix(11, 'M1', armorSlots, {'%magicBlock': [2, 6, 100]});
-addPrefix(21, 'M2', armorSlots, {'%magicBlock': [5, 10, 100]});
-addPrefix(31, 'M3', armorSlots, {'%magicBlock': [10, 15, 100]});
-addPrefix(41, 'M4', armorSlots, {'%magicBlock': [15, 20, 100]});
-addPrefix(51, 'M5', armorSlots, {'%magicBlock': [20, 25, 100]});
-addPrefix(71, 'M6', armorSlots, {'%magicBlock': [25, 30, 100]});
+addPrefix(11, 'Annoying', armorSlots, {'%magicBlock': [2, 6, 100]});
+addPrefix(21, 'Distracting', armorSlots, {'%magicBlock': [5, 10, 100]});
+addPrefix(31, 'Disconcerting', armorSlots, {'%magicBlock': [10, 15, 100]});
+addPrefix(41, 'Baffling', armorSlots, {'%magicBlock': [15, 20, 100]});
+addPrefix(51, 'Bewildering', armorSlots, {'%magicBlock': [20, 25, 100]});
+addPrefix(71, 'Confounding', armorSlots, {'%magicBlock': [25, 30, 100]});
 
 addPrefix(1, 'Hardy', 'body', {'+maxHealth': [20, 30]});
 addPrefix(10, 'Fit', 'body', {'+maxHealth': [40, 60]});
