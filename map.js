@@ -9,6 +9,7 @@ function exportMap() {
         var levelData = map[levelKey];
         var levelLines = ["    '" + levelKey+"': {"];
         levelLines.push("        'name': " + JSON.stringify(levelData.name) + ",");
+        levelLines.push("        'description': " + JSON.stringify(ifdefor(levelData.description, '')) + ",");
         levelLines.push("        'level': " + JSON.stringify(levelData.level) + ",");
         levelLines.push("        'x': " + JSON.stringify(levelData.x) + ", 'y': " + JSON.stringify(levelData.y) + ",");
         levelLines.push("        'coords': " + JSON.stringify(levelData.coords.map(function (number) { return Number(number.toFixed(0));})) + ",");
@@ -154,7 +155,7 @@ function getMapPopupTargetProper(x, y) {
 function getMapLevelHelpText(level) {
     var helpText;
     if (!editingMap) {
-        helpText = '<p style="font-weight: bold">Level ' + level.level + ' ' + level.name + '</p><br/>';
+        helpText = '<p style="font-weight: bold">Level ' + level.level + ' ' + level.name + '</p>';
     } else {
         helpText = '<p style="font-weight: bold">Level ' + level.level + ' ' + level.name +'(' + level.background +  ')</p><br/>';
         helpText += '<p><span style="font-weight: bold">Enemies:</span> ' + level.monsters.map(function (monsterKey) { return monsters[monsterKey].name;}).join(', ') + '</p>';
@@ -396,11 +397,50 @@ function clickMapHandler(x, y) {
     if (currentMapTarget.isShrine && state.selectedCharacter.currentLevelKey === currentMapTarget.level.levelKey && state.selectedCharacter.board.boardPreview) {
         showContext('jewel');
     } else if (!currentMapTarget.isShrine && currentMapTarget.levelKey) {
-        startArea(state.selectedCharacter, currentMapTarget.levelKey);
+        state.selectedCharacter.currentLevelKey = currentMapTarget.levelKey;
+        displayAreaMenu();
         currentMapTarget = null;
         $('.js-mainCanvas').toggleClass('clickable', false);
     }
 }
+function displayAreaMenu() {
+    selectedLevel = map[state.selectedCharacter.currentLevelKey];
+    centerMapOnLevel(selectedLevel);
+    // Do this in timeout so that it happens after the check for hiding the areaMenu...
+    setTimeout(function () {
+        $('.js-areaMenu').show();
+        $('.js-areaMenu .js-challengeDifficulty').hide();
+        $('.js-areaMenu .js-areaTitle').text('Lv ' + selectedLevel.level + ' ' + selectedLevel.name);
+        $('.js-areaMenu .js-areaDescription').html(ifdefor(selectedLevel.description, 'No description'));
+    },0);
+}
+
+$('.js-easyDifficulty').on('click', function (event) {
+    $('.js-areaMenu').hide();
+    state.selectedCharacter.levelDifficulty = 'easy';
+    startArea(state.selectedCharacter, state.selectedCharacter.currentLevelKey);
+});
+$('.js-normalDifficulty').on('click', function (event) {
+    $('.js-areaMenu').hide();
+    state.selectedCharacter.levelDifficulty = 'normal';
+    startArea(state.selectedCharacter, state.selectedCharacter.currentLevelKey);
+});
+$('.js-hardDifficulty').on('click', function (event) {
+    $('.js-areaMenu').hide();
+    state.selectedCharacter.levelDifficulty = 'hard';
+    startArea(state.selectedCharacter, state.selectedCharacter.currentLevelKey);
+});
+$('.js-challengeDifficulty').on('click', function (event) {
+    $('.js-areaMenu').hide();
+    state.selectedCharacter.levelDifficulty = 'challenge';
+    startArea(state.selectedCharacter, state.selectedCharacter.currentLevelKey);
+});
+
+$(document).on('mousedown', function (event) {
+    if (!$(event.target).closest('.js-areaMenu').length) {
+        $('.js-areaMenu').hide();
+    }
+});
 
 function completeLevel(character) {
     // If the character beat the last adventure open to them, unlock the next one
@@ -418,7 +458,10 @@ function completeLevel(character) {
     }
     var numberOfWaves = Math.max(level.events.length,  Math.floor(5 * Math.sqrt(level.level))) + 1; // Count the chest as a wave.
     var timeBonus = (character.completionTime <= numberOfWaves * (5 + level.level / 2)) ? 1.2 : (character.completionTime <= numberOfWaves * (10 + level.level / 2)) ? 1 : .8;
-    var newDivinityScore = Math.round(timeBonus * baseDivinity(level.level));
+    var difficultyBonus = 1;
+    if (character.levelDifficulty === 'easy') difficultyBonus = .8;
+    if (character.levelDifficulty === 'hard') difficultyBonus = 1.5;
+    var newDivinityScore = Math.round(difficultyBonus * timeBonus * baseDivinity(level.level));
     character.divinity += Math.max(0, newDivinityScore - oldDivinityScore);
     character.divinityScores[character.currentLevelKey] = Math.max(oldDivinityScore, newDivinityScore);
     character.levelCompleted = true;
@@ -512,6 +555,8 @@ $(document).on('keydown', function(event) {
                 showContext('adventure');
             } else if (state.selectedCharacter.area) {
                 recallSelectedCharacter();
+            } else {
+                $('.js-areaMenu').hide();
             }
         }
     }

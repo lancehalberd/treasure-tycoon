@@ -97,6 +97,9 @@ function removeActor(actor) {
     actor.allies.splice(index, 1);
     if (actor.isMainCharacter) {
         returnToMap(actor.character);
+        if (actor.character === state.selectedCharacter && !actor.character.replay && !testingLevel && currentContext === 'adventure') {
+            displayAreaMenu();
+        }
     }
 }
 function checkToStartNextWave(character) {
@@ -238,6 +241,12 @@ function startNextWave(character) {
     wave.monsters.forEach(function (entityData) {
         var extraSkills = ifdefor(character.area.enemySkills, []).slice();
         if (wave.extraBonuses) extraSkills.push(wave.extraBonuses);
+        if (character.levelDifficulty === 'easy') {
+            extraSkills.push(easyBonuses);
+        }
+        if (character.levelDifficulty === 'hard') {
+            extraSkills.push(hardBonuses);
+        }
         var newMonster = makeMonster(entityData, character.area.level, extraSkills, !!wave.extraBonuses);
         initializeActorForAdventure(newMonster);
         newMonster.x = x;

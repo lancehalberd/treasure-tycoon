@@ -1,6 +1,7 @@
 var map = {
     'academy': {
         'name': "Academy",
+        'description': "",
         'level': 6,
         'x': 0, 'y': 0,
         'coords': [-477,-53,-360],
@@ -17,6 +18,7 @@ var map = {
     },
     'ancientforest': {
         'name': "Ancient Forest",
+        'description': "",
         'level': 27,
         'x': 27, 'y': -12,
         'coords': [-186,-507,263],
@@ -33,6 +35,7 @@ var map = {
     },
     'ancientlibrary': {
         'name': "Ancient Library",
+        'description': "",
         'level': 24,
         'x': 4, 'y': 2,
         'coords': [-494,286,184],
@@ -50,6 +53,7 @@ var map = {
     },
     'assassin10': {
         'name': "assassin10",
+        'description': "",
         'level': 39,
         'x': 39, 'y': -11,
         'coords': [203,-234,514],
@@ -66,6 +70,7 @@ var map = {
     },
     'assassin5': {
         'name': "assassin5",
+        'description': "",
         'level': 16,
         'x': 16, 'y': -11,
         'coords': [436,-411,-27],
@@ -82,6 +87,7 @@ var map = {
     },
     'assassin6': {
         'name': "assassin6",
+        'description': "",
         'level': 20,
         'x': 20, 'y': -11,
         'coords': [392,-449,69],
@@ -98,6 +104,7 @@ var map = {
     },
     'assassin7': {
         'name': "assassin7",
+        'description': "",
         'level': 24,
         'x': 24, 'y': -11,
         'coords': [366,-429,205],
@@ -114,6 +121,7 @@ var map = {
     },
     'assassin8': {
         'name': "assassin8",
+        'description': "",
         'level': 29,
         'x': 29, 'y': -11,
         'coords': [333,-379,325],
@@ -130,6 +138,7 @@ var map = {
     },
     'assassin9': {
         'name': "assassin9",
+        'description': "",
         'level': 34,
         'x': 34, 'y': -11,
         'coords': [235,-324,447],
@@ -146,6 +155,7 @@ var map = {
     },
     'bard2': {
         'name': "Bard 2",
+        'description': "",
         'level': 7,
         'x': 0, 'y': 0,
         'coords': [-419,-241,-355],
@@ -162,6 +172,7 @@ var map = {
     },
     'bard3': {
         'name': "Bard 3",
+        'description': "",
         'level': 10,
         'x': 0, 'y': 0,
         'coords': [-474,-275,-245],
@@ -178,6 +189,7 @@ var map = {
     },
     'bard4': {
         'name': "Bard 4",
+        'description': "",
         'level': 13,
         'x': 0, 'y': 0,
         'coords': [-532,-225,-161],
@@ -194,6 +206,7 @@ var map = {
     },
     'bard6': {
         'name': "Bard 6",
+        'description': "",
         'level': 20,
         'x': 0, 'y': 0,
         'coords': [-542,-247,72],
@@ -210,6 +223,7 @@ var map = {
     },
     'bard7': {
         'name': "Bard 7",
+        'description': "",
         'level': 24,
         'x': 0, 'y': 0,
         'coords': [-493,-288,184],
@@ -226,6 +240,7 @@ var map = {
     },
     'bard8': {
         'name': "Bard 8",
+        'description': "",
         'level': 29,
         'x': 0, 'y': 0,
         'coords': [-439,-243,328],
@@ -242,6 +257,7 @@ var map = {
     },
     'bard9': {
         'name': "Bard 9",
+        'description': "",
         'level': 34,
         'x': 0, 'y': 0,
         'coords': [-406,-138,419],
@@ -258,6 +274,7 @@ var map = {
     },
     'barracks': {
         'name': "Barracks",
+        'description': "",
         'level': 4,
         'x': 0, 'y': 0,
         'coords': [122,394,-436],
@@ -274,6 +291,7 @@ var map = {
     },
     'batcave': {
         'name': "Bat Cave",
+        'description': "These bats will be tough opponents if your accuracy is too low.\n\nYou will need to visit the <span class=\"js-showCraftingPanel action\">Temple of Fortune</span> to make and equip stronger gear to complete harder areas.\n\nThe Distract ability gives 100% chance to dodge an attack every 10 seconds.",
         'level': 2,
         'x': 0, 'y': 0,
         'coords': [-183,-103,-562],
@@ -290,6 +308,7 @@ var map = {
     },
     'bayou': {
         'name': "Bayou",
+        'description': "",
         'level': 4,
         'x': 5, 'y': 4,
         'coords': [-367,-111,-461],
@@ -308,6 +327,7 @@ var map = {
     },
     'camp': {
         'name': "Camp",
+        'description': "",
         'level': 12,
         'x': 0, 'y': 0,
         'coords': [-352,-448,-188],
@@ -324,6 +344,7 @@ var map = {
     },
     'canopy': {
         'name': "Canopy",
+        'description': "",
         'level': 14,
         'x': 14, 'y': -14,
         'coords': [128,-574,-118],
@@ -340,6 +361,7 @@ var map = {
     },
     'carnival': {
         'name': "Carnival",
+        'description': "",
         'level': 33,
         'x': 0, 'y': 0,
         'coords': [-351,-268,407],
@@ -356,6 +378,7 @@ var map = {
     },
     'castle': {
         'name': "Castle",
+        'description': "",
         'level': 39,
         'x': 0, 'y': 0,
         'coords': [-251,-207,504],
@@ -372,6 +395,7 @@ var map = {
     },
     'cave': {
         'name': "Cave",
+        'description': "Magical gnomes are up to something in this cave.\n\nOnce you complete an area, you can click on the shrine to learn an ability and level up--if you have enough divinity.\n\nThe Heal spell will increase in power when you raise your intelligence and magic attack values.",
         'level': 1,
         'x': 8, 'y': 1,
         'coords': [-159,93,-571],
@@ -391,6 +415,7 @@ var map = {
     },
     'cemetery': {
         'name': "Cemetery",
+        'description': "",
         'level': 5,
         'x': 6, 'y': 1,
         'coords': [-411,91,-428],
@@ -412,6 +437,7 @@ var map = {
     },
     'channel': {
         'name': "Channel",
+        'description': "",
         'level': 15,
         'x': 15, 'y': -9,
         'coords': [515,-296,-82],
@@ -428,6 +454,7 @@ var map = {
     },
     'cliff': {
         'name': "Cliff",
+        'description': "",
         'level': 30,
         'x': 0, 'y': -5,
         'coords': [419,241,355],
@@ -446,6 +473,7 @@ var map = {
     },
     'cloister': {
         'name': "Cloister",
+        'description': "",
         'level': 10,
         'x': 0, 'y': 0,
         'coords': [-387,394,-235],
@@ -462,6 +490,7 @@ var map = {
     },
     'confluence': {
         'name': "Confluence",
+        'description': "",
         'level': 12,
         'x': 12, 'y': -9,
         'coords': [425,-380,-185],
@@ -478,6 +507,7 @@ var map = {
     },
     'corsair10': {
         'name': "corsair10",
+        'description': "",
         'level': 33,
         'x': 33, 'y': -13,
         'coords': [395,-92,442],
@@ -494,6 +524,7 @@ var map = {
     },
     'corsair6': {
         'name': "corsair6",
+        'description': "",
         'level': 16,
         'x': 16, 'y': -13,
         'coords': [582,-132,-60],
@@ -510,6 +541,7 @@ var map = {
     },
     'corsair7': {
         'name': "corsair7",
+        'description': "",
         'level': 21,
         'x': 21, 'y': -13,
         'coords': [585,-120,63],
@@ -526,6 +558,7 @@ var map = {
     },
     'corsair8': {
         'name': "corsair8",
+        'description': "",
         'level': 24,
         'x': 25, 'y': -13,
         'coords': [560,-100,190],
@@ -542,6 +575,7 @@ var map = {
     },
     'corsair9': {
         'name': "corsair9",
+        'description': "",
         'level': 29,
         'x': 29, 'y': -13,
         'coords': [479,-91,350],
@@ -558,6 +592,7 @@ var map = {
     },
     'crevice': {
         'name': "Crevice",
+        'description': "",
         'level': 10,
         'x': 12, 'y': -5,
         'coords': [200,-496,-273],
@@ -574,6 +609,7 @@ var map = {
     },
     'dancer2': {
         'name': "Dancer 2",
+        'description': "",
         'level': 4,
         'x': 0, 'y': 0,
         'coords': [-264,-256,-474],
@@ -590,6 +626,7 @@ var map = {
     },
     'dancer3': {
         'name': "Dancer 3",
+        'description': "",
         'level': 6,
         'x': 0, 'y': 0,
         'coords': [-308,-359,-369],
@@ -606,6 +643,7 @@ var map = {
     },
     'dancer4': {
         'name': "Dancer 4",
+        'description': "",
         'level': 8,
         'x': 0, 'y': 0,
         'coords': [-392,-358,-280],
@@ -622,6 +660,7 @@ var map = {
     },
     'dancer6': {
         'name': "Dancer 6",
+        'description': "",
         'level': 16,
         'x': 0, 'y': 0,
         'coords': [-423,-421,-64],
@@ -638,6 +677,7 @@ var map = {
     },
     'dancer7': {
         'name': "Dancer 7",
+        'description': "",
         'level': 21,
         'x': 0, 'y': 0,
         'coords': [-405,-434,85],
@@ -654,6 +694,7 @@ var map = {
     },
     'dancer8': {
         'name': "Dancer 8",
+        'description': "",
         'level': 25,
         'x': 0, 'y': 0,
         'coords': [-379,-400,237],
@@ -670,6 +711,7 @@ var map = {
     },
     'dancer9': {
         'name': "Dancer 9",
+        'description': "",
         'level': 29,
         'x': 0, 'y': 0,
         'coords': [-303,-409,318],
@@ -686,6 +728,7 @@ var map = {
     },
     'darkknight2': {
         'name': "Dark Knight 2",
+        'description': "",
         'level': 7,
         'x': 0, 'y': 0,
         'coords': [153,475,-333],
@@ -702,6 +745,7 @@ var map = {
     },
     'darkknight3': {
         'name': "Dark Knight 3",
+        'description': "",
         'level': 10,
         'x': 0, 'y': 0,
         'coords': [180,507,-265],
@@ -718,6 +762,7 @@ var map = {
     },
     'darkknight4': {
         'name': "Dark Knight 4",
+        'description': "",
         'level': 13,
         'x': 0, 'y': 0,
         'coords': [245,533,-125],
@@ -734,6 +779,7 @@ var map = {
     },
     'darkknight6': {
         'name': "Dark Knight 6",
+        'description': "",
         'level': 20,
         'x': 0, 'y': 0,
         'coords': [179,568,75],
@@ -750,6 +796,7 @@ var map = {
     },
     'darkknight7': {
         'name': "Dark Knight 7",
+        'description': "",
         'level': 24,
         'x': 0, 'y': 0,
         'coords': [192,535,191],
@@ -766,6 +813,7 @@ var map = {
     },
     'darkknight8': {
         'name': "Dark Knight 8",
+        'description': "",
         'level': 29,
         'x': 0, 'y': 0,
         'coords': [168,478,321],
@@ -782,6 +830,7 @@ var map = {
     },
     'darkknight9': {
         'name': "Dark Knight 9",
+        'description': "",
         'level': 34,
         'x': 0, 'y': 0,
         'coords': [136,402,424],
@@ -798,6 +847,7 @@ var map = {
     },
     'desert': {
         'name': "Desert",
+        'description': "",
         'level': 10,
         'x': 0, 'y': 0,
         'coords': [504,174,-276],
@@ -814,6 +864,7 @@ var map = {
     },
     'dojo': {
         'name': "Dojo",
+        'description': "",
         'level': 5,
         'x': 0, 'y': 0,
         'coords': [3,458,-387],
@@ -830,6 +881,7 @@ var map = {
     },
     'dungeon': {
         'name': "Dungeon",
+        'description': "",
         'level': 18,
         'x': 3, 'y': 4,
         'coords': [-597,64,-2],
@@ -848,6 +900,7 @@ var map = {
     },
     'emergents': {
         'name': "Emergents",
+        'description': "",
         'level': 11,
         'x': 11, 'y': -10,
         'coords': [83,-556,-209],
@@ -864,6 +917,7 @@ var map = {
     },
     'enahncer3': {
         'name': "Enahncer 3",
+        'description': "",
         'level': 12,
         'x': 0, 'y': 0,
         'coords': [57,567,-188],
@@ -880,6 +934,7 @@ var map = {
     },
     'enhancer2': {
         'name': "Enhancer 2",
+        'description': "",
         'level': 9,
         'x': 0, 'y': 0,
         'coords': [1,535,-271],
@@ -896,6 +951,7 @@ var map = {
     },
     'enhancer4': {
         'name': "Enhancer 4",
+        'description': "",
         'level': 15,
         'x': 0, 'y': 0,
         'coords': [2,592,-98],
@@ -912,6 +968,7 @@ var map = {
     },
     'enhancer6': {
         'name': "Enhancer 6",
+        'description': "",
         'level': 25,
         'x': 0, 'y': 0,
         'coords': [3,556,225],
@@ -928,6 +985,7 @@ var map = {
     },
     'enhancer7': {
         'name': "Enhancer 7",
+        'description': "",
         'level': 30,
         'x': 0, 'y': 0,
         'coords': [3,484,355],
@@ -944,6 +1002,7 @@ var map = {
     },
     'enhancer8': {
         'name': "Enhancer 8",
+        'description': "",
         'level': 35,
         'x': 0, 'y': 0,
         'coords': [3,386,459],
@@ -960,6 +1019,7 @@ var map = {
     },
     'enhancer9': {
         'name': "Enhancer 9",
+        'description': "",
         'level': 40,
         'x': 0, 'y': 0,
         'coords': [-124,275,519],
@@ -976,6 +1036,7 @@ var map = {
     },
     'floodplains': {
         'name': "Floodplains",
+        'description': "",
         'level': 6,
         'x': 6, 'y': -13,
         'coords': [420,-236,-357],
@@ -992,6 +1053,7 @@ var map = {
     },
     'fool1': {
         'name': "fool1",
+        'description': "",
         'level': 7,
         'x': 7, 'y': -7,
         'coords': [-58,-106,-588],
@@ -1008,6 +1070,7 @@ var map = {
     },
     'fool10': {
         'name': "fool10",
+        'description': "",
         'level': 70,
         'x': 55, 'y': -7,
         'coords': [0,-2,-600],
@@ -1024,6 +1087,7 @@ var map = {
     },
     'fool2': {
         'name': "fool2",
+        'description': "",
         'level': 14,
         'x': 14, 'y': -7,
         'coords': [65,-114,-585],
@@ -1040,6 +1104,7 @@ var map = {
     },
     'fool3': {
         'name': "fool3",
+        'description': "",
         'level': 21,
         'x': 21, 'y': -7,
         'coords': [128,-5,-586],
@@ -1056,6 +1121,7 @@ var map = {
     },
     'fool4': {
         'name': "fool4",
+        'description': "",
         'level': 28,
         'x': 28, 'y': -7,
         'coords': [68,34,-595],
@@ -1072,6 +1138,7 @@ var map = {
     },
     'fool5': {
         'name': "fool5",
+        'description': "",
         'level': 35,
         'x': 35, 'y': -7,
         'coords': [-1,74,-595],
@@ -1088,6 +1155,7 @@ var map = {
     },
     'fool6': {
         'name': "fool6",
+        'description': "",
         'level': 42,
         'x': 42, 'y': -7,
         'coords': [-69,35,-595],
@@ -1104,6 +1172,7 @@ var map = {
     },
     'fool7': {
         'name': "fool7",
+        'description': "",
         'level': 49,
         'x': 49, 'y': -7,
         'coords': [-75,-44,-594],
@@ -1120,6 +1189,7 @@ var map = {
     },
     'fool8': {
         'name': "fool8",
+        'description': "",
         'level': 56,
         'x': 51, 'y': -7,
         'coords': [-3,-80,-595],
@@ -1136,6 +1206,7 @@ var map = {
     },
     'fool9': {
         'name': "fool9",
+        'description': "",
         'level': 63,
         'x': 53, 'y': -7,
         'coords': [74,-45,-594],
@@ -1152,6 +1223,7 @@ var map = {
     },
     'foothills': {
         'name': "Foothills",
+        'description': "",
         'level': 14,
         'x': 0, 'y': 0,
         'coords': [464,364,-109],
@@ -1168,6 +1240,7 @@ var map = {
     },
     'forbiddenarchive': {
         'name': "Forbidden Archive",
+        'description': "",
         'level': 42,
         'x': 0, 'y': 0,
         'coords': [-243,136,531],
@@ -1184,6 +1257,7 @@ var map = {
     },
     'forestfloor': {
         'name': "Forest Floor",
+        'description': "",
         'level': 5,
         'x': 5, 'y': -10,
         'coords': [-92,-390,-447],
@@ -1204,6 +1278,7 @@ var map = {
     },
     'forestlair': {
         'name': "Forest Lair",
+        'description': "",
         'level': 9,
         'x': 9, 'y': -12,
         'coords': [-230,-488,-263],
@@ -1221,6 +1296,7 @@ var map = {
     },
     'fortress': {
         'name': "Fortress",
+        'description': "",
         'level': 16,
         'x': 0, 'y': 0,
         'coords': [154,578,-44],
@@ -1237,6 +1313,7 @@ var map = {
     },
     'gallows': {
         'name': "Gallows",
+        'description': "",
         'level': 39,
         'x': 0, 'y': 0,
         'coords': [155,272,512],
@@ -1253,6 +1330,7 @@ var map = {
     },
     'garden': {
         'name': "Garden",
+        'description': "",
         'level': 3,
         'x': 14, 'y': 3,
         'coords': [350,-3,-487],
@@ -1274,6 +1352,7 @@ var map = {
     },
     'gnometemple': {
         'name': "Gnome Temple",
+        'description': "The Gnome Clerics specialize in defensive and healing magic. Try equipping a magic wand or staff to defeat them.\n\nYou will need to visit the <span class=\"js-showCraftingPanel action\">Temple of Fortune</span> to make and equip stronger gear to complete harder areas.\n\nThe Protect spell gives a powerful armor buff to spell casters but only while it lasts!",
         'level': 2,
         'x': 7, 'y': 3,
         'coords': [2,218,-559],
@@ -1293,6 +1372,7 @@ var map = {
     },
     'grandcathedral': {
         'name': "Grand Cathedral",
+        'description': "",
         'level': 33,
         'x': 0, 'y': 0,
         'coords': [-134,389,437],
@@ -1309,6 +1389,7 @@ var map = {
     },
     'grove': {
         'name': "Grove",
+        'description': "These woods are full of magic resistant caterpillars and venomous spiders. Weak melee adventurers and magic users may have a tough time here.\n\nOnce you complete an area, you can click on the shrine to learn an ability and level up--if you have enough divinity.\n\nThe Sap ability can be powerful on adventurers with high attack speed.",
         'level': 1,
         'x': 10, 'y': -2,
         'coords': [-2,-183,-571],
@@ -1328,6 +1409,7 @@ var map = {
     },
     'headwaters': {
         'name': "Headwaters",
+        'description': "",
         'level': 9,
         'x': 9, 'y': -9,
         'coords': [473,-273,-249],
@@ -1344,6 +1426,7 @@ var map = {
     },
     'holyland': {
         'name': "Holy Land",
+        'description': "",
         'level': 30,
         'x': 0, 'y': 0,
         'coords': [-326,352,360],
@@ -1362,6 +1445,7 @@ var map = {
     },
     'impenetrableforest': {
         'name': "Impenetrable Forest",
+        'description': "",
         'level': 32,
         'x': 31, 'y': -12,
         'coords': [-123,-435,395],
@@ -1378,6 +1462,7 @@ var map = {
     },
     'juggler10': {
         'name': "juggler10",
+        'description': "",
         'level': 30,
         'x': 30, 'y': -14,
         'coords': [123,-463,362],
@@ -1394,6 +1479,7 @@ var map = {
     },
     'juggler9': {
         'name': "juggler9",
+        'description': "",
         'level': 26,
         'x': 26, 'y': -14,
         'coords': [148,-515,269],
@@ -1410,6 +1496,7 @@ var map = {
     },
     'killingfields': {
         'name': "Killing Fields",
+        'description': "",
         'level': 28,
         'x': 28, 'y': -10,
         'coords': [-1,-506,323],
@@ -1427,6 +1514,7 @@ var map = {
     },
     'levee': {
         'name': "Levee",
+        'description': "",
         'level': 6,
         'x': 6, 'y': -9,
         'coords': [320,-314,-399],
@@ -1443,6 +1531,7 @@ var map = {
     },
     'library': {
         'name': "Library",
+        'description': "",
         'level': 20,
         'x': 0, 'y': 0,
         'coords': [-589,-43,107],
@@ -1459,6 +1548,7 @@ var map = {
     },
     'lostshrine': {
         'name': "Lost Shrine",
+        'description': "",
         'level': 3,
         'x': 0, 'y': 0,
         'coords': [-139,246,-529],
@@ -1479,6 +1569,7 @@ var map = {
     },
     'master1': {
         'name': "master1",
+        'description': "",
         'level': 5,
         'x': 5, 'y': -8,
         'coords': [1,-183,571],
@@ -1495,6 +1586,7 @@ var map = {
     },
     'master10': {
         'name': "master10",
+        'description': "",
         'level': 50,
         'x': 50, 'y': -8,
         'coords': [-51,91,591],
@@ -1511,6 +1603,7 @@ var map = {
     },
     'master11': {
         'name': "master11",
+        'description': "",
         'level': 55,
         'x': 0, 'y': 0,
         'coords': [-114,1,589],
@@ -1527,6 +1620,7 @@ var map = {
     },
     'master12': {
         'name': "master12",
+        'description': "",
         'level': 60,
         'x': 0, 'y': 0,
         'coords': [-48,-79,593],
@@ -1543,6 +1637,7 @@ var map = {
     },
     'master13': {
         'name': "master13",
+        'description': "",
         'level': 65,
         'x': 0, 'y': 0,
         'coords': [0,1,600],
@@ -1559,6 +1654,7 @@ var map = {
     },
     'master2': {
         'name': "master2",
+        'description': "",
         'level': 10,
         'x': 10, 'y': -8,
         'coords': [154,-87,573],
@@ -1575,6 +1671,7 @@ var map = {
     },
     'master3': {
         'name': "master3",
+        'description': "",
         'level': 15,
         'x': 15, 'y': -8,
         'coords': [158,92,572],
@@ -1591,6 +1688,7 @@ var map = {
     },
     'master30': {
         'name': "master30",
+        'description': "",
         'level': 30,
         'x': 30, 'y': -8,
         'coords': [-156,-90,572],
@@ -1607,6 +1705,7 @@ var map = {
     },
     'master4': {
         'name': "master4",
+        'description': "",
         'level': 20,
         'x': 20, 'y': -8,
         'coords': [5,180,572],
@@ -1623,6 +1722,7 @@ var map = {
     },
     'master5': {
         'name': "master5",
+        'description': "",
         'level': 25,
         'x': 25, 'y': -8,
         'coords': [-157,93,571],
@@ -1639,6 +1739,7 @@ var map = {
     },
     'master7': {
         'name': "master7",
+        'description': "",
         'level': 35,
         'x': 35, 'y': -8,
         'coords': [42,-76,594],
@@ -1655,6 +1756,7 @@ var map = {
     },
     'master8': {
         'name': "master8",
+        'description': "",
         'level': 40,
         'x': 40, 'y': -8,
         'coords': [91,-3,593],
@@ -1671,6 +1773,7 @@ var map = {
     },
     'master9': {
         'name': "master9",
+        'description': "",
         'level': 45,
         'x': 45, 'y': -8,
         'coords': [46,84,592],
@@ -1687,6 +1790,7 @@ var map = {
     },
     'meadow': {
         'name': "Meadow",
+        'description': "A small dragon is attracting monsters to this peaceful meadow.\n\nOnce you complete an area, you can click on the shrine to learn an ability and level up--if you have enough divinity.\n\nThe Vitality ability gives adventurers more health regeneration based on their strength.",
         'level': 1,
         'x': 12, 'y': 1,
         'coords': [162,96,-570],
@@ -1706,6 +1810,7 @@ var map = {
     },
     'meander': {
         'name': "Meander",
+        'description': "",
         'level': 10,
         'x': 10, 'y': -11,
         'coords': [313,-470,-202],
@@ -1722,6 +1827,7 @@ var map = {
     },
     'memorial': {
         'name': "Memorial",
+        'description': "",
         'level': 16,
         'x': 0, 'y': 0,
         'coords': [-514,-301,-73],
@@ -1738,6 +1844,7 @@ var map = {
     },
     'monastery': {
         'name': "Monastery",
+        'description': "",
         'level': 5,
         'x': 0, 'y': 0,
         'coords': [458,2,-387],
@@ -1760,6 +1867,7 @@ var map = {
     },
     'monk4': {
         'name': "Monk 4",
+        'description': "",
         'level': 7,
         'x': 0, 'y': 0,
         'coords': [466,118,-359],
@@ -1776,6 +1884,7 @@ var map = {
     },
     'monk6': {
         'name': "Monk 6",
+        'description': "",
         'level': 14,
         'x': 0, 'y': 0,
         'coords': [584,49,-128],
@@ -1792,6 +1901,7 @@ var map = {
     },
     'monk7': {
         'name': "Monk 7",
+        'description': "",
         'level': 18,
         'x': 0, 'y': 0,
         'coords': [587,124,1],
@@ -1808,6 +1918,7 @@ var map = {
     },
     'monk8': {
         'name': "Monk 8",
+        'description': "",
         'level': 22,
         'x': 0, 'y': 0,
         'coords': [591,53,92],
@@ -1824,6 +1935,7 @@ var map = {
     },
     'monk9': {
         'name': "Monk 9",
+        'description': "",
         'level': 26,
         'x': 0, 'y': 0,
         'coords': [513,189,247],
@@ -1840,6 +1952,7 @@ var map = {
     },
     'mossbed': {
         'name': "Mossbed",
+        'description': "",
         'level': 17,
         'x': 18, 'y': -14,
         'coords': [229,-554,-30],
@@ -1856,6 +1969,7 @@ var map = {
     },
     'mountain': {
         'name': "Mountain",
+        'description': "",
         'level': 18,
         'x': 17, 'y': 5,
         'coords': [521,298,4],
@@ -1875,6 +1989,7 @@ var map = {
     },
     'ninja10': {
         'name': "ninja10",
+        'description': "",
         'level': 45,
         'x': 45, 'y': -9,
         'coords': [242,-51,546],
@@ -1891,6 +2006,7 @@ var map = {
     },
     'ninja5': {
         'name': "ninja5",
+        'description': "",
         'level': 20,
         'x': 20, 'y': -9,
         'coords': [517,-298,65],
@@ -1907,6 +2023,7 @@ var map = {
     },
     'ninja6': {
         'name': "ninja6",
+        'description': "",
         'level': 25,
         'x': 25, 'y': -9,
         'coords': [479,-274,237],
@@ -1923,6 +2040,7 @@ var map = {
     },
     'ninja7': {
         'name': "ninja7",
+        'description': "",
         'level': 30,
         'x': 30, 'y': -9,
         'coords': [421,-236,356],
@@ -1939,6 +2057,7 @@ var map = {
     },
     'ninja8': {
         'name': "ninja8",
+        'description': "",
         'level': 35,
         'x': 35, 'y': -9,
         'coords': [326,-189,467],
@@ -1955,6 +2074,7 @@ var map = {
     },
     'ninja9': {
         'name': "ninja9",
+        'description': "",
         'level': 40,
         'x': 40, 'y': -9,
         'coords': [249,-141,527],
@@ -1971,6 +2091,7 @@ var map = {
     },
     'oceanside': {
         'name': "Oceanside",
+        'description': "",
         'level': 8,
         'x': 8, 'y': -13,
         'coords': [497,-127,-310],
@@ -1987,6 +2108,7 @@ var map = {
     },
     'oldbattlefield': {
         'name': "Old Battlefield",
+        'description': "",
         'level': 24,
         'x': 0, 'y': 0,
         'coords': [453,344,191],
@@ -2003,6 +2125,7 @@ var map = {
     },
     'oldforest': {
         'name': "Old Forest",
+        'description': "",
         'level': 18,
         'x': 19, 'y': -12,
         'coords': [-249,-546,-3],
@@ -2019,6 +2142,7 @@ var map = {
     },
     'orchard': {
         'name': "Orchard",
+        'description': "",
         'level': 3,
         'x': 12, 'y': -3,
         'coords': [78,-266,-532],
@@ -2037,6 +2161,7 @@ var map = {
     },
     'paladin2': {
         'name': "Paladin 2",
+        'description': "",
         'level': 4,
         'x': 0, 'y': 0,
         'coords': [-93,371,-462],
@@ -2053,6 +2178,7 @@ var map = {
     },
     'paladin3': {
         'name': "Paladin 3",
+        'description': "",
         'level': 6,
         'x': 0, 'y': 0,
         'coords': [-89,472,-359],
@@ -2069,6 +2195,7 @@ var map = {
     },
     'paladin4': {
         'name': "Paladin 4",
+        'description': "",
         'level': 8,
         'x': 0, 'y': 0,
         'coords': [-215,482,-286],
@@ -2085,6 +2212,7 @@ var map = {
     },
     'paladin6': {
         'name': "Paladin 6",
+        'description': "",
         'level': 16,
         'x': 0, 'y': 0,
         'coords': [-221,554,-67],
@@ -2101,6 +2229,7 @@ var map = {
     },
     'paladin7': {
         'name': "Paladin 7",
+        'description': "",
         'level': 21,
         'x': 0, 'y': 0,
         'coords': [-193,558,108],
@@ -2117,6 +2246,7 @@ var map = {
     },
     'paladin8': {
         'name': "Paladin 8",
+        'description': "",
         'level': 25,
         'x': 0, 'y': 0,
         'coords': [-183,528,219],
@@ -2133,6 +2263,7 @@ var map = {
     },
     'paladin9': {
         'name': "Paladin 9",
+        'description': "",
         'level': 29,
         'x': 0, 'y': 0,
         'coords': [-180,477,316],
@@ -2149,6 +2280,7 @@ var map = {
     },
     'peak': {
         'name': "Peak",
+        'description': "",
         'level': 45,
         'x': 0, 'y': 0,
         'coords': [1,258,542],
@@ -2165,6 +2297,7 @@ var map = {
     },
     'priest3': {
         'name': "Priest 3",
+        'description': "",
         'level': 5,
         'x': 0, 'y': 0,
         'coords': [-307,278,-434],
@@ -2181,6 +2314,7 @@ var map = {
     },
     'priest4': {
         'name': "Priest 4",
+        'description': "",
         'level': 7,
         'x': 0, 'y': 0,
         'coords': [-295,378,-360],
@@ -2197,6 +2331,7 @@ var map = {
     },
     'priest6': {
         'name': "Priest 6",
+        'description': "",
         'level': 14,
         'x': 0, 'y': 0,
         'coords': [-343,472,-140],
@@ -2213,6 +2348,7 @@ var map = {
     },
     'priest7': {
         'name': "Priest 7",
+        'description': "",
         'level': 18,
         'x': 0, 'y': 0,
         'coords': [-390,456,-3],
@@ -2229,6 +2365,7 @@ var map = {
     },
     'priest8': {
         'name': "Priest 8",
+        'description': "",
         'level': 22,
         'x': 0, 'y': 0,
         'coords': [-418,418,103],
@@ -2245,6 +2382,7 @@ var map = {
     },
     'priest9': {
         'name': "Priest 9",
+        'description': "",
         'level': 26,
         'x': 0, 'y': 0,
         'coords': [-313,457,231],
@@ -2261,6 +2399,7 @@ var map = {
     },
     'range': {
         'name': "Range",
+        'description': "",
         'level': 6,
         'x': 10, 'y': -4,
         'coords': [-136,-457,-365],
@@ -2279,6 +2418,7 @@ var map = {
     },
     'ranger10': {
         'name': "ranger10",
+        'description': "",
         'level': 36,
         'x': 36, 'y': -12,
         'coords': [-108,-331,489],
@@ -2295,6 +2435,7 @@ var map = {
     },
     'ranger4': {
         'name': "ranger4",
+        'description': "",
         'level': 11,
         'x': 11, 'y': -12,
         'coords': [-133,-551,-197],
@@ -2311,6 +2452,7 @@ var map = {
     },
     'ranger5': {
         'name': "ranger5",
+        'description': "",
         'level': 14,
         'x': 14, 'y': -12,
         'coords': [-203,-557,-96],
@@ -2327,6 +2469,7 @@ var map = {
     },
     'ranger7': {
         'name': "ranger7",
+        'description': "",
         'level': 23,
         'x': 23, 'y': -12,
         'coords': [-221,-536,154],
@@ -2343,6 +2486,7 @@ var map = {
     },
     'ravine': {
         'name': "Ravine",
+        'description': "",
         'level': 13,
         'x': 13, 'y': -11,
         'coords': [370,-459,-112],
@@ -2359,6 +2503,7 @@ var map = {
     },
     'riverbank': {
         'name': "River Bank",
+        'description': "",
         'level': 7,
         'x': 7, 'y': -11,
         'coords': [357,-383,-293],
@@ -2375,6 +2520,7 @@ var map = {
     },
     'road': {
         'name': "Road",
+        'description': "",
         'level': 5,
         'x': 12, 'y': 3,
         'coords': [368,209,-425],
@@ -2394,6 +2540,7 @@ var map = {
     },
     'ruinedfortress': {
         'name': "Ruined Fortress",
+        'description': "",
         'level': 28,
         'x': 0, 'y': 0,
         'coords': [497,69,329],
@@ -2412,6 +2559,7 @@ var map = {
     },
     'ruins': {
         'name': "Ruins",
+        'description': "",
         'level': 12,
         'x': -1, 'y': -3,
         'coords': [-169,543,-190],
@@ -2430,6 +2578,7 @@ var map = {
     },
     'sage2': {
         'name': "Sage 2",
+        'description': "",
         'level': 9,
         'x': 0, 'y': 0,
         'coords': [-506,-149,-286],
@@ -2446,6 +2595,7 @@ var map = {
     },
     'sage3': {
         'name': "Sage 3",
+        'description': "",
         'level': 12,
         'x': 0, 'y': 0,
         'coords': [-568,-50,-185],
@@ -2462,6 +2612,7 @@ var map = {
     },
     'sage4': {
         'name': "Sage 4",
+        'description': "",
         'level': 15,
         'x': 0, 'y': 0,
         'coords': [-579,-147,-52],
@@ -2478,6 +2629,7 @@ var map = {
     },
     'sage7': {
         'name': "Sage 7",
+        'description': "",
         'level': 30,
         'x': 0, 'y': 0,
         'coords': [-485,-3,353],
@@ -2494,6 +2646,7 @@ var map = {
     },
     'sage8': {
         'name': "Sage 8 ",
+        'description': "",
         'level': 35,
         'x': 0, 'y': 0,
         'coords': [-378,-52,463],
@@ -2510,6 +2663,7 @@ var map = {
     },
     'sage9': {
         'name': "Sage 9 ",
+        'description': "",
         'level': 40,
         'x': 0, 'y': 0,
         'coords': [-289,-40,524],
@@ -2526,6 +2680,7 @@ var map = {
     },
     'samurai2': {
         'name': "Samurai 2",
+        'description': "",
         'level': 8,
         'x': 0, 'y': 0,
         'coords': [434,259,-323],
@@ -2542,6 +2697,7 @@ var map = {
     },
     'samurai3': {
         'name': "Samurai 3",
+        'description': "",
         'level': 11,
         'x': 0, 'y': 0,
         'coords': [489,274,-213],
@@ -2558,6 +2714,7 @@ var map = {
     },
     'samurai4': {
         'name': "Samurai 4",
+        'description': "",
         'level': 14,
         'x': 0, 'y': 0,
         'coords': [557,203,-94],
@@ -2574,6 +2731,7 @@ var map = {
     },
     'samurai6': {
         'name': "Samurai 6",
+        'description': "",
         'level': 23,
         'x': 0, 'y': 0,
         'coords': [563,144,147],
@@ -2590,6 +2748,7 @@ var map = {
     },
     'samurai8': {
         'name': "Samurai 8",
+        'description': "",
         'level': 33,
         'x': 0, 'y': 0,
         'coords': [397,120,434],
@@ -2606,6 +2765,7 @@ var map = {
     },
     'samurai9': {
         'name': "Samurai 9",
+        'description': "",
         'level': 38,
         'x': 0, 'y': 0,
         'coords': [336,34,496],
@@ -2622,6 +2782,7 @@ var map = {
     },
     'savannah': {
         'name': "Savannah",
+        'description': "",
         'level': 3,
         'x': 8, 'y': -3,
         'coords': [-78,-270,-530],
@@ -2639,6 +2800,7 @@ var map = {
     },
     'shipgraveyard': {
         'name': "Ship Graveyard",
+        'description': "These skeletal pirates specialize in countering ranged attacks.\n\nYou will need to visit the <span class=\"js-showCraftingPanel action\">Temple of Fortune</span> to make and equip stronger gear to complete harder areas.\n\nThe Hook ability learned here may give melee adventurers the edge they need against ranged foes.",
         'level': 2,
         'x': 14, 'y': 5,
         'coords': [188,-110,-559],
@@ -2658,6 +2820,7 @@ var map = {
     },
     'shore': {
         'name': "Shore",
+        'description': "",
         'level': 12,
         'x': 12, 'y': -13,
         'coords': [557,-111,-194],
@@ -2674,6 +2837,7 @@ var map = {
     },
     'shrubbery': {
         'name': "Shrubbery",
+        'description': "",
         'level': 5,
         'x': 5, 'y': -14,
         'coords': [132,-393,-434],
@@ -2690,6 +2854,7 @@ var map = {
     },
     'sniper10': {
         'name': "sniper10",
+        'description': "",
         'level': 42,
         'x': 42, 'y': -10,
         'coords': [67,-237,547],
@@ -2706,6 +2871,7 @@ var map = {
     },
     'sniper2': {
         'name': "sniper2",
+        'description': "",
         'level': 8,
         'x': 8, 'y': -10,
         'coords': [-36,-524,-290],
@@ -2722,6 +2888,7 @@ var map = {
     },
     'sniper4': {
         'name': "sniper4",
+        'description': "",
         'level': 16,
         'x': 14, 'y': -10,
         'coords': [-1,-595,-80],
@@ -2738,6 +2905,7 @@ var map = {
     },
     'sniper5': {
         'name': "sniper5",
+        'description': "",
         'level': 18,
         'x': 18, 'y': -10,
         'coords': [-2,-598,51],
@@ -2754,6 +2922,7 @@ var map = {
     },
     'sniper6': {
         'name': "sniper6",
+        'description': "",
         'level': 23,
         'x': 23, 'y': -10,
         'coords': [1,-570,189],
@@ -2770,6 +2939,7 @@ var map = {
     },
     'sniper8': {
         'name': "sniper8",
+        'description': "",
         'level': 33,
         'x': 33, 'y': -10,
         'coords': [0,-421,428],
@@ -2786,6 +2956,7 @@ var map = {
     },
     'sniper9': {
         'name': "sniper9",
+        'description': "",
         'level': 38,
         'x': 38, 'y': -10,
         'coords': [95,-312,503],
@@ -2802,6 +2973,7 @@ var map = {
     },
     'sorcerer': {
         'name': "Sorcerer",
+        'description': "",
         'level': 8,
         'x': 0, 'y': 0,
         'coords': [-504,117,-303],
@@ -2818,6 +2990,7 @@ var map = {
     },
     'sorcerer3': {
         'name': "Sorcerer 3",
+        'description': "",
         'level': 11,
         'x': 0, 'y': 0,
         'coords': [-558,62,-213],
@@ -2834,6 +3007,7 @@ var map = {
     },
     'sorcerer4': {
         'name': "Sorcerer 4",
+        'description': "",
         'level': 14,
         'x': 0, 'y': 0,
         'coords': [-570,151,-109],
@@ -2850,6 +3024,7 @@ var map = {
     },
     'sorcerer6': {
         'name': "Sorcerer 6",
+        'description': "",
         'level': 23,
         'x': 0, 'y': 0,
         'coords': [-571,85,165],
@@ -2866,6 +3041,7 @@ var map = {
     },
     'sorcerer7': {
         'name': "Sorcerer 7",
+        'description': "",
         'level': 28,
         'x': 0, 'y': 0,
         'coords': [-485,148,320],
@@ -2882,6 +3058,7 @@ var map = {
     },
     'sorcerer8': {
         'name': "Sorcerer 8",
+        'description': "",
         'level': 33,
         'x': 0, 'y': 0,
         'coords': [-388,124,441],
@@ -2898,6 +3075,7 @@ var map = {
     },
     'sorcerer9': {
         'name': "Sorcerer 9",
+        'description': "",
         'level': 38,
         'x': 0, 'y': 0,
         'coords': [-311,53,511],
@@ -2914,6 +3092,7 @@ var map = {
     },
     'tomb': {
         'name': "Tomb",
+        'description': "",
         'level': 14,
         'x': 0, 'y': 0,
         'coords': [-481,348,-87],
@@ -2930,6 +3109,7 @@ var map = {
     },
     'tower': {
         'name': "Tower",
+        'description': "",
         'level': 36,
         'x': 0, 'y': 0,
         'coords': [-256,226,493],
@@ -2946,6 +3126,7 @@ var map = {
     },
     'trail': {
         'name': "Trail",
+        'description': "",
         'level': 3,
         'x': 16, 'y': 3,
         'coords': [204,283,-488],
@@ -2965,6 +3146,7 @@ var map = {
     },
     'traininggrounds': {
         'name': "Training Grounds",
+        'description': "",
         'level': 3,
         'x': 0, 'y': 0,
         'coords': [-288,73,-521],
@@ -2984,6 +3166,7 @@ var map = {
     },
     'tributaries': {
         'name': "Tributaries",
+        'description': "",
         'level': 4,
         'x': 20, 'y': -4,
         'coords': [340,-175,-462],
@@ -3000,6 +3183,7 @@ var map = {
     },
     'tundra': {
         'name': "Tundra",
+        'description': "",
         'level': 36,
         'x': 0, 'y': 0,
         'coords': [248,247,488],
@@ -3016,6 +3200,7 @@ var map = {
     },
     'understory': {
         'name': "Understory",
+        'description': "",
         'level': 7,
         'x': 7, 'y': -14,
         'coords': [82,-485,-343],
@@ -3032,6 +3217,7 @@ var map = {
     },
     'university': {
         'name': "University",
+        'description': "",
         'level': 25,
         'x': 0, 'y': 0,
         'coords': [-532,-145,236],
@@ -3048,6 +3234,7 @@ var map = {
     },
     'valley': {
         'name': "Valley",
+        'description': "",
         'level': 22,
         'x': 10, 'y': -6,
         'coords': [198,-553,121],
@@ -3066,6 +3253,7 @@ var map = {
     },
     'warrior2': {
         'name': "Warrior 2",
+        'description': "",
         'level': 6,
         'x': 0, 'y': 0,
         'coords': [302,373,-360],
@@ -3082,6 +3270,7 @@ var map = {
     },
     'warrior3': {
         'name': "Warrior 3",
+        'description': "",
         'level': 9,
         'x': 0, 'y': 0,
         'coords': [395,366,-266],
@@ -3098,6 +3287,7 @@ var map = {
     },
     'warrior4': {
         'name': "Warrior 4",
+        'description': "",
         'level': 12,
         'x': 0, 'y': 0,
         'coords': [364,440,-184],
@@ -3114,6 +3304,7 @@ var map = {
     },
     'warrior6': {
         'name': "Warrior 6",
+        'description': "",
         'level': 18,
         'x': 0, 'y': 0,
         'coords': [380,464,0],
@@ -3130,6 +3321,7 @@ var map = {
     },
     'warrior7': {
         'name': "Warrior 7",
+        'description': "",
         'level': 22,
         'x': 0, 'y': 0,
         'coords': [346,474,125],
@@ -3146,6 +3338,7 @@ var map = {
     },
     'warrior8': {
         'name': "Warrior 8",
+        'description': "",
         'level': 27,
         'x': 0, 'y': 0,
         'coords': [318,424,282],
@@ -3162,6 +3355,7 @@ var map = {
     },
     'warrior9': {
         'name': "Warrior 9",
+        'description': "",
         'level': 32,
         'x': 0, 'y': 0,
         'coords': [343,286,401],
@@ -3178,6 +3372,7 @@ var map = {
     },
     'wasteland': {
         'name': "Wasteland",
+        'description': "",
         'level': 42,
         'x': 0, 'y': 0,
         'coords': [242,140,531],
@@ -3194,6 +3389,7 @@ var map = {
     },
     'waterfall': {
         'name': "Waterfall",
+        'description': "",
         'level': 20,
         'x': 0, 'y': 0,
         'coords': [8,597,58],
@@ -3210,6 +3406,7 @@ var map = {
     },
     'wetlands': {
         'name': "Wetlands",
+        'description': "",
         'level': 4,
         'x': 17, 'y': -4,
         'coords': [216,-277,-486],
@@ -3229,6 +3426,7 @@ var map = {
     },
     'wizard2': {
         'name': "Wizard 2",
+        'description': "",
         'level': 6,
         'x': 0, 'y': 0,
         'coords': [-437,202,-358],
@@ -3245,6 +3443,7 @@ var map = {
     },
     'wizard3': {
         'name': "Wizard 3",
+        'description': "",
         'level': 9,
         'x': 0, 'y': 0,
         'coords': [-464,260,-278],
@@ -3261,6 +3460,7 @@ var map = {
     },
     'wizard4': {
         'name': "Wizard 4",
+        'description': "",
         'level': 12,
         'x': 0, 'y': 0,
         'coords': [-494,286,-186],
@@ -3277,6 +3477,7 @@ var map = {
     },
     'wizard6': {
         'name': "Wizard 6",
+        'description': "",
         'level': 18,
         'x': 0, 'y': 0,
         'coords': [-547,245,-7],
@@ -3293,6 +3494,7 @@ var map = {
     },
     'wizard7': {
         'name': "Wizard 7",
+        'description': "",
         'level': 22,
         'x': 0, 'y': 0,
         'coords': [-561,197,79],
@@ -3309,6 +3511,7 @@ var map = {
     },
     'wizard8': {
         'name': "Wizard 8",
+        'description': "",
         'level': 27,
         'x': 0, 'y': 0,
         'coords': [-463,270,270],
@@ -3325,6 +3528,7 @@ var map = {
     },
     'wizard9': {
         'name': "Wizard 9",
+        'description': "",
         'level': 32,
         'x': 0, 'y': 0,
         'coords': [-285,323,418],
@@ -3341,6 +3545,7 @@ var map = {
     },
     'ziggurat': {
         'name': "Ziggurat",
+        'description': "",
         'level': 45,
         'x': 0, 'y': 0,
         'coords': [-227,-50,553],

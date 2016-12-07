@@ -62,10 +62,12 @@
             <canvas class="js-mainCanvas mainCanvas" width="800" height="270" style="background-color: blue;"></canvas>
             <div class="js-editingControls editingControlsTop" style="display: none">
                 <select class="js-levelSelect"></select>
-                <input class="js-levelNameInput" />
+                <input class="js-levelNameInput" placeholder="Level Name" />
                 <select class="js-levelBackgroundSelect"></select>
                 <select class="js-levelSkillSelect levelSkillSelect"></select>
                 <select class="js-levelBoardSelect"></select>
+                <br/>
+                <textarea class="js-levelDescriptionInput" rows="8" cols="40" placeholder="Level Description"></textarea>
             </div>
             <div class="js-adventureControls adventureControls" style="display: none;">
                 <span class="js-recallButton icon backButton adventureButton" helptext="Exit to map"></span>
@@ -209,6 +211,18 @@
             </div>
             <div class="points" helptext="Anima is used to enchant items with special powers.<br/>Anima is absorbed from defeated enemies and salvaged from gems.">
                 <span class="icon anima"></span> <span class="js-global-anima anima"></span>
+            </div>
+        </div>
+        <div class="js-areaMenu areaMenu" style="display: none;">
+            <div class="js-areaTitle areaTitle">Dark Forest</div>
+            <div class="areaDifficulties">
+                <div class="js-easyDifficulty difficulty easy" helptext="Enemies are weaker on easy mode but you will receive 20% less coins, anima and divinity.">Easy x0.8</div>
+                <div class="js-normalDifficulty difficulty normal">Normal x1</div>
+                <div class="js-hardDifficulty difficulty hard" helptext="Enemies are much stronger on hard mode but you will receive 50% more coins, anima and divinity.">Hard x1.5</div>
+                <div class="js-challengeDifficulty difficulty challenge">Challenge</div>
+            </div>
+            <div class="js-areaDescription areaDescription">
+                Beware! The venom from the spiders in these woods will suppress your health regeneration.
             </div>
         </div>
     </div>

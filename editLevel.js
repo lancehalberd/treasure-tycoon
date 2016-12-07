@@ -34,6 +34,7 @@ function initializeLevelEditing() {
         $(this).val(newName);
         updateMapKey(editingLevel.levelKey, newKey);
     });
+    $('.js-levelDescriptionInput').on('change', updateLevelDescription);
     $('.js-levelBackgroundSelect').on('change', function () {
         editingLevelInstance.background = editingLevel.background = $(this).val();
     });
@@ -130,6 +131,9 @@ function initializeLevelEditing() {
         var character = importCharacter(JSON.parse(characterJson));
         startTestingLevel(character);
     });
+}
+function updateLevelDescription() {
+    if (editingLevel) editingLevel.description = $('.js-levelDescriptionInput').val();
 }
 
 function updateMonsters() {
@@ -230,6 +234,7 @@ function startEditingLevel(level) {
         $('.js-levelBoardSelect option[value="' + editingLevel.board + '"]').prop('selected', true);
     }
     $('.js-levelNameInput').val(editingLevel.name);
+    $('.js-levelDescriptionInput').val(ifdefor(editingLevel.description, ''));
     updateEnemySkills();
     updateMonsters();
     updateEventMonsters();
@@ -239,6 +244,7 @@ function stopEditingLevel() {
     $('.js-levelNameInput').blur();
     $('.js-editingControls').hide();
     selectedMapNodes = [editingLevel];
+    updateLevelDescription();
     editingLevel = editingLevelInstance = undefined;
     editingMap = true;
     updateEditingState();

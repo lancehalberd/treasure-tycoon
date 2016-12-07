@@ -490,13 +490,13 @@ $('body').on('click', '.js-retire', function (event) {
     saveGame();
     updateRetireButtons();
 });
-$('.js-showAdventurePanel').on('click', function (event) {
+$('body').on('click', '.js-showAdventurePanel', function (event) {
     showContext('adventure');
 });
-$('.js-showCraftingPanel').on('click', function (event) {
+$('body').on('click', '.js-showCraftingPanel', function (event) {
     showContext('item');
 });
-$('.js-showJewelsPanel').on('click', function (event) {
+$('body').on('click', '.js-showJewelsPanel', function (event) {
     showContext('jewel');
 });
 $('body').on('click', '.js-recallButton', recallSelectedCharacter);
@@ -545,6 +545,7 @@ function showContext(context) {
     currentContext = context;
     if (context !== 'adventure') {
         $('.js-mainCanvasContainer').slideUp('fast');
+        $('.js-areaMenu').hide();
     } else {
         $('.js-mainCanvasContainer').slideDown('fast');
     }
