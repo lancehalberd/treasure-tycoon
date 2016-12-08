@@ -127,12 +127,12 @@ addSuffix(43, 'Parrying', 'melee', {'+block': [2, 6]});
 addSuffix(53, 'Fencing', 'melee', {'+block': [2, 6]});
 addSuffix(63, 'Aviodance', 'melee', {'+block': [2, 6]});
 
-addSuffix(2, 'Trickery', 'weapon', {'+damageOnMiss': [10, 20]});
-addSuffix(12, 'Artfullness', 'weapon', {'+damageOnMiss': [20, 40]});
-addSuffix(22, 'Subtly', 'weapon', {'+damageOnMiss': [40, 80]});
-addSuffix(32, 'Wiliness', 'weapon', {'+damageOnMiss': [70, 120]});
-addSuffix(42, 'Slyness', 'weapon', {'+damageOnMiss': [100, 160]});
-addSuffix(62, 'Deviousness', 'weapon', {'+damageOnMiss': [150, 200]});
+addSuffix(1, 'Trickery', 'weapon', {'+damageOnMiss': [10, 20]});
+addSuffix(11, 'Artfullness', 'weapon', {'+damageOnMiss': [20, 40]});
+addSuffix(21, 'Subtly', 'weapon', {'+damageOnMiss': [40, 80]});
+addSuffix(31, 'Wiliness', 'weapon', {'+damageOnMiss': [70, 120]});
+addSuffix(41, 'Slyness', 'weapon', {'+damageOnMiss': [100, 160]});
+addSuffix(61, 'Deviousness', 'weapon', {'+damageOnMiss': [150, 200]});
 
 addSuffix(1, 'Soaking', 'weapon', {'+healthGainOnHit': [1, 2]});
 addSuffix(11, 'Leaching', 'weapon', {'+healthGainOnHit': [2, 5]});
@@ -141,7 +141,7 @@ addSuffix(31, 'Feeding', 'weapon', {'+healthGainOnHit': [8, 12]});
 addSuffix(41, 'Feasting', 'weapon', {'+healthGainOnHit': [12, 16]});
 addSuffix(51, 'The Parasite', 'weapon', {'+healthGainOnHit': [16, 20]});
 
-addSuffix(2, 'Aiming', 'weapon', {'+accuracy': [3, 5]});
+addSuffix(1, 'Aiming', 'weapon', {'+accuracy': [3, 5]});
 addSuffix(12, 'The Archer', 'weapon', {'+accuracy': [6, 9]});
 addSuffix(22, 'Accuracy', 'weapon', {'+accuracy': [10, 14]});
 addSuffix(32, 'The Marksman', 'weapon', {'+accuracy': [15, 21]});
