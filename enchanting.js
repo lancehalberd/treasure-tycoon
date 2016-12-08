@@ -14,13 +14,6 @@ function addSuffix(level, name, tags, bonuses) {
     allEnchantments.push(affix)
 }
 
-addPrefix(2, 'Tricky', 'weapon', {'+damageOnMiss': [10, 20]});
-addPrefix(12, 'Artful', 'weapon', {'+damageOnMiss': [20, 40]});
-addPrefix(22, 'Subtle', 'weapon', {'+damageOnMiss': [40, 80]});
-addPrefix(32, 'Wily', 'weapon', {'+damageOnMiss': [70, 120]});
-addPrefix(42, 'Sly', 'weapon', {'+damageOnMiss': [100, 160]});
-addPrefix(62, 'Devious', 'weapon', {'+damageOnMiss': [150, 200]});
-
 addPrefix(1, 'Strong', 'weapon', {'+minPhysicalDamage': 1, '+maxPhysicalDamage': 2});
 addPrefix(5, 'Brutal', 'weapon', {'+minPhysicalDamage': [4,6], '+maxPhysicalDamage': [8,10]});
 addPrefix(15, 'Fierce', 'weapon', {'+minPhysicalDamage': [12, 14], '+maxPhysicalDamage': [20, 22]});
@@ -63,7 +56,6 @@ addPrefix(63, 'Deadly', 'weapon', {'+critDamage': [41, 70, 100]});
 addPrefix(3, 'Precise', 'weapon', {'%critChance': [10, 20, 100], '+critAccuracy': [10, 20, 100]});
 addPrefix(23, 'Preciser', 'weapon', {'%critChance': [21, 40, 100], '+critAccuracy': [21, 40, 100]});
 addPrefix(53, 'Precisest', 'weapon', {'%critChance': [41, 70, 100], '+critAccuracy': [41, 70, 100]});
-
 
 addPrefix(11, 'Rough', armorSlots, {'%armor': [2, 6, 100]});
 addPrefix(21, 'Thick', armorSlots, {'%armor': [5, 10, 100]});
@@ -128,19 +120,44 @@ addSuffix(43, 'The Hawk', 'ranged', {'+range': [21, 25, 10]});
 addSuffix(53, 'Sniping', 'ranged', {'+range': [26, 30, 10]});
 addSuffix(63, 'The Eagle', 'ranged', {'+range': [31, 35, 10]});
 
-addSuffix(1, 'Leeching', 'weapon', {'+healthGainOnHit': [1, 2]});
-addSuffix(11, 'The Sponge', 'weapon', {'+healthGainOnHit': [2, 5]});
-addSuffix(21, 'Feeding', 'weapon', {'+healthGainOnHit': [5, 8]});
-addSuffix(31, 'The Parasite', 'weapon', {'+healthGainOnHit': [8, 12]});
-addSuffix(41, 'Draining', 'weapon', {'+healthGainOnHit': [12, 16]});
-addSuffix(51, 'The Vampire', 'weapon', {'+healthGainOnHit': [16, 20]});
+addSuffix(3, 'Deflecting', 'melee', {'+block': [2, 6]});
+addSuffix(13, 'Diverting', 'melee', {'+block': [2, 6]});
+addSuffix(23, 'Anticipation', 'melee', {'+block': [2, 6]});
+addSuffix(43, 'Parrying', 'melee', {'+block': [2, 6]});
+addSuffix(53, 'Fencing', 'melee', {'+block': [2, 6]});
+addSuffix(63, 'Aviodance', 'melee', {'+block': [2, 6]});
 
-addSuffix(1, 'Aiming', 'weapon', {'+accuracy': [3, 5]});
-addSuffix(11, 'The Archer', 'weapon', {'+accuracy': [6, 9]});
-addSuffix(21, 'Accuracy', 'weapon', {'+accuracy': [10, 14]});
-addSuffix(31, 'The Marksman', 'weapon', {'+accuracy': [15, 21]});
-addSuffix(41, 'Precision', 'weapon', {'+accuracy': [22, 29]});
-addSuffix(51, 'The Sniper', 'weapon', {'+accuracy': [30, 40]});
+addSuffix(2, 'Trickery', 'weapon', {'+damageOnMiss': [10, 20]});
+addSuffix(12, 'Artfullness', 'weapon', {'+damageOnMiss': [20, 40]});
+addSuffix(22, 'Subtly', 'weapon', {'+damageOnMiss': [40, 80]});
+addSuffix(32, 'Wiliness', 'weapon', {'+damageOnMiss': [70, 120]});
+addSuffix(42, 'Slyness', 'weapon', {'+damageOnMiss': [100, 160]});
+addSuffix(62, 'Deviousness', 'weapon', {'+damageOnMiss': [150, 200]});
+
+addSuffix(1, 'Soaking', 'weapon', {'+healthGainOnHit': [1, 2]});
+addSuffix(11, 'Leaching', 'weapon', {'+healthGainOnHit': [2, 5]});
+addSuffix(21, 'Draining', 'weapon', {'+healthGainOnHit': [5, 8]});
+addSuffix(31, 'Feeding', 'weapon', {'+healthGainOnHit': [8, 12]});
+addSuffix(41, 'Feasting', 'weapon', {'+healthGainOnHit': [12, 16]});
+addSuffix(51, 'The Parasite', 'weapon', {'+healthGainOnHit': [16, 20]});
+
+addSuffix(2, 'Aiming', 'weapon', {'+accuracy': [3, 5]});
+addSuffix(12, 'The Archer', 'weapon', {'+accuracy': [6, 9]});
+addSuffix(22, 'Accuracy', 'weapon', {'+accuracy': [10, 14]});
+addSuffix(32, 'The Marksman', 'weapon', {'+accuracy': [15, 21]});
+addSuffix(42, 'Precision', 'weapon', {'+accuracy': [22, 29]});
+addSuffix(52, 'The Sniper', 'weapon', {'+accuracy': [30, 40]});
+
+addSuffix(4, 'Tempo', 'weapon', {'+cooldownReduction': [.01, .015]});
+addSuffix(19, 'Cadence', 'weapon', {'+cooldownReduction': [.02, .025]});
+addSuffix(34, 'Rythum', 'weapon', {'+cooldownReduction': [.03, .035]});
+addSuffix(49, 'Haste', 'weapon', {'+cooldownReduction': [.04, .05]});
+addSuffix(64, 'The Bard', 'weapon', {'+cooldownReduction': [.06, .07]});
+addSuffix(74, 'The Sage', 'weapon', {'+cooldownReduction': [.08, .1]});
+
+addSuffix(15, 'The Vampire', 'weapon', {'+lifeSteal': [.01, .15]});
+addSuffix(40, 'The Dark Knight', 'weapon', {'+lifeSteal': [.018, .023]});
+addSuffix(75, 'The Dread Lord', 'weapon', {'+lifeSteal': [.025, .03]});
 
 addSuffix(1, 'Shininess', armorSlots, {'+magicBlock': [1, 3]});
 addSuffix(9, 'Brightness', armorSlots, {'+magicBlock': [4, 6]});
@@ -156,7 +173,7 @@ addSuffix(30, 'The Mountain', armorSlots, {'+armor': [22, 30]});
 addSuffix(40, 'The Paladin', armorSlots, {'+armor': [32, 44]});
 addSuffix(50, 'Indestructibility', armorSlots, {'+armor': [46, 60]});
 
-addSuffix(1, 'Deflecting', armorSlots, {'+block': [2, 6]});
+addSuffix(1, 'Delaying', armorSlots, {'+block': [2, 6]});
 addSuffix(11, 'Intercepting', armorSlots, {'+block': [8, 12]});
 addSuffix(21, 'Blocking', armorSlots, {'+block': [14, 20]});
 addSuffix(31, 'Guarding', armorSlots, {'+block': [22, 30]});
