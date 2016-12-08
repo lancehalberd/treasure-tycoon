@@ -1,14 +1,14 @@
 var prefixes = [];
 var allEnchantments = [];
 function addPrefix(level, name, tags, bonuses) {
-    var affix = {name:name, tags:tags, bonuses: bonuses};
+    var affix = {level: level, name:name, tags:tags, bonuses: bonuses, prefix: true};
     prefixes[level] = ifdefor(prefixes[level], []);
     prefixes[level].push(affix);
     allEnchantments.push(affix)
 }
 var suffixes = [];
 function addSuffix(level, name, tags, bonuses) {
-    var affix = {name:name, tags:tags, bonuses: bonuses};
+    var affix = {level: level, name:name, tags:tags, bonuses: bonuses, suffix: true};
     suffixes[level] = ifdefor(suffixes[level], []);
     suffixes[level].push(affix);
     allEnchantments.push(affix)
@@ -201,30 +201,12 @@ addSuffix(61, 'Unsurpassed Dexterity', accessorySlots, {'+dexterity': [31, 50]})
 addSuffix(61, 'Unsurpassed Intelligence', accessorySlots, {'+intelligence': [31, 50]});
 
 var affixesByKey = {};
-$.each(prefixes, function (level, levelAffixes) {
-    ifdefor(levelAffixes, []).forEach(function (affix) {
-        var key = affix.name.replace(/\s*/g, '').toLowerCase();
-        if (affixesByKey[key]) {
-            throw new Error('affix key ' + key + ' is already used.');
-        }
-        affixesByKey[key] = affix;
-        affix.level = level;
-        affix.prefix = true;
-        affix.key = key;
-    });
-});
-$.each(suffixes, function (level, levelAffixes) {
-    ifdefor(levelAffixes, []).forEach(function (affix) {
-        var key = affix.name.replace(/\s*/g, '').toLowerCase();
-        if (affixesByKey[key]) {
-            throw new Error('affix key ' + key + ' is already used.');
-        }
-        affixesByKey[key] = affix;
-        affix.level = level;
-        affix.suffix = true;
-        affix.key = key;
-    });
-});
+for (var affix of allEnchantments) {
+    var key = affix.name.replace(/\s*/g, '').toLowerCase();
+    if (affixesByKey[key]) throw new Error('affix key ' + key + ' is already used.');
+    affixesByKey[key] = affix;
+    affix.key = key;
+}
 function makeAffix(baseAffix) {
     var affix = {
         'base': baseAffix,
