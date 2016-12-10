@@ -63,7 +63,7 @@ var abilities = {
     //'spellParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
 
     'axePhysicalDamage': {'name': 'Axe Physical Damage', 'bonuses': {'%axe:physicalDamage': .4, '%axe:accuracy': .2}},
-    'axeAttackSpeed': {'name': 'Axe Attack Speed', 'bonuses': {'%axe:speed': .4, '%axe:accuracy': .2}},
+    'axeAttackSpeed': {'name': 'Axe Attack Speed', 'bonuses': {'%axe:attackSpeed': .4, '%axe:accuracy': .2}},
     'axeCritDamage': {'name': 'Axe Critical Damage', 'bonuses': {'+axe:critDamage': .3, '%axe:physicalDamage': .3}},
     //'axeParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
 
