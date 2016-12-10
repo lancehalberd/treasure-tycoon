@@ -397,14 +397,14 @@ function clickMapHandler(x, y) {
     if (currentMapTarget.isShrine && state.selectedCharacter.currentLevelKey === currentMapTarget.level.levelKey && state.selectedCharacter.board.boardPreview) {
         showContext('jewel');
     } else if (!currentMapTarget.isShrine && currentMapTarget.levelKey) {
-        state.selectedCharacter.currentLevelKey = currentMapTarget.levelKey;
+        state.selectedCharacter.selectedLevelKey = currentMapTarget.levelKey;
         displayAreaMenu();
         currentMapTarget = null;
         $('.js-mainCanvas').toggleClass('clickable', false);
     }
 }
 function displayAreaMenu() {
-    selectedLevel = map[state.selectedCharacter.currentLevelKey];
+    selectedLevel = map[state.selectedCharacter.selectedLevelKey];
     centerMapOnLevel(selectedLevel);
     // Do this in timeout so that it happens after the check for hiding the areaMenu...
     setTimeout(function () {
@@ -418,22 +418,22 @@ function displayAreaMenu() {
 $('.js-easyDifficulty').on('click', function (event) {
     $('.js-areaMenu').hide();
     state.selectedCharacter.levelDifficulty = 'easy';
-    startArea(state.selectedCharacter, state.selectedCharacter.currentLevelKey);
+    startArea(state.selectedCharacter, state.selectedCharacter.selectedLevelKey);
 });
 $('.js-normalDifficulty').on('click', function (event) {
     $('.js-areaMenu').hide();
     state.selectedCharacter.levelDifficulty = 'normal';
-    startArea(state.selectedCharacter, state.selectedCharacter.currentLevelKey);
+    startArea(state.selectedCharacter, state.selectedCharacter.selectedLevelKey);
 });
 $('.js-hardDifficulty').on('click', function (event) {
     $('.js-areaMenu').hide();
     state.selectedCharacter.levelDifficulty = 'hard';
-    startArea(state.selectedCharacter, state.selectedCharacter.currentLevelKey);
+    startArea(state.selectedCharacter, state.selectedCharacter.selectedLevelKey);
 });
 $('.js-challengeDifficulty').on('click', function (event) {
     $('.js-areaMenu').hide();
     state.selectedCharacter.levelDifficulty = 'challenge';
-    startArea(state.selectedCharacter, state.selectedCharacter.currentLevelKey);
+    startArea(state.selectedCharacter, state.selectedCharacter.selectedLevelKey);
 });
 
 $(document).on('mousedown', function (event) {
