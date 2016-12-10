@@ -29,7 +29,7 @@ function drawMap() {
         camera.fixRightAndUp();
         camera.updateRotationMatrix();
         if (true) {
-            var lineColors = [,'#ff0','#8f0','#0f0','#0f8', '#0ff', '#08f', '#00f', '#80f', '#f0f', '#f08', '#f00','#f80'];
+            var lineColors = ['#ff0','#8f0','#0f0','#0f8', '#0ff', '#08f', '#00f', '#80f', '#f0f', '#f08', '#f00','#f80'];
             for (var theta = 0; theta < Math.PI * 2; theta += Math.PI / 6) {
                 context.beginPath();
                 context.strokeStyle = lineColors.pop();
