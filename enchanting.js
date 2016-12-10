@@ -57,6 +57,20 @@ addPrefix(3, 'Precise', 'weapon', {'%critChance': [10, 20, 100], '+critAccuracy'
 addPrefix(23, 'Preciser', 'weapon', {'%critChance': [21, 40, 100], '+critAccuracy': [21, 40, 100]});
 addPrefix(53, 'Precisest', 'weapon', {'%critChance': [41, 70, 100], '+critAccuracy': [41, 70, 100]});
 
+addPrefix(1, 'Hardy', 'body', {'%maxHealth': [3, 9, 100]});
+addPrefix(12, 'Staunch', 'body', {'%maxHealth': [7, 15, 100]});
+addPrefix(22, 'Steadfast', 'body', {'%maxHealth': [15, 21, 100]});
+addPrefix(32, 'Resilient', 'body', {'%maxHealth': [21, 30, 100]});
+addPrefix(52, 'Enduring', 'body', {'%maxHealth': [30, 37, 100]});
+addPrefix(72, 'Perpetual', 'body', {'%maxHealth': [37, 45, 100]});
+
+addPrefix(1, 'Sound', smallArmorSlots.concat(accessorySlots), {'%maxHealth': [2, 6, 100]});
+addPrefix(11, 'Hale', smallArmorSlots.concat(accessorySlots), {'%maxHealth': [5, 10, 100]});
+addPrefix(21, 'Robust', smallArmorSlots.concat(accessorySlots), {'%maxHealth': [10, 15, 100]});
+addPrefix(31, 'Invigorating', smallArmorSlots.concat(accessorySlots), {'%maxHealth': [15, 20, 100]});
+addPrefix(51, 'Abiding', smallArmorSlots.concat(accessorySlots), {'%maxHealth': [20, 25, 100]});
+addPrefix(71, 'Everlasting', smallArmorSlots.concat(accessorySlots), {'%maxHealth': [25, 30, 100]});
+
 addPrefix(11, 'Rough', armorSlots, {'%armor': [2, 6, 100]});
 addPrefix(21, 'Thick', armorSlots, {'%armor': [5, 10, 100]});
 addPrefix(31, 'Refined', armorSlots, {'%armor': [10, 15, 100]});
@@ -85,26 +99,12 @@ addPrefix(41, 'Baffling', armorSlots, {'%magicBlock': [15, 20, 100]});
 addPrefix(51, 'Bewildering', armorSlots, {'%magicBlock': [20, 25, 100]});
 addPrefix(71, 'Confounding', armorSlots, {'%magicBlock': [25, 30, 100]});
 
-addPrefix(1, 'Hardy', 'body', {'+maxHealth': [20, 30]});
-addPrefix(10, 'Fit', 'body', {'+maxHealth': [40, 60]});
-addPrefix(25, 'Powerful', 'body', {'+maxHealth': [70, 90]});
-addPrefix(40, 'Robust', 'body', {'+maxHealth': [100, 120]});
-addPrefix(55, 'Vigorous', 'body', {'+maxHealth': [140, 160]});
-addPrefix(70, 'Stalwart', 'body', {'+maxHealth': [180, 200]});
-
-addPrefix(1, 'Enlarged', smallArmorSlots.concat(accessorySlots), {'+maxHealth': [12, 18]});
-addPrefix(10, 'Enhanced', smallArmorSlots.concat(accessorySlots), {'+maxHealth': [24, 36]});
-addPrefix(25, 'Augmented', smallArmorSlots.concat(accessorySlots), {'+maxHealth': [42, 54]});
-addPrefix(40, 'Boosted', smallArmorSlots.concat(accessorySlots), {'+maxHealth': [60, 72]});
-addPrefix(55, 'Amplified', smallArmorSlots.concat(accessorySlots), {'+maxHealth': [84, 96]});
-addPrefix(70, 'Maximized', smallArmorSlots.concat(accessorySlots), {'+maxHealth': [108, 120]});
-
-addPrefix(1, 'Relaxing', smallArmorSlots.concat(accessorySlots), {'+healthRegen': [10, 20, 10]});
-addPrefix(12, 'Relieving', smallArmorSlots.concat(accessorySlots), {'+healthRegen': [20, 50, 10]});
-addPrefix(24, 'Soothing', smallArmorSlots.concat(accessorySlots), {'+healthRegen': [50, 80, 10]});
-addPrefix(36, 'Restoring', smallArmorSlots.concat(accessorySlots), {'+healthRegen': [80, 120, 10]});
-addPrefix(48, 'Healing', smallArmorSlots.concat(accessorySlots), {'+healthRegen': [120, 160, 10]});
-addPrefix(60, 'Reviving', smallArmorSlots.concat(accessorySlots), {'+healthRegen': [160, 200, 10]});
+addPrefix(1, 'Relaxing', armorSlots, {'+healthRegen': [10, 20, 10]});
+addPrefix(12, 'Relieving', armorSlots, {'+healthRegen': [20, 50, 10]});
+addPrefix(24, 'Soothing', armorSlots, {'+healthRegen': [50, 80, 10]});
+addPrefix(36, 'Restoring', armorSlots, {'+healthRegen': [80, 120, 10]});
+addPrefix(48, 'Healing', armorSlots, {'+healthRegen': [120, 160, 10]});
+addPrefix(60, 'Reviving', armorSlots, {'+healthRegen': [160, 200, 10]});
 
 addPrefix(1, 'Warding', accessorySlots, {'+magicResist': [10, 20, 1000]});
 addPrefix(8, 'Charmed', accessorySlots, {'+magicResist': [20, 50, 1000]});
@@ -112,6 +112,18 @@ addPrefix(18, 'Cloaking', accessorySlots, {'+magicResist': [50, 80, 1000]});
 addPrefix(38, 'Enchanted', accessorySlots, {'+magicResist': [80, 120, 1000]});
 addPrefix(48, 'Shielding', accessorySlots, {'+magicResist': [120, 160, 1000]});
 addPrefix(68, 'Blessed', accessorySlots, {'+magicResist': [160, 200, 1000]});
+
+addPrefix(10, 'Immense', 'heavyArmor', {'%strength': [10, 30, 1000]});
+addPrefix(40, 'Gigantic', 'heavyArmor', {'%strength': [40, 60, 1000]});
+addPrefix(80, 'Colossal', 'heavyArmor', {'%strength': [80, 100, 1000]});
+
+addPrefix(10, 'Duplicitous', 'lightArmor', {'%dexterity': [10, 30, 1000]});
+addPrefix(40, 'Perfidious', 'lightArmor', {'%dexterity': [40, 60, 1000]});
+addPrefix(80, 'Machiavellian', 'lightArmor', {'%dexterity': [80, 100, 1000]});
+
+addPrefix(10, 'Gifted', 'clothArmor', {'%intelligence': [10, 30, 1000]});
+addPrefix(40, 'Brilliant', 'clothArmor', {'%intelligence': [40, 60, 1000]});
+addPrefix(80, 'Unsurpassed', 'clothArmor', {'%intelligence': [80, 100, 1000]});
 
 addSuffix(3, 'Range', 'ranged', {'+range': [5, 10, 10]});
 addSuffix(13, 'The Owl', 'ranged', {'+range': [11, 15, 10]});
@@ -148,16 +160,30 @@ addSuffix(32, 'The Marksman', 'weapon', {'+accuracy': [15, 21]});
 addSuffix(42, 'Precision', 'weapon', {'+accuracy': [22, 29]});
 addSuffix(52, 'The Sniper', 'weapon', {'+accuracy': [30, 40]});
 
-addSuffix(4, 'Tempo', 'weapon', {'+cooldownReduction': [.01, .015]});
-addSuffix(19, 'Cadence', 'weapon', {'+cooldownReduction': [.02, .025]});
-addSuffix(34, 'Rythum', 'weapon', {'+cooldownReduction': [.03, .035]});
-addSuffix(49, 'Haste', 'weapon', {'+cooldownReduction': [.04, .05]});
-addSuffix(64, 'The Bard', 'weapon', {'+cooldownReduction': [.06, .07]});
-addSuffix(74, 'The Sage', 'weapon', {'+cooldownReduction': [.08, .1]});
+addSuffix(4, 'Tempo', 'weapon', {'+cooldownReduction': [10, 15, 1000]});
+addSuffix(19, 'Cadence', 'weapon', {'+cooldownReduction': [20, 25, 1000]});
+addSuffix(34, 'Rythum', 'weapon', {'+cooldownReduction': [30, 35, 1000]});
+addSuffix(49, 'Haste', 'weapon', {'+cooldownReduction': [40, 50, 1000]});
+addSuffix(64, 'The Bard', 'weapon', {'+cooldownReduction': [60, 70, 1000]});
+addSuffix(74, 'The Sage', 'weapon', {'+cooldownReduction': [80, 100, 1000]});
 
-addSuffix(15, 'The Vampire', 'weapon', {'+lifeSteal': [.01, .15]});
-addSuffix(40, 'The Dark Knight', 'weapon', {'+lifeSteal': [.018, .023]});
-addSuffix(75, 'The Dread Lord', 'weapon', {'+lifeSteal': [.025, .03]});
+addSuffix(15, 'The Vampire', 'weapon', {'+lifeSteal': [10, 15, 1000]});
+addSuffix(40, 'The Dark Knight', 'weapon', {'+lifeSteal': [18, 23, 1000]});
+addSuffix(75, 'The Dread Lord', 'weapon', {'+lifeSteal': [25, 30, 1000]});
+
+addSuffix(1, 'Health', 'body', {'+maxHealth': [20, 30]});
+addSuffix(10, 'Fitness', 'body', {'+maxHealth': [40, 60]});
+addSuffix(25, 'Power', 'body', {'+maxHealth': [70, 90]});
+addSuffix(40, 'Robustness', 'body', {'+maxHealth': [100, 120]});
+addSuffix(55, 'Vigor', 'body', {'+maxHealth': [140, 160]});
+addSuffix(70, 'Stalwartness', 'body', {'+maxHealth': [180, 200]});
+
+addSuffix(1, 'Enlarging', smallArmorSlots.concat(accessorySlots), {'+maxHealth': [12, 18]});
+addSuffix(10, 'Enhancing', smallArmorSlots.concat(accessorySlots), {'+maxHealth': [24, 36]});
+addSuffix(25, 'Augmenting', smallArmorSlots.concat(accessorySlots), {'+maxHealth': [42, 54]});
+addSuffix(40, 'Boosting', smallArmorSlots.concat(accessorySlots), {'+maxHealth': [60, 72]});
+addSuffix(55, 'Amplifcation', smallArmorSlots.concat(accessorySlots), {'+maxHealth': [84, 96]});
+addSuffix(70, 'Maximization', smallArmorSlots.concat(accessorySlots), {'+maxHealth': [108, 120]});
 
 addSuffix(1, 'Shininess', armorSlots, {'+magicBlock': [1, 3]});
 addSuffix(9, 'Brightness', armorSlots, {'+magicBlock': [4, 6]});
@@ -186,6 +212,18 @@ addSuffix(22, 'Evasion', armorSlots, {'+evasion': [14, 20]});
 addSuffix(32, 'Avoidance', armorSlots, {'+evasion': [22, 30]});
 addSuffix(42, 'Illusion', armorSlots, {'+evasion': [32, 44]});
 addSuffix(52, 'Vanishing', armorSlots, {'+evasion': [46, 60]});
+
+addSuffix(5, 'Courage', 'heavyArmor', {'+strength': [3, 6]});
+addSuffix(25, 'Valor', 'heavyArmor', {'+strength': [10, 20]});
+addSuffix(55, 'Heroism', 'heavyArmor', {'+strength': [30, 40]});
+
+addSuffix(5, 'Finesse', 'lightArmor', {'+dexterity': [3, 6]});
+addSuffix(25, 'Skill', 'lightArmor', {'+dexterity': [10, 20]});
+addSuffix(55, 'Mastery', 'lightArmor', {'+dexterity': [30, 40]});
+
+addSuffix(5, 'Insight', 'clothArmor', {'+intelligence': [3, 6]});
+addSuffix(25, 'Comprehension', 'clothArmor', {'+intelligence': [10, 20]});
+addSuffix(55, 'Genius', 'clothArmor', {'+intelligence': [30, 40]});
 
 addSuffix(1, 'Minor Strength', accessorySlots, {'+strength': [3, 6]});
 addSuffix(1, 'Minor Dexterity', accessorySlots, {'+dexterity': [3, 6]});
