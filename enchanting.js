@@ -99,12 +99,12 @@ addPrefix(41, 'Baffling', armorSlots, {'%magicBlock': [15, 20, 100]});
 addPrefix(51, 'Bewildering', armorSlots, {'%magicBlock': [20, 25, 100]});
 addPrefix(71, 'Confounding', armorSlots, {'%magicBlock': [25, 30, 100]});
 
-addPrefix(1, 'Relaxing', armorSlots, {'+healthRegen': [10, 20, 10]});
-addPrefix(12, 'Relieving', armorSlots, {'+healthRegen': [20, 50, 10]});
-addPrefix(24, 'Soothing', armorSlots, {'+healthRegen': [50, 80, 10]});
-addPrefix(36, 'Restoring', armorSlots, {'+healthRegen': [80, 120, 10]});
-addPrefix(48, 'Healing', armorSlots, {'+healthRegen': [120, 160, 10]});
-addPrefix(60, 'Reviving', armorSlots, {'+healthRegen': [160, 200, 10]});
+addPrefix(1, 'Relaxing', armorSlots.concat(accessorySlots), {'+healthRegen': [10, 20, 10]});
+addPrefix(12, 'Relieving', armorSlots.concat(accessorySlots), {'+healthRegen': [20, 50, 10]});
+addPrefix(24, 'Soothing', armorSlots.concat(accessorySlots), {'+healthRegen': [50, 80, 10]});
+addPrefix(36, 'Restoring', armorSlots.concat(accessorySlots), {'+healthRegen': [80, 120, 10]});
+addPrefix(48, 'Healing', armorSlots.concat(accessorySlots), {'+healthRegen': [120, 160, 10]});
+addPrefix(60, 'Reviving', armorSlots.concat(accessorySlots), {'+healthRegen': [160, 200, 10]});
 
 addPrefix(1, 'Warding', accessorySlots, {'+magicResist': [10, 20, 1000]});
 addPrefix(8, 'Charmed', accessorySlots, {'+magicResist': [20, 50, 1000]});
