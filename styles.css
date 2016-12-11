@@ -1079,7 +1079,7 @@ select {
 
 .sellItem {
     position: absolute;
-    left: 2px;
+    right: 5px;
     bottom: 2px;
     cursor: default;
 }
