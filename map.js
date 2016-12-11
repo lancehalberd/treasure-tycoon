@@ -596,3 +596,9 @@ $(document).on('keydown', function(event) {
         }
     }
 });
+
+// Return the minimum angle between two angles, specified in degrees.
+function getThetaDistance(angle1, angle2) {
+    var diff = Math.abs(angle1 - angle2) % 360;
+    return Math.min(diff, 360 - diff);
+}

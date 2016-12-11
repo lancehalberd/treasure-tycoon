@@ -190,6 +190,7 @@ function newCharacter(job) {
     character.gameSpeed = 1;
     character.replay = false;
     character.divinityScores = {};
+    character.levelTimes = {};
     character.divinity = 0;
     character.currentLevelKey = ifdefor(job.levelKey, 'meadow');
     character.levelCompleted = false;

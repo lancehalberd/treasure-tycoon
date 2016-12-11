@@ -1,4 +1,4 @@
-function instantiateLevel(levelData, completed) {
+function instantiateLevel(levelData, difficulty, difficultyCompleted) {
     var waves = [];
     var level = levelData.level;
     var numberOfWaves = 3 + Math.min(20, Math.floor(2 * Math.sqrt(level)));
@@ -27,12 +27,39 @@ function instantiateLevel(levelData, completed) {
 
     };
     var loot = [];
-    var pointsFactor = completed ? 1 : 4;
+    var pointsFactor = difficultyCompleted ? 1 : 4;
     // coins are granted at the end of each level, but diminished after the first completion.
     loot.push(coinsLoot([pointsFactor * level * level * 10, pointsFactor * level * level * 15]));
-    // Special Loot drops are given only the first time an adventurer complets an area.
-    if (!completed) {
-        loot = levelData.specialLoot.map(function (lootKey) { return loots[lootKey];}).concat(loot);
+
+    if (!difficultyCompleted) {
+        // Special Loot drops are given only the first time an adventurer complets an area on a given difficulty.
+        var levelDegrees = 180 * Math.atan2(levelData.coords[1], levelData.coords[0]) / Math.PI;
+        // This is the minimum distance the level is from one of the main str/dex/int leylines.
+        // Levels within 30 degrees of these leylines use 'basic'(triangle based) shapes for the jewels, other levels
+        // will likely have non-triangle based shapes.
+        var redComponent = Math.max(0, 60 - getThetaDistance(30, levelDegrees));
+        var blueComponent = Math.max(0, 60 - getThetaDistance(150, levelDegrees));
+        var greenComponent = Math.max(0, 60 - getThetaDistance(270, levelDegrees));
+        var allComponent = Math.abs(levelData.coords[2]) / 120;
+        // component can be as high as 60 so if it is at least 30 we are within 30 degrees of a leyline
+        var maxComponent = Math.max(redComponent, blueComponent, greenComponent);
+        var tier = getJewelTiewerForLevel(level);
+        var components = [[(redComponent + allComponent) * 0.9, (redComponent + allComponent) * 1.1],
+                          [(greenComponent + allComponent) * 0.9, (greenComponent + allComponent) * 1.1],
+                          [(blueComponent + allComponent) * 0.9, (blueComponent + allComponent) * 1.1]];
+        if (maxComponent < 30) {
+            var shapeTypes = ['rhombus']
+            if (difficulty !== 'easy') shapeTypes.push('square');
+            if (difficulty === 'hard') shapeTypes.push('trapezoid');
+        } else {
+            var shapeTypes = ['triangle'];
+            if (difficulty !== 'easy') shapeTypes.push('diamond');
+            if (difficulty === 'hard') shapeTypes.push('trapezoid');
+        }
+        // console.log(tier);
+        // console.log(shapeTypes.join(','));
+        // console.log(components.join(','));
+        loot.push(jewelLoot(shapeTypes, [tier, tier], components, false));
         waves.push(chestWave(firstChest(loot)));
     } else {
         waves.push(chestWave(backupChest(loot)));
@@ -46,12 +73,16 @@ function instantiateLevel(levelData, completed) {
         'background': levelData.background
     };
 }
-function createEndlessLevel(key, level) {
+function getJewelTiewerForLevel(level) {
     var tier = 1;
     if (level >= jewelTierLevels[5]) tier = 5
     else if (level >= jewelTierLevels[4]) tier = 4
     else if (level >= jewelTierLevels[3]) tier = 3
     else if (level >= jewelTierLevels[2]) tier = 2
+    return tier;
+}
+function createEndlessLevel(key, level) {
+    tier = getJewelTiewerForLevel(level);
     var componentBonus = (10 + tier) * (level - jewelTierLevels[tier]);
     var name, background, monsters, events;
     switch (key) {

@@ -147,6 +147,7 @@ function exportCharacter(character) {
     data.board = exportJewelBoard(character.board);
     data.gameSpeed = character.gameSpeed;
     data.divinityScores = character.divinityScores;
+    data.levelTimes = character.levelTimes;
     data.fame = character.fame;
     data.divinity = character.divinity;
     data.currentLevelKey = character.currentLevelKey;
@@ -175,6 +176,7 @@ function importCharacter(characterData) {
     character.gameSpeed = characterData.gameSpeed;
     character.replay = false;
     character.divinityScores = ifdefor(characterData.divinityScores, {});
+    character.levelTimes = ifdefor(characterData.levelTimes, {});
     character.divinity = ifdefor(characterData.divinity, 0);
     character.currentLevelKey = ifdefor(characterData.currentLevelKey, ifdefor(character.adventurer.job.levelKey, 'meadow'));
     character.levelCompleted = ifdefor(characterData.levelCompleted, false);

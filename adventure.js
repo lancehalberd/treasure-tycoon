@@ -11,7 +11,8 @@ function startArea(character, index) {
     }
     character.currentLevelKey = index;
     var levelCompleted = ifdefor(character.divinityScores[index], 0) !== 0;
-    character.area = instantiateLevel(map[index], levelCompleted);
+    var difficultyCompleted = !!ifdefor(character.levelTimes[index], {})[character.levelDifficulty];
+    character.area = instantiateLevel(map[index], character.levelDifficulty, difficultyCompleted);
     initializeActorForAdventure(character.adventurer);
     character.waveIndex = 0;
     character.adventurer.x = 0;

@@ -189,7 +189,7 @@ function startEditingLevel(level) {
     editingEventIndex = 0;
     currentMapTarget = null;
     editingMap = false;
-    editingLevelInstance = instantiateLevel(editingLevel, false);
+    editingLevelInstance = instantiateLevel(editingLevel, 'normal', false);
     state.selectedCharacter.x = 0;
     state.selectedCharacter.cameraX = -60;
     state.selectedCharacter.startTime = state.selectedCharacter.time;
