@@ -26,9 +26,18 @@ function jewelHelpText(jewel) {
     if (!jewel.fixed) {
         sections.push('Requires level ' + jewelTierLevels[jewel.tier]);
     }
+    var componentSum = 0;
+    var normalizedComponenets = [];
+    for (var component of jewel.components) {
+        componentSum += component;
+    }
+    for (var i in jewel.components) {
+        normalizedComponenets[i] = jewel.components[i] / componentSum;
+    }
     sections.push('');
     sections.push('Quality ' + jewel.quality.format(2));
-    sections.push('Balance ' + [(300 * jewel.components[0]).format(0), (300 * jewel.components[1]).format(0), (300 * jewel.components[2]).format(0)].join('/'));
+    sections.push('Balance ' + [(300 * normalizedComponenets[0]).format(0), (300 * normalizedComponenets[1]).format(0), (300 * normalizedComponenets[2]).format(0)].join('/'));
+    // sections.push('Color ' + jewel.shape.color);
     sections.push('');
     sections.push(bonusSourceHelpText(jewel, state.selectedCharacter.adventurer));
     sections.push('');
@@ -106,6 +115,7 @@ $('body').on('mousedown', function (event) {
         return;
     }
     draggedJewel = overJewel;
+    draggedJewel.startCharacter = draggedJewel.character;
     draggedJewel.startCenter = [draggedJewel.shape.center[0], draggedJewel.shape.center[1]];
     clearAdjacentJewels(draggedJewel);
     updateAdjacencyBonuses(draggedJewel);
@@ -316,6 +326,8 @@ function removeFromBoard(jewel) {
         // the bonus back again and trigger the stat update for the adventurer.
         jewels.splice(index, 1);
         removeBonusSourceFromObject(adventurer, adventurer.character.jewelBonuses, false);
+        jewel.character = null;
+        updateAdjacentJewels(jewel);
         updateJewelBonuses(adventurer.character);
         addBonusSourceToObject(adventurer, adventurer.character.jewelBonuses, true);
         refreshStatsPanel();
@@ -326,8 +338,8 @@ function returnToInventory(jewel) {
     jewel.shape.setCenterPosition(jewel.canvas.width / 2, jewel.canvas.height / 2);
     jewel.$canvas.css('position', '');
     jewel.$item.append(jewel.$canvas);
+    jewel.startCharacter = null;
     $('.js-jewel-inventory').append(jewel.$item);
-    jewel.character = null;
 }
 
 function stopJewelDrag() {
@@ -336,16 +348,13 @@ function stopJewelDrag() {
     if (overVertex) {
         overVertex = null;
         if (draggedJewel.character) {
+            var draggedJewelCharacter = draggedJewel.character;
             removeFromBoard(draggedJewel);
-            if (equipJewel(draggedJewel.character, false, true)) {
+            if (equipJewel(draggedJewelCharacter, false, true)) {
                 checkToShowJewelToolTip();
                 return;
             }
-            draggedJewel.shape.setCenterPosition(draggedJewel.canvas.width / 2, draggedJewel.canvas.height / 2);
-            draggedJewel.$canvas.css('position', '');
-            draggedJewel.$item.append(draggedJewel.$canvas);
-            $('.js-jewel-inventory').append(draggedJewel.$item);
-            draggedJewel.character = null;
+            returnToInventory(draggedJewel);
         }
         overJewel = draggedJewel;
         draggedJewel = null;
@@ -449,6 +458,13 @@ function equipJewel(character, replace, updateAdventurer) {
         return true;
     }
     updateAdjacentJewels(draggedJewel);
+    if (updateAdventurer) {
+        var adventurer = character.adventurer;
+        removeBonusSourceFromObject(adventurer, adventurer.character.jewelBonuses, false);
+        updateJewelBonuses(adventurer.character);
+        addBonusSourceToObject(adventurer, adventurer.character.jewelBonuses, true);
+        refreshStatsPanel();
+    }
     return false;
 }
 function updateJewelCraftingOptions() {
@@ -504,17 +520,17 @@ function fuseJewels(jewelA, jewelB) {
     var quality = (jewelA.quality * jewelA.area + jewelB.quality * jewelB.area) / fusedShape.area;
     var components = [];
     for (var i = 0;i < 3; i++) {
-        components[i] = jewelA.components[i] * jewelA.area + jewelB.components[i] * jewelB.area;
+        components[i] = (jewelA.components[i] * jewelA.area + jewelB.components[i] * jewelB.area) / (jewelA.area + jewelB.area);
     }
     var newJewel = makeJewel(tier, fusedShape.key, components, quality);
     destroyJewel(jewelA);
     destroyJewel(jewelB);
     appendJewelToElement(newJewel, $('.js-jewelCraftingSlot').first());
     updateJewelCraftingOptions();
+    saveGame();
 }
 function destroyJewel(jewel) {
     removeFromBoard(jewel);
-    jewel.character = null;
     jewel.$item.data('jewel', null).remove();
     jewel.$canvas.data('jewel', null).remove();
 }
@@ -541,8 +557,9 @@ function splitJewel(jewel) {
     }
     var componentsA = [];
     var componentsB = [];
-    for (var i = 0;i < 3; i++) {
-        componentsA[i] = jewel.components[i] * (.9 + Math.random() * .2);
+    for (var i = 0; i < 3; i++) {
+        // A component cannot be higher than 1. ComponentA must also be high enough to insure compontentB is no greater than 1.
+        componentsA[i] = Math.max(Math.min(1, jewel.components[i] * (.6 + Math.random() * .8)), jewel.components[i] * jewel.area - shapeDefinitionB.area);
         componentsB[i] = (jewel.components[i] * jewel.area - componentsA[i] * shapeDefinitionA.area) / shapeDefinitionB.area;
     }
     var newJewelA = makeJewel(jewel.tier, shapeDefinitionA.key, componentsA, qualityA);
@@ -551,6 +568,7 @@ function splitJewel(jewel) {
     appendJewelToElement(newJewelA, $('.js-jewelCraftingSlot').first());
     appendJewelToElement(newJewelB, $('.js-jewelCraftingSlot').last());
     updateJewelCraftingOptions();
+    saveGame();
 }
 function snapToBoard(jewel, board, replace, extraJewel) {
     var shape = jewel.shape;
@@ -608,10 +626,11 @@ function snapToBoard(jewel, board, replace, extraJewel) {
             }
             while (jewelsToRemove.length) {
                 var jewelToRemove = jewelsToRemove.pop();
-                if (jewel.character) {
+                if (jewel.startCharacter) {
                     var center = jewel.startCenter;
                     jewelToRemove.shape.setCenterPosition(center[0], center[1]);
                     if (snapToBoard(jewelToRemove, board, false, jewel)) {
+                        updateAdjacentJewels(jewelToRemove);
                         continue;
                     }
                 }

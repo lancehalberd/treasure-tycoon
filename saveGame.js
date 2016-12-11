@@ -33,6 +33,9 @@ function exportState(state) {
     $('.js-jewel-inventory .js-jewel').each(function () {
         data.jewels.push(exportJewel($(this).data('jewel')));
     })
+    $('.js-jewelCraftingSlot .js-jewel').each(function () {
+        data.jewels.push(exportJewel($(this).data('jewel')));
+    })
     data.items = [];
     $('.js-inventory .js-item').each(function () {
         data.items.push(exportItem($(this).data('item')));

@@ -11,8 +11,12 @@ function makeJewelProper(tier, shape, components, quality) {
     var componentsSum = 0;
     var componentBonuses = {};
     var jewelType = 0;
+    var savedComponents = [];
+    var normalize = false;
     for (var i = 0; i < 3; i++) {
         componentsSum += components[i];
+        savedComponents[i] = components[i];
+        if (components[i] > 1) normalize = true;
     }
     var RGB = [0, 0, 0];
     var minActiveComponent = 1;
@@ -21,7 +25,8 @@ function makeJewelProper(tier, shape, components, quality) {
     var numberOfActiveComponents = 0;
     for (var i = 0; i < 3; i++) {
         components[i] /= componentsSum;
-        // A compontent is not activy if it is less than 30% of the jewel.
+        if (normalize) savedComponents[i] /= componentsSum;
+        // A component is not activy if it is less than 30% of the jewel.
         if (components[i] < .3) continue;
         numberOfActiveComponents++;
         if (i == 0) componentBonuses['+strength'] = components[i];
@@ -66,9 +71,9 @@ function makeJewelProper(tier, shape, components, quality) {
             RGB[i] = Math.round(500 * components[i]);
         }
         if (components[i] >= .3) {
-            RGB[i] = Math.min(255, Math.max(0, RGB[i] + [50, 30, 10, -10, -20][qualifierIndex]));
+            RGB[i] = Math.min(255, Math.max(0, RGB[i] + [50, 10, 5, 0, -10][qualifierIndex]));
         } else {
-            RGB[i] = Math.min(255, Math.max(0, RGB[i] + [0, 10, 20, 40, 60][qualifierIndex]));
+            RGB[i] = Math.min(255, Math.max(0, RGB[i] + [0, 40, 45, 50, 70][qualifierIndex]));
         }
     }
     var shapeDefinition = shapeDefinitions[shape.key][0];
@@ -76,7 +81,7 @@ function makeJewelProper(tier, shape, components, quality) {
     var jewel = {
         'tier': tier,
         'shapeType': shape.key,
-        'components': components,
+        'components': savedComponents,
         'componentBonuses': componentBonuses,
         'qualifierName': ['Perfect', 'Brilliant', 'Shining', '', 'Dull'][qualifierIndex],
         'qualifierBonus': qualifierBonus,
@@ -123,6 +128,7 @@ function clearAdjacentJewels(jewel) {
 function updateAdjacentJewels(jewel) {
     clearAdjacentJewels(jewel);
     if (!jewel.character) {
+        updateAdjacencyBonuses(jewel);
         return;
     }
     var jewels = jewel.character.board.jewels.concat(jewel.character.board.fixed);
