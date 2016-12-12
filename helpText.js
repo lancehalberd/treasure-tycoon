@@ -90,7 +90,8 @@ function bonusSourceHelpText(bonusSource, actor, localObject) {
     }
     if (isImplicit) {
         for (var bonus in implicitBonusMap) {
-            if (displayedStats[bonus]) continue;
+            // implicit bonuses marked true are displayed as part of another implicit bonus.
+            if (displayedStats[bonus] || implicitBonusMap[bonus] === true) continue;
             var implicitBonusText = renderBonusText(implicitBonusMap, bonus, bonusSource, actor, localObject);
             if (implicitBonusText) sections.push(implicitBonusText);
         }
@@ -157,9 +158,11 @@ var implicitBonusMap = {
     '+minPhysicalDamage': function (bonusSource, actor) {
         return 'Damage: ' + bonusSource.bonuses['+minPhysicalDamage'].format(1) + ' to ' + bonusSource.bonuses['+maxPhysicalDamage'].format(1);
     },
+    '+maxPhysicalDamage': true,
     '+minMagicDamage': function (bonusSource, actor) {
         return 'Magic: ' + bonusSource.bonuses['+minMagicDamage'].format(1) + ' to ' + bonusSource.bonuses['+maxMagicDamage'].format(1);
     },
+    '+maxMagicDamage': true,
     '+weaponRange': 'Range: $1',
     '+range': 'Range: $1',
     '+attackSpeed': 'Attack Speed: $1',
@@ -200,9 +203,10 @@ var bonusMap = {
     '+physicalDamage': '+$1 physical damage',
     '*physicalDamage': '$3x physical damage',
     '%physicalDamage': '%1 increased physical damage',
+    '+maxMagicDamage': '+$1 max magic damage',
     '+magicDamage': '+$1 magic damage',
     '*magicDamage': '$3x magic damage',
-    '%magicDamageamage': '%1 increased magic damage',
+    '%magicDamage': '%1 increased magic damage',
     '*attackSpeed': '$1x attack speed',
     '%attackSpeed': '%1 increased attack speed',
     '+critChance': '+%1 chance to critical strike',
@@ -233,8 +237,11 @@ var bonusMap = {
     '%maxHealth': '%1 increased health',
     // Miscellaneous Stats
     '+dexterity': '+$1 Dexterity',
+    '%dexterity': '%1 increased Dexterity',
     '+strength': '+$1 Strength',
+    '%strength': '%1 increased Strength',
     '+intelligence': '+$1 Intelligence',
+    '%intelligence': '%1 increased Intelligence',
     '+healthGainOnHit': 'Gain $2 health on hit',
     '*healthGainOnHit': '$1x health gained on hit',
     '+healthRegen': 'Regenerate $1 health per second',

@@ -109,7 +109,7 @@ function updateDamageInfo(character, $statsPanel, monsterLevel) {
     sections.push(adventurer.armor + ' Armor (' + armorProtection.percent(1) + ')');
     sections.push('');
     sections.push(physicalProtection.percent(1) + ' combined reduction');
-    sections.push(attack.maxPhysicalDamage + ' damage reduced to ' + physical.format(1) );
+    sections.push(attack.maxPhysicalDamage.format(1) + ' damage reduced to ' + physical.format(1) );
     $protection.parent().attr('helptext', sections.join('<br/>'));
 
     var $resistance =  $statsPanel.find('.js-resistance');
@@ -128,7 +128,7 @@ function updateDamageInfo(character, $statsPanel, monsterLevel) {
     sections.push(adventurer.magicBlock + ' Magic Block (' + magicBlockResistance.percent(1) + ')');
     sections.push('');
     sections.push(magicResistance.percent(1) + ' combined reduction');
-    sections.push(attack.maxMagicDamage + ' damage reduced to ' + magic.format(1));
+    sections.push(attack.maxMagicDamage.format(1) + ' damage reduced to ' + magic.format(1));
     $resistance.parent().attr('helptext', sections.join('<br/>'));
 
 
