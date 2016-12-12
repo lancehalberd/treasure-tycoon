@@ -140,7 +140,9 @@ function updateItemCrafting() {
     $('.js-itemCraftingOption.js-armorOption').attr('helptext', 'For armor, offer ' + points('coins', levelMultiplier * 2));
     $('.js-itemCraftingOption.js-weaponOption').attr('helptext', 'For a weapon, offer ' + points('coins', levelMultiplier * 3));
     $('.js-itemCraftingOption.js-accessoryOption').attr('helptext', 'For an accessory, offer ' + points('coins', levelMultiplier * 5));
-    $('.js-reforge').attr('helptext', 'Drag one of the 3 items to your inventory or click here to offer ' + points('coins', Math.floor(getCurrentCraftingCost() / 5)) + ' for 3 new choices.');
+    var text = ['Drag one of the 3 items to your inventory or click here to offer ' + points('coins', Math.floor(getCurrentCraftingCost() / 5)) + ' for 3 new choices.',
+        'You can type \'r\' as a shortcut for clicking this button.'];
+    $('.js-reforge').attr('helptext', text.join('<br/>'));
     updateCraftingButtons();
     var itemsFilteredByLevel = [];
     itemsFilteredByType = [];
@@ -217,7 +219,8 @@ $('.js-itemCraftingOption').on('click', function () {
     updateItemCrafting();
     saveGame();
 });
-$('.js-reforge').on('click', function () {
+$('.js-reforge').on('click', reforgeItems);
+function reforgeItems() {
     if (!spend('coins', Math.floor(getCurrentCraftingCost() / 5))) {
         return;
     }
@@ -228,7 +231,7 @@ $('.js-reforge').on('click', function () {
     });
     updateCraftingButtons();
     saveGame();
-});
+}
 
 function craftItem() {
     var craftingRoll = Math.floor(Math.random() * selectedCraftingWeight);
