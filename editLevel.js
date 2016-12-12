@@ -42,21 +42,14 @@ function initializeLevelEditing() {
         var value = $(this).val();
         if (!value) {
             editingLevel.skill = null;
-            editingLevel.board = null;
-            $('.js-levelBoardSelect').hide();
         } else {
             editingLevel.skill = value;
-            $('.js-levelBoardSelect').show();
-            editingLevel.board = $('.js-levelBoardSelect').val();
         }
     });
     $('.js-levelSkillSelect').attr('helpText', '-').data('helpMethod', function ($element) {
         var value = $element.val();
         if (!value) return 'No skill selected';
         return abilityHelpText(abilities[value], state.selectedCharacter.adventurer);
-    });
-    $('.js-levelBoardSelect').on('change', function () {
-        editingLevel.board = $(this).val();
     });
     $('.js-enemySkillSelect').on('change', function () {
         var newSkill = $(this).val();
@@ -222,16 +215,8 @@ function startEditingLevel(level) {
     }
     if (editingLevel.skill) {
         $('.js-levelSkillSelect option[value="' + editingLevel.skill + '"]').show().prop('selected', true);
-        // Show the board select if a skill is set.
-        $('.js-levelBoardSelect').show();
-        if (!editingLevel.board) editingLevel.board = $('.js-levelSkillSelect').val();
     } else {
         $('.js-levelSkillSelect option').first().prop('selected', true);
-        // Hide the board select if no skill is set.
-        $('.js-levelBoardSelect').hide();
-    }
-    if (editingLevel.board) {
-        $('.js-levelBoardSelect option[value="' + editingLevel.board + '"]').prop('selected', true);
     }
     $('.js-levelNameInput').val(editingLevel.name);
     $('.js-levelDescriptionInput').val(ifdefor(editingLevel.description, ''));

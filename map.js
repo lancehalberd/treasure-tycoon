@@ -13,7 +13,7 @@ function exportMap() {
         levelLines.push("        'level': " + JSON.stringify(levelData.level) + ",");
         levelLines.push("        'x': " + JSON.stringify(levelData.x) + ", 'y': " + JSON.stringify(levelData.y) + ",");
         levelLines.push("        'coords': " + JSON.stringify(levelData.coords.map(function (number) { return Number(number.toFixed(0));})) + ",");
-        for (var key of ['background', 'unlocks', 'specialLoot', 'skill', 'board', 'enemySkills', 'monsters']) {
+        for (var key of ['background', 'unlocks', 'skill', 'enemySkills', 'monsters']) {
             levelLines.push("        '" + key + "': " + JSON.stringify(levelData[key]) + ",");
         }
         var eventLines = [];
