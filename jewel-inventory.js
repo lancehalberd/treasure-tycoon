@@ -468,12 +468,11 @@ function equipJewel(character, replace, updateAdventurer) {
     return false;
 }
 function updateJewelCraftingOptions() {
+    $('.js-jewelCraftingButton').hide();
+    $('.js-jewelDeformationButton').hide();
     var jewelA = $('.js-jewelCraftingSlot').first().find('.js-jewel').data('jewel');
     var jewelB = $('.js-jewelCraftingSlot').last().find('.js-jewel').data('jewel');
-    if (!jewelA && !jewelB) {
-        $('.js-jewelCraftingButton').hide();
-        return;
-    }
+    if (!jewelA && !jewelB) return;
     if (jewelA && jewelB) {
         $('.js-jewelCraftingButton').html('Fuse Jewels').show();
         var fusedShape = getFusedShape(jewelA, jewelB);
@@ -485,6 +484,11 @@ function updateJewelCraftingOptions() {
         return;
     }
     var jewel = jewelA || jewelB;
+    if (jewel.shapeType === 'triangle' || jewel.shapeType === 'diamond') {
+        $('.js-jewelDeformationButton').html('Expand Jewel').attr('helptext', 'Click to deform this jewel into a less compact shape.').show();
+    } else if (jewel.shapeType === 'rhombus' || jewel.shapeType === 'square') {
+        $('.js-jewelDeformationButton').html('Compress Jewel').attr('helptext', 'Click to deform this jewel into a more compact shape.').show();
+    }
     $('.js-jewelCraftingButton').html('Split Jewel').show();
     if (jewel.shapeType == 'triangle' || jewel.shapeType == 'rhombus') {
         $('.js-jewelCraftingButton').attr('helptext', 'This jewel cannot be split.').addClass('disabled');
@@ -513,6 +517,13 @@ $('.js-jewelCraftingButton').on('click', function () {
     if (jewelA && jewelB) fuseJewels(jewelA, jewelB);
     else splitJewel(jewelA || jewelB);
 });
+$('.js-jewelDeformationButton').on('click', function () {
+    var jewelA = $('.js-jewelCraftingSlot').first().find('.js-jewel').data('jewel');
+    var jewelB = $('.js-jewelCraftingSlot').last().find('.js-jewel').data('jewel');
+    var jewel = jewelA || jewelB;
+    if (jewel.shapeType === 'triangle' || jewel.shapeType === 'diamond') expandJewel(jewel);
+    else compressJewel(jewel);
+});
 function fuseJewels(jewelA, jewelB) {
     var fusedShape = getFusedShape(jewelA, jewelB);
     if (!fusedShape) return; // No fused shape exists for this combination of jewels.
@@ -525,6 +536,30 @@ function fuseJewels(jewelA, jewelB) {
     var newJewel = makeJewel(tier, fusedShape.key, components, quality);
     destroyJewel(jewelA);
     destroyJewel(jewelB);
+    appendJewelToElement(newJewel, $('.js-jewelCraftingSlot').first());
+    updateJewelCraftingOptions();
+    saveGame();
+}
+function compressJewel(jewel) {
+    var newShape;
+    if (jewel.shapeType === 'square') newShape = 'diamond';
+    if (jewel.shapeType === 'rhombus') newShape = 'triangle';
+    if (!newShape) return; // No compression exists for this jewel.
+    var newArea = shapeDefinitions[newShape][0].area;
+    var newJewel = makeJewel(jewel.tier, newShape, jewel.components, jewel.quality * .99 * jewel.area / newArea);
+    destroyJewel(jewel);
+    appendJewelToElement(newJewel, $('.js-jewelCraftingSlot').first());
+    updateJewelCraftingOptions();
+    saveGame();
+}
+function expandJewel(jewel) {
+    var newShape;
+    if (jewel.shapeType === 'diamond') newShape = 'square';
+    if (jewel.shapeType === 'triangle') newShape = 'rhombus';
+    if (!newShape) return; // No expansion exists for this jewel.
+    var newArea = shapeDefinitions[newShape][0].area;
+    var newJewel = makeJewel(jewel.tier, newShape, jewel.components, jewel.quality * .99 * jewel.area / newArea);
+    destroyJewel(jewel);
     appendJewelToElement(newJewel, $('.js-jewelCraftingSlot').first());
     updateJewelCraftingOptions();
     saveGame();
