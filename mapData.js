@@ -1377,7 +1377,7 @@ var map = {
         'background': "cave",
         'unlocks': ["priest3","paladin2"],
         'skill': "minorIntelligence",
-        'enemySkills': ["heal"],
+        'enemySkills': ["minorIntelligence"],
         'monsters': ["gnome","bat"],
         'events': [
             ["gnome","bat","bat"],

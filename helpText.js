@@ -149,7 +149,7 @@ function abilityHelpText(ability, actor) {
         sections.push(tag('div', 'abilityText', bonusSourceHelpText(action, actor, actionInstance)));
     }
     if (ability.minionBonuses) {
-        sections.push(bonusSourceHelpText({'bonuses': ability.minionBonuses}, actor));
+        sections.push(tag('div', 'tagText', 'Minions:<br/>' + bonusSourceHelpText({'bonuses': ability.minionBonuses}, actor)));
     }
     return sections.join('<br/>');
 }
