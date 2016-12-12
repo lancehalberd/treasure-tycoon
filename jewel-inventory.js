@@ -112,6 +112,7 @@ $('body').on('mousedown', function (event) {
             return;
         }
         draggingBoardJewel = overJewel;
+        dragged = false;
         return;
     }
     draggedJewel = overJewel;
@@ -147,15 +148,16 @@ $('body').on('mousemove', '.js-jewel', function (event) {
     var jewel = $(this).data('jewel');
     var points = jewel.shape.points;
     var relativePosition = relativeMousePosition(jewel.canvas);
+    if (isPointInPoints(relativePosition, points)) {
+        overJewel = jewel;
+        return;
+    }
     for (var j = 0; j < points.length; j++) {
         if (distanceSquared(points[j], relativePosition) < 25) {
             overJewel = jewel;
             overVertex = points[j].concat();
             return;
         }
-    }
-    if (isPointInPoints(relativePosition, points)) {
-        overJewel = jewel;
     }
 });
 $('body').on('mousemove', '.js-skillCanvas', function (event) {
@@ -170,16 +172,18 @@ $('body').on('mousemove', '.js-skillCanvas', function (event) {
     for (var i = 0; i < jewels.length; i++) {
         var jewel = jewels[i];
         var points = jewel.shape.points;
-        for (var j = 0; j < points.length; j++) {
+        if (isPointInPoints(relativePosition, points)) {
+            overJewel = jewel;
+            return;
+        }
+        // Disable rotation on the jewel board, it is ambiguous which vertex will be grabbed.
+        /*for (var j = 0; j < points.length; j++) {
             if (distanceSquared(points[j], relativePosition) < 25) {
                 overJewel = jewel;
                 overVertex = points[j].concat();
                 return;
             }
-        }
-        if (isPointInPoints(relativePosition, points)) {
-            overJewel = jewel;
-        }
+        }*/
     }
     var jewels = character.board.fixed.concat();
     if (character.board.boardPreview) {
@@ -188,15 +192,16 @@ $('body').on('mousemove', '.js-skillCanvas', function (event) {
     for (var i = 0; i < jewels.length; i++) {
         var jewel = jewels[i];
         var points = jewel.shape.points;
+        if (isPointInPoints(relativePosition, points)) {
+            overJewel = jewel;
+            return;
+        }
         for (var j = 0; j < points.length; j++) {
             if (distanceSquared(points[j], relativePosition) < 25) {
                 overJewel = jewel;
                 overVertex = points[j].concat();
                 return;
             }
-        }
-        if (isPointInPoints(relativePosition, points)) {
-            overJewel = jewel;
         }
     }
 });
@@ -308,11 +313,6 @@ function checkIfStillOverJewel() {
 }
 $('body').on('mouseout', '.js-jewel', function (event) {
     redrawInventoryJewel($(this).data('jewel'));
-});
-$('body').on('mouseup', function (event) {
-    if (overVertex || dragged) {
-        stopJewelDrag();
-    }
 });
 
 function removeFromBoard(jewel) {

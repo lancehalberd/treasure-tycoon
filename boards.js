@@ -35,15 +35,57 @@ var squareBoard = {
 };
 
 var basicTemplateBoards = [
-    [{"k":"triangle","p":[70,185.01923788646684],"t":-60},{"k":"triangle","p":[55,211],"t":-60},{"k":"triangle","p":[70,185.01923788646684],"t":0},{"k":"triangle","p":[85,211],"t":-60}],
-    [{"k":"triangle","p":[199.51923788646684,208.99038105676658],"t":-60},{"k":"triangle","p":[214.51923788646684,183.00961894323342],"t":-60},{"k":"triangle","p":[199.51923788646684,157.02885682970026],"t":0},{"k":"triangle","p":[184.51923788646684,183.00961894323342],"t":-60},{"k":"triangle","p":[214.51923788646684,183.00961894323342],"t":0},{"k":"triangle","p":[184.51923788646684,183.00961894323342],"t":0}],
-    [{"k":"triangle","p":[327.01923788646684,211],"t":-60},{"k":"diamond","p":[357.01923788646684,159.03847577293368],"t":120},{"k":"diamond","p":[327.01923788646684,211],"t":-180},{"k":"triangle","p":[312.01923788646684,185.01923788646684],"t":-60},{"k":"diamond","p":[372.01923788646684,185.01923788646684],"t":60},{"k":"triangle","p":[342.01923788646684,185.01923788646684],"t":-60}]
+    {'size': 4, 'shapes': [{"k":"triangle","p":[70,185.01923788646684],"t":-60},{"k":"triangle","p":[55,211],"t":-60},{"k":"triangle","p":[70,185.01923788646684],"t":0},{"k":"triangle","p":[85,211],"t":-60}]},
+    {'size': 6, 'shapes': [{"k":"triangle","p":[199.51923788646684,208.99038105676658],"t":-60},{"k":"triangle","p":[214.51923788646684,183.00961894323342],"t":-60},{"k":"triangle","p":[199.51923788646684,157.02885682970026],"t":0},{"k":"triangle","p":[184.51923788646684,183.00961894323342],"t":-60},{"k":"triangle","p":[214.51923788646684,183.00961894323342],"t":0},{"k":"triangle","p":[184.51923788646684,183.00961894323342],"t":0}]},
+    {'size': 9, 'shapes': [{"k":"triangle","p":[327.01923788646684,211],"t":-60},{"k":"diamond","p":[357.01923788646684,159.03847577293368],"t":120},{"k":"diamond","p":[327.01923788646684,211],"t":-180},{"k":"triangle","p":[312.01923788646684,185.01923788646684],"t":-60},{"k":"diamond","p":[372.01923788646684,185.01923788646684],"t":60},{"k":"triangle","p":[342.01923788646684,185.01923788646684],"t":-60}]}
 ];
 var complexTemplateBoards = [
-    [{"k":"triangle","p":[58.057713659400406,53.999999999999886],"t":30},{"k":"rhombus","p":[58.05771365940046,53.99999999999983],"t":-120},{"k":"triangle","p":[84.03847577293357,68.99999999999989],"t":-30},{"k":"rhombus","p":[99.03847577293357,94.98076211353305],"t":-120},{"k":"rhombus","p":[69.03847577293357,94.98076211353305],"t":150},{"k":"triangle","p":[69.03847577293357,94.98076211353305],"t":-60},{"k":"rhombus","p":[110.01923788646684,53.99999999999983],"t":-210},{"k":"triangle","p":[69.03847577293368,43.01923788646667],"t":0}],
-    [{"k":"triangle","p":[206.05771365940052,78],"t":-30},{"k":"rhombus","p":[258.01923788646684,48],"t":0},{"k":"triangle","p":[232.03847577293368,33],"t":30},{"k":"square","p":[202.03847577293368,63],"t":-90},{"k":"square","p":[232.03847577293368,63],"t":0},{"k":"rhombus","p":[202.03847577293368,63],"t":0}],
-    [{"k":"rhombus","p":[359,37.01923788646684],"t":-30},{"k":"rhombus","p":[318.01923788646684,48],"t":30},{"k":"square","p":[318.01923788646684,48],"t":-60},{"k":"rhombus","p":[359,88.98076211353316],"t":90},{"k":"square","p":[344,63],"t":-30},{"k":"square","p":[314,63],"t":0}]
+    {'size': 8, 'shapes': [{"k":"triangle","p":[58.057713659400406,53.999999999999886],"t":30},{"k":"rhombus","p":[58.05771365940046,53.99999999999983],"t":-120},{"k":"triangle","p":[84.03847577293357,68.99999999999989],"t":-30},{"k":"rhombus","p":[99.03847577293357,94.98076211353305],"t":-120},{"k":"rhombus","p":[69.03847577293357,94.98076211353305],"t":150},{"k":"triangle","p":[69.03847577293357,94.98076211353305],"t":-60},{"k":"rhombus","p":[110.01923788646684,53.99999999999983],"t":-210},{"k":"triangle","p":[69.03847577293368,43.01923788646667],"t":0}]},
+    {'size': 8, 'shapes': [{"k":"triangle","p":[206.05771365940052,78],"t":-30},{"k":"rhombus","p":[258.01923788646684,48],"t":0},{"k":"triangle","p":[232.03847577293368,33],"t":30},{"k":"square","p":[202.03847577293368,63],"t":-90},{"k":"square","p":[232.03847577293368,63],"t":0},{"k":"rhombus","p":[202.03847577293368,63],"t":0}]},
+    {'size': 9, 'shapes': [{"k":"rhombus","p":[359,37.01923788646684],"t":-30},{"k":"rhombus","p":[318.01923788646684,48],"t":30},{"k":"square","p":[318.01923788646684,48],"t":-60},{"k":"rhombus","p":[359,88.98076211353316],"t":90},{"k":"square","p":[344,63],"t":-30},{"k":"square","p":[314,63],"t":0}]}
 ];
+function getBoardDataForLevel(level) {
+    var safety = 0;
+    var levelDegrees = 180 * Math.atan2(level.coords[1], level.coords[0]) / Math.PI;
+    // 30 degrees = red leyline, 150 degrees = blue leyline, 270 degrees = green leyline.
+    var minLeylineDistance = Math.min(getThetaDistance(30, levelDegrees), getThetaDistance(150, levelDegrees), getThetaDistance(270, levelDegrees));
+    // Use basic templates (triangle based) for levels close to primary leylines and complex templates (square based) for levels close to intermediate leylines.
+    var templates = ((minLeylineDistance <= 30) ? basicTemplateBoards : complexTemplateBoards).slice();
+    // Each shape is worth roughly the number of triangles in it.
+    var shapeValues = {'triangle': 1, 'rhombus': 1, 'diamond': 2, 'square': 2, 'trapezoid': 3, 'hexagon': 6};
+    // Starts at 2 and gets as high as 7 by level 99.
+    var totalValue =  Math.ceil(1 + Math.sqrt(level.level / 3));
+    var chosenTemplate = Random.element(templates);
+    removeElementFromArray(templates, chosenTemplate, true);
+    while (templates.length && chosenTemplate.size <= totalValue && safety++ < 100) {
+        chosenTemplate = Random.element(templates);
+        removeElementFromArray(templates, chosenTemplate, true);
+    }
+    if (safety >= 100) console.log("failed first loop");
+    if (chosenTemplate.size <= totalValue) {
+        throw new Exception('No template found for a board of size ' + totalValue);
+    }
+    var currentSize = chosenTemplate.size;
+    var shapesToKeep = chosenTemplate.shapes.slice();
+    var removedShapes = [];
+    // This loop randomly adds and removes shapes until we get to the right value. Since some shapes are worth 2 points, and others worth 1,
+    // it may overshoot, but eventually it will hit the target.
+    while (currentSize !== totalValue && safety++ < 100) {
+        if (currentSize > totalValue) {
+            // Get rid of a shape to keep if the board is too large.
+            removedShapes = removedShapes.concat(shapesToKeep.splice(Math.floor(Math.random() * shapesToKeep.length), 1));
+            currentSize -= shapeValues[removedShapes[removedShapes.length - 1].k]
+        } else {
+            // Add a shape back in if the board is too small.
+            shapesToKeep = shapesToKeep.concat(removedShapes.splice(Math.floor(Math.random() * removedShapes.length), 1));
+            currentSize += shapeValues[shapesToKeep[shapesToKeep.length - 1].k]
+        }
+    }
+    if (safety >= 100) console.log("failed second loop");
+    // Select one of the removed shapes to be the fixed jewel for the board.
+    var fixedShape = Random.element(removedShapes);
+    return {'fixed':[fixedShape], 'spaces': shapesToKeep};
+}
 
 
 var classBoards = {

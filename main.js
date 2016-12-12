@@ -406,8 +406,8 @@ function checkToShowJewelToolTip() {
     }
     $popup.data('jewel', jewel);
     $popupTarget = null;
-    updateToolTip(mousePosition[0], mousePosition[1], $popup);
     $('.js-mouseContainer').append($popup);
+    updateToolTip(mousePosition[0], mousePosition[1], $popup);
 }
 $('.js-mouseContainer').on('mousemove', function (event) {
     if (!$popup) {
@@ -417,7 +417,7 @@ $('.js-mouseContainer').on('mousemove', function (event) {
 });
 
 function checkRemoveToolTip() {
-    if (overJewel || draggedJewel || overCraftingItem) {
+    if (overJewel || draggedJewel || draggingBoardJewel || overCraftingItem) {
         return;
     }
     if (draggedMap) {
@@ -465,6 +465,10 @@ function updateToolTip(x, y, $popup) {
     var left = x - 10 - $popup.outerWidth();
     if (left < 5) {
         left = x + 10;
+    }
+    if (draggingBoardJewel) {
+        left = $('.js-jewel-inventory').position().left;
+        top = 30;
     }
     $popup.css('left', left + "px").css('top', top + "px");
 }

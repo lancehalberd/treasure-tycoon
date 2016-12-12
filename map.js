@@ -492,14 +492,12 @@ function completeLevel(character) {
     character.levelCompleted = true;
 
     // This code will be used when they activate a shrine
-    if (level.board && !character.adventurer.unlockedAbilities[level.skill] && character.divinity >= totalCostForNextLevel(character, level)) {
-        if (!boards[level.board]) {
-            throw new Error("Could not find board: " + level.board);
-        }
+    if (level.skill && !character.adventurer.unlockedAbilities[level.skill] && character.divinity >= totalCostForNextLevel(character, level)) {
         if (!abilities[level.skill]) {
             throw new Error("Could not find ability: " + level.skill);
         }
-        var boardPreview = readBoardFromData(boards[level.board], character, abilities[level.skill]);
+        var boardData = getBoardDataForLevel(level);
+        var boardPreview = readBoardFromData(boardData, character, abilities[level.skill]);
         centerShapesInRectangle(boardPreview.fixed.map(jewelToShape).concat(boardPreview.spaces), rectangle(0, 0, character.boardCanvas.width, character.boardCanvas.height));
         snapBoardToBoard(boardPreview, character.board);
         character.board.boardPreview = boardPreview;

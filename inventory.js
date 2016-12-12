@@ -242,6 +242,9 @@ $('body').on('mouseup', function (event) {
     if (dragged) {
         stopDrag();
     }
+    if (overVertex || dragged) {
+        stopJewelDrag();
+    }
     dragged = false;
 });
 $('body').on('mousedown', '.js-item', function (event) {
