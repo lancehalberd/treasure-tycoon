@@ -1373,7 +1373,7 @@ var map = {
         'description': "",
         'level': 3,
         'x': 0, 'y': 0,
-        'coords': [-139,246,-529],
+        'coords': [-153,234,-531],
         'background': "cave",
         'unlocks': ["priest3","paladin2"],
         'skill': "minorIntelligence",
