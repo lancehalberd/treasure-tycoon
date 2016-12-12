@@ -191,7 +191,7 @@ function importCharacter(characterData) {
     character.fame = ifdefor(characterData.fame, Math.ceil(character.divinity / 10));
     character.applicationAge = ifdefor(characterData.applicationAge, 0);
     // Equiping the jewels cannot be done until character.board is actually set.
-    character.board.jewels.forEach(function (jewel) {
+    character.board.jewels.concat(character.board.fixed).forEach(function (jewel) {
         jewel.character = character;
         updateAdjacentJewels(jewel);
     });

@@ -159,9 +159,6 @@ function updateAdjacentJewels(jewel) {
 }
 function updateAdjacencyBonuses(jewel) {
     jewel.adjacencyBonuses = {};
-    if (jewel.fixed) {
-        return;
-    }
     var matches = 0;
     var typesSeen = {};
     typesSeen[jewel.jewelType] = true;
@@ -192,6 +189,16 @@ function updateAdjacencyBonuses(jewel) {
     var resonanceBonus = coefficient * [0, 1, 2, 3, 5, 8, 13, 21, 34][matches];
     var contrastBonus = coefficient * [0, 1, 2, 3, 5, 8, 13, 21, 34][uniqueTypes];
     switch(jewel.jewelType) {
+        case 0:
+            if (resonanceBonus) {
+                jewel.adjacencyBonuses['+reducedDivinityCost'] = resonanceBonus / 100;
+            }
+            if (contrastBonus) {
+                jewel.adjacencyBonuses['+strength'] = contrastBonus;
+                jewel.adjacencyBonuses['+dexterity'] = contrastBonus;
+                jewel.adjacencyBonuses['+intelligence'] = contrastBonus;
+            }
+            break;
         case 1:
             if (resonanceBonus) jewel.adjacencyBonuses['%maxHealth'] = resonanceBonus / 100;
             if (contrastBonus) jewel.adjacencyBonuses['%damage'] = contrastBonus / 100;
@@ -227,10 +234,12 @@ function updateAdjacencyBonuses(jewel) {
 }
 function updateJewelBonuses(character) {
     character.jewelBonuses = {'bonuses': {}};
-    character.board.jewels.forEach(function (jewel) {
-        $.each(jewel.bonuses, function (bonusKey, bonusValue) {
-            character.jewelBonuses.bonuses[bonusKey] = bonusValue + ifdefor(character.jewelBonuses.bonuses[bonusKey], 0);
-        })
+    character.board.jewels.concat(character.board.fixed).forEach(function (jewel) {
+        if (jewel.bonuses) {
+            $.each(jewel.bonuses, function (bonusKey, bonusValue) {
+                character.jewelBonuses.bonuses[bonusKey] = bonusValue + ifdefor(character.jewelBonuses.bonuses[bonusKey], 0);
+            })
+        }
         $.each(jewel.adjacencyBonuses, function (bonusKey, bonusValue) {
             character.jewelBonuses.bonuses[bonusKey] = bonusValue + ifdefor(character.jewelBonuses.bonuses[bonusKey], 0);
         })
@@ -243,6 +252,8 @@ function makeFixedJewel(shape, character, ability) {
     shape.color = '#333333';
     return {
         'shape': shape,
+        'shapeType': shape.key,
+        'quality': 1,
         'jewelType': 0,
         'fixed': true,
         'disabled': false,
@@ -250,6 +261,8 @@ function makeFixedJewel(shape, character, ability) {
         'ability': ability,
         'helpMethod': function () {
             var coreHelpText = abilityHelpText(ability, character.adventurer);
+            var bonusText = bonusSourceHelpText({'bonuses': this.adjacencyBonuses}, state.selectedCharacter.adventurer);
+            if (bonusText) coreHelpText += '<br/><br/>' + bonusText;
             if (!this.confirmed) return coreHelpText;
             if (this.disabled) {
                 return 'Disabled <br> Double click to enable <br><br> ' + coreHelpText;

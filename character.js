@@ -23,6 +23,7 @@ var allActorVariables = {
     'block': '.', 'magicBlock': '.', 'armor': '.', 'magicResist': '.',
     // special traits
     'cloaking': '.', 'overHeal': '.', 'increasedDrops': '.', 'cooldownReduction': '.',
+    'reducedDivinityCost': 'Reduces the divinity cost to level at shrines by this percent',
     'equipmentMastery': '.', 'invulnerable': '.', 'maxBlock': '.', 'maxMagicBlock': '.', 'maxEvasion': '.',
     'uncontrollable': '.', 'twoToOneHanded': '.',
     'overHealReflection': '.',
@@ -589,7 +590,7 @@ function totalCostForNextLevel(character, level) {
     if (character.adventurer.level > 1) {
         totalDivinityCost += Math.ceil(ifdefor(level.skill.costCoefficient, 1) * baseDivinity(level.level));
     }
-    return totalDivinityCost;
+    return Math.ceil((1 - ifdefor(character.adventurer.reducedDivinityCost, 0)) * totalDivinityCost);
 }
 function setSelectedCharacter(character) {
     state.selectedCharacter = character;
