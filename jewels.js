@@ -250,6 +250,7 @@ function makeFixedJewel(shape, character, ability) {
         'ability': ability,
         'helpMethod': function () {
             var coreHelpText = abilityHelpText(ability, character.adventurer);
+            if (!this.confirmed) return coreHelpText;
             if (this.disabled) {
                 return 'Disabled <br> Double click to enable <br><br> ' + coreHelpText;
             }

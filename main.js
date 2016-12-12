@@ -521,10 +521,15 @@ $('body').on('click', '.js-repeatButton', function (event) {
     state.selectedCharacter.replay = !state.selectedCharacter.replay;
     updateAdventureButtons();
 });
-$('body').on('click', '.js-pauseButton', function (event) {
+$('body').on('click', '.js-pauseButton', togglePause);
+function togglePause() {
     state.selectedCharacter.paused = !state.selectedCharacter.paused;
     updateAdventureButtons();
-});
+}
+function pause() {
+    state.selectedCharacter.paused = true;
+    updateAdventureButtons();
+}
 $('body').on('click', '.js-fastforwardButton', function (event) {
     if (state.selectedCharacter.gameSpeed !== 3) {
         state.selectedCharacter.gameSpeed = 3;

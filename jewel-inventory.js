@@ -71,7 +71,7 @@ var overJewel = null;
 var draggedJewel = null;
 var draggingBoardJewel = null;
 $('body').on('dblclick', function (event) {
-    if (!overJewel || !overJewel.fixed) return; // dblclick action only applies to fixed jewels
+    if (!overJewel || !overJewel.fixed || !overJewel.confirmed) return; // dblclick action only applies to fixed jewels
     // Cannot interact with jewel boards of characters that are not in your guild yet.
     if (overJewel.character && state.characters.indexOf(overJewel.character) < 0) return;
     overJewel.disabled = !overJewel.disabled;
@@ -112,6 +112,9 @@ $('body').on('mousedown', function (event) {
             return;
         }
         draggingBoardJewel = overJewel;
+        if (!overJewel.confirmed && state.selectedCharacter.area) {
+            pause();
+        }
         dragged = false;
         return;
     }
