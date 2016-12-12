@@ -217,8 +217,8 @@ function drawMap() {
             context.restore();
         }
 
-
-        var source = (divinityScore !== 0) ? openChestSource : closedChestSource;
+        var times = ifdefor(state.selectedCharacter.levelTimes[levelKey], {});
+        var source = (times['easy'] && times['normal'] && times['hard']) ? openChestSource : closedChestSource;
         context.drawImage(source.image, source.xOffset, 0, source.width, source.height,
                             levelData.left + levelData.width / 2 - 16, levelData.top + levelData.height / 2 - 18, 32, 32);
 
@@ -239,12 +239,12 @@ function drawMap() {
             context.font = '10px sans-serif';
             context.textAlign = 'center'
             context.fillText(divinityScore.abbreviate(), levelData.left + 20, levelData.top + 45);
-            source = silverSource;
-            var baseScore = Math.round(baseDivinity(levelData.level));
-            if (baseScore > divinityScore) {
-                source = bronzeSource;
-            } else if (baseScore < divinityScore) {
+            if (divinityScore >= Math.round(difficultyBonusMap.hard * 1.2 * baseDivinity(levelData.level))) {
                 source = goldSource;
+            } else if (divinityScore >= Math.round(baseDivinity(levelData.level))) {
+                source = silverSource;
+            } else {
+                source = bronzeSource;
             }
             context.drawImage(source.image, source.xOffset, source.yOffset, source.width, source.height,
                               levelData.left - 10, levelData.top + 34, 16, 16);

@@ -403,12 +403,27 @@ function clickMapHandler(x, y) {
         $('.js-mainCanvas').toggleClass('clickable', false);
     }
 }
+var difficultyBonusMap = {'easy': 0.8, 'normal': 1, 'hard': 1.5, 'challenge': 2};
 function displayAreaMenu() {
     selectedLevel = map[state.selectedCharacter.selectedLevelKey];
     centerMapOnLevel(selectedLevel);
     // Do this in timeout so that it happens after the check for hiding the areaMenu...
     setTimeout(function () {
         $('.js-areaMenu').show();
+        $('.js-areaMenu .js-areaMedal').hide();
+        var times = ifdefor(state.selectedCharacter.levelTimes[selectedLevel.levelKey], {});
+        for (var difficulty of ['easy', 'normal', 'hard', 'challenge']) {
+            if (!times[difficulty]) continue;
+            var $medal = $('.js-areaMenu .js-' + difficulty + 'Difficulty .js-areaMedal');
+            if (times[difficulty] < getGoldTimeLimit(selectedLevel, difficultyBonusMap[difficulty])) {
+                $medal.removeClass('bronzeMedal silverMedal').addClass('goldMedal');
+            } else if (times[difficulty] < getSilverTimeLimit(selectedLevel, difficultyBonusMap[difficulty])) {
+                $medal.removeClass('bronzeMedal goldMedal').addClass('silverMedal');
+            } else {
+                $medal.removeClass('silverMedal goldMedal').addClass('bronzeMedal');
+            }
+            $medal.show();
+        }
         $('.js-areaMenu .js-challengeDifficulty').hide();
         $('.js-areaMenu .js-areaTitle').text('Lv ' + selectedLevel.level + ' ' + selectedLevel.name);
         $('.js-areaMenu .js-areaDescription').html(ifdefor(selectedLevel.description, 'No description'));
@@ -441,7 +456,14 @@ $(document).on('mousedown', function (event) {
         $('.js-areaMenu').hide();
     }
 });
-
+function getGoldTimeLimit(level, difficultyMultiplier) {
+    var numberOfWaves = Math.max(level.events.length,  Math.floor(5 * Math.sqrt(level.level))) + 1; // Count the chest as a wave.
+    return difficultyMultiplier * numberOfWaves * (5 + level.level / 2);
+}
+function getSilverTimeLimit(level, difficultyMultiplier) {
+    var numberOfWaves = Math.max(level.events.length,  Math.floor(5 * Math.sqrt(level.level))) + 1; // Count the chest as a wave.
+    return difficultyMultiplier * numberOfWaves * (10 + level.level);
+}
 function completeLevel(character) {
     // If the character beat the last adventure open to them, unlock the next one
     var level = map[character.currentLevelKey];
@@ -456,14 +478,17 @@ function completeLevel(character) {
             unlockMapLevel(levelKey);
         });
     }
-    var numberOfWaves = Math.max(level.events.length,  Math.floor(5 * Math.sqrt(level.level))) + 1; // Count the chest as a wave.
-    var timeBonus = (character.completionTime <= numberOfWaves * (5 + level.level / 2)) ? 1.2 : (character.completionTime <= numberOfWaves * (10 + level.level / 2)) ? 1 : .8;
-    var difficultyBonus = 1;
-    if (character.levelDifficulty === 'easy') difficultyBonus = .8;
-    if (character.levelDifficulty === 'hard') difficultyBonus = 1.5;
+    var difficultyBonus = difficultyBonusMap[character.levelDifficulty];
+    var timeBonus = .8;
+    if (character.completionTime <= getGoldTimeLimit(level, difficultyBonus)) timeBonus = 1.2;
+    else if (character.completionTime <= getSilverTimeLimit(level, difficultyBonus)) timeBonus = 1;
     var newDivinityScore = Math.round(difficultyBonus * timeBonus * baseDivinity(level.level));
     character.divinity += Math.max(0, newDivinityScore - oldDivinityScore);
     character.divinityScores[character.currentLevelKey] = Math.max(oldDivinityScore, newDivinityScore);
+    // Initialize level times for this level if not yet set.
+    character.levelTimes[character.currentLevelKey] = ifdefor(character.levelTimes[character.currentLevelKey], {});
+    var oldTime = ifdefor(character.levelTimes[character.currentLevelKey][character.levelDifficulty], 99999);
+    character.levelTimes[character.currentLevelKey][character.levelDifficulty] = Math.min(character.completionTime, oldTime);
     character.levelCompleted = true;
 
     // This code will be used when they activate a shrine

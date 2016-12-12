@@ -755,6 +755,30 @@ select {
     background-position: -136px -81px;
 }
 
+.icon.goldMedal {
+    background-image: url('gfx/militaryIcons.png');
+    background-size: 203px 205px;
+    width: 16px;
+    height: 16px;
+    background-position: -68px -40px;
+}
+
+.icon.silverMedal {
+    background-image: url('gfx/militaryIcons.png');
+    background-size: 203px 205px;
+    width: 16px;
+    height: 16px;
+    background-position: -85px -40px;
+}
+
+.icon.bronzeMedal {
+    background-image: url('gfx/militaryIcons.png');
+    background-size: 203px 205px;
+    width: 16px;
+    height: 16px;
+    background-position: -102px -40px;
+}
+
 /* 'game-icons.png' from http://game-icons.net/about.html */
 
 .icon.mageHat {
@@ -1158,6 +1182,7 @@ p {
     display: inline-block;
 }
 .difficulty {
+    position: relative;
     border: 2px solid #222;
     padding: 4px;
     display: block;
@@ -1194,4 +1219,10 @@ p {
     cursor: pointer;
     color: #0f0;
     text-decoration: underline;
+}
+
+.areaMedal {
+    position: absolute;
+    top: 3px;
+    right: 0px;
 }

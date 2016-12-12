@@ -37,17 +37,17 @@ function instantiateLevel(levelData, difficulty, difficultyCompleted) {
         // This is the minimum distance the level is from one of the main str/dex/int leylines.
         // Levels within 30 degrees of these leylines use 'basic'(triangle based) shapes for the jewels, other levels
         // will likely have non-triangle based shapes.
-        var redComponent = Math.max(0, 60 - getThetaDistance(30, levelDegrees));
-        var blueComponent = Math.max(0, 60 - getThetaDistance(150, levelDegrees));
-        var greenComponent = Math.max(0, 60 - getThetaDistance(270, levelDegrees));
-        var allComponent = Math.abs(levelData.coords[2]) / 120;
-        // component can be as high as 60 so if it is at least 30 we are within 30 degrees of a leyline
+        var redComponent = Math.max(0, 120 - getThetaDistance(30, levelDegrees));
+        var blueComponent = Math.max(0, 120 - getThetaDistance(150, levelDegrees));
+        var greenComponent = Math.max(0, 120 - getThetaDistance(270, levelDegrees));
+        var allComponent = Math.abs(levelData.coords[2]) / 60;
+        // component can be as high as 120 so if it is at least 90 we are within 30 degrees of a primary leyline
         var maxComponent = Math.max(redComponent, blueComponent, greenComponent);
         var tier = getJewelTiewerForLevel(level);
         var components = [[(redComponent + allComponent) * 0.9, (redComponent + allComponent) * 1.1],
                           [(greenComponent + allComponent) * 0.9, (greenComponent + allComponent) * 1.1],
                           [(blueComponent + allComponent) * 0.9, (blueComponent + allComponent) * 1.1]];
-        if (maxComponent < 30) {
+        if (maxComponent < 90) {
             var shapeTypes = ['rhombus']
             if (difficulty !== 'easy') shapeTypes.push('square');
             if (difficulty === 'hard') shapeTypes.push('trapezoid');
