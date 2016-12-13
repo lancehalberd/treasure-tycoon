@@ -265,7 +265,7 @@ $('.js-mouseContainer').on('mousedown', '.js-mainCanvas', function (event) {
         var newMapTarget = getMapTarget(x, y);
         if (event.which === 3) {
             if (!newMapTarget) {
-                createNewLevel(camera.unprojectPoint(x + mapLeft - 20, y + mapTop - 20, world.radius));
+                createNewLevel(camera.unprojectPoint(x + mapLeft, y + mapTop, world.radius));
             } else {
                 clickedMapNode = newMapTarget;
                 selectedMapNodes = [newMapTarget];
