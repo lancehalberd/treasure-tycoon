@@ -1,4 +1,10 @@
 function addUnique(itemKey, initialChance, incrementChance, displayName, prefixes, suffixes) {
+    for (var prefix of prefixes) {
+        if (!prefixesByKey[prefix]) throw new Error("no prefix called " + prefix);
+    }
+    for (var suffix of suffixes) {
+        if (!suffixesByKey[suffix]) throw new Error("no prefix called " + suffix);
+    }
     var baseItem = itemsByKey[itemKey];
     baseItem.unique = {
         'initialChance': initialChance,

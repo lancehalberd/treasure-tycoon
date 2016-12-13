@@ -1,4 +1,5 @@
 var prefixes = [];
+var prefixesByKey = {};
 var allEnchantments = [];
 function addPrefix(level, name, tags, bonuses) {
     var affix = {level: level, name:name, tags:tags, bonuses: bonuses, prefix: true};
@@ -7,6 +8,7 @@ function addPrefix(level, name, tags, bonuses) {
     allEnchantments.push(affix)
 }
 var suffixes = [];
+var suffixesByKey = {};
 function addSuffix(level, name, tags, bonuses) {
     var affix = {level: level, name:name, tags:tags, bonuses: bonuses, suffix: true};
     suffixes[level] = ifdefor(suffixes[level], []);
@@ -147,7 +149,7 @@ addSuffix(41, 'Slyness', 'weapon', {'+damageOnMiss': [100, 160]});
 addSuffix(61, 'Deviousness', 'weapon', {'+damageOnMiss': [150, 200]});
 
 addSuffix(1, 'Soaking', 'weapon', {'+healthGainOnHit': [1, 2]});
-addSuffix(11, 'Leaching', 'weapon', {'+healthGainOnHit': [2, 5]});
+addSuffix(11, 'Leeching', 'weapon', {'+healthGainOnHit': [2, 5]});
 addSuffix(21, 'Draining', 'weapon', {'+healthGainOnHit': [5, 8]});
 addSuffix(31, 'Feeding', 'weapon', {'+healthGainOnHit': [8, 12]});
 addSuffix(41, 'Feasting', 'weapon', {'+healthGainOnHit': [12, 16]});
@@ -242,6 +244,8 @@ var affixesByKey = {};
 for (var affix of allEnchantments) {
     var key = affix.name.replace(/\s*/g, '').toLowerCase();
     if (affixesByKey[key]) throw new Error('affix key ' + key + ' is already used.');
+    if (affix.suffix) suffixesByKey[key] = affix;
+    if (affix.prefix) prefixesByKey[key] = affix;
     affixesByKey[key] = affix;
     affix.key = key;
 }
