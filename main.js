@@ -74,10 +74,12 @@ var mainCanvas, mainContext, jewelsCanvas, jewelsContext, previewContext;
 // Load any graphic assets needed by the game here.
 async.mapSeries([
     // Original images from project contributors:
-    'gfx/person.png', 'gfx/grass.png', 'gfx/cave.png', 'gfx/forest.png', 'gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png',
+    'gfx/person.png', 'gfx/grass.png', 'gfx/cave.png', 'gfx/forest2.png', 'gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png',
     'gfx/treasureChest.png', 'gfx/moneyIcon.png', 'gfx/projectiles.png',
     // http://topps.diku.dk/torbenm/maps.msp
-    'gfx/randomMap.bmp',
+    //'gfx/randomMap.jpg',
+    'gfx/squareMap.bmp',
+    //'gfx/icoMap.jpg',
     // Public domain images:
     'gfx/chest-closed.png', 'gfx/chest-open.png', // http://opengameart.org/content/treasure-chests
     'gfx/bat.png', // http://opengameart.org/content/bat-32x32
@@ -361,6 +363,9 @@ $('.js-mouseContainer').on('click', '.js-mainCanvas', function (event) {
         clickMapHandler(x, y);
     }
 });
+$('.js-mouseContainer').on('mouseout', '.js-mainCanvas', function (event) {
+    canvasCoords = [];
+});
 $('.js-mouseContainer').on('mouseover mousemove', checkToShowJewelToolTip);
 function checkToShowAdventureToolTip(x, y) {
     if (ifdefor(x) === null) return;
@@ -555,10 +560,10 @@ var currentContext;
 function showContext(context) {
     currentContext = context;
     if (context !== 'adventure') {
-        $('.js-mainCanvasContainer').slideUp('fast');
+        $('.js-mainCanvasContainer').hide();
         $('.js-areaMenu').hide();
     } else {
-        $('.js-mainCanvasContainer').slideDown('fast');
+        $('.js-mainCanvasContainer').show();
     }
     $('.js-adventureContext, .js-jewelContext, .js-itemContext').not('.js-' + context + 'Context').hide();
     $('.js-' + context + 'Context').show();

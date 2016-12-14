@@ -2,21 +2,21 @@ var backgrounds = {}; // fully defined background composed of sections.
 var bgSections = {}; // fully defined section with source, parallax, etc.
 var bgSources = {}; // single rectangle from an image.
 function backgroundSource(image, xFrame, y, width, height) {
-    return { image: image, x: xFrame * 64, y: ifdefor(width, 0), width: ifdefor(width, 64), height: ifdefor(width, 240)};
+    return { image: image, x: xFrame * 60, y: ifdefor(y, 0), width: ifdefor(width, 60), height: ifdefor(height, 300)};
 }
 function initializeBackground() {
     // Forest sources
-    bgSources.forest = backgroundSource(images['gfx/forest.png'], 1);
-    bgSources.bedrock = backgroundSource(images['gfx/forest.png'], 3);
-    bgSources.treeTops = backgroundSource(images['gfx/forest.png'], 4);
-    bgSources.tallTrees = backgroundSource(images['gfx/forest.png'], 5);
-    bgSources.shortTrees = backgroundSource(images['gfx/forest.png'], 6);
-    bgSources.roses = backgroundSource(images['gfx/forest.png'], 7);
-    bgSources.rootsA = backgroundSource(images['gfx/forest.png'], 9);
-    bgSources.rootsB = backgroundSource(images['gfx/forest.png'], 10);
-    bgSources.denseFallenLeaves = backgroundSource(images['gfx/forest.png'], 11);
-    bgSources.sparseLeaves = backgroundSource(images['gfx/forest.png'], 12);
-    bgSources.stick = backgroundSource(images['gfx/forest.png'], 13);
+    bgSources.forest = backgroundSource(images['gfx/forest2.png'], 0);
+    bgSources.treeTops = backgroundSource(images['gfx/forest2.png'], 1, 0, 60, 150);
+    bgSources.tallTrees = backgroundSource(images['gfx/forest2.png'], 2, 0, 60, 150);
+    bgSources.shortTrees = backgroundSource(images['gfx/forest2.png'], 3, 0, 60, 150);
+    bgSources.roses = backgroundSource(images['gfx/forest2.png'], 4, 0, 60, 150);
+    bgSources.rootsA = backgroundSource(images['gfx/forest2.png'], 1, 210, 60, 60);
+    bgSources.rootsB = backgroundSource(images['gfx/forest2.png'], 2, 210, 60, 60);
+    bgSources.denseLeaves = backgroundSource(images['gfx/forest2.png'], 1, 150, 60, 120);
+    bgSources.leavesAndStick = backgroundSource(images['gfx/forest2.png'], 2, 150, 60, 120);
+    bgSources.stick = backgroundSource(images['gfx/forest2.png'], 3, 150, 60, 120);
+    bgSources.leaf = backgroundSource(images['gfx/forest2.png'], 4, 150, 60, 120);
     // Field sources
     bgSources.field = backgroundSource(images['gfx/grass.png'], 1);
     bgSources.grassEdge = backgroundSource(images['gfx/grass.png'], 2);
@@ -40,10 +40,9 @@ function initializeBackground() {
         {'source': bgSources.shortTrees, 'parallax': .3, 'spacing': 2},
         {'source': bgSources.tallTrees, 'parallax': .5, 'spacing': 3},
         {'source': bgSources.roses, 'parallax': .65, 'spacing': 4},
-        {'source': bgSources.denseFallenLeaves, 'spacing': 2},
-        {'source': bgSources.sparseLeaves, 'spacing': 3},
+        {'source': bgSources.leavesAndStick, 'spacing': 2},
+        {'source': bgSources.denseLeaves, 'spacing': 3},
         {'source': bgSources.stick, 'spacing': 5},
-        {'source': bgSources.bedrock},
         {'source': bgSources.rootsA, 'spacing': 4},
         {'source': bgSources.rootsB, 'spacing': 3}
     ];
@@ -51,9 +50,8 @@ function initializeBackground() {
         {'source': bgSources.field},
         {'source': bgSources.roses, 'parallax': .4, 'spacing': 3.5},
         {'source': bgSources.roses, 'parallax': .65, 'spacing': 2},
-        {'source': bgSources.sparseLeaves, 'spacing': 3},
+        {'source': bgSources.denseLeaves, 'spacing': 3},
         {'source': bgSources.stick, 'spacing': 5},
-        {'source': bgSources.bedrock},
         {'source': bgSources.rootsA, 'spacing': 4},
         {'source': bgSources.rootsB, 'spacing': 3}
     ];
@@ -62,9 +60,8 @@ function initializeBackground() {
         {'source': bgSources.treeTops, 'parallax': .2},
         {'source': bgSources.shortTrees, 'parallax': .3, 'spacing': 1},
         {'source': bgSources.tallTrees, 'parallax': .5, 'spacing': 1.5},
-        {'source': bgSources.denseFallenLeaves, 'spacing': 2},
-        {'source': bgSources.sparseLeaves, 'spacing': 1},
-        {'source': bgSources.bedrock},
+        {'source': bgSources.leavesAndStick, 'spacing': 2},
+        {'source': bgSources.denseLeaves, 'spacing': 1},
         {'source': bgSources.rootsA, 'spacing': 4},
         {'source': bgSources.rootsB, 'spacing': 3}
     ];
@@ -85,7 +82,6 @@ function initializeBackground() {
         {'source': bgSources.tallTrees, 'parallax': .5, 'spacing': 3},
         {'source': bgSources.tombstone, 'spacing': 7, 'y': 20},
         {'source': bgSources.stick, 'spacing': 4},
-        {'source': bgSources.bedrock},
         {'source': bgSources.rootsA, 'spacing': 4},
         {'source': bgSources.rootsB, 'spacing': 3}
     ];

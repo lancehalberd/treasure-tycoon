@@ -207,5 +207,4 @@ function Vector(v){
         var v2 = vector.getArrayValue();
         return new Vector([v[1]*v2[2] - v[2]*v2[1], -(v[0]*v2[2] - v[2]*v2[0]), v[0]*v2[1] - v[1]*v2[0]]);
     };
-
 };

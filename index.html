@@ -59,7 +59,7 @@
     <div class="js-gameContent gameContent" style="display: none">
         <div class="js-jewelContext js-itemContext pointsBarPadding"> </div>
         <div class="js-mainCanvasContainer mainCanvasContainer">
-            <canvas class="js-mainCanvas mainCanvas" width="800" height="270" style="background-color: blue;"></canvas>
+            <canvas class="js-mainCanvas mainCanvas" width="800" height="600" style="background-color: blue;"></canvas>
             <div class="js-editingControls editingControlsTop" style="display: none">
                 <select class="js-levelSelect"></select>
                 <input class="js-levelNameInput" placeholder="Level Name" />
@@ -86,7 +86,8 @@
                 </div>
             </div>
         </div>
-        <div class="js-characterColumn displayColumn characterColumn js-adventureContext js-jewelContext js-itemContext">
+        <div class="js-adventureContext" style="height: 300px;"></div>
+        <div class="js-characterColumn displayColumn characterColumn js-adventureContext  js-jewelContext js-itemContext hideOnBottom">
             <div class="js-stats stats playerBox">
                 <div style="position: absolute; left: 5px; top: 0px;">Level <span class="js-playerLevel">X</span> <span class="js-playerName controlBarEntry">X</span></div>
                 <canvas class="js-canvas js-previewCanvas" width="64" height="128" style="position: absolute; left: 0px; top: 20px;"></canvas>
@@ -121,7 +122,7 @@
             </div>
             <div class="js-charactersBox characterBox"></div>
                 <div class="controlBar">
-                <button class="js-showAdventurePanel item" helptext="Click here to visit the Guild Hall."><div class="icon treasure"></div></button>
+                <button class="js-showAdventurePanel item" helptext="Click here to visit the Guild Hall."><div class="icon world"></div></button>
                 <button class="js-showCraftingPanel item" helptext="Click here to visit the Temple of Fortune."><div class="icon crafting"></div></button>
                 <button class="js-showJewelsPanel item" helptext="Click here to visit the Altar of Creation."><canvas class="js-jewelButtonCanvas" width="40" height="40"></canvas></button>
             </div><div class="js-equipment equipment playerBox js-itemContext">
@@ -151,7 +152,7 @@
                 <button class="js-sellItem sellItem" disabled helptext="Drag items here to sell them. <br/> You can also hover over an item and type 'S' to sell quickly."><div class="icon money"></div></button>
             </div>
         </div><div class="js-recruitmentColumn js-adventureContext displayColumn recruitmentColumn">
-            <div class="js-heroApplication heroApplication">
+            <div class="js-heroApplication heroApplication hideOnBottom">
                 <div class="js-stats stats playerBox">
                     <div style="position: absolute; left: 5px; top: 0px;">Recruit: <span class="js-playerName controlBarEntry">X</span></div>
                     <canvas class="js-canvas js-previewCanvas" width="64" height="128" style="position: absolute; left: 0px; top: 20px;"></canvas>

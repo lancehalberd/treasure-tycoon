@@ -4,6 +4,31 @@ var camera = new Camera(world, 800, 600);
 var mapLocation = new SphereVector(world);
 var movedMap = true;
 
+function icoMapPoint(longitude, latitude, u, v) {
+    var z = Math.sin(latitude) * world.radius;
+    var r = Math.cos(latitude) * world.radius;
+    var x = Math.cos(-longitude) * r;
+    var y = Math.sin(-longitude) * r;
+    var point = {};
+    point.longitude = longitude;
+    point.latitude = latitude;
+    var coords = camera.projectPoint([x, y, z]);
+    // x/y to draw to on the canvas.
+    point.x = coords[0] - mapLeft;
+    point.y = coords[1] - mapTop;
+    point.u = Math.round(1000 * longitude / (11 * Math.PI / 5));
+    // The y position of the triangles in the image don't span the entire height
+    // of the image, so I just picked them out by hand. Also the relationship
+    // between latitude and y position is not linear, so you can't really
+    // calculate it that easily anyway.
+    /*if (latitude <= -Math.PI + .01) point.v = 15;
+    else if (latitude < 0) point.v = 172;
+    else if (latitude < Math.PI - .01) point.v = 329;
+    else  point.v = 486;*/
+    point.u = u;
+    point.v = v;
+    return point;
+}
 function drawMap() {
     var context = mainContext;
 
@@ -28,92 +53,131 @@ function drawMap() {
         //camera.forward = snake.position.normalize(1);
         camera.fixRightAndUp();
         camera.updateRotationMatrix();
-        if (true) {
-            var lineColors = ['#ff0','#8f0','#0f0','#0f8', '#0ff', '#08f', '#00f', '#80f', '#f0f', '#f08', '#f00','#f80'];
-            var renderedLines = [];
-            for (var theta = 0; theta < Math.PI * 2 + .1; theta += Math.PI / 6) {
-                var renderedLine = [];
-                for (var rho = 0; rho < Math.PI + .1; rho += Math.PI / 20) {
-                    var newPoint = {};
-                    var z = Math.cos(rho) * world.radius;
-                    var r = Math.sin(rho) * world.radius;
-                    var x = Math.cos(theta) * r;
-                    var y = Math.sin(theta) * r;
-                    var visible = (new Vector([x, y, z]).dotProduct(camera.forward) <= 0);
-                    newPoint = {visible: visible};
-                    renderedLine.push(newPoint);
-                    //console.log([theta / Math.PI, rho / Math.PI, x,y,z]);
-                    if (!visible) continue;
-                    var point = camera.projectPoint([x, y, z]);
-                    newPoint.x = point[0] - mapLeft;
-                    newPoint.y = point[1] - mapTop;
-                    newPoint.u = Math.round(1000 * (theta) / (2 * Math.PI));
-                    newPoint.v = Math.round(500 * rho / Math.PI);
-                }
-                renderedLines.push(renderedLine);
+        var lineColors = ['#0ff', '#08f', '#00f', '#80f', '#f0f', '#f08', '#f00','#f80','#ff0','#8f0','#0f0', '#0f8'];
+        var renderedLines = [];
+        var latitudes = [];
+        for (var rho = 0; rho < Math.PI + .1; rho += Math.PI / 10) {
+            latitudes.push(rho);
+        }
+        //if (mouseDown) {
+            latitudes.splice(1, 0, Math.PI / 50);
+            latitudes.splice(latitudes.length - 1, 0, Math.PI  - Math.PI / 50);
+        /*} else {
+            latitudes.splice(1, 0, Math.PI / 50, Math.PI / 40, Math.PI / 30);
+            latitudes.splice(latitudes.length - 1, 0, Math.PI  - Math.PI / 30, Math.PI  - Math.PI / 40, Math.PI  - Math.PI / 50);
+        }*/
+        for (var theta = 0; theta < Math.PI * 2 + .1; theta += Math.PI / 6) {
+            var renderedLine = [];
+            for (var rho of latitudes) {
+                var newPoint = {};
+                var z = Math.cos(rho) * world.radius;
+                var r = Math.sin(rho) * world.radius;
+                var x = Math.cos(theta - 4 * Math.PI / 6) * r;
+                var y = Math.sin(theta - 4 * Math.PI / 6) * r;
+                var visible = (new Vector([x, y, z]).dotProduct(camera.forward) <= 0);
+                newPoint = {visible: visible};
+                renderedLine.push(newPoint);
+                //console.log([theta / Math.PI, rho / Math.PI, x,y,z]);
+                if (!visible) continue;
+                var point = camera.projectPoint([x, y, z]);
+                newPoint.x = point[0] - mapLeft;
+                newPoint.y = point[1] - mapTop;
+                newPoint.u = 800 - Math.round(800 * (theta) / (2 * Math.PI));
+                newPoint.v = 400 - Math.round(400 * rho / Math.PI);
             }
-            if (editingMap) {
-                for (var i = 0; i < renderedLines.length - 1; i++) {
-                    var lineA = renderedLines[i];
-                    var lineB = renderedLines[i + 1];
-                    for (var j = 1; j < lineA.length - 1; j++) {
-                        var A = lineB[j ];
-                        var B = lineB[j - 1];
-                        var C = lineA[j];
-                        if (A.visible && B.visible && C.visible) {
-                            textureMap(context, images['gfx/randomMap.bmp'], [A, B, C]);
-                        }
-                        var A = lineB[j];
-                        var B = lineA[j];
-                        var C = lineA[j + 1];
-                        if (A.visible && B.visible && C.visible) {
-                            textureMap(context, images['gfx/randomMap.bmp'], [A, B, C]);
-                        }
-                    }
-                }
-            }
+            renderedLines.push(renderedLine);
+        }
+        if (images['gfx/squareMap.bmp']) {
             for (var i = 0; i < renderedLines.length - 1; i++) {
-                var lastPoint = null;
-                var line = renderedLines[i];
-                context.beginPath();
-                context.strokeStyle = lineColors[i];
-                for (var j = 0; j < line.length; j++) {
-                    var point = line[j];
-                    if (!point.visible) {
-                        lastPoint = null;
-                        continue;
+                var lineA = renderedLines[i];
+                var lineB = renderedLines[i + 1];
+                for (var j = 1; j < lineA.length - 1; j++) {
+                    var A = lineB[j ];
+                    var B = lineB[j - 1];
+                    var C = lineA[j];
+                    if (A.visible && B.visible && C.visible) {
+                        textureMap(context, images['gfx/squareMap.bmp'], [A, B, C]);
                     }
-                    if (lastPoint) context.lineTo(point.x, point.y);
-                    else context.moveTo(point.x, point.y);
-                    lastPoint = point;
+                    var A = lineB[j];
+                    var B = lineA[j];
+                    var C = lineA[j + 1];
+                    if (A.visible && B.visible && C.visible) {
+                        textureMap(context, images['gfx/squareMap.bmp'], [A, B, C]);
+                    }
                 }
-                context.stroke();
             }
-            context.strokeStyle = '#000';
-            context.beginPath();
-            for (var rho = Math.PI / 10; rho < Math.PI; rho += Math.PI / 10) {
-                var lastPoint = null;
-                for (var theta = 0; theta < Math.PI * 2 + .1; theta += Math.PI / 6) {
-                    var z = Math.cos(rho) * world.radius;
-                    var r = Math.sin(rho) * world.radius;
-                    var x = Math.cos(theta) * r;
-                    var y = Math.sin(theta) * r;
-                    //console.log(point);
-                    if (new Vector([x, y, z]).dotProduct(camera.forward) > 0) {
-                        lastPoint = null;
-                        continue;
-                    }
-                    var point = camera.projectPoint([x, y, z]);
-                    if (lastPoint) {
-                        context.lineTo(point[0] - mapLeft, point[1] - mapTop);
-                    } else {
-                        lastPoint = point;
-                        context.moveTo(point[0] - mapLeft, point[1] - mapTop);
-                    }
+        } else if (images['gfx/icoMap.jpg']) {
+            function drawTriangle(A,B,C) {
+                var U = [B.x - A.x, B.y - A.y];
+                var V = [C.x - B.x, C.y - B.y];
+                if (U[0] * V[1] - V[0] * U[1] < 0) return;
+                //if (!A.visible || !B.visible || ! C.visible) return;
+                textureMap(context, images['gfx/icoMap.jpg'], [A, B, C]);
+            }
+            var pi5 = Math.PI / 5;
+            var u11 = 999 / 11;
+            var latitude = Math.atan(.5);
+            // Drawing the icosohedron as 5 strips of four triangles from
+            // top left to bottom right.
+            for (var i = 0; i < 5; i++) {
+                var left = 2 * i * pi5;
+                var ul = 1 + 2 * i * u11;
+                var A = icoMapPoint(left + pi5, -Math.PI / 2, Math.round(ul + u11), 16);
+                var B = icoMapPoint(left, -latitude, Math.round(ul), 173);
+                var C = icoMapPoint(left + 2 * pi5, -latitude, Math.round(ul + 2 * u11), 173);
+                var D = icoMapPoint(left + pi5, latitude, Math.round(ul + u11), 328);
+                var E = icoMapPoint(left + 3 * pi5, latitude, Math.round(ul + 3 * u11), 328);
+                var F = icoMapPoint(left + 2 * pi5, Math.PI / 2, Math.round(ul + 2 * u11), 485);
+                if (mouseDown) {
+                    //console.log(i + ': ' + JSON.stringify(A));
                 }
+                drawTriangle(A, C, B);
+                drawTriangle(B, C, D);
+                drawTriangle(C, E, D);
+                drawTriangle(D, E, F);
+            }
+        }
+        for (var i = 0; i < renderedLines.length - 1; i++) {
+            var lastPoint = null;
+            var line = renderedLines[i];
+            context.beginPath();
+            context.strokeStyle = lineColors.pop();
+            for (var j = 0; j < line.length; j++) {
+                var point = line[j];
+                if (!point.visible) {
+                    lastPoint = null;
+                    continue;
+                }
+                if (lastPoint) context.lineTo(point.x, point.y);
+                else context.moveTo(point.x, point.y);
+                lastPoint = point;
             }
             context.stroke();
         }
+        context.strokeStyle = '#000';
+        context.beginPath();
+        for (var rho = Math.PI / 10; rho < Math.PI; rho += Math.PI / 10) {
+            var lastPoint = null;
+            for (var theta = 0; theta < Math.PI * 2 + .1; theta += Math.PI / 6) {
+                var z = Math.cos(rho) * world.radius;
+                var r = Math.sin(rho) * world.radius;
+                var x = Math.cos(theta) * r;
+                var y = Math.sin(theta) * r;
+                //console.log(point);
+                if (new Vector([x, y, z]).dotProduct(camera.forward) > 0) {
+                    lastPoint = null;
+                    continue;
+                }
+                var point = camera.projectPoint([x, y, z]);
+                if (lastPoint) {
+                    context.lineTo(point[0] - mapLeft, point[1] - mapTop);
+                } else {
+                    lastPoint = point;
+                    context.moveTo(point[0] - mapLeft, point[1] - mapTop);
+                }
+            }
+        }
+        context.stroke();
         visibleNodes = {};
         $.each(map, function (levelKey, levelData) {
             if (!editingMap && !state.visibleLevels[levelKey]) {

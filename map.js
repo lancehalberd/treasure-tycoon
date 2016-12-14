@@ -112,13 +112,12 @@ function updateMap() {
     }*/
 }
 function centerMapOnLevel(levelData, instant) {
-    mapTop = -mapHeight / 2; mapLeft = -400;
     centerInstantly = instant;
     mapCenteringTarget = levelData;
     movedMap = true;
 }
 
-var mapLeft = -400, mapTop = -120, mapWidth = 800, mapHeight = 270;
+var mapLeft = -400, mapTop = -300, mapWidth = 800, mapHeight = 600;
 var visibleNodes = {};
 var selectedMapNodes = [];
 var clickedMapNode = null;
@@ -338,7 +337,7 @@ $(document).on('mouseup',function (event) {
     }
 });
 var arrowTargetLeft, arrowTargetTop;
-$('.js-mouseContainer').on('mousemove', '.js-mainCanvas', function (event) {
+$('.js-mouseContainer').on('mousemove', function (event) {
     if (!mouseDown && !rightMouseDown) return;
     draggedMap = true;
     var x = event.pageX - $(this).offset().left;
@@ -370,8 +369,6 @@ $('.js-mouseContainer').on('mousemove', '.js-mainCanvas', function (event) {
                 })
                 movedMap = true;
             } else {
-                //mapLeft += (mapDragX - x);
-                //mapTop += (mapDragY - y);
                 mapLocation.moveRight((mapDragX - x));
                 mapLocation.moveUp(-(mapDragY - y));
                 movedMap = true;
@@ -380,8 +377,6 @@ $('.js-mouseContainer').on('mousemove', '.js-mainCanvas', function (event) {
             }
         }
     } else if (mapDragX !== null && mapDragY !== null) {
-        //mapLeft += (mapDragX - x);
-        //mapTop += (mapDragY - y);
         mapLocation.moveRight((mapDragX - x));
         mapLocation.moveUp(-(mapDragY - y));
         movedMap = true;
@@ -550,10 +545,11 @@ function startMapEditing() {
 }
 function updateEditingState() {
     var isEditing = editingLevel || editingMap;
-    mapHeight = (isEditing && !editingLevel) ? 600 : 270;
-    mapTop = -mapHeight / 2; mapLeft = -400;
+    //mapHeight = 600;
+    //mapTop = -mapHeight / 2;
+    //mapLeft = -400;
     $('.js-pointsBar').toggle(!isEditing);
-    $('.js-mainCanvasContainer').css('height', ((isEditing && !testingLevel) ? 600 : 270) +'px');
+    //$('.js-mainCanvasContainer').css('height', '600px');
     $('.js-mainCanvas').attr('height', mapHeight);
     // Image smoothing seems to get enabled again after changing the canvas size, so disable it again.
     $('.js-mainCanvas')[0].getContext('2d').imageSmoothingEnabled = false;

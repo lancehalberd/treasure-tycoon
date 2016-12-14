@@ -563,6 +563,7 @@ select {
 }
 .characterColumn {
     width: 240px;
+    background: transparent;
 }
 
 .icon.treasure {
@@ -570,6 +571,13 @@ select {
     background-size: 32px 32px;
     width: 32px;
     height: 32px;
+}
+
+.icon.world {
+    background-image: url('gfx/worldIcon.png');
+    background-size: 36px 36px;
+    width: 36px;
+    height: 36px;
 }
 
 .characterBox {
@@ -594,6 +602,9 @@ select {
     padding: 7px;
     overflow-x: auto;
     box-sizing: border-box;
+    background: transparent;
+    overflow-y: hidden;
+    pointer-events: none;
 }
 
 .heroApplication {
@@ -601,12 +612,24 @@ select {
     margin-right: 5px;
     width: 240px;
     height: 300px;
+    background-image: url('gfx/oldMap.png');
     background-color: burlywood;
     border: 5px solid #eda;
     box-sizing: border-box;
+    pointer-events: auto;
 }
 .heroApplication canvas {
     opacity: .6;
+}
+
+.hideOnBottom {
+    position: relative;
+    bottom: -265px;
+    -webkit-transition: bottom .5s;
+    transition: bottom .5s;
+}
+.hideOnBottom:hover {
+    bottom: 0;
 }
 
 .heroApplicationButton {
@@ -614,16 +637,16 @@ select {
 }
 
 .mainCanvasContainer {
-    position: relative;
+    position: absolute;
     overflow: hidden;
-    height: 270px;
+    height: 600px;
     width: 800px;
 }
 
 .adventureControls {
     position: absolute;
     left: 10px;
-    bottom: 32px;
+    bottom: 50px;
 }
 
 .adventureControls .adventureButton {

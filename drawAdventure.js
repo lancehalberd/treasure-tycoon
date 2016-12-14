@@ -7,26 +7,30 @@ function drawAdventure(character) {
     var area = editingLevelInstance ? editingLevelInstance : character.area;
     var background = ifdefor(backgrounds[area.background], backgrounds.field);
     var cloudX = cameraX + character.time * .5;
-    var fullDrawingWidth = Math.ceil(mainCanvas.width / 64) * 64 + 64;
+    var tileWidth = 120;
+    var fullDrawingWidth = Math.ceil(mainCanvas.width / tileWidth) * tileWidth + tileWidth;
     background.forEach(function(section) {
         var source = section.source;
-        var y = ifdefor(section.y, 0);
-        var height = ifdefor(section.height, 240 - y);
-        var width = ifdefor(section.width, 64);
+        var y = ifdefor(section.y, source.y) * 2;
+        var height = ifdefor(section.height, source.height) * 2;
+        var width = ifdefor(section.width, source.width) * 2;
         var parallax = ifdefor(section.parallax, 1);
         var spacing = ifdefor(section.spacing, 1);
         var velocity = ifdefor(section.velocity, 0);
         var alpha = ifdefor(section.alpha, 1);
         context.globalAlpha = alpha;
-        for (var i = 0; i <= fullDrawingWidth; i += 64 * spacing) {
-            var x = (fullDrawingWidth + (i - (cameraX - character.time * velocity) * parallax) % fullDrawingWidth) % fullDrawingWidth - 64;
+        for (var i = 0; i <= fullDrawingWidth; i += tileWidth * spacing) {
+            var x = Math.round((fullDrawingWidth + (i - (cameraX - character.time * velocity) * parallax) % fullDrawingWidth) % fullDrawingWidth - tileWidth);
             context.drawImage(source.image, source.x, source.y, source.width, source.height,
                                   x, y, width, height);
+            if (x !== Math.round(x) || y !== Math.round(y) || width != Math.round(width) || height != Math.round(height)) {
+                console.log([x, y, width, height]);
+            }
         }
         context.globalAlpha = 1;
     });
     ifdefor(character.objects, []).forEach(function (object, index) {
-        object.draw(context, object.x - cameraX, 240 - 128);
+        object.draw(context, object.x - cameraX, 600 - 256);
     });
     ifdefor(character.enemies, []).forEach(function (actor, index) {
         drawActor(character, actor, 1 + character.enemies.length - index)
@@ -69,7 +73,7 @@ function drawActor(character, actor, index) {
         for (var i = 0; i < 3; i++ ) {
             var theta = 2 * Math.PI * (i + 3 * actor.time) / 3;
             var shrineSource = {'image': images['gfx/militaryIcons.png'], 'xOffset': 102, 'yOffset': 125, 'width': 16, 'height': 16};
-            var yPosition = 240 - 128 - 36 - 2 * (index % maxIndex);
+            var yPosition = 600 - 256 - 36 - 2 * (index % maxIndex);
             if (actor.source) yPosition -= ifdefor(actor.source.y, 0) * 2;
             mainContext.drawImage(shrineSource.image, shrineSource.xOffset, shrineSource.yOffset, shrineSource.width, shrineSource.height,
                                     actor.left + (actor.width - shrineSource.width) / 2 + Math.cos(theta) * 30,
@@ -96,7 +100,7 @@ function drawMonster(character, monster, index) {
     monster.width = source.width * scale;
     monster.height = ifdefor(source.height, 64) * scale;
     monster.left = monster.x - cameraX;
-    monster.top = 240 - monster.height - 72 - ifdefor(source.y, 0) * scale - 2 * (index % maxIndex);
+    monster.top = 600 - monster.height - 144 - ifdefor(source.y, 0) * scale - 2 * (index % maxIndex);
     var xCenter = ifdefor(source.xCenter, source.width / 2) * scale;
     var yCenter = ifdefor(source.yCenter, ifdefor(source.height, 64) / 2) * scale;
     context.translate(monster.left + xCenter, monster.top + yCenter);
@@ -153,12 +157,12 @@ function drawMonster(character, monster, index) {
     }
     context.restore();
     // Uncomment to draw a reference of the character to show where left side of monster should be
-    // context.drawImage(character.personCanvas, 0 * 32, 0 , 32, 64, monster.x - cameraX, 240 - 128 - 72, 64, 128);
-    //context.fillRect(monster.x - cameraX, 240 - 128 - 72, 64, 128);
+    // context.drawImage(character.personCanvas, 0 * 32, 0 , 32, 64, monster.x - cameraX, 600 - 256- 144, 64, 128);
+    //context.fillRect(monster.x - cameraX, 600 - 256- 144, 64, 128);
     // life bar
     if (monster.isDead) return;
     var x = monster.x - cameraX + monster.width / 2 - 32;
-    var y = 240 - 128 - 36 - 2 * (index % maxIndex) - ifdefor(source.y, 0) * 2;
+    var y = 600 - 256 - 36 - 2 * (index % maxIndex) - ifdefor(source.y, 0) * 2;
     drawBar(context, x, y, 64, 4, 'white', ifdefor(monster.color, 'red'), monster.health / monster.maxHealth);
     if (monster.bonusMaxHealth >= 1 && monster.health >= monster.maxHealth - monster.bonusMaxHealth) {
         // This logic is kind of a mess but it is to make sure the % of the bar that is due to bonusMaxHealth
@@ -197,7 +201,7 @@ function drawAdventurer(character, adventurer, index) {
     var cameraX = character.cameraX;
     var context = mainContext;
     adventurer.left = adventurer.x - cameraX;
-    adventurer.top = 240 - 128 * scale - 72 - 2 * (index % maxIndex);
+    adventurer.top = 600 - 256 * scale - 72 - 2 * (index % maxIndex);
     adventurer.width = 64 * scale;
     adventurer.height = 128 * scale;
     var xCenter = 16 * 2 * scale;
@@ -244,7 +248,7 @@ function drawAdventurer(character, adventurer, index) {
     // life bar
     if (adventurer.isDead) return;
     var x = adventurer.x - cameraX;
-    var y = 240 - 128 - 36 - 2 * (index % maxIndex);
+    var y = 600 - 256- 36 - 2 * (index % maxIndex);
     drawBar(mainContext, x, y, 64, 4, 'white', 'red', adventurer.health / adventurer.maxHealth);
     if (adventurer.bonusMaxHealth >= 1 && adventurer.health >= adventurer.maxHealth - adventurer.bonusMaxHealth) {
         // This logic is kind of a mess but it is to make sure the % of the bar that is due to bonusMaxHealth
@@ -281,14 +285,14 @@ function drawEffectIcons(actor, x, y) {
     }
 }
 function drawMinimap(character) {
-    var y = 270 - 20;
+    var y = 600 - 40;
     var height = 6;
     var x = 10;
     var width = 750;
     var context = mainContext;
     var area = editingLevelInstance ? editingLevelInstance : character.area;
-    context.fillStyle = 'black';
-    context.fillRect(0, 240, mainCanvas.width, 30);
+    //context.fillStyle = 'black';
+    //context.fillRect(0, 560, mainCanvas.width, 30);
     drawBar(context, x, y, width, height, 'white', 'white', character.waveIndex / area.waves.length);
     for (var i = 0; i < area.waves.length; i++) {
         var centerX = x + (i + 1) * width / area.waves.length;
