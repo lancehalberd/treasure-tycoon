@@ -6,17 +6,17 @@ function backgroundSource(image, xFrame, y, width, height) {
 }
 function initializeBackground() {
     // Forest sources
-    bgSources.forest = backgroundSource(images['gfx/forest2.png'], 0);
-    bgSources.treeTops = backgroundSource(images['gfx/forest2.png'], 1, 0, 60, 150);
-    bgSources.tallTrees = backgroundSource(images['gfx/forest2.png'], 2, 0, 60, 150);
-    bgSources.shortTrees = backgroundSource(images['gfx/forest2.png'], 3, 0, 60, 150);
-    bgSources.roses = backgroundSource(images['gfx/forest2.png'], 4, 0, 60, 150);
-    bgSources.rootsA = backgroundSource(images['gfx/forest2.png'], 1, 210, 60, 60);
-    bgSources.rootsB = backgroundSource(images['gfx/forest2.png'], 2, 210, 60, 60);
-    bgSources.denseLeaves = backgroundSource(images['gfx/forest2.png'], 1, 150, 60, 120);
-    bgSources.leavesAndStick = backgroundSource(images['gfx/forest2.png'], 2, 150, 60, 120);
-    bgSources.stick = backgroundSource(images['gfx/forest2.png'], 3, 150, 60, 120);
-    bgSources.leaf = backgroundSource(images['gfx/forest2.png'], 4, 150, 60, 120);
+    bgSources.forest = backgroundSource(images['gfx/forest.png'], 0);
+    bgSources.treeTops = backgroundSource(images['gfx/forest.png'], 1, 0, 60, 150);
+    bgSources.tallTrees = backgroundSource(images['gfx/forest.png'], 2, 0, 60, 150);
+    bgSources.shortTrees = backgroundSource(images['gfx/forest.png'], 3, 0, 60, 150);
+    bgSources.roses = backgroundSource(images['gfx/forest.png'], 4, 0, 60, 150);
+    bgSources.rootsA = backgroundSource(images['gfx/forest.png'], 1, 210, 60, 60);
+    bgSources.rootsB = backgroundSource(images['gfx/forest.png'], 2, 210, 60, 60);
+    bgSources.denseLeaves = backgroundSource(images['gfx/forest.png'], 1, 150, 60, 120);
+    bgSources.leavesAndStick = backgroundSource(images['gfx/forest.png'], 2, 150, 60, 120);
+    bgSources.stick = backgroundSource(images['gfx/forest.png'], 3, 150, 60, 120);
+    bgSources.leaf = backgroundSource(images['gfx/forest.png'], 4, 150, 60, 120);
     // Field sources
     bgSources.field = backgroundSource(images['gfx/grass.png'], 1);
     bgSources.grassEdge = backgroundSource(images['gfx/grass.png'], 2);
