@@ -397,7 +397,7 @@ function initalizeMonsters() {
     addMonster('dragon', {'name': 'Dragon', 'source': dragonSource, 'stationary': true, // speed still effects animation
         'implicitBonuses': {'*maxHealth': 1.6, '+weaponRange': 8, '+critChance': .15, '*accuracy': 2,
                             '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 2, '+magicResist': .5,
-                            '*speed': 2}, 'tags': ['ranged'],
+                            '*speed': 2, '*scale': 2}, 'tags': ['ranged'],
         'abilities': [abilities.fireball, abilities.sideStep]
     });
 }

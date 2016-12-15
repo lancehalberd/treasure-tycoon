@@ -13,20 +13,21 @@ function initializeBackground() {
     bgSources.roses = backgroundSource(images['gfx/forest.png'], 4, 0, 60, 150);
     bgSources.rootsA = backgroundSource(images['gfx/forest.png'], 1, 210, 60, 60);
     bgSources.rootsB = backgroundSource(images['gfx/forest.png'], 2, 210, 60, 60);
-    bgSources.denseLeaves = backgroundSource(images['gfx/forest.png'], 1, 150, 60, 120);
-    bgSources.leavesAndStick = backgroundSource(images['gfx/forest.png'], 2, 150, 60, 120);
-    bgSources.stick = backgroundSource(images['gfx/forest.png'], 3, 150, 60, 120);
-    bgSources.leaf = backgroundSource(images['gfx/forest.png'], 4, 150, 60, 120);
+    bgSources.denseLeaves = backgroundSource(images['gfx/forest.png'], 1, 150, 60, 90);
+    bgSources.leavesAndStick = backgroundSource(images['gfx/forest.png'], 2, 150, 60, 90);
+    bgSources.stick = backgroundSource(images['gfx/forest.png'], 3, 150, 60, 90);
+    bgSources.leaf = backgroundSource(images['gfx/forest.png'], 4, 150, 60, 90);
     // Field sources
-    bgSources.field = backgroundSource(images['gfx/grass.png'], 1);
-    bgSources.grassEdge = backgroundSource(images['gfx/grass.png'], 2);
-    bgSources.dirtCracks = backgroundSource(images['gfx/grass.png'], 3);
-    bgSources.skinnyCloud = backgroundSource(images['gfx/grass.png'], 4);
-    bgSources.mediumCloud = backgroundSource(images['gfx/grass.png'], 5);
-    bgSources.tinyCloud = backgroundSource(images['gfx/grass.png'], 6);
-    bgSources.grassA = backgroundSource(images['gfx/grass.png'], 8);
-    bgSources.grassB = backgroundSource(images['gfx/grass.png'], 9);
-    bgSources.grassC = backgroundSource(images['gfx/grass.png'], 10);
+    bgSources.field = backgroundSource(images['gfx/grass.png'], 0);
+    bgSources.skinnyCloud = backgroundSource(images['gfx/grass.png'], 1, 0, 60, 150)
+    bgSources.tinyCloud = backgroundSource(images['gfx/grass.png'], 2, 0, 60, 150)
+    bgSources.mediumCloud = backgroundSource(images['gfx/grass.png'], 3, 0, 60, 150)
+    bgSources.grassEdge = backgroundSource(images['gfx/grass.png'], 1, 150, 60, 90);
+    bgSources.grassA = backgroundSource(images['gfx/grass.png'], 2, 150, 60, 90);
+    bgSources.grassB = backgroundSource(images['gfx/grass.png'], 3, 150, 60, 90);
+    bgSources.grassC = backgroundSource(images['gfx/grass.png'], 4, 150, 60, 90);
+    bgSources.dirtCracksA = backgroundSource(images['gfx/grass.png'], 1, 210, 60, 60);
+    bgSources.dirtCracksB = backgroundSource(images['gfx/grass.png'], 2, 210, 60, 60);
     // Cave sources
     bgSources.cave = backgroundSource(images['gfx/cave.png'], 1);
     bgSources.rocks = backgroundSource(images['gfx/cave.png'], 2);
@@ -70,7 +71,8 @@ function initializeBackground() {
         {'source': bgSources.skinnyCloud, 'parallax': .2, 'spacing': 3, 'velocity': -50, 'alpha': .4},
         {'source': bgSources.tinyCloud, 'parallax': .3, 'spacing': 2, 'velocity': -50, 'alpha': .4},
         {'source': bgSources.mediumCloud, 'parallax': .5, 'spacing': 3, 'velocity': -50, 'alpha': .4},
-        {'source': bgSources.dirtCracks},
+        {'source': bgSources.dirtCracksA},
+        {'source': bgSources.dirtCracksB},
         {'source': bgSources.grassEdge},
         {'source': bgSources.grassA},
         {'source': bgSources.grassB, 'spacing': 4},
