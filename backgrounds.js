@@ -29,12 +29,12 @@ function initializeBackground() {
     bgSources.dirtCracksA = backgroundSource(images['gfx/grass.png'], 1, 210, 60, 60);
     bgSources.dirtCracksB = backgroundSource(images['gfx/grass.png'], 2, 210, 60, 60);
     // Cave sources
-    bgSources.cave = backgroundSource(images['gfx/cave.png'], 1);
-    bgSources.rocks = backgroundSource(images['gfx/cave.png'], 2);
-    bgSources.spikesA = backgroundSource(images['gfx/cave.png'], 3);
-    bgSources.spikesB = backgroundSource(images['gfx/cave.png'], 4);
-    bgSources.spikesC = backgroundSource(images['gfx/cave.png'], 5);
-    bgSources.tombstone = backgroundSource(images['gfx/cave.png'], 6);
+    bgSources.cave = backgroundSource(images['gfx/cave.png'], 0);
+    bgSources.rocks = backgroundSource(images['gfx/cave.png'], 1, 210, 60, 60);
+    bgSources.spikesA = backgroundSource(images['gfx/cave.png'], 1, 0, 60, 60);
+    bgSources.spikesB = backgroundSource(images['gfx/cave.png'], 2, 0, 60, 60);
+    bgSources.spikesC = backgroundSource(images['gfx/cave.png'], 3, 0, 60, 60);
+    bgSources.tombstone = backgroundSource(images['gfx/cave.png'], 1, 60, 60, 150);
     backgrounds.forest = [
         {'source': bgSources.forest},
         {'source': bgSources.treeTops, 'parallax': .2},
@@ -82,7 +82,7 @@ function initializeBackground() {
         {'source': bgSources.cave},
         {'source': bgSources.shortTrees, 'parallax': .3, 'spacing': 2.5},
         {'source': bgSources.tallTrees, 'parallax': .5, 'spacing': 3},
-        {'source': bgSources.tombstone, 'spacing': 7, 'y': 20},
+        {'source': bgSources.tombstone, 'spacing': 5},
         {'source': bgSources.stick, 'spacing': 4},
         {'source': bgSources.rootsA, 'spacing': 4},
         {'source': bgSources.rootsB, 'spacing': 3}
