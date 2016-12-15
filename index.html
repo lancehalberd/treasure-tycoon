@@ -70,7 +70,6 @@
                 <textarea class="js-levelDescriptionInput" rows="8" cols="40" placeholder="Level Description"></textarea>
             </div>
             <div class="js-adventureControls adventureControls" style="display: none;">
-                <span class="js-recallButton icon backButton adventureButton" helptext="Exit to map"></span>
                 <span class="js-repeatButton icon repeatButton adventureButton" helptext="Repeat this adventure"></span>
                 <span class="js-fastforwardButton icon fastforwardButton adventureButton" helptext="Fast Forward"></span>
                 <span class="js-pauseButton icon pauseButton adventureButton" helptext="Pause this adventure"></span>
@@ -120,13 +119,7 @@
                     <div class="js-strength strength" helptext="Strength increases physical damage, health and damage with melee weapons.">X</div>
                     <div class="js-intelligence intelligence" helptext="Intelligence increases accuracy, block and magic block and damage with magic weapons.">X</div>
                 </div>
-            </div>
-            <div class="js-charactersBox characterBox"></div>
-                <div class="controlBar">
-                <button class="js-showAdventurePanel item" helptext="Click here to view the World Map."><div class="icon world"></div></button>
-                <button class="js-showCraftingPanel item" helptext="Click here to visit the Temple of Fortune."><div class="icon crafting"></div></button>
-                <button class="js-showJewelsPanel item" helptext="Click here to visit the Altar of Creation."><canvas class="js-jewelButtonCanvas" width="40" height="40"></canvas></button>
-            </div><div class="js-equipment equipment playerBox js-itemContext">
+            </div><div class="js-charactersBox characterBox"></div><div class="js-equipment equipment playerBox js-itemContext">
                 <div class="js-head js-itemSlot itemSlot head"></div>
                 <div class="js-body js-itemSlot itemSlot body"></div>
                 <div class="js-arms js-itemSlot itemSlot arms"></div>
@@ -230,6 +223,11 @@
             <div class="js-areaDescription areaDescription">
                 Beware! The venom from the spiders in these woods will suppress your health regeneration.
             </div>
+        </div>
+        <div class="controlBar">
+            <button class="js-showAdventurePanel item" helptext="Click here to view the World Map."><div class="icon world"></div></button>
+            <button class="js-showCraftingPanel item" helptext="Click here to visit the Temple of Fortune."><div class="icon crafting"></div></button>
+            <button class="js-showJewelsPanel item" helptext="Click here to visit the Altar of Creation."><canvas class="js-jewelButtonCanvas" width="40" height="40"></canvas></button>
         </div>
     </div>
 </div>

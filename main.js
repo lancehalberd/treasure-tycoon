@@ -495,8 +495,10 @@ $('body').on('click', '.js-retire', function (event) {
     saveGame();
     updateRetireButtons();
 });
+// World Map button doubles for recall button now.
 $('body').on('click', '.js-showAdventurePanel', function (event) {
-    showContext('adventure');
+    if (currentContext !== 'adventure') showContext('adventure');
+    else if (state.selectedCharacter.area) recallSelectedCharacter();
 });
 $('body').on('click', '.js-showCraftingPanel', function (event) {
     showContext('item');
