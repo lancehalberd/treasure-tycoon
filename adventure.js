@@ -418,6 +418,6 @@ function defeatedEnemy(character, enemy) {
     if (enemy.anima) loot.push(animaLootDrop(enemy.anima));
     loot.forEach(function (loot, index) {
         loot.gainLoot(character);
-        loot.addTreasurePopup(character, enemy.x +enemy.base.source.width / 2 + index * 20, 240 - 140, 0, -1, index * 10);
+        loot.addTreasurePopup(character, enemy.x +enemy.base.source.width / 2 + index * 20, enemy.top, 0, -1, index * 10);
     });
 }

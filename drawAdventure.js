@@ -1,4 +1,5 @@
 var maxIndex = 9;
+var groundY = 390;
 function drawAdventure(character) {
     var adventurer = character.adventurer;
     var context = mainContext;
@@ -91,7 +92,7 @@ function drawMonster(character, monster, index) {
     var cameraX = character.cameraX;
     var context = mainContext;
     var source = monster.base.source;
-    var scale = 2 * ifdefor(monster.scale, 1);
+    var scale = ifdefor(monster.scale, 1);
     var frame;
     context.save();
     if (monster.cloaked) {
@@ -100,7 +101,7 @@ function drawMonster(character, monster, index) {
     monster.width = source.width * scale;
     monster.height = ifdefor(source.height, 64) * scale;
     monster.left = monster.x - cameraX;
-    monster.top = 600 - monster.height - 144 - ifdefor(source.y, 0) * scale - 2 * (index % maxIndex);
+    monster.top = groundY - monster.height - ifdefor(source.y, 0) * scale - 2 * (index % maxIndex);
     var xCenter = ifdefor(source.xCenter, source.width / 2) * scale;
     var yCenter = ifdefor(source.yCenter, ifdefor(source.height, 64) / 2) * scale;
     context.translate(monster.left + xCenter, monster.top + yCenter);
@@ -156,13 +157,10 @@ function drawMonster(character, monster, index) {
                                          target.left, target.top, target.width, target.height);
     }
     context.restore();
-    // Uncomment to draw a reference of the character to show where left side of monster should be
-    // context.drawImage(character.personCanvas, 0 * 32, 0 , 32, 64, monster.x - cameraX, 600 - 256- 144, 64, 128);
-    //context.fillRect(monster.x - cameraX, 600 - 256- 144, 64, 128);
     // life bar
     if (monster.isDead) return;
     var x = monster.x - cameraX + monster.width / 2 - 32;
-    var y = 600 - 256 - 36 - 2 * (index % maxIndex) - ifdefor(source.y, 0) * 2;
+    var y = monster.top + scale * ifdefor(source.yTop, 0) -5;
     drawBar(context, x, y, 64, 4, 'white', ifdefor(monster.color, 'red'), monster.health / monster.maxHealth);
     if (monster.bonusMaxHealth >= 1 && monster.health >= monster.maxHealth - monster.bonusMaxHealth) {
         // This logic is kind of a mess but it is to make sure the % of the bar that is due to bonusMaxHealth
@@ -201,11 +199,11 @@ function drawAdventurer(character, adventurer, index) {
     var cameraX = character.cameraX;
     var context = mainContext;
     adventurer.left = adventurer.x - cameraX;
-    adventurer.top = 600 - 256 * scale - 72 - 2 * (index % maxIndex);
-    adventurer.width = 64 * scale;
-    adventurer.height = 128 * scale;
-    var xCenter = 16 * 2 * scale;
-    var yCenter = 44 * 2 * scale;
+    adventurer.width = 32 * scale;
+    adventurer.height = 64 * scale;
+    adventurer.top = groundY - adventurer.height - 2 * (index % maxIndex);
+    var xCenter = adventurer.source.xCenter * scale;
+    var yCenter = adventurer.source.yCenter * scale;
     context.translate(adventurer.left + xCenter, adventurer.top + yCenter);
     if (ifdefor(adventurer.rotation)) {
         context.rotate(adventurer.rotation * Math.PI/180);
@@ -243,12 +241,11 @@ function drawAdventurer(character, adventurer, index) {
                     sourceRectangle.left, sourceRectangle.top , sourceRectangle.width, sourceRectangle.height,
                     -xCenter, -yCenter, adventurer.width, adventurer.height);
     }
-    //mainContext.fillRect(adventurer.x - cameraX, 240 - 128 - 72, 64, 128);
     context.restore();
     // life bar
     if (adventurer.isDead) return;
     var x = adventurer.x - cameraX;
-    var y = 600 - 256- 36 - 2 * (index % maxIndex);
+    var y = adventurer.top + scale * ifdefor(adventurer.source.yTop, 0) - 5;
     drawBar(mainContext, x, y, 64, 4, 'white', 'red', adventurer.health / adventurer.maxHealth);
     if (adventurer.bonusMaxHealth >= 1 && adventurer.health >= adventurer.maxHealth - adventurer.bonusMaxHealth) {
         // This logic is kind of a mess but it is to make sure the % of the bar that is due to bonusMaxHealth

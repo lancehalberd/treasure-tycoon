@@ -213,34 +213,11 @@ function exportAdventurer(adventurer) {
     return data;
 }
 function importAdventurer(adventurerData) {
-    var personCanvas = createCanvas(personFrames * 32, 64);
-    var personContext = personCanvas.getContext("2d");
-    personContext.imageSmoothingEnabled = false;
-    var adventurer = {
-        'x': 0,
-        'equipment': {},
-        'job': characterClasses[adventurerData.jobKey],
-        'width': 64,
-        'bonuses': [],
-        'unlockedAbilities': {},
-        'abilities': [],
-        'name': adventurerData.name,
-        'hairOffset': adventurerData.hairOffset,
-        'level': adventurerData.level,
-        'personCanvas': personCanvas,
-        'personContext': personContext,
-        'attackCooldown': 0,
-        'percentHealth': 1,
-        'helpMethod': actorHelpText
-    };
-    initializeVariableObject(adventurer, {'variableObjectType': 'actor'}, adventurer);
+    var adventurer = makeAdventurerFromData(adventurerData);
     for (var i = 0; i < ifdefor(window.testAbilities, []).length; i++) {
         adventurer.abilities.push(testAbilities[i]);
         console.log(abilityHelpText(testAbilities[i], adventurer));
     }
-    equipmentSlots.forEach(function (type) {
-        adventurer.equipment[type] = null;
-    });
     $.each(adventurerData.equipment, function (key, itemData) {
         if (itemData) equipItem(adventurer, importItem(itemData), false);
     });

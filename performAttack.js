@@ -251,18 +251,21 @@ function performAttackProper(attackStats, target) {
             }
             var currentTarget = targets.pop();
             var x = attacker.x + attacker.width / 2 + 500 * (i + 1) / (count + 2);
-            var y = -100;
-            var vy = 2;
+            var y = 600;
+            var vy = -2;
             var vx = (x > currentTarget.x) ? -1 : 1;
             attacker.character.projectiles.push(projectile(
                 attackStats, x, y, vx, vy, currentTarget, i * 10, // delay is in frames
-                attackStats.isCritical ? 'yellow' : 'red', ifdefor(attackStats.attack.base.size, 10) * (attackStats.isCritical ? 1.5 : 1)));
+                attackStats.isCritical ? 'yellow' : 'red', ifdefor(attackStats.attack.base.size, 20) * (attackStats.isCritical ? 1.5 : 1)));
         }
     } else if (attackStats.attack.tags['ranged']) {
         var distance = getDistance(attacker, target);
+        // Y value of projectiles can either be set on the source for the actor, or it will use the set yCenter or half the height.
+        var height = ifdefor(attacker.source.height, 64);
+        var attackY = attacker.scale * ifdefor(attacker.source.attackY, height - ifdefor(attacker.source.yCenter, height / 2));
         attacker.character.projectiles.push(projectile(
-            attackStats, attacker.x + attacker.width / 2 + attacker.direction * attacker.width / 4, 240 - 128,
-            attacker.direction * Math.max(15, distance / 25), -1, target, 0,
+            attackStats, attacker.x + attacker.width / 2 + attacker.direction * attacker.width / 4, attackY,
+            attacker.direction * Math.max(15, distance / 25), 1, target, 0,
             attackStats.isCritical ? 'yellow' : 'red', ifdefor(attackStats.attack.base.size, 10) * (attackStats.isCritical ? 1.5 : 1)));
     } else {
         attackStats.distance = getDistance(attacker, target);
@@ -323,7 +326,7 @@ function applyAttackToTarget(attackStats, target) {
     }
     var distance = attackStats.distance;
     var character = target.character;
-    var hitText = {x: target.x + 32, y: 240 - 128, color: 'red'};
+    var hitText = {x: target.x + 32, y: target.top + 10, color: 'red'};
     if (target.invulnerable) {
         hitText.value = 'invulnerable';
         hitText.color = 'blue';

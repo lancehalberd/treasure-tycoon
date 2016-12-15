@@ -110,7 +110,8 @@ var coreStatBonusSource = {'bonuses': {
     '&maxHealth': '{bonusMaxHealth}',
     '+healthRegen': ['{maxHealth}', '/', 50],
     '+magicPower': ['{intelligence}', '+', [['{minMagicDamage}', '+' ,'{maxMagicDamage}'], '/', 2]],
-    '+scale': 1
+    // All sprites are drawn at half size at the moment.
+    '+scale': 2
 }};
 
 function removeAdventureEffects(adventurer) {
@@ -172,7 +173,7 @@ function refreshStatsPanel(character, $statsPanel) {
 }
 function newCharacter(job) {
     var character = {};
-    character.adventurer = makeAdventurer(job, 1, ifdefor(job.startingEquipment, {}));
+    character.adventurer = makeAdventurerFromJob(job, 1, ifdefor(job.startingEquipment, {}));
     character.adventurer.character = character;
     character.adventurer.direction = 1; // Character moves left to right.
     character.adventurer.isMainCharacter = true;
@@ -222,35 +223,47 @@ function newCharacter(job) {
 function convertShapeDataToShape(shapeData) {
     return makeShape(shapeData.p[0], shapeData.p[1], (shapeData.t % 360 + 360) % 360, shapeDefinitions[shapeData.k][0], jewelShapeScale);
 }
-function makeAdventurer(job, level, equipment) {
+function makeAdventurerFromData(adventurerData) {
     var personCanvas = createCanvas(personFrames * 32, 64);
     var personContext = personCanvas.getContext("2d");
     personContext.imageSmoothingEnabled = false;
     var adventurer = {
         'x': 0,
         'equipment': {},
-        'job': job,
-        'width': 64,
+        'job': characterClasses[adventurerData.jobKey],
+        'source': {
+            'width': 32,
+            'height': 64,
+            'yTop': 12, // Measured from the top of the source
+            'yCenter': 44, // Measured from the top of the source
+            'xCenter': 16,
+            'attackY': 40 // Measured from the bottom of the source
+        },
+        'bonuses': [],
         'unlockedAbilities': {},
-        'abilities': [], //abilities.hook, abilities.hookRange1, abilities.hookRange2, abilities.hookDrag1, abilities.hookDrag2, abilities.hookPower
-        'name': Random.element(names),
-        'hairOffset': Random.range(hair[0], hair[1]),
-        'level': level,
+        'abilities': [],
+        'name': adventurerData.name,
+        'hairOffset': adventurerData.hairOffset,
+        'level': adventurerData.level,
         'personCanvas': personCanvas,
         'personContext': personContext,
         'attackCooldown': 0,
         'percentHealth': 1,
-        'isActor': true,
-        'actions': [],
-        'reactions': [],
-        'onHitEffects': [],
-        'onCritEffects': [],
-        'allEffects': [],
         'helpMethod': actorHelpText
     };
     initializeVariableObject(adventurer, {'variableObjectType': 'actor'}, adventurer);
     equipmentSlots.forEach(function (type) {
         adventurer.equipment[type] = null;
+    });
+    return adventurer;
+}
+function makeAdventurerFromJob(job, level, equipment) {
+    var adventurer = makeAdventurerFromData({
+        'jobKey': job.key,
+        'level': level,
+        'name': Random.element(names),
+        'hairOffset': Random.range(hair[0], hair[1]),
+        'equipment': equipment
     });
     $.each(equipment, function (key, item) {
         state.craftedItems[item.key] = ifdefor(state.craftedItems[item.key], 0) | CRAFTED_NORMAL;

@@ -4,6 +4,7 @@
     overflow-y: hidden;
     white-space: nowrap;
     height: 600px;
+    background-color: #ccc;
 }
 
 .displayColumn {
@@ -54,6 +55,9 @@
     padding: 5px;
     overflow-x: hidden;
     overflow-y: scroll;
+}
+.controlBar {
+    pointer-events: auto;
 }
 .playerControlBar {
     height: 30px;
@@ -199,6 +203,7 @@ button {
     margin-right: 1px;
     overflow-y: auto;
     overflow-x: hidden;
+    pointer-events: auto;
 }
 .stats {
     padding-top: 20px; /* Leave space for "Level X Job Name" abs positioned at top */
@@ -564,6 +569,7 @@ select {
 .characterColumn {
     width: 240px;
     background: transparent;
+    pointer-events: none;
 }
 
 .icon.treasure {
@@ -583,6 +589,7 @@ select {
 .characterBox {
     position: relative;
     margin-left: 10px;
+    pointer-events: auto;
 }
 
 .characterBox .character {
@@ -646,7 +653,7 @@ select {
 .adventureControls {
     position: absolute;
     left: 10px;
-    bottom: 50px;
+    top: 30px;
 }
 
 .adventureControls .adventureButton {

@@ -80,6 +80,7 @@ function makeMonster(monsterData, level, extraSkills, noRarity) {
         throw new Error('could not determine base monster type');
     }
     monster.base = baseMonster;
+    monster.source = baseMonster.source;
     monster.stationary = ifdefor(baseMonster.stationary);
     /* $.each(baseMonster, function (key, value) {
         monster[key] = value;

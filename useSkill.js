@@ -118,7 +118,7 @@ function useSkill(actor, skill, target) {
     // Show the name of the skill used if it isn't a basic attack. When skills have distinct
     // visible animations, we should probably remove this.
     if (!skill.tags['basic']) {
-        var hitText = {x: actor.x + 32, y: 240 - 170, color: 'white', font: "15px sans-serif"};
+        var hitText = {x: actor.x + 32, y: actor.top, color: 'white', font: "15px sans-serif"};
         hitText.value = skill.base.name;
         actor.character.textPopups.push(hitText);
     }
@@ -366,7 +366,7 @@ skillDefinitions.minion = {
 function cloneActor(actor, skill) {
     var clone;
     if (actor.personCanvas) {
-        clone = makeAdventurer(actor.job, actor.level, {});
+        clone = makeAdventurerFromJob(actor.job, actor.level, {});
         clone.hairOffset = actor.hairOffset;
         clone.equipment = actor.equipment;
         updateAdventurer(clone);

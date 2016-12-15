@@ -178,10 +178,10 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
         'hit': false, 'target': target, 'attackStats': attackStats, 'hitTargets': [],
         'update': function (character) {
             // Put an absolute cap on how far a projectile can travel
-            if (self.y > 240 - 64 || self.attackStats.distance > 2000) self.done = true;
+            if (self.y < 0 || self.attackStats.distance > 2000) self.done = true;
             if (self.done || self.delay-- > 0) return
             var tx = self.target.x + ifdefor(self.target.width, 64) / 2;
-            var ty = ifdefor(self.target.y, 64) + ifdefor(self.target.height, 128) / 2;
+            var ty = ifdefor(self.target.y, 0) + ifdefor(self.target.height, 128) / 2;
             self.x += self.vx;
             self.y += self.vy;
             var hit = false;
@@ -192,11 +192,11 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                 var distance = Math.sqrt(self.vx * self.vx + self.vy * self.vy);
                 self.vx *= speed / distance;
                 self.vy *= speed / distance;
-                self.vy += 1;
+                self.vy -= 1;
                 // rain hits when it touches the ground
-                hit = self.y >= (240 - 96);
+                hit = (self.y <= 0);
             } else {
-                self.vy += .1 * 15 / Math.abs(self.vx);
+                self.vy -= .1 * 15 / Math.abs(self.vx);
                 // normal projectiles hit when they get close to the targets center.
                 hit = Math.abs(tx - self.x) < 10 && Math.abs(ty - self.y) < 64 && self.target.health > 0;
             }
@@ -273,10 +273,10 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                 var animation = projectileAnimations[self.attackStats.attack.base.animation];
                 var frame = animation.frames[Math.floor(self.t / 5) % animation.frames.length];
                 mainContext.drawImage(animation.image, frame[0], frame[1], frame[2], frame[3],
-                                  self.x - character.cameraX - size / 2, self.y - size / 2, size, size);
+                                  self.x - character.cameraX - size / 2, groundY - (self.y - size / 2), size, size);
             } else {
                 mainContext.fillStyle = ifdefor(color, '#000');
-                mainContext.fillRect(self.x - character.cameraX - size / 2, self.y - size / 2, size, size);
+                mainContext.fillRect(self.x - character.cameraX - size / 2, groundY - (self.y - size / 2), size, size);
             }
         }
     };

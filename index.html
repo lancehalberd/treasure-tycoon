@@ -87,8 +87,9 @@
             </div>
         </div>
         <div class="js-adventureContext" style="height: 300px;"></div>
-        <div class="js-characterColumn displayColumn characterColumn js-adventureContext  js-jewelContext js-itemContext hideOnBottom">
-            <div class="js-stats stats playerBox">
+        <div class="js-characterColumn displayColumn characterColumn">
+            <div class="playerbox js-adventureContext" style="pointer-events: none;"></div>
+            <div class="js-stats stats playerBox js-jewelContext js-itemContext">
                 <div style="position: absolute; left: 5px; top: 0px;">Level <span class="js-playerLevel">X</span> <span class="js-playerName controlBarEntry">X</span></div>
                 <canvas class="js-canvas js-previewCanvas" width="64" height="128" style="position: absolute; left: 0px; top: 20px;"></canvas>
                 <div helptext="Divinity can be used at shrines to level up and gain new bonuses and abilities. <br/><br/> Completing new adventures grants divinity and access to the shrine for that area. <br/><br/> Leveling allows you to equip more powerful gear and increases health and basic stats slightly.">
@@ -122,7 +123,7 @@
             </div>
             <div class="js-charactersBox characterBox"></div>
                 <div class="controlBar">
-                <button class="js-showAdventurePanel item" helptext="Click here to visit the Guild Hall."><div class="icon world"></div></button>
+                <button class="js-showAdventurePanel item" helptext="Click here to view the World Map."><div class="icon world"></div></button>
                 <button class="js-showCraftingPanel item" helptext="Click here to visit the Temple of Fortune."><div class="icon crafting"></div></button>
                 <button class="js-showJewelsPanel item" helptext="Click here to visit the Altar of Creation."><canvas class="js-jewelButtonCanvas" width="40" height="40"></canvas></button>
             </div><div class="js-equipment equipment playerBox js-itemContext">
