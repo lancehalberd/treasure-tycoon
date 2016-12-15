@@ -77,9 +77,7 @@ async.mapSeries([
     'gfx/person.png', 'gfx/grass.png', 'gfx/cave.png', 'gfx/forest2.png', 'gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png',
     'gfx/treasureChest.png', 'gfx/moneyIcon.png', 'gfx/projectiles.png',
     // http://topps.diku.dk/torbenm/maps.msp
-    //'gfx/randomMap.jpg',
     'gfx/squareMap.bmp',
-    //'gfx/icoMap.jpg',
     // Public domain images:
     'gfx/chest-closed.png', 'gfx/chest-open.png', // http://opengameart.org/content/treasure-chests
     'gfx/bat.png', // http://opengameart.org/content/bat-32x32

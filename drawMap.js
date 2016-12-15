@@ -4,31 +4,6 @@ var camera = new Camera(world, 800, 600);
 var mapLocation = new SphereVector(world);
 var movedMap = true;
 
-function icoMapPoint(longitude, latitude, u, v) {
-    var z = Math.sin(latitude) * world.radius;
-    var r = Math.cos(latitude) * world.radius;
-    var x = Math.cos(-longitude) * r;
-    var y = Math.sin(-longitude) * r;
-    var point = {};
-    point.longitude = longitude;
-    point.latitude = latitude;
-    var coords = camera.projectPoint([x, y, z]);
-    // x/y to draw to on the canvas.
-    point.x = coords[0] - mapLeft;
-    point.y = coords[1] - mapTop;
-    point.u = Math.round(1000 * longitude / (11 * Math.PI / 5));
-    // The y position of the triangles in the image don't span the entire height
-    // of the image, so I just picked them out by hand. Also the relationship
-    // between latitude and y position is not linear, so you can't really
-    // calculate it that easily anyway.
-    /*if (latitude <= -Math.PI + .01) point.v = 15;
-    else if (latitude < 0) point.v = 172;
-    else if (latitude < Math.PI - .01) point.v = 329;
-    else  point.v = 486;*/
-    point.u = u;
-    point.v = v;
-    return point;
-}
 function drawMap() {
     var context = mainContext;
 
@@ -59,13 +34,9 @@ function drawMap() {
         for (var rho = 0; rho < Math.PI + .1; rho += Math.PI / 10) {
             latitudes.push(rho);
         }
-        //if (mouseDown) {
-            latitudes.splice(1, 0, Math.PI / 50);
-            latitudes.splice(latitudes.length - 1, 0, Math.PI  - Math.PI / 50);
-        /*} else {
-            latitudes.splice(1, 0, Math.PI / 50, Math.PI / 40, Math.PI / 30);
-            latitudes.splice(latitudes.length - 1, 0, Math.PI  - Math.PI / 30, Math.PI  - Math.PI / 40, Math.PI  - Math.PI / 50);
-        }*/
+        // Poles look bad so add one more point just before the poles on both ends.
+        latitudes.splice(1, 0, Math.PI / 50);
+        latitudes.splice(latitudes.length - 1, 0, Math.PI  - Math.PI / 50);
         for (var theta = 0; theta < Math.PI * 2 + .1; theta += Math.PI / 6) {
             var renderedLine = [];
             for (var rho of latitudes) {
@@ -87,54 +58,22 @@ function drawMap() {
             }
             renderedLines.push(renderedLine);
         }
-        if (images['gfx/squareMap.bmp']) {
-            for (var i = 0; i < renderedLines.length - 1; i++) {
-                var lineA = renderedLines[i];
-                var lineB = renderedLines[i + 1];
-                for (var j = 1; j < lineA.length - 1; j++) {
-                    var A = lineB[j ];
-                    var B = lineB[j - 1];
-                    var C = lineA[j];
-                    if (A.visible && B.visible && C.visible) {
-                        textureMap(context, images['gfx/squareMap.bmp'], [A, B, C]);
-                    }
-                    var A = lineB[j];
-                    var B = lineA[j];
-                    var C = lineA[j + 1];
-                    if (A.visible && B.visible && C.visible) {
-                        textureMap(context, images['gfx/squareMap.bmp'], [A, B, C]);
-                    }
+        for (var i = 0; i < renderedLines.length - 1; i++) {
+            var lineA = renderedLines[i];
+            var lineB = renderedLines[i + 1];
+            for (var j = 1; j < lineA.length - 1; j++) {
+                var A = lineB[j ];
+                var B = lineB[j - 1];
+                var C = lineA[j];
+                if (A.visible && B.visible && C.visible) {
+                    textureMap(context, images['gfx/squareMap.bmp'], [A, B, C]);
                 }
-            }
-        } else if (images['gfx/icoMap.jpg']) {
-            function drawTriangle(A,B,C) {
-                var U = [B.x - A.x, B.y - A.y];
-                var V = [C.x - B.x, C.y - B.y];
-                if (U[0] * V[1] - V[0] * U[1] < 0) return;
-                //if (!A.visible || !B.visible || ! C.visible) return;
-                textureMap(context, images['gfx/icoMap.jpg'], [A, B, C]);
-            }
-            var pi5 = Math.PI / 5;
-            var u11 = 999 / 11;
-            var latitude = Math.atan(.5);
-            // Drawing the icosohedron as 5 strips of four triangles from
-            // top left to bottom right.
-            for (var i = 0; i < 5; i++) {
-                var left = 2 * i * pi5;
-                var ul = 1 + 2 * i * u11;
-                var A = icoMapPoint(left + pi5, -Math.PI / 2, Math.round(ul + u11), 16);
-                var B = icoMapPoint(left, -latitude, Math.round(ul), 173);
-                var C = icoMapPoint(left + 2 * pi5, -latitude, Math.round(ul + 2 * u11), 173);
-                var D = icoMapPoint(left + pi5, latitude, Math.round(ul + u11), 328);
-                var E = icoMapPoint(left + 3 * pi5, latitude, Math.round(ul + 3 * u11), 328);
-                var F = icoMapPoint(left + 2 * pi5, Math.PI / 2, Math.round(ul + 2 * u11), 485);
-                if (mouseDown) {
-                    //console.log(i + ': ' + JSON.stringify(A));
+                var A = lineB[j];
+                var B = lineA[j];
+                var C = lineA[j + 1];
+                if (A.visible && B.visible && C.visible) {
+                    textureMap(context, images['gfx/squareMap.bmp'], [A, B, C]);
                 }
-                drawTriangle(A, C, B);
-                drawTriangle(B, C, D);
-                drawTriangle(C, E, D);
-                drawTriangle(D, E, F);
             }
         }
         for (var i = 0; i < renderedLines.length - 1; i++) {
