@@ -86,10 +86,6 @@ async.mapSeries([
     'gfx/spider.png', // Stephen "Redshrike" Challener as graphic artist and William.Thompsonj as contributor. If reasonable link to this page or the OGA homepage. http://opengameart.org/content/lpc-spider
     'gfx/wolf.png' // Stephen "Redshrike" Challener as graphic artist and William.Thompsonj as contributor. If reasonable link back to this page or the OGA homepage. http://opengameart.org/content/lpc-wolf-animation
 ], loadImage, function(err, results){
-    /*['gfx/bat.png', 'gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png', 'gfx/spider.png', 'gfx/wolf.png'].forEach(function (imageKey) {
-        images[imageKey + '-enchanted'] = makeTintedImage(images[imageKey], '#af0');
-        images[imageKey + '-imbued'] = makeTintedImage(images[imageKey], '#c6f');
-    });*/
     closedChestSource = {'image': images['gfx/chest-closed.png'], 'xOffset': 0, 'width': 32, 'height': 32};
     openChestSource = {'image': images['gfx/chest-open.png'], 'xOffset': 0, 'width': 32, 'height': 32};
     showContext('adventure');
