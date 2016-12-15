@@ -31,7 +31,7 @@ function drawAdventure(character) {
         context.globalAlpha = 1;
     });
     ifdefor(character.objects, []).forEach(function (object, index) {
-        object.draw(context, object.x - cameraX, 600 - 256);
+        object.draw(character);
     });
     ifdefor(character.enemies, []).forEach(function (actor, index) {
         drawActor(character, actor, 1 + character.enemies.length - index)

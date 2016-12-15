@@ -10,7 +10,7 @@ function songEffect(attackStats) {
     var endTime = attackStats.source.time + attackStats.attack.duration;
     var followTarget = attackStats.source;
     var height = ifdefor(attackStats.attack.base.height, 60);
-    var yOffset = ifdefor(attackStats.attack.base.yOffset, 120);
+    var yOffset = getAttackY(attackStats.source) + ifdefor(attackStats.attack.base.yOffset, 0);
     // This list is kept up to date each frame and targets stats are updated as they
     // are added/removed from this list.
     var effectedTargets = [];
@@ -53,7 +53,7 @@ function songEffect(attackStats) {
             mainContext.globalAlpha = alpha;
             mainContext.fillStyle = color;
             mainContext.beginPath();
-            mainContext.translate((followTarget.x - character.cameraX), yOffset);
+            mainContext.translate((followTarget.x - character.cameraX), groundY - yOffset);
             mainContext.scale(1, height / currentRadius);
             mainContext.arc(0, 0, currentRadius, 0, 2 * Math.PI);
             mainContext.fill();
@@ -104,7 +104,7 @@ function explosionEffect(attackStats, x, y) {
             mainContext.fillStyle = color;
             mainContext.beginPath();
             mainContext.save();
-            mainContext.translate((self.x - character.cameraX), self.y);
+            mainContext.translate((self.x - character.cameraX), groundY - self.y);
             mainContext.scale(1, height / currentRadius);
             mainContext.arc(0, 0, currentRadius, 0, 2 * Math.PI);
             mainContext.fill();
@@ -126,6 +126,7 @@ function fieldEffect(attackStats, followTarget) {
     var height = ifdefor(attackStats.attack.base.height, radius);
     var endTime = attackStats.source.time + attackStats.attack.duration;
     var nextHit = attackStats.source.time + 1 / attackStats.attack.hitsPerSecond;
+    var yOffset = getAttackY(attackStats.source) + ifdefor(attackStats.attack.base.yOffset, 0);
     var self = {
         'attackStats': attackStats, 'currentFrame': 0, 'done': false,
         'update': function (character) {
@@ -160,7 +161,7 @@ function fieldEffect(attackStats, followTarget) {
             mainContext.fillStyle = color;
             mainContext.beginPath();
             mainContext.save();
-            mainContext.translate((followTarget.x - character.cameraX), 40);
+            mainContext.translate((followTarget.x - character.cameraX), groundY - yOffset);
             mainContext.scale(1, height / currentRadius);
             mainContext.arc(0, 0, currentRadius, 0, 2 * Math.PI);
             mainContext.fill();

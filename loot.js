@@ -1,4 +1,4 @@
-function treasurePopup(x, y, vx, vy, delay, text, color, font) {
+/*function treasurePopup(x, y, vx, vy, delay, text, color, font) {
     var self = {
         'x': x, 'y': y, 'vx': vx, 'vy': vy, 't': 0, 'done': false, 'delay': delay,
         'update': function (character) {
@@ -17,7 +17,7 @@ function treasurePopup(x, y, vx, vy, delay, text, color, font) {
         }
     };
     return self;
-}
+}*/
 
 function coinTreasurePopup(coin, x, y, vx, vy, delay) {
     var self = {
@@ -26,14 +26,14 @@ function coinTreasurePopup(coin, x, y, vx, vy, delay) {
             if (delay-- > 0) return
             self.x += self.vx;
             self.y += self.vy;
-            self.vy++;
+            self.vy--;
             self.t += 1;
             self.done = self.t > 40;
         },
         'draw': function (character) {
             if (delay > 0) return
             mainContext.drawImage(coin.image, coin.x, coin.y, coin.width, coin.height,
-                self.x - coin.width / 2 - character.cameraX, self.y - coin.height / 2, coin.width, coin.height);
+                self.x - coin.width / 2 - character.cameraX, groundY - self.y - coin.height / 2, coin.width, coin.height);
         }
     };
     return self;
@@ -54,7 +54,7 @@ function coinsLootDrop(amount) {
                 // break single coins into smaller drops.
                 while (coins[index].value <= total && (drops || animaDrops[index].value < total || total < 5)) {
                     total -= coins[index].value;
-                    character.treasurePopups.push(coinTreasurePopup(coins[index], x, y, Math.random() * 10 - 5, -10, nextDelay));
+                    character.treasurePopups.push(coinTreasurePopup(coins[index], x, y, Math.random() * 10 - 5, 10, nextDelay));
                     nextDelay += 5;
                     drops++;
                 }
@@ -78,7 +78,7 @@ function animaTreasurePopup(coin, x, y, vx, vy, delay) {
             if (delay-- > 0) return
             self.x += self.vx;
             self.y += self.vy;
-            if (self.y > 240 - 128) {
+            if (self.y > (character.adventurer.height / 2)) {
                 self.vy--;
             } else {
                 self.vy++;
@@ -94,7 +94,7 @@ function animaTreasurePopup(coin, x, y, vx, vy, delay) {
         'draw': function (character) {
             if (delay > 0 || self.x < character.adventurer.x + 16) return
             mainContext.drawImage(coin.image, coin.x, coin.y, coin.width, coin.height,
-                self.x - coin.width / 2 - character.cameraX, self.y - coin.height / 2, coin.width, coin.height);
+                self.x - coin.width / 2 - character.cameraX, groundY - self.y - coin.height / 2, coin.width, coin.height);
         }
     };
     return self;
@@ -140,7 +140,7 @@ function jewelTreasurePopup(jewel, x, y, vx, vy, delay) {
         },
         'draw': function (character) {
             if (delay > 0) return
-            popupShape.setCenterPosition(self.x - character.cameraX, self.y);
+            popupShape.setCenterPosition(self.x - character.cameraX, groundY - self.y);
             var lightSource = relativeMousePosition(mainCanvas);
             drawJewel(mainContext, popupShape, lightSource, 'white');
         }
@@ -202,6 +202,7 @@ var closedChestSource, openChestSource; // initialized when images load.
 function treasureChest(loot, closedImage, openImage) {
     var self = {
         'x': 0,
+        'y': 0,
         'type': 'chest',
         'width': 64,
         'loot': loot,
@@ -226,16 +227,18 @@ function treasureChest(loot, closedImage, openImage) {
                         var drop = loot.generateLootDrop();
                         drop.gainLoot(character);
                         var vx =  Math.cos(theta) * 2;
-                        var vy = -Math.sin(theta) * 2;
-                        drop.addTreasurePopup(character, self.x + 32 + vx * 20, 240 - 80 + vy * 20, vx, vy, delay += 5);
+                        var vy = Math.sin(theta) * 2;
+                        drop.addTreasurePopup(character, self.x + vx * 20, self.y + 64, vx, vy, delay += 5);
                         theta += thetaRange / Math.max(1, self.loot.length - 1);
                     });
                 }
             }
         },
-        'draw': function (context, x, y) {
+        'draw': function (character) {
             var frameOffset = self.open ? 64 : 0;
-            context.drawImage(images['gfx/treasureChest.png'], frameOffset, 0, 64, 64, x, y, 64, 64);
+            console.log(self.y);
+            mainContext.drawImage(images['gfx/treasureChest.png'], frameOffset, 0, 64, 64,
+                (self.x - 32) - character.cameraX, groundY - self.y - 64, 64, 64);
         },
         'clone': function() {
             return treasureChest(copy(loot), closedImage, openImage);

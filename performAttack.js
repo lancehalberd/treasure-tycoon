@@ -237,10 +237,10 @@ function performAttackProper(attackStats, target) {
         attacker.character.effects.push(fieldEffect(attackStats, attacker));
     } else if (attackStats.attack.tags['nova']) {
         // attackStats.explode--;
-        attacker.character.effects.push(explosionEffect(attackStats, attacker.x + attacker.width / 2 + attacker.direction * attacker.width / 4, 120));
+        attacker.character.effects.push(explosionEffect(attackStats, attacker.x + attacker.width / 2 + attacker.direction * attacker.width / 4, getAttackY(attacker)));
     } else if (attackStats.attack.tags['blast']) {
         // attackStats.explode--;
-        attacker.character.effects.push(explosionEffect(attackStats, target.x + target.width / 2 + target.direction * target.width / 4, 120));
+        attacker.character.effects.push(explosionEffect(attackStats, target.x + target.width / 2 + target.direction * target.width / 4, getAttackY(attacker)));
     } else if (attackStats.attack.tags['rain']) {
         // attackStats.explode--;
         var targets = [];
@@ -260,11 +260,8 @@ function performAttackProper(attackStats, target) {
         }
     } else if (attackStats.attack.tags['ranged']) {
         var distance = getDistance(attacker, target);
-        // Y value of projectiles can either be set on the source for the actor, or it will use the set yCenter or half the height.
-        var height = ifdefor(attacker.source.height, 64);
-        var attackY = attacker.scale * ifdefor(attacker.source.attackY, height - ifdefor(attacker.source.yCenter, height / 2));
         attacker.character.projectiles.push(projectile(
-            attackStats, attacker.x + attacker.width / 2 + attacker.direction * attacker.width / 4, attackY,
+            attackStats, attacker.x + attacker.width / 2 + attacker.direction * attacker.width / 4, getAttackY(attacker),
             attacker.direction * Math.max(15, distance / 25), 1, target, 0,
             attackStats.isCritical ? 'yellow' : 'red', ifdefor(attackStats.attack.base.size, 10) * (attackStats.isCritical ? 1.5 : 1)));
     } else {
@@ -272,6 +269,11 @@ function performAttackProper(attackStats, target) {
         // apply melee attacks immediately
         applyAttackToTarget(attackStats, target);
     }
+}
+function getAttackY(attacker) {
+    // Y value of projectiles can either be set on the source for the actor, or it will use the set yCenter or half the height.
+    var height = ifdefor(attacker.source.height, 64);
+    return attacker.scale * ifdefor(attacker.source.attackY, height - ifdefor(attacker.source.yCenter, height / 2));
 }
 function applyAttackToTarget(attackStats, target) {
     var attack = attackStats.attack;
@@ -320,7 +322,7 @@ function applyAttackToTarget(attackStats, target) {
             'accuracy': attackStats.accuracy,
             'explode': attackStats.explode - 1
         };
-        var explosion = explosionEffect(explodeAttackStats, target.x + ifdefor(target.width, 64) / 2, 128);
+        var explosion = explosionEffect(explodeAttackStats, target.x + ifdefor(target.width, 64) / 2, ifdefor(attackStats.y, getAttackY(target)));
         attacker.character.effects.push(explosion);
         explosion.hitTargets.push(target);
     }
