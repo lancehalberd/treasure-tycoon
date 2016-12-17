@@ -18,6 +18,7 @@ function getItemHelpText($item) {
     } else {
         sections.push('Requires level ' + item.level);
     }
+    sections.push('Crafting level ' + item.itemLevel);
     sections.push('');
     sections.push(bonusSourceHelpText(item.base, state.selectedCharacter.adventurer));
 

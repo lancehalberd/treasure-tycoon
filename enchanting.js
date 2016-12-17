@@ -306,16 +306,44 @@ function affixMatchesItem(baseItem, affix) {
     return false;
 }
 $('.js-resetEnchantments').on('click', resetItem);
+$('.js-resetEnchantments').on('mouseover', function () {
+    var item = getEnchantingItem();
+    if (item.prefixes.length + item.suffixes.length > 0) previewPointsChange('coins', -resetCost(item));
+});
+$('.js-resetEnchantments').on('mouseout', hidePointsPreview);
 $('.js-enchant').on('click', enchantItem);
+$('.js-enchant').on('mouseover', function () {
+    var item = getEnchantingItem();
+    if (!item.unique && item.prefixes.length + item.suffixes.length === 0) previewPointsChange('anima', -enchantCost(item));
+});
+$('.js-enchant').on('mouseout', hidePointsPreview);
 $('.js-imbue').on('click', imbueItem);
+$('.js-imbue').on('mouseover', function () {
+    var item = getEnchantingItem();
+    if (!item.unique && item.prefixes.length + item.suffixes.length === 0) previewPointsChange('anima', -imbueCost(item));
+});
+$('.js-imbue').on('mouseout', hidePointsPreview);
 $('.js-augment').on('click', augmentItem);
+$('.js-augment').on('mouseover', function () {
+    var item = getEnchantingItem();
+    if (!item.unique && item.prefixes.length + item.suffixes.length < 4) previewPointsChange('anima', -augmentCost(item));
+});
+$('.js-augment').on('mouseout', hidePointsPreview);
 $('.js-mutate').on('click', mutateItem);
-
-function updateEnchantmentOptions() {
+$('.js-mutate').on('mouseover', function () {
+    var item = getEnchantingItem();
+    if (!item.unique && item.prefixes.length + item.suffixes.length > 0) previewPointsChange('anima', -mutateCost(item));
+});
+$('.js-mutate').on('mouseout', hidePointsPreview);
+function getEnchantingItem() {
     var item =  $('.js-enchantmentSlot').find('.js-item').data('item');
     if (!item && $dragHelper) {
         item = $dragHelper.data('$source').data('item');
     }
+    return item;
+}
+function updateEnchantmentOptions() {
+    var item = getEnchantingItem();
     if (!item) {
         return;
     }
@@ -371,7 +399,7 @@ function mutateCost(item) {
     return sellValue(item) * ((item.prefixes.length < 2 && item.suffixes.length < 2) ? 6 : 30);
 }
 function resetItem() {
-    var item = $('.js-enchantmentSlot').find('.js-item').data('item');
+    var item = getEnchantingItem();
     if (!spend('coins', resetCost(item))) {
         return;
     }
@@ -384,7 +412,7 @@ function resetItem() {
     saveGame();
 }
 function enchantItem() {
-    var item = $('.js-enchantmentSlot').find('.js-item').data('item');
+    var item = getEnchantingItem();
     if (!spend('anima', enchantCost(item))) return;
     enchantItemProper(item);
     saveGame();
@@ -403,7 +431,7 @@ function enchantItemProper(item) {
     updateEnchantmentOptions();
 }
 function imbueItem() {
-    var item = $('.js-enchantmentSlot').find('.js-item').data('item');
+    var item = getEnchantingItem();
     if (!spend('anima', imbueCost(item))) return;
     imbueItemProper(item);
     saveGame();
@@ -424,7 +452,7 @@ function imbueItemProper(item) {
     updateEnchantmentOptions();
 }
 function augmentItem() {
-    var item = $('.js-enchantmentSlot').find('.js-item').data('item');
+    var item = getEnchantingItem();
     if (item.prefixes.length + item.suffixes.length >= 4) return;
     if (!spend('anima', augmentCost(item))) return;
     augmentItemProper(item);
@@ -456,7 +484,7 @@ function augmentItemProper(item) {
     updateItem(item);
 }
 function mutateItem() {
-    var item = $('.js-enchantmentSlot').find('.js-item').data('item');
+    var item = getEnchantingItem();
     if (!spend('anima', mutateCost(item))) {
         return;
     }

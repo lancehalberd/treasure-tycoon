@@ -649,3 +649,12 @@ function setSelectedCharacter(character) {
     // Need to update which crafting levels are drawn in green/red.
     drawCraftingViewCanvas();
 }
+
+$('.js-jewelBoard').on('mouseover', function () {
+    if (state.selectedCharacter.board.boardPreview) {
+        var level = map[state.selectedCharacter.currentLevelKey];
+        var skill = state.selectedCharacter.board.boardPreview.fixed[0].ability;
+        previewPointsChange('divinity', -totalCostForNextLevel(state.selectedCharacter, level));
+    }
+});
+$('.js-jewelBoard').on('mouseout', hidePointsPreview);

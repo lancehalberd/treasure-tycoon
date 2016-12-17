@@ -553,6 +553,7 @@ $('body').on('click', '.js-slowMotionButton', function (event) {
 
 var currentContext;
 function showContext(context) {
+    hidePointsPreview();
     currentContext = context;
     if (context !== 'adventure') {
         $('.js-mainCanvasContainer').hide();
