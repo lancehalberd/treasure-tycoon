@@ -25,6 +25,7 @@
     position: absolute;
     left: 0px;
     top: 0px;
+    pointer-events: none;
 }
 .pointsBar .points {
     padding: 2px;
@@ -35,6 +36,7 @@
     background-color: #ccc;
     border: 2px solid black;
     border-top: none;
+    pointer-events: auto;
 }
 .fame {
     color: #D80;
@@ -591,9 +593,13 @@ select {
 }
 
 .characterBox {
-    position: relative;
-    margin-left: 10px;
+    position: absolute;
     pointer-events: auto;
+    bottom: -37px;
+    left: 160px;
+    padding-left: 5px;
+    background-image: url(gfx/oldMap.png);
+    border: 3px solid #eda;
 }
 
 .characterBox .character {

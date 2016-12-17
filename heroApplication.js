@@ -66,6 +66,7 @@ function getNewApplicationCost(character) {
 }
 
 $('body').on('click', '.js-hireApplicant', function () {
+    if (state.characters.length >= 8) return;
     var $applicationPanel = $(this).closest('.js-heroApplication');
     var character = $applicationPanel.data('character');
     if (!spend('coins', getApplicationCost(character))) {
@@ -87,6 +88,7 @@ $('body').on('click', '.js-seekNewApplicant', function () {
 });
 
 function hireCharacter(character) {
+    if (state.characters.length >= 8) return;
     unlockMapLevel(character.currentLevelKey);
     gain('fame', character.fame);
     state.characters.push(character);

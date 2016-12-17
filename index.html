@@ -117,7 +117,7 @@
                     <div class="js-strength strength" helptext="Strength increases physical damage, health and damage with melee weapons.">X</div>
                     <div class="js-intelligence intelligence" helptext="Intelligence increases accuracy, block and magic block and damage with magic weapons.">X</div>
                 </div>
-            </div><div class="js-charactersBox characterBox"></div><div class="js-equipment equipment playerBox js-itemContext">
+            </div><div class="js-equipment equipment playerBox js-itemContext">
                 <div class="js-head js-itemSlot itemSlot head"></div>
                 <div class="js-body js-itemSlot itemSlot body"></div>
                 <div class="js-arms js-itemSlot itemSlot arms"></div>
@@ -127,7 +127,7 @@
                 <div class="js-feet js-itemSlot itemSlot feet"></div>
                 <div class="js-back js-itemSlot itemSlot back"></div>
                 <div class="js-ring js-itemSlot itemSlot ring"></div>
-            </div><div class="js-jewelBonuses playerBox js-jewelContext jewelBonuses"><div class="panelTitle" style="text-align: center;">Jewel Bonuses</div><div class="js-content"></div></div>
+        </div><div class="js-jewelBonuses playerBox js-jewelContext jewelBonuses"><div class="panelTitle" style="text-align: center;">Jewel Bonuses</div><div class="js-content"></div></div>
         </div><div class="js-jewel-inventory displayColumn jewel-inventory js-jewelContext"></div><div class="js-jewelColumn displayColumn jewelColumn js-jewelContext">
             <div class="js-jewelBoard jewelBoard">
                 <canvas class="js-canvas js-skillCanvas" width="320" height="320"></canvas>
@@ -142,28 +142,6 @@
                 <button class="js-jewelCraftingButton centered" style="display: none;">Split</button>
                 <button class="js-jewelDeformationButton centered" style="display: none;">Expand</button>
                 <button class="js-sellItem sellItem" disabled helptext="Drag items here to sell them. <br/> You can also hover over an item and type 'S' to sell quickly."><div class="icon money"></div></button>
-            </div>
-        </div><div class="js-recruitmentColumn js-adventureContext displayColumn recruitmentColumn">
-            <div class="js-heroApplication heroApplication hideOnBottom">
-                <div class="heroApplicationBody"><div class="js-stats stats playerBox">
-                        <div style="position: absolute; left: 5px; top: 0px;">Hire <span class="js-playerName controlBarEntry">X</span></div>
-                        <canvas class="js-canvas js-previewCanvas" width="64" height="128" style="position: absolute; left: 0px; top: 20px;"></canvas>
-                        <span helptext="How famous this adventurer is. Famous adventurers are more powerful but also more expensive.<br/> Hiring and retiring famous adventurers increases the fame of your guild.">
-                            <span class="icon fame"></span> <span class="js-fame">X</span>
-                        </span>
-                        <span helptext="Starting health for each adventure."><span class="icon health"></span> <span class="js-maxHealth">X</span></span>
-                        <div style="position: relative; overflow: hidden; height: 160px; width: 160px;">
-                            <canvas class="js-canvas js-skillCanvas" width="360" height="360" style="width: 360px; height: 360px; position: relative; left: -80px; top: -80px;"></canvas>
-                        </div>
-                        <div class="triStatBox">
-                            <div class="js-dexterity dexterity" helptext="Dexterity increases attack speed, evasion and damage with ranged weapons.">X</div>
-                            <div class="js-strength strength" helptext="Strength increases physical damage, health and damage with melee weapons.">X</div>
-                            <div class="js-intelligence intelligence" helptext="Intelligence increases accuracy, block and magic block and damage with magic weapons.">X</div>
-                        </div>
-                    </div>
-                    <p><button class="js-hireApplicant heroApplicationButton" helptext="Hire this adventurer. The more famous your guild is, the cheaper it is to hire adventurers.">Hire <span class="js-hirePrice"></span></button></p>
-                    <p><button class="js-seekNewApplicant heroApplicationButton" helptext="Seek another guild applicant. Completing adventures will reduce this price.">Seek Another <span class="js-seekPrice"></span></button></p>
-                </div>
             </div>
         </div><div class="js-inventory displayColumn inventory js-itemContext"><div class="js-inventorySlot js-itemSlot itemSlot inventorySlot" helptext="Drag an item here to move it into your inventory."></div></div><div class="js-itemCrafting displayColumn itemCrafting js-itemContext">
             <div class="panelTitle">Temple of Fortune</div>
@@ -227,6 +205,28 @@
             <button class="js-showAdventurePanel item"><div class="icon world"></div></button>
             <button class="js-showCraftingPanel item"><div class="icon crafting"></div></button>
             <button class="js-showJewelsPanel item"><canvas class="js-jewelButtonCanvas" width="40" height="40"></canvas></button>
+        </div><div class="js-charactersBox characterBox"></div><div class="js-recruitmentColumn js-adventureContext displayColumn recruitmentColumn">
+            <div class="js-heroApplication heroApplication hideOnBottom">
+                <div class="heroApplicationBody"><div class="js-stats stats playerBox">
+                        <div style="position: absolute; left: 5px; top: 0px;">Hire <span class="js-playerName controlBarEntry">X</span></div>
+                        <canvas class="js-canvas js-previewCanvas" width="64" height="128" style="position: absolute; left: 0px; top: 20px;"></canvas>
+                        <span helptext="How famous this adventurer is. Famous adventurers are more powerful but also more expensive.<br/> Hiring and retiring famous adventurers increases the fame of your guild.">
+                            <span class="icon fame"></span> <span class="js-fame">X</span>
+                        </span>
+                        <span helptext="Starting health for each adventure."><span class="icon health"></span> <span class="js-maxHealth">X</span></span>
+                        <div style="position: relative; overflow: hidden; height: 160px; width: 160px;">
+                            <canvas class="js-canvas js-skillCanvas" width="360" height="360" style="width: 360px; height: 360px; position: relative; left: -80px; top: -80px;"></canvas>
+                        </div>
+                        <div class="triStatBox">
+                            <div class="js-dexterity dexterity" helptext="Dexterity increases attack speed, evasion and damage with ranged weapons.">X</div>
+                            <div class="js-strength strength" helptext="Strength increases physical damage, health and damage with melee weapons.">X</div>
+                            <div class="js-intelligence intelligence" helptext="Intelligence increases accuracy, block and magic block and damage with magic weapons.">X</div>
+                        </div>
+                    </div>
+                    <p><button class="js-hireApplicant heroApplicationButton" helptext="Hire this adventurer. The more famous your guild is, the cheaper it is to hire adventurers.">Hire <span class="js-hirePrice"></span></button></p>
+                    <p><button class="js-seekNewApplicant heroApplicationButton" helptext="Seek another guild applicant. Completing adventures will reduce this price.">Seek Another <span class="js-seekPrice"></span></button></p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
