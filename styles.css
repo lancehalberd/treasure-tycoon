@@ -222,14 +222,14 @@ button {
     width: 64px;
     height: 30px;
 }
-.dexterity {
+.triStatBox .dexterity {
     position: absolute;
     text-align: right;
     right: 34px;
     top: 15px;
     color: #0f0;
 }
-.strength {
+.triStatBox .strength {
     position: absolute;
     color: #f00;
     text-align: center;
@@ -237,7 +237,7 @@ button {
     left: 0px;
     top: 0px;
 }
-.intelligence {
+.triStatBox .intelligence {
     position: absolute;
     color: #00f;
     left: 34px;
@@ -1276,4 +1276,48 @@ p {
     position: absolute;
     top: 3px;
     right: 0px;
+}
+
+.statGrowth {
+    position: absolute;
+    top: 140px;
+    left: 10px;
+}
+.statGrowthBar {
+    box-sizing: border-box;
+    width: 50px;
+    height: 10px;
+    margin-bottom: 4px;
+}
+.statGrowthFill {
+    display: inline-block;
+    width: 9px;
+    height: 8px;
+    box-sizing: border-box;
+    border-right: 1px solid;
+}
+.statGrowthFill:nth-child(5) {
+    width: 8px;
+    border-right: none;
+}
+.statGrowthBar.strength {
+    border: 1px solid #800;
+}
+.statGrowthBar.strength .statGrowthFill {
+    background-color: #f88;
+    border-color: #800;
+}
+.statGrowthBar.intelligence {
+    border: 1px solid #008;
+}
+.statGrowthBar.intelligence .statGrowthFill {
+    background-color: #88f;
+    border-color: #008;
+}
+.statGrowthBar.dexterity {
+    border: 1px solid #080;
+}
+.statGrowthBar.dexterity .statGrowthFill {
+    background-color: #8f8;
+    border-color: #080;
 }
