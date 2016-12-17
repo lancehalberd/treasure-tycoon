@@ -10,7 +10,7 @@ var jobRanks = [
 ];
 
 function createNewHeroApplicant($applicationPanel, jobKey) {
-    var fameRoll = Math.round(state.fame / 2 + Math.random() * state.fame * 2 / 3);
+    var fameRoll = Math.round(state.fame / 3 + Math.random() * state.fame * 5 / 6);
     if (!jobKey) {
         // Log is base e, so we need to divide by log(10) to get log10 value.
         var maxRank = Math.min(Math.log(fameRoll) / Math.log(10), jobRanks.length);
@@ -29,6 +29,9 @@ function setHeroApplication($applicationPanel, character) {
     $applicationPanel.find('.js-skillCanvas').data('character', character);
     var $statsPanel = $applicationPanel.find('.js-stats');
     refreshStatsPanel(character, $statsPanel);
+    $statsPanel.find('.js-dexterityGrowth').empty();
+    $statsPanel.find('.js-strengthGrowth').empty();
+    $statsPanel.find('.js-intelligenceGrowth').empty();
     for (var i = 0; i < character.adventurer.job.dexterityBonus; i++) {
         $statsPanel.find('.js-dexterityGrowth').append($tag('div', 'statGrowthFill'));
     }
