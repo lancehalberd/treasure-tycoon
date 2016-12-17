@@ -509,10 +509,14 @@ $('body').on('click', '.js-confirmSkill', function (event) {
     character.adventurer.abilities.push(skill);
     character.adventurer.unlockedAbilities[skill.key] = true;
     character.board.spaces = character.board.spaces.concat(character.board.boardPreview.spaces);
+    character.board.fixed = character.board.fixed.concat(character.board.boardPreview.fixed);
     character.board.boardPreview.fixed.forEach(function (jewel) {
         jewel.confirmed = true;
+        removeBonusSourceFromObject(character.adventurer, character.jewelBonuses, false);
+        updateAdjacentJewels(jewel);
+        updateJewelBonuses(character);
+        addBonusSourceToObject(character.adventurer, character.jewelBonuses, true);
     });
-    character.board.fixed = character.board.fixed.concat(character.board.boardPreview.fixed);
     character.board.boardPreview = null;
     drawBoardBackground(character.boardContext, character.board);
     gainLevel(character.adventurer);
