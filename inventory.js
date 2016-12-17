@@ -254,6 +254,8 @@ $('body').on('mousedown', '.js-item', function (event) {
         return;
     }
     $dragHelper = $(this).clone();
+    $dragHelper.data('item', $(this).data('item'));
+    $dragHelper.data('helpMethod', $(this).data('helpMethod'));
     $dragHelper.data('$source', $(this));
     $(this).css('opacity', '.3');
     $dragHelper.css('position', 'absolute');

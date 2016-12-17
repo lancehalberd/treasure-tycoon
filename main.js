@@ -417,7 +417,7 @@ $('.js-mouseContainer').on('mousemove', function (event) {
 });
 
 function checkRemoveToolTip() {
-    if (overJewel || draggedJewel || draggingBoardJewel || overCraftingItem) {
+    if (overJewel || draggedJewel || draggingBoardJewel || overCraftingItem || $dragHelper) {
         return;
     }
     if (draggedMap) {
