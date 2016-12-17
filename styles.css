@@ -23,20 +23,25 @@
     height: 30px;
     box-sizing: border-box;
     position: absolute;
-    left: 0px;
+    right: 0px;
     top: 0px;
     pointer-events: none;
 }
-.pointsBar .points {
+.points {
     padding: 2px;
     display: inline-block;
     margin-right: 20px;
-    margin-left: 10px;
+    margin-left: 20px;
     width: 80px;
     background-color: #ccc;
     border: 2px solid black;
     border-top: none;
     pointer-events: auto;
+}
+.divinityPoints {
+    position: absolute;
+    left: 20px;
+    top: 0px;
 }
 .fame {
     color: #D80;
@@ -46,6 +51,17 @@
 }
 .anima {
     color: #c4f;
+}
+.divinity {
+    color: #a40;
+}
+.cost {
+    color: red;
+}
+/* With the current font, this looks more balanced than 0 margin. */
+.bottomLine {
+    margin-top: 2px;
+    margin-bottom: -2px;
 }
 .playerColumn {
     width: 560px;
@@ -87,7 +103,7 @@
     overflow-x: auto;
     background-color: #CCC;
     margin-bottom: 5px;
-    height: 210px;
+    height: 205px;
 }
 .craftingBar .craftingCanvas {
     position: absolute;

@@ -92,6 +92,14 @@ $('body').on('click', '.js-hireApplicant', function () {
     updateRetireButtons();
     saveGame();
 });
+$('body').on('mouseover', '.js-hireApplicant', function () {
+    var $applicationPanel = $(this).closest('.js-heroApplication');
+    var character = $applicationPanel.data('character');
+    previewPointsChange('coins', -getApplicationCost(character));
+});
+$('body').on('mouseout', '.js-hireApplicant', function () {
+    hidePointsPreview();
+});
 $('body').on('click', '.js-seekNewApplicant', function () {
     var $applicationPanel = $(this).closest('.js-heroApplication');
     var character = $applicationPanel.data('character');
@@ -100,6 +108,14 @@ $('body').on('click', '.js-seekNewApplicant', function () {
     }
     createNewHeroApplicant($applicationPanel);
     saveGame();
+});
+$('body').on('mouseover', '.js-seekNewApplicant', function () {
+    var $applicationPanel = $(this).closest('.js-heroApplication');
+    var character = $applicationPanel.data('character');
+    previewPointsChange('coins', -getNewApplicationCost(character));
+});
+$('body').on('mouseout', '.js-seekNewApplicant', function () {
+    hidePointsPreview();
 });
 
 function hireCharacter(character) {

@@ -460,7 +460,7 @@ function getHelpText($popupTarget) {
 function updateToolTip(x, y, $popup) {
     var top = y + 10;
     if (top + $popup.outerHeight() >= 600) {
-        top = Math.max(0, y - 10 - $popup.outerHeight());
+        top = Math.max(40, y - 10 - $popup.outerHeight());
     }
     var left = x - 10 - $popup.outerWidth();
     if (left < 5) {

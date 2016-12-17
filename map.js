@@ -131,6 +131,9 @@ function getMapPopupTarget(x, y) {
         var level = newMapTarget ? (newMapTarget.isShrine ? newMapTarget.level.level : newMapTarget.level) : undefined;
         updateDamageInfo(state.selectedCharacter, $('.js-characterColumn .js-stats'), level);
     }
+    if ((currentMapTarget && currentMapTarget.isShrine) && !(newMapTarget && newMapTarget.isShrine)) {
+        hidePointsPreview();
+    }
     currentMapTarget = newMapTarget;
     $('.js-mainCanvas').toggleClass('clickable', !!currentMapTarget);
     return currentMapTarget;
@@ -145,6 +148,11 @@ function getMapPopupTargetProper(x, y) {
     }
     if (ifdefor(newMapTarget.isShrine)) {
         newMapTarget.helpMethod = getMapShrineHelpText;
+        var skill = abilities[newMapTarget.level.skill];
+        if (!state.selectedCharacter.adventurer.unlockedAbilities[skill.key]) {
+            var totalCost = totalCostForNextLevel(state.selectedCharacter, newMapTarget.level);
+            previewPointsChange('divinity', -totalCost);
+        }
     } else {
         newMapTarget.helpMethod = getMapLevelHelpText;
     }

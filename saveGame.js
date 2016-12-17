@@ -2,7 +2,6 @@ function loadSavedData() {
     /** @type Object */
     var importedSaveData = $.jStorage.get("savedGame");
     if (importedSaveData) {
-        console.log("loading saved data");
         importState(importedSaveData);
         return true;
     }
@@ -10,7 +9,6 @@ function loadSavedData() {
 }
 
 function saveGame() {
-    console.log("saving game data");
     $.jStorage.set("savedGame", exportState(state));
 }
 

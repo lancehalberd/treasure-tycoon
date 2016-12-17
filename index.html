@@ -89,9 +89,6 @@
             <div class="js-stats stats playerBox js-jewelContext js-itemContext">
                 <div style="position: absolute; left: 5px; top: 0px;">Level <span class="js-playerLevel">X</span> <span class="js-playerName controlBarEntry">X</span></div>
                 <canvas class="js-canvas js-previewCanvas" width="64" height="128" style="position: absolute; left: 0px; top: 20px;"></canvas>
-                <div helptext="Divinity can be used at shrines to level up and gain new bonuses and abilities. <br/><br/> Completing new adventures grants divinity and access to the shrine for that area. <br/><br/> Leveling allows you to equip more powerful gear and increases health and basic stats slightly.">
-                    <span class="icon divinity"></span> <span class="js-divinity">X</span>
-                </div>
                 <div>
                     <span class="playerStat"><span helptext="Starting health for each adventure."><span class="icon health"></span> <span class="js-maxHealth">X</span></span>
                     <span style="font-size: 12px" helptext="How fast your adventurer regenerates health.">(<span class="js-healthRegen" >X</span>)</span></span>
@@ -145,10 +142,11 @@
             </div>
         </div><div class="js-inventory displayColumn inventory js-itemContext"><div class="js-inventorySlot js-itemSlot itemSlot inventorySlot" helptext="Drag an item here to move it into your inventory."></div></div><div class="js-itemCrafting displayColumn itemCrafting js-itemContext">
             <div class="panelTitle">Temple of Fortune</div>
-            <div class="craftingPrice">Item Level <span class='js-craftingLevel'>1</span><span class="js-levelMultiplier"></span></div>
             <div class="js-craftingBar craftingBar">
                 <canvas class="js-craftingCanvas craftingCanvas" height="210" width="1100" style="background-color: white;"></canvas>
             </div>
+            <div class="craftingPrice">Level <span class='js-craftingLevel'>1</span> crafting costs <span class="js-levelMultiplier"></span> per attempt.</div>
+            <div class="craftingHelp">Click and drag above to choose crafting level.<br/>Complete harder levels to unlock new crafting levels.</div>
             <div class="js-craftingPanel js-infoPanel infoPanel craftingPanel">
                 <div class="js-craftingOptions">
                     <div class="js-itemCraftingOption js-allOption itemCraftingOption centerSlot" data-filter="all"><div class="icon bag"></div><div class="multiplier"><span class="icon coin"></span>x1</div></div>
@@ -175,15 +173,46 @@
                 <button class="js-sellItem sellItem" disabled helptext="Drag items here to sell them. <br/> You can also hover over an item and type 'S' to sell quickly."><div class="icon money"></div></button>
             </div>
         </div>
+        <div class="points divinityPoints" helptext="Divinity can be used at shrines to level up and gain new bonuses and abilities. <br/><br/> Completing new adventures grants divinity and access to the shrine for that area. <br/><br/> Leveling allows you to equip more powerful gear and increases health and basic stats slightly.">
+            <div style="display: inline-block; vertical-align: top;"><span class="icon divinity"></span></div>
+            <div style="display: inline-block; vertical-align: top; text-align: right;">
+                <span class="js-global-divinity divinity">1000</span>
+                <br/>
+                <span class="js-amount" style="display: none;">-200</span>
+                <hr class="js-bottomLine bottomLine" style="display: none;">
+                <span class="js-balance divinity" style="display: none;">800</span>
+            </div>
+        </div>
         <div class="js-pointsBar pointsBar">
             <div class="points" helptext="The fame of your guild effects how powerful your guild recruits will be and how much you will have to pay to recruit them.<br/><br/>Fame is gained by leveling adventurers and completing new areas.<br/>Hiring famous adventurers also increases the fame of your guild.">
-                <span class="icon fame"></span> <span class="js-global-fame fame"></span>
+                <div style="display: inline-block; vertical-align: top;"><span class="icon fame"></span></div>
+                <div style="display: inline-block; vertical-align: top; text-align: right;">
+                    <span class="js-global-fame fame">1000</span>
+                    <br/>
+                    <span class="js-amount" style="display: none;">-200</span>
+                    <hr class="js-bottomLine bottomLine" style="display: none;">
+                    <span class="js-balance fame" style="display: none;">800</span>
+                </div>
             </div>
             <div class="points" helptext="Coins are used to create brand new items.<br/>Coins are found in chests and dropped from defeated enemies.">
-                <span class="icon coin"></span> <span class="js-global-coins coins"></span>
+                <div style="display: inline-block; vertical-align: top;"><span class="icon coin"></span></div>
+                <div style="display: inline-block; vertical-align: top; text-align: right;">
+                    <span class="js-global-coins coin">1000</span>
+                    <br/>
+                    <span class="js-amount" style="display: none;">-200</span>
+                    <hr class="js-bottomLine bottomLine" style="display: none;">
+                    <span class="js-balance coin" style="display: none;">800</span>
+                </div>
             </div>
             <div class="points" helptext="Anima is used to enchant items with special powers.<br/>Anima is absorbed from defeated enemies and salvaged from gems.">
-                <span class="icon anima"></span> <span class="js-global-anima anima"></span>
+                <div style="display: inline-block; vertical-align: top;"><span class="icon anima"></span></div>
+                <div style="display: inline-block; vertical-align: top; text-align: right;">
+                    <span class="js-global-anima anima">1000</span>
+                    <br/>
+                    <span class="js-amount" style="display: none;">-200</span>
+                    <hr class="js-bottomLine bottomLine" style="display: none;">
+                    <span class="js-balance anima" style="display: none;">800</span>
+                </div>
             </div>
         </div>
         <div class="js-areaMenu areaMenu" style="display: none;">
@@ -237,7 +266,6 @@
 <script src="drawJewel.js"></script>
 <script src="drawBoard.js"></script>
 <script src="inventory.js"></script>
-<script src="crafting.js"></script>
 <script src="armor.js"></script>
 <script src="weapons.js"></script>
 <script src="accessories.js"></script>
@@ -252,6 +280,7 @@
 <script src="loot.js"></script>
 <script src="boards.js"></script>
 <script src="character.js"></script>
+<script src="crafting.js"></script>
 <script src="heroApplication.js"></script>
 <script src="effects.js"></script>
 <script src="performAttack.js"></script>

@@ -162,7 +162,7 @@ function refreshStatsPanel(character, $statsPanel) {
     $statsPanel.find('.js-dexterity').text(adventurer.dexterity.format(0));
     $statsPanel.find('.js-strength').text(adventurer.strength.format(0));
     $statsPanel.find('.js-intelligence').text(adventurer.intelligence.format(0));
-    $statsPanel.find('.js-divinity').text(character.divinity);
+    $('.js-global-divinity').text(character.divinity.abbreviate());
     $statsPanel.find('.js-maxHealth').text(adventurer.maxHealth.format(0));
     if (adventurer.actions.length) {
         $statsPanel.find('.js-range').text(getBasicAttack(adventurer).range.format(2));
@@ -287,6 +287,24 @@ function readBoardFromData(boardData, character, ability, confirmed) {
     };
 }
 
+function previewPointsChange(pointsType, amount) {
+    if (amount === 0) return;
+    var $pointsSpan = $('.js-global-' + pointsType);
+    $pointsSpan.nextAll().show();
+    var $amount = $pointsSpan.nextAll('.js-amount');
+    $amount.toggleClass('cost', amount < 0);
+    if (amount < 0) $amount.text('-' + Math.abs(amount).abbreviate());
+    else $amount.text('+' + amount.abbreviate());
+    if (pointsType === 'divinity') var balance = state.selectedCharacter.divinity + amount;
+    else var balance = state[pointsType] + amount;
+    var $balance = $pointsSpan.nextAll('.js-balance');
+    $balance.toggleClass('cost', balance < 0);
+    if (balance < 0) $balance.text('-' + Math.abs(balance).abbreviate());
+    else $balance.text(balance.abbreviate());
+}
+function hidePointsPreview() {
+    $('.js-amount, .js-bottomLine, .js-balance').hide();
+}
 function gain(pointsType, amount) {
     state[pointsType] += amount;
     changedPoints(pointsType);
