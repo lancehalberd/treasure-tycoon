@@ -27,7 +27,11 @@ function createNewHeroApplicant($applicationPanel, jobKey) {
 function setHeroApplication($applicationPanel, character) {
     $applicationPanel.data('character', character);
     $applicationPanel.find('.js-skillCanvas').data('character', character);
-    refreshStatsPanel(character, $applicationPanel.find('.js-stats'));
+    var $statsPanel = $applicationPanel.find('.js-stats');
+    refreshStatsPanel(character, $statsPanel);
+    $statsPanel.find('.js-dexterity').text(character.adventurer.job.dexterityBonus.format(0));
+    $statsPanel.find('.js-strength').text(character.adventurer.job.strengthBonus.format(0));
+    $statsPanel.find('.js-intelligence').text(character.adventurer.job.intelligenceBonus.format(0));
     character.jewelsCanvas = $applicationPanel.find('.js-skillCanvas')[0];
     updateHireButtonsForApplication($applicationPanel);
     var applicantPreviewContext = $applicationPanel.find('.js-previewCanvas')[0].getContext("2d");
