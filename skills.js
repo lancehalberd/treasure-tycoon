@@ -144,18 +144,18 @@ var skills = {
                 'If an attack would deal more than half of your remaining life, dodge it and throw a smoke bomb causing: {$globalDebuff} to all enemies.'),
     'shadowClone': genericAction('clone', {'tags': ['minion']}, {'+limit': 10, '+chance': .1},
                         'Chance to summon a weak clone of yourself on taking damage'),
-    'enhanceWeapon': genericAction('effect', {'tags': ['spell'], 'target': 'self'}, {'+cooldown': 20, '$buff': buffEffect({'icons': [effectSourceUp, effectSourceSword]}, {
+    'enhanceWeapon': genericAction('effect', {'tags': ['spell'], 'target': 'self'}, {'+cooldown': 30, '$buff': buffEffect({'icons': [effectSourceUp, effectSourceSword]}, {
                             '++physicalDamage': ['{strength}', '/', 10], '++magicDamage': ['{intelligence}', '/', 10],
-                            '++critDamage': ['{dexterity}', '/', 500], '+duration': 5})},
+                            '++critDamage': ['{dexterity}', '/', 500], '+duration': 10})},
                     'Enhance the strength of your weapon granting: {$buff}'),
     'enhanceArmor': genericAction('effect', {'tags': ['spell'], 'target': 'self'}, {'+cooldown': 30, '$buff': buffEffect({'icons': [effectSourceUp, effectSourceArmor]}, {
                             '++armor': ['{strength}', '/', 10], '++magicBlock': ['{intelligence}', '/', 20],
                             '++block': ['{intelligence}', '/', 10], '++evasion': ['{dexterity}', '/', 10], '+duration': 15})},
                     'Enhance the strength of your armor granting: {$buff}'),
-    'enhanceAbility': genericAction('effect', {'tags': ['spell'], 'target': 'self'}, {'+cooldown': 30, '$buff': buffEffect({}, {
+    'enhanceAbility': genericAction('effect', {'tags': ['spell'], 'target': 'self'}, {'+cooldown': 20, '$buff': buffEffect({}, {
                             // This buff increases magicPower from magicDamage by 44% since that counts both damage and magicPower.
                             // Making a note here in case I want to change this *damage bonus to *physicalDamage later to balance this.
-                            '++cooldownReduction': .2, '+*magicPower': 1.2, '+*damage': 1.2, '+*range': 1.2, '+duration': 10})},
+                            '++cooldownReduction': .2, '+*magicPower': 1.2, '+*damage': 1.2, '+*range': 1.2, '+duration': 5})},
                     'Enhance your own abilities granting: {$buff}'),
     // Song buffs should be based on the singer's stats, not the stats of the targets. Not sure if this is the case or not.
     'attackSong': genericAction('song', {'tags': ['song', 'field'], 'target': 'allies', 'color': 'orange', 'alpha': .2},
