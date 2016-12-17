@@ -143,7 +143,6 @@ function drawMap() {
         });
         movedMap = false;
     }
-    context.save();
     // Draw ovals for each node.
     $.each(visibleNodes, function (levelKey, levelData){
         context.fillStyle = 'white';
@@ -174,11 +173,11 @@ function drawMap() {
                 // Draw a triangle while editing the map so it is obvious which levels are unlocked by completing a level.
                 if (editingMap) {
                     drawMapArrow(context, levelData, nextLevelData);
-                } else {
+                } /*else {
                     context.moveTo(levelData.left + levelData.width / 2, levelData.top + levelData.height / 2);
                     context.lineTo(nextLevelData.left + nextLevelData.width / 2, nextLevelData.top + nextLevelData.height / 2);
                     context.stroke();
-                }
+                }*/
             }
         });
     });
@@ -326,7 +325,10 @@ function textureMap(ctx, texture, pts) {
 
     // Set clipping area so that only pixels inside the triangle will
     // be affected by the image drawing operation
-    ctx.save(); ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1);
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(x0, y0);
+    ctx.lineTo(x1, y1);
     ctx.lineTo(x2, y2); ctx.closePath(); ctx.clip();
 
     // Compute matrix transform

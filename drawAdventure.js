@@ -1,5 +1,8 @@
 var maxIndex = 9;
+// Indicates where the ground is. This will be replaced once we allow a range of y values for the ground.
 var groundY = 390;
+// Indicates how much to shift drawing the map/level based on the needs of other UI elements.
+var screenYOffset = 0;
 function drawAdventure(character) {
     var adventurer = character.adventurer;
     var context = mainContext;
@@ -198,6 +201,7 @@ function drawAdventurer(character, adventurer, index) {
     var scale = ifdefor(adventurer.scale, 1);
     var cameraX = character.cameraX;
     var context = mainContext;
+    context.save();
     adventurer.left = adventurer.x - cameraX;
     adventurer.width = 32 * scale;
     adventurer.height = 64 * scale;

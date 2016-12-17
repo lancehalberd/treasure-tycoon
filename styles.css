@@ -649,7 +649,7 @@ select {
 
 .mainCanvasContainer {
     position: absolute;
-    overflow: hidden;
+    overflow: visible;
     height: 600px;
     width: 800px;
 }
@@ -1149,7 +1149,7 @@ select {
 .editingControlsTop {
     position: absolute;
     left: 5px;
-    top: 2px;
+    top: 332px;
 }
 
 .editingControlsBottom {
@@ -1160,6 +1160,9 @@ select {
 }
 .levelEditingSection {
     margin-bottom: 15px;
+}
+.levelDescriptionInput{
+    vertical-align: top;
 }
 
 .enemySkill, .monster {

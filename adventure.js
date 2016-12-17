@@ -34,7 +34,6 @@ function startArea(character, index) {
     });
     if (state.selectedCharacter === character) {
         updateAdventureButtons();
-        drawAdventure(character);
     }
     saveGame();
 }

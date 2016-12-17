@@ -533,26 +533,30 @@ function deleteLevel(level) {
     });
     delete map[level.levelKey];
 }
-function stopMapEditing() {
-    movedMap = true;
-    editingMap = false;
-    updateEditingState();
-}
 function startMapEditing() {
     movedMap = true;
     editingMap = true;
     updateEditingState();
 }
+function stopMapEditing() {
+    movedMap = true;
+    editingMap = false;
+    updateEditingState();
+}
 function updateEditingState() {
     var isEditing = editingLevel || editingMap;
-    //mapHeight = 600;
-    //mapTop = -mapHeight / 2;
-    //mapLeft = -400;
-    $('.js-pointsBar').toggle(!isEditing);
+    // This is true if not editing or testing a level.
+    var inAdventureMode = !!testingLevel || !editingLevel;
+    $('.js-pointsBar').toggle(inAdventureMode);
     //$('.js-mainCanvasContainer').css('height', '600px');
     $('.js-mainCanvas').attr('height', mapHeight);
     // Image smoothing seems to get enabled again after changing the canvas size, so disable it again.
     $('.js-mainCanvas')[0].getContext('2d').imageSmoothingEnabled = false;
+    // Use !! to cast testingLevel to boolean, otherwise jquery will do something strange with the value.
+    $('.js-controlBar').toggle(inAdventureMode);
+    $('.js-charactersBox').toggle(!isEditing);
+    $('.js-recruitmentColumn').toggle(!isEditing);
+    $('.js-mainCanvasContainer').css('top', inAdventureMode ? 'auto' : '-330px');
 }
 
 $(document).on('keydown', function(event) {
@@ -595,9 +599,8 @@ $(document).on('keydown', function(event) {
             return;
         }
         if (!editingLevel) {
-            editingMap = !editingMap;
-            movedMap = true;
-            updateEditingState();
+            if (!editingMap) startMapEditing();
+            else stopMapEditing();
         }
     }
     if (editingMap && event.which === 70) { // 'f' float

@@ -12,9 +12,6 @@ function initializeLevelEditing() {
         $('.js-levelSkillSelect').append($tag('option','', ability.name).val(skillKey));
         $('.js-enemySkillSelect').append($tag('option','', ability.name).val(skillKey));
     });
-    $.each(boards, function (boardKey, board) {
-        $('.js-levelBoardSelect').append($tag('option','', boardKey).val(boardKey));
-    });
     $.each(monsters, function (monsterKey, monster) {
         $('.js-monsterSelect').append($tag('option','', monster.name).val(monsterKey));
     });
