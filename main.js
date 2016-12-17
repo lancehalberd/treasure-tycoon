@@ -95,8 +95,6 @@ async.mapSeries([
     initializeCoins();
     initializeProjectileAnimations();
     updateItemCrafting();
-    var jobKey = Random.element(jobRanks[0]);
-    jobKey = ifdefor(testJob, jobKey);
     mainCanvas = $('.js-mainCanvas')[0];
     mainContext = mainCanvas.getContext('2d');
     mainContext.imageSmoothingEnabled = false;
@@ -118,12 +116,16 @@ async.mapSeries([
         gain('fame', 1);
         gain('coins', 50);
         gain('anima', 0);
+        var jobKey = Random.element(jobRanks[0]);
+        jobKey = ifdefor(testJob, jobKey);
         var startingCharacter = newCharacter(characterClasses[jobKey]);
         updateAdventurer(startingCharacter.adventurer);
         hireCharacter(startingCharacter);
         $('.js-heroApplication').after($('.js-heroApplication').clone());
+        var otherKeys = jobRanks[0].slice();
+        removeElementFromArray(otherKeys, jobKey, true);
         $('.js-heroApplication').each(function () {
-            createNewHeroApplicant($(this));
+            createNewHeroApplicant($(this), otherKeys.pop());
         });
     }
     for (var tier1JobKey of jobRanks[0]) {
