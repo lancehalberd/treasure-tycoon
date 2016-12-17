@@ -107,6 +107,8 @@ function bonusSourceHelpText(bonusSource, actor, localObject) {
             // console.log([key,statKey,tagKey]);
             tagBonusSources[tagKey] = ifdefor(tagBonusSources[tagKey], {'bonuses': {}});
             tagBonusSources[tagKey].bonuses[statKey] = value;
+        } else if (!displayedStats[key] && typeof value === 'string') {
+            sections.push(value);
         }
     });
     $.each(tagBonusSources, function (tags, tagBonusSource) {
