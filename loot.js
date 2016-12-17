@@ -236,7 +236,6 @@ function treasureChest(loot, closedImage, openImage) {
         },
         'draw': function (character) {
             var frameOffset = self.open ? 64 : 0;
-            console.log(self.y);
             mainContext.drawImage(images['gfx/treasureChest.png'], frameOffset, 0, 64, 64,
                 (self.x - 32) - character.cameraX, groundY - self.y - 64, 64, 64);
         },

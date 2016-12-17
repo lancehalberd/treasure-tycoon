@@ -346,7 +346,9 @@ function applyAttackToTarget(attackStats, target) {
     attackStats.evaded = false;
     if (!ifdefor(attack.alwaysHits)) {
         var evasionRoll = (target.maxEvasion ? 1 : Math.random()) * target.evasion;
-        if (attackStats.accuracy - evasionRoll < 0) {
+        // Projectiles have up to 50% reduced accuracy at a distance of 320 pixels.
+        var effectiveAccuracy = attackStats.accuracy * Math.max(.5, 1 - ifdefor(attackStats.distance, 0) / 640);
+        if (effectiveAccuracy - evasionRoll < 0) {
             hitText.value = 'miss';
             if (ifdefor(attack.damageOnMiss)) {
                 var damageOnMiss = Math.round(attack.damageOnMiss * effectiveness);

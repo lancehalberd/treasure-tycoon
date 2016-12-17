@@ -45,4 +45,6 @@ function makeItemUnique(item) {
     });
     item.unique = true;
 }
-addUnique('primitivebow', .25, .25, 'Stick, Sticky Bow of Aiming and Leeching and Leeching and Aiming', ['sticky', 'sticky'], ['aiming','leeching','aiming','leeching']);
+
+// leeching got renamed to soaking, but I don't want to change the name or the level, so I'm just kind of lying now.
+addUnique('primitivebow', .25, .25, 'Stick, Sticky Bow of Aiming and Leeching and Leeching and Aiming', ['sticky', 'sticky'], ['aiming','soaking','aiming','soaking']);
