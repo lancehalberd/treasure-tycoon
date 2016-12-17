@@ -286,7 +286,7 @@ function drawEffectIcons(actor, x, y) {
     }
 }
 function drawMinimap(character) {
-    var y = 600 - 40;
+    var y = 600 - 65;
     var height = 6;
     var x = 10;
     var width = 750;
