@@ -355,9 +355,6 @@ $('.js-mouseContainer').on('click', '.js-mainCanvas', function (event) {
     var x = event.pageX - $(this).offset().left;
     var y = event.pageY - $(this).offset().top;
     canvasCoords = [x, y];
-    if (!state.selectedCharacter.area) {
-        clickMapHandler(x, y);
-    }
 });
 $('.js-mouseContainer').on('mouseout', '.js-mainCanvas', function (event) {
     canvasCoords = [];

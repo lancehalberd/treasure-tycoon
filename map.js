@@ -260,8 +260,8 @@ $('.js-mouseContainer').on('mousedown', '.js-mainCanvas', function (event) {
     var y = event.pageY - $(this).offset().top;
     //console.log(camera.unprojectPoint(x + mapLeft, y + mapTop, world.radius));
 
+    var newMapTarget = getMapTarget(x, y);
     if (editingMap) {
-        var newMapTarget = getMapTarget(x, y);
         if (event.which === 3) {
             if (!newMapTarget) {
                 createNewLevel(camera.unprojectPoint(x + mapLeft, y + mapTop, world.radius));
@@ -282,6 +282,18 @@ $('.js-mouseContainer').on('mousedown', '.js-mainCanvas', function (event) {
         }
     }
     if (event.which != 1) return; // Handle only left click.
+    if (!editingMap && newMapTarget) {
+        if (currentMapTarget.isShrine && state.selectedCharacter.currentLevelKey === currentMapTarget.level.levelKey && state.selectedCharacter.board.boardPreview) {
+            showContext('jewel');
+            return;
+        } else if (!currentMapTarget.isShrine && currentMapTarget.levelKey) {
+            state.selectedCharacter.selectedLevelKey = currentMapTarget.levelKey;
+            displayAreaMenu();
+            currentMapTarget = null;
+            $('.js-mainCanvas').toggleClass('clickable', false);
+            return;
+        }
+    }
     draggedMap = false;
     mapDragX = x;
     mapDragY = y;
@@ -385,19 +397,6 @@ $('.js-mouseContainer').on('mousemove', function (event) {
     }
 });
 
-function clickMapHandler(x, y) {
-    if (editingMap) return;
-    if (draggedMap) return;
-    if (!currentMapTarget) return;
-    if (currentMapTarget.isShrine && state.selectedCharacter.currentLevelKey === currentMapTarget.level.levelKey && state.selectedCharacter.board.boardPreview) {
-        showContext('jewel');
-    } else if (!currentMapTarget.isShrine && currentMapTarget.levelKey) {
-        state.selectedCharacter.selectedLevelKey = currentMapTarget.levelKey;
-        displayAreaMenu();
-        currentMapTarget = null;
-        $('.js-mainCanvas').toggleClass('clickable', false);
-    }
-}
 var difficultyBonusMap = {'easy': 0.8, 'normal': 1, 'hard': 1.5, 'challenge': 2};
 function displayAreaMenu() {
     selectedLevel = map[state.selectedCharacter.selectedLevelKey];
