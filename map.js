@@ -476,7 +476,7 @@ function completeLevel(character) {
     var timeBonus = .8;
     if (character.completionTime <= getGoldTimeLimit(level, difficultyBonus)) timeBonus = 1.2;
     else if (character.completionTime <= getSilverTimeLimit(level, difficultyBonus)) timeBonus = 1;
-    var newDivinityScore = Math.round(difficultyBonus * timeBonus * baseDivinity(level.level));
+    var newDivinityScore = Math.max(10, Math.round(difficultyBonus * timeBonus * baseDivinity(level.level)));
     character.divinity += Math.max(0, newDivinityScore - oldDivinityScore);
     character.divinityScores[character.currentLevelKey] = Math.max(oldDivinityScore, newDivinityScore);
     // Initialize level times for this level if not yet set.
