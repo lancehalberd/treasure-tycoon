@@ -19,6 +19,7 @@ function evaluateValue(actor, value, localObject) {
     if (!formula || !formula.length) {
         throw new Error('Expected "formula" to be an array, but value is: ' + formula);
     }
+    var originalFormula = formula.slice();
     formula = formula.slice();
 
     if (formula.length == 1) {
@@ -32,7 +33,7 @@ function evaluateValue(actor, value, localObject) {
     if (formula.length > 1) {
         var operator = formula.shift();
         var operand = evaluateValue(actor, formula.shift(), localObject);
-        // console.log([value, operator, operand]);
+        //console.log([value, operator, operand]);
         if (operator == '+') {
             value += operand;
         } else if (operator == '-') {
@@ -40,7 +41,8 @@ function evaluateValue(actor, value, localObject) {
         } else if (operator == '*') {
             value *= operand;
         } else if (operator == '/') {
-            value /= operand;
+            if (operand === 0) value = 0;
+            else value /= operand;
         }
     }
     return value;

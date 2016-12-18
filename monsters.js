@@ -137,9 +137,9 @@ function matchingMonsterAffixes(list, monster, alreadyUsed) {
 function updateMonster(monster) {
     // Clear the character's bonuses and graphics.
     initializeVariableObject(monster, monster.base, monster);
-    addBonusSourceToObject(monster, {'bonuses': monster.base.implicitBonuses});
-    addBonusSourceToObject(monster, {'bonuses': getMonsterBonuses(monster)});
-    addBonusSourceToObject(monster, coreStatBonusSource);
+    addBonusSourceToObject(monster, {'bonuses': monster.base.implicitBonuses}, false);
+    addBonusSourceToObject(monster, {'bonuses': getMonsterBonuses(monster)}, false);
+    addBonusSourceToObject(monster, coreStatBonusSource, false);
     monster.actions = [];
     monster.reactions = [];
     monster.onHitEffects = [];
@@ -148,20 +148,20 @@ function updateMonster(monster) {
     var enchantments = monster.prefixes.length + monster.suffixes.length;
     monster.image = monster.base.source.image.normal;
     if (enchantments > 2) {
-        addBonusSourceToObject(monster, imbuedMonsterBonuses);
+        addBonusSourceToObject(monster, imbuedMonsterBonuses, false);
     } else if (enchantments) {
-        addBonusSourceToObject(monster, enchantedMonsterBonuses);
+        addBonusSourceToObject(monster, enchantedMonsterBonuses, false);
     }
     ifdefor(monster.extraSkills, []).concat(ifdefor(monster.base.abilities, [])).forEach(function (ability) {
-        addBonusSourceToObject(monster, ability);
+        addBonusSourceToObject(monster, ability, false);
         addActions(monster, ability);
     });
     monster.prefixes.forEach(function (affix) {
-        addBonusSourceToObject(monster, affix);
+        addBonusSourceToObject(monster, affix, false);
         addActions(monster, affix);
     });
     monster.suffixes.forEach(function (affix) {
-        addBonusSourceToObject(monster, affix);
+        addBonusSourceToObject(monster, affix, false);
         addActions(monster, affix);
     });
     monster.name = monster.base.name;
@@ -171,14 +171,14 @@ function updateMonster(monster) {
         if (!equipment) {
             return;
         }
-        addBonusSourceToObject(monster, equipment.base);
+        addBonusSourceToObject(monster, equipment.base, false);
         addActions(monster, equipment.base);
         equipment.prefixes.forEach(function (affix) {
-            addBonusSourceToObject(monster, affix);
+            addBonusSourceToObject(monster, affix, false);
             addActions(monster, affix);
         })
         equipment.suffixes.forEach(function (affix) {
-            addBonusSourceToObject(monster, affix);
+            addBonusSourceToObject(monster, affix, false);
             addActions(monster, affix);
         })
     });
@@ -304,7 +304,16 @@ function initalizeMonsters() {
         'implicitBonuses': {'+weaponRange': 4, '*attackSpeed': 1, '+magicDamage': 4, '*magicDamage': 1.3,
                             '+block': 4, '+armor': 4, '*armor': 1.5, '*block': 1.5, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': .4},
-        'abilities': [abilities.summonSkeleton, abilities.summoner], 'tags': ['ranged']
+        'abilities': [abilities.summonSkeleton, abilities.summoner, abilities.darkknight, abilities.consume, abilities.consumeRange], 'tags': ['ranged']
+    });
+    addMonster('necrognomecon', {'name': 'Necrognomecon', 'source': gnomeSource, 'fpsMultiplier': 1.5,
+        'implicitBonuses': {'+weaponRange': 4, '*attackSpeed': 1, '+magicDamage': 4, '*magicDamage': 1.3,
+                            '+scale': [2, '*', ['{bonusMaxHealth}', '/', '{maxHealth}']],
+                            '*cooldown': [.2, '+', ['{bonusMaxHealth}', '/', '{maxHealth}']],
+                            '*damage': [1, '+', ['{bonusMaxHealth}', '/', '{maxHealth}']],
+                            '+block': 4, '+armor': 4, '*armor': 1.5, '*block': 1.5, '*magicBlock': 0, '*magicResist': 0,
+                            '*speed': .4},
+        'abilities': [abilities.summonSkeleton, abilities.summoner, abilities.darkknight, abilities.consume, abilities.consumeRange, abilities.consumeRatio], 'tags': ['ranged']
     });
     addMonster('gnomeCleric', {'name': 'Gnome Cleric', 'source': gnomeSource, 'fpsMultiplier': 1.5,
         'implicitBonuses': {'+weaponRange': 4, '*attackSpeed': 1, '+magicDamage': 4, '*magicDamage': 1.3,

@@ -242,7 +242,7 @@ var map = {
     },
     'barracks': {
         'name': "Barracks",
-        'description': "",
+        'description': "These Gnomes have practiced dark arts that allow them to consume the souls of fallen friends and foes alike.",
         'level': 4,
         'x': 0, 'y': 0,
         'coords': [122,394,-436],
@@ -250,9 +250,12 @@ var map = {
         'unlocks': ["dojo","warrior2"],
         'skill': "consume",
         'enemySkills': [],
-        'monsters': ["skeleton"],
+        'monsters': ["spider","gnome"],
         'events': [
-            ["dragon"]
+            ["gnomecromancer"],
+            ["vampireBat","vampireBat","gnomecromancer"],
+            ["gnomecromancer","gnomecromancer"],
+            ["necrognomecon"]
         ]
     },
     'batcave': {

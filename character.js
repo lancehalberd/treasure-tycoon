@@ -127,6 +127,7 @@ function initializeActorForAdventure(actor) {
     actor.percentHealth = 1;
     actor.maxReflectBarrier = actor.reflectBarrier = 0;
     actor.health = actor.maxHealth;
+    actor.bonusMaxHealth = 0;
     actor.stunned = 0;
     actor.pull = null;
     actor.time = 0;

@@ -558,7 +558,7 @@ function updateEditingState() {
     var isEditing = editingLevel || editingMap;
     // This is true if not editing or testing a level.
     var inAdventureMode = !!testingLevel || !editingLevel;
-    $('.js-pointsBar').toggle(inAdventureMode);
+    $('.js-pointsBar, .js-divinityPoints').toggle(inAdventureMode);
     //$('.js-mainCanvasContainer').css('height', '600px');
     $('.js-mainCanvas').attr('height', mapHeight);
     // Image smoothing seems to get enabled again after changing the canvas size, so disable it again.

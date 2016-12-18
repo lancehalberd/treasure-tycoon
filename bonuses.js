@@ -318,9 +318,9 @@ function recomputeStat(object, statKey) {
     } else if (typeof(newValue) === 'number') {
         //console.log(statOps);
         newValue = newValue + ifdefor(statOps['+'], 0);
-        /*for (var sum of ifdefor(statOps['+'], [])) {
-            newValue += sum;
-        }*/
+        //for (var sum of ifdefor(statOps['+'], [])) {
+        //    newValue += sum;
+        //}
         newValue *= ifdefor(statOps['%'], 1);
         for (var factor of ifdefor(statOps['*'], [])) {
             newValue *= factor;
