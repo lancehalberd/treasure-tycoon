@@ -436,21 +436,29 @@ $('.js-easyDifficulty').on('click', function (event) {
     $('.js-areaMenu').hide();
     state.selectedCharacter.levelDifficulty = 'easy';
     startArea(state.selectedCharacter, state.selectedCharacter.selectedLevelKey);
+    // Sometimes divinity points preview is stuck open at beginning of level, not sure how.
+    hidePointsPreview();
 });
 $('.js-normalDifficulty').on('click', function (event) {
     $('.js-areaMenu').hide();
     state.selectedCharacter.levelDifficulty = 'normal';
     startArea(state.selectedCharacter, state.selectedCharacter.selectedLevelKey);
+    // Sometimes divinity points preview is stuck open at beginning of level, not sure how.
+    hidePointsPreview();
 });
 $('.js-hardDifficulty').on('click', function (event) {
     $('.js-areaMenu').hide();
     state.selectedCharacter.levelDifficulty = 'hard';
     startArea(state.selectedCharacter, state.selectedCharacter.selectedLevelKey);
+    // Sometimes divinity points preview is stuck open at beginning of level, not sure how.
+    hidePointsPreview();
 });
 $('.js-challengeDifficulty').on('click', function (event) {
     $('.js-areaMenu').hide();
     state.selectedCharacter.levelDifficulty = 'challenge';
     startArea(state.selectedCharacter, state.selectedCharacter.selectedLevelKey);
+    // Sometimes divinity points preview is stuck open at beginning of level, not sure how.
+    hidePointsPreview();
 });
 
 $(document).on('mousedown', function (event) {

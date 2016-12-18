@@ -309,7 +309,7 @@ function initalizeMonsters() {
     addMonster('necrognomecon', {'name': 'Necrognomecon', 'source': gnomeSource, 'fpsMultiplier': 1.5,
         'implicitBonuses': {'+weaponRange': 4, '*attackSpeed': 1, '+magicDamage': 4, '*magicDamage': 1.3,
                             '+scale': [2, '*', ['{bonusMaxHealth}', '/', '{maxHealth}']],
-                            '*cooldown': [.2, '+', ['{bonusMaxHealth}', '/', '{maxHealth}']],
+                            '*cooldown': [.1, '+', ['{bonusMaxHealth}', '/', '{maxHealth}']],
                             '*damage': [1, '+', ['{bonusMaxHealth}', '/', '{maxHealth}']],
                             '+block': 4, '+armor': 4, '*armor': 1.5, '*block': 1.5, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': .4},
