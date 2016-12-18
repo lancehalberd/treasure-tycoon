@@ -484,7 +484,6 @@ $('body').on('click', '.js-retire', function (event) {
         return;
     }
     var $panel = $(this).closest('.js-playerPanel');
-    // gain('fame', state.selectedCharacter.fame);
     $panel.remove();
     var index = state.characters.indexOf(state.selectedCharacter);
     state.characters.splice(index, 1);
