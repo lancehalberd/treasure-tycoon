@@ -27,6 +27,18 @@
     top: 0px;
     pointer-events: none;
 }
+.pointsIcon {
+    display: inline-block;
+    vertical-align: top;
+    padding: 4px;
+    padding-left: 2px;
+    padding-right: 0px;
+}
+.pointsColumn {
+    display: inline-block;
+    vertical-align: top;
+    text-align: right;
+}
 .points {
     padding: 2px;
     display: inline-block;
