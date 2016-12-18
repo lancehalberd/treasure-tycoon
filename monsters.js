@@ -301,13 +301,13 @@ function initalizeMonsters() {
                             '*speed': .4}, 'tags': ['ranged']
     });
     addMonster('gnomecromancer', {'name': 'Gnomecromancer', 'source': gnomeSource, 'fpsMultiplier': 1.5,
-        'implicitBonuses': {'+weaponRange': 4, '*attackSpeed': 1, '+magicDamage': 4, '*magicDamage': 1.3,
+        'implicitBonuses': {'+weaponRange': 6, '*attackSpeed': 1, '+magicDamage': 4, '*magicDamage': 1.3,
                             '+block': 4, '+armor': 4, '*armor': 1.5, '*block': 1.5, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': .4},
         'abilities': [abilities.summonSkeleton, abilities.summoner, abilities.darkknight, abilities.consume, abilities.consumeRange], 'tags': ['ranged']
     });
     addMonster('necrognomecon', {'name': 'Necrognomecon', 'source': gnomeSource, 'fpsMultiplier': 1.5,
-        'implicitBonuses': {'+weaponRange': 4, '*attackSpeed': 1, '+magicDamage': 4, '*magicDamage': 1.3,
+        'implicitBonuses': {'+weaponRange': 6, '*attackSpeed': 1, '+magicDamage': 4, '*magicDamage': 1.3,
                             '+scale': [2, '*', ['{bonusMaxHealth}', '/', '{maxHealth}']],
                             '*cooldown': [.1, '+', ['{bonusMaxHealth}', '/', '{maxHealth}']],
                             '*damage': [1, '+', ['{bonusMaxHealth}', '/', '{maxHealth}']],
