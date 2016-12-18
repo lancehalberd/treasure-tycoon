@@ -2465,7 +2465,7 @@ var map = {
     },
     'savannah': {
         'name': "Savannah",
-        'description': "",
+        'description': "A plague of insects is ravaging all the plant life in the Savannah. Track down and destroy the source of the plague.",
         'level': 3,
         'x': 8, 'y': -3,
         'coords': [-78,-270,-530],
@@ -2769,7 +2769,7 @@ var map = {
     },
     'trail': {
         'name': "Trail",
-        'description': "",
+        'description': "A band of living skeletons has been making raids on travelers recently.",
         'level': 3,
         'x': 16, 'y': 3,
         'coords': [204,283,-488],
@@ -2787,7 +2787,7 @@ var map = {
     },
     'traininggrounds': {
         'name': "Training Grounds",
-        'description': "",
+        'description': "The Training Grounds is where Gnomes are taught basic elemental magic.",
         'level': 3,
         'x': 0, 'y': 0,
         'coords': [-288,73,-521],
@@ -3017,7 +3017,7 @@ var map = {
     },
     'wetlands': {
         'name': "Wetlands",
-        'description': "",
+        'description': "Dense webs have appeared in the Wetlands recently...",
         'level': 4,
         'x': 17, 'y': -4,
         'coords': [216,-277,-486],
