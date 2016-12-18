@@ -18,7 +18,7 @@ function songEffect(attackStats) {
         'attackStats': attackStats, 'currentFrame': 0, 'done': false,
         'update': function (character) {
             self.currentFrame++;
-            if (followTarget.time > endTime) {
+            if (followTarget.time > endTime || attackStats.source.isDead) {
                 self.done = true;
                 while (effectedTargets.length) removeEffectFromActor(effectedTargets.pop(), self.attackStats.attack.buff, true);
                 return;
@@ -131,7 +131,7 @@ function fieldEffect(attackStats, followTarget) {
         'attackStats': attackStats, 'currentFrame': 0, 'done': false,
         'update': function (character) {
             self.currentFrame++;
-            if (self.attackStats.source.time > endTime) {
+            if (self.attackStats.source.time > endTime || attackStats.source.isDead) {
                 self.done = true;
                 return;
             }
