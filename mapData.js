@@ -255,7 +255,7 @@ var map = {
             ["gnomecromancer"],
             ["vampireBat","vampireBat","gnomecromancer"],
             ["gnomecromancer","gnomecromancer"],
-            ["necrognomecon"]
+            ["necrognomekhan"]
         ]
     },
     'batcave': {

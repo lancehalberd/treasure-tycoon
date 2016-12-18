@@ -317,7 +317,7 @@ function initalizeMonsters() {
                             '*speed': .4},
         'abilities': [abilities.summonSkeleton, abilities.summoner, abilities.darkknight, abilities.consume, abilities.consumeRange], 'tags': ['ranged']
     });
-    addMonster('necrognomecon', {'name': 'Necrognomecon', 'source': gnomeSource, 'fpsMultiplier': 1.5,
+    addMonster('necrognomekhan', {'name': 'Necrognomekhan', 'source': gnomeSource, 'fpsMultiplier': 1.5,
         'implicitBonuses': {'+weaponRange': 6, '*attackSpeed': 1, '+magicDamage': 4, '*magicDamage': 1.3,
                             '+scale': [2, '*', ['{bonusMaxHealth}', '/', '{maxHealth}']],
                             '*cooldown': [.1, '+', ['{bonusMaxHealth}', '/', '{maxHealth}']],
