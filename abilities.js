@@ -222,7 +222,7 @@ var abilities = {
         'majorDexterity': {'name': 'Major Dexterity', 'bonuses': {'+dexterity': 30, '*dexterity': 1.1}},
         'powerShot': {'name': 'Power Shot', 'bonuses': {'+dexterity': 5}, 'action': skills.powerShot},
         'powerShotKnockback': {'name': 'Power Shot Knockback', 'bonuses': {'+dexterity': 5, '+strength': 5, '+powerShot:knockbackChance': 1, '+powerShot:knockbackDistance': 5}},
-        'aiming': {'name': 'Aiming', 'bonuses': {'*ranged:accuracy': 1.5, '+ranged:critChance': .1, '+ranged:critDamage': .3}},
+        'aiming': {'name': 'Aiming', 'action': skills.aiming},
         'snipe': {'name': 'Snipe', 'bonuses': {'+dexterity': 15}, 'action': skills.snipe},
     'samuraiIndex': {'name': '---Samurai---'},
         'samurai': {'name': 'Great Warrior', 'bonuses': {'+twoHanded:melee:physical': [2, '*', '{level}'], '+twoHanded:melee:block': [2, '*', '{level}'], '+twoHanded:melee:magicBlock': '{level}'}},
