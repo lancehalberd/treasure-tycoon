@@ -64,21 +64,9 @@ function initializeCraftingImage() {
             setCraftingLevel(level);
         }
     });
-    $(craftingViewCanvas).on('click', function (event) {
+    $(craftingViewCanvas).on('mousedown', function (event) {
         var offset = relativeMousePosition($(this));
-        var ty = Math.floor((offset[1] - 2) / craftingSlotTotal);
         var level = Math.floor((offset[0] - 2) / craftingSlotTotal) + 1;
-        var slotOffset = 0;
-        var overSlot = 'weapon';
-        $.each(offsets, function (slot, offset) {
-            if (ty >= offset) {
-                slotOffset = offset;
-                overSlot = slot;
-            }
-            return ty >= offset;
-        });
-        var items = ifdefor(ifdefor(itemsBySlotAndLevel[overSlot], [])[level], []);
-        var index = ty - slotOffset;
         setCraftingLevel(level);
     });
     $(craftingViewCanvas).on('mouseout', function () {
