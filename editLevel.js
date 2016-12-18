@@ -236,10 +236,8 @@ $(document).on('keydown', function(event) {
     if (event.which === 27) { // escape key
         event.preventDefault();
         if (testingLevel) {
-            console.log("stop testing");
             stopTestingLevel();
         } else if (editingLevel) {
-            console.log("stop editing");
             stopEditingLevel();
         }
     }
