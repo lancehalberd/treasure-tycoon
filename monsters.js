@@ -258,6 +258,17 @@ function initalizeMonsters() {
         'name': 'Wolf', 'source': wolfSource,
         'implicitBonuses': {'*maxHealth': 1.5, '*magicDamage': 0, '*accuracy': 1.5, '+critChance': .1, '*speed': 2, '*scale': .75}
     });
+    addMonster('alphaWolf', {
+        'name': 'Alpha Wolf', 'source': wolfSource,
+        'implicitBonuses': {'+weaponRange': 1, '*maxHealth': 2, '*magicDamage': 0, '*accuracy': 1.5, '+critChance': .1, '*speed': 2, '*scale': .8},
+        'abilities': [abilities.attackSong]
+    });
+    addMonster('packLeader', {
+        'name': 'Pack Leader', 'source': wolfSource,
+        'implicitBonuses': {'+weaponRange': 2, '*maxHealth': 2, '*magicDamage': 0, '*accuracy': 1.5, '+critChance': .1, '*speed': 2, '*scale': .8},
+        'abilities': [abilities.majorDexterity, abilities.majorStrength, abilities.majorIntelligence,
+                      abilities.howl, abilities.howl, abilities.attackSong, abilities.defenseSong, abilities.sicem, abilities.howlSingAttack]
+    });
     addMonster('giantSpider', {
         'name': 'Giant Spider', 'source': spiderSource,
         'implicitBonuses': {'+weaponRange': 12, '*evasion': .8, '*accuracy': .8, '*damage': 1.4, '+critChance': .25, '*scale': 1.15},

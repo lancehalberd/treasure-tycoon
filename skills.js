@@ -131,6 +131,8 @@ var skills = {
                          'Call a caterpillar to fight with you.'),
     'summonSkeleton': genericAction('minion', {'target': 'none', 'tags': ['minion'], 'monsterKey': 'skeleton'}, {'+limit': 2, '+cooldown': 15},
                          'Summon skeletons to fight for you.'),
+    'howl': genericAction('minion', {'target': 'none', 'tags': ['minion'], 'monsterKey': 'wolf'}, {'+limit': 4, '+cooldown': 10},
+                         'Summon a pack member to fight with you.'),
     'net': genericAction('effect', {}, {'+cooldown': 10, '+range': 10, '$debuff': debuffEffect({}, {'+*speed': 0, '+duration': 3})},
                          'Throw a net to ensnare a distant enemy.'),
     'sicem': genericAction('effect', {}, {'+cooldown': [60, '*', [100, '/', [100, '+', '{dexterity}']]],

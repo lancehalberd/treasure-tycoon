@@ -283,7 +283,9 @@ var abilities = {
     'poison': {'name': 'Poison', 'onHitEffect': {'variableObjectType': 'trigger', 'bonuses': {'$debuff': debuffEffect({}, {'+*healthRegen': 0, '++damageOverTime': '{level}', '+duration': 3})}}},
     'enemyDancing': {'name': 'Dancing', 'reaction': skills.evadeAndCounter},
     'consumeRange': {'name': 'Consume Range', 'bonuses': {'+consume:range': 5}},
-    'consumeRatio': {'name': 'Consume Range', 'bonuses': {'+consume:consumeRatio': .5}}
+    'consumeRatio': {'name': 'Consume Range', 'bonuses': {'+consume:consumeRatio': .5}},
+    'howl': {'name': 'Howl', 'action': skills.howl},
+    'howlSingAttack': {'name': 'Howl Sing Attack', 'bonuses': {'$howl:instantCooldown': 'attackSong', '$attackSong:instantCooldown': 'sicem'}},
 };
 var testJob;// = 'blackbelt';
 var testAbilities = [];

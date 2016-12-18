@@ -275,19 +275,19 @@ var map = {
     },
     'bayou': {
         'name': "Bayou",
-        'description': "",
+        'description': "The howls from the Bayou keep all but the most adventurous at bay.",
         'level': 4,
         'x': 5, 'y': 4,
         'coords': [-367,-111,-461],
         'background': "forest",
         'unlocks': ["cemetery","bard2","academy"],
         'skill': "attackSong",
-        'enemySkills': ["protect","majorIntelligence"],
-        'monsters': ["butterfly","bat"],
+        'enemySkills': [],
+        'monsters': ["wolf"],
         'events': [
-            ["butterfly","butterfly"],
-            ["bat","bat","bat","bat"],
-            ["lightningBug","lightningBug"]
+            ["wolf","alphaWolf"],
+            ["wolf","wolf","wolf","alphaWolf"],
+            ["wolf","wolf","packLeader"]
         ]
     },
     'camp': {
