@@ -225,7 +225,7 @@ var abilities = {
         'aiming': {'name': 'Aiming', 'bonuses': {'*ranged:accuracy': 1.5, '+ranged:critChance': .1, '+ranged:critDamage': .3}},
         'snipe': {'name': 'Snipe', 'bonuses': {'+dexterity': 15}, 'action': skills.snipe},
     'samuraiIndex': {'name': '---Samurai---'},
-        'samurai': {'name': 'Great Warrior', 'bonuses': {'*twoHanded:damage': 2}},
+        'samurai': {'name': 'Great Warrior', 'bonuses': {'+twoHanded:melee:physical': [2, '*', '{level}'], '+twoHanded:melee:block': [2, '*', '{level}'], '+twoHanded:melee:magicBlock': '{level}'}},
         'majorStrength': {'name': 'Major Strength', 'bonuses': {'+strength': 30, '*strength': 1.1}},
         'sideStep': {'name': 'Side Step', 'bonuses': {'+evasion': 2}, 'reaction': skills.sideStep},
         'dragonSlayer': {'name': 'Dragon Slayer', 'bonuses': {'+strength': 10}, 'action': skills.dragonSlayer},
