@@ -346,40 +346,23 @@ function applyDragResults() {
         }
         var sourceCharacter = state.selectedCharacter;
         hit = true
-        var currentMain = targetCharacter.adventurer.equipment[item.base.slot];
-        var currentSub = null;
-        if (isTwoHandedWeapon(item) && !ifdefor(targetCharacter.adventurer.twoToOneHanded)) {
-            currentSub = targetCharacter.adventurer.equipment.offhand;
-            unequipSlot(targetCharacter.adventurer, 'offhand');
-        }
-        unequipSlot(targetCharacter.adventurer, item.base.slot, false);
+        // If the item is coming from a source character, unequip it from them.
         if (sourceCharacter && sourceCharacter !== targetCharacter) {
-            unequipSlot(sourceCharacter.adventurer, item.base.slot, false);
-            if (!currentMain && !currentSub) {
-                // The source character won't have additional items equipped to them,
-                // so go ahead and recompute stats now.
-                recomputeDirtyStats(sourceCharacter.adventurer);
-            } else {
-                if (currentMain && currentMain.level <= sourceCharacter.adventurer.level) {
-                    // Swap the item back to the source character if they can equip it.
-                    equipItem(sourceCharacter.adventurer, currentMain, true);
-                    currentMain = null;
-                }
-                if (currentSub && currentSub.level <= sourceCharacter.adventurer.level) {
-                    // Swap the item back to the source character if they can equip it.
-                    equipItem(sourceCharacter.adventurer, currentSub, true);
-                    currentSub = null;
-                }
-            }
+            unequipSlot(sourceCharacter.adventurer, item.base.slot, true);
         }
-        //unequip the existing item if it hasn't already been swapped.
-        if (currentMain) {
-            addToInventory(currentMain);
-        }
-        if (currentSub) {
-            addToInventory(currentSub);
-        }
+        // Unequip anything that might be currently equipped in the target character.
+        var currentMain = targetCharacter.adventurer.equipment[item.base.slot];
+        unequipSlot(targetCharacter.adventurer, item.base.slot, false);
+        if (currentMain) addToInventory(currentMain);
+        // Now equip the item on the target character and update stats so we can
+        // tell if they can still equip an offhand.
         equipItem(targetCharacter.adventurer, item, true);
+        // Unequip the offhand if the equipping character can no longer hold an offhand.
+        if (isTwoHandedWeapon(item) && !ifdefor(targetCharacter.adventurer.twoToOneHanded)) {
+            var currentSub = targetCharacter.adventurer.equipment.offhand;
+            unequipSlot(targetCharacter.adventurer, 'offhand', true);
+            if (currentSub) addToInventory(currentSub);
+        }
         return false;
     });
     if (!hit) {

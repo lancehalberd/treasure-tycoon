@@ -15,98 +15,141 @@
  * This could cause trouble if the tag generated for a skill name conflicted with another tag. For instance if we had both a revive skill
  * and a revive tag, there is no way to target those individually.
  */
+/*
+Ability outlines for each class:
+
+xxx Ability 1
+xxx Minor stat boost (shared)
+xxx Specialization boost 1
+xxx Flat defense boost (shared)
+xxx Flat offense boost (shared)
+xxx Ability 2
+xxx Scaling defense boost (shared)
+___ Specialization Paradigm Shift - changes how a specialization works.
+xxx Scaling offense boost (shared)
+xxx Specialization boost 2
+xxx Major stat boost (shared)
+xxx Specialization boost 3
+xxx Ability 3
+*/
 var abilities = {
     'basicAttack': {'name': 'Basic Attack', 'action': skills.basicAttack},
+
+'passiveBonus': {'name': '-----Core Passives-----'},
+    'minorDexterity': {'name': 'Minor Dexterity', 'bonuses': {'+dexterity': [10, '+', '{level}']}},
+    'flatEvasion': {'name': 'Basic Evasion', 'bonuses': {'+evasion': 10}},
+    'flatRangedAttackDamage':  {'name': 'Archery', 'bonuses': {'+ranged:attack:physicalDamage': 8}},
+    'percentEvasion': {'name': 'Enhanced Evasion', 'bonuses': {'%evasion': 0.2}},
+    'percentAttackSpeed': {'name': 'Finesse', 'bonuses': {'%attackSpeed': 0.2}},
+    'majorDexterity': {'name': 'Major Dexterity', 'bonuses': {'+dexterity': 30, '*dexterity': 1.1}},
+    'minorIntelligence': {'name': 'Minor Intelligence', 'bonuses': {'+intelligence': [10, '+', '{level}']}},
+    'flatBlock': {'name': 'Basic Blocking', 'bonuses': {'+block': 10}},
+    'flatMagicDamage':  {'name': 'Ensorcel', 'bonuses': {'+magic:magicDamage': 6}},
+    'percentBlocking': {'name': 'Enhanced Blocking', 'bonuses': {'%block': 0.2}},
+    'percentMagicDamage': {'name': 'Resonance', 'bonuses': {'%magicDamage': .2}},
+    'majorIntelligence': {'name': 'Major Intelligence', 'bonuses': {'+intelligence': 30, '*intelligence': 1.1}},
+    'minorStrength': {'name': 'Minor Strength', 'bonuses': {'+strength': [10, '+', '{level}']}},
+    'flatArmor': {'name': 'Basic Toughness', 'bonuses': {'+armor': 10}},
+    'flatMeleeAttackDamage':  {'name': 'Sparring', 'bonuses': {'+melee:attack:physicalDamage': 10}},
+    'percentArmor': {'name': 'Enhanced Toughness', 'bonuses': {'%armor': 0.2}},
+    'percentPhysicalDamage': {'name': 'Ferocity', 'bonuses': {'%physicalDamage': 0.2}},
+    'majorStrength': {'name': 'Major Strength', 'bonuses': {'+strength': 30, '*strength': 1.1}},
+    'minorVigor': {'name': 'Minor Vigor', 'bonuses': {'+dexterity': [10, '+', ['{level}', '/', 2]], '+strength': [10, '+', ['{level}', '/', 2]]}},
+    'flatMovementSpeed': {'name': 'Basic Mobility', 'bonuses': {'+movementSpeed': 20}},
+    'flatCriticalChance':  {'name': 'Find Weakness', 'bonuses': {'+criticalChance': 0.02}},
+    'percentMovementSpeed': {'name': 'Enhanced Mobility', 'bonuses': {'%movementSpeed': 0.2}},
+    'percentCriticalChance': {'name': 'Precision', 'bonuses': {'%criticalChance': 0.2}},
+    'majorVigor': {'name': 'Major Vigor', 'bonuses': {'+dexterity': 15, '*dexterity': 1.05, '+strength': 15, '*strength': 1.05}},
+    'minorWill': {'name': 'Minor Will', 'bonuses': {'+strength': [10, '+', ['{level}', '/', 2]], '+intelligence': [10, '+', ['{level}', '/', 2]]}},
+    'flatMagicBlock': {'name': 'Basic Warding', 'bonuses': {'+magicBlock': 5}},
+    'flatMagicPower':  {'name': 'Find Weakness', 'bonuses': {'+magicPower': 60}},
+    'percentMagicBlock': {'name': 'Enhanced Mobility', 'bonuses': {'%magicBlock': 0.2}},
+    'percentMagicPower': {'name': 'Precision', 'bonuses': {'%magicPower': 0.4}},
+    'majorWill': {'name': 'Major Will', 'bonuses': {'+strength': 15, '*strength': 1.05, '+intelligence': 15, '*intelligence': 1.05}},
+    'minorCharisma': {'name': 'Minor Charisma', 'bonuses': {'+dexterity': [10, '+', ['{level}', '/', 2]], '+intelligence': [10, '+', ['{level}', '/', 2]]}},
+    'flatDuration': {'name': 'Basic Channeling', 'bonuses': {'+duration': 2}},
+    'flatAreaOfEffect':  {'name': 'Extension', 'bonuses': {'+area': 2}},
+    'percentDuration': {'name': 'Enhanced Channeling', 'bonuses': {'%duration': 0.2}},
+    'percentAreaOfEffect': {'name': 'Influence', 'bonuses': {'%area': 0.2}},
+    'majorCharisma': {'name': 'Major Charisma', 'bonuses': {'+dexterity': 15, '*dexterity': 1.05, '+intelligence': 15, '*intelligence': 1.05}},
+    'healthPerLevel': {'name': 'Life Force', 'bonuses': {'+maxHealth': [5, '*', '{level}']}},
+    'flatRange': {'name': 'Farsight', 'bonuses': {'+range': 1}},
+    'percentHealth': {'name': 'Larger than Life', 'bonuses': {'%maxHealth': 0.2, '+scale': .2}},
+    'percentAccuracy': {'name': 'Concentration', 'bonuses': {'%accuracy': 0.4}},
+    'cooldownReduction': {'name': 'Acuity', 'bonuses': {'+cooldownReduction': 0.5}},
+'specializationIndex': {'name': '-----Specialization-----'},
     'throwingPower': {'name': 'Throwing Power', 'bonuses': {'%throwing:physicalDamage': .3, '+throwing:weaponRange': 2}},
     'throwingDamage': {'name': 'Throwing Mastery', 'bonuses': {'%throwing:physicalDamage': .2, '%throwing:attackSpeed': .2}},
     'throwingCriticalChance': {'name': 'Throwing Precision', 'bonuses': {'%throwing:critChance': .3, '%throwing:attackSpeed': .3}},
     'throwingParadigmShift': {'name': 'Melee Throwing', 'bonuses': {'$throwing:setRange': 'melee', '$throwing:weaponRange': 1, '*throwing:damage': 1.3, '*throwing:attackSpeed': 1.3}},
-
     'rangedAccuracy': {'name': 'Ranged Accuracy', 'bonuses': {'%ranged:accuracy': .3, '+ranged:range': 1}},
     'rangedDamage': {'name': 'Ranged Damage', 'bonuses': {'%ranged:damage': .2, '+ranged:range': 1}},
     'rangedAttackSpeed': {'name': 'Ranged Attack Speed', 'bonuses': {'%ranged:attackSpeed': .2, '+ranged:range': 1}},
     'rangedParadigmShift': {'name': 'Close Quarters', 'bonuses': {'*ranged:range': .5, '*ranged:damage': 1.3, '*ranged:accuracy': 1.3}},
-
     'bowRange': {'name': 'Bow Range', 'bonuses': {'+bow:weaponRange': 3, '+bow:critDamage': .5}},
-    'bowPhysicalDamage': {'name': 'Physical Bow Damage', 'bonuses': {'*bow:physicalDamage': .3, '+bow:critDamage': .3}},
-    'bowDamage': {'name': 'Bow Damage', 'bonuses': {'*bow:damage': .5, '*+bow:critDamage': .3}},
-    //'bowParadigmShift': {'name': 'Bow Shield', 'bonuses': {'*bow:weaponRange': .5, '$bow:twoToOneHanded': 'Equipping a bow only uses one hand.'}}, // This doesn't work yet because setting twoToOneHanded needs to happen before we check to hide the offhand slot.
-
+    'bowPhysicalDamage': {'name': 'Physical Bow Damage', 'bonuses': {'%bow:physicalDamage': 0.3, '+bow:critDamage': 0.3}},
+    'bowDamage': {'name': 'Bow Damage', 'bonuses': {'%bow:damage': 0.3, '+bow:critDamage': .3}},
+    'bowParadigmShift': {'name': 'One Handed Archery', 'bonuses': {'*bow:weaponRange': .5, '$bow:twoToOneHanded': 'Equipping a bow only uses one hand.'}}, // This doesn't work yet because setting twoToOneHanded needs to happen before we check to hide the offhand slot.
     'fistDamage': {'name': 'Fist Damage', 'bonuses': {'%fist:physicalDamage': .3, '+fist:critDamage': .3}},
     'fistCriticalChance': {'name': 'Fist Precision', 'bonuses': {'%fist:critChance': .3, '%fist:accuracy': .3}},
     'fistAttackSpeed': {'name': 'Fist Attack Speed', 'bonuses': {'%fist:attackSpeed': .2, '%fist:physicalDamage': .2}},
     //'fistParadigmShift': {'name': '', 'bonuses': {}},
-
     'swordPhysicalDamage': {'name': 'Sword Damage', 'bonuses': {'%sword:physicalDamage': .3, '%sword:critChance': .3}},
-    'swordAccuracy': {'name': 'Sword Accuracy', 'bonuses': {'%sword:accuracy': .5, '*sword:critChance': .2}},
+    'swordAccuracy': {'name': 'Sword Accuracy', 'bonuses': {'%sword:accuracy': .5, '+sword:critChance': .2}},
     'swordAttackSpeed': {'name': 'Sword Attack Speed', 'bonuses': {'%sword:attackSpeed': .2, '%sword:physicalDamage': .2}},
-    'swordParadigmShift': {'name': 'Two Hands', 'bonuses': {'*noOffhand:damage': 1.5, '*noOffhand:attackSpeed': .75}}, // This should be noOffhand:sword
-
+    'swordParadigmShift': {'name': 'Two Hands', 'bonuses': {'*noOffhand:sword:damage': 1.5, '*noOffhand:sword:attackSpeed': .75}}, // This should be noOffhand:sword
     'greatswordDamage': {'name': 'Greatsword Damage', 'bonuses': {'%greatsword:damage': .3, '%greatsword:critChance': .3}},
     'greatswordPhysicalDamage': {'name': 'Greatsword Physical Damage', 'bonuses': {'%greatsword:physicalDamage': .4, '%greatsword:accuracy': .2}},
-    'greatswordAccuracy': {'name': 'Greatsword Accuracy', 'bonuses': {'%greatsword:accuracy': .5, '%greatsword:physicalDamage': .2}},
-    'greatswordParadigmShift': {'name': 'Greatsword Wave', 'bonuses': {'*greatsword:weaponRange': 2, '*greatsword:attackSpeed': .5}},
-
+    'greatswordAccuracy': {'name': 'Greatsword Accuracy', 'bonuses': {'%greatsword:accuracy': .5, '%greatsword:physicalDamage': 0.2}},
+    'greatswordParadigmShift': {'name': 'Greatsword Wave', 'bonuses': {'*greatsword:weaponRange': 2, '*greatsword:attackSpeed': 0.5}},
     'wandRange': {'name': 'Wand Range', 'bonuses': {'+wand:weaponRange': 2, '%wand:magicDamage': .3}},
     'wandAttackSpeed': {'name': 'Wand Attack Speed', 'bonuses': {'%wand:attackSpeed': .2, '%wand:magicDamage': .2}},
     'wandCritChance': {'name': 'Want Critical Chance', 'bonuses': {'%wand:critChance': .3, '%wand:magicDamage': .3}},
     //'wandParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
-
     'staffDamage': {'name': 'Staff Damage', 'bonuses': {'%staff:damage': .5, '%staff:accuracy': .2}},
     'staffCritDamage': {'name': 'Staff Crit Damage', 'bonuses': {'+staff:critDamage': .3, '%staff:magicDamage': .3}},
     'staffAccuracy': {'name': 'Staff Accuracy', 'bonuses': {'%staff:accuracy': .3, '%staff:damage': .3}},
     //'staffParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
-
     'spellCDR': {'name': 'Spell Cooldown Reduction', 'bonuses': {'%spell:cooldown': -.1}},
     'spellPower': {'name': 'Spell Power', 'bonuses': {'%spell:damage': .4, '+spell:range': 2}},
     'spellPrecision': {'name': 'Spell Precision', 'bonuses': {'%spell:critChance': .3, '+spell:critDamage': .3}},
     //'spellParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
-
     'axePhysicalDamage': {'name': 'Axe Physical Damage', 'bonuses': {'%axe:physicalDamage': .4, '%axe:accuracy': .2}},
     'axeAttackSpeed': {'name': 'Axe Attack Speed', 'bonuses': {'%axe:attackSpeed': .4, '%axe:accuracy': .2}},
     'axeCritDamage': {'name': 'Axe Critical Damage', 'bonuses': {'+axe:critDamage': .3, '%axe:physicalDamage': .3}},
     //'axeParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
-
     'criticalDamage': {'name': 'Critical Damage', 'bonuses': {'+critDamage': .5}},
     'criticalStrikes': {'name': 'Critical Strikes', 'bonuses': {'%critChance': .2, '+critDamage': .3}},
     'criticalAccuracy': {'name': 'Critical Accuracy', 'bonuses': {'+critAccuracy': .5, '%critChance': .2}},
     //'criticalParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
-
     'oneHandedDamage': {'name': 'One Handed Damage', 'bonuses': {'%oneHanded:damage': .2, '%oneHanded:attackSpeed': .2}},
     'oneHandedCritChance': {'name': 'One Handed Critical Chance', 'bonuses': {'%oneHanded:critChance': .2, '%oneHanded:attackSpeed': .2}},
     'oneHandedCritDamage': {'name': 'One Handed Critical Damage', 'bonuses': {'%oneHanded:critDamage': .2, '%oneHanded:attackSpeed': .2}},
-    'oneHandedParadigmShift': {'name': 'Dual Wield', 'bonuses': {'*noOffhand:attackSpeed': 1.5, '*noOffhand:damage': .75}},
-
+    'oneHandedParadigmShift': {'name': 'Dual Wield', 'bonuses': {'*noOffhand:oneHanded:attackSpeed': 1.5, '*noOffhand:oneHanded:damage': 0.75}},
     'shieldDexterity': {'name': 'Shield Agility', 'bonuses': {'%shield:attackSpeed': .3, '%shield:evasion': .3}},
     'shieldStrength': {'name': 'Shield Toughness', 'bonuses': {'%shield:damage': .3, '%shield:armor': .3}},
     'shieldIntelligence': {'name': 'Shield Tactics', 'bonuses': {'%shield:accuracy': .3, '%shield:block': .3, '%shield:magicBlock': .3}},
     //'shieldParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}}, // Dual wield shields, no basic attack
-
     'polearmRange': {'name': 'Polearm Range', 'bonuses': {'+polearm:weaponRange': 1, '%polearm:physicalDamage': .4}},
     'polearmAccuracy': {'name': 'Polearm Accuracy', 'bonuses': {'%polearm:accuracy': .3, '%polearm:damage': .3}},
     'polearmCritDamage': {'name': 'Polearm Critical Damage', 'bonuses': {'+polearm:critDamage': .3, '%polearm:physicalDamage': .3}},
     //'polearmParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
-
     'meleeDamage': {'name': 'Melee Damage', 'bonuses': {'%melee:damage': .2, '%melee:accuracy': .2}},
     'meleeAttackSpeed': {'name': 'Melee Attack Speed', 'bonuses': {'%melee:attackSpeed': .2, '%melee:accuracy': .2}},
     'meleeCritChance': {'name': 'Melee CriticalChance', 'bonuses': {'%melee:critChance': .2, '%melee:accuracy': .2}},
     //'meleeParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
-
     'movementCDR': {'name': 'Movement Cooldown Reduction', 'bonuses': {'%movement:cooldown': -.1, '%movement:distance': .1}},
     'movementDamage': {'name': 'Movement Damage', 'bonuses': {'%movement:damage': .3, '%movement:critDamage': .3}},
     'movementPrecision': {'name': 'Movement Precision', 'bonuses': {'%movement:accuracy': .3, '%movement:critChance': .3}},
     //'movementParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
-
     'minionToughness': {'name': 'Ally Toughness', 'bonuses': {'%minion:maxHealth': .5, '%minion:armor': .3}},
     'minionDamage': {'name': 'Ally Damage', 'bonuses': {'%minion:damage': .3, '%minion:accuracy': .3}},
     'minionFerocity': {'name': 'Ally Ferocity', 'bonuses': {'%minion:attackSpeed': .5, '%minion:critChance': .3}},
     //'minionParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
-
     'magicMagicDamage': {'name': 'Magic Weapon Magic Damage', 'bonuses': {'%magic:magicDamage': .3, '%magic:accuracy': .3}},
     'magicAttackSpeed': {'name': 'Magic Weapon Attack Speed', 'bonuses': {'%magic:attackSpeed': .2, '%magic:critChance': .2}},
     'magicDamage': {'name': 'Magic Weapon Damage', 'bonuses': {'%magic:damage': .2, '%magic:critDamage': .3}},
     //'magicParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
-
     'daggerAttackSpeed': {'name': 'Dagger Attack Speed', 'bonuses': {'%dagger:attackSpeed': .2, '%dagger:critChance': .2}},
     'daggerCritChance': {'name': 'Dagger Critical Chance', 'bonuses': {'%dagger:critChance': .3, '%dagger:damage': .2}},
     'daggerDamage': {'name': 'Dagger Damage', 'bonuses': {'%dagger:damage': .2, '%dagger:attackSpeed': .2}},
@@ -114,8 +157,6 @@ var abilities = {
 'tier1Index': {'name': '------Tier 1------'},
     'jugglerIndex': {'name': '---Juggler---'},
         'juggler': {'name': 'Juggling', 'bonuses': {'$throwing:chaining': 'Projectiles ricochet between targets until they miss.'}},
-        'minorDexterity': {'name': 'Minor Dexterity', 'bonuses': {'+dexterity': 10, '*dexterity': 1.02}},
-        'evasion': {'name': 'Evasion', 'bonuses': {'%evasion': .5}},
         'sap': {'name': 'Sap', 'bonuses': {'+slowOnHit': .1, '+healthGainOnHit': 1}},
         'dodge': {'name': 'Dodge', 'bonuses': {'+evasion': 2}, 'reaction': skills.dodge},
         'acrobatics': {'name': 'Acrobatics', 'bonuses': {'+evasion': 2, '+dodge:cooldown': -2, '*dodge:distance': 2}},
@@ -124,7 +165,6 @@ var abilities = {
     'blackbeltIndex': {'name': '---Blackbelt---'},
         'blackbelt': {'name': 'Martial Arts',
             'bonuses': {'*unarmed:damage': 3, '*unarmed:attackSpeed': 1.5, '+unarmed:critChance': .15, '*unarmed:critDamage': 2, '*unarmed:critAccuracy': 2}},
-        'minorStrength': {'name': 'Minor Strength', 'bonuses': {'+strength': 10, '*strength': 1.02}},
         'vitality': {'name': 'Vitality', 'bonuses': {'+healthRegen': ['{strength}', '/', 10], '+strength': 5}},
         'counterAttack': {'name': 'Counter Attack', 'bonuses': {'+strength': 5}, 'reaction': skills.counterAttack},
         'counterPower': {'name': 'Improved Counter', 'bonuses': {'+strength': 5, '+counterAttack:attackPower': .5, '*counterAttack:accuracy': 1.5}},
@@ -132,7 +172,6 @@ var abilities = {
         'dragonPunch': {'name': 'Dragon Punch', 'action': skills.dragonPunch},
     'priestIndex': {'name': '---Priest---'},
         'priest': {'name': 'Divine Blessing', 'bonuses': {'+healOnCast': .1, '+overHealReflection': .5, '+castKnockBack': 12}},
-        'minorIntelligence': {'name': 'Minor Intelligence', 'bonuses': {'+intelligence': 10, '*intelligence': 1.02}},
         'heal': {'name': 'Heal', 'bonuses': {'+intelligence': 5}, 'action': skills.heal},
         'reflect': {'name': 'Reflect', 'bonuses': {'+intelligence': 10}, 'action': skills.reflect},
         'revive': {'name': 'Revive', 'bonuses': {'+intelligence': 10}, 'reaction': skills.revive},
@@ -168,7 +207,6 @@ var abilities = {
 'tier3Index': {'name': '------Tier 3------'},
     'rangerIndex': {'name': '---Ranger---'},
         'ranger': {'name': 'Taming', 'minionBonuses': {'*maxHealth': 2, '*attackSpeed': 1.5, '*speed': 1.5}},
-        'finesse':  {'name': 'Finesse', 'bonuses': {'%attackSpeed': .2}},
         'pet': {'name': 'Pet', 'action': skills.pet},
         'petFood': {'name': 'Pet Food', 'bonuses': {'-pet:cooldown': 3}, 'minionBonuses': {'*pet:maxHealth': 1.5}},
         'petTraining': {'name': 'Pet Training', 'bonuses': {'-pet:cooldown': 3}, 'minionBonuses': {'*pet:damage': 1.5}},
@@ -180,7 +218,6 @@ var abilities = {
                         'helpText': 'Sicem buff grants life steal and lasts an additional 2 seconds'},
     'warriorIndex': {'name': '---Warrior---'},
         'warrior': {'name': 'Cleave', 'bonuses': {'%melee:damage': .5, '+melee:cleave': .6, '+melee:cleaveRange': 3}},
-        'ferocity': {'name': 'Ferocity', 'bonuses': {'%physicalDamage': .2}},
         'charge': {'name': 'Charge', 'bonuses': {'+strength': 5}, 'action': skills.charge},
         'batteringRam': {'name': 'Battering Ram', 'bonuses': {'+charge:rangeDamage': .1},
             'helpText': 'Charge deals more damage from further away.'},
@@ -190,7 +227,6 @@ var abilities = {
         'armorBreak': {'name': 'Armor Break', 'bonuses': {'+strength': 15}, 'action': skills.armorBreak},
     'wizardIndex': {'name': '---Wizard---'},
         'wizard': {'name': 'Arcane Prodigy', 'bonuses': {'*spell:area': 2, '*magicPower': 2}},
-        'resonance': {'name': 'Resonance', 'bonuses': {'%magicDamage': .2}},
         'fireball': {'name': 'Fireball', 'bonuses': {'+intelligence': 5}, 'action': skills.fireball},
         'chainReaction': {'name': 'Chain Reaction', 'bonuses': {'+fireball:explode': 1}, 'helpText': 'Fireball explosions will chain an extra time.'},
         'freeze': {'name': 'Freeze', 'bonuses': {'+intelligence': 10}, 'action': skills.freeze},
@@ -219,19 +255,16 @@ var abilities = {
 'tier5Index': {'name': '------Tier 5------'},
     'sniperIndex': {'name': '---Sniper---'},
         'sniper': {'name': 'Sharp Shooter', 'bonuses': {'*bow:critChance': 1.5, '*bow:critDamage': 1.5, '$bow:criticalPiercing': 'Critical strikes hit multiple enemies.'}},
-        'majorDexterity': {'name': 'Major Dexterity', 'bonuses': {'+dexterity': 30, '*dexterity': 1.1}},
         'powerShot': {'name': 'Power Shot', 'bonuses': {'+dexterity': 5}, 'action': skills.powerShot},
         'powerShotKnockback': {'name': 'Power Shot Knockback', 'bonuses': {'+dexterity': 5, '+strength': 5, '+powerShot:knockbackChance': 1, '+powerShot:knockbackDistance': 5}},
         'aiming': {'name': 'Aiming', 'action': skills.aiming},
         'snipe': {'name': 'Snipe', 'bonuses': {'+dexterity': 15}, 'action': skills.snipe},
     'samuraiIndex': {'name': '---Samurai---'},
         'samurai': {'name': 'Great Warrior', 'bonuses': {'+twoHanded:melee:physical': [2, '*', '{level}'], '+twoHanded:melee:block': [2, '*', '{level}'], '+twoHanded:melee:magicBlock': '{level}'}},
-        'majorStrength': {'name': 'Major Strength', 'bonuses': {'+strength': 30, '*strength': 1.1}},
         'sideStep': {'name': 'Side Step', 'bonuses': {'+evasion': 2}, 'reaction': skills.sideStep},
         'dragonSlayer': {'name': 'Dragon Slayer', 'bonuses': {'+strength': 10}, 'action': skills.dragonSlayer},
         'armorPenetration': {'name': 'Penetrating Strikes', 'bonuses': {'+strength': 15, '+melee:armorPenetration': .3}},
     'sorcerorIndex': {'name': '---Sorceror---'},
-        'majorIntelligence': {'name': 'Major Intelligence', 'bonuses': {'+intelligence': 30, '*intelligence': 1.1}},
         'raiseDead': {'name': 'Raise Dead', 'bonuses': {'+intelligence': 5}, 'action': skills.raiseDead},
         'drainLife': {'name': 'Drain Life', 'bonuses': {'+intelligence': 10}, 'action': skills.drainLife},
         'plague': {'name': 'Plague', 'bonuses': {'+intelligence': 15}, 'action': skills.plague},
