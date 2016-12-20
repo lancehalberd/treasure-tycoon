@@ -18,19 +18,19 @@
 /*
 Ability outlines for each class:
 
-xxx Ability 1
+xxx 1: Ability 1
 xxx Minor stat boost (shared)
-xxx Specialization boost 1
+xxx 3: Specialization boost 1
 xxx Flat defense boost (shared)
 xxx Flat offense boost (shared)
-xxx Ability 2
+xxx 5: Ability 2
 xxx Scaling defense boost (shared)
-___ Specialization Paradigm Shift - changes how a specialization works.
+___ 6: Specialization Paradigm Shift - changes how a specialization works.
 xxx Scaling offense boost (shared)
-xxx Specialization boost 2
+xxx 7: Specialization boost 2
 xxx Major stat boost (shared)
-xxx Specialization boost 3
-xxx Ability 3
+xxx 9: Specialization boost 3
+xxx 10: Ability 3
 */
 var abilities = {
     'basicAttack': {'name': 'Basic Attack', 'action': skills.basicAttack},
