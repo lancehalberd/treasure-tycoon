@@ -76,6 +76,25 @@ async.mapSeries([
     // Original images from project contributors:
     'gfx/person.png', 'gfx/grass.png', 'gfx/cave.png', 'gfx/forest.png', 'gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png',
     'gfx/treasureChest.png', 'gfx/moneyIcon.png', 'gfx/projectiles.png',
+    // http://opengameart.org/content/496-pixel-art-icons-for-medievalfantasy-rpg
+    'gfx/496RpgIcons/abilityCharm.png',
+    'gfx/496RpgIcons/abilityPowerShot.png',
+    'gfx/496RpgIcons/abilityThrowWeapon.png',
+    'gfx/496RpgIcons/abilityVenom.png',
+    'gfx/496RpgIcons/auraAbility.png',
+    'gfx/496RpgIcons/auraAttack.png',
+    'gfx/496RpgIcons/auraDefense.png',
+    'gfx/496RpgIcons/clock.png',
+    'gfx/496RpgIcons/scroll.png',
+    'gfx/496RpgIcons/spellFire.png',
+    'gfx/496RpgIcons/spellFreeze.png',
+    'gfx/496RpgIcons/spellHeal.png',
+    'gfx/496RpgIcons/spellMeteor.png',
+    'gfx/496RpgIcons/spellPlague.png',
+    'gfx/496RpgIcons/spellProtect.png',
+    'gfx/496RpgIcons/spellRevive.png',
+    'gfx/496RpgIcons/spellStorm.png',
+    'gfx/496RpgIcons/target.png',
     // http://topps.diku.dk/torbenm/maps.msp
     'gfx/squareMap.bmp',
     // Public domain images:

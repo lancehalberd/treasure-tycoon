@@ -179,7 +179,8 @@ var abilities = {
         'reviveInvulnerability': {'name': 'Halo', 'bonuses': {'$revive:buff': buffEffect({}, {'+duration': 2, '$$invulnerable': 'Invulnerability'})}},
 'tier2Index': {'name': '------Tier 2------'},
     'corsairIndex': {'name': '---Corsair---'},
-        'corsair': {'name': 'Venom', 'bonuses': {'+poison': .2}, 'onHitEffect': {'variableObjectType': 'trigger', 'bonuses': {'$debuff': debuffEffect({'icons':[effectSourcePoison]}, {'+*damage': .9, '+duration': 2})}},
+        'corsair': {'name': 'Venom', 'icon': 'gfx/496RpgIcons/abilityVenom.png',
+                'bonuses': {'+poison': .2}, 'onHitEffect': {'variableObjectType': 'trigger', 'bonuses': {'$debuff': debuffEffect({'icons':[effectSourcePoison]}, {'+*damage': .9, '+duration': 2})}},
                         'helpText': "Apply a stacking debuff with every hit that weakens enemies' attacks and deals damage over time."},
         'hook': {'name': 'Grappling Hook', 'action': skills.hook},
         'hookRange': {'name': 'Long Shot', 'bonuses': {'+hook:range': 5, '+hook:cooldown': -3}},
@@ -359,3 +360,11 @@ $.each(abilities, function (key, ability) {
         ability.reaction.key = key;
     }
 });
+
+function getAbilityIconSource(ability, defaultSource) {
+    var icon = ifdefor(ability.icon);
+    if (ability.action) icon = icon || ability.action.icon;
+    if (ability.reaction) icon = icon || ability.reaction.icon;
+    if (!icon) return ifdefor(defaultSource);
+    return {'image': images[icon], 'xOffset': 0, 'yOffset': 0, 'width': 34, 'height': 34};
+}

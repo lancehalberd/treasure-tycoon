@@ -221,17 +221,18 @@ function drawMap() {
             var canAffordSkill = state.selectedCharacter.divinity >= totalCostForNextLevel(state.selectedCharacter, levelData);
             // Disable shrine if the character did not just complete this area.
             if (!levelCompleted) {
-                context.globalAlpha = .5;
+                context.globalAlpha = .8;
             } else {
                 context.globalAlpha = 1;
             }
+            var abilitySource = getAbilityIconSource(skill, shrineSource);
             // Make the shrine flash if the player can currently activate it.
             if (levelCompleted && !skillLearned && canAffordSkill) {
-                drawTintedImage(context, shrineSource.image, '#ff0', .5 + Math.cos(now() / 100) / 5,
-                            {'left': shrineSource.xOffset, 'top' :shrineSource.yOffset, 'width': shrineSource.width, 'height': shrineSource.height},
+                drawTintedImage(context, abilitySource.image, '#ff0', .5 + Math.cos(now() / 100) / 5,
+                            {'left': abilitySource.xOffset, 'top' :abilitySource.yOffset, 'width': abilitySource.width, 'height': abilitySource.height},
                             shrine);
             } else {
-                context.drawImage(shrineSource.image, shrineSource.xOffset, shrineSource.yOffset, shrineSource.width, shrineSource.height,
+                context.drawImage(abilitySource.image, abilitySource.xOffset, abilitySource.yOffset, abilitySource.width, abilitySource.height,
                                 shrine.left, shrine.top, shrine.width, shrine.height);
             }
             if (skillLearned) {

@@ -40,6 +40,7 @@ function spellAction(type, action, bonuses, helpText) {
     if (typeof(bonuses['+power']) === 'undefined') {
         bonuses['+power'] = ['{magicPower}'];
     }
+    action.icon = ifdefor(action.icon, 'gfx/496RpgIcons/scroll.png');
     action.bonuses = bonuses;
     action.helpText = helpText;
     action.tags = ifdefor(action.tags, []);
@@ -103,7 +104,7 @@ var skills = {
     'soulStrike': attackAction('attack', {'restrictions': ['melee']}, {'+range': 2, '*damage': 2, '+cooldown': 15,
                                '$alwaysHits': 'Never misses', '+healthSacrifice': .2, '+cleave': 1},
                     'Sacrifice a portion of your current health to deal a cleaving attack that hits all enemies in an extended range.'),
-    'powerShot': attackAction('attack', {'restrictions': ['ranged']}, {'+range': 5, '+critChance': 1, '*damage': 1.5,
+    'powerShot': attackAction('attack', {'icon': 'gfx/496RpgIcons/abilityPowerShot.png', 'restrictions': ['ranged']}, {'+range': 5, '+critChance': 1, '*damage': 1.5,
                                         '+cooldown': 10, '$alwaysHits': 'Never misses'},
                                 'Perform a powerful long ranged attack that always strikes critically.'),
     'snipe': attackAction('attack', {'restrictions': ['ranged']}, {'+range': 10, '*damage': 2, '+cooldown': 30,
@@ -113,7 +114,7 @@ var skills = {
     'dragonSlayer': attackAction('attack', {'restrictions': ['melee']},
                         {'+critDamage': .5, '*critChance': 2, '*damage': 3, '+cooldown': 20, '$alwaysHits': 'Never misses'},
                         'Strike with unparalleled ferocity.'),
-    'throwWeapon': attackAction('attack', {'restrictions': ['melee'], 'tags': ['ranged']},
+    'throwWeapon': attackAction('attack', {'icon': 'gfx/496RpgIcons/abilityThrowWeapon.png', 'restrictions': ['melee'], 'tags': ['ranged']},
                         {'+range': 12, '*damage': 1.5, '+cooldown': 10, '$alwaysHits': 'Never misses'},
                         'Throw a shadow clone of your weapon at a distant enemy.'),
     // Generic actions:
@@ -123,7 +124,7 @@ var skills = {
                              'Steal an enemies enchantment for yourself.'),
     'distract': genericAction('dodge', {}, {'$globalDebuff': debuffEffect({}, {'+*accuracy': .5, '+duration': 2}), '+cooldown': 10},
                               'Dodge an attack with a distracting flourish that inflicts: {$globalDebuff} on all enemies.'),
-    'charm': genericAction('charm', {'tags': ['minion']}, {'+range': 1, '+cooldown': ['240', '*', [100, '/', [100, '+', '{intelligence}']]]},
+    'charm': genericAction('charm', {'icon': 'gfx/496RpgIcons/abilityCharm.png', 'tags': ['minion']}, {'+range': 1, '+cooldown': ['240', '*', [100, '/', [100, '+', '{intelligence}']]]},
                            'Steal an enemies heart, turning them into an ally.'),
     'pet': genericAction('minion', {'target': 'none', 'tags': ['minion'], 'monsterKey': 'wolf'}, {'+limit': 1, '+cooldown': 30},
                          'Call a wolf to fight with you.'),
@@ -141,7 +142,7 @@ var skills = {
     'consume': genericAction('consume', {'target': 'all', 'targetDeadUnits': true, 'consumeCorpse': true},
                              {'+consumeRatio': .2, '+range': 5, '+count': 0, '+duration': 0},
                              'Consume the spirits of nearby fallen enemies and allies to regenerate your health.'),
-    'aiming': genericAction('effect', {'target': 'self'}, {'+cooldown': 30, '$buff': buffEffect({},
+    'aiming': genericAction('effect', {'icon': 'gfx/496RpgIcons/target.png', 'target': 'self'}, {'+cooldown': 30, '$buff': buffEffect({},
                             {'+ranged:range': 5, '*ranged:attackSpeed': .5, '*ranged:damage': 1.5, '*ranged:accuracy': 1.5, '+ranged:critChance': .2, '+ranged:critDamage': .3, '+duration': 10})},
                             'Enter a state of heightened perception greatly increasing your sharpshooting abilities while reducing your attack speed. Grants: {$buff}'),
     'smokeBomb': genericAction('criticalCounter', {}, {'$dodgeAttack': true, '+cooldown': 100, '$globalDebuff': debuffEffect({},
@@ -149,15 +150,15 @@ var skills = {
                 'If an attack would deal more than half of your remaining life, dodge it and throw a smoke bomb causing: {$globalDebuff} to all enemies.'),
     'shadowClone': genericAction('clone', {'tags': ['minion']}, {'+limit': 10, '+chance': .1},
                         'Chance to summon a weak clone of yourself on taking damage'),
-    'enhanceWeapon': genericAction('effect', {'tags': ['spell'], 'target': 'self'}, {'+cooldown': 30, '$buff': buffEffect({'icons': [effectSourceUp, effectSourceSword]}, {
+    'enhanceWeapon': genericAction('effect', {'icon': 'gfx/496RpgIcons/auraAttack.png', 'tags': ['spell'], 'target': 'self'}, {'+cooldown': 30, '$buff': buffEffect({'icons': [effectSourceUp, effectSourceSword]}, {
                             '++physicalDamage': ['{strength}', '/', 10], '++magicDamage': ['{intelligence}', '/', 10],
                             '++critDamage': ['{dexterity}', '/', 500], '+duration': 10})},
                     'Enhance the strength of your weapon granting: {$buff}'),
-    'enhanceArmor': genericAction('effect', {'tags': ['spell'], 'target': 'self'}, {'+cooldown': 30, '$buff': buffEffect({'icons': [effectSourceUp, effectSourceArmor]}, {
+    'enhanceArmor': genericAction('effect', {'icon': 'gfx/496RpgIcons/auraDefense.png', 'tags': ['spell'], 'target': 'self'}, {'+cooldown': 30, '$buff': buffEffect({'icons': [effectSourceUp, effectSourceArmor]}, {
                             '++armor': ['{strength}', '/', 10], '++magicBlock': ['{intelligence}', '/', 20],
                             '++block': ['{intelligence}', '/', 10], '++evasion': ['{dexterity}', '/', 10], '+duration': 15})},
                     'Enhance the strength of your armor granting: {$buff}'),
-    'enhanceAbility': genericAction('effect', {'tags': ['spell'], 'target': 'self'}, {'+cooldown': 20, '$buff': buffEffect({}, {
+    'enhanceAbility': genericAction('effect', {'icon': 'gfx/496RpgIcons/auraAbility.png', 'tags': ['spell'], 'target': 'self'}, {'+cooldown': 20, '$buff': buffEffect({}, {
                             // This buff increases magicPower from magicDamage by 44% since that counts both damage and magicPower.
                             // Making a note here in case I want to change this *damage bonus to *physicalDamage later to balance this.
                             '++cooldownReduction': .2, '+*magicPower': 1.2, '+*damage': 1.2, '+*range': 1.2, '+duration': 5})},
@@ -195,24 +196,24 @@ var skills = {
     'explode': genericAction('explode', {'tags': ['ranged']}, {'+power': ['{maxHealth}'], '$alwaysHits': 'Shrapnel cannot be evaded'},
                              'Explode into shrapnel on death.'),
     // Spell actions
-    'heal': spellAction('heal', {'target': 'allies'}, {'+cooldown': 10, '+range': 10}, 'Cast a spell to restore {+power} health.'),
+    'heal': spellAction('heal', {'icon': 'gfx/496RpgIcons/spellHeal.png', 'target': 'allies'}, {'+cooldown': 10, '+range': 10}, 'Cast a spell to restore {+power} health.'),
     'reflect': spellAction('reflect', {'target': 'allies'}, {'+cooldown': 20},
             'Create a magical barrier that will reflect projectile attacks until it breaks after taking {+power} damage. Further casting strengthens the barrier.'),
-    'revive': spellAction('revive', {}, {'+cooldown': 120},
+    'revive': spellAction('revive', {}, {'icon': 'gfx/496RpgIcons/spellRevive.png', '+cooldown': 120},
             'Upon receiving a lethal blow, cast a spell that brings you back to life with {+power} health.'),
-    'protect': spellAction('effect', {'target': 'allies'}, {'+cooldown': 30, '+range': 10, '$buff': buffEffect({'icons': [effectSourceUp, effectSourceArmor]}, {'++armor': ['{intelligence}'], '+duration': 20})},
+    'protect': spellAction('effect', {'icon': 'gfx/496RpgIcons/spellProtect.png', 'target': 'allies'}, {'+cooldown': 30, '+range': 10, '$buff': buffEffect({'icons': [effectSourceUp, effectSourceArmor]}, {'++armor': ['{intelligence}'], '+duration': 20})},
                            'Create a magic barrier that grants: {$buff}'),
     'aegis': spellAction('criticalCounter', {}, {'+cooldown': 60, '+stopAttack': 1,
                 '$buff': buffEffect({}, {'$$maxBlock': 'Block checks are always perfect', '$$maxMagicBlock': 'Magic Block checks are always perfect', '+duration': 5})},
                 'If an attack would deal more than half of your remaining life, prevent it and cast an enchantment that grants you: {$buff}'),
-    'fireball': spellAction('spell', {'tags': ['ranged'], 'animation': 'fireball', 'size': 32, 'color': 'red'},
+    'fireball': spellAction('spell', {'icon': 'gfx/496RpgIcons/spellFire.png', 'tags': ['ranged'], 'animation': 'fireball', 'size': 32, 'color': 'red'},
                                     {'+range': 12, '+cooldown': 8, '$alwaysHits': 'Never misses', '+explode': 1, '+area': 3, '+areaCoefficient': .5},
                             'Conjure an explosive fireball to hurl at enemies dealing {+power} damage.'),
-    'freeze': spellAction('spell', {'tags': ['nova'], 'height': 20, 'color': 'white', 'alpha': .7},
+    'freeze': spellAction('spell', {'icon': 'gfx/496RpgIcons/spellFreeze.png', 'tags': ['nova'], 'height': 20, 'color': 'white', 'alpha': .7},
                                     {'+power': ['{magicPower}', '/', 2], '+area': [4, '+', ['{magicPower}', '/', '50']],
                                     '+areaCoefficient': 1, '+cooldown': 10, '$alwaysHits': 'Never misses', '+slowOnHit': 1},
                         'Emit a blast of icy air that deals {+power} damage and slows enemies. The effect is less the further away the enemy is.'),
-    'storm': spellAction('spell', {'tags': ['field'], 'yOffset': 100, 'height': 40, 'color': 'yellow', 'alpha': .2},
+    'storm': spellAction('spell', {'icon': 'gfx/496RpgIcons/spellStorm.png', 'tags': ['field'], 'yOffset': 100, 'height': 40, 'color': 'yellow', 'alpha': .2},
                          {'+hitsPerSecond': 2, '+duration': 5, '+power': ['{magicPower}', '/', 4],
                          '+area': [5, '+', ['{magicPower}', '/', '50']], '+cooldown': 20, '$alwaysHits': 'Never misses'},
                         'Create a cloud of static electricity that randomly deals magic damage to nearby enemies.'),
@@ -220,18 +221,18 @@ var skills = {
                        {'+power': ['{magicPower}', '/', 2], '+range': 10, '+area': [8, '+', ['{magicPower}', '/', '100']],
                        '+areaCoefficient': 1, '+cooldown': 10, '+lifeSteal': 1, '$alwaysHits': 'Never misses'},
                         'Drain life from all enemies in a large area.'),
-    'plague': spellAction('spell', {'tags': ['blast'], 'height': 20, 'color': 'yellow', 'alpha': .4},
+    'plague': spellAction('spell', {'icon': 'gfx/496RpgIcons/spellPlague.png', 'tags': ['blast'], 'height': 20, 'color': 'yellow', 'alpha': .4},
                         {'+power': ['{magicPower}', '/', 10], '+range': 10, '+area': [8, '+', ['{magicPower}', '/', '100']],
                         '+areaCoefficient': 1, '+cooldown': 20, '$alwaysHits': 'Never misses',
                         '$debuff': debuffEffect({}, {'++damageOverTime': ['{magicPower}', '/', 10], '+duration': 0})},
                         'Apply a permanent debuff that deals damage over time to effected enemies.'),
-    'stopTime': spellAction('stop', {}, {'+duration': [1, '+', ['{magicPower}' , '/', '50']], '+cooldown': 120},
+    'stopTime': spellAction('stop', {'icon': 'gfx/496RpgIcons/clock.png', }, {'+duration': [1, '+', ['{magicPower}' , '/', '50']], '+cooldown': 120},
                 'If an attack would deal more than half of your remaining life, negate it and cast a spell that stops time for everyone else.'),
     'dispell': spellAction('spell', {'tags': ['blast'], 'height': 20, 'color': 'grey', 'alpha': .4},
                     {'+range': 10, '+area': [8, '+', ['{magicPower}', '/', '100']], '+cooldown': 15,
                     '$alwaysHits': 'Never misses', '$debuff': debuffEffect({}, {'+*magicResist': .5, '+*magicBlock': .5, '+duration': 0})},
                     'Premanently reduce the magic resistances of all enemies in a large area.'),
-    'meteor': spellAction('spell', {'tags': ['rain'], 'height': 20, 'color': 'grey', 'alpha': .4, 'size': 20},
+    'meteor': spellAction('spell', {'icon': 'gfx/496RpgIcons/spellMeteor.png', 'tags': ['rain'], 'height': 20, 'color': 'grey', 'alpha': .4, 'size': 20},
                        {'+count': [1, '+', ['{magicPower}', '/', '100']], '+explode': 1, '+power': ['{magicPower}', '/', 2],
                        '+area': [2, '+', ['{magicPower}', '/', '100']], '+cooldown': 15, '$alwaysHits': 'Never misses'},
                         'Rain {+count} meteors down on your enemies each dealing {+power} damage.')

@@ -291,9 +291,17 @@ $('.js-mouseContainer').on('mousedown', '.js-mainCanvas', function (event) {
     }
     if (event.which != 1) return; // Handle only left click.
     if (!editingMap && newMapTarget) {
-        if (currentMapTarget.isShrine && state.selectedCharacter.currentLevelKey === currentMapTarget.level.levelKey && state.selectedCharacter.board.boardPreview) {
-            showContext('jewel');
-            return;
+        if (currentMapTarget.isShrine) {
+            if (state.selectedCharacter.currentLevelKey === currentMapTarget.level.levelKey && state.selectedCharacter.board.boardPreview) {
+                showContext('jewel');
+                return;
+            } else if (state.selectedCharacter.currentLevelKey !== currentMapTarget.level.levelKey) {
+                // Show them the area menu if they click on the shrine from a different area.
+                state.selectedCharacter.selectedLevelKey = currentMapTarget.level.levelKey;
+                displayAreaMenu();
+                currentMapTarget = null;
+                $('.js-mainCanvas').toggleClass('clickable', false);
+            }
         } else if (!currentMapTarget.isShrine && currentMapTarget.levelKey) {
             state.selectedCharacter.selectedLevelKey = currentMapTarget.levelKey;
             displayAreaMenu();
