@@ -171,7 +171,7 @@ var abilities = {
         'counterChance': {'name': 'Heightened Reflexes', 'bonuses': {'+dexterity': 5, '+counterAttack:chance': .1}},
         'dragonPunch': {'name': 'Dragon Punch', 'action': skills.dragonPunch},
     'priestIndex': {'name': '---Priest---'},
-        'priest': {'name': 'Divine Blessing', 'bonuses': {'+healOnCast': .1, '+overHealReflection': .5, '+castKnockBack': 12}},
+        'priest': {'name': 'Divine Blessing', 'icon': 'gfx/496RpgIcons/abilityDivineBlessing.png', 'bonuses': {'+healOnCast': .1, '+overHealReflection': .5, '+castKnockBack': 12}},
         'heal': {'name': 'Heal', 'bonuses': {'+intelligence': 5}, 'action': skills.heal},
         'reflect': {'name': 'Reflect', 'bonuses': {'+intelligence': 10}, 'action': skills.reflect},
         'revive': {'name': 'Revive', 'bonuses': {'+intelligence': 10}, 'reaction': skills.revive},

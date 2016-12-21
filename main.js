@@ -79,6 +79,7 @@ async.mapSeries([
     // http://opengameart.org/content/496-pixel-art-icons-for-medievalfantasy-rpg
     'gfx/496RpgIcons/abilityCharm.png',
     'gfx/496RpgIcons/abilityConsume.png',
+    'gfx/496RpgIcons/abilityDivineBlessing.png',
     'gfx/496RpgIcons/abilityPowerShot.png',
     'gfx/496RpgIcons/abilityShadowClone.png',
     'gfx/496RpgIcons/abilityThrowWeapon.png',
