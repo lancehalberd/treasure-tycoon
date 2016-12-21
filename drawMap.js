@@ -220,8 +220,8 @@ function drawMap() {
             var skillLearned = state.selectedCharacter.adventurer.unlockedAbilities[skill.key];
             var canAffordSkill = state.selectedCharacter.divinity >= totalCostForNextLevel(state.selectedCharacter, levelData);
             // Disable shrine if the character did not just complete this area.
-            if (!levelCompleted) {
-                context.globalAlpha = .8;
+            if (!skillLearned && !canAffordSkill) {
+                context.globalAlpha = .7;
             } else {
                 context.globalAlpha = 1;
             }
@@ -241,8 +241,8 @@ function drawMap() {
                                     shrine.left, shrine.top, shrine.width, shrine.height);
             } else if (!canAffordSkill) {
                 // If the character can't afford the ability for this leve, draw a red circle around the shrine.
-                context.drawImage(circleSource.image, circleSource.xOffset, circleSource.yOffset, circleSource.width, circleSource.height,
-                                    shrine.left, shrine.top, shrine.width, shrine.height);
+                //context.drawImage(circleSource.image, circleSource.xOffset, circleSource.yOffset, circleSource.width, circleSource.height,
+                //                    shrine.left, shrine.top, shrine.width, shrine.height);
             }
             context.restore();
         }

@@ -362,6 +362,7 @@ $.each(abilities, function (key, ability) {
 });
 
 function getAbilityIconSource(ability, defaultSource) {
+    if (!ability) return null;
     var icon = ifdefor(ability.icon);
     if (ability.action) icon = icon || ability.action.icon;
     if (ability.reaction) icon = icon || ability.reaction.icon;

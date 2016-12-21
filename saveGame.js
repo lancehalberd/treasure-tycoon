@@ -319,8 +319,8 @@ function importJewel(jewelData) {
     return makeJewelProper(jewelData.tier, importShape(jewelData.shape), jewelData.components, jewelData.quality);
 }
 function exportShape(shape) {
-    return {'shapeKey': shape.key, 'x': shape.points[0][0], 'y': shape.points[0][1], 'rotation': shape.angles[0]};
+    return {'shapeKey': shape.key, 'x': shape.points[0][0] * originalJewelScale / displayJewelShapeScale, 'y': shape.points[0][1] * originalJewelScale / displayJewelShapeScale, 'rotation': shape.angles[0]};
 }
 function importShape(shapeData) {
-    return makeShape(shapeData.x, shapeData.y, shapeData.rotation, shapeDefinitions[shapeData.shapeKey][0], jewelShapeScale);
+    return makeShape(shapeData.x * displayJewelShapeScale / originalJewelScale, shapeData.y * displayJewelShapeScale / originalJewelScale, shapeData.rotation, shapeDefinitions[shapeData.shapeKey][0], displayJewelShapeScale);
 }

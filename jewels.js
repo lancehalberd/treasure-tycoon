@@ -1,8 +1,10 @@
+var originalJewelScale = 30;
+var displayJewelShapeScale = 30;
 var jewelShapeScale = 30;
 
 function makeJewel(tier, shapeType, components, quality) {
     var shapeDefinition = shapeDefinitions[shapeType][0];
-    var shape = makeShape(0, 0, 0, shapeDefinition).scale(jewelShapeScale)
+    var shape = makeShape(0, 0, 0, shapeDefinition).scale(displayJewelShapeScale)
     jewel = makeJewelProper(tier, shape, components, quality);
     jewel.shape.setCenterPosition(jewel.canvas.width / 2, jewel.canvas.height / 2);
     return jewel;

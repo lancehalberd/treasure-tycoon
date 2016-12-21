@@ -222,7 +222,7 @@ function newCharacter(job) {
     return character;
 }
 function convertShapeDataToShape(shapeData) {
-    return makeShape(shapeData.p[0], shapeData.p[1], (shapeData.t % 360 + 360) % 360, shapeDefinitions[shapeData.k][0], jewelShapeScale);
+    return makeShape(shapeData.p[0] * displayJewelShapeScale / originalJewelScale, shapeData.p[1] * displayJewelShapeScale / originalJewelScale, (shapeData.t % 360 + 360) % 360, shapeDefinitions[shapeData.k][0], displayJewelShapeScale);
 }
 function makeAdventurerFromData(adventurerData) {
     var personCanvas = createCanvas(personFrames * 32, 64);

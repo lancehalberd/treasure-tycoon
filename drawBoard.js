@@ -38,11 +38,16 @@ function drawBoardJewels(character, canvas) {
         drawShapesPath(context, board.spaces, true, false);
         context.globalAlpha = 1;
     }
-    drawBoardJewelsProper(context, relativeMousePosition(canvas), board);
+    drawBoardJewelsProper(context, relativeMousePosition(canvas), board, isMouseOver($(canvas)));
 }
-function drawBoardJewelsProper(context, lightSource, board) {
+function drawBoardJewelsProper(context, lightSource, board, mouseIsOverBoard) {
     var focusedJewelIsOnBoard = false;
     var fixedJewels = board.fixed;
+    for (var i = 0; i < board.jewels.length; i++) {
+        var jewel = board.jewels[i];
+        drawJewel(context, jewel.shape, lightSource);
+        focusedJewelIsOnBoard = focusedJewelIsOnBoard || draggedJewel == jewel || overJewel == jewel;
+    }
     for (var i = 0; i < fixedJewels.length; i++) {
         var jewel = fixedJewels[i];
         if (ifdefor(jewel.disabled)) {
@@ -54,6 +59,11 @@ function drawBoardJewelsProper(context, lightSource, board) {
         } else {
             jewel.shape.color = '#333';
             drawJewel(context, jewel.shape, lightSource);
+        }
+        var iconSource = getAbilityIconSource(jewel.ability);
+        if (mouseIsOverBoard && iconSource) {
+            context.drawImage(iconSource.image, iconSource.xOffset, iconSource.yOffset, iconSource.width, iconSource.height,
+                jewel.shape.center[0] - iconSource.width / 3, jewel.shape.center[1] - iconSource.height / 3, iconSource.width * 2 / 3, iconSource.height * 2 / 3);
         }
     }
     if (board.boardPreview) {
@@ -71,17 +81,17 @@ function drawBoardJewelsProper(context, lightSource, board) {
         var fixedJewel = board.boardPreview.fixed[0];
         context.globalAlpha = 1;
         drawJewel(context, fixedJewel.shape, lightSource);
+        var iconSource = getAbilityIconSource(fixedJewel.ability);
+        if (mouseIsOverBoard && iconSource) {
+            context.drawImage(iconSource.image, iconSource.xOffset, iconSource.yOffset, iconSource.width, iconSource.height,
+                fixedJewel.shape.center[0] - iconSource.width / 3, fixedJewel.shape.center[1] - iconSource.height / 3, iconSource.width * 2 / 3, iconSource.height * 2 / 3);
+        }
         focusedJewelIsOnBoard = focusedJewelIsOnBoard || draggingBoardJewel == fixedJewel || overJewel == fixedJewel;
 
         context.globalAlpha = .5 + .2 * Math.sin(now() / 150);
         context.fillStyle = '#ff0';
         drawShapesPath(context, [fixedJewel.shape], true, false);
         context.globalAlpha = 1;
-    }
-    for (var i = 0; i < board.jewels.length; i++) {
-        var jewel = board.jewels[i];
-        drawJewel(context, jewel.shape, lightSource);
-        focusedJewelIsOnBoard = focusedJewelIsOnBoard || draggedJewel == jewel || overJewel == jewel;
     }
     if (overVertex && focusedJewelIsOnBoard) {
         context.strokeStyle = 'black';
