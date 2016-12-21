@@ -293,7 +293,7 @@ function drawMap() {
         context.save();
         context.lineWidth = 5;
         context.strokeStyle = '#0f0';
-        drawMapArrow(context, clickedMapNode, {'left': arrowTargetLeft, 'top': arrowTargetTop, 'width': 40, 'height': 40});
+        drawMapArrow(context, clickedMapNode, {'left': arrowTargetLeft, 'top': arrowTargetTop, 'width': 0, 'height': 0});
         context.restore();
     }
 }

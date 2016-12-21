@@ -362,8 +362,6 @@ $('.js-mouseContainer').on('mousemove', function (event) {
     draggedMap = true;
     var x = event.pageX - $(this).offset().left;
     var y = event.pageY - $(this).offset().top;
-    var tx = Math.floor((x + mapLeft) / 40);
-    var ty = Math.floor((y + mapTop) / 40);
     if (editingMap) {
         if (selectionStartPoint) {
             var endPoint = {'x': x, 'y': y};
@@ -376,8 +374,8 @@ $('.js-mouseContainer').on('mousemove', function (event) {
             });
             drawRunningAnts(mainContext, selectedRectangle);
         } else if (event.which === 3 && clickedMapNode) {
-            arrowTargetLeft = x - 20;
-            arrowTargetTop = y - 20;
+            arrowTargetLeft = x;
+            arrowTargetTop = y;
         } else if (mapDragX !== null && mapDragY !== null) {
             if (clickedMapNode) {
                 var dx = x - (clickedMapNode.left);
