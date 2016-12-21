@@ -139,7 +139,7 @@ var skills = {
     'sicem': genericAction('effect', {}, {'+cooldown': [60, '*', [100, '/', [100, '+', '{dexterity}']]],
                             '+range': 10, '$allyBuff': buffEffect({}, {'*speed': 2, '*attackSpeed': 2, '*damage': 2, '+duration': 2})},
                             'Incite your allies to fiercely attack the enemy granting them: {$allyBuff}'),
-    'consume': genericAction('consume', {'target': 'all', 'targetDeadUnits': true, 'consumeCorpse': true},
+    'consume': genericAction('consume', {'icon': 'gfx/496RpgIcons/abilityConsume.png', 'target': 'all', 'targetDeadUnits': true, 'consumeCorpse': true},
                              {'+consumeRatio': .2, '+range': 5, '+count': 0, '+duration': 0},
                              'Consume the spirits of nearby fallen enemies and allies to regenerate your health.'),
     'aiming': genericAction('effect', {'icon': 'gfx/496RpgIcons/target.png', 'target': 'self'}, {'+cooldown': 30, '$buff': buffEffect({},
@@ -148,7 +148,7 @@ var skills = {
     'smokeBomb': genericAction('criticalCounter', {}, {'$dodgeAttack': true, '+cooldown': 100, '$globalDebuff': debuffEffect({},
                                     {'+*accuracy': 0, '+duration': 5})},
                 'If an attack would deal more than half of your remaining life, dodge it and throw a smoke bomb causing: {$globalDebuff} to all enemies.'),
-    'shadowClone': genericAction('clone', {'tags': ['minion']}, {'+limit': 10, '+chance': .1},
+    'shadowClone': genericAction('clone', {'icon': 'gfx/496RpgIcons/abilityShadowClone.png', 'tags': ['minion']}, {'+limit': 10, '+chance': .1},
                         'Chance to summon a weak clone of yourself on taking damage'),
     'enhanceWeapon': genericAction('effect', {'icon': 'gfx/496RpgIcons/auraAttack.png', 'tags': ['spell'], 'target': 'self'}, {'+cooldown': 30, '$buff': buffEffect({'icons': [effectSourceUp, effectSourceSword]}, {
                             '++physicalDamage': ['{strength}', '/', 10], '++magicDamage': ['{intelligence}', '/', 10],
