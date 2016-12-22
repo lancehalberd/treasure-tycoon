@@ -187,20 +187,18 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
             self.y += self.vy;
             var hit = false;
             if (attackStats.attack.tags['rain'] >= 0) {
-                var speed = Math.sqrt(self.vx * self.vx + self.vy * self.vy);
                 self.vx = tx - self.x;
                 self.vy = Math.max(self.vy, ty - self.y);
                 var distance = Math.sqrt(self.vx * self.vx + self.vy * self.vy);
-                self.vx *= speed / distance;
-                self.vy *= speed / distance;
-                self.vy -= 1;
+                self.vx *= attackStats.speed / distance;
+                self.vy *= attackStats.speed / distance;
                 // rain hits when it touches the ground
                 hit = (self.y <= 0);
             } else {
-                self.vy -= .1 * 15 / Math.abs(self.vx);
                 // normal projectiles hit when they get close to the targets center.
-                hit = Math.abs(tx - self.x) < 10 && Math.abs(ty - self.y) < 64 && self.target.health > 0;
+                hit = Math.abs(tx - self.x) <= Math.abs(self.vx) + 1 && Math.abs(ty - self.y) <= ifdefor(self.target.height, 128) + size / 2 && self.target.health > 0;
             }
+            self.vy -= attackStats.gravity;
             self.t += 1;
             if (self.attackStats.piercing) {
                 for (var i = 0; i < self.attackStats.source.enemies.length; i++) {
@@ -208,7 +206,7 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                     if (enemy === self.target || self.hitTargets.indexOf(enemy) >= 0) {
                         continue;
                     }
-                    if (Math.abs(enemy.x + ifdefor(enemy.width, 64) / 2 - self.x) < 10 && Math.abs(ifdefor(enemy.y, 64) + ifdefor(enemy.height, 128) / 2 - self.y) < 64 && enemy.health > 0) {
+                    if (Math.abs(enemy.x + ifdefor(enemy.width, 64) / 2 - self.x) <= Math.abs(self.vx) + 1 && Math.abs(ifdefor(enemy.y, 0) + ifdefor(enemy.height, 128) / 2 - self.y) < ifdefor(self.target.height, 128) + size / 2 && enemy.health > 0) {
                         applyAttackToTarget(self.attackStats, enemy);
                         self.hitTargets.push(enemy);
                     }
@@ -226,9 +224,9 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                     var newTarget = self.attackStats.source;
                     self.attackStats.source = self.target;
                     self.target = newTarget;
-                    self.vx = -self.vx;
-                    var distance = Math.abs(self.x - newTarget.x);
-                    if (self.y > 240 - 128) self.vy = -distance / 200;
+                    var v = getProjectileVelocity(self.attackStats, self.x, self.y, newTarget);
+                    self.vx = v[0];
+                    self.vy = v[1];
                 } else if (applyAttackToTarget(self.attackStats, self.target)) {
                     self.done = true;
                     if (ifdefor(attackStats.attack.chaining)) {
@@ -237,7 +235,7 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                         self.hitTargets = [];
                         // reduce the speed. This seems realistic and make it easier to
                         // distinguish bounced attacks from new attacks.
-                        self.vx = -self.vx / 5;
+                        self.vx = -self.vx / 2;
                         var targets = self.attackStats.source.enemies.slice();
                         while (targets.length) {
                             var index = Math.floor(Math.random() * targets.length);
@@ -248,41 +246,55 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                                 targets.splice(index--, 1);
                                 continue;
                             }
-                            // increase the speed back to normal if the ricochete succeeds.
-                            self.vx *= 5;
                             self.hit = false;
                             self.target = newTarget;
-                            var distance = Math.abs(self.x - newTarget.x);
-                            if (self.vx * (self.target.x + 32 - self.x) <= 0) {
-                                self.vx = -self.vx;
-                            }
-                            if (self.y > 240 - 128) self.vy = -distance / 200;
+                            // Calculate new velocity
+                            var v = getProjectileVelocity(self.attackStats, self.x, self.y, newTarget);
+                            self.vx = v[0];
+                            self.vy = v[1];
                             break;
                         }
                     } else if (ifdefor(self.attackStats.piercing)) {
                         self.done = false;
-                        console.log('pierce');
+                        //console.log('pierce');
                     }
                 }
             } else if (self.target.health > 0 && self.vx * (tx - self.x) <= 0) {
-                self.vx = -self.vx;
+                //self.vx = -self.vx;
+                // console.log([tx, self.x, self.vx, 'y', ty, self.y, size / 2, ifdefor(self.target.height, 128) / 2]);
             }
         },
         'draw': function (character) {
             if (self.done || self.delay > 0) return
+            mainContext.save();
+            mainContext.translate(self.x - character.cameraX, groundY - self.y);
+            if (self.vx < 0) mainContext.scale(-1, 1);
             if (self.attackStats.attack.base.animation && projectileAnimations[self.attackStats.attack.base.animation]) {
                 var animation = projectileAnimations[self.attackStats.attack.base.animation];
                 var frame = animation.frames[Math.floor(self.t / 5) % animation.frames.length];
                 mainContext.drawImage(animation.image, frame[0], frame[1], frame[2], frame[3],
-                                  self.x - character.cameraX - size / 2, groundY - (self.y - size / 2), size, size);
+                                   -size / 2, -size / 2, size, size);
             } else {
                 mainContext.fillStyle = ifdefor(color, '#000');
-                mainContext.fillRect(self.x - character.cameraX - size / 2, groundY - (self.y - size / 2), size, size);
+                mainContext.fillRect(-size / 2, -size / 2, size, size);
             }
+            mainContext.restore();
         }
     };
     self.attackStats.projectile = self;
     return self;
+}
+
+function getProjectileVelocity(attackStats, x, y, target) {
+    var tx = target.x + ifdefor(target.width, 64) / 2;
+    var ty = ifdefor(target.y, 0) + ifdefor(target.height, 128) * 3 / 4;
+    var v = [tx - x, ty - y];
+    var distance = Math.sqrt(v[0] * v[0] + v[1] * v[1]);
+    var frameEstimate = distance / attackStats.speed;
+    // Over a period of N frames, the projectile will fall roughly N^2 / 2, update target velocity accordingly
+    v[1] += attackStats.gravity * frameEstimate * frameEstimate / 2;
+    distance = Math.sqrt(v[0] * v[0] + v[1] * v[1]);
+    return [v[0] * attackStats.speed / distance, v[1] * attackStats.speed / distance];
 }
 
 

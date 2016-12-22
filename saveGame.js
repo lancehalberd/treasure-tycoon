@@ -109,7 +109,7 @@ function importState(stateData) {
     });
     stateData.items.forEach(function (itemData) {
         var item = importItem(itemData);
-        addToInventory(item);
+        if (item) addToInventory(item);
     });
     if (stateData.craftingItems && stateData.craftingItems.length) {
         $('.js-craftingSelectOptions .js-itemSlot').each(function (index) {
@@ -117,16 +117,18 @@ function importState(stateData) {
             // we expect 3. Just show however many we have.
             if (!stateData.craftingItems[index]) return;
             var item = importItem(stateData.craftingItems[index]);
-            $(this).append(item.$item);
+            if (item) $(this).append(item.$item);
         });
         $('.js-craftingSelectOptions').show();
         $('.js-craftingOptions').hide();
     } else if (stateData.enchantmentItem) {
         var item = importItem(stateData.enchantmentItem);
-        $('.js-enchantmentSlot').append(item.$item);
-        $('.js-enchantmentOptions').show();
-        $('.js-craftingOptions').hide();
-        updateEnchantmentOptions();
+        if (item) {
+            $('.js-enchantmentSlot').append(item.$item);
+            $('.js-enchantmentOptions').show();
+            $('.js-craftingOptions').hide();
+            updateEnchantmentOptions();
+        }
     }
     state.craftingLevel = stateData.craftingLevel;
     state.craftingTypeFilter = stateData.craftingTypeFilter;
@@ -217,7 +219,10 @@ function importAdventurer(adventurerData) {
         console.log(abilityHelpText(testAbilities[i], adventurer));
     }
     $.each(adventurerData.equipment, function (key, itemData) {
-        if (itemData) equipItem(adventurer, importItem(itemData), false);
+        if (itemData) {
+            var item = importItem(itemData);
+            if (item) equipItem(adventurer, item, false);
+        }
     });
     return adventurer;
 }
@@ -232,6 +237,8 @@ function exportItem(item) {
 }
 function importItem(itemData) {
     var baseItem = itemsByKey[itemData.itemKey];
+    // This can happen if a base item was removed since they last saved the game.
+    if (!baseItem) return null;
     var item = {
         'base': baseItem,
         'itemLevel': itemData.itemLevel,

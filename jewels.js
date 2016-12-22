@@ -226,7 +226,7 @@ function updateAdjacencyBonuses(jewel) {
             break;
         case 6:
             if (resonanceBonus) jewel.adjacencyBonuses['+magicBlock'] = resonanceBonus / 10;
-            if (contrastBonus) jewel.adjacencyBonuses['+maxMagicDamage'] = contrastBonus / 10;
+            if (contrastBonus) jewel.adjacencyBonuses['+magicDamage'] = contrastBonus / 10;
             break;
         case 7:
             // This used to be increased experience, but we don't have xp any more

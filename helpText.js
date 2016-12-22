@@ -161,11 +161,9 @@ var implicitBonusMap = {
     '+minPhysicalDamage': function (bonusSource, actor) {
         return 'Damage: ' + bonusSource.bonuses['+minPhysicalDamage'].format(1) + ' to ' + bonusSource.bonuses['+maxPhysicalDamage'].format(1);
     },
-    '+maxPhysicalDamage': true,
     '+minMagicDamage': function (bonusSource, actor) {
         return 'Magic: ' + bonusSource.bonuses['+minMagicDamage'].format(1) + ' to ' + bonusSource.bonuses['+maxMagicDamage'].format(1);
     },
-    '+maxMagicDamage': true,
     '+weaponRange': 'Range: $1',
     '+range': 'Range: $1',
     '+attackSpeed': 'Attack Speed: $1',
@@ -174,6 +172,8 @@ var implicitBonusMap = {
     '+evasion': 'Evasion: $1',
     '+block': 'Block: $1',
     '+magicBlock': 'Magic Block: $1',
+    '+speed': 'Movement Speed: $1',
+    '-speed': 'Movement Speed: -$1',
     // Ability implicits
     '$monsterKey': 'Summons a $',
     '+area': 'Area: $1',
@@ -189,7 +189,6 @@ var bonusMap = {
     '$setRange': function (bonusSource, actor) {
         if (bonusSource.bonuses['$setRange'] === 'melee') return 'Attacks become melee';
         if (bonusSource.bonuses['$setRange'] === 'ranged') return 'Attacks become ranged';
-        console.log(bonusSource);
         throw new Error('unexpected value ' + bonusSource.bonuses['$setRange']);
     },
     '$weaponRange': 'Weapon range is always $1',
@@ -206,10 +205,12 @@ var bonusMap = {
     '+physicalDamage': '+$1 physical damage',
     '*physicalDamage': '$3x physical damage',
     '%physicalDamage': '%1 increased physical damage',
-    '+maxMagicDamage': '+$1 max magic damage',
     '+magicDamage': '+$1 magic damage',
     '*magicDamage': '$3x magic damage',
     '%magicDamage': '%1 increased magic damage',
+    '+magicPower': '+$1 magic power',
+    '*magicPower': '$1x magic power',
+    '%magicPower': '%1 increased magic power',
     '*attackSpeed': '$1x attack speed',
     '%attackSpeed': '%1 increased attack speed',
     '+critChance': '+%1 chance to critical strike',
@@ -217,8 +218,10 @@ var bonusMap = {
     '%critChance': '%1 increased critical chance',
     '+critDamage': '+%1 critical damage',
     '*critDamage': '$1x critical damage',
+    '%critDamage': '%1 increased critical damage',
     '+critAccuracy': '+%1 critical accuracy',
     '*critAccuracy': '$1x critical accuracy',
+    '%critAccuracy': '%1 increased critical accuracy',
     '+range': '+$1 range',
     '+accuracy': '+$1 accuracy',
     '*accuracy': '$1x accuracy',
@@ -251,16 +254,19 @@ var bonusMap = {
     '*healthRegen': '$1x health regenerated per second',
     '+damageOnMiss': 'Deals $1 true damage to enemy on miss',
     '+slowOnHit': 'Slow targets by %0 on hit',
-    '+speed': '+$1 speed',
-    '%speed': '%1 increased speed',
-    '*speed': '$1x speed',
+    '-speed': '$1 reduced movement speed',
+    '+speed': '+$1 movement speed',
+    '%speed': '%1 increased movement speed',
+    '*speed': '$1x movement speed',
     '+increasedDrops': 'Gain %1 more coins and anima',
     // Ability specific bonuses
     '+area': '+$1 area offect',
     '*area': '$1x increased area of effect',
+    '%area': '%1 increased area of effect',
     '*power': '$1x more effective',
     '+cooldown': 'Cooldown increased by $1 seconds',
     '-cooldown': 'Cooldown decreased by $1 seconds',
+    '%cooldown': '%1 cooldown time',
     '*cooldown': '$1x cooldown time',
     '+limit': '+$0 maximum minions',
     '+armorPenetration': '+%1 armor penetration',
@@ -281,6 +287,7 @@ var bonusMap = {
     '+lifeSteal': '%1 of damage dealt is gained as life',
     '+duration': '+$1s duration',
     '*duration': '$1x duration',
+    '%duration': '%1 increased duration',
     '+count': '+$1 enchantment(s) stolen',
     '+weaponRange': '+$1 increased range',
     '+damageOverTime': 'Taking $1 damage per second',

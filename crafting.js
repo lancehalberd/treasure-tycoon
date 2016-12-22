@@ -283,6 +283,8 @@ function redrawCraftingContext() {
     }
 }
 function updateCraftingContext(craftedItem) {
+    // Sometimes old saves have invalid item types in them.
+    if (!craftedItem) return;
     craftingContext.fillStyle = (state.craftedItems[craftedItem.key] & CRAFTED_UNIQUE) ? '#44ccff' : 'green';
     craftingContext.fillRect(craftedItem.craftingX, craftedItem.craftingY, craftingSlotSize, craftingSlotSize);
 }

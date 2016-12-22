@@ -1,6 +1,7 @@
 function genericAction(type, action, bonuses, helpText) {
     action.type = type;
     action.variableObjectType = 'action';
+    action.icon = ifdefor(action.icon, 'gfx/496RpgIcons/openScroll.png');
     action.bonuses = bonuses;
     action.helpText = helpText;
     action.tags = ifdefor(action.tags, []);
@@ -12,6 +13,7 @@ function movementAction(type, action, bonuses, helpText) {
     action.type = type;
     action.variableObjectType = 'action';
     action.bonuses = bonuses;
+    action.icon = ifdefor(action.icon, 'gfx/496RpgIcons/openScroll.png');
     action.helpText = helpText;
     action.tags = ifdefor(action.tags, []);
     action.tags.unshift('movement');
@@ -26,6 +28,7 @@ function attackAction(type, action, bonuses, helpText) {
     if (typeof(bonuses['+range']) === 'undefined') {
         bonuses['+range'] = ['{weaponRange}'];
     }
+    action.icon = ifdefor(action.icon, 'gfx/496RpgIcons/openScroll.png');
     action.bonuses = bonuses;
     action.helpText = helpText;
     action.tags = ifdefor(action.tags, []);
@@ -79,7 +82,7 @@ var skills = {
 
     // Attack actions
     'basicAttack': attackAction('attack', {'tags': ['basic']}, {}, 'A basic attack'),
-    'bullseye': attackAction('attack', {}, {'*damage': 2, '+cooldown': 15, '$alwaysHits': 'Never misses', '$undodgeable': 'Cannot be dodged'}),
+    'bullseye': attackAction('attack', {'icon': 'gfx/496RpgIcons/target.png'}, {'*damage': 2, '+cooldown': 15, '$alwaysHits': 'Never misses', '$undodgeable': 'Cannot be dodged'}),
     'counterAttack': attackAction('counterAttack', {}, {'*damage': 1.5, '+chance': .1},
                             'Perform a powerful counter attack.<br/>The chance to counter is lower the further away the attacker is.'),
     'dragonPunch': attackAction('attack', {'restrictions': ['fist']},
@@ -206,7 +209,7 @@ var skills = {
     'aegis': spellAction('criticalCounter', {}, {'+cooldown': 60, '+stopAttack': 1,
                 '$buff': buffEffect({}, {'$$maxBlock': 'Block checks are always perfect', '$$maxMagicBlock': 'Magic Block checks are always perfect', '+duration': 5})},
                 'If an attack would deal more than half of your remaining life, prevent it and cast an enchantment that grants you: {$buff}'),
-    'fireball': spellAction('spell', {'icon': 'gfx/496RpgIcons/spellFire.png', 'tags': ['ranged'], 'animation': 'fireball', 'size': 32, 'color': 'red'},
+    'fireball': spellAction('spell', {'icon': 'gfx/496RpgIcons/spellFire.png', 'tags': ['ranged'], 'animation': 'fireball', 'size': 32, 'color': 'red', 'gravity': 0},
                                     {'+range': 12, '+cooldown': 8, '$alwaysHits': 'Never misses', '+explode': 1, '+area': 3, '+areaCoefficient': .5},
                             'Conjure an explosive fireball to hurl at enemies dealing {+power} damage.'),
     'freeze': spellAction('spell', {'icon': 'gfx/496RpgIcons/spellFreeze.png', 'tags': ['nova'], 'height': 20, 'color': 'white', 'alpha': .7},

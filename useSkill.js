@@ -67,13 +67,13 @@ function useSkill(actor, skill, target) {
         if (ifdefor(skill.base.target, 'enemies') === 'enemies' && actor.enemies.indexOf(target) < 0) {
             return false;
         }
-        // Let's be careful about using any ability that can't be used more than once every 2 seconds.
+        // Let's be careful about using any ability that can't be used more than once every 10 seconds.
         // For enemies, ignore this code if they are targeting the main character since hitting the main character is
         // always sufficient reason to use their most powerful abilities.
-        if (!target.isMainCharacter && ifdefor(skill.cooldown, 0) > 2 && ifdefor(skill.base.target, 'enemies') === 'enemies') {
+        if (!target.isMainCharacter && ifdefor(skill.cooldown, 0) >= 10 && ifdefor(skill.base.target, 'enemies') === 'enemies') {
             var health = 0;
             if (isAOE) {
-                var targetsInRange = getEnemiesInRange(actor, skill, target);
+                var targetsInRange = getEnemiesLikelyToBeHitIfEnemyIsTargetedBySkill(actor, skill, target);
                 if (targetsInRange.length === 0) {
                     return false;
                 }
@@ -165,31 +165,24 @@ function useSkill(actor, skill, target) {
     return true;
 }
 
-function getEnemiesInRange(actor, skill, skillTarget) {
-    var targets = [], distance;
+function getEnemiesLikelyToBeHitIfEnemyIsTargetedBySkill(actor, skill, skillTarget) {
+    var targets = [];
     // Rain targets everything on the field.
     if (skill.tags['rain']) {
         return actor.enemies.slice();
     }
     for (var i = 0; i < actor.enemies.length; i++) {
         var target = actor.enemies[i];
-        if (skill.tags['blast']) {
-            distance = getDistance(skillTarget, target);
-            if (distance < skill.area * 32) {
-                targets.push(target);
-                continue;
-            }
-        }
-        distance = getDistance(actor, target);
         if (skill.tags['nova'] || skill.tags['field']) {
-            if (distance < skill.area * 32) {
+            if (getDistance(actor, target) < skill.area * 32) {
                 targets.push(target);
                 continue;
             }
-        }
-        if ((skill.range + ifdefor(skill.teleport, 0)) * 32 >= distance) {
-            targets.push(target);
-            continue;
+        } else if (skill.area) {
+            if (getDistance(skillTarget, target) < skill.area * 32) {
+                targets.push(target);
+                continue;
+            }
         }
     }
     return targets;

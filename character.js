@@ -238,7 +238,7 @@ function makeAdventurerFromData(adventurerData) {
             'yTop': 12, // Measured from the top of the source
             'yCenter': 44, // Measured from the top of the source
             'xCenter': 16,
-            'attackY': 40 // Measured from the bottom of the source
+            'attackY': 30 // Measured from the bottom of the source
         },
         'bonuses': [],
         'unlockedAbilities': {},

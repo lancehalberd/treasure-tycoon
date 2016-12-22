@@ -165,6 +165,8 @@ function createAttackStats(attacker, attack, target) {
     }
     return {
         'distance': 0,
+        'gravity': ifdefor(attack.gravity, ifdefor(attack.base.gravity, .8)),
+        'speed': ifdefor(attack.speed, ifdefor(attack.base.speed, ifdefor(attack.range, 10) * 2.5)),
         'healthSacrificed': sacrificedHealth,
         'source': attacker,
         'attack': attack,
@@ -192,6 +194,8 @@ function createSpellStats(attacker, spell, target) {
     }
     return {
         'distance': 0,
+        'gravity': ifdefor(spell.gravity, ifdefor(spell.base.gravity, .8)),
+        'speed': ifdefor(spell.speed, ifdefor(spell.base.speed, ifdefor(spell.range, 10) * 2.5)),
         'healthSacrificed': sacrificedHealth,
         'source': attacker,
         'attack': spell,
@@ -260,9 +264,11 @@ function performAttackProper(attackStats, target) {
         }
     } else if (attackStats.attack.tags['ranged']) {
         var distance = getDistance(attacker, target);
+        var x = attacker.x + attacker.width / 2 + attacker.direction * attacker.width / 4;
+        var y = getAttackY(attacker);
+        var v = getProjectileVelocity(attackStats, x, y, target);
         attacker.character.projectiles.push(projectile(
-            attackStats, attacker.x + attacker.width / 2 + attacker.direction * attacker.width / 4, getAttackY(attacker),
-            attacker.direction * Math.max(15, distance / 25), 1, target, 0,
+            attackStats, x, y, v[0], v[1], target, 0,
             attackStats.isCritical ? 'yellow' : 'red', ifdefor(attackStats.attack.base.size, 10) * (attackStats.isCritical ? 1.5 : 1)));
     } else {
         attackStats.distance = getDistance(attacker, target);
