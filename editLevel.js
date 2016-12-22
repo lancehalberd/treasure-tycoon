@@ -172,7 +172,6 @@ function updateEnemySkills() {
     });
 }
 
-
 function startEditingLevel(level) {
     if (!level) return
     editingLevel = level

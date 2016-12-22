@@ -125,7 +125,7 @@ var abilities = {
     'oneHandedDamage': {'name': 'One Handed Damage', 'bonuses': {'%oneHanded:damage': .2, '%oneHanded:attackSpeed': .2}},
     'oneHandedCritChance': {'name': 'One Handed Critical Chance', 'bonuses': {'%oneHanded:critChance': .2, '%oneHanded:attackSpeed': .2}},
     'oneHandedCritDamage': {'name': 'One Handed Critical Damage', 'bonuses': {'%oneHanded:critDamage': .2, '%oneHanded:attackSpeed': .2}},
-    'oneHandedParadigmShift': {'name': 'Dual Wield', 'bonuses': {'*noOffhand:oneHanded:attackSpeed': 1.5, '*noOffhand:oneHanded:damage': 0.75}},
+    'oneHandedParadigmShift': {'name': 'Dual Wield', 'bonuses': {'*noOffhand:oneHanded:attackSpeed': 1.5}},
     'shieldDexterity': {'name': 'Shield Agility', 'icon': 'gfx/496RpgIcons/buffShield.png', 'bonuses': {'%shield:attackSpeed': .3, '%shield:evasion': .3}},
     'shieldStrength': {'name': 'Shield Toughness', 'icon': 'gfx/496RpgIcons/buffShield.png', 'bonuses': {'%shield:damage': .3, '%shield:armor': .3}},
     'shieldIntelligence': {'name': 'Shield Tactics', 'icon': 'gfx/496RpgIcons/buffShield.png', 'bonuses': {'%shield:accuracy': .3, '%shield:block': .3, '%shield:magicBlock': .3}},
