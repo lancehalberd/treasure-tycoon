@@ -9,10 +9,8 @@ var map = {
         'unlocks': ["sage2"],
         'skill': "stopTime",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'ancientforest': {
         'name': "Ancient Forest",
@@ -55,10 +53,8 @@ var map = {
         'unlocks': ["fool9"],
         'skill': "cripple",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'assassin5': {
         'name': "assassin5",
@@ -70,10 +66,8 @@ var map = {
         'unlocks': ["corsair7"],
         'skill': "cull",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'assassin6': {
         'name': "assassin6",
@@ -85,10 +79,8 @@ var map = {
         'unlocks': ["ninja5","ninja6"],
         'skill': null,
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'assassin7': {
         'name': "assassin7",
@@ -100,10 +92,8 @@ var map = {
         'unlocks': ["ninja7","juggler10"],
         'skill': "criticalAccuracy",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'assassin9': {
         'name': "assassin9",
@@ -115,10 +105,8 @@ var map = {
         'unlocks': ["corsair10"],
         'skill': "criticalDamage",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'bard2': {
         'name': "Bard 2",
@@ -130,10 +118,8 @@ var map = {
         'unlocks': ["range"],
         'skill': "flatDuration",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'bard3': {
         'name': "Bard 3",
@@ -145,10 +131,8 @@ var map = {
         'unlocks': ["sage3"],
         'skill': "minionToughness",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'bard6': {
         'name': "Bard 6",
@@ -160,10 +144,8 @@ var map = {
         'unlocks': ["charisma5","sage6"],
         'skill': null,
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'bard7': {
         'name': "Bard 7",
@@ -175,10 +157,8 @@ var map = {
         'unlocks': ["sage7","holyland"],
         'skill': "minionFerocity",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'bard9': {
         'name': "Bard 9",
@@ -190,10 +170,8 @@ var map = {
         'unlocks': ["carnival"],
         'skill': "minionDamage",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'barracks': {
         'name': "Barracks",
@@ -255,10 +233,8 @@ var map = {
         'unlocks': ["canopy","dancer6"],
         'skill': "charm",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'canopy': {
         'name': "Canopy",
@@ -270,10 +246,8 @@ var map = {
         'unlocks': ["ranger5","dancer6","valley"],
         'skill': "throwingParadigmShift",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'carnival': {
         'name': "Carnival",
@@ -285,10 +259,8 @@ var map = {
         'unlocks': ["ranger10","sage8"],
         'skill': "dervish",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'castle': {
         'name': "Castle",
@@ -300,10 +272,8 @@ var map = {
         'unlocks': ["master7"],
         'skill': "heroSong",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'cave': {
         'name': "Cave",
@@ -353,10 +323,8 @@ var map = {
         'unlocks': ["monk6","corsair6"],
         'skill': "deflect",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'charisma5': {
         'name': "Charisma5",
@@ -368,10 +336,8 @@ var map = {
         'unlocks': ["juggler9"],
         'skill': "percentAreaOfEffect",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'cliff': {
         'name': "Cliff",
@@ -400,10 +366,8 @@ var map = {
         'unlocks': ["priest6"],
         'skill': "reflect",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'confluence': {
         'name': "Confluence",
@@ -415,10 +379,8 @@ var map = {
         'unlocks': ["shore","impenetrableforest"],
         'skill': "oneHandedDamage",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'corsair10': {
         'name': "corsair10",
@@ -430,10 +392,8 @@ var map = {
         'unlocks': ["tundra","ninja8"],
         'skill': "plunder",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'corsair6': {
         'name': "corsair6",
@@ -445,10 +405,8 @@ var map = {
         'unlocks': ["assassin5","corsair7"],
         'skill': null,
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'corsair7': {
         'name': "corsair7",
@@ -460,10 +418,8 @@ var map = {
         'unlocks': ["warrior7","ninja5"],
         'skill': "axeAttackSpeed",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'corsair8': {
         'name': "corsair8",
@@ -475,10 +431,8 @@ var map = {
         'unlocks': ["monk9"],
         'skill': "percentCriticalChance",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'corsair9': {
         'name': "corsair9",
@@ -490,10 +444,8 @@ var map = {
         'unlocks': ["warrior9"],
         'skill': "axeCritDamage",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'crevice': {
         'name': "Crevice",
@@ -520,10 +472,8 @@ var map = {
         'unlocks': ["academy","bard2"],
         'skill': "minorCharisma",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'dancer3': {
         'name': "Dancer 3",
@@ -535,10 +485,8 @@ var map = {
         'unlocks': ["camp"],
         'skill': "movementCDR",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'dancer6': {
         'name': "Dancer6",
@@ -550,10 +498,8 @@ var map = {
         'unlocks': ["memorial","dancer7"],
         'skill': null,
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'dancer7': {
         'name': "Dancer 7",
@@ -565,10 +511,8 @@ var map = {
         'unlocks': ["forestlair","bard6"],
         'skill': "movementPrecision",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'dancer9': {
         'name': "Dancer 9",
@@ -580,10 +524,8 @@ var map = {
         'unlocks': ["oldforest"],
         'skill': "movementDamage",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'darkknight2': {
         'name': "Dark Knight 2",
@@ -595,10 +537,8 @@ var map = {
         'unlocks': ["priest3"],
         'skill': "flatMagicBlock",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'darkknight3': {
         'name': "Dark Knight 3",
@@ -610,10 +550,8 @@ var map = {
         'unlocks': ["enhancer3"],
         'skill': "polearmCritDamage",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'darkknight4': {
         'name': "Dark Knight 4",
@@ -625,10 +563,8 @@ var map = {
         'unlocks': ["fortress"],
         'skill': "percentMagicBlock",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'darkknight6': {
         'name': "Dark Knight 6",
@@ -640,10 +576,8 @@ var map = {
         'unlocks': ["waterfall","enhancer6"],
         'skill': null,
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'darkknight7': {
         'name': "Dark Knight 7",
@@ -655,10 +589,8 @@ var map = {
         'unlocks': ["enhancer7","cliff"],
         'skill': "polearmAccuracy",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'darkknight9': {
         'name': "Dark Knight 9",
@@ -670,10 +602,8 @@ var map = {
         'unlocks': ["grandcathedral"],
         'skill': "polearmRange",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'desert': {
         'name': "Desert",
@@ -685,10 +615,8 @@ var map = {
         'unlocks': ["monk6"],
         'skill': "counterAttack",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'dojo': {
         'name': "Dojo",
@@ -700,10 +628,8 @@ var map = {
         'unlocks': ["enhancer2"],
         'skill': "enhanceWeapon",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'dungeon': {
         'name': "Dungeon",
@@ -732,10 +658,8 @@ var map = {
         'unlocks': ["sniper6"],
         'skill': "percentEvasion",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'enhancer2': {
         'name': "Enhancer 2",
@@ -747,10 +671,8 @@ var map = {
         'unlocks': ["paladin3","darkknight3"],
         'skill': "flatMagicPower",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'enhancer3': {
         'name': "Enhancer 3",
@@ -762,10 +684,8 @@ var map = {
         'unlocks': ["darkknight4","warrior6"],
         'skill': "meleeAttackSpeed",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'enhancer4': {
         'name': "Enhancer 4",
@@ -777,10 +697,8 @@ var map = {
         'unlocks': ["priest9"],
         'skill': "percentMagicPower",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'enhancer6': {
         'name': "Enhancer 6",
@@ -792,10 +710,8 @@ var map = {
         'unlocks': ["enhancer7","darkknight7"],
         'skill': null,
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'enhancer7': {
         'name': "Enhancer 7",
@@ -807,10 +723,8 @@ var map = {
         'unlocks': ["paladin9"],
         'skill': "meleeCritChance",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'enhancer8': {
         'name': "Enhancer 8",
@@ -822,10 +736,8 @@ var map = {
         'unlocks': ["enhancer9","gallows"],
         'skill': "majorWill",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'enhancer9': {
         'name': "Enhancer 9",
@@ -837,10 +749,8 @@ var map = {
         'unlocks': ["master5"],
         'skill': "meleeDamage",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'floodplains': {
         'name': "Floodplains",
@@ -852,10 +762,8 @@ var map = {
         'unlocks': ["monastery"],
         'skill': "flatMovementSpeed",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'fool1': {
         'name': "fool1",
@@ -867,10 +775,8 @@ var map = {
         'unlocks': ["shrubbery"],
         'skill': "tomFoolery",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'fool10': {
         'name': "fool10",
@@ -882,10 +788,8 @@ var map = {
         'unlocks': [],
         'skill': "mimic",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'fool3': {
         'name': "fool3",
@@ -897,10 +801,8 @@ var map = {
         'unlocks': ["foothills"],
         'skill': "daggerDamage",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'fool5': {
         'name': "fool5",
@@ -912,10 +814,8 @@ var map = {
         'unlocks': ["priest9","sorcerer7"],
         'skill': "decoy",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'fool6': {
         'name': "fool6",
@@ -927,10 +827,8 @@ var map = {
         'unlocks': ["juggler9","sniper7"],
         'skill': null,
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'fool7': {
         'name': "fool7",
@@ -942,10 +840,8 @@ var map = {
         'unlocks': ["warrior9","ruinedfortress"],
         'skill': "daggerAttackSpeed",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'fool9': {
         'name': "fool9",
@@ -957,10 +853,8 @@ var map = {
         'unlocks': ["ninja10"],
         'skill': "daggerCritChance",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'foothills': {
         'name': "Foothills",
@@ -987,10 +881,8 @@ var map = {
         'unlocks': ["ziggurat"],
         'skill': "plague",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'forestfloor': {
         'name': "Forest Floor",
@@ -1037,10 +929,8 @@ var map = {
         'unlocks': ["paladin7"],
         'skill': "soulStrike",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'gallows': {
         'name': "Gallows",
@@ -1052,10 +942,8 @@ var map = {
         'unlocks': ["master5"],
         'skill': "reaper",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'garden': {
         'name': "Garden",
@@ -1105,10 +993,8 @@ var map = {
         'unlocks': ["tower","enhancer8"],
         'skill': "aegis",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'grove': {
         'name': "Grove",
@@ -1138,10 +1024,8 @@ var map = {
         'unlocks': ["channel"],
         'skill': "axePhysicalDamage",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'holyland': {
         'name': "Holy Land",
@@ -1185,10 +1069,8 @@ var map = {
         'unlocks': ["assassin9"],
         'skill': "bullseye",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'juggler9': {
         'name': "juggler9",
@@ -1200,10 +1082,8 @@ var map = {
         'unlocks': ["sniper7"],
         'skill': "throwingCriticalChance",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'jungle': {
         'name': "Jungle",
@@ -1215,10 +1095,8 @@ var map = {
         'unlocks': ["assassin7"],
         'skill': "percentAttackSpeed",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'killingfields': {
         'name': "Killing Fields",
@@ -1246,10 +1124,8 @@ var map = {
         'unlocks': ["oceanside"],
         'skill': "smokeBomb",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'library': {
         'name': "Library",
@@ -1261,10 +1137,8 @@ var map = {
         'unlocks': ["bard6","sage6"],
         'skill': "dispell",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'lostshrine': {
         'name': "Lost Shrine",
@@ -1295,10 +1169,8 @@ var map = {
         'unlocks': [],
         'skill': "equipmentMastery",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'master2': {
         'name': "master2",
@@ -1310,10 +1182,8 @@ var map = {
         'unlocks': [],
         'skill': "healthPerLevel",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'master3': {
         'name': "master3",
@@ -1325,10 +1195,8 @@ var map = {
         'unlocks': ["sniper10"],
         'skill': "flatRange",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'master4': {
         'name': "master4",
@@ -1340,10 +1208,8 @@ var map = {
         'unlocks': ["wasteland"],
         'skill': "percentHealth",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'master5': {
         'name': "master5",
@@ -1355,10 +1221,8 @@ var map = {
         'unlocks': ["peak"],
         'skill': "abilityMastery",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'master6': {
         'name': "master6",
@@ -1370,10 +1234,8 @@ var map = {
         'unlocks': ["forbiddenarchive"],
         'skill': "percentAccuracy",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'master7': {
         'name': "master7",
@@ -1385,10 +1247,8 @@ var map = {
         'unlocks': ["ziggurat"],
         'skill': "cooldownReduction",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'meadow': {
         'name': "Meadow",
@@ -1418,10 +1278,8 @@ var map = {
         'unlocks': ["confluence"],
         'skill': "criticalStrikes",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'memorial': {
         'name': "Memorial",
@@ -1433,10 +1291,8 @@ var map = {
         'unlocks': ["dancer7"],
         'skill': "defenseSong",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'monastery': {
         'name': "Monastery",
@@ -1469,10 +1325,8 @@ var map = {
         'unlocks': ["foothills","corsair6","monk7"],
         'skill': null,
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'monk7': {
         'name': "Monk 7",
@@ -1484,10 +1338,8 @@ var map = {
         'unlocks': ["corsair7","warrior7"],
         'skill': "fistCriticalChance",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'monk9': {
         'name': "Monk 9",
@@ -1499,10 +1351,8 @@ var map = {
         'unlocks': ["samurai7","fool7"],
         'skill': "fistDamage",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'mossbed': {
         'name': "Mossbed",
@@ -1514,10 +1364,8 @@ var map = {
         'unlocks': [],
         'skill': "acrobatics",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'mountain': {
         'name': "Mountain",
@@ -1547,10 +1395,8 @@ var map = {
         'unlocks': ["fool10"],
         'skill': "shadowClone",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'ninja5': {
         'name': "ninja5",
@@ -1562,10 +1408,8 @@ var map = {
         'unlocks': ["corsair8","ninja6"],
         'skill': "throwWeapon",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'ninja6': {
         'name': "ninja6",
@@ -1577,10 +1421,8 @@ var map = {
         'unlocks': ["ninja7","assassin7"],
         'skill': "oneHandedParadigmShift",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'ninja7': {
         'name': "ninja7",
@@ -1592,10 +1434,8 @@ var map = {
         'unlocks': ["corsair9"],
         'skill': "oneHandedCritChance",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'ninja8': {
         'name': "ninja8",
@@ -1607,10 +1447,8 @@ var map = {
         'unlocks': ["ninja9","assassin10"],
         'skill': "majorVigor",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'ninja9': {
         'name': "ninja9",
@@ -1622,10 +1460,8 @@ var map = {
         'unlocks': ["fool9"],
         'skill': "oneHandedCritDamage",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'oceanside': {
         'name': "Oceanside",
@@ -1637,10 +1473,8 @@ var map = {
         'unlocks': ["headwaters","meander"],
         'skill': "flatCriticalChance",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'oldbattlefield': {
         'name': "Old Battlefield",
@@ -1652,10 +1486,8 @@ var map = {
         'unlocks': ["darkknight7"],
         'skill': "percentPhysicalDamage",
         'enemySkills': ["percentPhysicalDamage"],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'oldforest': {
         'name': "Old Forest",
@@ -1699,10 +1531,8 @@ var map = {
         'unlocks': ["darkknight2","dojo"],
         'skill': "minorWill",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'paladin3': {
         'name': "Paladin 3",
@@ -1714,10 +1544,8 @@ var map = {
         'unlocks': ["ruins"],
         'skill': "shieldDexterity",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'paladin6': {
         'name': "Paladin 6",
@@ -1729,10 +1557,8 @@ var map = {
         'unlocks': ["fortress","paladin7"],
         'skill': null,
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'paladin7': {
         'name': "Paladin 7",
@@ -1744,10 +1570,8 @@ var map = {
         'unlocks': ["wizard7","waterfall"],
         'skill': "shieldIntelligence",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'paladin9': {
         'name': "Paladin 9",
@@ -1759,10 +1583,8 @@ var map = {
         'unlocks': ["wizard9"],
         'skill': "shieldStrength",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'peak': {
         'name': "Peak",
@@ -1774,10 +1596,8 @@ var map = {
         'unlocks': ["fool10"],
         'skill': "enhanceAbility",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'priest3': {
         'name': "Priest 3",
@@ -1789,10 +1609,8 @@ var map = {
         'unlocks': ["priest4","cloister"],
         'skill': "wandCritChance",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'priest4': {
         'name': "Priest 4",
@@ -1804,10 +1622,8 @@ var map = {
         'unlocks': ["sorcerer3","cloister"],
         'skill': "flatMagicDamage",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'priest6': {
         'name': "Priest 6",
@@ -1819,10 +1635,8 @@ var map = {
         'unlocks': ["tomb","paladin6","priest7"],
         'skill': null,
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'priest7': {
         'name': "Priest 7",
@@ -1834,10 +1648,8 @@ var map = {
         'unlocks': ["paladin7","wizard7"],
         'skill': "wandAttackSpeed",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'priest9': {
         'name': "Priest 9",
@@ -1849,10 +1661,8 @@ var map = {
         'unlocks': ["sorcerer7"],
         'skill': "wandRange",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'range': {
         'name': "Range",
@@ -1881,10 +1691,8 @@ var map = {
         'unlocks': ["master3","castle"],
         'skill': "sicem",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'ranger5': {
         'name': "ranger5",
@@ -1896,10 +1704,8 @@ var map = {
         'unlocks': ["valley","sniper5"],
         'skill': "net",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'road': {
         'name': "Road",
@@ -1963,10 +1769,8 @@ var map = {
         'unlocks': ["dancer3","bard3"],
         'skill': "flatAreaOfEffect",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'sage3': {
         'name': "Sage 3",
@@ -1978,10 +1782,8 @@ var map = {
         'unlocks': ["sage4","wizard6"],
         'skill': "magicMagicDamage",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'sage4': {
         'name': "Sage 4",
@@ -1993,10 +1795,8 @@ var map = {
         'unlocks': ["memorial"],
         'skill': "percentDuration",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'sage6': {
         'name': "Sage6",
@@ -2008,10 +1808,8 @@ var map = {
         'unlocks': ["bard7","sage7"],
         'skill': null,
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'sage7': {
         'name': "Sage 7",
@@ -2023,10 +1821,8 @@ var map = {
         'unlocks': ["dancer9"],
         'skill': "magicAttackSpeed",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'sage8': {
         'name': "Sage 8 ",
@@ -2038,10 +1834,8 @@ var map = {
         'unlocks': ["castle","sage9"],
         'skill': "majorCharisma",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'sage9': {
         'name': "Sage 9 ",
@@ -2053,10 +1847,8 @@ var map = {
         'unlocks': ["master7"],
         'skill': "magicDamage",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'samurai2': {
         'name': "Samurai 2",
@@ -2068,10 +1860,8 @@ var map = {
         'unlocks': ["samurai3","desert","fool3"],
         'skill': "flatMeleeAttackDamage",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'samurai3': {
         'name': "Samurai 3",
@@ -2083,10 +1873,8 @@ var map = {
         'unlocks': ["enhancer3","fool3"],
         'skill': "greatswordPhysicalDamage",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'samurai6': {
         'name': "Samurai 6",
@@ -2098,10 +1886,8 @@ var map = {
         'unlocks': ["oldbattlefield"],
         'skill': "greatswordParadigmShift",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'samurai7': {
         'name': "Samurai 7",
@@ -2113,10 +1899,8 @@ var map = {
         'unlocks': ["cliff","fool7"],
         'skill': "greatswordAccuracy",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'samurai9': {
         'name': "Samurai 9",
@@ -2128,10 +1912,8 @@ var map = {
         'unlocks': ["enhancer9"],
         'skill': "greatswordDamage",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'savannah': {
         'name': "Savannah",
@@ -2177,10 +1959,8 @@ var map = {
         'unlocks': ["assassin5"],
         'skill': "percentMovementSpeed",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'shrubbery': {
         'name': "Shrubbery",
@@ -2192,10 +1972,8 @@ var map = {
         'unlocks': ["oceanside","ancientforest"],
         'skill': "throwingPower",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'sniper10': {
         'name': "sniper10",
@@ -2207,10 +1985,8 @@ var map = {
         'unlocks': ["ninja10"],
         'skill': "snipe",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'sniper2': {
         'name': "sniper2",
@@ -2222,10 +1998,8 @@ var map = {
         'unlocks': ["understory","crevice"],
         'skill': "flatRangedAttackDamage",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'sniper5': {
         'name': "sniper5",
@@ -2237,10 +2011,8 @@ var map = {
         'unlocks': ["emergents","assassin6"],
         'skill': "aiming",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'sniper6': {
         'name': "sniper6",
@@ -2252,10 +2024,8 @@ var map = {
         'unlocks': ["jungle","fool6"],
         'skill': "bowParadigmShift",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'sniper7': {
         'name': "sniper7",
@@ -2267,10 +2037,8 @@ var map = {
         'unlocks': ["juggler10","oldforest"],
         'skill': "bowRange",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'sniper9': {
         'name': "sniper9",
@@ -2282,10 +2050,8 @@ var map = {
         'unlocks': ["ninja9"],
         'skill': "bowDamage",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'sorcerer3': {
         'name': "Sorcerer 3",
@@ -2297,10 +2063,8 @@ var map = {
         'unlocks': ["sage3"],
         'skill': "spellCDR",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'sorcerer6': {
         'name': "Sorcerer 6",
@@ -2312,10 +2076,8 @@ var map = {
         'unlocks': ["ancientlibrary","fool5"],
         'skill': null,
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'sorcerer7': {
         'name': "Sorcerer 7",
@@ -2327,10 +2089,8 @@ var map = {
         'unlocks': ["holyland","wizard9"],
         'skill': "spellPrecision",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'sorcerer9': {
         'name': "Sorcerer 9",
@@ -2342,10 +2102,8 @@ var map = {
         'unlocks': ["sage9"],
         'skill': "spellPower",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'tomb': {
         'name': "Tomb",
@@ -2357,10 +2115,8 @@ var map = {
         'unlocks': ["dungeon","tomb","priest7"],
         'skill': "freeze",
         'enemySkills': ["freeze","majorIntelligence"],
-        'monsters': ["skeleton"],
-        'events': [
-            ["frostGiant"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'tower': {
         'name': "Tower",
@@ -2372,10 +2128,8 @@ var map = {
         'unlocks': ["master6","gallows"],
         'skill': "storm",
         'enemySkills': ["storm"],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'trail': {
         'name': "Trail",
@@ -2438,10 +2192,8 @@ var map = {
         'unlocks': ["master4","assassin10"],
         'skill': "armorBreak",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'understory': {
         'name': "Understory",
@@ -2453,10 +2205,8 @@ var map = {
         'unlocks': ["confluence"],
         'skill': "bowPhysicalDamage",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'university': {
         'name': "University",
@@ -2468,10 +2218,8 @@ var map = {
         'unlocks': ["sorcerer9"],
         'skill': "majorIntelligence",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'valley': {
         'name': "Valley",
@@ -2500,10 +2248,8 @@ var map = {
         'unlocks': ["enhancer2","warrior3"],
         'skill': "flatArmor",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'warrior3': {
         'name': "Warrior 3",
@@ -2515,10 +2261,8 @@ var map = {
         'unlocks': ["samurai3","samurai2"],
         'skill': "swordAttackSpeed",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'warrior4': {
         'name': "Warrior 4",
@@ -2530,10 +2274,8 @@ var map = {
         'unlocks': ["samurai6"],
         'skill': "percentArmor",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'warrior6': {
         'name': "Warrior 6",
@@ -2545,10 +2287,8 @@ var map = {
         'unlocks': ["mountain"],
         'skill': "swordParadigmShift",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'warrior7': {
         'name': "Warrior 7",
@@ -2560,10 +2300,8 @@ var map = {
         'unlocks': ["samurai6"],
         'skill': "swordAccuracy",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'warrior9': {
         'name': "Warrior 9",
@@ -2575,10 +2313,8 @@ var map = {
         'unlocks': ["ruinedfortress"],
         'skill': "swordPhysicalDamage",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'wasteland': {
         'name': "Wasteland",
@@ -2605,10 +2341,8 @@ var map = {
         'unlocks': ["enhancer4","enhancer6"],
         'skill': "enhanceArmor",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'wetlands': {
         'name': "Wetlands",
@@ -2638,10 +2372,8 @@ var map = {
         'unlocks': ["sage2","wizard3"],
         'skill': "flatBlock",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'wizard3': {
         'name': "Wizard 3",
@@ -2653,10 +2385,8 @@ var map = {
         'unlocks': ["priest4","sorcerer3"],
         'skill': "staffDamage",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'wizard4': {
         'name': "Wizard 4",
@@ -2668,10 +2398,8 @@ var map = {
         'unlocks': ["sorcerer6"],
         'skill': "percentBlocking",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'wizard6': {
         'name': "Wizard6",
@@ -2683,10 +2411,8 @@ var map = {
         'unlocks': ["dungeon"],
         'skill': null,
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'wizard7': {
         'name': "Wizard 7",
@@ -2698,10 +2424,8 @@ var map = {
         'unlocks': ["sorcerer6","fool5"],
         'skill': "staffAccuracy",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'wizard9': {
         'name': "Wizard 9",
@@ -2713,10 +2437,8 @@ var map = {
         'unlocks': ["university"],
         'skill': "staffCritDamage",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     },
     'ziggurat': {
         'name': "Ziggurat",
@@ -2728,10 +2450,8 @@ var map = {
         'unlocks': ["fool10"],
         'skill': "meteor",
         'enemySkills': [],
-        'monsters': ["skeleton"],
-        'events': [
-            ["dragon"]
-        ]
+        'monsters': [],
+        'events': []
     }
 };
 var mapKeys = Object.keys(map);

@@ -17,9 +17,9 @@ function exportMap() {
             levelLines.push("        '" + key + "': " + JSON.stringify(levelData[key]) + ",");
         }
         var eventLines = [];
-        levelData.events.forEach(function (event) {
+        for (var event of levelData.events) {
             eventLines.push("            " + JSON.stringify(event));
-        })
+        }
         if (eventLines.length) {
             levelLines.push("        'events': [");
             levelLines.push(eventLines.join(",\n"));
