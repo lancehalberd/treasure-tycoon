@@ -227,7 +227,7 @@ function drawMap() {
             }
             var abilitySource = getAbilityIconSource(skill, shrineSource);
             // Make the shrine flash if the player can currently activate it.
-            if (levelCompleted && !skillLearned && canAffordSkill) {
+            if (levelCompleted && !skillLearned && canAffordSkill && state.selectedCharacter.adventurer.level < maxLevel) {
                 drawTintedImage(context, abilitySource.image, '#ff0', .5 + Math.cos(now() / 100) / 5,
                             {'left': abilitySource.xOffset, 'top' :abilitySource.yOffset, 'width': abilitySource.width, 'height': abilitySource.height},
                             shrine);

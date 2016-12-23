@@ -193,7 +193,9 @@ function getMapShrineHelpText(shrine) {
         helpText += '<p style="font-size: 12">An adventurer can only visit the shrine for the last adventure they completed.</p><br/>';
     }
     var skillAlreadyLearned = state.selectedCharacter.adventurer.unlockedAbilities[skill.key];
-    if (!skillAlreadyLearned && state.selectedCharacter.divinity < totalCost) {
+    if (!skillAlreadyLearned && state.selectedCharacter.adventurer.level >= maxLevel) {
+        helpText += '<p style="font-size: 12">' + state.selectedCharacter.adventurer.name + ' has reached the maximum level and can no longer learn new abilities.</p><br/>';
+    } else if (!skillAlreadyLearned && state.selectedCharacter.divinity < totalCost) {
         helpText += '<p style="font-size: 12">' + state.selectedCharacter.adventurer.name + ' does not have enough divinity to learn the skill from this shrine.</p><br/>';
     }
     if (!skillAlreadyLearned) {
@@ -537,7 +539,7 @@ function completeLevel(character) {
     }
 
     // This code will be used when they activate a shrine
-    if (level.skill && !character.adventurer.unlockedAbilities[level.skill] && character.divinity >= totalCostForNextLevel(character, level)) {
+    if (character.adventurer.level < maxLevel && level.skill && !character.adventurer.unlockedAbilities[level.skill] && character.divinity >= totalCostForNextLevel(character, level)) {
         if (!abilities[level.skill]) {
             throw new Error("Could not find ability: " + level.skill);
         }
