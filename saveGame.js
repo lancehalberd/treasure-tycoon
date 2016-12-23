@@ -87,12 +87,18 @@ function importState(stateData) {
     $('.js-charactersBox').empty();
     var characters = stateData.characters.map(importCharacter);
     characters.forEach(function (character) {
+        if (isNaN(character.divinity) || typeof(character.divinity) !== "number") {
+            character.divinity = 0;
+        }
         state.characters.push(character);
         for (var levelKey of Object.keys(character.divinityScores)) {
             var level = map[levelKey];
             if (!level) {
                 delete character.divinityScores[levelKey];
                 continue;
+            }
+            if (isNaN(character.divinityScores[levelKey])) {
+                delete character.divinityScores[levelKey];
             }
             state.visibleLevels[levelKey] = true;
             for (var nextLevelKey of level.unlocks) {

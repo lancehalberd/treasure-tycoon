@@ -1240,10 +1240,10 @@ p {
 
 .areaMenu {
     position: absolute;
-    left: 200px;
+    left: 190px;
     top: 50px;
     color: white;
-    width: 400px;
+    width: 420px;
     margin-left: auto;
     margin-right: auto;
     background-color: rgba(0, 0, 0, .8);
@@ -1266,7 +1266,7 @@ p {
     padding: 4px;
     display: block;
     font-size: 20px;
-    width: 100px;
+    width: 120px;
     margin-bottom: 2px;
     margin-right: 2px;
     cursor: pointer;
@@ -1283,6 +1283,9 @@ p {
 }
 .difficulty.challenge {
     background-color: purple;
+}
+.difficulty.endless {
+    background-color: #444;
 }
 .difficulty:hover {
     border: 2px solid white;

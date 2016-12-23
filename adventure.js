@@ -12,7 +12,11 @@ function startArea(character, index) {
     character.currentLevelKey = index;
     var levelCompleted = ifdefor(character.divinityScores[index], 0) !== 0;
     var difficultyCompleted = !!ifdefor(character.levelTimes[index], {})[character.levelDifficulty];
-    character.area = instantiateLevel(map[index], character.levelDifficulty, difficultyCompleted);
+    if (character.levelDifficulty === 'endless') {
+        character.area = instantiateLevel(map[index], character.levelDifficulty, difficultyCompleted, getEndlessLevel(character, map[index]));
+    } else {
+        character.area = instantiateLevel(map[index], character.levelDifficulty, difficultyCompleted);
+    }
     initializeActorForAdventure(character.adventurer);
     character.waveIndex = 0;
     character.adventurer.x = 0;
@@ -96,6 +100,11 @@ function removeActor(actor) {
     var index = actor.allies.indexOf(actor);
     actor.allies.splice(index, 1);
     if (actor.isMainCharacter) {
+        var character = actor.character;
+        if (character.levelDifficulty === 'endless') {
+            var currentEndlessLevel = getEndlessLevel(character, map[character.currentLevelKey]);
+            character.levelTimes[character.currentLevelKey][character.levelDifficulty] = currentEndlessLevel - 1;
+        }
         returnToMap(actor.character);
         if (actor.character === state.selectedCharacter && !actor.character.replay && !testingLevel && currentContext === 'adventure') {
             displayAreaMenu();
@@ -244,7 +253,7 @@ function startNextWave(character) {
         if (character.levelDifficulty === 'easy') {
             extraSkills.push(easyBonuses);
         }
-        if (character.levelDifficulty === 'hard') {
+        if (character.levelDifficulty === 'hard' || character.levelDifficulty === 'endless') {
             extraSkills.push(hardBonuses);
         }
         var newMonster = makeMonster(entityData, character.area.level, extraSkills, !!wave.extraBonuses);

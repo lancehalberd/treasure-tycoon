@@ -435,6 +435,11 @@ function displayAreaMenu() {
             $medal.show();
         }
         $('.js-areaMenu .js-challengeDifficulty').hide();
+        if (times['hard']) {
+            $('.js-areaMenu .js-endlessDifficulty').text('Endless -' + getEndlessLevel(state.selectedCharacter, selectedLevel) + '-').show();
+        } else {
+            $('.js-areaMenu .js-endlessDifficulty').hide();
+        }
         $('.js-areaMenu .js-areaTitle').text('Lv ' + selectedLevel.level + ' ' + selectedLevel.name);
         $('.js-areaMenu .js-areaDescription').html(ifdefor(selectedLevel.description, 'No description'));
     },0);
@@ -468,6 +473,18 @@ $('.js-challengeDifficulty').on('click', function (event) {
     // Sometimes divinity points preview is stuck open at beginning of level, not sure how.
     hidePointsPreview();
 });
+$('.js-endlessDifficulty').on('click', function (event) {
+    $('.js-areaMenu').hide();
+    state.selectedCharacter.levelDifficulty = 'endless';
+    startArea(state.selectedCharacter, state.selectedCharacter.selectedLevelKey);
+    // Sometimes divinity points preview is stuck open at beginning of level, not sure how.
+    hidePointsPreview();
+});
+
+function getEndlessLevel(character, level) {
+    var times = ifdefor(character.levelTimes[level.levelKey], {});
+    return ifdefor(times['endless'], level.level + 5);
+}
 
 $(document).on('mousedown', function (event) {
     if (!$(event.target).closest('.js-areaMenu').length) {
@@ -496,18 +513,28 @@ function completeLevel(character) {
             unlockMapLevel(levelKey);
         });
     }
-    var difficultyBonus = difficultyBonusMap[character.levelDifficulty];
-    var timeBonus = .8;
-    if (character.completionTime <= getGoldTimeLimit(level, difficultyBonus)) timeBonus = 1.2;
-    else if (character.completionTime <= getSilverTimeLimit(level, difficultyBonus)) timeBonus = 1;
-    var newDivinityScore = Math.max(10, Math.round(difficultyBonus * timeBonus * baseDivinity(level.level)));
+    var newDivinityScore;
+    var currentEndlessLevel = getEndlessLevel(character, level);
+    if (character.levelDifficulty === 'endless') {
+        newDivinityScore = Math.max(10, Math.round(baseDivinity(currentEndlessLevel)));
+    } else {
+        var difficultyBonus = difficultyBonusMap[character.levelDifficulty];
+        var timeBonus = .8;
+        if (character.completionTime <= getGoldTimeLimit(level, difficultyBonus)) timeBonus = 1.2;
+        else if (character.completionTime <= getSilverTimeLimit(level, difficultyBonus)) timeBonus = 1;
+        newDivinityScore = Math.max(10, Math.round(difficultyBonus * timeBonus * baseDivinity(level.level)));
+    }
     character.divinity += Math.max(0, newDivinityScore - oldDivinityScore);
     character.divinityScores[character.currentLevelKey] = Math.max(oldDivinityScore, newDivinityScore);
     // Initialize level times for this level if not yet set.
     character.levelTimes[character.currentLevelKey] = ifdefor(character.levelTimes[character.currentLevelKey], {});
-    var oldTime = ifdefor(character.levelTimes[character.currentLevelKey][character.levelDifficulty], 99999);
-    character.levelTimes[character.currentLevelKey][character.levelDifficulty] = Math.min(character.completionTime, oldTime);
-    character.levelCompleted = true;
+    if (character.levelDifficulty === 'endless') {
+        character.levelTimes[character.currentLevelKey][character.levelDifficulty] = currentEndlessLevel + 5;
+    } else {
+        var oldTime = ifdefor(character.levelTimes[character.currentLevelKey][character.levelDifficulty], 99999);
+        character.levelTimes[character.currentLevelKey][character.levelDifficulty] = Math.min(character.completionTime, oldTime);
+        character.levelCompleted = true;
+    }
 
     // This code will be used when they activate a shrine
     if (level.skill && !character.adventurer.unlockedAbilities[level.skill] && character.divinity >= totalCostForNextLevel(character, level)) {

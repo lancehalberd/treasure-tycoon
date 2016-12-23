@@ -1,6 +1,6 @@
-function instantiateLevel(levelData, difficulty, difficultyCompleted) {
+function instantiateLevel(levelData, difficulty, difficultyCompleted, level) {
     var waves = [];
-    var level = levelData.level;
+    level = ifdefor(level, levelData.level);
     var numberOfWaves = Math.min(10, 3 + Math.floor(2 * Math.sqrt(level)));
     var minWaveSize = Math.floor(Math.min(4, Math.sqrt(level)) * 10);
     var maxWaveSize = Math.floor(Math.min(10, 2.2 * Math.sqrt(level)) * 10);
@@ -50,7 +50,11 @@ function instantiateLevel(levelData, difficulty, difficultyCompleted) {
         console.log(JSON.stringify(events));
     }
     // Make sure we have at least enough waves for the required events
-    numberOfWaves = Math.max(levelData.events.length, numberOfWaves);
+    numberOfWaves = Math.max(events.length, numberOfWaves);
+    // To keep endless levels from dragging on forever, they just have 1 random wave per event wave.
+    if (difficulty === 'endless') {
+        numberOfWaves = Math.min(Math.max(10, events.length), 2 * events.length);
+    }
     var eventsLeft = events;
     while (waves.length < numberOfWaves) {
         var waveSize = Math.max(1, Math.floor(Random.range(minWaveSize, maxWaveSize) / 10));
