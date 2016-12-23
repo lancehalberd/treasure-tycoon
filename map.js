@@ -168,7 +168,9 @@ function getMapLevelHelpText(level) {
         helpText += '<p><span style="font-weight: bold">Enemies:</span> ' + level.monsters.map(function (monsterKey) { return monsters[monsterKey].name;}).join(', ') + '</p>';
         if (level.events) {
             helpText += '<p><span style="font-weight: bold"># Events: </span> ' + level.events.length + '</p>';
-            helpText += '<p><span style="font-weight: bold">Boss Event: </span> ' + level.events[level.events.length - 1].map(function (monsterKey) { return monsters[monsterKey].name;}).join(', ') + '</p>';
+            if (level.events.length) {
+                helpText += '<p><span style="font-weight: bold">Boss Event: </span> ' + level.events[level.events.length - 1].map(function (monsterKey) { return monsters[monsterKey].name;}).join(', ') + '</p>';
+            }
         } else {
             helpText += '<p style="font-weight: bold; color: red;">No Events!</p>';
         }

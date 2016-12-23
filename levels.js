@@ -1,12 +1,57 @@
 function instantiateLevel(levelData, difficulty, difficultyCompleted) {
     var waves = [];
     var level = levelData.level;
-    var numberOfWaves = 3 + Math.min(20, Math.floor(2 * Math.sqrt(level)));
-    // Make sure we have at least enough waves for the required events
-    numberOfWaves = Math.max(levelData.events.length, numberOfWaves);
+    var numberOfWaves = Math.min(10, 3 + Math.floor(2 * Math.sqrt(level)));
     var minWaveSize = Math.floor(Math.min(4, Math.sqrt(level)) * 10);
     var maxWaveSize = Math.floor(Math.min(10, 2.2 * Math.sqrt(level)) * 10);
-    var eventsLeft = levelData.events.slice();
+    var levelDegrees = (360 + 180 * Math.atan2(levelData.coords[1], levelData.coords[0]) / Math.PI) % 360;
+    var monsters = levelData.monsters.slice();
+    var strengthMonsters = ['skeleton','skeletalBuccaneer','undeadPaladin','undeadWarrior', 'stealthyCateripllar'];
+    var strengthEventMonsters = ['dragon','giantSkeleton', 'butcher', 'alphaWolf', 'battlefly', 'motherfly'];
+    var strengthBosses = ['skeletonOgre', 'dragon', 'packLeader', 'necrognomekhan'];
+    var intelligenceMonsters = ['gnome', 'gnomeCleric', 'gnomeWizard', 'bat', 'vampireBat'];
+    var intelligenceEventMonsters = ['dragon','giantSkeleton', 'butcher', 'frostGiant', 'battlefly', 'gnomecromancer'];
+    var intelligenceBosses = ['skeletonOgre', 'lightningBug', 'frostGiant', 'necrognomekhan', 'giantSpider'];
+    var dexterityMonsters = ['spider', 'jumpingSpider', 'wolf', 'caterpillar', 'spongeyCateripllar'];
+    var dexterityEventMonsters = ['dragon','giantSkeleton', 'alphaWolf', 'motherfly', 'battlefly', 'gnomecromancer'];
+    var dexterityBosses = ['lightningBug', 'dragon', 'frostGiant', 'packLeader', 'giantSpider'];
+    if (!monsters.length) {
+        var desiredNumberOfMonsters = Math.max(4, Math.floor(Math.sqrt(level)));
+        while (monsters.length < desiredNumberOfMonsters) {
+            var roll = (360 + levelDegrees - 30 + Math.random() * 60) % 360;
+            if (roll >= 330 || roll < 90) { // Strength
+                monsters.push(Random.removeElement(strengthMonsters))
+            } else if (roll < 210) { // Intelligence
+                monsters.push(Random.removeElement(intelligenceMonsters))
+            } else { //Dexterity
+                monsters.push(Random.removeElement(dexterityMonsters))
+            }
+        }
+        console.log(JSON.stringify(monsters));
+    }
+    var events = levelData.events.slice();
+    if (!events.length) {
+        var eventMonsters, bossMonsters;
+        var roll = (360 + levelDegrees - 30 + Math.random() * 60) % 360;
+        if (roll >= 330 || roll < 90) { // strength
+            eventMonsters = strengthEventMonsters;
+            bossMonsters = strengthBosses;
+        } else if (roll < 210) { // int
+            eventMonsters = intelligenceEventMonsters;
+            bossMonsters = intelligenceBosses;
+        } else { //Dexterity
+            eventMonsters = dexterityEventMonsters;
+            bossMonsters = dexterityBosses;
+        }
+        events.push([Random.element(monsters), Random.element(monsters), Random.element(eventMonsters)]);
+        events.push([Random.element(monsters), Random.element(monsters), Random.element(eventMonsters), Random.element(eventMonsters)]);
+        events.push([Random.element(monsters), Random.element(eventMonsters), Random.element(eventMonsters), Random.element(eventMonsters)]);
+        events.push([Random.element(monsters), Random.element(eventMonsters), Random.element(bossMonsters)]);
+        console.log(JSON.stringify(events));
+    }
+    // Make sure we have at least enough waves for the required events
+    numberOfWaves = Math.max(levelData.events.length, numberOfWaves);
+    var eventsLeft = events;
     while (waves.length < numberOfWaves) {
         var waveSize = Math.max(1, Math.floor(Random.range(minWaveSize, maxWaveSize) / 10));
         var wave = [];
@@ -20,7 +65,7 @@ function instantiateLevel(levelData, difficulty, difficultyCompleted) {
         } else {
             // Don't add random mobs to boss waves.
             while (wave.length < waveSize) {
-                wave.push(Random.element(levelData.monsters));
+                wave.push(Random.element(monsters));
             }
             waves.push(monsterWave(wave));
         }
@@ -33,7 +78,6 @@ function instantiateLevel(levelData, difficulty, difficultyCompleted) {
 
     if (!difficultyCompleted) {
         // Special Loot drops are given only the first time an adventurer complets an area on a given difficulty.
-        var levelDegrees = 180 * Math.atan2(levelData.coords[1], levelData.coords[0]) / Math.PI;
         // This is the minimum distance the level is from one of the main str/dex/int leylines.
         // Levels within 30 degrees of these leylines use 'basic'(triangle based) shapes for the jewels, other levels
         // will likely have non-triangle based shapes.

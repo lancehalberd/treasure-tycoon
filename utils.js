@@ -24,6 +24,25 @@ var Random = {
     },
 
     /**
+     * @param {Array} array  The array of elements to return random element from
+     */
+    'removeElement': function (collection) {
+        if (collection.constructor == Object) {
+            var keys = Object.keys(collection);
+            var key = this.element(keys);
+            var value = collection[key];
+            delete collection[key]
+            return value;
+        }
+        if (collection.constructor == Array) {
+            var spliced = collection.splice(this.range(0, collection.length - 1), 1);
+            return spliced[0];
+        }
+        console.log("Warning @ Random.removeElement: "+ collection + " is neither Array or Object");
+        return null;
+    },
+
+    /**
      * Shuffles an array.
      *
      * Knuth algorithm found at:
