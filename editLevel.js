@@ -202,7 +202,8 @@ function startEditingLevel(level) {
         $('.js-testCharacters').append($tag('option','', ['Lv',character.adventurer.level, character.adventurer.job.name, character.adventurer.name].join(' ')).val(JSON.stringify(exportCharacter(character))));
     }
     // Hide skills already used by other levels.
-    for (var otherLevel of Object.values(map)) {
+    for (var otherLevelKey in map) {
+        var otherLevel = map[otherLevelKey];
         if (otherLevel.skill) $('.js-levelSkillSelect option[value="' + otherLevel.skill + '"]').hide();
     }
     // Hide class skills, they cannot be granted by levels.

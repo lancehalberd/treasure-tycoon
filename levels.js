@@ -27,7 +27,7 @@ function instantiateLevel(levelData, difficulty, difficultyCompleted, level) {
                 monsters.push(Random.removeElement(dexterityMonsters))
             }
         }
-        console.log(JSON.stringify(monsters));
+        //console.log(JSON.stringify(monsters));
     }
     var events = levelData.events.slice();
     if (!events.length) {
@@ -47,7 +47,7 @@ function instantiateLevel(levelData, difficulty, difficultyCompleted, level) {
         events.push([Random.element(monsters), Random.element(monsters), Random.element(eventMonsters), Random.element(eventMonsters)]);
         events.push([Random.element(monsters), Random.element(eventMonsters), Random.element(eventMonsters), Random.element(eventMonsters)]);
         events.push([Random.element(monsters), Random.element(eventMonsters), Random.element(bossMonsters)]);
-        console.log(JSON.stringify(events));
+        //console.log(JSON.stringify(events));
     }
     // Make sure we have at least enough waves for the required events
     numberOfWaves = Math.max(events.length, numberOfWaves);
