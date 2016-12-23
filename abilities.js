@@ -104,7 +104,7 @@ var abilities = {
     'greatswordParadigmShift': {'name': 'Greatsword Wave', 'icon': 'gfx/496RpgIcons/buffGreatSword.png', 'bonuses': {'*greatsword:weaponRange': 2, '*greatsword:attackSpeed': 0.5}},
     'wandRange': {'name': 'Wand Range', 'icon': 'gfx/496RpgIcons/buffWand.png', 'bonuses': {'+wand:weaponRange': 2, '%wand:magicDamage': .3}},
     'wandAttackSpeed': {'name': 'Wand Attack Speed', 'icon': 'gfx/496RpgIcons/buffWand.png', 'bonuses': {'%wand:attackSpeed': .2, '%wand:magicDamage': .2}},
-    'wandCritChance': {'name': 'Want Critical Chance', 'icon': 'gfx/496RpgIcons/buffWand.png', 'bonuses': {'%wand:critChance': .3, '%wand:magicDamage': .3}},
+    'wandCritChance': {'name': 'Wand Critical Chance', 'icon': 'gfx/496RpgIcons/buffWand.png', 'bonuses': {'%wand:critChance': .3, '%wand:magicDamage': .3}},
     //'wandParadigmShift': {'name': '', 'icon': 'gfx/496RpgIcons/buffWand.png', 'bonuses': {'%:': .3, '%:': .3}},
     'staffDamage': {'name': 'Staff Damage', 'icon': 'gfx/496RpgIcons/buffStaff.png', 'bonuses': {'%staff:damage': .5, '%staff:accuracy': .2}},
     'staffCritDamage': {'name': 'Staff Crit Damage', 'icon': 'gfx/496RpgIcons/buffStaff.png', 'bonuses': {'+staff:critDamage': .3, '%staff:magicDamage': .3}},
