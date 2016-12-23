@@ -324,7 +324,7 @@ skillDefinitions.minion = {
     isValid: function (actor, minionSkill, target) {
         var count = 0;
         // Cannot raise corpses of uncontrollable enemies as minions.
-        if (minionSkill.base.consumeCorpse && target.uncontrollable) {
+        if (minionSkill.base.consumeCorpse && (target.uncontrollable || target.stationary)) {
             return false;
         }
         actor.allies.forEach(function (ally) {
@@ -717,7 +717,7 @@ function banishTarget(actor, target, range, rotation) {
 
 skillDefinitions.charm = {
     isValid: function (actor, charmSkill, target) {
-        return !target.cloaked && !target.uncontrollable;
+        return !target.cloaked && !(target.uncontrollable || target.stationary);
     },
     use: function (actor, charmSkill, target) {
         target.allies = actor.allies;
