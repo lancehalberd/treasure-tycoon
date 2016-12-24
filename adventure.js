@@ -257,10 +257,10 @@ function moveActor(actor, delta) {
     if (actor.target && actor.target.pull) {
         actor.target = null;
     }
-    if (actor.isDead || actor.stunned || actor.blocked || actor.target || actor.pull || ifdefor(actor.stationary)) {
+    if (actor.isDead || actor.stunned || actor.pull || ifdefor(actor.stationary)) {
         return;
     }
-    if ((!actor.target || actor.target.isDead) && (!actor.desiredTarget || actor.desiredTarget.isDead)) {
+    if ((!actor.target || actor.target.isDead) && (!actor.desiredTarget || actor.desiredTarget.isDead || actor.enemies.indexOf(actor.desiredTarget) < 0)) {
         actor.desiredTarget = null;
         var bestDistance = 10000;
         actor.enemies.forEach(function (target) {
@@ -286,10 +286,19 @@ function moveActor(actor, delta) {
         xOffset += actor.x - actor.allies[i].x;
     }
     speedBonus -= actor.direction * xOffset / 1000;
-    speedBonus = Math.min(1.25, Math.max(speedBonus, .5));
+    speedBonus = Math.min(1.25, Math.max(speedBonus, .2));
     if (actor.chargeEffect) {
         speedBonus *= actor.chargeEffect.chargeSkill.speedBonus;
         actor.chargeEffect.distance += speedBonus * actor.speed * Math.max(.1, 1 - actor.slow) * delta;
+    }
+    // If the character is closer than they need to be to auto attack then they can back away f
+    if (actor.target) {
+        var distanceToTarget = getDistance(actor, actor.target);
+        if (distanceToTarget <= (actor.weaponRange - 1) * 32 || Math.abs(actor.x - actor.target.x) < 32) {
+            speedBonus *= -.5;
+        } else if (distanceToTarget <= actor.weaponRange * 32) {
+            speedBonus = 0;
+        }
     }
     actor.x += speedBonus * actor.speed * actor.direction * Math.max(.1, 1 - actor.slow) * delta;
 }
@@ -363,19 +372,13 @@ function processStatusEffects(character, target, delta) {
             target.rotation += dr;
             var damage = target.pull.damage * Math.min(1, delta / timeLeft);
             target.pull.damage -= damage;
-            // Don't let target be pulled past enemies. Do let them jump away from enemies.
-            if (!target.blocked || dx * target.direction < 0) {
-                target.x += dx;
-                target.health -= damage;
-            }
+            target.x += dx;
+            target.health -= damage;
         } else {
             var dx = target.pull.x - target.x;
             target.rotation = 0;
-            // Don't let target be pulled past enemies. Do let them jump away from enemies.
-            if (!target.blocked || dx * target.direction < 0) {
-                target.x = target.pull.x;
-                target.health -= target.pull.damage;
-            }
+            target.x = target.pull.x;
+            target.health -= target.pull.damage;
             target.pull = null;
         }
     }
@@ -400,12 +403,10 @@ function runActorLoop(character, actor) {
         target.priority = getDistance(actor, target) - 1000;
         targets.push(target);
     }
-    actor.blocked = false;
     for (var i = 0; i < actor.enemies.length; i++) {
         var target = actor.enemies[i];
         target.priority = getDistance(actor, target);
         if (target.priority <= 0) {
-            if (!target.isDead) actor.blocked = true;
             if (actor.chargeEffect) {
                 var attackStats = createAttackStats(actor, actor.chargeEffect.chargeSkill, target);
                 attackStats.distance = actor.chargeEffect.distance;
@@ -426,7 +427,6 @@ function runActorLoop(character, actor) {
     // An actor that is being pulled cannot perform any actions.
     if (actor.pull || actor.chargeEffect) {
         actor.target = null;
-        actor.cloaked = (actor.cloaking && !actor.blocked && !actor.target);
         return;
     }
     // The main purpose of this is to prevent pulled actors from passing through their enemies.
@@ -450,7 +450,7 @@ function runActorLoop(character, actor) {
             break;
         }
     }
-    actor.cloaked = (actor.cloaking && !actor.blocked && !actor.target);
+    actor.cloaked = (actor.cloaking && !actor.target);
 }
 function checkToUseSkillOnTarget(character, actor, target) {
     for(var i = 0; i < ifdefor(actor.actions, []).length; i++) {

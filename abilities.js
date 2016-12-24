@@ -207,7 +207,7 @@ var abilities = {
                     'helpText': "Gain momentum with each hit you land granting increased attack speed and movement speed."},
 'tier3Index': {'name': '------Tier 3------'},
     'rangerIndex': {'name': '---Ranger---'},
-        'ranger': {'name': 'Taming', 'minionBonuses': {'*maxHealth': 2, '*attackSpeed': 1.5, '*speed': 1.5}},
+        'ranger': {'name': 'Taming', 'minionBonuses': {'*maxHealth': 2, '*attackSpeed': 1.5, '*speed': 1.2}},
         'pet': {'name': 'Pet', 'action': skills.pet},
         'petFood': {'name': 'Pet Food', 'bonuses': {'-pet:cooldown': 3}, 'minionBonuses': {'*pet:maxHealth': 1.5}},
         'petTraining': {'name': 'Pet Training', 'bonuses': {'-pet:cooldown': 3}, 'minionBonuses': {'*pet:damage': 1.5}},
