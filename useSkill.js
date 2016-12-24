@@ -113,8 +113,7 @@ function useSkill(actor, skill, target) {
         return false;
     }
 
-    var cdr = Math.min(.9, ifdefor(actor.cooldownReduction, 0));
-    skill.readyAt = actor.time + ifdefor(skill.cooldown, 0) * (1 - cdr);
+    skill.readyAt = actor.time + ifdefor(skill.cooldown, 0);
     // Show the name of the skill used if it isn't a basic attack. When skills have distinct
     // visible animations, we should probably remove this.
     if (!skill.tags['basic']) {

@@ -164,7 +164,7 @@ var skills = {
     'enhanceAbility': genericAction('effect', {'icon': 'gfx/496RpgIcons/auraAbility.png', 'tags': ['spell'], 'target': 'self'}, {'+cooldown': 20, '$buff': buffEffect({}, {
                             // This buff increases magicPower from magicDamage by 44% since that counts both damage and magicPower.
                             // Making a note here in case I want to change this *damage bonus to *physicalDamage later to balance this.
-                            '++cooldownReduction': .2, '+*magicPower': 1.2, '+*damage': 1.2, '+*range': 1.2, '+duration': 5})},
+                            '+%cooldown': -.2, '+*magicPower': 1.2, '+*damage': 1.2, '+*range': 1.2, '+duration': 5})},
                     'Enhance your own abilities granting: {$buff}'),
     // Song buffs should be based on the singer's stats, not the stats of the targets. Not sure if this is the case or not.
     'attackSong': genericAction('song', {'tags': ['song', 'field'], 'target': 'allies', 'color': 'orange', 'alpha': .2},

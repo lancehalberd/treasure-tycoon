@@ -162,12 +162,12 @@ addSuffix(32, 'The Marksman', 'weapon', {'+accuracy': [15, 21]});
 addSuffix(42, 'Precision', 'weapon', {'+accuracy': [22, 29]});
 addSuffix(52, 'The Sniper', 'weapon', {'+accuracy': [30, 40]});
 
-addSuffix(4, 'Tempo', 'weapon', {'+cooldownReduction': [10, 15, 1000]});
-addSuffix(19, 'Cadence', 'weapon', {'+cooldownReduction': [20, 25, 1000]});
-addSuffix(34, 'Rythum', 'weapon', {'+cooldownReduction': [30, 35, 1000]});
-addSuffix(49, 'Haste', 'weapon', {'+cooldownReduction': [40, 50, 1000]});
-addSuffix(64, 'The Bard', 'weapon', {'+cooldownReduction': [60, 70, 1000]});
-addSuffix(74, 'The Sage', 'weapon', {'+cooldownReduction': [80, 100, 1000]});
+addSuffix(4, 'Tempo', 'weapon', {'%cooldown': [-10, -15, 1000]});
+addSuffix(19, 'Cadence', 'weapon', {'%cooldown': [-20, -25, 1000]});
+addSuffix(34, 'Rythum', 'weapon', {'%cooldown': [-30, -35, 1000]});
+addSuffix(49, 'Haste', 'weapon', {'%cooldown': [-40, -50, 1000]});
+addSuffix(64, 'The Bard', 'weapon', {'%cooldown': [-60, -70, 1000]});
+addSuffix(74, 'The Sage', 'weapon', {'%cooldown': [-80, -100, 1000]});
 
 addSuffix(15, 'The Vampire', 'weapon', {'+lifeSteal': [10, 15, 1000]});
 addSuffix(40, 'The Dark Knight', 'weapon', {'+lifeSteal': [18, 23, 1000]});

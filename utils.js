@@ -4,7 +4,9 @@ var Random = {
      * @param {Number} min  The smallest returned value
      * @param {Number} max  The largest returned value
      */
-    'range': function (min, max) {
+    'range': function (A, B) {
+        var min = Math.min(A, B);
+        var max = Math.max(A, B);
         return Math.floor(Math.random() * (max + 1 - min)) + min;
     },
 

@@ -23,7 +23,7 @@ var allActorVariables = {
     'evasion': '.',
     'block': '.', 'magicBlock': '.', 'armor': '.', 'magicResist': '.',
     // special traits
-    'cloaking': '.', 'overHeal': '.', 'increasedDrops': '.', 'cooldownReduction': '.',
+    'cloaking': '.', 'overHeal': '.', 'increasedDrops': '.',
     'reducedDivinityCost': 'Reduces the divinity cost to level at shrines by this percent',
     'equipmentMastery': '.', 'invulnerable': '.', 'maxBlock': '.', 'maxMagicBlock': '.', 'maxEvasion': '.',
     'uncontrollable': '.', 'twoToOneHanded': '.',

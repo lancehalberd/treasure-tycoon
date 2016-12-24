@@ -163,7 +163,7 @@ function drawMonster(character, monster, index) {
     // life bar
     if (monster.isDead) return;
     var x = monster.x - cameraX + monster.width / 2 - 32;
-    var y = monster.top + scale * ifdefor(source.yTop, 0) -5;
+    var y = monster.top + scale * ifdefor(source.yTop, 0) - 5;
     drawBar(context, x, y, 64, 4, 'white', ifdefor(monster.color, 'red'), monster.health / monster.maxHealth);
     if (monster.bonusMaxHealth >= 1 && monster.health >= monster.maxHealth - monster.bonusMaxHealth) {
         // This logic is kind of a mess but it is to make sure the % of the bar that is due to bonusMaxHealth
