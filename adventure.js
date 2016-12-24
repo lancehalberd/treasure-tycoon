@@ -230,7 +230,23 @@ function adventureLoop(character, delta) {
     });
     // Update position info.
     var cameraX = character.cameraX;
+    ifdefor(character.enemies, []).forEach(function (actor, index) {
+        index = 1 + character.enemies.length - index;
+        var source = actor.source;
+        var scale = ifdefor(actor.scale, 1);
+        actor.width = source.width * scale;
+        actor.height = ifdefor(source.height, 64) * scale;
+        actor.left = actor.x - cameraX;
+        actor.top = groundY - actor.height - ifdefor(source.y, 0) * scale - 2 * (index % maxIndex);
+        if (isNaN(actor.top) || isNaN(actor.left) || isNaN(actor.width) || isNaN(actor.height)) {
+            console.log([actor.left,actor.top,actor.width,actor.height]);
+            pause();
+            return false;
+        }
+        return true;
+    });
     ifdefor(character.allies, []).forEach(function (actor, index) {
+        index = - index;
         var source = actor.source;
         var scale = ifdefor(actor.scale, 1);
         actor.width = source.width * scale;
@@ -244,19 +260,7 @@ function adventureLoop(character, delta) {
             pause();
             return false;
         }
-    });
-    ifdefor(character.enemies, []).forEach(function (actor, index) {
-        var source = actor.source;
-        var scale = ifdefor(actor.scale, 1);
-        actor.width = source.width * scale;
-        actor.height = ifdefor(source.height, 64) * scale;
-        actor.left = actor.x - cameraX;
-        actor.top = groundY - actor.height - ifdefor(source.y, 0) * scale + 2 * (index % maxIndex);
-        if (isNaN(actor.top) || isNaN(actor.left) || isNaN(actor.width) || isNaN(actor.height)) {
-            console.log([actor.left,actor.top,actor.width,actor.height]);
-            pause();
-            return false;
-        }
+        return true;
     });
 }
 function moveActor(actor, delta) {

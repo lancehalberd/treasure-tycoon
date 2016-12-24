@@ -39,9 +39,7 @@ function drawAdventure(character) {
     ifdefor(character.enemies, []).forEach(function (actor, index) {
         drawActor(character, actor, 1 + character.enemies.length - index)
     });
-    drawActor(character, adventurer, 0);
     ifdefor(character.allies, []).forEach(function (actor, index) {
-        if (actor == adventurer) return;
         drawActor(character, actor, -index)
     });
     // Draw text popups such as damage dealt, item points gained, and so on.
