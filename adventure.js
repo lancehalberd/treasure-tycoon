@@ -30,6 +30,7 @@ function startArea(character, index) {
     character.allies = [character.adventurer];
     character.adventurer.allies = character.allies;
     character.adventurer.enemies = character.enemies;
+    character.adventurer.desiredTarget = null;
     character.treasurePopups = [];
     character.textPopups = [];
     character.timeStopEffect = null;
@@ -200,6 +201,7 @@ function adventureLoop(character, delta) {
     everybody.forEach(function (actor) {
         if (actor.timeOfDeath < actor.time - 1) {
             removeActor(actor);
+            return;
         }
         // Since damage can be dealt at various points in the frame, it is difficult to pin point what damage was dealt
         // since the last action check. To this end, we keep track of their health over the last five frames and use
@@ -224,6 +226,24 @@ function moveActor(actor, delta) {
     }
     if (actor.isDead || actor.stunned || actor.blocked || actor.target || actor.pull || ifdefor(actor.stationary)) {
         return;
+    }
+    if ((!actor.target || actor.target.isDead) && (!actor.desiredTarget || actor.desiredTarget.isDead)) {
+        actor.desiredTarget = null;
+        var bestDistance = 10000;
+        actor.enemies.forEach(function (target) {
+            if (target.isDead) return;
+            var distance = getDistance(actor, target);
+            if (distance < bestDistance) {
+                distance = bestDistance;
+                actor.desiredTarget = target;
+            }
+        });
+    }
+    var goalTarget = actor.target || actor.desiredTarget;
+    if (goalTarget) {
+        actor.direction = (goalTarget.x < actor.x) ? -1 : 1;
+    } else {
+        actor.direction = 1;
     }
     // If an enemy ends up behind the adventurer, have them appear in front of them.
     if (actor.x < actor.character.adventurer.x - 800) {
