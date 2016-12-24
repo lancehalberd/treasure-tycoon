@@ -5,8 +5,8 @@ var jobRanks = [
     ['ranger', 'warrior', 'wizard'],
     ['assassin', 'darkknight', 'bard'],
     ['sniper', 'samurai', 'sorcerer'],
-    ['ninja', 'enhancer', 'sage'],
-    ['master', 'fool']
+    ['ninja', 'enhancer', 'sage']
+    //['master', 'fool']
 ];
 
 function createNewHeroApplicant($applicationPanel, jobKey) {
