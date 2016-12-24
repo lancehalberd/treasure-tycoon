@@ -202,7 +202,7 @@ var skills = {
     'heal': spellAction('heal', {'icon': 'gfx/496RpgIcons/spellHeal.png', 'target': 'allies'}, {'+cooldown': 10, '+range': 10}, 'Cast a spell to restore {+power} health.'),
     'reflect': spellAction('reflect', {'target': 'allies'}, {'+cooldown': 20},
             'Create a magical barrier that will reflect projectile attacks until it breaks after taking {+power} damage. Further casting strengthens the barrier.'),
-    'revive': spellAction('revive', {}, {'icon': 'gfx/496RpgIcons/spellRevive.png', '+cooldown': 120},
+    'revive': spellAction('revive', {'icon': 'gfx/496RpgIcons/spellRevive.png'}, {'+cooldown': 120},
             'Upon receiving a lethal blow, cast a spell that brings you back to life with {+power} health.'),
     'protect': spellAction('effect', {'icon': 'gfx/496RpgIcons/spellProtect.png', 'target': 'allies'}, {'+cooldown': 30, '+range': 10, '$buff': buffEffect({'icons': [effectSourceUp, effectSourceArmor]}, {'++armor': ['{intelligence}'], '+duration': 20})},
                            'Create a magic barrier that grants: {$buff}'),
