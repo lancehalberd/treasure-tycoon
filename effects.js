@@ -294,6 +294,15 @@ function getProjectileVelocity(attackStats, x, y, target) {
     // Over a period of N frames, the projectile will fall roughly N^2 / 2, update target velocity accordingly
     v[1] += attackStats.gravity * frameEstimate * frameEstimate / 2;
     distance = Math.sqrt(v[0] * v[0] + v[1] * v[1]);
+    if (distance === 0 || isNaN(distance) || isNaN(v[0]) || isNaN(v[1])) {
+        console.log("invalid velocity");
+        console.log([x, y, tx, ty]);
+        console.log([target.x, target.y, target.width, target.height]);
+        console.log(target);
+        console.log(distance);
+        console.log(v);
+        pause();
+    }
     return [v[0] * attackStats.speed / distance, v[1] * attackStats.speed / distance];
 }
 

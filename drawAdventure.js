@@ -101,10 +101,6 @@ function drawMonster(character, monster, index) {
     if (monster.cloaked) {
         context.globalAlpha = .2;
     }
-    monster.width = source.width * scale;
-    monster.height = ifdefor(source.height, 64) * scale;
-    monster.left = monster.x - cameraX;
-    monster.top = groundY - monster.height - ifdefor(source.y, 0) * scale - 2 * (index % maxIndex);
     var xCenter = ifdefor(source.xCenter, source.width / 2) * scale;
     var yCenter = ifdefor(source.yCenter, ifdefor(source.height, 64) / 2) * scale;
     context.translate(monster.left + xCenter, monster.top + yCenter);
@@ -202,10 +198,6 @@ function drawAdventurer(character, adventurer, index) {
     var cameraX = character.cameraX;
     var context = mainContext;
     context.save();
-    adventurer.left = adventurer.x - cameraX;
-    adventurer.width = 32 * scale;
-    adventurer.height = 64 * scale;
-    adventurer.top = groundY - adventurer.height - 2 * (index % maxIndex);
     var xCenter = adventurer.source.xCenter * scale;
     var yCenter = adventurer.source.yCenter * scale;
     context.translate(adventurer.left + xCenter, adventurer.top + yCenter);

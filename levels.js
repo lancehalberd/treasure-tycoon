@@ -5,7 +5,7 @@ function instantiateLevel(levelData, difficulty, difficultyCompleted, level) {
     var minWaveSize = Math.floor(Math.min(4, Math.sqrt(level)) * 10);
     var maxWaveSize = Math.floor(Math.min(10, 2.2 * Math.sqrt(level)) * 10);
     var levelDegrees = (360 + 180 * Math.atan2(levelData.coords[1], levelData.coords[0]) / Math.PI) % 360;
-    var monsters = levelData.monsters.slice();
+    var possibleMonsters = levelData.monsters.slice();
     var strengthMonsters = ['skeleton','skeletalBuccaneer','undeadPaladin','undeadWarrior', 'stealthyCateripllar'];
     var strengthEventMonsters = ['dragon','giantSkeleton', 'butcher', 'alphaWolf', 'battlefly', 'motherfly'];
     var strengthBosses = ['skeletonOgre', 'dragon', 'packLeader', 'necrognomekhan'];
@@ -15,16 +15,24 @@ function instantiateLevel(levelData, difficulty, difficultyCompleted, level) {
     var dexterityMonsters = ['spider', 'jumpingSpider', 'wolf', 'caterpillar', 'spongeyCateripllar'];
     var dexterityEventMonsters = ['dragon','giantSkeleton', 'alphaWolf', 'motherfly', 'battlefly', 'gnomecromancer'];
     var dexterityBosses = ['lightningBug', 'dragon', 'frostGiant', 'packLeader', 'giantSpider'];
-    if (!monsters.length) {
-        var desiredNumberOfMonsters = Math.max(4, Math.floor(Math.sqrt(level)));
-        while (monsters.length < desiredNumberOfMonsters) {
+    var allMonsters = strengthMonsters.concat(strengthEventMonsters).concat(strengthBosses)
+                        .concat(intelligenceMonsters).concat(intelligenceEventMonsters).concat(intelligenceBosses)
+                        .concat(dexterityMonsters).concat(dexterityEventMonsters).concat(dexterityBosses);
+    for (var monsterKey of allMonsters) {
+        if (!monsters[monsterKey]) {
+            throw new Error('Invalid monster key: ' + monsterKey);
+        }
+    }
+    if (!possibleMonsters.length) {
+        var desiredNumberOfMonsters = Math.min(4, Math.floor(Math.sqrt(level)));
+        while (possibleMonsters.length < desiredNumberOfMonsters) {
             var roll = (360 + levelDegrees - 30 + Math.random() * 60) % 360;
             if (roll >= 330 || roll < 90) { // Strength
-                monsters.push(Random.removeElement(strengthMonsters))
+                possibleMonsters.push(Random.removeElement(strengthMonsters))
             } else if (roll < 210) { // Intelligence
-                monsters.push(Random.removeElement(intelligenceMonsters))
+                possibleMonsters.push(Random.removeElement(intelligenceMonsters))
             } else { //Dexterity
-                monsters.push(Random.removeElement(dexterityMonsters))
+                possibleMonsters.push(Random.removeElement(dexterityMonsters))
             }
         }
         //console.log(JSON.stringify(monsters));
@@ -43,10 +51,10 @@ function instantiateLevel(levelData, difficulty, difficultyCompleted, level) {
             eventMonsters = dexterityEventMonsters;
             bossMonsters = dexterityBosses;
         }
-        events.push([Random.element(monsters), Random.element(monsters), Random.element(eventMonsters)]);
-        events.push([Random.element(monsters), Random.element(monsters), Random.element(eventMonsters), Random.element(eventMonsters)]);
-        events.push([Random.element(monsters), Random.element(eventMonsters), Random.element(eventMonsters), Random.element(eventMonsters)]);
-        events.push([Random.element(monsters), Random.element(eventMonsters), Random.element(bossMonsters)]);
+        events.push([Random.element(possibleMonsters), Random.element(possibleMonsters), Random.element(eventMonsters)]);
+        events.push([Random.element(possibleMonsters), Random.element(possibleMonsters), Random.element(eventMonsters), Random.element(eventMonsters)]);
+        events.push([Random.element(possibleMonsters), Random.element(eventMonsters), Random.element(eventMonsters), Random.element(eventMonsters)]);
+        events.push([Random.element(possibleMonsters), Random.element(eventMonsters), Random.element(bossMonsters)]);
         //console.log(JSON.stringify(events));
     }
     // Make sure we have at least enough waves for the required events
@@ -69,7 +77,7 @@ function instantiateLevel(levelData, difficulty, difficultyCompleted, level) {
         } else {
             // Don't add random mobs to boss waves.
             while (wave.length < waveSize) {
-                wave.push(Random.element(monsters));
+                wave.push(Random.element(possibleMonsters));
             }
             waves.push(monsterWave(wave));
         }

@@ -327,7 +327,7 @@ skillDefinitions.minion = {
             return false;
         }
         actor.allies.forEach(function (ally) {
-            if (ally.source == minionSkill) count++;
+            if (ally.skillSource == minionSkill) count++;
         });
         return count < minionSkill.limit;
     },
@@ -343,7 +343,7 @@ skillDefinitions.minion = {
         }
         newMonster.character = actor.character;
         newMonster.direction = actor.direction;
-        newMonster.source = minionSkill;
+        newMonster.skillSource = minionSkill;
         newMonster.allies = actor.allies;
         newMonster.enemies = actor.enemies;
         newMonster.time = 0;
@@ -410,13 +410,13 @@ skillDefinitions.clone = {
     isValid: function (actor, cloneSkill, attackStats) {
         var count = 0;
         actor.allies.forEach(function (ally) {
-            if (ally.source == cloneSkill) count++;
+            if (ally.skillSource == cloneSkill) count++;
         });
         return count < cloneSkill.limit && Math.random() < cloneSkill.chance;
     },
     use: function (actor, cloneSkill, attackStats) {
         var clone = cloneActor(actor, cloneSkill);
-        clone.source = cloneSkill;
+        clone.skillSource = cloneSkill;
         clone.name = actor.name + ' shadow clone';
         clone.percentHealth = actor.percentHealth;
         clone.health = clone.percentHealth * clone.maxHealth;
@@ -429,13 +429,13 @@ skillDefinitions.decoy = {
     isValid: function (actor, decoySkill, attackStats) {
         var count = 0;
         actor.allies.forEach(function (ally) {
-            if (ally.source == decoySkill) count++;
+            if (ally.skillSource == decoySkill) count++;
         });
         return count < ifdefor(decoySkill.limit, 10);
     },
     use: function (actor, decoySkill, attackStats) {
         var clone = cloneActor(actor, decoySkill);
-        clone.source = decoySkill;
+        clone.skillSource = decoySkill;
         clone.name = actor.name + ' decoy';
         addActions(clone, abilities.explode);
         actor.allies.push(clone);

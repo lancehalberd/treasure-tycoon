@@ -30,6 +30,7 @@ function startArea(character, index) {
     character.allies = [character.adventurer];
     character.adventurer.allies = character.allies;
     character.adventurer.enemies = character.enemies;
+    character.adventurer.desiredTarget = null;
     character.treasurePopups = [];
     character.textPopups = [];
     character.timeStopEffect = null;
@@ -98,6 +99,13 @@ function capHealth(actor) {
 }
 function removeActor(actor) {
     var index = actor.allies.indexOf(actor);
+    if (index < 0) {
+        console.log("Tried to remove actor that was not amongst its allies");
+        console.log(actor);
+        console.log(actor.allies);
+        pause();
+        return;
+    }
     actor.allies.splice(index, 1);
     if (actor.isMainCharacter) {
         var character = actor.character;
@@ -168,6 +176,8 @@ function adventureLoop(character, delta) {
     character.enemies.forEach(function (actor) {
         runActorLoop(character, actor);
     });
+    // A skill may have removed an actor from one of the allies/enemies array, so remake everybody.
+    everybody = character.allies.concat(character.enemies);
     everybody.forEach(function (actor) {
         moveActor(actor, delta);
     });
@@ -200,6 +210,7 @@ function adventureLoop(character, delta) {
     everybody.forEach(function (actor) {
         if (actor.timeOfDeath < actor.time - 1) {
             removeActor(actor);
+            return;
         }
         // Since damage can be dealt at various points in the frame, it is difficult to pin point what damage was dealt
         // since the last action check. To this end, we keep track of their health over the last five frames and use
@@ -217,6 +228,36 @@ function adventureLoop(character, delta) {
             }
         }
     });
+    // Update position info.
+    var cameraX = character.cameraX;
+    ifdefor(character.allies, []).forEach(function (actor, index) {
+        var source = actor.source;
+        var scale = ifdefor(actor.scale, 1);
+        actor.width = source.width * scale;
+        actor.height = ifdefor(source.height, 64) * scale;
+        actor.top = groundY - actor.height - ifdefor(source.y, 0) * scale - 2 * (index % maxIndex);
+        actor.left = actor.x - cameraX;
+        if (isNaN(actor.top) || isNaN(actor.left) || isNaN(actor.width) || isNaN(actor.height)) {
+            console.log(actor.scale);
+            console.log(source);
+            console.log([actor.left,actor.top,actor.width,actor.height]);
+            pause();
+            return false;
+        }
+    });
+    ifdefor(character.enemies, []).forEach(function (actor, index) {
+        var source = actor.source;
+        var scale = ifdefor(actor.scale, 1);
+        actor.width = source.width * scale;
+        actor.height = ifdefor(source.height, 64) * scale;
+        actor.left = actor.x - cameraX;
+        actor.top = groundY - actor.height - ifdefor(source.y, 0) * scale + 2 * (index % maxIndex);
+        if (isNaN(actor.top) || isNaN(actor.left) || isNaN(actor.width) || isNaN(actor.height)) {
+            console.log([actor.left,actor.top,actor.width,actor.height]);
+            pause();
+            return false;
+        }
+    });
 }
 function moveActor(actor, delta) {
     if (actor.target && actor.target.pull) {
@@ -225,9 +266,23 @@ function moveActor(actor, delta) {
     if (actor.isDead || actor.stunned || actor.blocked || actor.target || actor.pull || ifdefor(actor.stationary)) {
         return;
     }
-    // If an enemy ends up behind the adventurer, have them appear in front of them.
-    if (actor.x < actor.character.adventurer.x - 800) {
-        actor.x = actor.character.adventurer.x + 1200;
+    if ((!actor.target || actor.target.isDead) && (!actor.desiredTarget || actor.desiredTarget.isDead)) {
+        actor.desiredTarget = null;
+        var bestDistance = 10000;
+        actor.enemies.forEach(function (target) {
+            if (target.isDead) return;
+            var distance = getDistance(actor, target);
+            if (distance < bestDistance) {
+                distance = bestDistance;
+                actor.desiredTarget = target;
+            }
+        });
+    }
+    var goalTarget = actor.target || actor.desiredTarget;
+    if (goalTarget) {
+        actor.direction = (goalTarget.x < actor.x) ? -1 : 1;
+    } else {
+        actor.direction = 1;
     }
     // Make sure the main character doesn't run in front of their allies.
     // If the allies are fast enough, this shouldn't be an isse.

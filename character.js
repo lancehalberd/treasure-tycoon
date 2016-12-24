@@ -418,16 +418,7 @@ function updateAdventurer(adventurer) {
         '+weaponless:critChance': .01
     };
     adventurer.tags = recomputActorTags(adventurer);
-    var sectionWidth = personFrames * 32;
-    var hat = adventurer.equipment.head;
-    var hideHair = hat ? ifdefor(hat.base.hideHair, false) : false;
-    adventurer.personContext.clearRect(0, 0, sectionWidth, 64);
-    for (var i = 0; i < personFrames; i++) {
-        adventurer.personContext.drawImage(images['gfx/person.png'], i * 32, 0 , 32, 64, i * 32, 0, 32, 64);
-        if (!hideHair) {
-            adventurer.personContext.drawImage(images['gfx/person.png'], i * 32 + adventurer.hairOffset * sectionWidth, 0 , 32, 64, i * 32, 0, 32, 64);
-        }
-    }
+    updateAdventurerGraphics(adventurer);
     addActions(adventurer, abilities.basicAttack);
     adventurer.abilities.forEach(function (ability) {
         addActions(adventurer, ability);
@@ -448,21 +439,36 @@ function updateAdventurer(adventurer) {
         equipment.prefixes.forEach(function (affix) {
             addActions(adventurer, affix);
             addBonusSourceToObject(adventurer, affix);
-        })
+        });
         equipment.suffixes.forEach(function (affix) {
             addActions(adventurer, affix);
             addBonusSourceToObject(adventurer, affix);
-        })
-        if (equipment.base.offset) {
-            for (var i = 0; i < personFrames; i++) {
-                adventurer.personContext.drawImage(images['gfx/person.png'], i * 32 + equipment.base.offset * sectionWidth, 0 , 32, 64, i * 32, 0, 32, 64);
-            }
-        }
+        });
     });
     addBonusSourceToObject(adventurer, {'bonuses': adventurerBonuses});
     addBonusSourceToObject(adventurer, coreStatBonusSource);
     recomputeDirtyStats(adventurer);
     //console.log(adventurer);
+}
+function updateAdventurerGraphics(adventurer) {
+    var sectionWidth = personFrames * 32;
+    var hat = adventurer.equipment.head;
+    var hideHair = hat ? ifdefor(hat.base.hideHair, false) : false;
+    adventurer.personContext.clearRect(0, 0, sectionWidth, 64);
+    for (var i = 0; i < personFrames; i++) {
+        adventurer.personContext.drawImage(images['gfx/person.png'], i * 32, 0 , 32, 64, i * 32, 0, 32, 64);
+        if (!hideHair) {
+            adventurer.personContext.drawImage(images['gfx/person.png'], i * 32 + adventurer.hairOffset * sectionWidth, 0 , 32, 64, i * 32, 0, 32, 64);
+        }
+    }
+    equipmentSlots.forEach(function (type) {
+        var equipment = adventurer.equipment[type];
+        if (equipment && equipment.base.offset) {
+            for (var i = 0; i < personFrames; i++) {
+                adventurer.personContext.drawImage(images['gfx/person.png'], i * 32 + equipment.base.offset * sectionWidth, 0 , 32, 64, i * 32, 0, 32, 64);
+            }
+        }
+    });
 }
 function recomputActorTags(actor) {
     var tags = {'actor': true};

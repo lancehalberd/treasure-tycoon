@@ -74,7 +74,7 @@ var mainCanvas, mainContext, jewelsCanvas, jewelsContext, previewContext;
 // Load any graphic assets needed by the game here.
 async.mapSeries([
     // Original images from project contributors:
-    'gfx/person.png', 'gfx/grass.png', 'gfx/cave.png', 'gfx/forest.png', 'gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png',
+    'gfx/person.png', 'gfx/grass.png', 'gfx/cave.png', 'gfx/forest.png', 'gfx/beach.png', 'gfx/town.png', 'gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png',
     'gfx/treasureChest.png', 'gfx/moneyIcon.png', 'gfx/projectiles.png',
     // http://opengameart.org/content/496-pixel-art-icons-for-medievalfantasy-rpg
     'gfx/496RpgIcons/abilityCharm.png',
@@ -242,16 +242,16 @@ function mainLoop() {
             }
             for (var i = 0; i < character.gameSpeed && character.area; i++) {
                 character.time += delta / 1000;
-                adventureLoop(character, delta / 1000);
-                if (!character.area) {
-                    return
-                }
                 // Original this branch was designed to make the camera change for opening the treasure
                 // But it actually applies to both the chest and the boss, which turned out to be fine.
                 if (character.waveIndex < character.area.waves.length - 1) {
                     character.cameraX = (character.cameraX * 10 + character.adventurer.x - 100) / 11;
                 } else if (character.cameraX < character.adventurer.x - 200 || character.cameraX > character.adventurer.x) {
                     character.cameraX = (character.cameraX * 10 + character.adventurer.x - 200) / 11;
+                }
+                adventureLoop(character, delta / 1000);
+                if (!character.area) {
+                    return
                 }
             }
         }
