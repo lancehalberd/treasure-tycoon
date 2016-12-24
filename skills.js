@@ -196,7 +196,7 @@ var skills = {
     'mimic': genericAction('mimic', {}, {}, 'Counter an enemy ability with a copy of that ability.'),
     'decoy': genericAction('decoy', {'tags': ['minion']}, {'+cooldown': 60},
                 'Dodge an attack and leave behind a decoy that explodes on death damaging all enemies.'),
-    'explode': genericAction('explode', {'tags': ['ranged']}, {'+power': ['{maxHealth}'], '$alwaysHits': 'Shrapnel cannot be evaded'},
+    'explode': genericAction('explode', {'tags': ['ranged']}, {'+power': ['{maxHealth}'], '+range': 10, '$alwaysHits': 'Shrapnel cannot be evaded'},
                              'Explode into shrapnel on death.'),
     // Spell actions
     'heal': spellAction('heal', {'icon': 'gfx/496RpgIcons/spellHeal.png', 'target': 'allies'}, {'+cooldown': 10, '+range': 10}, 'Cast a spell to restore {+power} health.'),

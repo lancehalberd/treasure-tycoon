@@ -456,6 +456,8 @@ skillDefinitions.explode = {
         for (var i = 0; i < actor.enemies.length; i++) {
             performAttackProper({
                 'distance': 0,
+                'gravity': ifdefor(explodeSkill.gravity, ifdefor(explodeSkill.base.gravity, .8)),
+                'speed': ifdefor(explodeSkill.speed, ifdefor(explodeSkill.base.speed, ifdefor(explodeSkill.range, 10) * 2.5)),
                 'source': actor,
                 'attack': explodeSkill,
                 'isCritical': true,

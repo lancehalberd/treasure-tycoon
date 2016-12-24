@@ -296,6 +296,7 @@ function getProjectileVelocity(attackStats, x, y, target) {
     distance = Math.sqrt(v[0] * v[0] + v[1] * v[1]);
     if (distance === 0 || isNaN(distance) || isNaN(v[0]) || isNaN(v[1])) {
         console.log("invalid velocity");
+        console.log([attackStats.speed, attackStats.gravity]);
         console.log([x, y, tx, ty]);
         console.log([target.x, target.y, target.width, target.height]);
         console.log(target);
