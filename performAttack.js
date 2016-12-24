@@ -220,6 +220,7 @@ function castSpell(attacker, spell, target) {
     attacker.health -= attackStats.healthSacrificed;
     attacker.attackCooldown = attacker.time + .2;
     performAttackProper(attackStats, target);
+    attacker.stunned = attacker.time + .3;
     return attackStats;
 }
 function performAttackProper(attackStats, target) {
