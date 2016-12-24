@@ -99,6 +99,13 @@ function capHealth(actor) {
 }
 function removeActor(actor) {
     var index = actor.allies.indexOf(actor);
+    if (index < 0) {
+        console.log("Tried to remove actor that was not amongst its allies");
+        console.log(actor);
+        console.log(actor.allies);
+        pause();
+        return;
+    }
     actor.allies.splice(index, 1);
     if (actor.isMainCharacter) {
         var character = actor.character;
@@ -169,6 +176,8 @@ function adventureLoop(character, delta) {
     character.enemies.forEach(function (actor) {
         runActorLoop(character, actor);
     });
+    // A skill may have removed an actor from one of the allies/enemies array, so remake everybody.
+    everybody = character.allies.concat(character.enemies);
     everybody.forEach(function (actor) {
         moveActor(actor, delta);
     });
@@ -244,10 +253,6 @@ function moveActor(actor, delta) {
         actor.direction = (goalTarget.x < actor.x) ? -1 : 1;
     } else {
         actor.direction = 1;
-    }
-    // If an enemy ends up behind the adventurer, have them appear in front of them.
-    if (actor.x < actor.character.adventurer.x - 800) {
-        actor.x = actor.character.adventurer.x + 1200;
     }
     // Make sure the main character doesn't run in front of their allies.
     // If the allies are fast enough, this shouldn't be an isse.
