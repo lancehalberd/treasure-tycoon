@@ -186,6 +186,10 @@ function getActorTints(actor) {
         tints.push([actor.tint, center + Math.cos(actor.animationTime * 5) * radius]);
     }
     if (actor.slow > 0) tints.push(['#fff', Math.min(1, actor.slow)]);
+    if (mouseDown) {
+        if (actor === state.selectedCharacter.adventurer.target) tints.push(['#f00', .5]);
+        if (actor === state.selectedCharacter.adventurer.desiredTarget) tints.push(['#00f', .5]);
+    }
     return tints;
 }
 function drawImage(context, image, source, target) {

@@ -267,18 +267,16 @@ function moveActor(actor, delta) {
     if (actor.isDead || actor.stunned || actor.pull || ifdefor(actor.stationary)) {
         return;
     }
-    if ((!actor.target || actor.target.isDead) && (!actor.desiredTarget || actor.desiredTarget.isDead || actor.enemies.indexOf(actor.desiredTarget) < 0)) {
-        actor.desiredTarget = null;
-        var bestDistance = 10000;
-        actor.enemies.forEach(function (target) {
-            if (target.isDead) return;
-            var distance = getDistance(actor, target);
-            if (distance < bestDistance) {
-                distance = bestDistance;
-                actor.desiredTarget = target;
-            }
-        });
-    }
+    actor.desiredTarget = null;
+    var bestDistance = 10000;
+    actor.enemies.forEach(function (target) {
+        if (target.isDead) return;
+        var distance = getDistance(actor, target);
+        if (distance < bestDistance) {
+            bestDistance = distance;
+            actor.desiredTarget = target;
+        }
+    });
     var goalTarget = actor.target || actor.desiredTarget;
     if (goalTarget) {
         actor.direction = (goalTarget.x < actor.x) ? -1 : 1;
@@ -299,8 +297,8 @@ function moveActor(actor, delta) {
         actor.chargeEffect.distance += speedBonus * actor.speed * Math.max(.1, 1 - actor.slow) * delta;
     }
     // If the character is closer than they need to be to auto attack then they can back away f
-    if (actor.target) {
-        var distanceToTarget = getDistanceOverlap(actor, actor.target);
+    if (goalTarget) {
+        var distanceToTarget = getDistanceOverlap(actor, goalTarget);
         if (distanceToTarget < (actor.weaponRange - 1.5) * 32) {
             speedBonus *= -.25;
         } else if (distanceToTarget <= actor.weaponRange * 32) {

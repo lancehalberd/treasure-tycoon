@@ -440,26 +440,27 @@ function applyAttackToTarget(attackStats, target) {
             target.stunned = Math.max(ifdefor(target.stunned, 0), target.time + attack.stun * effectiveness);
             hitText.value += ' stunned!';
         }
+        var direction = (target.x < attacker.x) ? -1 : 1;
         if (Math.random() < ifdefor(attack.knockbackChance, 0)) {
-            var targetX = target.x - target.direction * 32 * ifdefor(attack.knockbackDistance, 1);
+            var targetX = target.x + direction * 32 * ifdefor(attack.knockbackDistance, 1);
             // unset the current target since they are being pushed away.
             attacker.target = null;
             target.pull = {'x': targetX, 'time': target.time + .3, 'damage': 0};
-            target.rotation = attacker.direction * ifdefor(attack.knockbackRotation, 45);
+            target.rotation = direction * ifdefor(attack.knockbackRotation, 45);
         }
         if (attack.pullsTarget) {
             target.stunned =  Math.max(ifdefor(target.stunned, 0), target.time + .3 + distance / 32 * ifdefor(attack.dragStun * effectiveness, 0));
-            var targetX = (attacker.x > target.x) ? (attacker.x - 64) : (attacker.x + 64);
+            var targetX = (attacker.x > target.x) ? (attacker.x - target.width) : (attacker.x + attacker.width);
             target.pull = {'x': targetX, 'time': target.time + .3, 'damage': Math.floor(distance / 32 * damage * ifdefor(attack.dragDamage * effectiveness, 0))};
             attacker.pull = {'x': attacker.x, 'time': attacker.time + .3, 'damage': 0};
-            target.rotation = attacker.direction * ifdefor(attack.knockbackRotation, -45);
+            target.rotation = direction * ifdefor(attack.knockbackRotation, -45);
             hitText.value += ' hooked!';
         }
         if (attack.domino) {
             target.dominoAttackStats = attackStats;
-            var targetX = (attacker.x < target.x) ? (target.x + ifdefor(attack.distance * effectiveness, 128)) : (target.x - ifdefor(attack.distance * effectiveness, 128));
+            var targetX = (attacker.x < target.x) ? (target.x + attacker.width + ifdefor(attack.distance * effectiveness, 128)) : (target.x - ifdefor(attack.distance * effectiveness, 128));
             target.pull = {'x': targetX, 'time': target.time + .3, 'damage': 0};
-            target.rotation = attacker.direction * ifdefor(attack.knockbackRotation, 45);
+            target.rotation = direction * ifdefor(attack.knockbackRotation, 45);
         }
     } else {
         hitText.value = 'blocked';

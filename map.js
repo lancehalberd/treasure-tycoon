@@ -268,6 +268,7 @@ $('.js-mouseContainer').on('contextmenu', '.js-mainCanvas', function (event) {
     return !editingMap;
 });
 $('.js-mouseContainer').on('mousedown', '.js-mainCanvas', function (event) {
+    if (state.selectedCharacter.area) return;
     var x = event.pageX - $(this).offset().left;
     var y = event.pageY - $(this).offset().top;
     //console.log(camera.unprojectPoint(x + mapLeft, y + mapTop, world.radius));
