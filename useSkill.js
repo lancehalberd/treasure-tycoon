@@ -371,11 +371,11 @@ function cloneActor(actor, skill) {
     } else {
         clone = makeMonster({'key': actor.base.key}, actor.level, [], true);
     }
-    initializeActorForAdventure(clone);
-    actor.pull = {'x': actor.x - actor.direction * 64, 'time': actor.time + .3, 'damage': 0};
     clone.x = actor.x + actor.direction * 32;
     clone.character = actor.character;
     clone.direction = actor.direction;
+    initializeActorForAdventure(clone);
+    actor.pull = {'x': actor.x - actor.direction * 64, 'time': actor.time + .3, 'damage': 0};
     clone.allies = actor.allies;
     clone.enemies = actor.enemies;
     clone.stunned = 0;

@@ -139,6 +139,7 @@ function initializeActorForAdventure(actor) {
     actor.target = null;
     actor.slow = 0;
     actor.rotation = 0;
+    updateActorDimensions(actor, 0);
 }
 function returnToMap(character) {
     removeAdventureEffects(character.adventurer);

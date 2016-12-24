@@ -17,12 +17,12 @@ function startArea(character, index) {
     } else {
         character.area = instantiateLevel(map[index], character.levelDifficulty, difficultyCompleted);
     }
+    character.cameraX = -60;
     initializeActorForAdventure(character.adventurer);
     character.waveIndex = 0;
     character.adventurer.x = 0;
     character.finishTime = false;
     character.startTime = character.time;
-    character.cameraX = -60;
     character.enemies = [];
     character.objects = [];
     character.projectiles = [];
@@ -229,39 +229,29 @@ function adventureLoop(character, delta) {
         }
     });
     // Update position info.
-    var cameraX = character.cameraX;
     ifdefor(character.enemies, []).forEach(function (actor, index) {
-        index = 1 + character.enemies.length - index;
-        var source = actor.source;
-        var scale = ifdefor(actor.scale, 1);
-        actor.width = source.width * scale;
-        actor.height = ifdefor(source.height, 64) * scale;
-        actor.left = actor.x - cameraX;
-        actor.top = groundY - actor.height - ifdefor(source.y, 0) * scale - 2 * (index % maxIndex);
-        if (isNaN(actor.top) || isNaN(actor.left) || isNaN(actor.width) || isNaN(actor.height)) {
-            console.log([actor.left,actor.top,actor.width,actor.height]);
-            pause();
-            return false;
-        }
-        return true;
+        return updateActorDimensions(actor, 1 + character.enemies.length - index);
     });
     ifdefor(character.allies, []).forEach(function (actor, index) {
-        index = - index;
-        var source = actor.source;
-        var scale = ifdefor(actor.scale, 1);
-        actor.width = source.width * scale;
-        actor.height = ifdefor(source.height, 64) * scale;
-        actor.top = groundY - actor.height - ifdefor(source.y, 0) * scale - 2 * (index % maxIndex);
-        actor.left = actor.x - cameraX;
-        if (isNaN(actor.top) || isNaN(actor.left) || isNaN(actor.width) || isNaN(actor.height)) {
-            console.log(actor.scale);
-            console.log(source);
-            console.log([actor.left,actor.top,actor.width,actor.height]);
-            pause();
-            return false;
-        }
-        return true;
+        return updateActorDimensions(actor, -index);
     });
+}
+function updateActorDimensions(actor, index) {
+    var source = actor.source;
+    var scale = ifdefor(actor.scale, 1);
+    actor.width = source.width * scale;
+    actor.height = ifdefor(source.height, 64) * scale;
+    actor.top = groundY - actor.height - ifdefor(source.y, 0) * scale - 2 * (index % maxIndex);
+    actor.left = actor.x - actor.character.cameraX;
+    if (isNaN(actor.top) || isNaN(actor.left) || isNaN(actor.width) || isNaN(actor.height)) {
+        console.log(actor.scale);
+        console.log([actor.x, actor.character.cameraX]);
+        console.log(source);
+        console.log([actor.left,actor.top,actor.width,actor.height]);
+        pause();
+        return false;
+    }
+    return true;
 }
 function moveActor(actor, delta) {
     if (actor.target && actor.target.pull) {
@@ -316,12 +306,12 @@ function startNextWave(character) {
             extraSkills.push(hardBonuses);
         }
         var newMonster = makeMonster(entityData, character.area.level, extraSkills, !!wave.extraBonuses);
-        initializeActorForAdventure(newMonster);
+        newMonster.direction = -1; // Monsters move right to left
         newMonster.x = x;
+        newMonster.character = character;
+        initializeActorForAdventure(newMonster);
         newMonster.time = 0;
         newMonster.animationTime = newMonster.x;
-        newMonster.character = character;
-        newMonster.direction = -1; // Monsters move right to left
         newMonster.allies = character.enemies;
         newMonster.enemies = character.allies;
         character.enemies.push(newMonster);
