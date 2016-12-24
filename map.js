@@ -531,8 +531,10 @@ function completeLevel(character) {
     // Initialize level times for this level if not yet set.
     character.levelTimes[character.currentLevelKey] = ifdefor(character.levelTimes[character.currentLevelKey], {});
     if (character.levelDifficulty === 'endless') {
+        unlockItemLevel(currentEndlessLevel + 1);
         character.levelTimes[character.currentLevelKey][character.levelDifficulty] = currentEndlessLevel + 5;
     } else {
+        unlockItemLevel(level.level + 1);
         var oldTime = ifdefor(character.levelTimes[character.currentLevelKey][character.levelDifficulty], 99999);
         character.levelTimes[character.currentLevelKey][character.levelDifficulty] = Math.min(character.completionTime, oldTime);
         character.levelCompleted = true;
@@ -551,7 +553,6 @@ function completeLevel(character) {
         // This will show the confirm skill button if this character is selected.
         updateConfirmSkillButton();
     }
-    unlockItemLevel(level.level + 1);
     saveGame();
 }
 $('body').on('click', '.js-confirmSkill', function (event) {
