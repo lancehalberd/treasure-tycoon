@@ -299,10 +299,10 @@ function initalizeMonsters() {
     });
     addMonster('stealthyCateripllar', {
         'name': 'The Very Stealth Caterpillar', 'source': caterpillarSource,
-        'implicitBonuses': {'*magicDamage': 0, '*scale': .1, '+scale': ['{maxHealth}', '/', ['{level}', '*', '10']],
-                            '*block': .5, '+magicBlock': 4, '*magicBlock': 2, '+magicResist': .5,
-                            '*speed': 0.4},
-        'abilities': [abilities.stealth, abilities.darkknight, abilities.vitality, abilities.vitality, abilities.majorStrength]
+        'implicitBonuses': {'*magicDamage': 0, '*maxHealth': .5, '*scale': .2, '+scale': [40, '*', ['{bonusMaxHealth}', '/', '{maxHealth}']],
+                            '*block': .5, '+magicBlock': 4, '*magicBlock': 2, '+magicResist': .5, '*healthRegen': 5,
+                            '*speed': [.5, '+', [2, '*', ['{bonusMaxHealth}', '/', '{maxHealth}']]]},
+        'abilities': [abilities.stealth, abilities.darkknight, abilities.darkknight]
     });
     // Gnomes are vulnerable to magic damage, strong against physical damage, and deal ranged magic damage.
     // Designed to favor mage classes.

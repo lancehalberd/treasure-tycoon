@@ -114,19 +114,27 @@ function drawMonster(character, monster) {
     }
     if (monster.pull) {
         frame = 0;
+        monster.walkFrame = monster.attackFrame = 0;
     } else if (monster.isDead && ifdefor(source.deathFrames)) {
         var deathFps = 1.5 * source.deathFrames.length;
         frame = Math.min(source.deathFrames.length - 1, Math.floor((monster.time - monster.timeOfDeath) * deathFps));
         frame = arrMod(source.deathFrames, frame);
     } else if (ifdefor(source.attackFrames) && monster.target && monster.lastAction && monster.lastAction.attackSpeed) { // attacking loop
         var attackFps = 1 / ((1 / monster.lastAction.attackSpeed) / source.attackFrames.length);
-        var frame = Math.floor(Math.abs(monster.animationTime - monster.attackCooldown) * attackFps);
-        frame = arrMod(source.attackFrames, frame);
+        //var frame = Math.floor(Math.abs(monster.animationTime - monster.attackCooldown) * attackFps);
+        //frame = arrMod(source.attackFrames, frame);
+        monster.attackFrame = ifdefor(monster.attackFrame, 0) + attackFps * frameMilliseconds / 1000;
+        frame = arrMod(source.attackFrames, Math.floor(monster.attackFrame));
+        monster.walkFrame = 0;
     } else {
         var walkFps = ifdefor(monster.base.fpsMultiplier, 1) * 3 * monster.speed / 100;
-        frame = Math.floor(monster.animationTime * walkFps);
-        if (ifdefor(source.walkFrames)) frame = arrMod(source.walkFrames, frame);
-        else frame = frame % source.frames;
+        //frame = Math.floor(monster.animationTime * walkFps);
+        //if (ifdefor(source.walkFrames)) frame = arrMod(source.walkFrames, frame);
+        //else frame = frame % source.frames;
+        monster.walkFrame = ifdefor(monster.walkFrame, 0) + walkFps * frameMilliseconds / 1000;
+        if (ifdefor(source.walkFrames)) frame = arrMod(source.walkFrames, Math.floor(monster.walkFrame));
+        else frame = Math.floor(monster.walkFrame) % source.frames;
+        monster.attackFrame = 0;
     }
     var xFrame = frame;
     var yFrame = 0;

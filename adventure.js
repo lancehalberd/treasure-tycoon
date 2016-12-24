@@ -297,7 +297,7 @@ function moveActor(actor, delta) {
         actor.chargeEffect.distance += speedBonus * actor.speed * Math.max(.1, 1 - actor.slow) * delta;
     }
     // If the character is closer than they need to be to auto attack then they can back away f
-    if (goalTarget) {
+    if (goalTarget && !goalTarget.cloaked) {
         var distanceToTarget = getDistanceOverlap(actor, goalTarget);
         if (distanceToTarget < (actor.weaponRange - 1.5) * 32) {
             speedBonus *= -.25;
