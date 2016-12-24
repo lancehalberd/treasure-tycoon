@@ -288,20 +288,20 @@ function initalizeMonsters() {
         'name': 'Caterpillar', 'source': caterpillarSource,
         'implicitBonuses': {'*magicDamage': 0, '+damage': 1,
                             '*block': .5, '+magicBlock': 6, '*magicBlock': 2, '+magicResist': .66,
-                            '*speed': .5}
+                            '*speed': 0.7}
     });
     addMonster('spongeyCateripllar', {
         'name': 'Armorpede', 'source': caterpillarSource,
         'implicitBonuses': {'*magicDamage': 0, '*damage': 0.5, '*maxHealth': 3,
                             '*armor': 1.5, '+magicBlock': 6, '*magicBlock': 2, '+magicResist': 0.75,
-                            '*speed': 0.5},
+                            '*speed': 0.7},
         'abilities': [abilities.vitality, abilities.majorStrength]
     });
     addMonster('stealthyCateripllar', {
         'name': 'The Very Stealth Caterpillar', 'source': caterpillarSource,
         'implicitBonuses': {'*magicDamage': 0, '*scale': .1, '+scale': ['{maxHealth}', '/', ['{level}', '*', '10']],
                             '*block': .5, '+magicBlock': 4, '*magicBlock': 2, '+magicResist': .5,
-                            '*speed': .2},
+                            '*speed': 0.4},
         'abilities': [abilities.stealth, abilities.darkknight, abilities.vitality, abilities.vitality, abilities.majorStrength]
     });
     // Gnomes are vulnerable to magic damage, strong against physical damage, and deal ranged magic damage.
@@ -309,12 +309,12 @@ function initalizeMonsters() {
     addMonster('gnome', {'name': 'Gnome', 'source': gnomeSource, 'fpsMultiplier': 1.5,
         'implicitBonuses': {'+weaponRange': 4, '*attackSpeed': 1, '+magicDamage': 4, '*magicDamage': 1.3,
                             '+block': 4, '+armor': 4, '*armor': 1.5, '*block': 1.5, '*magicBlock': 0, '*magicResist': 0,
-                            '*speed': .4}, 'tags': ['ranged']
+                            '*speed': .6}, 'tags': ['ranged']
     });
     addMonster('gnomecromancer', {'name': 'Gnomecromancer', 'source': gnomeSource, 'fpsMultiplier': 1.5,
         'implicitBonuses': {'+weaponRange': 6, '*attackSpeed': 1, '+magicDamage': 4, '*magicDamage': 1.3,
                             '+block': 4, '+armor': 4, '*armor': 1.5, '*block': 1.5, '*magicBlock': 0, '*magicResist': 0,
-                            '*speed': .4},
+                            '*speed': .6},
         'abilities': [abilities.summonSkeleton, abilities.summoner, abilities.darkknight, abilities.consume, abilities.consumeRange], 'tags': ['ranged']
     });
     addMonster('necrognomekhan', {'name': 'Necrognomekhan', 'source': gnomeSource, 'fpsMultiplier': 1.5,
@@ -323,20 +323,20 @@ function initalizeMonsters() {
                             '*cooldown': [.1, '+', ['{bonusMaxHealth}', '/', '{maxHealth}']],
                             '*damage': [1, '+', ['{bonusMaxHealth}', '/', '{maxHealth}']],
                             '+block': 4, '+armor': 4, '*armor': 1.5, '*block': 1.5, '*magicBlock': 0, '*magicResist': 0,
-                            '*speed': .4},
+                            '*speed': .6},
         'abilities': [abilities.summonSkeleton, abilities.summoner, abilities.darkknight, abilities.consume, abilities.consumeRange, abilities.consumeRatio], 'tags': ['ranged']
     });
     addMonster('gnomeCleric', {'name': 'Gnome Cleric', 'source': gnomeSource, 'fpsMultiplier': 1.5,
         'implicitBonuses': {'+weaponRange': 4, '*attackSpeed': 1, '+magicDamage': 4, '*magicDamage': 1.3,
                             '*intelligence': 2,
                             '+block': 4, '+armor': 4, '*armor': 1.5, '*block': 1.5, '*magicBlock': 0, '*magicResist': 0,
-                            '*speed': .4},
+                            '*speed': .6},
         'abilities': [abilities.spellAOE, abilities.protect, abilities.heal, abilities.minorIntelligence], 'tags': ['ranged']
     });
     addMonster('gnomeWizard', {'name': 'Gnome Wizard', 'source': gnomeSource, 'fpsMultiplier': 1.5,
         'implicitBonuses': {'+weaponRange': 4, '*attackSpeed': 1, '+magicDamage': 4, '*magicDamage': 1.3,
                             '+block': 4, '+armor': 4, '*armor': 1.5, '*block': 1.5, '*magicBlock': 0, '*magicResist': 0,
-                            '*speed': .4},
+                            '*speed': .6},
         'abilities': [abilities.fireball, abilities.freeze, abilities.wizard], 'tags': ['ranged']
     });
     addMonster('skeleton', {'name': 'Skeleton', 'source': skeletonSource,
@@ -372,27 +372,27 @@ function initalizeMonsters() {
         'implicitBonuses': {'*maxHealth': 1.5, '+weaponRange': 4, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5, '*accuracy': 2,
                             '*magicDamage': .4, '*damage': .8,
                             '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
-                            '*speed': .6}, 'tags': ['ranged']
+                            '*speed': .8}, 'tags': ['ranged']
     });
     addMonster('battlefly', {'name': 'Battlefly', 'source': butterflySource,
         'implicitBonuses': {'*maxHealth': 2, '+weaponRange': 5, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5, '*accuracy': 2,
                             '*magicDamage': 0,
                             '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
-                            '*speed': .6}, 'tags': ['ranged'],
+                            '*speed': .8}, 'tags': ['ranged'],
         'abilities': [abilities.powerShot, abilities.powerShotKnockback]
     });
     addMonster('motherfly', {'name': 'Motherfly', 'source': butterflySource,
         'implicitBonuses': {'+maxHealth': 20, '*maxHealth': 3, '+weaponRange': 5, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5, '*accuracy': 2,
                             '*minPhysicalDamage': .8, '*maxPhysicalDamage': .8, '*attackSpeed': .5, '*magicDamage': .5,
                             '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
-                            '*speed': .6}, 'tags': ['ranged'],
+                            '*speed': .8}, 'tags': ['ranged'],
         'abilities': [abilities.summonCaterpillar, abilities.summoner]
     });
     addMonster('lightningBug', {'name': 'Lightning Bug', 'source': butterflySource,
         'implicitBonuses': {'*maxHealth': 1.5, '+weaponRange': 4, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5, '*accuracy': 2,
                             '*minPhysicalDamage': .8, '*maxPhysicalDamage': .8, '*attackSpeed': .5, '*magicDamage': .5,
                             '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
-                            '*speed': .6}, 'tags': ['ranged'],
+                            '*speed': .8}, 'tags': ['ranged'],
         'abilities': [abilities.storm]
     });
     addMonster('giantSkeleton', {'name': 'Skelegiant', 'source': skeletonGiantSource,

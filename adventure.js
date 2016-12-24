@@ -80,6 +80,13 @@ function timeStopLoop(character, delta) {
     moveActor(actor, delta);
     capHealth(actor);
     updateActorHelpText(actor);
+    // Update position info.
+    ifdefor(character.enemies, []).forEach(function (actor, index) {
+        return updateActorDimensions(actor, 1 + character.enemies.length - index);
+    });
+    ifdefor(character.allies, []).forEach(function (actor, index) {
+        return updateActorDimensions(actor, -index);
+    });
     return true;
 }
 function actorCanOverHeal(actor) {
@@ -285,17 +292,17 @@ function moveActor(actor, delta) {
     for (var i = 0; i < actor.allies.length; i++) {
         xOffset += actor.x - actor.allies[i].x;
     }
-    speedBonus -= actor.direction * xOffset / 1000;
-    speedBonus = Math.min(1.25, Math.max(speedBonus, .2));
+    //speedBonus -= actor.direction * xOffset / 1000;
+    //speedBonus = Math.min(1.25, Math.max(speedBonus, .2));
     if (actor.chargeEffect) {
         speedBonus *= actor.chargeEffect.chargeSkill.speedBonus;
         actor.chargeEffect.distance += speedBonus * actor.speed * Math.max(.1, 1 - actor.slow) * delta;
     }
     // If the character is closer than they need to be to auto attack then they can back away f
     if (actor.target) {
-        var distanceToTarget = getDistance(actor, actor.target);
-        if (distanceToTarget <= (actor.weaponRange - 1) * 32 || Math.abs(actor.x - actor.target.x) < 32) {
-            speedBonus *= -.5;
+        var distanceToTarget = getDistanceOverlap(actor, actor.target);
+        if (distanceToTarget < (actor.weaponRange - 1.5) * 32) {
+            speedBonus *= -.25;
         } else if (distanceToTarget <= actor.weaponRange * 32) {
             speedBonus = 0;
         }
@@ -465,6 +472,11 @@ function getDistance(actorA, actorB) {
     return Math.max(0, (actorA.x > actorB.x)
         ? (actorA.x - actorB.x - ifdefor(actorB.width, 64))
         : (actorB.x - actorA.x - ifdefor(actorA.width, 64)));
+}
+function getDistanceOverlap(actorA, actorB) {
+    return (actorA.x > actorB.x)
+        ? (actorA.x - actorB.x - ifdefor(actorB.width, 64))
+        : (actorB.x - actorA.x - ifdefor(actorA.width, 64));
 }
 
 function defeatedEnemy(character, enemy) {
