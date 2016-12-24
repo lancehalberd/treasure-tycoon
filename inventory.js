@@ -29,6 +29,7 @@ function equipItem(actor, item, update) {
         if (state.selectedCharacter === actor.character) {
             refreshStatsPanel(actor.character, $('.js-characterColumn .js-stats'));
         }
+        updateAdventurerGraphics(actor);
         updateOffhandDisplay();
     }
 }
@@ -53,6 +54,7 @@ function unequipSlot(actor, slotKey, update) {
             if (state.selectedCharacter === actor.character) {
                 refreshStatsPanel(actor.character, $('.js-characterColumn .js-stats'));
             }
+            updateAdventurerGraphics(actor);
             updateOffhandDisplay();
         }
     }
