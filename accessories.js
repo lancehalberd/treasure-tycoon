@@ -1,7 +1,7 @@
 
 //Back/Neck/Waist
 addItem(1, {'slot': 'back', 'type': 'cloak', 'name': 'Plain Cloak', 'bonuses': {'+evasion': 1, '+armor': 1, '+maxHealth': 6}, icon: 'cloak'});
-addItem(2, {'slot': 'back', 'type': 'quiver', 'name': 'Quiver', 'bonuses': {'+bow:minPhysicalDamage': 2, '+bow:maxPhysicalDamage': 4}, icon: 'quiver'});
+addItem(2, {'slot': 'back', 'type': 'quiver', 'name': 'Quiver', 'bonuses': {'+bow:minPhysicalDamage': 2, '+bow:maxPhysicalDamage': 4, '+thrown:minPhysicalDamage': 2, '+thrown:maxPhysicalDamage': 3}, icon: 'quiver'});
 addItem(3, {'slot': 'back', 'type': 'scabbard', 'name': 'Scabbard', 'bonuses': {'+dagger:minPhysicalDamage': 1, '+dagger:maxPhysicalDamage': 2, '+sword:minPhysicalDamage': 2, '+sword:maxPhysicalDamage': 3, '+greatsword:minPhysicalDamage': 3, '+greatsword:maxPhysicalDamage': 4}, icon: 'scabbard'});
 addItem(4, {'slot': 'back', 'type': 'baldric', 'name': 'Baldric', 'bonuses': {'+axe:minPhysicalDamage': 2, '+axe:maxPhysicalDamage': 3, '+polearm:minPhysicalDamage': 3, '+polearm:maxPhysicalDamage': 5}, icon: 'scabbard'});
 addItem(5, {'slot': 'back', 'type': 'amulet', 'name': 'Runed Amulet', 'bonuses': {'+wand:minMagicDamage': 1, '+wand:maxMagicDamage': 2, '+staff:minMagicDamage': 2, '+staff:maxMagicDamage': 3}, icon: 'amulet'});
