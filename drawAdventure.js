@@ -33,14 +33,14 @@ function drawAdventure(character) {
         }
         context.globalAlpha = 1;
     });
-    ifdefor(character.objects, []).forEach(function (object, index) {
+    ifdefor(character.objects, []).forEach(function (object) {
         object.draw(character);
     });
-    ifdefor(character.enemies, []).forEach(function (actor, index) {
-        drawActor(character, actor, 1 + character.enemies.length - index)
+    ifdefor(character.enemies, []).forEach(function (actor) {
+        drawActor(character, actor)
     });
-    ifdefor(character.allies, []).forEach(function (actor, index) {
-        drawActor(character, actor, -index)
+    ifdefor(character.allies, []).forEach(function (actor) {
+        drawActor(character, actor)
     });
     // Draw text popups such as damage dealt, item points gained, and so on.
     context.fillStyle = 'red';
@@ -62,21 +62,21 @@ function drawAdventure(character) {
     }
     drawMinimap(character);
 }
-function drawActor(character, actor, index) {
+function drawActor(character, actor) {
     mainContext.save();
     if (actor.personCanvas) {
         if (actor.isDead) {
             actor.animationTime = actor.timeOfDeath;
             mainContext.globalAlpha = 1 - (actor.time - actor.timeOfDeath);
         }
-        drawAdventurer(character, actor, index);
-    } else drawMonster(character, actor, index);
+        drawAdventurer(character, actor);
+    } else drawMonster(character, actor);
     if (!actor.isDead && actor.stunned) {
         for (var i = 0; i < 3; i++ ) {
             var theta = 2 * Math.PI * (i + 3 * actor.time) / 3;
             var shrineSource = {'image': images['gfx/militaryIcons.png'], 'xOffset': 102, 'yOffset': 125, 'width': 16, 'height': 16};
-            var yPosition = 600 - 256 - 36 - 2 * (index % maxIndex);
-            if (actor.source) yPosition -= ifdefor(actor.source.y, 0) * 2;
+            var scale = ifdefor(actor.scale, 1);
+            var yPosition = actor.top + scale * ifdefor(actor.source.yTop, 0) - 5;
             mainContext.drawImage(shrineSource.image, shrineSource.xOffset, shrineSource.yOffset, shrineSource.width, shrineSource.height,
                                     actor.left + (actor.width - shrineSource.width) / 2 + Math.cos(theta) * 30,
                                     yPosition + Math.sin(theta) * 10, shrineSource.width, shrineSource.height);
@@ -84,7 +84,7 @@ function drawActor(character, actor, index) {
     }
     mainContext.restore();
 }
-function drawMonster(character, monster, index) {
+function drawMonster(character, monster) {
     if (!monster.image) {
         console.log("Found monster without an image. Last time this happened was because the -enchanged/-imbued version of the image was not being created at load time.");
         console.log(monster);
@@ -191,7 +191,7 @@ function getActorTints(actor) {
 function drawImage(context, image, source, target) {
     context.drawImage(image, source.left, source.top, source.width, source.height, target.left, target.top, target.width, target.height);
 }
-function drawAdventurer(character, adventurer, index) {
+function drawAdventurer(character, adventurer) {
     var scale = ifdefor(adventurer.scale, 1);
     var cameraX = character.cameraX;
     var context = mainContext;
