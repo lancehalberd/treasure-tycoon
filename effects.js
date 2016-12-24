@@ -322,7 +322,7 @@ function expireTimedEffects(character, actor) {
     if (changed) recomputeDirtyStats(actor);
 }
 function addTimedEffect(actor, effect) {
-    if (actor.isDead ) return;
+    if (actor.isDead) return;
     var area = ifdefor(effect.area);
     // Copy the effect because each timed effect has a distinct expirationTime.
     // Also setting the area here to 0 allows us to call this method again for
@@ -339,9 +339,14 @@ function addTimedEffect(actor, effect) {
             if (getDistance(actor, ally) < area * 32) addTimedEffect(ally, effect);
         });
     }
-    // effects without duration last indefinitely.
-    if (effect.duration) effect.expirationTime = actor.time + effect.duration;
-    addEffectToActor(actor, effect, true);
+    if (effect.duration !== 'forever') effect.expirationTime = actor.time + effect.duration;
+    var count = 0;
+    ifdefor(actor.allEffects, []).forEach(function (currentEffect) {
+        if (currentEffect.base === effect.base) count++;
+    });
+    if (count < 50) {
+        addEffectToActor(actor, effect, true);
+    }
 }
 function addEffectToActor(actor, effect, triggerComputation) {
     actor.allEffects.push(effect);
