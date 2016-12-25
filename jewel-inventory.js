@@ -13,12 +13,16 @@ function redrawInventoryJewel(jewel) {
 function redrawInventoryJewels() {
     var $container = $('.js-jewelInventory');
     var jewelsDrawn = jewelsTotal = 0;
-    $('.js-jewel').each(function (index, element) {
+    $container.find('.js-jewel').each(function (index, element) {
         jewelsTotal++;
         if ($(element).is(':visible') && collision($container, $(element))) {
             jewelsDrawn++;
             redrawInventoryJewel($(element).data('jewel'));
         }
+    });
+    // Crafting slots are always visible.
+    $('.js-jewelCraftingSlot .js-jewel').each(function () {
+        redrawInventoryJewel($(this).data('jewel'));
     });
 }
 $('.js-jewelInventory').on('scroll', redrawInventoryJewels);
@@ -488,11 +492,17 @@ function equipJewel(character, replace, updateAdventurer) {
     }
     return false;
 }
+function getCraftingSlotA() {
+    return $('.js-jewelCraftingSlotA');
+}
+function getCraftingSlotB() {
+    return $('.js-jewelCraftingSlotB');
+}
 function updateJewelCraftingOptions() {
     $('.js-jewelCraftingButton').hide();
     $('.js-jewelDeformationButton').hide();
-    var jewelA = $('.js-jewelCraftingSlot').first().find('.js-jewel').data('jewel');
-    var jewelB = $('.js-jewelCraftingSlot').last().find('.js-jewel').data('jewel');
+    var jewelA = getCraftingSlotA().find('.js-jewel').data('jewel');
+    var jewelB = getCraftingSlotB().find('.js-jewel').data('jewel');
     if (!jewelA && !jewelB) return;
     if (jewelA && jewelB) {
         $('.js-jewelCraftingButton').html('Fuse Jewels').show();
@@ -532,15 +542,15 @@ function getFusedShape(jewelA, jewelB) {
 }
 
 $('.js-jewelCraftingButton').on('click', function () {
-    var jewelA = $('.js-jewelCraftingSlot').first().find('.js-jewel').data('jewel');
-    var jewelB = $('.js-jewelCraftingSlot').last().find('.js-jewel').data('jewel');
+    var jewelA = getCraftingSlotA().find('.js-jewel').data('jewel');
+    var jewelB = getCraftingSlotB().find('.js-jewel').data('jewel');
     if (!jewelA && !jewelB) return;
     if (jewelA && jewelB) fuseJewels(jewelA, jewelB);
     else splitJewel(jewelA || jewelB);
 });
 $('.js-jewelDeformationButton').on('click', function () {
-    var jewelA = $('.js-jewelCraftingSlot').first().find('.js-jewel').data('jewel');
-    var jewelB = $('.js-jewelCraftingSlot').last().find('.js-jewel').data('jewel');
+    var jewelA = getCraftingSlotA().find('.js-jewel').data('jewel');
+    var jewelB = getCraftingSlotB().find('.js-jewel').data('jewel');
     var jewel = jewelA || jewelB;
     if (jewel.shapeType === 'triangle' || jewel.shapeType === 'diamond') expandJewel(jewel);
     else compressJewel(jewel);
@@ -557,7 +567,7 @@ function fuseJewels(jewelA, jewelB) {
     var newJewel = makeJewel(tier, fusedShape.key, components, quality);
     destroyJewel(jewelA);
     destroyJewel(jewelB);
-    appendJewelToElement(newJewel, $('.js-jewelCraftingSlot').first());
+    appendJewelToElement(newJewel, getCraftingSlotA());
     updateJewelCraftingOptions();
     saveGame();
 }
@@ -569,7 +579,7 @@ function compressJewel(jewel) {
     var newArea = shapeDefinitions[newShape][0].area;
     var newJewel = makeJewel(jewel.tier, newShape, jewel.components, jewel.quality * .99 * jewel.area / newArea);
     destroyJewel(jewel);
-    appendJewelToElement(newJewel, $('.js-jewelCraftingSlot').first());
+    appendJewelToElement(newJewel, getCraftingSlotA());
     updateJewelCraftingOptions();
     saveGame();
 }
@@ -581,7 +591,7 @@ function expandJewel(jewel) {
     var newArea = shapeDefinitions[newShape][0].area;
     var newJewel = makeJewel(jewel.tier, newShape, jewel.components, jewel.quality * .99 * jewel.area / newArea);
     destroyJewel(jewel);
-    appendJewelToElement(newJewel, $('.js-jewelCraftingSlot').first());
+    appendJewelToElement(newJewel, getCraftingSlotA());
     updateJewelCraftingOptions();
     saveGame();
 }
@@ -621,8 +631,8 @@ function splitJewel(jewel) {
     var newJewelA = makeJewel(jewel.tier, shapeDefinitionA.key, componentsA, qualityA);
     var newJewelB = makeJewel(jewel.tier, shapeDefinitionB.key, componentsB, qualityB);
     destroyJewel(jewel);
-    appendJewelToElement(newJewelA, $('.js-jewelCraftingSlot').first());
-    appendJewelToElement(newJewelB, $('.js-jewelCraftingSlot').last());
+    appendJewelToElement(newJewelA, getCraftingSlotA());
+    appendJewelToElement(newJewelB, getCraftingSlotB());
     updateJewelCraftingOptions();
     saveGame();
 }
