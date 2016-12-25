@@ -111,7 +111,7 @@ function importState(stateData) {
     stateData.jewels.forEach(function (jewelData) {
         var jewel = importJewel(jewelData);
         jewel.shape.setCenterPosition(jewel.canvas.width / 2, jewel.canvas.height / 2);
-        $('.js-jewel-inventory').append(jewel.$item);
+        addJewelToInventory(jewel.$item);
     });
     stateData.items.forEach(function (itemData) {
         var item = importItem(itemData);

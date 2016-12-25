@@ -342,7 +342,16 @@ function returnToInventory(jewel) {
     jewel.$canvas.css('position', '');
     jewel.$item.append(jewel.$canvas);
     jewel.startCharacter = null;
-    $('.js-jewel-inventory').append(jewel.$item);
+    addJewelToInventory(jewel.$item);
+}
+function addJewelToInventory($jewel) {
+    $('.js-jewel-inventory').append($jewel);
+    filterJewel($jewel);
+}
+function filterJewel($jewel) {
+    // Hide/show this jewel depending on whether it is filtered out.
+    var tier = $jewel.data('jewel').tier;
+    $jewel.toggle($('.js-jewelTier' + tier + ' input').prop('checked'));
 }
 
 function stopJewelDrag() {
@@ -390,7 +399,7 @@ function stopJewelDrag() {
         var $existingItem = $craftingSlot.find('.js-jewel');
         if ($existingItem.length) {
             $existingItem.detach();
-            $('.js-jewel-inventory').append($existingItem);
+            addJewelToInventory($existingItem);
         }
         appendDraggedJewelToElement($craftingSlot);
     }
@@ -413,10 +422,12 @@ function stopJewelDrag() {
         // drag operation, then detach the item and place it before the target.
         var $jewelItem = draggedJewel.$item;
         appendDraggedJewelToElement($('.js-jewel-inventory'));
+        filterJewel($jewelItem);
         $target.before($jewelItem.detach());
     }
     if (!draggedJewel) return;
     appendDraggedJewelToElement($('.js-jewel-inventory'));
+    filterJewel(draggedJewel.$item);
 }
 
 function stopBoardDrag() {
@@ -782,5 +793,15 @@ $('.js-jewelSortDiamond').on('click', function () {
 $('.js-jewelSortQuality').on('click', function () {
     sortJewelDivs(function(jewelA, jewelB) {
         return jewelB.quality - jewelA.quality;
+    });
+});
+$('.js-jewelTierLabel input').on('change', function () {
+    var tier = $(this).val();
+    var display = $(this).prop('checked');
+    $('.js-jewel-inventory .js-jewel').each(function () {
+        var jewel = $(this).data('jewel');
+        if (jewel.tier == tier) {
+            $(this).toggle(display);
+        }
     });
 });

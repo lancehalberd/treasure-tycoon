@@ -160,7 +160,7 @@ function jewelLootDrop(jewel) {
     }
 }
 function gainJewel(jewel) {
-    $('.js-jewel-inventory').append(jewel.$item);
+    addJewelToInventory(jewel.$item);
 }
 
 function jewelLoot(shapes, tiers, components, permute) {
