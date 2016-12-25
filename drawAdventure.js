@@ -119,19 +119,13 @@ function drawActor(actor) {
         prepareTintedImage();
         var tint = tints.pop();
         var tintedImage = getTintedImage(actor.image, tint[0], tint[1], frameSource);
+        var tintSource = {'left': 0, 'top': 0, 'width': frameSource.width, 'height': frameSource.height};
         for (var tint of tints) {
-            tintedImage = getTintedImage(tintedImage, tint[0], tint[1], {'left': 0, 'top': 0, 'width': frameSource.width, 'height': frameSource.height});
+            tintedImage = getTintedImage(tintedImage, tint[0], tint[1], tintSource);
         }
-        mainContext.drawImage(tintedImage,
-                    0, 0, frameSource.width, frameSource.height,
-                    target.left, target.top, target.width, target.height);
+        drawImage(context, tintedImage, tintSource, target);
     } else {
-        /*if (actor === state.selectedCharacter.adventurer) {
-            console.log([actor.image, frameSource.left, frameSource.top, frameSource.width, frameSource.height,
-                                         target.left, target.top, target.width, target.height]);
-        }*/
-        context.drawImage(actor.image, frameSource.left, frameSource.top, frameSource.width, frameSource.height,
-                                         target.left, target.top, target.width, target.height);
+        drawImage(context, actor.image, frameSource, target);
     }
     context.restore();
 
@@ -156,14 +150,14 @@ function drawActor(actor) {
     }
     drawEffectIcons(actor, x, y);
     if (!actor.isDead && actor.stunned) {
+        var shrineSource = {'left': 102, 'top': 125, 'width': 16, 'height': 16};
+        var target =  {'left': 0, 'top': 0, 'width': shrineSource.width, 'height': shrineSource.height}
         for (var i = 0; i < 3; i++ ) {
             var theta = 2 * Math.PI * (i + 3 * actor.time) / 3;
-            var shrineSource = {'image': images['gfx/militaryIcons.png'], 'xOffset': 102, 'yOffset': 125, 'width': 16, 'height': 16};
             var scale = ifdefor(actor.scale, 1);
-            var yPosition = actor.top + scale * ifdefor(actor.source.yTop, 0) - 5;
-            mainContext.drawImage(shrineSource.image, shrineSource.xOffset, shrineSource.yOffset, shrineSource.width, shrineSource.height,
-                                    actor.left + (actor.width - shrineSource.width) / 2 + Math.cos(theta) * 30,
-                                    yPosition + Math.sin(theta) * 10, shrineSource.width, shrineSource.height);
+            target.left = actor.left + (actor.width - shrineSource.width) / 2 + Math.cos(theta) * 30;
+            target.top = actor.top + scale * ifdefor(actor.source.yTop, 0) - 5 + Math.sin(theta) * 10;
+            drawImage(context, images['gfx/militaryIcons.png'], shrineSource, target);
         }
     }
 }
