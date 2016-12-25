@@ -724,3 +724,47 @@ function isOnBoard(shape, board) {
     }
     return false;
 }
+
+function sortJewelDivs(sortFunction) {
+    $('.js-jewel-inventory .js-jewel').sort(function (a, b) {
+        return sortFunction($(a).data('jewel'), $(b).data('jewel'));
+    }).detach().appendTo($('.js-jewel-inventory'));
+}
+
+$('.js-jewelSortRuby').on('click', function () {
+    sortJewelDivs(function(jewelA, jewelB) {
+        return jewelB.components[0] - jewelA.components[0];
+    });
+});
+$('.js-jewelSortEmerald').on('click', function () {
+    sortJewelDivs(function(jewelA, jewelB) {
+        return jewelB.components[1] - jewelA.components[1];
+    });
+});
+$('.js-jewelSortSaphire').on('click', function () {
+    sortJewelDivs(function(jewelA, jewelB) {
+        return jewelB.components[2] - jewelA.components[2];
+    });
+});
+
+$('.js-jewelSortTopaz').on('click', function () {
+    sortJewelDivs(function(jewelA, jewelB) {
+        var bValue = jewelB.components[0] + jewelB.components[1] - jewelB.components[2] + (jewelB.jewelType === 3 ? 1000 : 0);
+        var aValue = jewelA.components[0] + jewelA.components[1] - jewelA.components[2] + (jewelA.jewelType === 3 ? 1000 : 0);
+        return bValue - aValue;
+    });
+});
+$('.js-jewelSortAquamarine').on('click', function () {
+    sortJewelDivs(function(jewelA, jewelB) {
+        var bValue = jewelB.components[2] + jewelB.components[1] - jewelB.components[0] + (jewelB.jewelType === 6 ? 1000 : 0);
+        var aValue = jewelA.components[2] + jewelA.components[1] - jewelA.components[0] + (jewelA.jewelType === 6 ? 1000 : 0);
+        return bValue - aValue;
+    });
+});
+$('.js-jewelSortAmethyst').on('click', function () {
+    sortJewelDivs(function(jewelA, jewelB) {
+        var bValue = jewelB.components[0] + jewelB.components[2] - jewelB.components[1] + (jewelB.jewelType === 5 ? 1000 : 0);
+        var aValue = jewelA.components[0] + jewelA.components[2] - jewelA.components[1] + (jewelA.jewelType === 5 ? 1000 : 0);
+        return bValue - aValue;
+    });
+});

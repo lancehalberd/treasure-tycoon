@@ -154,6 +154,10 @@
     height: 240px;
 }
 
+.jewelColumn {
+    width: 240px;
+}
+
 .jewel-inventory {
     padding: 5px;
     padding-right:0;
