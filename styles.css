@@ -158,6 +158,9 @@
     width: 240px;
 }
 
+.jewelOptions {
+    height: 80px
+}
 .jewel-inventory {
     padding: 5px;
     padding-right:0;
@@ -165,6 +168,7 @@
     overflow-x: hidden;
     overflow-y: scroll;
     width: 240px;
+    height: 495px;
     box-sizing: border-box;
     background-color: #AAA;
 }

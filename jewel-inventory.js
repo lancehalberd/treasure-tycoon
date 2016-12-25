@@ -768,3 +768,19 @@ $('.js-jewelSortAmethyst').on('click', function () {
         return bValue - aValue;
     });
 });
+$('.js-jewelSortDiamond').on('click', function () {
+    sortJewelDivs(function(jewelA, jewelB) {
+        var averageA = (jewelA.components[0] + jewelA.components[1] + jewelA.components[2]) / 3
+        var aValue = Math.abs(jewelA.components[0] - averageA) + Math.abs(jewelA.components[1] - averageA) + Math.abs(jewelA.components[2] - averageA);
+        var averageB = (jewelB.components[0] + jewelB.components[1] + jewelB.components[2]) / 3
+        var bValue = Math.abs(jewelB.components[0] - averageB) + Math.abs(jewelB.components[1] - averageB) + Math.abs(jewelB.components[2] - averageB);
+        //var aValue = Math.max(jewelB.components[0], jewelB.components[1], jewelB.components[2]) - Math.min(jewelB.components[0], jewelB.components[1], jewelB.components[2]);
+        //var bValue = Math.max(jewelA.components[0], jewelA.components[1], jewelA.components[2]) - Math.min(jewelA.components[0], jewelA.components[1], jewelA.components[2]);
+        return aValue + (jewelB.jewelType === 7 ? 1000 : 0) - (bValue + (jewelA.jewelType === 7 ? 1000 : 0));
+    });
+});
+$('.js-jewelSortQuality').on('click', function () {
+    sortJewelDivs(function(jewelA, jewelB) {
+        return jewelB.quality - jewelA.quality;
+    });
+});
