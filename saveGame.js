@@ -28,7 +28,7 @@ function exportState(state) {
         data.applications.push(exportCharacter(application));
     });
     data.jewels = [];
-    $('.js-jewel-inventory .js-jewel').each(function () {
+    $('.js-jewelInventory .js-jewel').each(function () {
         data.jewels.push(exportJewel($(this).data('jewel')));
     })
     $('.js-jewelCraftingSlot .js-jewel').each(function () {
@@ -57,7 +57,7 @@ function fixNumber(number) {
 function importState(stateData) {
     var $helperSlot = $('.js-inventory .js-inventorySlot').detach();
     $('.js-inventory').empty().append($helperSlot);
-    $('.js-jewel-inventory').empty();
+    $('.js-jewelInventory').empty();
     state = {};
     state.fame = fixNumber(stateData.fame);
     state.coins = fixNumber(stateData.coins);

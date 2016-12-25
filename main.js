@@ -228,7 +228,7 @@ function logPixel(context, x, y) {
 var frameMilliseconds = 20;
 function mainLoop() {
     var time = now();
-    if ($('.js-jewel-inventory').is(":visible")) {
+    if ($('.js-jewelInventory').is(":visible")) {
         redrawInventoryJewels();
     }
     var fps = Math.floor(3 * 5 / 3);
@@ -500,7 +500,7 @@ function updateToolTip(x, y, $popup) {
         left = x + 10;
     }
     if (draggingBoardJewel) {
-        left = $('.js-jewel-inventory').position().left;
+        left = $('.js-jewelInventory').position().left;
         top = 30;
     }
     $popup.css('left', left + "px").css('top', top + "px");

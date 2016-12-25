@@ -11,10 +11,17 @@ function redrawInventoryJewel(jewel) {
     }
 }
 function redrawInventoryJewels() {
+    var $container = $('.js-jewelInventory');
+    var jewelsDrawn = jewelsTotal = 0;
     $('.js-jewel').each(function (index, element) {
-        redrawInventoryJewel($(element).data('jewel'));
+        jewelsTotal++;
+        if ($(element).is(':visible') && collision($container, $(element))) {
+            jewelsDrawn++;
+            redrawInventoryJewel($(element).data('jewel'));
+        }
     });
 }
+$('.js-jewelInventory').on('scroll', redrawInventoryJewels);
 function jewelHelpText(jewel) {
     var jewelDefinition = jewelDefinitions[jewel.jewelType];
     var name = jewelDefinition.name;
@@ -345,7 +352,7 @@ function returnToInventory(jewel) {
     addJewelToInventory(jewel.$item);
 }
 function addJewelToInventory($jewel) {
-    $('.js-jewel-inventory').append($jewel);
+    $('.js-jewelInventory').append($jewel);
     filterJewel($jewel);
 }
 function filterJewel($jewel) {
@@ -406,7 +413,7 @@ function stopJewelDrag() {
     if (!draggedJewel) return;
     var $target = null;
     var largestCollision = 0;
-    $('.js-jewel-inventory .js-jewel').each(function (index, element) {
+    $('.js-jewelInventory .js-jewel').each(function (index, element) {
         var $element = $(element);
         var collisionArea = getCollisionArea(draggedJewel.$canvas, $element);
         if (collisionArea > largestCollision) {
@@ -421,12 +428,12 @@ function stopJewelDrag() {
         // to the end first so we get all the normal logic for cleaning up the
         // drag operation, then detach the item and place it before the target.
         var $jewelItem = draggedJewel.$item;
-        appendDraggedJewelToElement($('.js-jewel-inventory'));
+        appendDraggedJewelToElement($('.js-jewelInventory'));
         filterJewel($jewelItem);
         $target.before($jewelItem.detach());
     }
     if (!draggedJewel) return;
-    appendDraggedJewelToElement($('.js-jewel-inventory'));
+    appendDraggedJewelToElement($('.js-jewelInventory'));
     filterJewel(draggedJewel.$item);
 }
 
@@ -737,9 +744,9 @@ function isOnBoard(shape, board) {
 }
 
 function sortJewelDivs(sortFunction) {
-    $('.js-jewel-inventory .js-jewel').sort(function (a, b) {
+    $('.js-jewelInventory .js-jewel').sort(function (a, b) {
         return sortFunction($(a).data('jewel'), $(b).data('jewel'));
-    }).detach().appendTo($('.js-jewel-inventory'));
+    }).detach().appendTo($('.js-jewelInventory'));
 }
 
 $('.js-jewelSortRuby').on('click', function () {
@@ -798,7 +805,7 @@ $('.js-jewelSortQuality').on('click', function () {
 $('.js-jewelTierLabel input').on('change', function () {
     var tier = $(this).val();
     var display = $(this).prop('checked');
-    $('.js-jewel-inventory .js-jewel').each(function () {
+    $('.js-jewelInventory .js-jewel').each(function () {
         var jewel = $(this).data('jewel');
         if (jewel.tier == tier) {
             $(this).toggle(display);
