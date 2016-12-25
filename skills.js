@@ -76,7 +76,7 @@ var skills = {
     // Movement actions
     'dodge': movementAction('dodge', {}, {'+cooldown': 10, '+distance': -128, '$buff': buffEffect({}, {'+%evasion': .5, '+duration': 5})},
                             'Leap back to dodge an attack and gain: {$buff}'),
-    'sideStep': movementAction('dodge', {'rangedOnly': true}, {'+cooldown': 10, '+moveDuration': .05, '+distance': 64,
+    'sideStep': movementAction('sideStep', {'rangedOnly': true}, {'+cooldown': 10, '+moveDuration': .05, '+distance': 64,
                                         '$buff': buffEffect({}, {'++critChance': .2, '+duration': 2})},
                             'Side step a ranged attack and advance toward enemis gaining: {$buff}'),
 

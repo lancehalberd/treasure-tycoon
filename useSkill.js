@@ -9,8 +9,10 @@
  *
  * @return boolean True if the skill was used.
  */
-function useSkill(actor, skill, target) {
+function useSkill(actor, skill, targetOrAttackStats) {
     if (!skill) return false;
+    // This is a bit gross, but doesn't seem to be breaking anything at the moment.
+    var target = targetOrAttackStats;
     var actionIndex = actor.actions.indexOf(skill);
     var reactionIndex = actor.reactions.indexOf(skill);
     if (actionIndex < 0 && reactionIndex < 0) return false;
@@ -531,6 +533,39 @@ skillDefinitions.dodge = {
         attackStats.dodged = true;
         if (ifdefor(dodgeSkill.distance)) {
             actor.pull = {'x': actor.x + actor.direction * dodgeSkill.distance, 'time': actor.time + ifdefor(dodgeSkill.moveDuration, .3), 'damage': 0};
+        }
+        if (ifdefor(dodgeSkill.buff)) {
+            addTimedEffect(actor, dodgeSkill.buff);
+        }
+        if (ifdefor(dodgeSkill.globalDebuff)) {
+            actor.enemies.forEach(function (enemy) {
+                addTimedEffect(enemy, dodgeSkill.globalDebuff);
+            });
+        }
+    }
+};
+
+skillDefinitions.sideStep = {
+    isValid: function (actor, dodgeSkill, attackStats) {
+        // side step can only dodge ranged attacked.
+        if (ifdefor(dodgeSkill.base.rangedOnly) && !attackStats.projectile ) {
+            return false;
+        }
+        // Cannot side step if attacker is on top of you.
+        if (getDistance(actor, attackStats.source) <= 0) {
+            return false;
+        }
+        return !attackStats.evaded;
+    },
+    use: function (actor, dodgeSkill, attackStats) {
+        attackStats.dodged = true;
+        if (ifdefor(dodgeSkill.distance)) {
+            var attacker = attackStats.source;
+            if (attacker.x > actor.x) {
+                actor.pull = {'x': Math.min(actor.x + actor.direction * dodgeSkill.distance, attacker.x - actor.width), 'time': actor.time + ifdefor(dodgeSkill.moveDuration, .3), 'damage': 0};
+            } else {
+                actor.pull = {'x': Math.max(actor.x + actor.direction * dodgeSkill.distance, attacker.x + attacker.width), 'time': actor.time + ifdefor(dodgeSkill.moveDuration, .3), 'damage': 0};
+            }
         }
         if (ifdefor(dodgeSkill.buff)) {
             addTimedEffect(actor, dodgeSkill.buff);
