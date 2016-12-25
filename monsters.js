@@ -1,8 +1,8 @@
 
 var enchantedMonsterBonuses = {'bonuses': {'*maxHealth': 1.5, '*damage': 1.5, '*coins': 2, '*anima': 3,
-                                    '$tint': '#af0', '$tintMinAlpha': 0.2, '$tintMaxAlpha': 0.5, '$color': '#af0'}};
+                                    '$tint': '#af0', '$tintMinAlpha': 0.2, '$tintMaxAlpha': 0.5, '$lifeBarColor': '#af0'}};
 var imbuedMonsterBonuses = {'bonuses': {'*maxHealth': 2, '*damage': 2, '*coins': 6, '*anima': 10,
-                                    '$tint': '#c6f', '$tintMinAlpha': 0.2, '$tintMaxAlpha': 0.5, '$color': '#c6f'}};
+                                    '$tint': '#c6f', '$tintMinAlpha': 0.2, '$tintMaxAlpha': 0.5, '$lifeBarColor': '#c6f'}};
 
 
 var easyBonuses = {'bonuses': {'*maxHealth': .8, '*strength': .8, '*dexterity': .8, '*intelligence': .8,
@@ -224,21 +224,20 @@ function getMonsterBonuses(monster) {
         '+intelligence': 5 * growth,
         '+dexterity': 5 * growth,
         '+coins': Random.range(1, Math.floor(Math.pow(1.25, growth + 1) * 4)),
-        '+anima': Random.range(1, Math.floor(Math.pow(1.25, growth + 1))),
-        '$color': 'red'
+        '+anima': Random.range(1, Math.floor(Math.pow(1.25, growth + 1)))
     };
 }
 function initalizeMonsters() {
-    var caterpillarSource = {'image': enemySheet('gfx/caterpillar.png'), 'xOffset': 0, 'width': 48,  'height': 24, 'yOffset': 40, 'flipped': true, frames: 4};
-    var gnomeSource = {'image': enemySheet('gfx/gnome.png'), 'xOffset': 0, 'width': 32, 'height': 38, 'yOffset': 26, 'flipped': false, frames: 4};
-    var skeletonSource = {'image': enemySheet('gfx/skeletonSmall.png'), 'xOffset': 0, 'width': 48, 'height': 38, 'yOffset': 26, 'flipped': true, frames: 7};
-    var butterflySource = {'image': enemySheet('gfx/caterpillar.png'), 'xOffset': 4 * 48, 'width': 48, 'flipped': true, frames: 4};
-    var skeletonGiantSource = {'image': enemySheet('gfx/skeletonGiant.png'), 'xOffset': 0, 'width': 48, 'flipped': true, frames: 7};
-    var dragonSource = {'image': enemySheet('gfx/dragonEastern.png'), 'xOffset': 0, 'width': 48, 'xCenter': 25, 'yCenter': 48, 'flipped': false, frames: 5};
-    var batSource = {'image': enemySheet('gfx/bat.png'), 'xOffset': 0, 'width': 32, 'height': 32, 'flipped': false, frames: 5, 'y': 20};
-    var spiderSource = {'image': enemySheet('gfx/spider.png'), 'xOffset': 0, 'width': 48, 'height': 48, 'flipped': true, 'y': -10,
+    var caterpillarSource = {'image': enemySheet('gfx/caterpillar.png'), 'width': 48,  'height': 24, 'yOffset': 40, frames: 4};
+    var gnomeSource = {'image': enemySheet('gfx/gnome.png'), 'width': 32, 'height': 38, 'yOffset': 26, 'flipped': true, frames: 4};
+    var skeletonSource = {'image': enemySheet('gfx/skeletonSmall.png'), 'width': 48, 'height': 38, 'yOffset': 26, frames: 7};
+    var butterflySource = {'image': enemySheet('gfx/caterpillar.png'), 'xOffset': 4 * 48, 'width': 48, frames: 4};
+    var skeletonGiantSource = {'image': enemySheet('gfx/skeletonGiant.png'), 'width': 48, frames: 7};
+    var dragonSource = {'image': enemySheet('gfx/dragonEastern.png'), 'width': 48, 'xCenter': 25, 'yCenter': 48, 'flipped': true, frames: 5};
+    var batSource = {'image': enemySheet('gfx/bat.png'), 'width': 32, 'height': 32, 'flipped': true, frames: 5, 'y': 20};
+    var spiderSource = {'image': enemySheet('gfx/spider.png'), 'width': 48, 'height': 48, 'y': -10,
             framesPerRow: 10, walkFrames: [4, 5, 6, 7, 8, 9], attackFrames: [2, 3, 0, 1], deathFrames: [10, 11, 12, 13]};
-    var wolfSource = {'image': enemySheet('gfx/wolf.png'), 'xOffset': 0, 'width': 64, 'height': 32, 'flipped': true,
+    var wolfSource = {'image': enemySheet('gfx/wolf.png'), 'width': 64, 'height': 32,
             framesPerRow: 7, walkFrames: [0, 1, 2, 3], attackFrames: [6, 4, 5, 0], deathFrames: [0, 7, 8, 9]};
     addMonster('dummy', {
         'name': 'Dummy', 'source': caterpillarSource,

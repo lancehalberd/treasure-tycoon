@@ -232,7 +232,6 @@ function mainLoop() {
         redrawInventoryJewels();
     }
     var fps = Math.floor(3 * 5 / 3);
-    var frame = Math.floor(now() * fps / 1000) % walkLoop.length;
     var characters = testingLevel ? [state.selectedCharacter] : state.characters;
     for (var character of characters) {
         if (character.area && !character.paused) {
@@ -254,16 +253,17 @@ function mainLoop() {
                 }
             }
         }
+        var frame = arrMod(character.adventurer.source.walkFrames, Math.floor(now() * fps / 1000));
         if (state.selectedCharacter === character) {
             previewContext.clearRect(0, 0, 64, 128);
-            previewContext.drawImage(character.adventurer.personCanvas, walkLoop[frame] * 32, 0 , 32, 64, 0, -20, 64, 128);
+            previewContext.drawImage(character.adventurer.personCanvas, frame * 32, 0 , 32, 64, 0, -20, 64, 128);
             character.characterContext.globalAlpha = 1;
         } else {
             character.characterContext.globalAlpha = .3;
         }
         //character.characterContext.fillStyle = 'white';
         character.characterContext.clearRect(0, 0, 32, 64);
-        character.characterContext.drawImage(character.adventurer.personCanvas, walkLoop[frame] * 32, 0 , 32, 64, 0, -10, 32, 64);
+        character.characterContext.drawImage(character.adventurer.personCanvas, frame * 32, 0 , 32, 64, 0, -10, 32, 64);
     }
     if (currentContext === 'adventure') {
         if (editingLevel && !testingLevel) {

@@ -3,8 +3,6 @@ var maxLevel = 100;
 var clothes = [1, 3];
 var hair = [clothes[1] + 1, clothes[1] + 4];
 var names = ['Chris', 'Leon', 'Hillary', 'Michelle', 'Rob', 'Reuben', 'Kingston', 'Silver'];
-var walkLoop = [0, 1, 2, 3];
-var fightLoop = [4, 5, 6];
 var pointsTypes = ['coins', 'anima', 'fame'];
 // These are the only variables on actors that can be targeted by effects.
 var allActorVariables = {
@@ -35,7 +33,7 @@ var allActorVariables = {
     // tracked for debuffs that deal damage over time
     'damageOverTime': '.',
     // For enemy loot and color
-    'coins': '.', 'anima': '.', 'color': '.', 'scale': '.',
+    'coins': '.', 'anima': '.', 'lifeBarColor': '.', 'scale': '.',
     'tint': 'Color to of glowing tint', 'tintMaxAlpha': 'Max alpha for tint.', 'tintMinAlpha': 'Min alph for tint.'
 };
 // These are variables that can be targeted by effects on any action.
@@ -112,7 +110,8 @@ var coreStatBonusSource = {'bonuses': {
     '+healthRegen': ['{maxHealth}', '/', 50],
     '+magicPower': ['{intelligence}', '+', [['{minMagicDamage}', '+' ,'{maxMagicDamage}'], '/', 2]],
     // All sprites are drawn at half size at the moment.
-    '+scale': 2
+    '+scale': 2,
+    '$lifeBarColor': 'red'
 }};
 
 function removeAdventureEffects(adventurer) {
@@ -136,6 +135,7 @@ function initializeActorForAdventure(actor) {
     actor.isDead = false;
     actor.timeOfDeath = undefined;
     actor.attackCooldown = 0;
+    actor.attackFrame = 0;
     actor.target = null;
     actor.slow = 0;
     actor.rotation = 0;
@@ -240,7 +240,9 @@ function makeAdventurerFromData(adventurerData) {
             'yTop': 12, // Measured from the top of the source
             'yCenter': 44, // Measured from the top of the source
             'xCenter': 16,
-            'attackY': 30 // Measured from the bottom of the source
+            'attackY': 30, // Measured from the bottom of the source
+            'walkFrames': [0, 1, 2, 3],
+            'attackFrames': [6, 5, 4, 5]
         },
         'bonuses': [],
         'unlockedAbilities': {},
@@ -248,6 +250,7 @@ function makeAdventurerFromData(adventurerData) {
         'name': adventurerData.name,
         'hairOffset': adventurerData.hairOffset,
         'level': adventurerData.level,
+        'image': personCanvas,
         'personCanvas': personCanvas,
         'personContext': personContext,
         'attackCooldown': 0,
