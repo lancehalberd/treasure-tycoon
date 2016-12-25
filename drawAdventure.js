@@ -212,8 +212,6 @@ function drawMinimap(character) {
     var width = 750;
     var context = mainContext;
     var area = editingLevelInstance ? editingLevelInstance : character.area;
-    //context.fillStyle = 'black';
-    //context.fillRect(0, 560, mainCanvas.width, 30);
     drawBar(context, x, y, width, height, 'white', 'white', character.waveIndex / area.waves.length);
     for (var i = 0; i < area.waves.length; i++) {
         var centerX = x + (i + 1) * width / area.waves.length;
