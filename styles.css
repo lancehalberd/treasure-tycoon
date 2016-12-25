@@ -409,8 +409,14 @@ button {
 .itemSlot.active {
     background-color: #88ff88;
 }
+.itemSlot.active .item {
+    background-color: #ccffcc;
+}
 .itemSlot.invalid {
     background-color: #ff8888;
+}
+.itemSlot.invalid .item {
+    background-color: #ffcccc;
 }
 .icon.armor {
     background-position: -20px -20px;
