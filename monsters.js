@@ -306,7 +306,7 @@ function initalizeMonsters() {
     });
     addMonster('stealthyCateripllar', {
         'name': 'The Very Stealth Caterpillar', 'source': caterpillarSource,
-        'implicitBonuses': {'*magicDamage': 0, '*maxHealth': .5, '*scale': .2, '+scale': [40, '*', ['{bonusMaxHealth}', '/', '{maxHealth}']],
+        'implicitBonuses': {'*magicDamage': 0, '*maxHealth': .5, '*scale': .15, '+scale': [40, '*', ['{bonusMaxHealth}', '/', '{maxHealth}']],
                             '*block': .5, '+magicBlock': 4, '*magicBlock': 2, '+magicResist': .5, '*healthRegen': 5,
                             '*speed': [.5, '+', [2, '*', ['{bonusMaxHealth}', '/', '{maxHealth}']]]},
         'abilities': [abilities.stealth, abilities.darkknight, abilities.darkknight]
