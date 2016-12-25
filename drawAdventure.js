@@ -58,6 +58,19 @@ function drawAdventure(character) {
     }
     drawMinimap(character);
 }
+function updateActorAnimationFrame(actor) {
+    if (actor.pull || actor.stunned || actor.isDead ) {
+        actor.walkFrame = actor.attackFrame = 0;
+    } else if (actor.target && actor.lastAction && actor.lastAction.attackSpeed) { // attacking loop
+        var attackFps = 1 / ((1 / actor.lastAction.attackSpeed) / actor.source.attackFrames.length);
+        actor.attackFrame = ifdefor(actor.attackFrame, 0) + attackFps * frameMilliseconds / 1000;
+        actor.walkFrame = 0;
+    } else {
+        var walkFps = ifdefor(actor.base.fpsMultiplier, 1) * 3 * actor.speed / 100;
+        actor.walkFrame = ifdefor(actor.walkFrame, 0) + walkFps * frameMilliseconds * Math.max(.1, 1 - actor.slow) / 1000;
+        actor.attackFrame = 0;
+    }
+}
 function drawActor(actor) {
     var cameraX = actor.character.cameraX;
     var context = mainContext;
@@ -80,23 +93,16 @@ function drawActor(actor) {
     if (actor.isDead && !ifdefor(source.deathFrames)) {
         mainContext.globalAlpha = 1 - (actor.time - actor.timeOfDeath);
     }
-    if (actor.pull || actor.stunned) {
-        frame = actor.walkFrame = actor.attackFrame = 0;
+    if (actor.pull || actor.stunned || (actor.isDead && !ifdefor(source.deathFrames))) {
+        frame = 0;
     } else if (actor.isDead && ifdefor(source.deathFrames)) {
         var deathFps = 1.5 * source.deathFrames.length;
         frame = Math.min(source.deathFrames.length - 1, Math.floor((actor.time - actor.timeOfDeath) * deathFps));
         frame = arrMod(source.deathFrames, frame);
-    } else if (ifdefor(source.attackFrames) && actor.target && actor.lastAction && actor.lastAction.attackSpeed) { // attacking loop
-        var attackFps = 1 / ((1 / actor.lastAction.attackSpeed) / source.attackFrames.length);
-        actor.attackFrame = ifdefor(actor.attackFrame, 0) + attackFps * frameMilliseconds / 1000;
+    } else if (actor.target && actor.lastAction && actor.lastAction.attackSpeed) { // attacking loop
         frame = arrMod(source.attackFrames, Math.floor(actor.attackFrame));
-        actor.walkFrame = 0;
     } else {
-        var walkFps = ifdefor(actor.base.fpsMultiplier, 1) * 3 * actor.speed / 100;
-        actor.walkFrame = ifdefor(actor.walkFrame, 0) + walkFps * frameMilliseconds * Math.max(.1, 1 - actor.slow) / 1000;
-        if (source.walkFrames) frame = arrMod(source.walkFrames, Math.floor(actor.walkFrame));
-        else frame = Math.floor(actor.walkFrame) % source.frames;
-        actor.attackFrame = 0;
+        frame = arrMod(source.walkFrames, Math.floor(actor.walkFrame));
     }
     var xFrame = frame;
     var yFrame = 0;

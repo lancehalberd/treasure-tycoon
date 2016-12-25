@@ -242,6 +242,7 @@ function adventureLoop(character, delta) {
     ifdefor(character.allies, []).forEach(function (actor, index) {
         return updateActorDimensions(actor, -index);
     });
+    everybody.forEach(updateActorAnimationFrame);
 }
 function updateActorDimensions(actor, index) {
     var source = actor.source;

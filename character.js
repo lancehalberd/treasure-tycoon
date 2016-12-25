@@ -234,7 +234,7 @@ function makeAdventurerFromData(adventurerData) {
         'x': 0,
         'equipment': {},
         'job': characterClasses[adventurerData.jobKey],
-        'source': {
+        'source': setupActorSource({
             'width': 32,
             'height': 64,
             'yTop': 12, // Measured from the top of the source
@@ -243,7 +243,7 @@ function makeAdventurerFromData(adventurerData) {
             'attackY': 30, // Measured from the bottom of the source
             'walkFrames': [0, 1, 2, 3],
             'attackFrames': [6, 5, 4, 5]
-        },
+        }),
         'bonuses': [],
         'unlockedAbilities': {},
         'abilities': [],

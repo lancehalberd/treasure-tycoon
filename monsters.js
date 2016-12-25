@@ -227,18 +227,26 @@ function getMonsterBonuses(monster) {
         '+anima': Random.range(1, Math.floor(Math.pow(1.25, growth + 1)))
     };
 }
+function setupActorSource(source) {
+    if (!source.walkFrames) {
+        source.walkFrames = [];
+        for (var i = 0; i < source.frames; i++) source.walkFrames[i] = i;
+    }
+    source.attackFrames = ifdefor(source.attackFrames, source.walkFrames);
+    return source;
+}
 function initalizeMonsters() {
-    var caterpillarSource = {'image': enemySheet('gfx/caterpillar.png'), 'width': 48,  'height': 24, 'yOffset': 40, frames: 4};
-    var gnomeSource = {'image': enemySheet('gfx/gnome.png'), 'width': 32, 'height': 38, 'yOffset': 26, 'flipped': true, frames: 4};
-    var skeletonSource = {'image': enemySheet('gfx/skeletonSmall.png'), 'width': 48, 'height': 38, 'yOffset': 26, frames: 7};
-    var butterflySource = {'image': enemySheet('gfx/caterpillar.png'), 'xOffset': 4 * 48, 'width': 48, frames: 4};
-    var skeletonGiantSource = {'image': enemySheet('gfx/skeletonGiant.png'), 'width': 48, frames: 7};
-    var dragonSource = {'image': enemySheet('gfx/dragonEastern.png'), 'width': 48, 'xCenter': 25, 'yCenter': 48, 'flipped': true, frames: 5};
-    var batSource = {'image': enemySheet('gfx/bat.png'), 'width': 32, 'height': 32, 'flipped': true, frames: 5, 'y': 20};
-    var spiderSource = {'image': enemySheet('gfx/spider.png'), 'width': 48, 'height': 48, 'y': -10,
-            framesPerRow: 10, walkFrames: [4, 5, 6, 7, 8, 9], attackFrames: [2, 3, 0, 1], deathFrames: [10, 11, 12, 13]};
-    var wolfSource = {'image': enemySheet('gfx/wolf.png'), 'width': 64, 'height': 32,
-            framesPerRow: 7, walkFrames: [0, 1, 2, 3], attackFrames: [6, 4, 5, 0], deathFrames: [0, 7, 8, 9]};
+    var caterpillarSource = setupActorSource({'image': enemySheet('gfx/caterpillar.png'), 'width': 48,  'height': 24, 'yOffset': 40, frames: 4});
+    var gnomeSource = setupActorSource({'image': enemySheet('gfx/gnome.png'), 'width': 32, 'height': 38, 'yOffset': 26, 'flipped': true, frames: 4});
+    var skeletonSource = setupActorSource({'image': enemySheet('gfx/skeletonSmall.png'), 'width': 48, 'height': 38, 'yOffset': 26, frames: 7});
+    var butterflySource = setupActorSource({'image': enemySheet('gfx/caterpillar.png'), 'xOffset': 4 * 48, 'width': 48, frames: 4});
+    var skeletonGiantSource = setupActorSource({'image': enemySheet('gfx/skeletonGiant.png'), 'width': 48, frames: 7});
+    var dragonSource = setupActorSource({'image': enemySheet('gfx/dragonEastern.png'), 'width': 48, 'xCenter': 25, 'yCenter': 48, 'flipped': true, frames: 5});
+    var batSource = setupActorSource({'image': enemySheet('gfx/bat.png'), 'width': 32, 'height': 32, 'flipped': true, frames: 5, 'y': 20});
+    var spiderSource = setupActorSource({'image': enemySheet('gfx/spider.png'), 'width': 48, 'height': 48, 'y': -10,
+            framesPerRow: 10, walkFrames: [4, 5, 6, 7, 8, 9], attackFrames: [2, 3, 0, 1], deathFrames: [10, 11, 12, 13]});
+    var wolfSource = setupActorSource({'image': enemySheet('gfx/wolf.png'), 'width': 64, 'height': 32,
+            framesPerRow: 7, walkFrames: [0, 1, 2, 3], attackFrames: [6, 4, 5, 0], deathFrames: [0, 7, 8, 9]});
     addMonster('dummy', {
         'name': 'Dummy', 'source': caterpillarSource,
         'implicitBonuses': {'+magicDamage': 2}
