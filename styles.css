@@ -151,7 +151,7 @@
 
 .jewelCrafting {
     position: relative;
-    height: 240px;
+    height: 260px;
 }
 
 .jewelColumn {
@@ -173,6 +173,11 @@
     background-color: #AAA;
 }
 
+.extraJewelSlots {
+    position: absolute;
+    bottom: 2px;
+}
+
 .jewel, .jewelCraftingSlot {
     width: 68px;
     height: 68px;
@@ -183,9 +188,13 @@
     /* For some reason drag and drop messes up v-align without this. */
     vertical-align: middle;
 }
+.mainJewelCraftingSlot {
+    border: 3px solid #888;
+}
 .jewelCraftingSlot.active {
     background-color: #88ff88;
 }
+
 
 .map {
     display: inline-block;
@@ -1197,7 +1206,7 @@ select {
 .sellItem {
     position: absolute;
     right: 5px;
-    bottom: 2px;
+    top: 2px;
     cursor: default;
 }
 
