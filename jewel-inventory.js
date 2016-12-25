@@ -130,6 +130,7 @@ $('body').on('mousedown', function (event) {
         return;
     }
     draggedJewel = overJewel;
+    $('.js-jewelCraftingSlot').addClass('active');
     draggedJewel.startCharacter = draggedJewel.character;
     draggedJewel.startCenter = [draggedJewel.shape.center[0], draggedJewel.shape.center[1]];
     clearAdjacentJewels(draggedJewel);
@@ -366,6 +367,7 @@ function filterJewel($jewel) {
 }
 
 function stopJewelDrag() {
+    $('.js-jewelCraftingSlot').removeClass('active');
     if (draggingBoardJewel) stopBoardDrag();
     if (!draggedJewel) return;
     if (overVertex) {

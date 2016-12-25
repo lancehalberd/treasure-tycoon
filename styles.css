@@ -183,6 +183,9 @@
     /* For some reason drag and drop messes up v-align without this. */
     vertical-align: middle;
 }
+.jewelCraftingSlot.active {
+    background-color: #88ff88;
+}
 
 .map {
     display: inline-block;
