@@ -247,11 +247,9 @@ function drawMap() {
             context.restore();
         }
         if (state.selectedCharacter.currentLevelKey === levelKey) {
-            //var fps = Math.floor(3 * 5 / 3);
-            var frame = 1;//Math.floor(now() * fps / 1000) % walkLoop.length;
             context.save();
             context.translate(levelData.left + 25, levelData.top - 40);
-            context.drawImage(state.selectedCharacter.adventurer.personCanvas, walkLoop[frame] * 32, 0 , 32, 64, 0, -0, 32, 64);
+            context.drawImage(state.selectedCharacter.adventurer.personCanvas, state.selectedCharacter.adventurer.source.walkFrames[1] * 32, 0 , 32, 64, 0, -0, 32, 64);
             context.restore();
         }
 

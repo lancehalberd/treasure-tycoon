@@ -225,14 +225,13 @@ function logPixel(context, x, y) {
     var imgd = context.getImageData(x, y, 1, 1);
     console.log(imgd.data)
 }
+var frameMilliseconds = 20;
 function mainLoop() {
     var time = now();
-    var delta = 20;
     if ($('.js-jewel-inventory').is(":visible")) {
         redrawInventoryJewels();
     }
     var fps = Math.floor(3 * 5 / 3);
-    var frame = Math.floor(now() * fps / 1000) % walkLoop.length;
     var characters = testingLevel ? [state.selectedCharacter] : state.characters;
     for (var character of characters) {
         if (character.area && !character.paused) {
@@ -241,30 +240,30 @@ function mainLoop() {
                 return;
             }
             for (var i = 0; i < character.gameSpeed && character.area; i++) {
-                character.time += delta / 1000;
+                character.time += frameMilliseconds / 1000;
                 // Original this branch was designed to make the camera change for opening the treasure
                 // But it actually applies to both the chest and the boss, which turned out to be fine.
-                if (character.waveIndex < character.area.waves.length - 1) {
-                    character.cameraX = (character.cameraX * 10 + character.adventurer.x - 100) / 11;
-                } else if (character.cameraX < character.adventurer.x - 200 || character.cameraX > character.adventurer.x) {
-                    character.cameraX = (character.cameraX * 10 + character.adventurer.x - 200) / 11;
-                }
-                adventureLoop(character, delta / 1000);
+                var centerX = character.adventurer.x + 200 * character.adventurer.direction;
+                //if (character.cameraX < centerX - 400 || character.cameraX > centerX - 400) {
+                    character.cameraX = (character.cameraX * 10 + centerX - 400) / 11;
+                //}
+                adventureLoop(character, frameMilliseconds / 1000);
                 if (!character.area) {
                     return
                 }
             }
         }
+        var frame = arrMod(character.adventurer.source.walkFrames, Math.floor(now() * fps / 1000));
         if (state.selectedCharacter === character) {
             previewContext.clearRect(0, 0, 64, 128);
-            previewContext.drawImage(character.adventurer.personCanvas, walkLoop[frame] * 32, 0 , 32, 64, 0, -20, 64, 128);
+            previewContext.drawImage(character.adventurer.personCanvas, frame * 32, 0 , 32, 64, 0, -20, 64, 128);
             character.characterContext.globalAlpha = 1;
         } else {
             character.characterContext.globalAlpha = .3;
         }
         //character.characterContext.fillStyle = 'white';
         character.characterContext.clearRect(0, 0, 32, 64);
-        character.characterContext.drawImage(character.adventurer.personCanvas, walkLoop[frame] * 32, 0 , 32, 64, 0, -10, 32, 64);
+        character.characterContext.drawImage(character.adventurer.personCanvas, frame * 32, 0 , 32, 64, 0, -10, 32, 64);
     }
     if (currentContext === 'adventure') {
         if (editingLevel && !testingLevel) {
