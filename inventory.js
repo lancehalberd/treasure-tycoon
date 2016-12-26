@@ -429,6 +429,7 @@ equipmentSlots.forEach(function (slot) {
 });
 
 function addItem(level, data) {
+    var key = data.name.replace(/\s*/g, '').toLowerCase();
     var tags = ifdefor(data.tags, []);
     data.tags = {};
     for (var tag of tags) {
@@ -441,6 +442,7 @@ function addItem(level, data) {
     }
     data.tags[data.slot] = true;
     data.tags[data.type] = true;
+    data.tags[key] = true;
     items[level] = ifdefor(items[level], []);
     itemsBySlotAndLevel[data.slot][level] = ifdefor(itemsBySlotAndLevel[data.slot][level], []);
     data.level = level;
@@ -449,7 +451,6 @@ function addItem(level, data) {
     data.hasImplictBonuses = true;
     items[level].push(data);
     itemsBySlotAndLevel[data.slot][level].push(data);
-    var key = data.name.replace(/\s*/g, '').toLowerCase();
     data.key = key;
     itemsByKey[key] = data;
 }
