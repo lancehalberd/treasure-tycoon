@@ -167,7 +167,7 @@ function refreshStatsPanel(character, $statsPanel) {
     $statsPanel.find('.js-strength').text(adventurer.strength.format(0));
     $statsPanel.find('.js-intelligence').text(adventurer.intelligence.format(0));
     $('.js-global-divinity').text(character.divinity.abbreviate());
-    $statsPanel.find('.js-maxHealth').text(adventurer.maxHealth.format(0));
+    $statsPanel.find('.js-maxHealth').text(adventurer.maxHealth.format(0).abbreviate());
     if (adventurer.actions.length) {
         $statsPanel.find('.js-range').text(getBasicAttack(adventurer).range.format(2));
     }
@@ -533,9 +533,9 @@ function actorHelpText(actor) {
     for (var suffix of ifdefor(actor.suffixes, [])) suffixNames.push(suffix.base.name);
     if (prefixNames.length) name = prefixNames.join(', ') + ' ' + name;
     if (suffixNames.length) name = name + ' of ' + suffixNames.join(' and ');
-    var sections = [name + ' ' + Math.ceil(actor.health) + '/' + Math.ceil(actor.maxHealth)];
+    var sections = [name + ' ' + Math.ceil(actor.health).abbreviate() + '/' + Math.ceil(actor.maxHealth).abbreviate()];
     if (actor.reflectBarrier > 0) {
-        sections.push('Reflect: ' + actor.reflectBarrier.format(0));
+        sections.push('Reflect: ' + actor.reflectBarrier.format(0).abbreviate());
     }
     sections.push('');
     ifdefor(actor.prefixes, []).forEach(function (affix) {
