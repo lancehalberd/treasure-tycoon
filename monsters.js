@@ -22,7 +22,7 @@ var monsterPrefixes = [
         {'name': 'Giant', 'bonuses': {'*maxHealth': 2, '*scale': 1.3}}
     ],
     [
-        {'name': 'Eldritch', 'bonuses': {'+magicDamage': [1, 2], '*magicDamage': [2, 3]}}
+        {'name': 'Eldritch', 'bonuses': {'+weaponMagicDamage': [1, 2], '*weaponMagicDamage': [2, 3]}}
     ],
     [
         {'name': 'Telekenetic', 'bonuses': {'+range': [3, 5]}}
@@ -205,10 +205,10 @@ function getMonsterBonuses(monster) {
         // Health scales linearly to level 10, then 10% a level.
         '+maxHealth': (growth <= 10) ? (10 + 20 * growth) : 200 * Math.pow(1.1, growth - 10),
         '+range': 1,
-        '+minPhysicalDamage': Math.round(.9 * (5 + 6 * growth)),
-        '+maxPhysicalDamage': Math.round(1.1 * (5 + 6 * growth)),
-        '+minMagicDamage': Math.round(.9 * (1 + 1.5 * growth)),
-        '+maxMagicDamage': Math.round(1.1 * (1 + 1.5 * growth)),
+        '+minWeaponPhysicalDamage': Math.round(.9 * (5 + 6 * growth)),
+        '+maxWeaponPhysicalDamage': Math.round(1.1 * (5 + 6 * growth)),
+        '+minWeaponMagicDamage': Math.round(.9 * (1 + 1.5 * growth)),
+        '+maxWeaponMagicDamage': Math.round(1.1 * (1 + 1.5 * growth)),
         '+critChance': .05,
         '+critDamage': .5,
         '+critAccuracy': 1,
@@ -251,7 +251,7 @@ function initalizeMonsters() {
             framesPerRow: 5, walkFrames: [0, 1, 2, 3], attackFrames: [5, 6], deathFrames: [5, 7, 8, 9]};
     addMonster('dummy', {
         'name': 'Dummy', 'source': caterpillarSource,
-        'implicitBonuses': {'+magicDamage': 2}
+        'implicitBonuses': {}
     });
     addMonster('turtle', {
         'name': 'Turtle', 'source': turtleSource, 'fpsMultiplier': 2,
