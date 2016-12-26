@@ -69,7 +69,11 @@ function bonusSourceHelpText(bonusSource, actor, localObject) {
     }
     var sections = [];
     for (var restriction of ifdefor(bonusSource.restrictions, [])) {
-        sections.push(tag('u', '', restrictionToCategoryDisplayName(restriction) + ' Only'));
+        var style = '';
+        if (!state.selectedCharacter.adventurer.tags[restriction]) {
+            style = ' style="color: #f00;"';
+        }
+        sections.push('<u' + style + '>' + restrictionToCategoryDisplayName(restriction) + ' Only</u>');
     }
     if (bonusSource.helpText) {
         sections.push(bonusSource.helpText.replace(/\{([^\}]+)\}/g, function (match, key) {

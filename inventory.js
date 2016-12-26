@@ -31,6 +31,7 @@ function equipItem(actor, item, update) {
         }
         updateAdventurerGraphics(actor);
         updateOffhandDisplay();
+        unequipRestrictedGear();
     }
 }
 function unequipSlot(actor, slotKey, update) {
@@ -56,6 +57,22 @@ function unequipSlot(actor, slotKey, update) {
             }
             updateAdventurerGraphics(actor);
             updateOffhandDisplay();
+            unequipRestrictedGear();
+        }
+    }
+}
+function unequipRestrictedGear() {
+    var actor = state.selectedCharacter.adventurer;
+    for (var slotKey in actor.equipment) {
+        var item = actor.equipment[slotKey];
+        if (!item) continue;
+        if (!canEquipItem(actor, item)) {
+            unequipSlot(actor, slotKey, true);
+            addToInventory(item);
+            // This method will get called again as a consequence of unequiping
+            // the invalid item, so we don't need to do any further processing
+            // in this call.
+            break;
         }
     }
 }
@@ -143,14 +160,15 @@ function tagToCategoryDisplayName(tag) {
     return ifdefor(tagToCategoryMap[tag], properCase(tag));
 }
 var restrictionToCategoryMap = {
-    'twoHanded': '2-handed Weapons',
     'oneHanded': '1-handed Weapons',
-    'ranged': 'Ranged Weapons',
+    'twoHanded': '2-handed Weapons',
     'melee': 'Melee Weapons',
+    'ranged': 'Ranged Weapons',
+    'physical': 'Physical Weapons',
     'magic': 'Magic Weapons',
     'throwing': 'Throwing Weapons',
-    'unarmed': 'Unarmed',
     'fist': 'Fist Weapons',
+    'unarmed': 'Unarmed',
     'noOffhand': 'With No Offhand'
 };
 function restrictionToCategoryDisplayName(tag) {
@@ -271,10 +289,22 @@ $('body').on('mousedown', '.js-item', function (event) {
     updateDragHelper();
     dragged = false;
     var item = $(this).data('item');
-    $('.js-equipment .js-' + item.base.slot).addClass(item.level > state.selectedCharacter.adventurer.level ? 'invalid' : 'active');
+    $('.js-equipment .js-' + item.base.slot).addClass(!canEquipItem(state.selectedCharacter.adventurer, item) ? 'invalid' : 'active');
     $('.js-enchantmentSlot').addClass('active');
     $('.js-inventorySlot').addClass('active');
 });
+
+function canEquipItem(actor, item) {
+    if (item.level > actor.level) {
+        return false;
+    }
+    for (var requiredTag of ifdefor(item.base.restrictions, [])) {
+        if (!actor.tags[requiredTag]) {
+            return false;
+        }
+    }
+    return true;
+}
 
 function updateDragHelper() {
     if (!$dragHelper) {
@@ -343,7 +373,7 @@ function applyDragResults() {
             return true;
         }
         var targetCharacter = state.selectedCharacter;
-        if (targetCharacter.adventurer.level < item.level) {
+        if (!canEquipItem(targetCharacter.adventurer, item)) {
             return false;
         }
         var sourceCharacter = state.selectedCharacter;
@@ -439,6 +469,7 @@ function addItem(level, data) {
     if (data.slot === 'weapon') {
         if (!data.tags['ranged']) data.tags['melee'] = true;
         if (!data.tags['twoHanded']) data.tags['oneHanded'] = true;
+        if (!data.tags['magic']) data.tags['physical'] = true;
     }
     data.tags[data.slot] = true;
     data.tags[data.type] = true;
