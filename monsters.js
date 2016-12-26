@@ -14,7 +14,7 @@ var hardBonuses = {'bonuses': {'*maxHealth': 1.3, '*strength': 1.3, '*dexterity'
 // To make bosses intimidating, give them lots of health and damage, but to keep them from being overwhelming,
 // scale down their health regen, attack speed and critical multiplier.
 var bossMonsterBonuses = {'bonuses': {'*maxHealth': [2.5, '+', ['{level}', '/', 2]], '*damage': 2, '*attackSpeed': .75, '*critDamage': .5, '*critChance': .5, '*evasion': .5,
-                            '*healthRegen': .3, '+coins': 2, '*coins': 4, '+anima': 1, '*anima': 4,
+                            '*healthRegen': [1, '/', [1.5, '+', ['{level}', '/', 2]]], '+coins': 2, '*coins': 4, '+anima': 1, '*anima': 4,
                             '$uncontrollable': 'Cannot be controlled.', '$tint': 'red', '$tintMinAlpha': 0.2, '$tintMaxAlpha': 0.5}};
 var monsterPrefixes = [
     [
