@@ -17,12 +17,12 @@ function startArea(character, index) {
     } else {
         character.area = instantiateLevel(map[index], character.levelDifficulty, difficultyCompleted);
     }
+    character.cameraX = -60;
     initializeActorForAdventure(character.adventurer);
     character.waveIndex = 0;
     character.adventurer.x = 0;
     character.finishTime = false;
     character.startTime = character.time;
-    character.cameraX = -60;
     character.enemies = [];
     character.objects = [];
     character.projectiles = [];
@@ -80,6 +80,13 @@ function timeStopLoop(character, delta) {
     moveActor(actor, delta);
     capHealth(actor);
     updateActorHelpText(actor);
+    // Update position info.
+    ifdefor(character.enemies, []).forEach(function (actor, index) {
+        return updateActorDimensions(actor, 1 + character.enemies.length - index);
+    });
+    ifdefor(character.allies, []).forEach(function (actor, index) {
+        return updateActorDimensions(actor, -index);
+    });
     return true;
 }
 function actorCanOverHeal(actor) {
@@ -99,6 +106,13 @@ function capHealth(actor) {
 }
 function removeActor(actor) {
     var index = actor.allies.indexOf(actor);
+    if (index < 0) {
+        console.log("Tried to remove actor that was not amongst its allies");
+        console.log(actor);
+        console.log(actor.allies);
+        pause();
+        return;
+    }
     actor.allies.splice(index, 1);
     if (actor.isMainCharacter) {
         var character = actor.character;
@@ -169,6 +183,8 @@ function adventureLoop(character, delta) {
     character.enemies.forEach(function (actor) {
         runActorLoop(character, actor);
     });
+    // A skill may have removed an actor from one of the allies/enemies array, so remake everybody.
+    everybody = character.allies.concat(character.enemies);
     everybody.forEach(function (actor) {
         moveActor(actor, delta);
     });
@@ -219,35 +235,54 @@ function adventureLoop(character, delta) {
             }
         }
     });
+    // Update position info.
+    ifdefor(character.enemies, []).forEach(function (actor, index) {
+        return updateActorDimensions(actor, 1 + character.enemies.length - index);
+    });
+    ifdefor(character.allies, []).forEach(function (actor, index) {
+        return updateActorDimensions(actor, -index);
+    });
+    everybody.forEach(updateActorAnimationFrame);
+}
+function updateActorDimensions(actor, index) {
+    var source = actor.source;
+    var scale = ifdefor(actor.scale, 1);
+    actor.width = source.width * scale;
+    actor.height = ifdefor(source.height, 64) * scale;
+    actor.top = groundY - actor.height - ifdefor(source.y, 0) * scale - 2 * (index % maxIndex);
+    actor.left = actor.x - actor.character.cameraX;
+    if (isNaN(actor.top) || isNaN(actor.left) || isNaN(actor.width) || isNaN(actor.height)) {
+        console.log(actor.scale);
+        console.log([actor.x, actor.character.cameraX]);
+        console.log(source);
+        console.log([actor.left,actor.top,actor.width,actor.height]);
+        pause();
+        return false;
+    }
+    return true;
 }
 function moveActor(actor, delta) {
     if (actor.target && actor.target.pull) {
         actor.target = null;
     }
-    if (actor.isDead || actor.stunned || actor.blocked || actor.target || actor.pull || ifdefor(actor.stationary)) {
+    if (actor.isDead || actor.stunned || actor.pull || ifdefor(actor.stationary)) {
         return;
     }
-    if ((!actor.target || actor.target.isDead) && (!actor.desiredTarget || actor.desiredTarget.isDead)) {
-        actor.desiredTarget = null;
-        var bestDistance = 10000;
-        actor.enemies.forEach(function (target) {
-            if (target.isDead) return;
-            var distance = getDistance(actor, target);
-            if (distance < bestDistance) {
-                distance = bestDistance;
-                actor.desiredTarget = target;
-            }
-        });
-    }
+    actor.desiredTarget = null;
+    var bestDistance = 10000;
+    actor.enemies.forEach(function (target) {
+        if (target.isDead) return;
+        var distance = getDistance(actor, target);
+        if (distance < bestDistance) {
+            bestDistance = distance;
+            actor.desiredTarget = target;
+        }
+    });
     var goalTarget = actor.target || actor.desiredTarget;
     if (goalTarget) {
         actor.direction = (goalTarget.x < actor.x) ? -1 : 1;
     } else {
         actor.direction = 1;
-    }
-    // If an enemy ends up behind the adventurer, have them appear in front of them.
-    if (actor.x < actor.character.adventurer.x - 800) {
-        actor.x = actor.character.adventurer.x + 1200;
     }
     // Make sure the main character doesn't run in front of their allies.
     // If the allies are fast enough, this shouldn't be an isse.
@@ -256,11 +291,20 @@ function moveActor(actor, delta) {
     for (var i = 0; i < actor.allies.length; i++) {
         xOffset += actor.x - actor.allies[i].x;
     }
-    speedBonus -= actor.direction * xOffset / 1000;
-    speedBonus = Math.min(1.25, Math.max(speedBonus, .5));
+    //speedBonus -= actor.direction * xOffset / 1000;
+    //speedBonus = Math.min(1.25, Math.max(speedBonus, .2));
     if (actor.chargeEffect) {
         speedBonus *= actor.chargeEffect.chargeSkill.speedBonus;
         actor.chargeEffect.distance += speedBonus * actor.speed * Math.max(.1, 1 - actor.slow) * delta;
+    }
+    // If the character is closer than they need to be to auto attack then they can back away f
+    if (goalTarget && !goalTarget.cloaked) {
+        var distanceToTarget = getDistanceOverlap(actor, goalTarget);
+        if (distanceToTarget < (actor.weaponRange - 1.5) * 32) {
+            speedBonus *= -.25;
+        } else if (distanceToTarget <= actor.weaponRange * 32) {
+            speedBonus = 0;
+        }
     }
     actor.x += speedBonus * actor.speed * actor.direction * Math.max(.1, 1 - actor.slow) * delta;
 }
@@ -277,12 +321,12 @@ function startNextWave(character) {
             extraSkills.push(hardBonuses);
         }
         var newMonster = makeMonster(entityData, character.area.level, extraSkills, !!wave.extraBonuses);
-        initializeActorForAdventure(newMonster);
+        newMonster.direction = -1; // Monsters move right to left
         newMonster.x = x;
+        newMonster.character = character;
+        initializeActorForAdventure(newMonster);
         newMonster.time = 0;
         newMonster.animationTime = newMonster.x;
-        newMonster.character = character;
-        newMonster.direction = -1; // Monsters move right to left
         newMonster.allies = character.enemies;
         newMonster.enemies = character.allies;
         character.enemies.push(newMonster);
@@ -334,19 +378,13 @@ function processStatusEffects(character, target, delta) {
             target.rotation += dr;
             var damage = target.pull.damage * Math.min(1, delta / timeLeft);
             target.pull.damage -= damage;
-            // Don't let target be pulled past enemies. Do let them jump away from enemies.
-            if (!target.blocked || dx * target.direction < 0) {
-                target.x += dx;
-                target.health -= damage;
-            }
+            target.x += dx;
+            target.health -= damage;
         } else {
             var dx = target.pull.x - target.x;
             target.rotation = 0;
-            // Don't let target be pulled past enemies. Do let them jump away from enemies.
-            if (!target.blocked || dx * target.direction < 0) {
-                target.x = target.pull.x;
-                target.health -= target.pull.damage;
-            }
+            target.x = target.pull.x;
+            target.health -= target.pull.damage;
             target.pull = null;
         }
     }
@@ -371,12 +409,10 @@ function runActorLoop(character, actor) {
         target.priority = getDistance(actor, target) - 1000;
         targets.push(target);
     }
-    actor.blocked = false;
     for (var i = 0; i < actor.enemies.length; i++) {
         var target = actor.enemies[i];
         target.priority = getDistance(actor, target);
         if (target.priority <= 0) {
-            if (!target.isDead) actor.blocked = true;
             if (actor.chargeEffect) {
                 var attackStats = createAttackStats(actor, actor.chargeEffect.chargeSkill, target);
                 attackStats.distance = actor.chargeEffect.distance;
@@ -397,7 +433,6 @@ function runActorLoop(character, actor) {
     // An actor that is being pulled cannot perform any actions.
     if (actor.pull || actor.chargeEffect) {
         actor.target = null;
-        actor.cloaked = (actor.cloaking && !actor.blocked && !actor.target);
         return;
     }
     // The main purpose of this is to prevent pulled actors from passing through their enemies.
@@ -421,7 +456,7 @@ function runActorLoop(character, actor) {
             break;
         }
     }
-    actor.cloaked = (actor.cloaking && !actor.blocked && !actor.target);
+    actor.cloaked = (actor.cloaking && !actor.target);
 }
 function checkToUseSkillOnTarget(character, actor, target) {
     for(var i = 0; i < ifdefor(actor.actions, []).length; i++) {
@@ -436,6 +471,11 @@ function getDistance(actorA, actorB) {
     return Math.max(0, (actorA.x > actorB.x)
         ? (actorA.x - actorB.x - ifdefor(actorB.width, 64))
         : (actorB.x - actorA.x - ifdefor(actorA.width, 64)));
+}
+function getDistanceOverlap(actorA, actorB) {
+    return (actorA.x > actorB.x)
+        ? (actorA.x - actorB.x - ifdefor(actorB.width, 64))
+        : (actorB.x - actorA.x - ifdefor(actorA.width, 64));
 }
 
 function defeatedEnemy(character, enemy) {

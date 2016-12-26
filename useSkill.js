@@ -9,8 +9,10 @@
  *
  * @return boolean True if the skill was used.
  */
-function useSkill(actor, skill, target) {
+function useSkill(actor, skill, targetOrAttackStats) {
     if (!skill) return false;
+    // This is a bit gross, but doesn't seem to be breaking anything at the moment.
+    var target = targetOrAttackStats;
     var actionIndex = actor.actions.indexOf(skill);
     var reactionIndex = actor.reactions.indexOf(skill);
     if (actionIndex < 0 && reactionIndex < 0) return false;
@@ -255,6 +257,7 @@ skillDefinitions.song = {
     use: function (actor, songSkill, target) {
         var attackStats = createSpellStats(actor, songSkill, target);
         actor.attackCooldown = actor.time + .2;
+        actor.attackFrame = 0;
         performAttackProper(attackStats, target);
         return attackStats;
     }
@@ -283,6 +286,7 @@ skillDefinitions.heroSong = {
     use: function (actor, songSkill, target) {
         var attackStats = createSpellStats(actor, songSkill, target);
         actor.attackCooldown = actor.time + .2;
+        actor.attackFrame = 0;
         performAttackProper(attackStats, target);
         return attackStats;
     }
@@ -327,7 +331,7 @@ skillDefinitions.minion = {
             return false;
         }
         actor.allies.forEach(function (ally) {
-            if (ally.source == minionSkill) count++;
+            if (ally.skillSource == minionSkill) count++;
         });
         return count < minionSkill.limit;
     },
@@ -343,7 +347,7 @@ skillDefinitions.minion = {
         }
         newMonster.character = actor.character;
         newMonster.direction = actor.direction;
-        newMonster.source = minionSkill;
+        newMonster.skillSource = minionSkill;
         newMonster.allies = actor.allies;
         newMonster.enemies = actor.enemies;
         newMonster.time = 0;
@@ -371,11 +375,11 @@ function cloneActor(actor, skill) {
     } else {
         clone = makeMonster({'key': actor.base.key}, actor.level, [], true);
     }
-    initializeActorForAdventure(clone);
-    actor.pull = {'x': actor.x - actor.direction * 64, 'time': actor.time + .3, 'damage': 0};
     clone.x = actor.x + actor.direction * 32;
     clone.character = actor.character;
     clone.direction = actor.direction;
+    initializeActorForAdventure(clone);
+    actor.pull = {'x': actor.x - actor.direction * 64, 'time': actor.time + .3, 'damage': 0};
     clone.allies = actor.allies;
     clone.enemies = actor.enemies;
     clone.stunned = 0;
@@ -410,13 +414,13 @@ skillDefinitions.clone = {
     isValid: function (actor, cloneSkill, attackStats) {
         var count = 0;
         actor.allies.forEach(function (ally) {
-            if (ally.source == cloneSkill) count++;
+            if (ally.skillSource == cloneSkill) count++;
         });
         return count < cloneSkill.limit && Math.random() < cloneSkill.chance;
     },
     use: function (actor, cloneSkill, attackStats) {
         var clone = cloneActor(actor, cloneSkill);
-        clone.source = cloneSkill;
+        clone.skillSource = cloneSkill;
         clone.name = actor.name + ' shadow clone';
         clone.percentHealth = actor.percentHealth;
         clone.health = clone.percentHealth * clone.maxHealth;
@@ -429,13 +433,13 @@ skillDefinitions.decoy = {
     isValid: function (actor, decoySkill, attackStats) {
         var count = 0;
         actor.allies.forEach(function (ally) {
-            if (ally.source == decoySkill) count++;
+            if (ally.skillSource == decoySkill) count++;
         });
         return count < ifdefor(decoySkill.limit, 10);
     },
     use: function (actor, decoySkill, attackStats) {
         var clone = cloneActor(actor, decoySkill);
-        clone.source = decoySkill;
+        clone.skillSource = decoySkill;
         clone.name = actor.name + ' decoy';
         addActions(clone, abilities.explode);
         actor.allies.push(clone);
@@ -456,6 +460,8 @@ skillDefinitions.explode = {
         for (var i = 0; i < actor.enemies.length; i++) {
             performAttackProper({
                 'distance': 0,
+                'gravity': ifdefor(explodeSkill.gravity, ifdefor(explodeSkill.base.gravity, .8)),
+                'speed': ifdefor(explodeSkill.speed, ifdefor(explodeSkill.base.speed, ifdefor(explodeSkill.range, 10) * 2.5)),
                 'source': actor,
                 'attack': explodeSkill,
                 'isCritical': true,
@@ -527,6 +533,39 @@ skillDefinitions.dodge = {
         attackStats.dodged = true;
         if (ifdefor(dodgeSkill.distance)) {
             actor.pull = {'x': actor.x + actor.direction * dodgeSkill.distance, 'time': actor.time + ifdefor(dodgeSkill.moveDuration, .3), 'damage': 0};
+        }
+        if (ifdefor(dodgeSkill.buff)) {
+            addTimedEffect(actor, dodgeSkill.buff);
+        }
+        if (ifdefor(dodgeSkill.globalDebuff)) {
+            actor.enemies.forEach(function (enemy) {
+                addTimedEffect(enemy, dodgeSkill.globalDebuff);
+            });
+        }
+    }
+};
+
+skillDefinitions.sideStep = {
+    isValid: function (actor, dodgeSkill, attackStats) {
+        // side step can only dodge ranged attacked.
+        if (ifdefor(dodgeSkill.base.rangedOnly) && !attackStats.projectile ) {
+            return false;
+        }
+        // Cannot side step if attacker is on top of you.
+        if (getDistance(actor, attackStats.source) <= 0) {
+            return false;
+        }
+        return !attackStats.evaded;
+    },
+    use: function (actor, dodgeSkill, attackStats) {
+        attackStats.dodged = true;
+        if (ifdefor(dodgeSkill.distance)) {
+            var attacker = attackStats.source;
+            if (attacker.x > actor.x) {
+                actor.pull = {'x': Math.min(actor.x + actor.direction * dodgeSkill.distance, attacker.x - actor.width), 'time': actor.time + ifdefor(dodgeSkill.moveDuration, .3), 'damage': 0};
+            } else {
+                actor.pull = {'x': Math.max(actor.x + actor.direction * dodgeSkill.distance, attacker.x + attacker.width), 'time': actor.time + ifdefor(dodgeSkill.moveDuration, .3), 'damage': 0};
+            }
         }
         if (ifdefor(dodgeSkill.buff)) {
             addTimedEffect(actor, dodgeSkill.buff);

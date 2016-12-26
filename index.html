@@ -125,7 +125,24 @@
                 <div class="js-back js-itemSlot itemSlot back"></div>
                 <div class="js-ring js-itemSlot itemSlot ring"></div>
         </div><div class="js-jewelBonuses playerBox js-jewelContext jewelBonuses"><div class="panelTitle" style="text-align: center;">Jewel Bonuses</div><div class="js-content"></div></div>
-        </div><div class="js-jewel-inventory displayColumn jewel-inventory js-jewelContext"></div><div class="js-jewelColumn displayColumn jewelColumn js-jewelContext">
+        </div><div class="displayColumn jewelColumn js-jewelContext"><div class="jewelOptions">
+            <button class="js-jewelSortRuby">Ruby</button>
+            <button class="js-jewelSortEmerald">Emerald</button>
+            <button class="js-jewelSortSaphire">Saphire</button>
+            <br/>
+            <button class="js-jewelSortTopaz">Topaz</button>
+            <button class="js-jewelSortAquamarine">Aquamarine</button>
+            <button class="js-jewelSortAmethyst">Amethyst</button>
+            <br/>
+            <button class="js-jewelSortDiamond">Diamond</button>
+            <button class="js-jewelSortQuality">Quality</button>
+            <br/>
+            Tier: <label class="js-jewelTier1 js-jewelTierLabel" helptext="Click to toggle display of Tier 1 (Level 1) Jewels"><input type="checkbox" checked="checked" value="1"/> 1</label>
+            <label class="js-jewelTier2 js-jewelTierLabel" helptext="Click to toggle display of Tier 2 (Level 10) Jewels"><input type="checkbox" checked="checked" value="2"/> 2</label>
+            <label class="js-jewelTier3 js-jewelTierLabel" helptext="Click to toggle display of Tier 3 (Level 20) Jewels"><input type="checkbox" checked="checked" value="3"/> 3</label>
+            <label class="js-jewelTier4 js-jewelTierLabel" helptext="Click to toggle display of Tier 4 (Level 40) Jewels"><input type="checkbox" checked="checked" value="4"/> 4</label>
+            <label class="js-jewelTier5 js-jewelTierLabel" helptext="Click to toggle display of Tier 5 (Level 60) Jewels"><input type="checkbox" checked="checked" value="5"/> 5</label>
+        </div><div class="js-jewelInventory jewel-inventory"></div></div><div class="js-jewelColumn displayColumn js-jewelContext">
             <div class="js-jewelBoard jewelBoard">
                 <canvas class="js-canvas js-skillCanvas" width="320" height="320"></canvas>
                 <button class="js-confirmSkill confirmSkill" helptext="Finalize augmentation and level this character." style="display: none;">Apply</button>
@@ -133,12 +150,18 @@
             <div class="js-jewelPanel infoPanel jewelCrafting">
                 <div class="panelTitle" style="text-align: center;">Altar of Creation</div>
                 <div style="text-align: center;">
-                    <div class="js-jewelCraftingSlot jewelCraftingSlot" helptext="Drag a jewel here to craft."></div>
-                    <div class="js-jewelCraftingSlot jewelCraftingSlot" helptext="Drag a jewel here to craft."></div>
+                    <div class="js-jewelCraftingSlot js-jewelCraftingSlotA jewelCraftingSlot mainJewelCraftingSlot" helptext="Drag a jewel here to craft."></div>
+                    <div class="js-jewelCraftingSlot js-jewelCraftingSlotB jewelCraftingSlot mainJewelCraftingSlot" helptext="Drag a jewel here to craft."></div>
                 </div>
                 <button class="js-jewelCraftingButton centered" style="display: none;">Split</button>
                 <button class="js-jewelDeformationButton centered" style="display: none;">Expand</button>
                 <button class="js-sellItem sellItem" disabled helptext="Drag items here to sell them. <br/> You can also hover over an item and type 'S' to sell quickly."><div class="icon money"></div></button>
+                <div class="extraJewelSlots">
+                    <div class="js-jewelCraftingSlot jewelCraftingSlot"></div>
+                    <div class="js-jewelCraftingSlot jewelCraftingSlot"></div>
+                    <div class="js-jewelCraftingSlot jewelCraftingSlot"></div>
+                    <div class="js-jewelCraftingSlot jewelCraftingSlot"></div>
+                </div>
             </div>
         </div><div class="js-inventory displayColumn inventory js-itemContext"><div class="js-inventorySlot js-itemSlot itemSlot inventorySlot" helptext="Drag an item here to move it into your inventory."></div></div><div class="js-itemCrafting displayColumn itemCrafting js-itemContext">
             <div class="panelTitle">Temple of Fortune</div>

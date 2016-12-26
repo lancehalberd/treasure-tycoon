@@ -180,32 +180,32 @@ addItem(69, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Divine Tights', 'bon
 
 //Sabatons gives armor and health
 //addItem(1, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Corroded Sabatons', 'bonuses': {'+armor': 2, '+maxHealth': 5, '-speed': 50}, 'offset': 8, icon: 'sabatons'});
-addItem(7, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Bamboo Sabatons', 'bonuses': {'+armor': 9, '+maxHealth': 55, '-speed': 25}, 'offset': 8, icon: 'sabatons'});
+addItem(7, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Bamboo Sabatons', 'bonuses': {'+armor': 9, '+maxHealth': 55, '-speed': 50}, 'offset': 8, icon: 'sabatons'});
 addItem(12, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Copper Sabatons', 'bonuses': {'+armor': 16, '+maxHealth': 85, '-speed': 50}, 'offset': 8, icon: 'sabatons'});
-addItem(17, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Bronze Sabatons', 'bonuses': {'+armor': 23, '+maxHealth': 125, '-speed': 60}, 'offset': 8, icon: 'sabatons'});
-addItem(22, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Iron Sabatons', 'bonuses': {'+armor': 30, '+maxHealth': 165, '-speed': 70}, 'offset': 8, icon: 'sabatons'});
-addItem(27, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Black Sabatons', 'bonuses': {'+armor': 37, '+maxHealth': 205, '-speed': 80}, 'offset': 8, icon: 'sabatons'});
-addItem(32, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Forged Sabatons', 'bonuses': {'+armor': 44, '+maxHealth': 245, '-speed': 90}, 'offset': 8, icon: 'sabatons'});
-addItem(37, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Steel Sabatons', 'bonuses': {'+armor': 51, '+maxHealth': 285, '-speed': 100}, 'offset': 8, icon: 'sabatons'});
-addItem(42, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Stainless Sabatons', 'bonuses': {'+armor': 58, '+maxHealth': 325, '-speed': 100}, 'offset': 8, icon: 'sabatons'});
-addItem(47, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Engraved Sabatons', 'bonuses': {'+armor': 65, '+maxHealth': 365, '-speed': 100}, 'offset': 8, icon: 'sabatons'});
-addItem(52, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Meteoric Sabatons', 'bonuses': {'+armor': 72, '+maxHealth': 405, '-speed': 100}, 'offset': 8, icon: 'sabatons'});
+addItem(17, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Bronze Sabatons', 'bonuses': {'+armor': 23, '+maxHealth': 125, '-speed': 50}, 'offset': 8, icon: 'sabatons'});
+addItem(22, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Iron Sabatons', 'bonuses': {'+armor': 30, '+maxHealth': 165, '-speed': 50}, 'offset': 8, icon: 'sabatons'});
+addItem(27, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Black Sabatons', 'bonuses': {'+armor': 37, '+maxHealth': 205, '-speed': 50}, 'offset': 8, icon: 'sabatons'});
+addItem(32, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Forged Sabatons', 'bonuses': {'+armor': 44, '+maxHealth': 245, '-speed': 50}, 'offset': 8, icon: 'sabatons'});
+addItem(37, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Steel Sabatons', 'bonuses': {'+armor': 51, '+maxHealth': 285, '-speed': 50}, 'offset': 8, icon: 'sabatons'});
+addItem(42, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Stainless Sabatons', 'bonuses': {'+armor': 58, '+maxHealth': 325, '-speed': 50}, 'offset': 8, icon: 'sabatons'});
+addItem(47, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Engraved Sabatons', 'bonuses': {'+armor': 65, '+maxHealth': 365, '-speed': 50}, 'offset': 8, icon: 'sabatons'});
+addItem(52, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Meteoric Sabatons', 'bonuses': {'+armor': 72, '+maxHealth': 405, '-speed': 50}, 'offset': 8, icon: 'sabatons'});
 addItem(62, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Adamantium Sabatons', 'bonuses': {'+armor': 100, '+maxHealth': 500, '+evasion': 10, '+block': 10, '+magicBlock': 10, '%speed': -0.1}, 'offset': 8, icon: 'sabatons'});
 addItem(72, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Orichalcum Sabatons', 'bonuses': {'+armor': 90, '+maxHealth': 500, '+evasion': 10, '+block': 10, '+magicBlock': 20}, 'offset': 8, icon: 'sabatons'});
 
 //Boots gives armor and evasion
 //addItem(1, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Worn Shoes', 'bonuses': {'+armor': 1, '+evasion': 2, '-speed': 25}, 'offset': 8, icon: 'boots'});
-addItem(6, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Leather Shoes', 'bonuses': {'+armor': 6, '+evasion': 10, '-speed': 10}, 'offset': 8, icon: 'boots'});
-addItem(11, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Hide Shoes', 'bonuses': {'+armor': 11, '+evasion': 18, '-speed': 20}, 'offset': 8, icon: 'boots'});
-addItem(16, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Leather Boots', 'bonuses': {'+armor': 16, '+evasion': 26, '-speed': 30}, 'offset': 8, icon: 'boots'});
-addItem(21, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Studded Boots', 'bonuses': {'+armor': 21, '+evasion': 34, '-speed': 40}, 'offset': 8, icon: 'boots'});
-addItem(26, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Hide Boots', 'bonuses': {'+armor': 26, '+evasion': 42, '-speed': 50}, 'offset': 8, icon: 'boots'});
-addItem(31, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Carapace Boots', 'bonuses': {'+armor': 31, '+evasion': 50, '-speed': 50}, 'offset': 8, icon: 'boots'});
-addItem(36, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Padded Boots', 'bonuses': {'+armor': 36, '+evasion': 58, '-speed': 50}, 'offset': 8, icon: 'boots'});
-addItem(41, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Plated Boots', 'bonuses': {'+armor': 41, '+evasion': 66, '-speed': 50}, 'offset': 8, icon: 'boots'});
-addItem(46, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Scale Boots', 'bonuses': {'+armor': 46, '+evasion': 74, '-speed': 50}, 'offset': 8, icon: 'boots'});
-addItem(51, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Composite Boots', 'bonuses': {'+armor': 51, '+evasion': 82, '-speed': 50}, 'offset': 8, icon: 'boots'});
-addItem(61, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Runed Boots', 'bonuses': {'+armor': 60, '+evasion': 90, '+maxHealth': 35, '+block': 5, '+magicBlock': 5, '-speed': 50}, 'offset': 8, icon: 'boots'});
+addItem(6, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Leather Shoes', 'bonuses': {'+armor': 6, '+evasion': 10, '-speed': 25}, 'offset': 8, icon: 'boots'});
+addItem(11, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Hide Shoes', 'bonuses': {'+armor': 11, '+evasion': 18, '-speed': 25}, 'offset': 8, icon: 'boots'});
+addItem(16, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Leather Boots', 'bonuses': {'+armor': 16, '+evasion': 26, '-speed': 25}, 'offset': 8, icon: 'boots'});
+addItem(21, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Studded Boots', 'bonuses': {'+armor': 21, '+evasion': 34, '-speed': 25}, 'offset': 8, icon: 'boots'});
+addItem(26, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Hide Boots', 'bonuses': {'+armor': 26, '+evasion': 42, '-speed': 25}, 'offset': 8, icon: 'boots'});
+addItem(31, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Carapace Boots', 'bonuses': {'+armor': 31, '+evasion': 50, '-speed': 25}, 'offset': 8, icon: 'boots'});
+addItem(36, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Padded Boots', 'bonuses': {'+armor': 36, '+evasion': 58, '-speed': 25}, 'offset': 8, icon: 'boots'});
+addItem(41, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Plated Boots', 'bonuses': {'+armor': 41, '+evasion': 66, '-speed': 25}, 'offset': 8, icon: 'boots'});
+addItem(46, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Scale Boots', 'bonuses': {'+armor': 46, '+evasion': 74, '-speed': 25}, 'offset': 8, icon: 'boots'});
+addItem(51, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Composite Boots', 'bonuses': {'+armor': 51, '+evasion': 82, '-speed': 25}, 'offset': 8, icon: 'boots'});
+addItem(61, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Runed Boots', 'bonuses': {'+armor': 60, '+evasion': 90, '+maxHealth': 35, '+block': 5, '+magicBlock': 5, '-speed': 25}, 'offset': 8, icon: 'boots'});
 addItem(71, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Dragon Boots', 'bonuses': {'+armor': 70, '+evasion': 110,'+maxHealth': 100, '+block': 10, '+magicBlock': 20}, 'offset': 8, icon: 'boots'});
 
 //Sandals/Slippers gives block and magic block
@@ -220,8 +220,8 @@ addItem(35, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Angora Slippers', 'b
 addItem(40, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Velvet Slippers', 'bonuses': {'+block': 33, '+magicBlock': 33, '+speed': 90}, 'offset': 8, icon: 'shoes'});
 addItem(45, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Embroidered Slippers', 'bonuses': {'+block': 37, '+magicBlock': 37, '+speed': 100}, 'offset': 8, icon: 'shoes'});
 addItem(50, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Sourcerous Slippers', 'bonuses': {'+block': 41, '+magicBlock': 41, '+speed': 110}, 'offset': 8, icon: 'shoes'});
-addItem(60, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Blessed Sandals', 'bonuses': {'+block': 50, '+magicBlock': 50, '+armor': 5, '+evasion': 5, '+maxHealth': 35, '+speed': 150}, 'offset': 8, icon: 'shoes'});
-addItem(70, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Divine Sandals', 'bonuses': {'+block': 70, '+magicBlock': 60, '+armor': 10, '+evasion': 10, '+maxHealth': 60, '%speed': 0.25}, 'offset': 8, icon: 'shoes'});
+addItem(60, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Blessed Sandals', 'bonuses': {'+block': 50, '+magicBlock': 50, '+armor': 5, '+evasion': 5, '+maxHealth': 35, '+speed': 120}, 'offset': 8, icon: 'shoes'});
+addItem(70, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Divine Sandals', 'bonuses': {'+block': 70, '+magicBlock': 60, '+armor': 10, '+evasion': 10, '+maxHealth': 60, '%speed': 0.5}, 'offset': 8, icon: 'shoes'});
 
 //Heavy Shields
 addItem(2, {'slot': 'offhand', 'type': 'heavyShield', 'tags': ['shield'], 'name': 'Wooden Board', 'bonuses': {'+maxHealth': 20, '+block': 3}, 'icon': 'heavyShield'});

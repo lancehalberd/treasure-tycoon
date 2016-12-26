@@ -192,6 +192,7 @@ var bonusMap = {
         throw new Error('unexpected value ' + bonusSource.bonuses['$setRange']);
     },
     '$weaponRange': 'Weapon range is always $1',
+    '*weaponRange': '$1x weapon range',
     // Offensive stats
     '+damage': '+$1 damage',
     '*damage': '$3x damage',
@@ -223,6 +224,7 @@ var bonusMap = {
     '*critAccuracy': '$1x critical accuracy',
     '%critAccuracy': '%1 increased critical accuracy',
     '+range': '+$1 range',
+    '*range': '$1x range',
     '+accuracy': '+$1 accuracy',
     '*accuracy': '$1x accuracy',
     '%accuracy': '%1 increased accuracy',

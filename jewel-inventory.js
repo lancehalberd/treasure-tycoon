@@ -11,10 +11,21 @@ function redrawInventoryJewel(jewel) {
     }
 }
 function redrawInventoryJewels() {
-    $('.js-jewel').each(function (index, element) {
-        redrawInventoryJewel($(element).data('jewel'));
+    var $container = $('.js-jewelInventory');
+    var jewelsDrawn = jewelsTotal = 0;
+    $container.find('.js-jewel').each(function (index, element) {
+        jewelsTotal++;
+        if ($(element).is(':visible') && collision($container, $(element))) {
+            jewelsDrawn++;
+            redrawInventoryJewel($(element).data('jewel'));
+        }
+    });
+    // Crafting slots are always visible.
+    $('.js-jewelCraftingSlot .js-jewel').each(function () {
+        redrawInventoryJewel($(this).data('jewel'));
     });
 }
+$('.js-jewelInventory').on('scroll', redrawInventoryJewels);
 function jewelHelpText(jewel) {
     var jewelDefinition = jewelDefinitions[jewel.jewelType];
     var name = jewelDefinition.name;
@@ -119,6 +130,7 @@ $('body').on('mousedown', function (event) {
         return;
     }
     draggedJewel = overJewel;
+    $('.js-jewelCraftingSlot').addClass('active');
     draggedJewel.startCharacter = draggedJewel.character;
     draggedJewel.startCenter = [draggedJewel.shape.center[0], draggedJewel.shape.center[1]];
     clearAdjacentJewels(draggedJewel);
@@ -342,10 +354,20 @@ function returnToInventory(jewel) {
     jewel.$canvas.css('position', '');
     jewel.$item.append(jewel.$canvas);
     jewel.startCharacter = null;
-    $('.js-jewel-inventory').append(jewel.$item);
+    addJewelToInventory(jewel.$item);
+}
+function addJewelToInventory($jewel) {
+    $('.js-jewelInventory').append($jewel);
+    filterJewel($jewel);
+}
+function filterJewel($jewel) {
+    // Hide/show this jewel depending on whether it is filtered out.
+    var tier = $jewel.data('jewel').tier;
+    $jewel.toggle($('.js-jewelTier' + tier + ' input').prop('checked'));
 }
 
 function stopJewelDrag() {
+    $('.js-jewelCraftingSlot').removeClass('active');
     if (draggingBoardJewel) stopBoardDrag();
     if (!draggedJewel) return;
     if (overVertex) {
@@ -390,14 +412,14 @@ function stopJewelDrag() {
         var $existingItem = $craftingSlot.find('.js-jewel');
         if ($existingItem.length) {
             $existingItem.detach();
-            $('.js-jewel-inventory').append($existingItem);
+            addJewelToInventory($existingItem);
         }
         appendDraggedJewelToElement($craftingSlot);
     }
     if (!draggedJewel) return;
     var $target = null;
     var largestCollision = 0;
-    $('.js-jewel-inventory .js-jewel').each(function (index, element) {
+    $('.js-jewelInventory .js-jewel').each(function (index, element) {
         var $element = $(element);
         var collisionArea = getCollisionArea(draggedJewel.$canvas, $element);
         if (collisionArea > largestCollision) {
@@ -412,11 +434,13 @@ function stopJewelDrag() {
         // to the end first so we get all the normal logic for cleaning up the
         // drag operation, then detach the item and place it before the target.
         var $jewelItem = draggedJewel.$item;
-        appendDraggedJewelToElement($('.js-jewel-inventory'));
+        appendDraggedJewelToElement($('.js-jewelInventory'));
+        filterJewel($jewelItem);
         $target.before($jewelItem.detach());
     }
     if (!draggedJewel) return;
-    appendDraggedJewelToElement($('.js-jewel-inventory'));
+    appendDraggedJewelToElement($('.js-jewelInventory'));
+    filterJewel(draggedJewel.$item);
 }
 
 function stopBoardDrag() {
@@ -470,11 +494,17 @@ function equipJewel(character, replace, updateAdventurer) {
     }
     return false;
 }
+function getCraftingSlotA() {
+    return $('.js-jewelCraftingSlotA');
+}
+function getCraftingSlotB() {
+    return $('.js-jewelCraftingSlotB');
+}
 function updateJewelCraftingOptions() {
     $('.js-jewelCraftingButton').hide();
     $('.js-jewelDeformationButton').hide();
-    var jewelA = $('.js-jewelCraftingSlot').first().find('.js-jewel').data('jewel');
-    var jewelB = $('.js-jewelCraftingSlot').last().find('.js-jewel').data('jewel');
+    var jewelA = getCraftingSlotA().find('.js-jewel').data('jewel');
+    var jewelB = getCraftingSlotB().find('.js-jewel').data('jewel');
     if (!jewelA && !jewelB) return;
     if (jewelA && jewelB) {
         $('.js-jewelCraftingButton').html('Fuse Jewels').show();
@@ -514,15 +544,15 @@ function getFusedShape(jewelA, jewelB) {
 }
 
 $('.js-jewelCraftingButton').on('click', function () {
-    var jewelA = $('.js-jewelCraftingSlot').first().find('.js-jewel').data('jewel');
-    var jewelB = $('.js-jewelCraftingSlot').last().find('.js-jewel').data('jewel');
+    var jewelA = getCraftingSlotA().find('.js-jewel').data('jewel');
+    var jewelB = getCraftingSlotB().find('.js-jewel').data('jewel');
     if (!jewelA && !jewelB) return;
     if (jewelA && jewelB) fuseJewels(jewelA, jewelB);
     else splitJewel(jewelA || jewelB);
 });
 $('.js-jewelDeformationButton').on('click', function () {
-    var jewelA = $('.js-jewelCraftingSlot').first().find('.js-jewel').data('jewel');
-    var jewelB = $('.js-jewelCraftingSlot').last().find('.js-jewel').data('jewel');
+    var jewelA = getCraftingSlotA().find('.js-jewel').data('jewel');
+    var jewelB = getCraftingSlotB().find('.js-jewel').data('jewel');
     var jewel = jewelA || jewelB;
     if (jewel.shapeType === 'triangle' || jewel.shapeType === 'diamond') expandJewel(jewel);
     else compressJewel(jewel);
@@ -539,7 +569,7 @@ function fuseJewels(jewelA, jewelB) {
     var newJewel = makeJewel(tier, fusedShape.key, components, quality);
     destroyJewel(jewelA);
     destroyJewel(jewelB);
-    appendJewelToElement(newJewel, $('.js-jewelCraftingSlot').first());
+    appendJewelToElement(newJewel, getCraftingSlotA());
     updateJewelCraftingOptions();
     saveGame();
 }
@@ -551,7 +581,7 @@ function compressJewel(jewel) {
     var newArea = shapeDefinitions[newShape][0].area;
     var newJewel = makeJewel(jewel.tier, newShape, jewel.components, jewel.quality * .99 * jewel.area / newArea);
     destroyJewel(jewel);
-    appendJewelToElement(newJewel, $('.js-jewelCraftingSlot').first());
+    appendJewelToElement(newJewel, getCraftingSlotA());
     updateJewelCraftingOptions();
     saveGame();
 }
@@ -563,7 +593,7 @@ function expandJewel(jewel) {
     var newArea = shapeDefinitions[newShape][0].area;
     var newJewel = makeJewel(jewel.tier, newShape, jewel.components, jewel.quality * .99 * jewel.area / newArea);
     destroyJewel(jewel);
-    appendJewelToElement(newJewel, $('.js-jewelCraftingSlot').first());
+    appendJewelToElement(newJewel, getCraftingSlotA());
     updateJewelCraftingOptions();
     saveGame();
 }
@@ -603,8 +633,8 @@ function splitJewel(jewel) {
     var newJewelA = makeJewel(jewel.tier, shapeDefinitionA.key, componentsA, qualityA);
     var newJewelB = makeJewel(jewel.tier, shapeDefinitionB.key, componentsB, qualityB);
     destroyJewel(jewel);
-    appendJewelToElement(newJewelA, $('.js-jewelCraftingSlot').first());
-    appendJewelToElement(newJewelB, $('.js-jewelCraftingSlot').last());
+    appendJewelToElement(newJewelA, getCraftingSlotA());
+    appendJewelToElement(newJewelB, getCraftingSlotB());
     updateJewelCraftingOptions();
     saveGame();
 }
@@ -724,3 +754,73 @@ function isOnBoard(shape, board) {
     }
     return false;
 }
+
+function sortJewelDivs(sortFunction) {
+    $('.js-jewelInventory .js-jewel').sort(function (a, b) {
+        return sortFunction($(a).data('jewel'), $(b).data('jewel'));
+    }).detach().appendTo($('.js-jewelInventory'));
+}
+
+$('.js-jewelSortRuby').on('click', function () {
+    sortJewelDivs(function(jewelA, jewelB) {
+        return jewelB.components[0] - jewelA.components[0];
+    });
+});
+$('.js-jewelSortEmerald').on('click', function () {
+    sortJewelDivs(function(jewelA, jewelB) {
+        return jewelB.components[1] - jewelA.components[1];
+    });
+});
+$('.js-jewelSortSaphire').on('click', function () {
+    sortJewelDivs(function(jewelA, jewelB) {
+        return jewelB.components[2] - jewelA.components[2];
+    });
+});
+
+$('.js-jewelSortTopaz').on('click', function () {
+    sortJewelDivs(function(jewelA, jewelB) {
+        var bValue = jewelB.components[0] + jewelB.components[1] - jewelB.components[2] + (jewelB.jewelType === 3 ? 1000 : 0);
+        var aValue = jewelA.components[0] + jewelA.components[1] - jewelA.components[2] + (jewelA.jewelType === 3 ? 1000 : 0);
+        return bValue - aValue;
+    });
+});
+$('.js-jewelSortAquamarine').on('click', function () {
+    sortJewelDivs(function(jewelA, jewelB) {
+        var bValue = jewelB.components[2] + jewelB.components[1] - jewelB.components[0] + (jewelB.jewelType === 6 ? 1000 : 0);
+        var aValue = jewelA.components[2] + jewelA.components[1] - jewelA.components[0] + (jewelA.jewelType === 6 ? 1000 : 0);
+        return bValue - aValue;
+    });
+});
+$('.js-jewelSortAmethyst').on('click', function () {
+    sortJewelDivs(function(jewelA, jewelB) {
+        var bValue = jewelB.components[0] + jewelB.components[2] - jewelB.components[1] + (jewelB.jewelType === 5 ? 1000 : 0);
+        var aValue = jewelA.components[0] + jewelA.components[2] - jewelA.components[1] + (jewelA.jewelType === 5 ? 1000 : 0);
+        return bValue - aValue;
+    });
+});
+$('.js-jewelSortDiamond').on('click', function () {
+    sortJewelDivs(function(jewelA, jewelB) {
+        var averageA = (jewelA.components[0] + jewelA.components[1] + jewelA.components[2]) / 3
+        var aValue = Math.abs(jewelA.components[0] - averageA) + Math.abs(jewelA.components[1] - averageA) + Math.abs(jewelA.components[2] - averageA);
+        var averageB = (jewelB.components[0] + jewelB.components[1] + jewelB.components[2]) / 3
+        var bValue = Math.abs(jewelB.components[0] - averageB) + Math.abs(jewelB.components[1] - averageB) + Math.abs(jewelB.components[2] - averageB);
+        //var aValue = Math.max(jewelB.components[0], jewelB.components[1], jewelB.components[2]) - Math.min(jewelB.components[0], jewelB.components[1], jewelB.components[2]);
+        //var bValue = Math.max(jewelA.components[0], jewelA.components[1], jewelA.components[2]) - Math.min(jewelA.components[0], jewelA.components[1], jewelA.components[2]);
+        return aValue + (jewelB.jewelType === 7 ? 1000 : 0) - (bValue + (jewelA.jewelType === 7 ? 1000 : 0));
+    });
+});
+$('.js-jewelSortQuality').on('click', function () {
+    sortJewelDivs(function(jewelA, jewelB) {
+        return jewelB.quality - jewelA.quality;
+    });
+});
+$('.js-jewelTierLabel input').on('change', function () {
+    var tier = $(this).val();
+    var display = $(this).prop('checked');
+    $('.js-jewelInventory .js-jewel').each(function () {
+        var jewel = $(this).data('jewel');
+        if (jewel.tier == tier) {
+            $(this).toggle(display);
+        }
+    });
+});
