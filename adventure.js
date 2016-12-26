@@ -299,10 +299,11 @@ function moveActor(actor, delta) {
     }
     // If the character is closer than they need to be to auto attack then they can back away f
     if (goalTarget && !goalTarget.cloaked) {
+        var basicAttackRange = getBasicAttack(actor).range;
         var distanceToTarget = getDistanceOverlap(actor, goalTarget);
-        if (distanceToTarget < (actor.weaponRange - 1.5) * 32) {
+        if (distanceToTarget < (basicAttackRange - 1.5) * 32) {
             speedBonus *= -.25;
-        } else if (distanceToTarget <= actor.weaponRange * 32) {
+        } else if (distanceToTarget <= basicAttackRange * 32) {
             speedBonus = 0;
         }
     }
