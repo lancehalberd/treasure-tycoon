@@ -74,7 +74,8 @@ var mainCanvas, mainContext, jewelsCanvas, jewelsContext, previewContext;
 // Load any graphic assets needed by the game here.
 async.mapSeries([
     // Original images from project contributors:
-    'gfx/person.png', 'gfx/grass.png', 'gfx/cave.png', 'gfx/forest.png', 'gfx/beach.png', 'gfx/town.png', 'gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png',
+    'gfx/person.png', 'gfx/grass.png', 'gfx/cave.png', 'gfx/forest.png', 'gfx/beach.png', 'gfx/town.png',
+    'gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png', 'gfx/turtle.png',
     'gfx/treasureChest.png', 'gfx/moneyIcon.png', 'gfx/projectiles.png',
     // http://opengameart.org/content/496-pixel-art-icons-for-medievalfantasy-rpg
     'gfx/496RpgIcons/abilityCharm.png',

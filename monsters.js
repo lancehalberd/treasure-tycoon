@@ -247,9 +247,15 @@ function initalizeMonsters() {
             framesPerRow: 10, walkFrames: [4, 5, 6, 7, 8, 9], attackFrames: [2, 3, 0, 1], deathFrames: [10, 11, 12, 13]});
     var wolfSource = setupActorSource({'image': enemySheet('gfx/wolf.png'), 'width': 64, 'height': 32,
             framesPerRow: 7, walkFrames: [0, 1, 2, 3], attackFrames: [6, 4, 5, 0], deathFrames: [0, 7, 8, 9]});
+    var turtleSource = {'image': enemySheet('gfx/turtle.png'), 'xOffset': 0, 'width': 64, 'height': 64,
+            framesPerRow: 5, walkFrames: [0, 1, 2, 3], attackFrames: [5, 6], deathFrames: [5, 7, 8, 9]};
     addMonster('dummy', {
         'name': 'Dummy', 'source': caterpillarSource,
         'implicitBonuses': {'+magicDamage': 2}
+    });
+    addMonster('turtle', {
+        'name': 'Turtle', 'source': turtleSource, 'fpsMultiplier': 2,
+        'implicitBonuses': {}
     });
     addMonster('spider', {
         'name': 'Spider', 'source': spiderSource,
