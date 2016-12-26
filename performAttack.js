@@ -212,6 +212,7 @@ function performAttack(attacker, attack, target) {
     var attackStats = createAttackStats(attacker, attack, target);
     attacker.health -= attackStats.healthSacrificed;
     attacker.attackCooldown = attacker.time + 1 / (attackStats.attack.attackSpeed * Math.max(.1, (1 - attacker.slow)));
+    attacker.moveCooldown = attacker.time + .2;
     attacker.attackFrame = 0;
     performAttackProper(attackStats, target);
     return attackStats;
@@ -220,6 +221,7 @@ function castSpell(attacker, spell, target) {
     var attackStats = createSpellStats(attacker, spell, target);
     attacker.health -= attackStats.healthSacrificed;
     attacker.attackCooldown = attacker.time + .2;
+    attacker.moveCooldown = attacker.time + .2;
     attacker.attackFrame = 0;
     performAttackProper(attackStats, target);
     attacker.stunned = attacker.time + .3;

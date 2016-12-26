@@ -135,6 +135,7 @@ function initializeActorForAdventure(actor) {
     actor.isDead = false;
     actor.timeOfDeath = undefined;
     actor.attackCooldown = 0;
+    actor.moveCooldown = 0;
     actor.attackFrame = 0;
     actor.target = null;
     actor.slow = 0;

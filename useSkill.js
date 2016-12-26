@@ -257,6 +257,7 @@ skillDefinitions.song = {
     use: function (actor, songSkill, target) {
         var attackStats = createSpellStats(actor, songSkill, target);
         actor.attackCooldown = actor.time + .2;
+        actor.moveCooldown = actor.time + .2;
         actor.attackFrame = 0;
         performAttackProper(attackStats, target);
         return attackStats;
@@ -286,6 +287,7 @@ skillDefinitions.heroSong = {
     use: function (actor, songSkill, target) {
         var attackStats = createSpellStats(actor, songSkill, target);
         actor.attackCooldown = actor.time + .2;
+        actor.moveCooldown = actor.time + .2;
         actor.attackFrame = 0;
         performAttackProper(attackStats, target);
         return attackStats;
