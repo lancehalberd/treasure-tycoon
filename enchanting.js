@@ -127,23 +127,23 @@ addPrefix(10, 'Gifted', 'clothArmor', {'%intelligence': [10, 30, 1000]});
 addPrefix(40, 'Brilliant', 'clothArmor', {'%intelligence': [40, 60, 1000]});
 addPrefix(80, 'Unsurpassed', 'clothArmor', {'%intelligence': [80, 100, 1000]});
 
-addPrefix(2, 'Damaging', 'basicHolder', {'%physicalDamage': [10, 15, 100], });
-addPrefix(20, 'Harmful', 'basicHolder', {'%pyshicalDamage': [30, 50, 100], });
-addPrefix(40, 'Injurious', 'basicHolder', {'%physicalDamage': [60, 80, 100], });
+addPrefix(2, 'Damaging', 'basicHolder', {'%physicalDamage': [10, 15, 100]});
+addPrefix(20, 'Harmful', 'basicHolder', {'%pyshicalDamage': [30, 50, 100]});
+addPrefix(40, 'Injurious', 'basicHolder', {'%physicalDamage': [60, 80, 100]});
 
-addPrefix(2, 'Sparkling', 'basicMagicHolder', {'%magicDamage': [10, 15, 100], });
-addPrefix(20, 'Glowing', 'basicMagicHolder', {'%magicDamage': [30, 50, 100], });
-addPrefix(40, 'Blinding', 'basicMagicHolder', {'%magicDamage': [60, 80, 100], });
+addPrefix(2, 'Sparkling', 'basicMagicHolder', {'%magicDamage': [10, 15, 100]});
+addPrefix(20, 'Glowing', 'basicMagicHolder', {'%magicDamage': [30, 50, 100]});
+addPrefix(40, 'Blinding', 'basicMagicHolder', {'%magicDamage': [60, 80, 100]});
 
-addPrefix(20, 'Vicious', 'holder', {'%physicalDamage': [40, 60, 100], });
-addPrefix(40, 'Malicious', 'holder', {'%physicalDamage': [70, 90, 100], });
-addPrefix(60, 'Atrocious', 'holder', {'%physicalDamage': [100, 120, 100], });
-addPrefix(80, 'Inhuman', 'holder', {'%physicalDamage': [130, 150, 100], });
+addPrefix(20, 'Vicious', 'holder', {'%physicalDamage': [40, 60, 100]});
+addPrefix(40, 'Malicious', 'holder', {'%physicalDamage': [70, 90, 100]});
+addPrefix(60, 'Atrocious', 'holder', {'%physicalDamage': [100, 120, 100]});
+addPrefix(80, 'Inhuman', 'holder', {'%physicalDamage': [130, 150, 100]});
 
-addPrefix(20, 'Creative', 'magicHolder', {'%magicDamage': [40, 60, 100], });
-addPrefix(40, 'Innovative', 'magicHolder', {'%magicDamage': [70, 90, 100], });
-addPrefix(60, 'Inspired', 'magicHolder', {'%magicDamage': [100, 120, 100], });
-addPrefix(80, 'Visionary', 'magicHolder', {'%magicDamage': [130, 150, 100], });
+addPrefix(20, 'Creative', 'magicHolder', {'%magicDamage': [40, 60, 100]});
+addPrefix(40, 'Innovative', 'magicHolder', {'%magicDamage': [70, 90, 100]});
+addPrefix(60, 'Inspired', 'magicHolder', {'%magicDamage': [100, 120, 100]});
+addPrefix(80, 'Visionary', 'magicHolder', {'%magicDamage': [130, 150, 100]});
 
 addSuffix(3, 'Range', 'ranged', {'+range': [5, 10, 10]});
 addSuffix(13, 'The Owl', 'ranged', {'+range': [11, 15, 10]});
@@ -245,29 +245,29 @@ addSuffix(5, 'Insight', 'clothArmor', {'+intelligence': [3, 6]});
 addSuffix(25, 'Comprehension', 'clothArmor', {'+intelligence': [10, 20]});
 addSuffix(55, 'Genius', 'clothArmor', {'+intelligence': [30, 40]});
 
-addSuffix(2, 'Irritation', 'basicHolder', {'+physicalDamage': [3, 5], });
-addSuffix(10, 'Discomfort', 'basicHolder', {'+physicalDamage': [10, 15], });
-addSuffix(20, 'Misery', 'basicHolder', {'+physicalDamage': [20, 30], });
-addSuffix(30, 'Torture', 'basicHolder', {'+physicalDamage': [30, 40], });
-addSuffix(40, 'Laceration', 'basicHolder', {'+physicalDamage': [40, 50], });
-addSuffix(50, 'Flaying', 'basicHolder', {'+physicalDamage': [50, 60], });
+addSuffix(2, 'Irritation', 'basicHolder', {'+physicalDamage': [3, 5]});
+addSuffix(10, 'Discomfort', 'basicHolder', {'+physicalDamage': [10, 15]});
+addSuffix(20, 'Misery', 'basicHolder', {'+physicalDamage': [20, 30]});
+addSuffix(30, 'Torture', 'basicHolder', {'+physicalDamage': [30, 40]});
+addSuffix(40, 'Laceration', 'basicHolder', {'+physicalDamage': [40, 50]});
+addSuffix(50, 'Flaying', 'basicHolder', {'+physicalDamage': [50, 60]});
 
-addSuffix(2, 'Tingling', 'basicMagicHolder', {'+magicDamage': [1, 2], });
-addSuffix(10, 'Smoking', 'basicMagicHolder', {'+magicDamage': [5, 7], });
-addSuffix(20, 'Simmering', 'basicMagicHolder', {'+magicDamage': [10, 15], });
-addSuffix(30, 'Burning', 'basicMagicHolder', {'+magicDamage': [15, 20], });
-addSuffix(40, 'Crackling', 'basicMagicHolder', {'+magicDamage': [20, 25], });
-addSuffix(50, 'Blazing', 'basicMagicHolder', {'+magicDamage': [25, 30], });
+addSuffix(2, 'Tingling', 'basicMagicHolder', {'+magicDamage': [1, 2]});
+addSuffix(10, 'Smoking', 'basicMagicHolder', {'+magicDamage': [5, 7]});
+addSuffix(20, 'Simmering', 'basicMagicHolder', {'+magicDamage': [10, 15]});
+addSuffix(30, 'Burning', 'basicMagicHolder', {'+magicDamage': [15, 20]});
+addSuffix(40, 'Crackling', 'basicMagicHolder', {'+magicDamage': [20, 25]});
+addSuffix(50, 'Blazing', 'basicMagicHolder', {'+magicDamage': [25, 30]});
 
-addSuffix(20, 'Barbarism', 'holder', {'+physicalDamage': [40, 60], });
-addSuffix(40, 'Savagery', 'holder', {'+physicalDamage': [60, 100], });
-addSuffix(60, 'Brutality', 'holder', {'+physicalDamage': [100, 150], });
-addSuffix(80, 'Death', 'holder', {'+physicalDamage': [150, 200], });
+addSuffix(20, 'Barbarism', 'holder', {'+physicalDamage': [40, 60]});
+addSuffix(40, 'Savagery', 'holder', {'+physicalDamage': [60, 100]});
+addSuffix(60, 'Brutality', 'holder', {'+physicalDamage': [100, 150]});
+addSuffix(80, 'Death', 'holder', {'+physicalDamage': [150, 200]});
 
-addSuffix(20, 'Ravaging', 'magicHolder', {'+magicDamage': [20, 30], });
-addSuffix(40, 'Destruction', 'magicHolder', {'+magicDamage': [30, 50], });
-addSuffix(60, 'Eradication', 'magicHolder', {'+magicDamage': [50, 75], });
-addSuffix(80, 'Disintegration', 'magicHolder', {'+magicDamage': [75, 100], });
+addSuffix(20, 'Ravaging', 'magicHolder', {'+magicDamage': [20, 30]});
+addSuffix(40, 'Destruction', 'magicHolder', {'+magicDamage': [30, 50]});
+addSuffix(60, 'Eradication', 'magicHolder', {'+magicDamage': [50, 75]});
+addSuffix(80, 'Disintegration', 'magicHolder', {'+magicDamage': [75, 100]});
 
 addSuffix(1, 'Minor Strength', accessorySlots, {'+strength': [3, 6]});
 addSuffix(1, 'Minor Dexterity', accessorySlots, {'+dexterity': [3, 6]});
