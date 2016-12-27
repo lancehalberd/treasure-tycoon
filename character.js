@@ -2,7 +2,7 @@ var personFrames = 7;
 var maxLevel = 100;
 var clothes = [1, 3];
 var hair = [clothes[1] + 1, clothes[1] + 4];
-var names = ['Chris', 'Leon', 'Hillary', 'Michelle', 'Rob', 'Reuben', 'Kingston', 'Silver'];
+var names = ['Chris', 'Leon', 'Hillary', 'Michelle', 'Rob', 'Reuben', 'Kingston', 'Silver', 'Blaise'];
 var pointsTypes = ['coins', 'anima', 'fame'];
 // These are the only variables on actors that can be targeted by effects.
 var allActorVariables = {
