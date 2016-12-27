@@ -2,7 +2,9 @@ var prefixes = [];
 var prefixesByKey = {};
 var allEnchantments = [];
 function addPrefix(level, name, tags, bonuses) {
-    var affix = {level: level, name:name, tags:tags, bonuses: bonuses, prefix: true};
+    var bonusesKey = '';
+    for (var bonusKey in bonuses) bonusesKey += bonusKey;
+    var affix = {'level': level, 'name':name, 'tags':tags, 'bonuses': bonuses, 'prefix': true, 'bonusesKey': bonusesKey};
     prefixes[level] = ifdefor(prefixes[level], []);
     prefixes[level].push(affix);
     allEnchantments.push(affix);
@@ -10,7 +12,9 @@ function addPrefix(level, name, tags, bonuses) {
 var suffixes = [];
 var suffixesByKey = {};
 function addSuffix(level, name, tags, bonuses) {
-    var affix = {level: level, name:name, tags:tags, bonuses: bonuses, suffix: true};
+    var bonusesKey = '';
+    for (var bonusKey in bonuses) bonusesKey += bonusKey;
+    var affix = {'level': level, 'name':name, 'tags':tags, 'bonuses': bonuses, 'suffic': true, 'bonusesKey': bonusesKey};
     suffixes[level] = ifdefor(suffixes[level], []);
     suffixes[level].push(affix);
     allEnchantments.push(affix);
@@ -310,9 +314,9 @@ function makeAffix(baseAffix) {
     return affix;
 }
 function addPrefixToItem(item) {
-    var alreadyUsed = [];
-    item.prefixes.forEach(function (affix) {alreadyUsed.push(affix.base);});
-    var possibleAffixes = matchingAffixes(prefixes, item, alreadyUsed);
+    var alreadyUsedBonusesKeys = {};
+    item.prefixes.forEach(function (affix) {alreadyUsedBonusesKeys[affix.base.bonusesKey] = true;});
+    var possibleAffixes = matchingAffixes(prefixes, item, alreadyUsedBonusesKeys);
     if (possibleAffixes.length === 0) {
         console.log('No prefixes available for this item:');
         console.log(item);
@@ -322,9 +326,9 @@ function addPrefixToItem(item) {
     item.prefixes.push(newAffix);
 }
 function addSuffixToItem(item) {
-    var alreadyUsed = [];
-    item.suffixes.forEach(function (affix) {alreadyUsed.push(affix.base);});
-    var possibleAffixes = matchingAffixes(suffixes, item, alreadyUsed);
+    var alreadyUsedBonusesKeys = {};
+    item.suffixes.forEach(function (affix) {alreadyUsedBonusesKeys[affix.base.bonusesKey] = true;});
+    var possibleAffixes = matchingAffixes(suffixes, item, alreadyUsedBonusesKeys);
     if (possibleAffixes.length === 0) {
         console.log('No suffixes available for this item:');
         console.log(item);
@@ -333,11 +337,11 @@ function addSuffixToItem(item) {
     var newAffix = makeAffix(Random.element(possibleAffixes));
     item.suffixes.push(newAffix);
 }
-function matchingAffixes(list, item, alreadyUsed) {
+function matchingAffixes(list, item, alreadyUsedBonusesKeys) {
     var choices = [];
     for (var level = 0; level <= item.itemLevel && level < list.length; level++) {
         ifdefor(list[level], []).forEach(function (affix) {
-            if (alreadyUsed.indexOf(affix) < 0 && affixMatchesItem(item.base, affix)) {
+            if (alreadyUsedBonusesKeys[affix.base.bonusesKey] && affixMatchesItem(item.base, affix)) {
                 choices.push(affix);
             }
         });
