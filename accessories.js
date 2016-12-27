@@ -1,18 +1,18 @@
 
 //Back/Neck/Waist
-addItem(1, {'slot': 'back', 'type': 'cloak', 'name': 'Plain Cloak', 'bonuses': {'+evasion': 1, '+armor': 1, '+maxHealth': 6}, icon: 'cloak'});
-addItem(2, {'slot': 'back', 'type': 'quiver', 'name': 'Quiver', 'bonuses': {'+bow:minPhysicalDamage': 2, '+bow:maxPhysicalDamage': 4, '+thrown:minPhysicalDamage': 2, '+thrown:maxPhysicalDamage': 3}, icon: 'quiver'});
-addItem(3, {'slot': 'back', 'type': 'scabbard', 'name': 'Scabbard', 'bonuses': {'+dagger:minPhysicalDamage': 1, '+dagger:maxPhysicalDamage': 2, '+sword:minPhysicalDamage': 2, '+sword:maxPhysicalDamage': 3, '+greatsword:minPhysicalDamage': 3, '+greatsword:maxPhysicalDamage': 4}, icon: 'scabbard'});
-addItem(4, {'slot': 'back', 'type': 'baldric', 'name': 'Baldric', 'bonuses': {'+axe:minPhysicalDamage': 2, '+axe:maxPhysicalDamage': 3, '+polearm:minPhysicalDamage': 3, '+polearm:maxPhysicalDamage': 5}, icon: 'scabbard'});
-addItem(5, {'slot': 'back', 'type': 'amulet', 'name': 'Runed Amulet', 'bonuses': {'+wand:minMagicDamage': 1, '+wand:maxMagicDamage': 2, '+staff:minMagicDamage': 2, '+staff:maxMagicDamage': 3}, icon: 'amulet'});
+addItem(1, {'slot': 'back', 'type': 'cloak', 'name': 'Plain Cloak', 'bonuses': {'+evasion': 1, '+armor': 1, '+maxWeaponHealth': 6}, icon: 'cloak'});
+addItem(2, {'slot': 'back', 'type': 'quiver', 'name': 'Quiver', 'bonuses': {'+bow:minWeaponPhysicalDamage': 2, '+bow:maxWeaponPhysicalDamage': 4, '+thrown:minWeaponPhysicalDamage': 2, '+thrown:maxWeaponPhysicalDamage': 3}, icon: 'quiver'});
+addItem(3, {'slot': 'back', 'type': 'scabbard', 'name': 'Scabbard', 'bonuses': {'+dagger:minWeaponPhysicalDamage': 1, '+dagger:maxWeaponPhysicalDamage': 2, '+sword:minWeaponPhysicalDamage': 2, '+sword:maxWeaponPhysicalDamage': 3, '+greatsword:minWeaponPhysicalDamage': 3, '+greatsword:maxWeaponPhysicalDamage': 4}, icon: 'scabbard'});
+addItem(4, {'slot': 'back', 'type': 'baldric', 'name': 'Baldric', 'bonuses': {'+axe:minWeaponPhysicalDamage': 2, '+axe:maxWeaponPhysicalDamage': 3, '+polearm:minWeaponPhysicalDamage': 3, '+polearm:maxWeaponPhysicalDamage': 5}, icon: 'scabbard'});
+addItem(5, {'slot': 'back', 'type': 'amulet', 'name': 'Runed Amulet', 'bonuses': {'+wand:minWeaponMagicDamage': 1, '+wand:maxWeaponMagicDamage': 2, '+staff:minWeaponMagicDamage': 2, '+staff:maxWeaponMagicDamage': 3}, icon: 'amulet'});
 addItem(15, {'slot': 'back', 'type': 'cloak', 'name': 'Travelers Cloak', 'bonuses': {'+evasion': 10}, icon: 'cloak'});
 addItem(16, {'slot': 'back', 'type': 'cloak', 'name': 'Fur Cloak', 'bonuses': {'+block': 10}, icon: 'cloak'});
 addItem(17, {'slot': 'back', 'type': 'cloak', 'name': 'Plated Cloak', 'bonuses': {'+armor': 10}, icon: 'cloak'});
 
 
 //Rings
-addItem(1, {'slot': 'ring', 'type': 'ring', 'name': 'Iron Band', 'bonuses': {'+minPhysicalDamage': 2, '+maxPhysicalDamage': 4}, icon: 'band'});
-addItem(2, {'slot': 'ring', 'type': 'ring', 'name': 'Gold Band', 'bonuses': {'+minMagicDamage': 1, '+maxMagicDamage': 2}, icon: 'band'});
+addItem(1, {'slot': 'ring', 'type': 'ring', 'name': 'Iron Band', 'bonuses': {'+minWeaponPhysicalDamage': 2, '+maxWeaponPhysicalDamage': 4}, icon: 'band'});
+addItem(2, {'slot': 'ring', 'type': 'ring', 'name': 'Gold Band', 'bonuses': {'+minWeaponMagicDamage': 1, '+maxWeaponMagicDamage': 2}, icon: 'band'});
 addItem(4, {'slot': 'ring', 'type': 'ring', 'name': 'Ruby Ring', 'bonuses': {'+strength': 6}, icon: 'ring'});
 addItem(5, {'slot': 'ring', 'type': 'ring', 'name': 'Emerald Ring', 'bonuses': {'+dexterity': 6}, icon: 'ring'});
 addItem(6, {'slot': 'ring', 'type': 'ring', 'name': 'Sapphire Ring', 'bonuses': {'+intelligence': 6}, icon: 'ring'});

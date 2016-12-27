@@ -13,9 +13,10 @@ var allActorVariables = {
     'healthRegen': '.',
     'speed': '.',
     'magicPower': '.',
-    // These are only used to calculate magicPower. The damage values actually used are put directly on actions.
-    'minMagicDamage': '.', 'maxMagicDamage': '.',
-    // This is not used directly, but is included as a factor in any skills based on the range of equipped weapon.
+    // These stats are used as input into the actual range/damage stats on abilities/attacks.
+    // For example spells use magicPower as input to damage, which is intelligence + average weaponMagicDamage.
+    'minWeaponPhysicalDamage': '.', 'maxWeaponPhysicalDamage': '.',
+    'minWeaponMagicDamage': '.', 'maxWeaponMagicDamage': '.',
     'weaponRange': '.',
     // defensive stats
     'evasion': '.',
@@ -108,7 +109,11 @@ var coreStatBonusSource = {'bonuses': {
     '+magic:magicDamage': ['{intelligence}', '/', 10],
     '&maxHealth': '{bonusMaxHealth}',
     '+healthRegen': ['{maxHealth}', '/', 50],
-    '+magicPower': ['{intelligence}', '+', [['{minMagicDamage}', '+' ,'{maxMagicDamage}'], '/', 2]],
+    '+magicPower': ['{intelligence}', '+', [['{minWeaponMagicDamage}', '+' ,'{maxWeaponMagicDamage}'], '/', 2]],
+    '+minPhysicalDamage': '{minWeaponPhysicalDamage}',
+    '+maxPhysicalDamage': '{maxWeaponPhysicalDamage}',
+    '+minMagicDamage': '{minWeaponMagicDamage}',
+    '+maxMagicDamage': '{maxWeaponMagicDamage}',
     // All sprites are drawn at half size at the moment.
     '+scale': 2,
     '$lifeBarColor': 'red'

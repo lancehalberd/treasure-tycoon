@@ -52,7 +52,7 @@ function coinsLootDrop(amount) {
             while (total > 0 && index >= 0) {
                 // Getting a single large coin drop feels underwhelming, so if no coins have dropped yet
                 // break single coins into smaller drops.
-                while (coins[index].value <= total && (drops || animaDrops[index].value < total || total < 5)) {
+                while (coins[index].value <= total && (drops || coins[index].value < total || total < 5) && drops < 50) {
                     total -= coins[index].value;
                     character.treasurePopups.push(coinTreasurePopup(coins[index], x, y, Math.random() * 10 - 5, 10, nextDelay));
                     nextDelay += 5;
@@ -112,7 +112,7 @@ function animaLootDrop(amount) {
             while (total > 0 && index >= 0) {
                 // Getting a single large anima drop feels underwhelming, so if no anima has dropped yet
                 // break single anima into smaller drops.
-                while (animaDrops[index].value <= total && (drops || animaDrops[index].value < total || total < 5)) {
+                while (animaDrops[index].value <= total && (drops || animaDrops[index].value < total || total < 5) && drops < 50) {
                     total -= animaDrops[index].value;
                     character.treasurePopups.push(animaTreasurePopup(animaDrops[index], x, y, 10 + Math.random() * 5, Math.random() * 10 - 5, nextDelay));
                     nextDelay += 5;
