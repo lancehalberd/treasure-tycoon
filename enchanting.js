@@ -16,26 +16,30 @@ function addSuffix(level, name, tags, bonuses) {
     allEnchantments.push(affix)
 }
 
-addPrefix(1, 'Strong', 'weapon', {'+minPhysicalDamage': 1, '+maxPhysicalDamage': 2});
-addPrefix(5, 'Brutal', 'weapon', {'+minPhysicalDamage': [4,6], '+maxPhysicalDamage': [8,10]});
-addPrefix(15, 'Fierce', 'weapon', {'+minPhysicalDamage': [12, 14], '+maxPhysicalDamage': [20, 22]});
-addPrefix(30, 'Savage', 'weapon', {'+minPhysicalDamage': [22, 24], '+maxPhysicalDamage': [30, 32]});
-addPrefix(45, 'Cruel', 'weapon', {'+minPhysicalDamage': [32, 34], '+maxPhysicalDamage': [40, 42]});
-addPrefix(60, 'Bloody', 'weapon', {'+minPhysicalDamage': [35, 40], '+maxPhysicalDamage': [45, 50]});
+var basicHolders = ['simplequiver', 'scabbard', 'wornebaldric'];
+var holders = ['neverendingquiver', 'runedscabbard', 'bandolier', 'heavybaldric', 'etchedsheath', 'cover', 'largescabbard'];
+var magicHolders = ['runedamulet', 'heavyamulet'];
 
-addPrefix(1, 'Priest\'s', 'weapon', {'+minMagicDamage': 1, '+maxMagicDamage': 2});
-addPrefix(6, 'Magic', 'weapon', {'+minMagicDamage': [2,3], '+maxMagicDamage': [6,8]});
-addPrefix(16, 'Wizard\'s', 'weapon', {'+minMagicDamage': [8, 10], '+maxMagicDamage': [12, 14]});
-addPrefix(31, 'Imbued', 'weapon', {'+minMagicDamage': [14, 16], '+maxMagicDamage': [20, 22]});
-addPrefix(46, 'Sorcerer\'s', 'weapon', {'+minMagicDamage': [20, 22], '+maxMagicDamage': [26, 28]});
-addPrefix(61, 'Diabolic', 'weapon', {'+minMagicDamage': [25, 30], '+maxMagicDamage': [30, 35]});
+addPrefix(1, 'Strong', 'weapon', {'+minWeaponPhysicalDamage': 1, '+maxWeaponPhysicalDamage': 2});
+addPrefix(5, 'Brutal', 'weapon', {'+minWeaponPhysicalDamage': [4,6], '+maxWeaponPhysicalDamage': [8,10]});
+addPrefix(15, 'Fierce', 'weapon', {'+minWeaponPhysicalDamage': [12, 14], '+maxWeaponPhysicalDamage': [20, 22]});
+addPrefix(30, 'Savage', 'weapon', {'+minWeaponPhysicalDamage': [22, 24], '+maxWeaponPhysicalDamage': [30, 32]});
+addPrefix(45, 'Cruel', 'weapon', {'+minWeaponPhysicalDamage': [32, 34], '+maxWeaponPhysicalDamage': [40, 42]});
+addPrefix(60, 'Bloody', 'weapon', {'+minWeaponPhysicalDamage': [35, 40], '+maxWeaponPhysicalDamage': [45, 50]});
 
-addPrefix(7, 'Angry', 'weapon', {'*damage': [102, 105, 100]});
-addPrefix(17, 'Irate', 'weapon', {'*damage': [106, 112, 100]});
-addPrefix(27, 'Infuriated', 'weapon', {'*damage': [113, 120, 100]});
-addPrefix(37, 'Seething', 'weapon', {'*damage': [121, 129, 100]});
-addPrefix(47, 'Enraged', 'weapon', {'*damage': [130, 139, 100]});
-addPrefix(67, 'Wrathful', 'weapon', {'*damage': [140, 150, 100]});
+addPrefix(1, 'Priest\'s', 'weapon', {'+minWeaponMagicDamage': 1, '+maxWeaponMagicDamage': 2});
+addPrefix(6, 'Magic', 'weapon', {'+minWeaponMagicDamage': [2,3], '+maxWeaponMagicDamage': [6,8]});
+addPrefix(16, 'Wizard\'s', 'weapon', {'+minWeaponMagicDamage': [8, 10], '+maxWeaponMagicDamage': [12, 14]});
+addPrefix(31, 'Imbued', 'weapon', {'+minWeaponMagicDamage': [14, 16], '+maxWeaponMagicDamage': [20, 22]});
+addPrefix(46, 'Sorcerer\'s', 'weapon', {'+minWeaponMagicDamage': [20, 22], '+maxWeaponMagicDamage': [26, 28]});
+addPrefix(61, 'Diabolic', 'weapon', {'+minWeaponMagicDamage': [25, 30], '+maxWeaponMagicDamage': [30, 35]});
+
+addPrefix(7, 'Angry', 'weapon', {'*weaponDamage': [102, 105, 100]});
+addPrefix(17, 'Irate', 'weapon', {'*weaponDamage': [106, 112, 100]});
+addPrefix(27, 'Infuriated', 'weapon', {'*weaponDamage': [113, 120, 100]});
+addPrefix(37, 'Seething', 'weapon', {'*weaponDamage': [121, 129, 100]});
+addPrefix(47, 'Enraged', 'weapon', {'*weaponDamage': [130, 139, 100]});
+addPrefix(67, 'Wrathful', 'weapon', {'*weaponDamage': [140, 150, 100]});
 
 addPrefix(1, 'Brisk', 'weapon', {'%attackSpeed': [3, 6, 100]});
 addPrefix(4, 'Swift', 'weapon', {'%attackSpeed': [7, 12, 100]});
@@ -127,23 +131,23 @@ addPrefix(10, 'Gifted', 'clothArmor', {'%intelligence': [10, 30, 1000]});
 addPrefix(40, 'Brilliant', 'clothArmor', {'%intelligence': [40, 60, 1000]});
 addPrefix(80, 'Unsurpassed', 'clothArmor', {'%intelligence': [80, 100, 1000]});
 
-addPrefix(2, 'Damaging', 'basicHolder', {'%physicalDamage': [10, 15, 100]});
-addPrefix(20, 'Harmful', 'basicHolder', {'%pyshicalDamage': [30, 50, 100]});
-addPrefix(40, 'Injurious', 'basicHolder', {'%physicalDamage': [60, 80, 100]});
+addPrefix(2, 'Damaging', basicHolders, {'%weaponPhysicalDamage': [10, 15, 100]});
+addPrefix(20, 'Harmful', basicHolders, {'%pyshicalDamage': [30, 50, 100]});
+addPrefix(40, 'Injurious', basicHolders, {'%weaponPhysicalDamage': [60, 80, 100]});
 
-addPrefix(2, 'Sparkling', 'basicMagicHolder', {'%magicDamage': [10, 15, 100]});
-addPrefix(20, 'Glowing', 'basicMagicHolder', {'%magicDamage': [30, 50, 100]});
-addPrefix(40, 'Blinding', 'basicMagicHolder', {'%magicDamage': [60, 80, 100]});
+addPrefix(2, 'Sparkling', 'choker', {'%weaponMagicDamage': [10, 15, 100]});
+addPrefix(20, 'Glowing', 'choker', {'%weaponMagicDamage': [30, 50, 100]});
+addPrefix(40, 'Blinding', 'choker', {'%weaponMagicDamage': [60, 80, 100]});
 
-addPrefix(20, 'Vicious', 'holder', {'%physicalDamage': [40, 60, 100]});
-addPrefix(40, 'Malicious', 'holder', {'%physicalDamage': [70, 90, 100]});
-addPrefix(60, 'Atrocious', 'holder', {'%physicalDamage': [100, 120, 100]});
-addPrefix(80, 'Inhuman', 'holder', {'%physicalDamage': [130, 150, 100]});
+addPrefix(20, 'Vicious', holders, {'%weaponPhysicalDamage': [40, 60, 100]});
+addPrefix(40, 'Malicious', holders, {'%weaponPhysicalDamage': [70, 90, 100]});
+addPrefix(60, 'Atrocious', holders, {'%weaponPhysicalDamage': [100, 120, 100]});
+addPrefix(80, 'Inhuman', holders, {'%weaponPhysicalDamage': [130, 150, 100]});
 
-addPrefix(20, 'Creative', 'magicHolder', {'%magicDamage': [40, 60, 100]});
-addPrefix(40, 'Innovative', 'magicHolder', {'%magicDamage': [70, 90, 100]});
-addPrefix(60, 'Inspired', 'magicHolder', {'%magicDamage': [100, 120, 100]});
-addPrefix(80, 'Visionary', 'magicHolder', {'%magicDamage': [130, 150, 100]});
+addPrefix(20, 'Creative', magicHolders, {'%weaponMagicDamage': [40, 60, 100]});
+addPrefix(40, 'Innovative', magicHolders, {'%weaponMagicDamage': [70, 90, 100]});
+addPrefix(60, 'Inspired', magicHolders, {'%weaponMagicDamage': [100, 120, 100]});
+addPrefix(80, 'Visionary', magicHolders, {'%weaponMagicDamage': [130, 150, 100]});
 
 addSuffix(3, 'Range', 'ranged', {'+range': [5, 10, 10]});
 addSuffix(13, 'The Owl', 'ranged', {'+range': [11, 15, 10]});
@@ -245,29 +249,29 @@ addSuffix(5, 'Insight', 'clothArmor', {'+intelligence': [3, 6]});
 addSuffix(25, 'Comprehension', 'clothArmor', {'+intelligence': [10, 20]});
 addSuffix(55, 'Genius', 'clothArmor', {'+intelligence': [30, 40]});
 
-addSuffix(2, 'Irritation', 'basicHolder', {'+physicalDamage': [3, 5]});
-addSuffix(10, 'Discomfort', 'basicHolder', {'+physicalDamage': [10, 15]});
-addSuffix(20, 'Misery', 'basicHolder', {'+physicalDamage': [20, 30]});
-addSuffix(30, 'Torture', 'basicHolder', {'+physicalDamage': [30, 40]});
-addSuffix(40, 'Laceration', 'basicHolder', {'+physicalDamage': [40, 50]});
-addSuffix(50, 'Flaying', 'basicHolder', {'+physicalDamage': [50, 60]});
+addSuffix(2, 'Irritation', basicHolders, {'+weaponPhysicalDamage': [3, 5]});
+addSuffix(10, 'Discomfort', basicHolders, {'+weaponPhysicalDamage': [10, 15]});
+addSuffix(20, 'Misery', basicHolders, {'+weaponPhysicalDamage': [20, 30]});
+addSuffix(30, 'Torture', basicHolders, {'+weaponPhysicalDamage': [30, 40]});
+addSuffix(40, 'Laceration', basicHolders, {'+weaponPhysicalDamage': [40, 50]});
+addSuffix(50, 'Flaying', basicHolders, {'+weaponPhysicalDamage': [50, 60]});
 
-addSuffix(2, 'Tingling', 'basicMagicHolder', {'+magicDamage': [1, 2]});
-addSuffix(10, 'Smoking', 'basicMagicHolder', {'+magicDamage': [5, 7]});
-addSuffix(20, 'Simmering', 'basicMagicHolder', {'+magicDamage': [10, 15]});
-addSuffix(30, 'Burning', 'basicMagicHolder', {'+magicDamage': [15, 20]});
-addSuffix(40, 'Crackling', 'basicMagicHolder', {'+magicDamage': [20, 25]});
-addSuffix(50, 'Blazing', 'basicMagicHolder', {'+magicDamage': [25, 30]});
+addSuffix(2, 'Tingling', 'choker', {'+weaponMagicDamage': [1, 2]});
+addSuffix(10, 'Smoking', 'choker', {'+weaponMagicDamage': [5, 7]});
+addSuffix(20, 'Simmering', 'choker', {'+weaponMagicDamage': [10, 15]});
+addSuffix(30, 'Burning', 'choker', {'+weaponMagicDamage': [15, 20]});
+addSuffix(40, 'Crackling', 'choker', {'+weaponMagicDamage': [20, 25]});
+addSuffix(50, 'Blazing', 'choker', {'+weaponMagicDamage': [25, 30]});
 
-addSuffix(20, 'Barbarism', 'holder', {'+physicalDamage': [40, 60]});
-addSuffix(40, 'Savagery', 'holder', {'+physicalDamage': [60, 100]});
-addSuffix(60, 'Brutality', 'holder', {'+physicalDamage': [100, 150]});
-addSuffix(80, 'Death', 'holder', {'+physicalDamage': [150, 200]});
+addSuffix(20, 'Barbarism', holders, {'+weaponPhysicalDamage': [40, 60]});
+addSuffix(40, 'Savagery', holders, {'+weaponPhysicalDamage': [60, 100]});
+addSuffix(60, 'Brutality', holders, {'+weaponPhysicalDamage': [100, 150]});
+addSuffix(80, 'Death', holders, {'+weaponPhysicalDamage': [150, 200]});
 
-addSuffix(20, 'Ravaging', 'magicHolder', {'+magicDamage': [20, 30]});
-addSuffix(40, 'Destruction', 'magicHolder', {'+magicDamage': [30, 50]});
-addSuffix(60, 'Eradication', 'magicHolder', {'+magicDamage': [50, 75]});
-addSuffix(80, 'Disintegration', 'magicHolder', {'+magicDamage': [75, 100]});
+addSuffix(20, 'Ravaging', magicHolders, {'+weaponMagicDamage': [20, 30]});
+addSuffix(40, 'Destruction', magicHolders, {'+weaponMagicDamage': [30, 50]});
+addSuffix(60, 'Eradication', magicHolders, {'+weaponMagicDamage': [50, 75]});
+addSuffix(80, 'Disintegration', magicHolders, {'+weaponMagicDamage': [75, 100]});
 
 addSuffix(1, 'Minor Strength', accessorySlots, {'+strength': [3, 6]});
 addSuffix(1, 'Minor Dexterity', accessorySlots, {'+dexterity': [3, 6]});
@@ -343,8 +347,7 @@ function matchingAffixes(list, item, alreadyUsed) {
 function affixMatchesItem(baseItem, affix) {
     var tags = ifdefor(affix.tags, []);
     tags = Array.isArray(tags) ? tags : [tags];
-    if (!tags.length) return true;
-    for (var tag of tags) if (baseItem.tags[tag]) return true;
+    for (var tag of tags) if (tag === baseItem.key || baseItem.tags[tag]) return true;
     return false;
 }
 $('.js-resetEnchantments').on('click', resetItem);

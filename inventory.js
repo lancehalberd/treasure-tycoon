@@ -476,7 +476,6 @@ function addItem(level, data) {
     }
     data.tags[data.slot] = true;
     data.tags[data.type] = true;
-    data.tags[key] = true;
     items[level] = ifdefor(items[level], []);
     itemsBySlotAndLevel[data.slot][level] = ifdefor(itemsBySlotAndLevel[data.slot][level], []);
     data.level = level;

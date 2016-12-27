@@ -22,7 +22,7 @@ function parseBonus(bonusKeyString, bonusValue) {
         stats = ['minWeaponPhysicalDamage', 'maxWeaponPhysicalDamage'];
     } else if (stat === 'weaponMagicDamage') {
         stats = ['minWeaponMagicDamage', 'maxWeaponMagicDamage'];
-    } {
+    } else {
         stats = [stat];
     }
     var statDependencies = getStatDependencies(bonusValue, {});
