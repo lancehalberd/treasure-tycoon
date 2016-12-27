@@ -7,15 +7,15 @@ addItem(4, {'slot': 'back', 'type': 'amulet', 'restrictions': ['magic'], 'name':
 addItem(15, {'slot': 'back', 'type': 'cloak', 'name': 'Travelers Cloak', 'bonuses': {'+evasion': 10}, icon: 'cloak'});
 addItem(16, {'slot': 'back', 'type': 'cloak', 'name': 'Fur Cloak', 'bonuses': {'+block': 10}, icon: 'cloak'});
 addItem(17, {'slot': 'back', 'type': 'cloak', 'name': 'Plated Cloak', 'bonuses': {'+armor': 10}, icon: 'cloak'});
-addItem(21, {'slot': 'back', 'type': 'quiver', 'name': 'Neverending Quiver', 'bonuses': {'+minPhysicalDamage': 130, '+maxPhysicalDamage': 150}, icon: 'quiver'});
-addItem(22, {'slot': 'back', 'type': 'sheath', 'name': 'Runed Scabbard', 'bonuses': {'+minPhysicalDamage': 50, '+maxPhysicalDamage': 75}, icon: 'scabbard'});
-addItem(23, {'slot': 'back', 'type': 'bandolier', 'name': 'Bandolier', 'bonuses':{'+minPhysicalDamage': 55, '+maxPhysicalDamage': 80}, icon: 'quiver'});
-addItem(24, {'slot': 'back', 'type': 'baldric', 'name': 'Heavy Baldric', 'bonuses': {'+minPhysicalDamage': 75, '+maxPhysicalDamage': 120}, icon: 'scabbard'});
-addItem(25, {'slot': 'back', 'type': 'amulet', 'name': 'Runed Amulet', 'bonuses': {'+minMagicDamage': 25, '+maxMagicDamage': 40}, icon: 'amulet'});
-addItem(26,{'slot': 'back', 'type': 'sheath', 'name': 'Etched Sheath', 'bonuses':{'+minPhysicalDamage': 45, '+maxPhysicalDamage': 70}, icon: 'scabbard'});
-addItem(27, {'slot': 'back', 'type': 'sheath', 'name': 'Cover', 'bonuses':{'+minPhysicalDamage': 120, '+maxPhysicalDamage': 150}, icon: 'scabbard'});
-addItem(28, {'slot': 'back', 'type': 'sheath', 'name': 'Large Scabbard', 'bonuses':{'+minPhysicalDamage': 110, '+maxPhysicalDamage': 135}, icon: 'scabbard'});
-addItem(29, {'slot': 'back', 'type': 'amulet', 'name': 'Heavy Amulet', 'bonuses': {'+minMagicDamage': 40, '+maxMagicDamage': 60}, icon: 'amulet'});
+addItem(21, {'slot': 'back', 'type': 'quiver', 'restrictions': ['bow'], 'name': 'Neverending Quiver', 'bonuses': {'+minPhysicalDamage': 130, '+maxPhysicalDamage': 150}, icon: 'quiver'});
+addItem(22, {'slot': 'back', 'type': 'sheath', 'restrictions': ['sword'], 'name': 'Runed Scabbard', 'bonuses': {'+minPhysicalDamage': 50, '+maxPhysicalDamage': 75}, icon: 'scabbard'});
+addItem(23, {'slot': 'back', 'type': 'bandolier', 'restrictions': ['throwing'], 'name': 'Bandolier', 'bonuses':{'+minPhysicalDamage': 55, '+maxPhysicalDamage': 80}, icon: 'quiver'});
+addItem(24, {'slot': 'back', 'type': 'baldric', 'restrictions': ['axe'], 'name': 'Heavy Baldric', 'bonuses': {'+minPhysicalDamage': 75, '+maxPhysicalDamage': 120}, icon: 'scabbard'});
+addItem(25, {'slot': 'back', 'type': 'amulet', 'restrictions': ['wand'], 'name': 'Runed Amulet', 'bonuses': {'+minMagicDamage': 25, '+maxMagicDamage': 40}, icon: 'amulet'});
+addItem(26,{'slot': 'back', 'type': 'sheath', 'restrictions': ['dagger'], 'name': 'Etched Sheath', 'bonuses':{'+minPhysicalDamage': 45, '+maxPhysicalDamage': 70}, icon: 'scabbard'});
+addItem(27, {'slot': 'back', 'type': 'sheath', 'restrictions': ['polearm'], 'name': 'Cover', 'bonuses':{'+minPhysicalDamage': 120, '+maxPhysicalDamage': 150}, icon: 'scabbard'});
+addItem(28, {'slot': 'back', 'type': 'sheath', 'restrictions': ['greatsword'], 'name': 'Large Scabbard', 'bonuses':{'+minPhysicalDamage': 110, '+maxPhysicalDamage': 135}, icon: 'scabbard'});
+addItem(29, {'slot': 'back', 'type': 'amulet', 'restrictions': ['staff'], 'name': 'Heavy Amulet', 'bonuses': {'+minMagicDamage': 40, '+maxMagicDamage': 60}, icon: 'amulet'});
 
 //Rings
 addItem(1, {'slot': 'ring', 'type': 'ring', 'name': 'Iron Band', 'bonuses': {'+minWeaponPhysicalDamage': 2, '+maxWeaponPhysicalDamage': 4}, icon: 'band'});
