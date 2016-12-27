@@ -24,10 +24,10 @@ function updateDamageInfo(character, $statsPanel, monsterLevel) {
 
     var sections = [];
     if (attack.minPhysicalDamage) {
-        sections.push('Physical damage ' + attack.minPhysicalDamage.format(1) + ' - ' + attack.maxPhysicalDamage.format(1));
+        sections.push('Physical damage ' + attack.minPhysicalDamage.format(1).abbreviate() + ' - ' + attack.maxPhysicalDamage.format(1).abbreviate());
     }
     if (attack.minMagicDamage) {
-        sections.push('Magic damage ' + attack.minMagicDamage.format(1) + ' - ' + attack.maxMagicDamage.format(1));
+        sections.push('Magic damage ' + attack.minMagicDamage.format(1).abbreviate() + ' - ' + attack.maxMagicDamage.format(1).abbreviate());
     }
     if (ifdefor(attack.cooldown)) {
         sections.push('Can be used once every' + attack.cooldown.format(1) + ' seconds');
@@ -39,18 +39,18 @@ function updateDamageInfo(character, $statsPanel, monsterLevel) {
         sections.push('');
         sections.push(attack.critChance.percent(1) + ' chance to crit for:');
         if (attack.minPhysicalDamage) {
-            sections.push('Physical damage ' + (attack.minPhysicalDamage * (1 + attack.critDamage)).format(1) + ' - ' + (attack.maxPhysicalDamage * (1 + attack.critDamage)).format(1));
+            sections.push('Physical damage ' + (attack.minPhysicalDamage * (1 + attack.critDamage)).format(1).abbreviate() + ' - ' + (attack.maxPhysicalDamage * (1 + attack.critDamage)).format(1).abbreviate());
         }
         if (attack.minMagicDamage) {
-            sections.push('Magic damage ' + (attack.minMagicDamage * (1 + attack.critDamage)).format(1) + ' - ' + (attack.maxMagicDamage * (1 + attack.critDamage)).format(1));
+            sections.push('Magic damage ' + (attack.minMagicDamage * (1 + attack.critDamage)).format(1).abbreviate() + ' - ' + (attack.maxMagicDamage * (1 + attack.critDamage)).format(1).abbreviate());
         }
         sections.push((attack.accuracy * (1 + attack.critAccuracy)).format(1) + ' accuracy');
     }
     sections.push('');
     if (rawPhysicalDPS && rawMagicDPS) {
-        sections.push('Total Average DPS is ' +  (rawPhysicalDPS + rawMagicDPS).format(1) + '(' + rawPhysicalDPS.format(1) + ' physical + ' + rawMagicDPS.format(1) + ' magic)');
+        sections.push('Total Average DPS is ' +  (rawPhysicalDPS + rawMagicDPS).format(1).abbreviate() + '(' + rawPhysicalDPS.format(1).abbreviate() + ' physical + ' + rawMagicDPS.format(1).abbreviate() + ' magic)');
     } else {
-        sections.push('Total Average DPS is ' + (rawPhysicalDPS + rawMagicDPS).format(1));
+        sections.push('Total Average DPS is ' + (rawPhysicalDPS + rawMagicDPS).format(1).abbreviate());
     }
 
     // Expected damage against an 'average' monster of the adventurer's level.
@@ -81,12 +81,12 @@ function updateDamageInfo(character, $statsPanel, monsterLevel) {
     sections.push('');
     sections.push('Expected hit rate is ' + hitPercent.percent(1));
     if (attack.minPhysicalDamage && attack.minMagicDamage) {
-        sections.push('Total Expected DPS is ' + (expectedPhysicalDPS + expectedMagicDPS).format(1) + '(' + expectedPhysicalDPS.format(1) + ' physical + ' + expectedMagicDPS.format(1) + ' magic)');
+        sections.push('Total Expected DPS is ' + (expectedPhysicalDPS + expectedMagicDPS).format(1).abbreviate() + '(' + expectedPhysicalDPS.format(1).abbreviate() + ' physical + ' + expectedMagicDPS.format(1).abbreviate() + ' magic)');
     } else {
-        sections.push('Total Expected DPS is ' + (expectedPhysicalDPS + expectedMagicDPS).format(1));
+        sections.push('Total Expected DPS is ' + (expectedPhysicalDPS + expectedMagicDPS).format(1).abbreviate());
     }
     var $damage =  $statsPanel.find('.js-damage');
-    $damage.text((expectedPhysicalDPS + expectedMagicDPS).format(1));
+    $damage.text((expectedPhysicalDPS + expectedMagicDPS).format(1).abbreviate());
     $damage.parent().attr('helptext', sections.join('<br/>'));
 
     attack = getBasicAttack(dummy);
@@ -212,6 +212,7 @@ function performAttack(attacker, attack, target) {
     var attackStats = createAttackStats(attacker, attack, target);
     attacker.health -= attackStats.healthSacrificed;
     attacker.attackCooldown = attacker.time + 1 / (attackStats.attack.attackSpeed * Math.max(.1, (1 - attacker.slow)));
+    attacker.moveCooldown = attacker.time + .2;
     attacker.attackFrame = 0;
     performAttackProper(attackStats, target);
     return attackStats;
@@ -220,6 +221,7 @@ function castSpell(attacker, spell, target) {
     var attackStats = createSpellStats(attacker, spell, target);
     attacker.health -= attackStats.healthSacrificed;
     attacker.attackCooldown = attacker.time + .2;
+    attacker.moveCooldown = attacker.time + .2;
     attacker.attackFrame = 0;
     performAttackProper(attackStats, target);
     attacker.stunned = attacker.time + .3;

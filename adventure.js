@@ -30,7 +30,6 @@ function startArea(character, index) {
     character.allies = [character.adventurer];
     character.adventurer.allies = character.allies;
     character.adventurer.enemies = character.enemies;
-    character.adventurer.desiredTarget = null;
     character.treasurePopups = [];
     character.textPopups = [];
     character.timeStopEffect = null;
@@ -265,20 +264,21 @@ function moveActor(actor, delta) {
     if (actor.target && actor.target.pull) {
         actor.target = null;
     }
-    if (actor.isDead || actor.stunned || actor.pull || ifdefor(actor.stationary)) {
+    if (actor.isDead || actor.stunned || actor.pull || ifdefor(actor.stationary) || actor.moveCooldown > actor.time) {
         return;
     }
-    actor.desiredTarget = null;
-    var bestDistance = 10000;
-    actor.enemies.forEach(function (target) {
-        if (target.isDead) return;
-        var distance = getDistance(actor, target);
-        if (distance < bestDistance) {
-            bestDistance = distance;
-            actor.desiredTarget = target;
-        }
-    });
-    var goalTarget = actor.target || actor.desiredTarget;
+    var goalTarget = actor.target;
+    if (!goalTarget) {
+        var bestDistance = 10000;
+        actor.enemies.forEach(function (target) {
+            if (target.isDead) return;
+            var distance = getDistance(actor, target);
+            if (distance < bestDistance) {
+                bestDistance = distance;
+                goalTarget = target;
+            }
+        });
+    }
     if (goalTarget) {
         actor.direction = (goalTarget.x < actor.x) ? -1 : 1;
     } else {
@@ -299,10 +299,11 @@ function moveActor(actor, delta) {
     }
     // If the character is closer than they need to be to auto attack then they can back away f
     if (goalTarget && !goalTarget.cloaked) {
+        var basicAttackRange = getBasicAttack(actor).range;
         var distanceToTarget = getDistanceOverlap(actor, goalTarget);
-        if (distanceToTarget < (actor.weaponRange - 1.5) * 32) {
+        if (distanceToTarget < (basicAttackRange - 1.5) * 32) {
             speedBonus *= -.25;
-        } else if (distanceToTarget <= actor.weaponRange * 32) {
+        } else if (distanceToTarget <= basicAttackRange * 32) {
             speedBonus = 0;
         }
     }
@@ -442,7 +443,7 @@ function runActorLoop(character, actor) {
         return A.priority - B.priority;
     });
     // Don't choose a new target until
-    if (ifdefor(actor.attackCooldown, 0) > actor.time) {
+    if (!(!actor.target || actor.target.isDead) && ifdefor(actor.attackCooldown, 0) > actor.time) {
         return;
     }
     actor.target = null;

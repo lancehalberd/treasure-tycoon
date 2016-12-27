@@ -13,9 +13,10 @@ var allActorVariables = {
     'healthRegen': '.',
     'speed': '.',
     'magicPower': '.',
-    // These are only used to calculate magicPower. The damage values actually used are put directly on actions.
-    'minMagicDamage': '.', 'maxMagicDamage': '.',
-    // This is not used directly, but is included as a factor in any skills based on the range of equipped weapon.
+    // These stats are used as input into the actual range/damage stats on abilities/attacks.
+    // For example spells use magicPower as input to damage, which is intelligence + average weaponMagicDamage.
+    'minWeaponPhysicalDamage': '.', 'maxWeaponPhysicalDamage': '.',
+    'minWeaponMagicDamage': '.', 'maxWeaponMagicDamage': '.',
     'weaponRange': '.',
     // defensive stats
     'evasion': '.',
@@ -108,7 +109,11 @@ var coreStatBonusSource = {'bonuses': {
     '+magic:magicDamage': ['{intelligence}', '/', 10],
     '&maxHealth': '{bonusMaxHealth}',
     '+healthRegen': ['{maxHealth}', '/', 50],
-    '+magicPower': ['{intelligence}', '+', [['{minMagicDamage}', '+' ,'{maxMagicDamage}'], '/', 2]],
+    '+magicPower': ['{intelligence}', '+', [['{minWeaponMagicDamage}', '+' ,'{maxWeaponMagicDamage}'], '/', 2]],
+    '+minPhysicalDamage': '{minWeaponPhysicalDamage}',
+    '+maxPhysicalDamage': '{maxWeaponPhysicalDamage}',
+    '+minMagicDamage': '{minWeaponMagicDamage}',
+    '+maxMagicDamage': '{maxWeaponMagicDamage}',
     // All sprites are drawn at half size at the moment.
     '+scale': 2,
     '$lifeBarColor': 'red'
@@ -135,6 +140,7 @@ function initializeActorForAdventure(actor) {
     actor.isDead = false;
     actor.timeOfDeath = undefined;
     actor.attackCooldown = 0;
+    actor.moveCooldown = 0;
     actor.attackFrame = 0;
     actor.target = null;
     actor.slow = 0;
@@ -166,7 +172,7 @@ function refreshStatsPanel(character, $statsPanel) {
     $statsPanel.find('.js-strength').text(adventurer.strength.format(0));
     $statsPanel.find('.js-intelligence').text(adventurer.intelligence.format(0));
     $('.js-global-divinity').text(character.divinity.abbreviate());
-    $statsPanel.find('.js-maxHealth').text(adventurer.maxHealth.format(0));
+    $statsPanel.find('.js-maxHealth').text(adventurer.maxHealth.format(0).abbreviate());
     if (adventurer.actions.length) {
         $statsPanel.find('.js-range').text(getBasicAttack(adventurer).range.format(2));
     }
@@ -532,9 +538,9 @@ function actorHelpText(actor) {
     for (var suffix of ifdefor(actor.suffixes, [])) suffixNames.push(suffix.base.name);
     if (prefixNames.length) name = prefixNames.join(', ') + ' ' + name;
     if (suffixNames.length) name = name + ' of ' + suffixNames.join(' and ');
-    var sections = [name + ' ' + Math.ceil(actor.health) + '/' + Math.ceil(actor.maxHealth)];
+    var sections = [name + ' ' + Math.ceil(actor.health).abbreviate() + '/' + Math.ceil(actor.maxHealth).abbreviate()];
     if (actor.reflectBarrier > 0) {
-        sections.push('Reflect: ' + actor.reflectBarrier.format(0));
+        sections.push('Reflect: ' + actor.reflectBarrier.format(0).abbreviate());
     }
     sections.push('');
     ifdefor(actor.prefixes, []).forEach(function (affix) {

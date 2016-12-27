@@ -14,7 +14,7 @@ var hardBonuses = {'bonuses': {'*maxHealth': 1.3, '*strength': 1.3, '*dexterity'
 // To make bosses intimidating, give them lots of health and damage, but to keep them from being overwhelming,
 // scale down their health regen, attack speed and critical multiplier.
 var bossMonsterBonuses = {'bonuses': {'*maxHealth': [2.5, '+', ['{level}', '/', 2]], '*damage': 2, '*attackSpeed': .75, '*critDamage': .5, '*critChance': .5, '*evasion': .5,
-                            '*healthRegen': .3, '+coins': 2, '*coins': 4, '+anima': 1, '*anima': 4,
+                            '*healthRegen': [1, '/', [1.5, '+', ['{level}', '/', 2]]], '+coins': 2, '*coins': 4, '+anima': 1, '*anima': 4,
                             '$uncontrollable': 'Cannot be controlled.', '$tint': 'red', '$tintMinAlpha': 0.2, '$tintMaxAlpha': 0.5}};
 var monsterPrefixes = [
     [
@@ -22,7 +22,7 @@ var monsterPrefixes = [
         {'name': 'Giant', 'bonuses': {'*maxHealth': 2, '*scale': 1.3}}
     ],
     [
-        {'name': 'Eldritch', 'bonuses': {'+magicDamage': [1, 2], '*magicDamage': [2, 3]}}
+        {'name': 'Eldritch', 'bonuses': {'+weaponMagicDamage': [1, 2], '*weaponMagicDamage': [2, 3]}}
     ],
     [
         {'name': 'Telekenetic', 'bonuses': {'+range': [3, 5]}}
@@ -205,10 +205,10 @@ function getMonsterBonuses(monster) {
         // Health scales linearly to level 10, then 10% a level.
         '+maxHealth': (growth <= 10) ? (10 + 20 * growth) : 200 * Math.pow(1.1, growth - 10),
         '+range': 1,
-        '+minPhysicalDamage': Math.round(.9 * (5 + 6 * growth)),
-        '+maxPhysicalDamage': Math.round(1.1 * (5 + 6 * growth)),
-        '+minMagicDamage': Math.round(.9 * (1 + 1.5 * growth)),
-        '+maxMagicDamage': Math.round(1.1 * (1 + 1.5 * growth)),
+        '+minWeaponPhysicalDamage': Math.round(.9 * (5 + 6 * growth)),
+        '+maxWeaponPhysicalDamage': Math.round(1.1 * (5 + 6 * growth)),
+        '+minWeaponMagicDamage': Math.round(.9 * (1 + 1.5 * growth)),
+        '+maxWeaponMagicDamage': Math.round(1.1 * (1 + 1.5 * growth)),
         '+critChance': .05,
         '+critDamage': .5,
         '+critAccuracy': 1,
@@ -239,7 +239,8 @@ function initalizeMonsters() {
     var caterpillarSource = setupActorSource({'image': enemySheet('gfx/caterpillar.png'), 'width': 48,  'height': 24, 'yOffset': 40, frames: 4});
     var gnomeSource = setupActorSource({'image': enemySheet('gfx/gnome.png'), 'width': 32, 'height': 38, 'yOffset': 26, 'flipped': true, frames: 4});
     var skeletonSource = setupActorSource({'image': enemySheet('gfx/skeletonSmall.png'), 'width': 48, 'height': 38, 'yOffset': 26, frames: 7});
-    var butterflySource = setupActorSource({'image': enemySheet('gfx/caterpillar.png'), 'xOffset': 4 * 48, 'width': 48, frames: 4});
+    var butterflySource = setupActorSource({'image': enemySheet('gfx/yellowButterfly.png'), 'width': 64, 'height': 64,
+            framesPerRow: 7, walkFrames: [1, 2, 3, 4, 5, 6, 4, 2, 0], attackFrames: [7, 10, 11, 10], deathFrames: [7, 8, 9, 9]});
     var skeletonGiantSource = setupActorSource({'image': enemySheet('gfx/skeletonGiant.png'), 'width': 48, frames: 7});
     var dragonSource = setupActorSource({'image': enemySheet('gfx/dragonEastern.png'), 'width': 48, 'xCenter': 25, 'yCenter': 48, 'flipped': true, frames: 5});
     var batSource = setupActorSource({'image': enemySheet('gfx/bat.png'), 'width': 32, 'height': 32, 'flipped': true, frames: 5, 'y': 20});
@@ -249,9 +250,11 @@ function initalizeMonsters() {
             framesPerRow: 7, walkFrames: [0, 1, 2, 3], attackFrames: [6, 4, 5, 0], deathFrames: [0, 7, 8, 9]});
     var turtleSource = {'image': enemySheet('gfx/turtle.png'), 'xOffset': 0, 'width': 64, 'height': 64,
             framesPerRow: 5, walkFrames: [0, 1, 2, 3], attackFrames: [5, 6], deathFrames: [5, 7, 8, 9]};
+    var monarchSource = setupActorSource({'image': enemySheet('gfx/monarchButterfly.png'), 'width': 64, 'height': 64,
+            framesPerRow: 7, walkFrames: [1, 2, 3, 4, 5, 6, 4, 2, 0], attackFrames: [7, 10, 11, 10], deathFrames: [7, 8, 9, 9]});
     addMonster('dummy', {
         'name': 'Dummy', 'source': caterpillarSource,
-        'implicitBonuses': {'+magicDamage': 2}
+        'implicitBonuses': {}
     });
     addMonster('turtle', {
         'name': 'Turtle', 'source': turtleSource, 'fpsMultiplier': 2,
@@ -381,27 +384,27 @@ function initalizeMonsters() {
         'abilities': [abilities.blinkStrike, abilities.soulStrike, abilities.majorStrength, abilities.vitality]
     });
     //console.log(JSON.stringify(makeMonster('skeleton', 1)));
-    addMonster('butterfly', {'name': 'Butterfly', 'source': butterflySource,
+    addMonster('butterfly', {'name': 'Butterfly', 'source': butterflySource, 'fpsMultiplier': 4,
         'implicitBonuses': {'*maxHealth': 1.5, '+weaponRange': 4, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5, '*accuracy': 2,
                             '*magicDamage': .4, '*damage': .8,
                             '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
                             '*speed': .8}, 'tags': ['ranged']
     });
-    addMonster('battlefly', {'name': 'Battlefly', 'source': butterflySource,
+    addMonster('battlefly', {'name': 'Battlefly', 'source': butterflySource, 'fpsMultiplier': 4,
         'implicitBonuses': {'*maxHealth': 2, '+weaponRange': 5, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5, '*accuracy': 2,
                             '*magicDamage': 0,
                             '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
                             '*speed': .8}, 'tags': ['ranged'],
         'abilities': [abilities.powerShot, abilities.powerShotKnockback]
     });
-    addMonster('motherfly', {'name': 'Motherfly', 'source': butterflySource,
+    addMonster('motherfly', {'name': 'Motherfly', 'source': monarchSource, 'fpsMultiplier': 4,
         'implicitBonuses': {'+maxHealth': 20, '*maxHealth': 3, '+weaponRange': 5, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5, '*accuracy': 2,
                             '*minPhysicalDamage': .8, '*maxPhysicalDamage': .8, '*attackSpeed': .5, '*magicDamage': .5,
                             '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
                             '*speed': .8}, 'tags': ['ranged'],
         'abilities': [abilities.summonCaterpillar, abilities.summoner]
     });
-    addMonster('lightningBug', {'name': 'Lightning Bug', 'source': butterflySource,
+    addMonster('lightningBug', {'name': 'Lightning Bug', 'source': butterflySource, 'fpsMultiplier': 4,
         'implicitBonuses': {'*maxHealth': 1.5, '+weaponRange': 4, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5, '*accuracy': 2,
                             '*minPhysicalDamage': .8, '*maxPhysicalDamage': .8, '*attackSpeed': .5, '*magicDamage': .5,
                             '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,

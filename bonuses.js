@@ -16,7 +16,13 @@ function parseBonus(bonusKeyString, bonusValue) {
         stats = ['minPhysicalDamage', 'maxPhysicalDamage'];
     } else if (stat === 'magicDamage') {
         stats = ['minMagicDamage', 'maxMagicDamage'];
-    } else {
+    } else if (stat === 'weaponDamage') {
+        stats = ['minWeaponPhysicalDamage', 'maxWeaponPhysicalDamage', 'minWeaponMagicDamage', 'maxWeaponMagicDamage'];
+    } else if (stat === 'weaponPhysicalDamage') {
+        stats = ['minWeaponPhysicalDamage', 'maxWeaponPhysicalDamage'];
+    } else if (stat === 'weaponMagicDamage') {
+        stats = ['minWeaponMagicDamage', 'maxWeaponMagicDamage'];
+    } {
         stats = [stat];
     }
     var statDependencies = getStatDependencies(bonusValue, {});

@@ -164,6 +164,12 @@ var implicitBonusMap = {
     '+minMagicDamage': function (bonusSource, actor) {
         return 'Magic: ' + bonusSource.bonuses['+minMagicDamage'].format(1) + ' to ' + bonusSource.bonuses['+maxMagicDamage'].format(1);
     },
+    '+minWeaponPhysicalDamage': function (bonusSource, actor) {
+        return 'Damage: ' + bonusSource.bonuses['+minWeaponPhysicalDamage'].format(1) + ' to ' + bonusSource.bonuses['+maxWeaponPhysicalDamage'].format(1);
+    },
+    '+minWeaponMagicDamage': function (bonusSource, actor) {
+        return 'Magic: ' + bonusSource.bonuses['+minWeaponMagicDamage'].format(1) + ' to ' + bonusSource.bonuses['+maxWeaponMagicDamage'].format(1);
+    },
     '+weaponRange': 'Range: $1',
     '+range': 'Range: $1',
     '+attackSpeed': 'Attack Speed: $1',
@@ -197,11 +203,20 @@ var bonusMap = {
     '+damage': '+$1 damage',
     '*damage': '$3x damage',
     '%damage': '%1 increased damage',
+    '+weaponDamage': '+$1 damage',
+    '*weaponDamage': '$3x damage',
+    '%weaponDamage': '%1 increased damage',
     '+minPhysicalDamage': function (bonusSource, actor) {
         return bonusSource.bonuses['+minPhysicalDamage'].format(1) + ' to ' + bonusSource.bonuses['+maxPhysicalDamage'].format(1) + ' increased physical damage';
     },
     '+minMagicDamage': function (bonusSource, actor) {
         return bonusSource.bonuses['+minMagicDamage'].format(1) + ' to ' + bonusSource.bonuses['+maxMagicDamage'].format(1) + ' increased magic damage';
+    },
+    '+minWeaponPhysicalDamage': function (bonusSource, actor) {
+        return bonusSource.bonuses['+minWeaponPhysicalDamage'].format(1) + ' to ' + bonusSource.bonuses['+maxWeaponPhysicalDamage'].format(1) + ' increased physical damage';
+    },
+    '+minWeaponMagicDamage': function (bonusSource, actor) {
+        return bonusSource.bonuses['+minWeaponMagicDamage'].format(1) + ' to ' + bonusSource.bonuses['+maxWeaponMagicDamage'].format(1) + ' increased magic damage';
     },
     '+physicalDamage': '+$1 physical damage',
     '*physicalDamage': '$3x physical damage',
@@ -209,6 +224,12 @@ var bonusMap = {
     '+magicDamage': '+$1 magic damage',
     '*magicDamage': '$3x magic damage',
     '%magicDamage': '%1 increased magic damage',
+    '+weaponPhysicalDamage': '+$1 physical damage',
+    '*weaponPhysicalDamage': '$3x physical damage',
+    '%weaponPhysicalDamage': '%1 increased physical damage',
+    '+weaponMagicDamage': '+$1 magic damage',
+    '*weaponMagicDamage': '$3x magic damage',
+    '%weaponMagicDamage': '%1 increased magic damage',
     '+magicPower': '+$1 magic power',
     '*magicPower': '$1x magic power',
     '%magicPower': '%1 increased magic power',
@@ -238,8 +259,10 @@ var bonusMap = {
     '-block': '$1 decreased block',
     '%block': '%1 increased block',
     '+magicBlock': '+$1 magic block',
+    '*magicBlock': '$1x magic block',
     '%magicBlock': '%1 increased magic block',
     '+magicResist': 'Reduces magic damage received by %1',
+    '*magicResist': '$1x magic resist',
     '+maxHealth': '+$1 health',
     '*maxHealth': '$1x health',
     '%maxHealth': '%1 increased health',
