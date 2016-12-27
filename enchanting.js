@@ -361,7 +361,7 @@ function matchingAffixes(list, item, alreadyUsedBonusesKeys) {
     var choices = [];
     for (var level = 0; level <= item.itemLevel && level < list.length; level++) {
         ifdefor(list[level], []).forEach(function (affix) {
-            if (alreadyUsedBonusesKeys[affix.base.bonusesKey] && affixMatchesItem(item.base, affix)) {
+            if (!alreadyUsedBonusesKeys[affix.bonusesKey] && affixMatchesItem(item.base, affix)) {
                 choices.push(affix);
             }
         });
