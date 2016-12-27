@@ -5,7 +5,7 @@ function addPrefix(level, name, tags, bonuses) {
     var affix = {level: level, name:name, tags:tags, bonuses: bonuses, prefix: true};
     prefixes[level] = ifdefor(prefixes[level], []);
     prefixes[level].push(affix);
-    allEnchantments.push(affix)
+    allEnchantments.push(affix);
 }
 var suffixes = [];
 var suffixesByKey = {};
@@ -13,7 +13,7 @@ function addSuffix(level, name, tags, bonuses) {
     var affix = {level: level, name:name, tags:tags, bonuses: bonuses, suffix: true};
     suffixes[level] = ifdefor(suffixes[level], []);
     suffixes[level].push(affix);
-    allEnchantments.push(affix)
+    allEnchantments.push(affix);
 }
 
 var basicHolders = ['simplequiver', 'scabbard', 'wornebaldric'];
@@ -395,7 +395,6 @@ function updateEnchantmentOptions() {
     var prefixes = item.prefixes.length;
     var suffixes = item.suffixes.length;
     var total = prefixes + suffixes;
-    var value = sellValue(item);
     if (total > 0) {
         $('.js-resetEnchantments').toggleClass('disabled', state.coins < resetCost(item))
             .attr('helptext', 'Offer ' + points('coins', resetCost(item)) + ' to remove all enchantments from an item.<br/>This will allow you to enchant it again differently.');
@@ -408,7 +407,7 @@ function updateEnchantmentOptions() {
         $('.js-enchant,.js-imbue').addClass('disabled').attr('helptext', 'This item is unique and cannot be further enchanted.');
         return;
     }
-    if (total == 0) {
+    if (total === 0) {
         $('.js-enchant').toggleClass('disabled', state.anima < enchantCost(item))
             .attr('helptext', 'Offer ' + points('anima', enchantCost(item)) + ' to add up to two magical properties to this item');
         $('.js-imbue').toggleClass('disabled', state.anima < imbueCost(item))
@@ -465,12 +464,12 @@ function enchantItem() {
 function enchantItemProper(item) {
     item.prefixes = [];
     item.suffixes = [];
-    if (Math.random() < .5) {
+    if (Math.random() < 0.5) {
         addPrefixToItem(item);
-        if (Math.random() < .5) addSuffixToItem(item);
+        if (Math.random() < 0.5) addSuffixToItem(item);
     } else {
         addSuffixToItem(item);
-        if (Math.random() < .5) addPrefixToItem(item);
+        if (Math.random() < 0.5) addPrefixToItem(item);
     }
     updateItem(item);
     updateEnchantmentOptions();
@@ -486,12 +485,12 @@ function imbueItemProper(item) {
     item.suffixes = [];
     addPrefixToItem(item);
     addSuffixToItem(item);
-    if (Math.random() < .5) {
+    if (Math.random() < 0.5) {
         addPrefixToItem(item);
-        if (Math.random() < .5) addSuffixToItem(item);
+        if (Math.random() < 0.5) addSuffixToItem(item);
     } else {
         addSuffixToItem(item);
-        if (Math.random() < .5) addPrefixToItem(item);
+        if (Math.random() < 0.5) addPrefixToItem(item);
     }
     updateItem(item);
     updateEnchantmentOptions();
@@ -506,7 +505,7 @@ function augmentItem() {
 }
 function augmentItemProper(item) {
     if (!item.prefixes.length && !item.suffixes.length) {
-        if (Math.random() > .5) {
+        if (Math.random() > 0.5) {
             addPrefixToItem(item);
         } else {
             addSuffixToItem(item);
@@ -520,7 +519,7 @@ function augmentItemProper(item) {
             addPrefixToItem(item);
         } else if (item.prefixes.length == 2) {
             addSuffixToItem(item);
-        } else if (Math.random() > .5) {
+        } else if (Math.random() > 0.5) {
             addPrefixToItem(item);
         } else {
             addSuffixToItem(item);
