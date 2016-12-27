@@ -74,7 +74,8 @@ var mainCanvas, mainContext, jewelsCanvas, jewelsContext, previewContext;
 // Load any graphic assets needed by the game here.
 async.mapSeries([
     // Original images from project contributors:
-    'gfx/person.png', 'gfx/grass.png', 'gfx/cave.png', 'gfx/forest.png', 'gfx/beach.png', 'gfx/town.png',
+    'gfx/personSprite.png', 'gfx/hair.png', 'gfx/equipment.png',
+    'gfx/grass.png', 'gfx/cave.png', 'gfx/forest.png', 'gfx/beach.png', 'gfx/town.png',
     'gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png',
     'gfx/turtle.png', 'gfx/monarchButterfly.png', 'gfx/yellowButterfly.png',
     'gfx/treasureChest.png', 'gfx/moneyIcon.png', 'gfx/projectiles.png',

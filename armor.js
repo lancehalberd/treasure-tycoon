@@ -1,3 +1,17 @@
+var arm = 1;
+var body = head = 0;
+var feet = legs = 2;
+
+function equipmentSource(column, row) {
+    return {'xOffset': column * 32, 'yOffset': row * 64}
+}
+var equipmentSources = {
+    'strawHat': equipmentSource(head, 2),
+    'vest': equipmentSource(body, 3),
+    'shorts': equipmentSource(legs, 2),
+    'sandals': equipmentSource(feet, 3),
+};
+
 //Heavy Helmets gives armor and health
 //addItem(1, {'slot': 'head', 'type': 'heavyArmor', 'name': 'Dented Bucket', 'bonuses': {'+armor': 2, '+maxHealth': 10}, 'offset': 10, icon: 'helmet'});
 addItem(2, {'slot': 'head', 'type': 'heavyArmor', 'name': 'Oversized Helmet', 'bonuses': {'+armor': 5, '+maxHealth': 35}, 'offset': 10, icon: 'helmet'});
@@ -29,7 +43,7 @@ addItem(58, {'slot': 'head', 'type': 'lightArmor', 'name': 'Runed Helmet', 'bonu
 addItem(68, {'slot': 'head', 'type': 'lightArmor', 'name': 'Dragon Helmet', 'bonuses': {'+armor': 80, '+evasion': 120, '+maxHealth': 100, '+block': 10, '+magicBlock': 10}, 'offset': 10, icon: 'featherHat'});
 
 //Hoods gives block and magic block
-addItem(1, {'slot': 'head', 'type': 'clothArmor', 'name': 'Straw Hat', 'bonuses': {'+block': 2, '+magicBlock': 1}, 'offset': 10, icon: 'mageHat'});
+addItem(1, {'slot': 'head', 'type': 'clothArmor', 'name': 'Straw Hat', 'bonuses': {'+block': 2, '+magicBlock': 1}, 'source': equipmentSources.strawHat, icon: 'mageHat'});
 addItem(3, {'slot': 'head', 'type': 'clothArmor', 'name': 'Wool Cap', 'bonuses': {'+block': 10, '+magicBlock': 5}, 'offset': 10, icon: 'mageHat'});
 addItem(7, {'slot': 'head', 'type': 'clothArmor', 'name': 'Winged Cap', 'bonuses': {'+block': 18, '+magicBlock': 9}, 'offset': 10, icon: 'mageHat'});
 addItem(12, {'slot': 'head', 'type': 'clothArmor', 'name': 'Cotten Hood', 'bonuses': {'+block': 26, '+magicBlock': 13}, 'offset': 10, icon: 'mageHat'});
@@ -74,7 +88,7 @@ addItem(62, {'slot': 'body', 'type': 'lightArmor', 'name': 'Runed Armor', 'bonus
 addItem(72, {'slot': 'body', 'type': 'lightArmor', 'name': 'Dragon Armor', 'bonuses': {'+armor': 70, '+evasion': 170, '+maxHealth': 200, '+block': 20, '+magicBlock': 20}, 'offset': 3, icon: 'lightArmor'});
 
 // Cloth Armor gives armor, block and magic block
-addItem(1, {'slot': 'body', 'type': 'clothArmor', 'name': 'Wool Shirt', 'bonuses': {'+armor': 2, '+block': 4, '+magicBlock': 2}, 'offset': 3, icon: 'clothArmor'});
+addItem(1, {'slot': 'body', 'type': 'clothArmor', 'name': 'Wool Shirt', 'bonuses': {'+armor': 2, '+block': 4, '+magicBlock': 2}, 'source': equipmentSources.vest, icon: 'clothArmor'});
 addItem(6, {'slot': 'body', 'type': 'clothArmor', 'name': 'Hemp Frock', 'bonuses': {'+armor': 4, '+block': 10, '+magicBlock': 6}, 'offset': 3, icon: 'clothArmor'});
 addItem(11, {'slot': 'body', 'type': 'clothArmor', 'name': 'Linen Frock', 'bonuses': {'+armor': 7, '+block': 17, '+magicBlock': 11}, 'offset': 3, icon: 'clothArmor'});
 addItem(16, {'slot': 'body', 'type': 'clothArmor', 'name': 'Cotten Frock', 'bonuses': {'+armor': 10, '+block': 24, '+magicBlock': 16}, 'offset': 3, icon: 'clothArmor'});
@@ -164,7 +178,7 @@ addItem(60, {'slot': 'legs', 'type': 'lightArmor', 'name': 'Runed Pants', 'bonus
 addItem(70, {'slot': 'legs', 'type': 'lightArmor', 'name': 'Dragon Pants', 'bonuses': {'+armor': 90, '+evasion': 120, '+maxHealth': 100, '+block': 20, '+magicBlock': 20}, icon: 'pants'});
 
 //Tights gives block and magic block
-addItem(1, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Tattered Shorts', 'bonuses': {'+block': 3, '+magicBlock': 1}, icon: 'tights'});
+addItem(1, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Tattered Shorts', 'bonuses': {'+block': 3, '+magicBlock': 1}, source: equipmentSources.shorts, icon: 'tights'});
 addItem(4, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Hemp Shorts', 'bonuses': {'+block': 11, '+magicBlock': 6}, icon: 'tights'});
 addItem(9, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Linen Shorts', 'bonuses': {'+block': 19, '+magicBlock': 11}, icon: 'tights'});
 addItem(14, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Cotten Shorts', 'bonuses': {'+block': 27, '+magicBlock': 16}, icon: 'tights'});
@@ -209,7 +223,7 @@ addItem(61, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Runed Boots', 'bonus
 addItem(71, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Dragon Boots', 'bonuses': {'+armor': 70, '+evasion': 110,'+maxHealth': 100, '+block': 10, '+magicBlock': 20}, 'offset': 8, icon: 'boots'});
 
 //Sandals/Slippers gives block and magic block
-addItem(1, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Broken Sandals', 'bonuses': {'+block': 1, '+magicBlock': 1, '-speed': 10}, 'offset': 8, icon: 'shoes'});
+addItem(1, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Broken Sandals', 'bonuses': {'+block': 1, '+magicBlock': 1, '-speed': 10}, 'source': equipmentSources.sandals, icon: 'shoes'});
 addItem(5, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Leather Sandals', 'bonuses': {'+block': 5, '+magicBlock': 5, '+speed': 10}, 'offset': 8, icon: 'shoes'});
 addItem(10, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Winged Sandals', 'bonuses': {'+block': 9, '+magicBlock': 9, '+speed': 50}, 'offset': 8, icon: 'shoes'});
 addItem(15, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Cotton Slippers', 'bonuses': {'+block': 13, '+magicBlock': 13, '+speed': 40}, 'offset': 8, icon: 'shoes'});

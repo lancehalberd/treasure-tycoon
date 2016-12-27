@@ -247,14 +247,15 @@ function makeAdventurerFromData(adventurerData) {
             'yCenter': 44, // Measured from the top of the source
             'xCenter': 16,
             'attackY': 30, // Measured from the bottom of the source
-            'walkFrames': [0, 1, 2, 3],
-            'attackFrames': [6, 5, 4, 5]
+            'walkFrames': [0, 1, 0, 2],
+            'attackFrames': [4, 3, 0, 3]
         }),
         'bonuses': [],
         'unlockedAbilities': {},
         'abilities': [],
         'name': adventurerData.name,
-        'hairOffset': adventurerData.hairOffset,
+        'hairOffset': adventurerData.hairOffset % 4,
+        'skinColorOffset': ifdefor(adventurerData.skinColorOffset, Random.range(0, 2)) % 3,
         'level': adventurerData.level,
         'image': personCanvas,
         'personCanvas': personCanvas,
@@ -274,7 +275,8 @@ function makeAdventurerFromJob(job, level, equipment) {
         'jobKey': job.key,
         'level': level,
         'name': Random.element(names),
-        'hairOffset': Random.range(hair[0], hair[1]),
+        'hairOffset': Random.range(0, 3),
+        'skinColorOffset': Random.range(0, 2),
         'equipment': equipment
     });
     $.each(equipment, function (key, item) {
@@ -465,20 +467,42 @@ function updateAdventurerGraphics(adventurer) {
     var hat = adventurer.equipment.head;
     var hideHair = hat ? ifdefor(hat.base.hideHair, false) : false;
     adventurer.personContext.clearRect(0, 0, sectionWidth, 64);
-    for (var i = 0; i < personFrames; i++) {
-        adventurer.personContext.drawImage(images['gfx/person.png'], i * 32, 0 , 32, 64, i * 32, 0, 32, 64);
+    var skinColorYOffset = adventurer.skinColorOffset;
+    var hairYOffset = adventurer.hairOffset;
+    for (var frame = 0; frame < personFrames; frame++) {
+        // Draw the person legs then body then hair then under garment then leg gear then body gear.
+        adventurer.personContext.drawImage(images['gfx/personSprite.png'], frame * 96 + 64, skinColorYOffset * 64 , 32, 64, frame * 32, 0, 32, 64); //legs
+        adventurer.personContext.drawImage(images['gfx/personSprite.png'], frame * 96, skinColorYOffset * 64 , 32, 64, frame * 32, 0, 32, 64); //body
         if (!hideHair) {
-            adventurer.personContext.drawImage(images['gfx/person.png'], i * 32 + adventurer.hairOffset * sectionWidth, 0 , 32, 64, i * 32, 0, 32, 64);
+            adventurer.personContext.drawImage(images['gfx/hair.png'], frame * 96, hairYOffset * 64, 32, 64, frame * 32, 0, 32, 64); //hair
         }
+        // To avoid drawing 'naked' characters, draw an undergarment (black dress?) if they
+        // don't have both a pants and a shirt on.
+        if ((!adventurer.equipment.body || !adventurer.equipment.body.base.source)
+                || (!adventurer.equipment.legs || !adventurer.equipment.legs.base.source)) {
+            adventurer.personContext.drawImage(images['gfx/equipment.png'], frame * 96, 8 * 64 , 32, 64, frame * 32, 0, 32, 64); //undergarment
+        }
+        // leg + body gear
+        for (var subX of [64, 0]) {
+            equipmentSlots.forEach(function (type) {
+                var equipment = adventurer.equipment[type];
+                if (!equipment || !equipment.base.source) return;
+                var source = equipment.base.source;
+                if (source.xOffset !== subX) return;
+                adventurer.personContext.drawImage(images['gfx/equipment.png'], frame * 96 + source.xOffset, source.yOffset, 32, 64, frame * 32, 0, 32, 64);
+            });
+        }
+        // Draw the person arm then arm gear
+        adventurer.personContext.drawImage(images['gfx/personSprite.png'], frame * 96 + 32, skinColorYOffset * 64 , 32, 64, frame * 32, 0, 32, 64); // arm
+        //arm gear
+        equipmentSlots.forEach(function (type) {
+            var equipment = adventurer.equipment[type];
+            if (!equipment || !equipment.base.source) return;
+            var source = equipment.base.source;
+            if (source.xOffset !== 32) return; // don't draw this if it isn't arm gear
+            adventurer.personContext.drawImage(images['gfx/equipment.png'], frame * 96 + source.xOffset, source.yOffset, 32, 64, frame * 32, 0, 32, 64);
+        });
     }
-    equipmentSlots.forEach(function (type) {
-        var equipment = adventurer.equipment[type];
-        if (equipment && equipment.base.offset) {
-            for (var i = 0; i < personFrames; i++) {
-                adventurer.personContext.drawImage(images['gfx/person.png'], i * 32 + equipment.base.offset * sectionWidth, 0 , 32, 64, i * 32, 0, 32, 64);
-            }
-        }
-    });
 }
 function recomputActorTags(actor) {
     var tags = {'actor': true};

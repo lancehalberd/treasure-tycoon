@@ -99,7 +99,7 @@ function drawActor(actor) {
         var deathFps = 1.5 * source.deathFrames.length;
         frame = Math.min(source.deathFrames.length - 1, Math.floor((actor.time - actor.timeOfDeath) * deathFps));
         frame = arrMod(source.deathFrames, frame);
-    } else if (actor.target && actor.lastAction && actor.lastAction.attackSpeed) { // attacking loop
+    } else if ((actor.target || actor.time < actor.moveCooldown) && actor.lastAction && actor.lastAction.attackSpeed) { // attacking loop
         frame = arrMod(source.attackFrames, Math.floor(actor.attackFrame));
     } else {
         frame = arrMod(source.walkFrames, Math.floor(actor.walkFrame));
