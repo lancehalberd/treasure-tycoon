@@ -229,7 +229,7 @@ var skills = {
                         '+areaCoefficient': 1, '+cooldown': 20, '$alwaysHits': 'Never misses',
                         '$debuff': debuffEffect({}, {'++damageOverTime': ['{magicPower}', '/', 10], '+%healthRegen': -0.01, '$duration': 'forever'})},
                         'Apply a permanent debuff that deals damage over time to effected enemies.'),
-    'stopTime': spellAction('stop', {'icon': 'gfx/496RpgIcons/clock.png', }, {'+duration': [1, '+', ['{magicPower}' , '/', '50']], '+cooldown': 120},
+    'stopTime': spellAction('stop', {'icon': 'gfx/496RpgIcons/clock.png', }, {'+duration': [1, '+', ['{magicPower}' , '/', '200']], '+cooldown': 120},
                 'If an attack would deal more than half of your remaining life, negate it and cast a spell that stops time for everyone else.'),
     'dispell': spellAction('spell', {'tags': ['blast'], 'height': 20, 'color': 'grey', 'alpha': .4},
                     {'+range': 10, '+area': [8, '+', ['{magicPower}', '/', '100']], '+cooldown': 15,
