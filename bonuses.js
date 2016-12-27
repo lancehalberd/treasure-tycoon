@@ -341,6 +341,9 @@ function recomputeStat(object, statKey) {
 }
 function setStat(object, statKey, newValue) {
     delete object.dirtyStats[statKey];
+    if (typeof newValue === 'number' && newValue > 1000000000000) {
+        newValue = 1000000000000;
+    }
     var oldValue = object[statKey];
     if (oldValue === newValue) return;
     // If the old value was a variable child, remove it since it is either gone or
