@@ -442,11 +442,15 @@ function runActorLoop(character, actor) {
     targets.sort(function (A, B) {
         return A.priority - B.priority;
     });
-    // Don't choose a new target until
-    if (!(!actor.target || actor.target.isDead) && ifdefor(actor.attackCooldown, 0) > actor.time) {
+    var attackIsOnCooldown = ifdefor(actor.attackCooldown, 0) > actor.time;
+    // Don't choose a new target until they are dead or basic attack cooldown is up.
+    if (!(!actor.target || actor.target.isDead) && attackIsOnCooldown) {
         return;
     }
     actor.target = null;
+    if (attackIsOnCooldown){
+        return;
+    }
     for (var i = 0; i < targets.length; i++) {
         var target = targets[i];
         // Returns true if the actor chose an action. May actually take an action
