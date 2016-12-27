@@ -306,15 +306,15 @@ function initalizeMonsters() {
                             '*block': .5, '+magicBlock': 6, '*magicBlock': 2, '+magicResist': .66,
                             '*speed': 0.7}
     });
-    addMonster('spongeyCateripllar', {
+    addMonster('spongeyCaterpillar', {
         'name': 'Armorpede', 'source': caterpillarSource,
         'implicitBonuses': {'*magicDamage': 0, '*damage': 0.5, '*maxHealth': 3,
                             '*armor': 1.5, '+magicBlock': 6, '*magicBlock': 2, '+magicResist': 0.75,
                             '*speed': 0.7},
         'abilities': [abilities.vitality, abilities.majorStrength]
     });
-    addMonster('stealthyCateripllar', {
-        'name': 'The Very Stealth Caterpillar', 'source': caterpillarSource,
+    addMonster('stealthyCaterpillar', {
+        'name': 'The Very Stealthy Caterpillar', 'source': caterpillarSource,
         'implicitBonuses': {'*magicDamage': 0, '*maxHealth': .5, '*scale': .15, '+scale': [40, '*', ['{bonusMaxHealth}', '/', '{maxHealth}']],
                             '*block': .5, '+magicBlock': 4, '*magicBlock': 2, '+magicResist': .5, '*healthRegen': 5,
                             '*speed': [.5, '+', [2, '*', ['{bonusMaxHealth}', '/', '{maxHealth}']]]},

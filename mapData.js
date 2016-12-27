@@ -894,12 +894,12 @@ var map = {
         'unlocks': ["shrubbery"],
         'skill': "powerShot",
         'enemySkills': [],
-        'monsters': ["caterpillar","spongeyCateripllar","butterfly"],
+        'monsters': ["caterpillar","spongeyCaterpillar","butterfly"],
         'events': [
             ["battlefly"],
-            ["spongeyCateripllar","battlefly"],
-            ["spongeyCateripllar","battlefly","battlefly"],
-            ["spongeyCateripllar","spongeyCateripllar","battlefly","battlefly"],
+            ["spongeyCaterpillar","battlefly"],
+            ["spongeyCaterpillar","battlefly","battlefly"],
+            ["spongeyCaterpillar","spongeyCaterpillar","battlefly","battlefly"],
             ["skeletonOgre","battlefly"]
         ]
     },
@@ -2356,9 +2356,9 @@ var map = {
         'enemySkills': [],
         'monsters': ["spider","jumpingSpider"],
         'events': [
-            ["jumpingSpider","stealthyCateripllar"],
-            ["jumpingSpider","jumpingSpider","stealthyCateripllar"],
-            ["jumpingSpider","jumpingSpider","stealthyCateripllar","stealthyCateripllar"],
+            ["jumpingSpider","stealthyCaterpillar"],
+            ["jumpingSpider","jumpingSpider","stealthyCaterpillar"],
+            ["jumpingSpider","jumpingSpider","stealthyCaterpillar","stealthyCaterpillar"],
             ["giantSpider"]
         ]
     },
