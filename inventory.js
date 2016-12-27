@@ -177,6 +177,9 @@ function restrictionToCategoryDisplayName(tag) {
 // Wrapper for toFixed that strips trailing '0's and '.'s.
 // Foundt at http://stackoverflow.com/questions/7312468/javascript-round-to-a-number-of-decimal-places-but-strip-extra-zeros
 Number.prototype.abbreviate = function () {
+    if (this > 1000000000000) {
+        return (this / 1000000000000 + '').slice(0, 5) + ' T';
+    }
     if (this > 1000000000) {
         return (this / 1000000000 + '').slice(0, 5) + ' B';
     }
