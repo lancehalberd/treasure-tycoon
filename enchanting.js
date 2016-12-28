@@ -31,12 +31,12 @@ addPrefix(30, 'Savage', 'weapon', {'+minWeaponPhysicalDamage': [22, 24], '+maxWe
 addPrefix(45, 'Cruel', 'weapon', {'+minWeaponPhysicalDamage': [32, 34], '+maxWeaponPhysicalDamage': [40, 42]});
 addPrefix(60, 'Bloody', 'weapon', {'+minWeaponPhysicalDamage': [35, 40], '+maxWeaponPhysicalDamage': [45, 50]});
 
-addPrefix(1, 'Priest\'s', 'weapon', {'+minWeaponMagicDamage': 1, '+maxWeaponMagicDamage': 2});
-addPrefix(6, 'Magic', 'weapon', {'+minWeaponMagicDamage': [2,3], '+maxWeaponMagicDamage': [6,8]});
-addPrefix(16, 'Wizard\'s', 'weapon', {'+minWeaponMagicDamage': [8, 10], '+maxWeaponMagicDamage': [12, 14]});
-addPrefix(31, 'Imbued', 'weapon', {'+minWeaponMagicDamage': [14, 16], '+maxWeaponMagicDamage': [20, 22]});
-addPrefix(46, 'Sorcerer\'s', 'weapon', {'+minWeaponMagicDamage': [20, 22], '+maxWeaponMagicDamage': [26, 28]});
-addPrefix(61, 'Diabolic', 'weapon', {'+minWeaponMagicDamage': [25, 30], '+maxWeaponMagicDamage': [30, 35]});
+addPrefix(1, 'Savvy', 'weapon', {'+minWeaponMagicDamage': 1, '+maxWeaponMagicDamage': 2});
+addPrefix(6, 'Prespicacious', 'weapon', {'+minWeaponMagicDamage': [2,3], '+maxWeaponMagicDamage': [6,8]});
+addPrefix(16, 'Shrewd', 'weapon', {'+minWeaponMagicDamage': [8, 10], '+maxWeaponMagicDamage': [12, 14]});
+addPrefix(31, 'Astute', 'weapon', {'+minWeaponMagicDamage': [14, 16], '+maxWeaponMagicDamage': [20, 22]});
+addPrefix(46, 'Sagacious', 'weapon', {'+minWeaponMagicDamage': [20, 22], '+maxWeaponMagicDamage': [26, 28]});
+addPrefix(61, 'Profound', 'weapon', {'+minWeaponMagicDamage': [25, 30], '+maxWeaponMagicDamage': [30, 35]});
 
 addPrefix(7, 'Angry', 'weapon', {'*weaponDamage': [102, 105, 100]});
 addPrefix(17, 'Irate', 'weapon', {'*weaponDamage': [106, 112, 100]});
@@ -63,9 +63,9 @@ addPrefix(13, 'Keen', 'weapon', {'+critDamage': [10, 20, 100]});
 addPrefix(33, 'Sharp', 'weapon', {'+critDamage': [21, 40, 100]});
 addPrefix(63, 'Deadly', 'weapon', {'+critDamage': [41, 70, 100]});
 
-addPrefix(3, 'Precise', 'weapon', {'%critChance': [10, 20, 100], '+critAccuracy': [10, 20, 100]});
-addPrefix(23, 'Preciser', 'weapon', {'%critChance': [21, 40, 100], '+critAccuracy': [21, 40, 100]});
-addPrefix(53, 'Precisest', 'weapon', {'%critChance': [41, 70, 100], '+critAccuracy': [41, 70, 100]});
+addPrefix(3, 'Penetrating', 'weapon', {'%critChance': [10, 20, 100], '+critAccuracy': [10, 20, 100]});
+addPrefix(23, 'Piercing', 'weapon', {'%critChance': [21, 40, 100], '+critAccuracy': [21, 40, 100]});
+addPrefix(53, 'Shattering', 'weapon', {'%critChance': [41, 70, 100], '+critAccuracy': [41, 70, 100]});
 
 addPrefix(1, 'Hardy', 'body', {'%maxHealth': [3, 9, 100]});
 addPrefix(12, 'Staunch', 'body', {'%maxHealth': [7, 15, 100]});
@@ -266,8 +266,8 @@ addSuffix(25, 'Valor', 'heavyArmor', {'+strength': [10, 20]});
 addSuffix(55, 'Heroism', 'heavyArmor', {'+strength': [30, 40]});
 
 addSuffix(5, 'Finesse', 'lightArmor', {'+dexterity': [3, 6]});
-addSuffix(25, 'Skill', 'lightArmor', {'+dexterity': [10, 20]});
-addSuffix(55, 'Mastery', 'lightArmor', {'+dexterity': [30, 40]});
+addSuffix(25, 'Mastery', 'lightArmor', {'+dexterity': [10, 20]});
+addSuffix(55, 'Preeminence', 'lightArmor', {'+dexterity': [30, 40]});
 
 addSuffix(5, 'Insight', 'clothArmor', {'+intelligence': [3, 6]});
 addSuffix(25, 'Comprehension', 'clothArmor', {'+intelligence': [10, 20]});
