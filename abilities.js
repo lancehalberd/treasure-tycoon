@@ -93,7 +93,7 @@ var abilities = {
     'fistDamage': {'name': 'Fist Damage', 'icon': 'gfx/496RpgIcons/buffFist.png', 'bonuses': {'%fist:weaponPhysicalDamage': .3, '+fist:critDamage': .3}},
     'fistCriticalChance': {'name': 'Fist Precision', 'icon': 'gfx/496RpgIcons/buffFist.png', 'bonuses': {'%fist:critChance': .3, '%fist:accuracy': .3}},
     'fistAttackSpeed': {'name': 'Fist Attack Speed', 'icon': 'gfx/496RpgIcons/buffFist.png', 'bonuses': {'%fist:attackSpeed': .2, '%fist:weaponPhysicalDamage': .2}},
-    //'fistParadigmShift': {'name': '', 'icon': 'gfx/496RpgIcons/buffFist.png', 'bonuses': {}},
+    'fistParadigmShift': {'name': 'Jujutsu', 'icon': 'gfx/496RpgIcons/buffFist.png', 'bonuses': {'*fist:damage': 2, '+fist:counterAttack:chance': .3, '$fist:cannotAttack': 'Cannot attack', '$fist:counterAttack:dodge': 'Dodge countered attacks.'}},
     'swordPhysicalDamage': {'name': 'Sword Damage', 'icon': 'gfx/496RpgIcons/buffSword.png', 'bonuses': {'%sword:weaponPhysicalDamage': .3, '%sword:critChance': .3}},
     'swordAccuracy': {'name': 'Sword Accuracy', 'icon': 'gfx/496RpgIcons/buffSword.png', 'bonuses': {'%sword:accuracy': .5, '+sword:critChance': .2}},
     'swordAttackSpeed': {'name': 'Sword Attack Speed', 'icon': 'gfx/496RpgIcons/buffSword.png', 'bonuses': {'%sword:attackSpeed': .2, '%sword:weaponPhysicalDamage': .2}},

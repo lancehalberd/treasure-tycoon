@@ -397,7 +397,7 @@ function applyAttackToTarget(attackStats, target) {
     attackStats.dodged = false;
     attackStats.stopped = false;
     for (var i = 0; i < ifdefor(target.reactions, []).length; i++) {
-        if (useSkill(target, target.reactions[i], attackStats)) {
+        if (useSkill(target, target.reactions[i], null, attackStats)) {
             break;
         }
     }
