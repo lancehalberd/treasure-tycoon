@@ -23,6 +23,12 @@ var equipmentSources = {
     'wizardSleeves': equipmentSource(arm, 10),
     'wizardPants': equipmentSource(legs, 9),
     'wizardSandals': equipmentSource(feet, 10),
+    // Peter Pan
+    'featherCap': equipmentSource(head, 12),
+    'leatherVest': equipmentSource(body, 13),
+    'leatherLongGloves': equipmentSource(arm, 12),
+    'leatherPants': equipmentSource(legs, 12),
+    'leatherBoots': equipmentSource(feet, 13),
     // Robes
     'blueRobe': equipmentSource(body, 6),
     'purpleRobe': equipmentSource(body, 7),
@@ -37,6 +43,7 @@ var equipmentSources = {
     'sword': equipmentSource(hand, 7),
     // Accesories
     'bracelet': equipmentSource(hand, 1),
+    'ring': equipmentSource(hand, 11),
 };
 
 //Heavy Helmets gives armor and health
@@ -56,18 +63,18 @@ addItem(69, {'slot': 'head', 'type': 'heavyArmor', 'name': 'Orichalcum Great Hel
 
 //Light Helmets gives armor and evasion
 //addItem(1, {'slot': 'head', 'type': 'lightArmor', 'name': 'Rotten Bucket', 'bonuses': {'+armor': 1, '+evasion': 3}, 'offset': 10, icon: 'featherHat'});
-addItem(4, {'slot': 'head', 'type': 'lightArmor', 'name': 'Leather Cap', 'bonuses': {'+armor': 7, '+evasion': 13}, 'offset': 10, icon: 'featherHat'});
-addItem(8, {'slot': 'head', 'type': 'lightArmor', 'name': 'Hide Cap', 'bonuses': {'+armor': 13, '+evasion': 23}, 'offset': 10, icon: 'featherHat'});
-addItem(13, {'slot': 'head', 'type': 'lightArmor', 'name': 'Leather Helmet', 'bonuses': {'+armor': 19, '+evasion': 33}, 'offset': 10, icon: 'featherHat'});
-addItem(18, {'slot': 'head', 'type': 'lightArmor', 'name': 'Studded Helmet', 'bonuses': {'+armor': 25, '+evasion': 43}, 'offset': 10, icon: 'featherHat'});
-addItem(23, {'slot': 'head', 'type': 'lightArmor', 'name': 'Hide Helmet', 'bonuses': {'+armor': 31, '+evasion': 53}, 'offset': 10, icon: 'featherHat'});
-addItem(28, {'slot': 'head', 'type': 'lightArmor', 'name': 'Shell Helmet', 'bonuses': {'+armor': 37, '+evasion': 63}, 'offset': 10, icon: 'featherHat'});
-addItem(33, {'slot': 'head', 'type': 'lightArmor', 'name': 'Leather Hood', 'bonuses': {'+armor': 43, '+evasion': 73}, 'offset': 10, icon: 'featherHat'});
-addItem(38, {'slot': 'head', 'type': 'lightArmor', 'name': 'Horned Helmet', 'bonuses': {'+armor': 49, '+evasion': 83}, 'offset': 10, icon: 'featherHat'});
-addItem(43, {'slot': 'head', 'type': 'lightArmor', 'name': 'Scale Helmet', 'bonuses': {'+armor': 55, '+evasion': 93}, 'offset': 10, icon: 'featherHat'});
-addItem(48, {'slot': 'head', 'type': 'lightArmor', 'name': 'Composite Helmet', 'bonuses': {'+armor': 61, '+evasion': 103}, 'offset': 10, icon: 'featherHat'});
-addItem(58, {'slot': 'head', 'type': 'lightArmor', 'name': 'Runed Helmet', 'bonuses': {'+armor': 70, '+evasion': 110, '+maxHealth': 35, '+block': 5, '+magicBlock': 5}, 'offset': 10, icon: 'featherHat'});
-addItem(68, {'slot': 'head', 'type': 'lightArmor', 'name': 'Dragon Helmet', 'bonuses': {'+armor': 80, '+evasion': 120, '+maxHealth': 100, '+block': 10, '+magicBlock': 10}, 'offset': 10, icon: 'featherHat'});
+addItem(4, {'slot': 'head', 'type': 'lightArmor', 'name': 'Leather Cap', 'bonuses': {'+armor': 7, '+evasion': 13}, 'source': equipmentSources.featherCap, icon: 'featherHat'});
+addItem(8, {'slot': 'head', 'type': 'lightArmor', 'name': 'Hide Cap', 'bonuses': {'+armor': 13, '+evasion': 23}, 'source': equipmentSources.featherCap, icon: 'featherHat'});
+addItem(13, {'slot': 'head', 'type': 'lightArmor', 'name': 'Leather Helmet', 'bonuses': {'+armor': 19, '+evasion': 33}, 'source': equipmentSources.featherCap, icon: 'featherHat'});
+addItem(18, {'slot': 'head', 'type': 'lightArmor', 'name': 'Studded Helmet', 'bonuses': {'+armor': 25, '+evasion': 43}, 'source': equipmentSources.featherCap, icon: 'featherHat'});
+addItem(23, {'slot': 'head', 'type': 'lightArmor', 'name': 'Hide Helmet', 'bonuses': {'+armor': 31, '+evasion': 53}, 'source': equipmentSources.featherCap, icon: 'featherHat'});
+addItem(28, {'slot': 'head', 'type': 'lightArmor', 'name': 'Shell Helmet', 'bonuses': {'+armor': 37, '+evasion': 63}, 'source': equipmentSources.featherCap, icon: 'featherHat'});
+addItem(33, {'slot': 'head', 'type': 'lightArmor', 'name': 'Leather Hood', 'bonuses': {'+armor': 43, '+evasion': 73}, 'source': equipmentSources.featherCap, icon: 'featherHat'});
+addItem(38, {'slot': 'head', 'type': 'lightArmor', 'name': 'Horned Helmet', 'bonuses': {'+armor': 49, '+evasion': 83}, 'source': equipmentSources.featherCap, icon: 'featherHat'});
+addItem(43, {'slot': 'head', 'type': 'lightArmor', 'name': 'Scale Helmet', 'bonuses': {'+armor': 55, '+evasion': 93}, 'source': equipmentSources.featherCap, icon: 'featherHat'});
+addItem(48, {'slot': 'head', 'type': 'lightArmor', 'name': 'Composite Helmet', 'bonuses': {'+armor': 61, '+evasion': 103}, 'source': equipmentSources.featherCap, icon: 'featherHat'});
+addItem(58, {'slot': 'head', 'type': 'lightArmor', 'name': 'Runed Helmet', 'bonuses': {'+armor': 70, '+evasion': 110, '+maxHealth': 35, '+block': 5, '+magicBlock': 5}, 'source': equipmentSources.featherCap, icon: 'featherHat'});
+addItem(68, {'slot': 'head', 'type': 'lightArmor', 'name': 'Dragon Helmet', 'bonuses': {'+armor': 80, '+evasion': 120, '+maxHealth': 100, '+block': 10, '+magicBlock': 10}, 'source': equipmentSources.featherCap, icon: 'featherHat'});
 
 //Hoods gives block and magic block
 addItem(1, {'slot': 'head', 'type': 'clothArmor', 'name': 'Straw Hat', 'bonuses': {'+block': 2, '+magicBlock': 1}, 'source': equipmentSources.strawHat, 'hideHair': true, icon: 'mageHat'});
@@ -100,19 +107,19 @@ addItem(63, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Adamantium Plate', '
 addItem(73, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Orichalcum Plate', 'bonuses': {'+armor': 120, '+maxHealth': 700, '+evasion': 20, '+block': 20, '+magicBlock': 20}, 'source': equipmentSources.heavyArmor, icon: 'heavyArmor'});
 
 //Light Armor gives armor and evasion
-addItem(2, {'slot': 'body', 'type': 'lightArmor', 'name': 'Cloth Tunic', 'bonuses': {'+armor': 2, '+evasion': 4}, 'offset': 3, icon: 'lightArmor'});
-addItem(7, {'slot': 'body', 'type': 'lightArmor', 'name': 'Leather Tunic', 'bonuses': {'+armor': 7, '+evasion': 19}, 'offset': 3, icon: 'lightArmor'});
-addItem(12, {'slot': 'body', 'type': 'lightArmor', 'name': 'Hide Tunic', 'bonuses': {'+armor': 12, '+evasion': 34}, 'offset': 3, icon: 'lightArmor'});
-addItem(17, {'slot': 'body', 'type': 'lightArmor', 'name': 'Leather Armor', 'bonuses': {'+armor': 17, '+evasion': 49}, 'offset': 3, icon: 'lightArmor'});
-addItem(22, {'slot': 'body', 'type': 'lightArmor', 'name': 'Studded Armor', 'bonuses': {'+armor': 22, '+evasion': 64}, 'offset': 3, icon: 'lightArmor'});
-addItem(27, {'slot': 'body', 'type': 'lightArmor', 'name': 'Hide Armor', 'bonuses': {'+armor': 27, '+evasion': 79}, 'offset': 3, icon: 'lightArmor'});
-addItem(32, {'slot': 'body', 'type': 'lightArmor', 'name': 'Carapace Armor', 'bonuses': {'+armor': 32, '+evasion': 94}, 'offset': 3, icon: 'lightArmor'});
-addItem(37, {'slot': 'body', 'type': 'lightArmor', 'name': 'Treated Armor', 'bonuses': {'+armor': 37, '+evasion': 109}, 'offset': 3, icon: 'lightArmor'});
-addItem(42, {'slot': 'body', 'type': 'lightArmor', 'name': 'Splint Armor', 'bonuses': {'+armor': 42, '+evasion': 124}, 'offset': 3, icon: 'lightArmor'});
-addItem(47, {'slot': 'body', 'type': 'lightArmor', 'name': 'Scale Armor', 'bonuses': {'+armor': 47, '+evasion': 139}, 'offset': 3, icon: 'lightArmor'});
-addItem(52, {'slot': 'body', 'type': 'lightArmor', 'name': 'Composite Armor', 'bonuses': {'+armor': 52, '+evasion': 154}, 'offset': 3, icon: 'lightArmor'});
-addItem(62, {'slot': 'body', 'type': 'lightArmor', 'name': 'Runed Armor', 'bonuses': {'+armor': 55, '+evasion': 155, '+maxHealth': 60, '+block': 10, '+magicBlock': 10}, 'offset': 3, icon: 'lightArmor'});
-addItem(72, {'slot': 'body', 'type': 'lightArmor', 'name': 'Dragon Armor', 'bonuses': {'+armor': 70, '+evasion': 170, '+maxHealth': 200, '+block': 20, '+magicBlock': 20}, 'offset': 3, icon: 'lightArmor'});
+addItem(2, {'slot': 'body', 'type': 'lightArmor', 'name': 'Cloth Tunic', 'bonuses': {'+armor': 2, '+evasion': 4}, 'source': equipmentSources.leatherVest, icon: 'lightArmor'});
+addItem(7, {'slot': 'body', 'type': 'lightArmor', 'name': 'Leather Tunic', 'bonuses': {'+armor': 7, '+evasion': 19}, 'source': equipmentSources.leatherVest, icon: 'lightArmor'});
+addItem(12, {'slot': 'body', 'type': 'lightArmor', 'name': 'Hide Tunic', 'bonuses': {'+armor': 12, '+evasion': 34}, 'source': equipmentSources.leatherVest, icon: 'lightArmor'});
+addItem(17, {'slot': 'body', 'type': 'lightArmor', 'name': 'Leather Armor', 'bonuses': {'+armor': 17, '+evasion': 49}, 'source': equipmentSources.leatherVest, icon: 'lightArmor'});
+addItem(22, {'slot': 'body', 'type': 'lightArmor', 'name': 'Studded Armor', 'bonuses': {'+armor': 22, '+evasion': 64}, 'source': equipmentSources.leatherVest, icon: 'lightArmor'});
+addItem(27, {'slot': 'body', 'type': 'lightArmor', 'name': 'Hide Armor', 'bonuses': {'+armor': 27, '+evasion': 79}, 'source': equipmentSources.leatherVest, icon: 'lightArmor'});
+addItem(32, {'slot': 'body', 'type': 'lightArmor', 'name': 'Carapace Armor', 'bonuses': {'+armor': 32, '+evasion': 94}, 'source': equipmentSources.leatherVest, icon: 'lightArmor'});
+addItem(37, {'slot': 'body', 'type': 'lightArmor', 'name': 'Treated Armor', 'bonuses': {'+armor': 37, '+evasion': 109}, 'source': equipmentSources.leatherVest, icon: 'lightArmor'});
+addItem(42, {'slot': 'body', 'type': 'lightArmor', 'name': 'Splint Armor', 'bonuses': {'+armor': 42, '+evasion': 124}, 'source': equipmentSources.leatherVest, icon: 'lightArmor'});
+addItem(47, {'slot': 'body', 'type': 'lightArmor', 'name': 'Scale Armor', 'bonuses': {'+armor': 47, '+evasion': 139}, 'source': equipmentSources.leatherVest, icon: 'lightArmor'});
+addItem(52, {'slot': 'body', 'type': 'lightArmor', 'name': 'Composite Armor', 'bonuses': {'+armor': 52, '+evasion': 154}, 'source': equipmentSources.leatherVest, icon: 'lightArmor'});
+addItem(62, {'slot': 'body', 'type': 'lightArmor', 'name': 'Runed Armor', 'bonuses': {'+armor': 55, '+evasion': 155, '+maxHealth': 60, '+block': 10, '+magicBlock': 10}, 'source': equipmentSources.leatherVest, icon: 'lightArmor'});
+addItem(72, {'slot': 'body', 'type': 'lightArmor', 'name': 'Dragon Armor', 'bonuses': {'+armor': 70, '+evasion': 170, '+maxHealth': 200, '+block': 20, '+magicBlock': 20}, 'source': equipmentSources.leatherVest, icon: 'lightArmor'});
 
 // Cloth Armor gives armor, block and magic block
 addItem(1, {'slot': 'body', 'type': 'clothArmor', 'name': 'Wool Shirt', 'bonuses': {'+armor': 2, '+block': 4, '+magicBlock': 2}, 'source': equipmentSources.vest, icon: 'clothArmor'});
@@ -146,18 +153,18 @@ addItem(70, {'slot': 'arms', 'type': 'heavyArmor', 'name': 'Orichalcum Vambracer
 
 //Bracers gives armor and evasion
 //addItem(1, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Rotting Bracelets', 'bonuses': {'+armor': 1, '+evasion': 3}, icon: 'bracers'});
-addItem(4, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Leather Bracelets', 'bonuses': {'+armor': 7, '+evasion': 13}, icon: 'bracers'});
-addItem(9, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Hide Bracelets', 'bonuses': {'+armor': 13, '+evasion': 23}, icon: 'bracers'});
-addItem(14, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Leather Bracers', 'bonuses': {'+armor': 19, '+evasion': 33}, icon: 'bracers'});
-addItem(19, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Studded Bracers', 'bonuses': {'+armor': 25, '+evasion': 43}, icon: 'bracers'});
-addItem(24, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Hide Bracers', 'bonuses': {'+armor': 31, '+evasion': 53}, icon: 'bracers'});
-addItem(29, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Carapace Bracers', 'bonuses': {'+armor': 37, '+evasion': 63}, icon: 'bracers'});
-addItem(34, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Padded Bracers', 'bonuses': {'+armor': 43, '+evasion': 73}, icon: 'bracers'});
-addItem(39, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Plated Bracers', 'bonuses': {'+armor': 49, '+evasion': 83}, icon: 'bracers'});
-addItem(44, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Scale Bracers', 'bonuses': {'+armor': 55, '+evasion': 93}, icon: 'bracers'});
-addItem(49, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Composite Bracers', 'bonuses': {'+armor': 61, '+evasion': 103}, icon: 'bracers'});
-addItem(59, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Runed Bracers', 'bonuses': {'+armor': 70, '+evasion': 110, '+maxHealth': 35, '+block': 5, '+magicBlock': 5}, icon: 'bracers'});
-addItem(69, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Dragon Bracers', 'bonuses': {'+armor': 80, '+evasion': 120, '+maxHealth': 100, '+block': 10, '+magicBlock': 10}, icon: 'bracers'});
+addItem(4, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Leather Bracelets', 'bonuses': {'+armor': 7, '+evasion': 13}, 'source': equipmentSources.leatherLongGloves, icon: 'bracers'});
+addItem(9, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Hide Bracelets', 'bonuses': {'+armor': 13, '+evasion': 23}, 'source': equipmentSources.leatherLongGloves, icon: 'bracers'});
+addItem(14, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Leather Bracers', 'bonuses': {'+armor': 19, '+evasion': 33}, 'source': equipmentSources.leatherLongGloves, icon: 'bracers'});
+addItem(19, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Studded Bracers', 'bonuses': {'+armor': 25, '+evasion': 43}, 'source': equipmentSources.leatherLongGloves, icon: 'bracers'});
+addItem(24, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Hide Bracers', 'bonuses': {'+armor': 31, '+evasion': 53}, 'source': equipmentSources.leatherLongGloves, icon: 'bracers'});
+addItem(29, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Carapace Bracers', 'bonuses': {'+armor': 37, '+evasion': 63}, 'source': equipmentSources.leatherLongGloves, icon: 'bracers'});
+addItem(34, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Padded Bracers', 'bonuses': {'+armor': 43, '+evasion': 73}, 'source': equipmentSources.leatherLongGloves, icon: 'bracers'});
+addItem(39, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Plated Bracers', 'bonuses': {'+armor': 49, '+evasion': 83}, 'source': equipmentSources.leatherLongGloves, icon: 'bracers'});
+addItem(44, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Scale Bracers', 'bonuses': {'+armor': 55, '+evasion': 93}, 'source': equipmentSources.leatherLongGloves, icon: 'bracers'});
+addItem(49, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Composite Bracers', 'bonuses': {'+armor': 61, '+evasion': 103}, 'source': equipmentSources.leatherLongGloves, icon: 'bracers'});
+addItem(59, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Runed Bracers', 'bonuses': {'+armor': 70, '+evasion': 110, '+maxHealth': 35, '+block': 5, '+magicBlock': 5}, 'source': equipmentSources.leatherLongGloves, icon: 'bracers'});
+addItem(69, {'slot': 'arms', 'type': 'lightArmor', 'name': 'Dragon Bracers', 'bonuses': {'+armor': 80, '+evasion': 120, '+maxHealth': 100, '+block': 10, '+magicBlock': 10}, 'source': equipmentSources.leatherLongGloves, icon: 'bracers'});
 
 //Gloves gives block and magic block
 addItem(1, {'slot': 'arms', 'type': 'clothArmor', 'name': 'Torn Mittens', 'bonuses': {'+block': 2, '+magicBlock': 1}, 'source': equipmentSources.leatherGloves, icon: 'gloves'});
@@ -191,18 +198,18 @@ addItem(71, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Orichalcum Greaves',
 
 //Pants gives evasion and armor
 //addItem(1, {'slot': 'legs', 'type': 'lightArmor', 'name': 'Worn Kilt', 'bonuses': {'+armor': 2, '+evasion': 3}, icon: 'pants'});
-addItem(5, {'slot': 'legs', 'type': 'lightArmor', 'name': 'Leather Kilt', 'bonuses': {'+armor': 10, '+evasion': 13}, icon: 'pants'});
-addItem(10, {'slot': 'legs', 'type': 'lightArmor', 'name': 'Hide Kilt', 'bonuses': {'+armor': 18, '+evasion': 23}, icon: 'pants'});
-addItem(15, {'slot': 'legs', 'type': 'lightArmor', 'name': 'Leather Pants', 'bonuses': {'+armor': 26, '+evasion': 33}, icon: 'pants'});
-addItem(20, {'slot': 'legs', 'type': 'lightArmor', 'name': 'Studded Pants', 'bonuses': {'+armor': 34, '+evasion': 43}, icon: 'pants'});
-addItem(25, {'slot': 'legs', 'type': 'lightArmor', 'name': 'Hide Pants', 'bonuses': {'+armor': 42, '+evasion': 53}, icon: 'pants'});
-addItem(30, {'slot': 'legs', 'type': 'lightArmor', 'name': 'Carapace Pants', 'bonuses': {'+armor': 50, '+evasion': 63}, icon: 'pants'});
-addItem(35, {'slot': 'legs', 'type': 'lightArmor', 'name': 'Padded Pants', 'bonuses': {'+armor': 58, '+evasion': 73}, icon: 'pants'});
-addItem(40, {'slot': 'legs', 'type': 'lightArmor', 'name': 'Plated Pants', 'bonuses': {'+armor': 66, '+evasion': 83}, icon: 'pants'});
-addItem(45, {'slot': 'legs', 'type': 'lightArmor', 'name': 'Scale Pants', 'bonuses': {'+armor': 74, '+evasion': 93}, icon: 'pants'});
+addItem(5, {'slot': 'legs', 'type': 'lightArmor', 'name': 'Leather Kilt', 'bonuses': {'+armor': 10, '+evasion': 13}, 'source': equipmentSources.leatherPants, icon: 'pants'});
+addItem(10, {'slot': 'legs', 'type': 'lightArmor', 'name': 'Hide Kilt', 'bonuses': {'+armor': 18, '+evasion': 23}, 'source': equipmentSources.leatherPants, icon: 'pants'});
+addItem(15, {'slot': 'legs', 'type': 'lightArmor', 'name': 'Leather Pants', 'bonuses': {'+armor': 26, '+evasion': 33}, 'source': equipmentSources.leatherPants, icon: 'pants'});
+addItem(20, {'slot': 'legs', 'type': 'lightArmor', 'name': 'Studded Pants', 'bonuses': {'+armor': 34, '+evasion': 43}, 'source': equipmentSources.leatherPants, icon: 'pants'});
+addItem(25, {'slot': 'legs', 'type': 'lightArmor', 'name': 'Hide Pants', 'bonuses': {'+armor': 42, '+evasion': 53}, 'source': equipmentSources.leatherPants, icon: 'pants'});
+addItem(30, {'slot': 'legs', 'type': 'lightArmor', 'name': 'Carapace Pants', 'bonuses': {'+armor': 50, '+evasion': 63}, 'source': equipmentSources.leatherPants, icon: 'pants'});
+addItem(35, {'slot': 'legs', 'type': 'lightArmor', 'name': 'Padded Pants', 'bonuses': {'+armor': 58, '+evasion': 73}, 'source': equipmentSources.leatherPants, icon: 'pants'});
+addItem(40, {'slot': 'legs', 'type': 'lightArmor', 'name': 'Plated Pants', 'bonuses': {'+armor': 66, '+evasion': 83}, 'source': equipmentSources.leatherPants, icon: 'pants'});
+addItem(45, {'slot': 'legs', 'type': 'lightArmor', 'name': 'Scale Pants', 'bonuses': {'+armor': 74, '+evasion': 93}, 'source': equipmentSources.leatherPants, icon: 'pants'});
 addItem(50, {'slot': 'legs', 'type': 'lightArmor', 'name': 'Composite Pants', 'bonuses': {'+armor': 82, '+evasion': 103}, icon: 'pants'});
-addItem(60, {'slot': 'legs', 'type': 'lightArmor', 'name': 'Runed Pants', 'bonuses': {'+armor': 85, '+evasion': 115, '+maxHealth': 60, '+block': 10, '+magicBlock': 10}, icon: 'pants'});
-addItem(70, {'slot': 'legs', 'type': 'lightArmor', 'name': 'Dragon Pants', 'bonuses': {'+armor': 90, '+evasion': 120, '+maxHealth': 100, '+block': 20, '+magicBlock': 20}, icon: 'pants'});
+addItem(60, {'slot': 'legs', 'type': 'lightArmor', 'name': 'Runed Pants', 'bonuses': {'+armor': 85, '+evasion': 115, '+maxHealth': 60, '+block': 10, '+magicBlock': 10}, 'source': equipmentSources.leatherPants, icon: 'pants'});
+addItem(70, {'slot': 'legs', 'type': 'lightArmor', 'name': 'Dragon Pants', 'bonuses': {'+armor': 90, '+evasion': 120, '+maxHealth': 100, '+block': 20, '+magicBlock': 20}, 'source': equipmentSources.leatherPants, icon: 'pants'});
 
 //Tights gives block and magic block
 addItem(1, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Tattered Shorts', 'bonuses': {'+block': 3, '+magicBlock': 1}, source: equipmentSources.shorts, icon: 'tights'});
@@ -236,12 +243,12 @@ addItem(72, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Orichalcum Sabatons'
 
 //Boots gives armor and evasion
 //addItem(1, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Worn Shoes', 'bonuses': {'+armor': 1, '+evasion': 2, '-speed': 25}, 'offset': 8, icon: 'boots'});
-addItem(6, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Leather Shoes', 'bonuses': {'+armor': 6, '+evasion': 10, '-speed': 25}, 'source': equipmentSources.redShoes, icon: 'boots'});
-addItem(11, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Hide Shoes', 'bonuses': {'+armor': 11, '+evasion': 18, '-speed': 25}, 'source': equipmentSources.redShoes, icon: 'boots'});
-addItem(16, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Leather Boots', 'bonuses': {'+armor': 16, '+evasion': 26, '-speed': 25}, 'source': equipmentSources.redShoes, icon: 'boots'});
-addItem(21, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Studded Boots', 'bonuses': {'+armor': 21, '+evasion': 34, '-speed': 25}, 'source': equipmentSources.redShoes, icon: 'boots'});
-addItem(26, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Hide Boots', 'bonuses': {'+armor': 26, '+evasion': 42, '-speed': 25}, 'source': equipmentSources.redShoes, icon: 'boots'});
-addItem(31, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Carapace Boots', 'bonuses': {'+armor': 31, '+evasion': 50, '-speed': 25}, 'source': equipmentSources.redShoes, icon: 'boots'});
+addItem(6, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Leather Shoes', 'bonuses': {'+armor': 6, '+evasion': 10, '-speed': 25}, 'source': equipmentSources.leatherBoots, icon: 'boots'});
+addItem(11, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Hide Shoes', 'bonuses': {'+armor': 11, '+evasion': 18, '-speed': 25}, 'source': equipmentSources.leatherBoots, icon: 'boots'});
+addItem(16, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Leather Boots', 'bonuses': {'+armor': 16, '+evasion': 26, '-speed': 25}, 'source': equipmentSources.leatherBoots, icon: 'boots'});
+addItem(21, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Studded Boots', 'bonuses': {'+armor': 21, '+evasion': 34, '-speed': 25}, 'source': equipmentSources.leatherBoots, icon: 'boots'});
+addItem(26, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Hide Boots', 'bonuses': {'+armor': 26, '+evasion': 42, '-speed': 25}, 'source': equipmentSources.leatherBoots, icon: 'boots'});
+addItem(31, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Carapace Boots', 'bonuses': {'+armor': 31, '+evasion': 50, '-speed': 25}, 'source': equipmentSources.leatherBoots, icon: 'boots'});
 addItem(36, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Padded Boots', 'bonuses': {'+armor': 36, '+evasion': 58, '-speed': 25}, 'source': equipmentSources.redShoes, icon: 'boots'});
 addItem(41, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Plated Boots', 'bonuses': {'+armor': 41, '+evasion': 66, '-speed': 25}, 'source': equipmentSources.redShoes, icon: 'boots'});
 addItem(46, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Scale Boots', 'bonuses': {'+armor': 46, '+evasion': 74, '-speed': 25}, 'source': equipmentSources.redShoes, icon: 'boots'});
