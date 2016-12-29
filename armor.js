@@ -17,6 +17,12 @@ var equipmentSources = {
     'heavySleeves': equipmentSource(arm, 0),
     'heavyPants': equipmentSource(legs, 0),
     'heavyBoots': equipmentSource(feet, 1),
+    // Wizard
+    'wizardHat': equipmentSource(head, 9),
+    'wizardRobe': equipmentSource(body, 10),
+    'wizardSleeves': equipmentSource(arm, 10),
+    'wizardPants': equipmentSource(legs, 9),
+    'wizardSandals': equipmentSource(feet, 10),
     // Robes
     'blueRobe': equipmentSource(body, 6),
     'purpleRobe': equipmentSource(body, 7),
@@ -72,11 +78,11 @@ addItem(17, {'slot': 'head', 'type': 'clothArmor', 'name': 'Fur Hood', 'bonuses'
 addItem(22, {'slot': 'head', 'type': 'clothArmor', 'name': 'Cashmere Hood', 'bonuses': {'+block': 42, '+magicBlock': 21}, 'source': equipmentSources.strawHat, 'hideHair': true, icon: 'mageHat'});
 addItem(27, {'slot': 'head', 'type': 'clothArmor', 'name': 'Silk Hood', 'bonuses': {'+block': 50, '+magicBlock': 25}, 'source': equipmentSources.strawHat, 'hideHair': true, icon: 'mageHat'});
 addItem(32, {'slot': 'head', 'type': 'clothArmor', 'name': 'Angora Hood', 'bonuses': {'+block': 58, '+magicBlock': 29}, 'source': equipmentSources.strawHat, 'hideHair': true, icon: 'mageHat'});
-addItem(37, {'slot': 'head', 'type': 'clothArmor', 'name': 'Velvet Hood', 'bonuses': {'+block': 66, '+magicBlock': 33}, 'source': equipmentSources.strawHat, 'hideHair': true, icon: 'mageHat'});
-addItem(42, {'slot': 'head', 'type': 'clothArmor', 'name': 'Embroidered Hat', 'bonuses': {'+block': 74, '+magicBlock': 37}, 'source': equipmentSources.strawHat, 'hideHair': true, icon: 'mageHat'});
-addItem(47, {'slot': 'head', 'type': 'clothArmor', 'name': 'Wizards Hat', 'bonuses': {'+block': 82, '+magicBlock': 41}, 'source': equipmentSources.strawHat, 'hideHair': true, icon: 'mageHat'});
-addItem(57, {'slot': 'head', 'type': 'clothArmor', 'name': 'Blessed Cowl', 'bonuses': {'+block': 85, '+magicBlock': 50, '+armor': 5, '+evasion': 5, '+maxHealth': 35}, 'source': equipmentSources.strawHat, 'hideHair': true, icon: 'mageHat'});
-addItem(67, {'slot': 'head', 'type': 'clothArmor', 'name': 'Divine Cowl', 'bonuses': {'+block': 100, '+magicBlock': 60, '+armor': 10, '+evasion': 10, '+maxHealth': 50}, 'source': equipmentSources.strawHat, 'hideHair': true, icon: 'mageHat'});
+addItem(37, {'slot': 'head', 'type': 'clothArmor', 'name': 'Velvet Hood', 'bonuses': {'+block': 66, '+magicBlock': 33}, 'source': equipmentSources.wizardHat, 'hideHair': true, icon: 'mageHat'});
+addItem(42, {'slot': 'head', 'type': 'clothArmor', 'name': 'Embroidered Hat', 'bonuses': {'+block': 74, '+magicBlock': 37}, 'source': equipmentSources.wizardHat, 'hideHair': true, icon: 'mageHat'});
+addItem(47, {'slot': 'head', 'type': 'clothArmor', 'name': 'Wizards Hat', 'bonuses': {'+block': 82, '+magicBlock': 41}, 'source': equipmentSources.wizardHat, 'hideHair': true, icon: 'mageHat'});
+addItem(57, {'slot': 'head', 'type': 'clothArmor', 'name': 'Blessed Cowl', 'bonuses': {'+block': 85, '+magicBlock': 50, '+armor': 5, '+evasion': 5, '+maxHealth': 35}, 'source': equipmentSources.wizardHat, 'hideHair': true, icon: 'mageHat'});
+addItem(67, {'slot': 'head', 'type': 'clothArmor', 'name': 'Divine Cowl', 'bonuses': {'+block': 100, '+magicBlock': 60, '+armor': 10, '+evasion': 10, '+maxHealth': 50}, 'source': equipmentSources.wizardHat, 'hideHair': true, icon: 'mageHat'});
 
 //Heavy Armor gives armor + health
 addItem(3, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Lamellar', 'bonuses': {'+armor': 8, '+maxHealth': 40}, 'source': equipmentSources.heavyArmor, icon: 'heavyArmor'});
@@ -116,12 +122,12 @@ addItem(16, {'slot': 'body', 'type': 'clothArmor', 'name': 'Cotten Frock', 'bonu
 addItem(21, {'slot': 'body', 'type': 'clothArmor', 'name': 'Fur Coat', 'bonuses': {'+armor': 13, '+block': 31, '+magicBlock': 21}, 'source': equipmentSources.vest, icon: 'clothArmor'});
 addItem(26, {'slot': 'body', 'type': 'clothArmor', 'name': 'Cashmere Robe', 'bonuses': {'+armor': 16, '+block': 38, '+magicBlock': 26}, 'source': equipmentSources.blueRobe, icon: 'clothArmor'});
 addItem(31, {'slot': 'body', 'type': 'clothArmor', 'name': 'Silk Robe', 'bonuses': {'+armor': 19, '+block': 45, '+magicBlock': 31}, 'source': equipmentSources.blueRobe, icon: 'clothArmor'});
-addItem(36, {'slot': 'body', 'type': 'clothArmor', 'name': 'Angora Robe', 'bonuses': {'+armor': 22, '+block': 52, '+magicBlock': 36}, 'source': equipmentSources.blueRobe, icon: 'clothArmor'});
-addItem(41, {'slot': 'body', 'type': 'clothArmor', 'name': 'Velvet Robe', 'bonuses': {'+armor': 25, '+block': 59, '+magicBlock': 41}, 'source': equipmentSources.blueRobe, icon: 'clothArmor'});
-addItem(46, {'slot': 'body', 'type': 'clothArmor', 'name': 'Embroidered Robe', 'bonuses': {'+armor': 28, '+block': 66, '+magicBlock': 46}, 'source': equipmentSources.blueRobe, icon: 'clothArmor'});
-addItem(51, {'slot': 'body', 'type': 'clothArmor', 'name': 'Sorcerous Vestment', 'bonuses': {'+armor': 31, '+block': 73, '+magicBlock': 51}, 'source': equipmentSources.purpleRobe, icon: 'clothArmor'});
-addItem(61, {'slot': 'body', 'type': 'clothArmor', 'name': 'Blessed Vestment', 'bonuses': {'+armor': 40, '+block': 80, '+magicBlock': 56, '+evasion': 10, '+maxHealth': 60}, 'source': equipmentSources.purpleRobe, icon: 'clothArmor'});
-addItem(71, {'slot': 'body', 'type': 'clothArmor', 'name': 'Divine Vestment', 'bonuses': {'+armor': 50, '+block': 100, '+magicBlock': 75, '+evasion': 20, '+maxHealth': 100}, 'source': equipmentSources.purpleRobe, icon: 'clothArmor'});
+addItem(36, {'slot': 'body', 'type': 'clothArmor', 'name': 'Angora Robe', 'bonuses': {'+armor': 22, '+block': 52, '+magicBlock': 36}, 'source': equipmentSources.purpleRobe, icon: 'clothArmor'});
+addItem(41, {'slot': 'body', 'type': 'clothArmor', 'name': 'Velvet Robe', 'bonuses': {'+armor': 25, '+block': 59, '+magicBlock': 41}, 'source': equipmentSources.purpleRobe, icon: 'clothArmor'});
+addItem(46, {'slot': 'body', 'type': 'clothArmor', 'name': 'Embroidered Robe', 'bonuses': {'+armor': 28, '+block': 66, '+magicBlock': 46}, 'source': equipmentSources.wizardRobe, icon: 'clothArmor'});
+addItem(51, {'slot': 'body', 'type': 'clothArmor', 'name': 'Sorcerous Vestment', 'bonuses': {'+armor': 31, '+block': 73, '+magicBlock': 51}, 'source': equipmentSources.wizardRobe, icon: 'clothArmor'});
+addItem(61, {'slot': 'body', 'type': 'clothArmor', 'name': 'Blessed Vestment', 'bonuses': {'+armor': 40, '+block': 80, '+magicBlock': 56, '+evasion': 10, '+maxHealth': 60}, 'source': equipmentSources.wizardRobe, icon: 'clothArmor'});
+addItem(71, {'slot': 'body', 'type': 'clothArmor', 'name': 'Divine Vestment', 'bonuses': {'+armor': 50, '+block': 100, '+magicBlock': 75, '+evasion': 20, '+maxHealth': 100}, 'source': equipmentSources.wizardRobe, icon: 'clothArmor'});
 
 //Vambracers gives armor and health
 //addItem(1, {'slot': 'arms', 'type': 'heavyArmor', 'name': 'Corroded Vambracers', 'bonuses': {'+armor': 2, '+maxHealth': 10}, icon: 'vambracers'});
@@ -161,12 +167,12 @@ addItem(13, {'slot': 'arms', 'type': 'clothArmor', 'name': 'Cotten Mittens', 'bo
 addItem(18, {'slot': 'arms', 'type': 'clothArmor', 'name': 'Fur Gloves', 'bonuses': {'+block': 34, '+magicBlock': 17}, 'source': equipmentSources.leatherGloves, icon: 'gloves'});
 addItem(23, {'slot': 'arms', 'type': 'clothArmor', 'name': 'Cashmere Gloves', 'bonuses': {'+block': 42, '+magicBlock': 21}, 'source': equipmentSources.leatherGloves, icon: 'gloves'});
 addItem(28, {'slot': 'arms', 'type': 'clothArmor', 'name': 'Silk Gloves', 'bonuses': {'+block': 50, '+magicBlock': 25}, 'source': equipmentSources.leatherGloves, icon: 'gloves'});
-addItem(33, {'slot': 'arms', 'type': 'clothArmor', 'name': 'Angora Gloves', 'bonuses': {'+block': 58, '+magicBlock': 29}, 'source': equipmentSources.leatherGloves, icon: 'gloves'});
-addItem(38, {'slot': 'arms', 'type': 'clothArmor', 'name': 'Velvet Gloves', 'bonuses': {'+block': 66, '+magicBlock': 33}, 'source': equipmentSources.leatherGloves, icon: 'gloves'});
-addItem(43, {'slot': 'arms', 'type': 'clothArmor', 'name': 'Embroidered Gloves', 'bonuses': {'+block': 74, '+magicBlock': 37}, 'source': equipmentSources.leatherGloves, icon: 'gloves'});
-addItem(48, {'slot': 'arms', 'type': 'clothArmor', 'name': 'Sorcerous Gloves', 'bonuses': {'+block':82, '+magicBlock': 41}, 'source': equipmentSources.leatherGloves, icon: 'gloves'});
-addItem(58, {'slot': 'arms', 'type': 'clothArmor', 'name': 'Blessed Gloves', 'bonuses': {'+block': 85, '+magicBlock': 50, '+armor': 5, '+evasion': 5, '+maxHealth': 35}, 'source': equipmentSources.leatherGloves, icon: 'gloves'});
-addItem(68, {'slot': 'arms', 'type': 'clothArmor', 'name': 'Divine Gloves', 'bonuses': {'+block': 100, '+magicBlock': 60, '+armor': 10, '+evasion': 10, '+maxHealth': 60}, 'source': equipmentSources.leatherGloves, icon: 'gloves'});
+addItem(33, {'slot': 'arms', 'type': 'clothArmor', 'name': 'Angora Gloves', 'bonuses': {'+block': 58, '+magicBlock': 29}, 'source': equipmentSources.wizardSleeves, icon: 'gloves'});
+addItem(38, {'slot': 'arms', 'type': 'clothArmor', 'name': 'Velvet Gloves', 'bonuses': {'+block': 66, '+magicBlock': 33}, 'source': equipmentSources.wizardSleeves, icon: 'gloves'});
+addItem(43, {'slot': 'arms', 'type': 'clothArmor', 'name': 'Embroidered Gloves', 'bonuses': {'+block': 74, '+magicBlock': 37}, 'source': equipmentSources.wizardSleeves, icon: 'gloves'});
+addItem(48, {'slot': 'arms', 'type': 'clothArmor', 'name': 'Sorcerous Gloves', 'bonuses': {'+block':82, '+magicBlock': 41}, 'source': equipmentSources.wizardSleeves, icon: 'gloves'});
+addItem(58, {'slot': 'arms', 'type': 'clothArmor', 'name': 'Blessed Gloves', 'bonuses': {'+block': 85, '+magicBlock': 50, '+armor': 5, '+evasion': 5, '+maxHealth': 35}, 'source': equipmentSources.wizardSleeves, icon: 'gloves'});
+addItem(68, {'slot': 'arms', 'type': 'clothArmor', 'name': 'Divine Gloves', 'bonuses': {'+block': 100, '+magicBlock': 60, '+armor': 10, '+evasion': 10, '+maxHealth': 60}, 'source': equipmentSources.wizardSleeves, icon: 'gloves'});
 
 //Greaves gives armor and health
 //addItem(1, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Corroded Skirt', 'bonuses': {'+armor': 3, '+maxHealth': 10}, icon: 'greaves'});
@@ -205,13 +211,13 @@ addItem(9, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Linen Shorts', 'bonus
 addItem(14, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Cotten Shorts', 'bonuses': {'+block': 27, '+magicBlock': 16}, source: equipmentSources.shorts, icon: 'tights'});
 addItem(19, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Fur Tights', 'bonuses': {'+block': 35, '+magicBlock': 21}, source: equipmentSources.shorts, icon: 'tights'});
 addItem(24, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Cashmere Tights', 'bonuses': {'+block': 43, '+magicBlock': 26}, source: equipmentSources.shorts, icon: 'tights'});
-addItem(29, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Silk Tights', 'bonuses': {'+block': 51, '+magicBlock': 31}, source: equipmentSources.shorts, icon: 'tights'});
-addItem(34, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Angora Tights', 'bonuses': {'+block': 59, '+magicBlock': 36}, source: equipmentSources.shorts, icon: 'tights'});
-addItem(39, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Velvet Tights', 'bonuses': {'+block': 67, '+magicBlock': 41}, source: equipmentSources.shorts, icon: 'tights'});
-addItem(44, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Embroidered Tights', 'bonuses': {'+block': 75, '+magicBlock': 46}, source: equipmentSources.shorts, icon: 'tights'});
-addItem(49, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Sorcerous Tights', 'bonuses': {'+block': 83, '+magicBlock': 51}, source: equipmentSources.shorts, icon: 'tights'});
-addItem(59, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Blessed Tights', 'bonuses': {'+block': 90, '+magicBlock': 60, '+armor': 10, '+evasion': 10, '+maxHealth': 60}, source: equipmentSources.shorts, icon: 'tights'});
-addItem(69, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Divine Tights', 'bonuses': {'+block': 100, '+magicBlock': 70, '+armor': 20, '+evasion': 20, '+maxHealth': 60}, source: equipmentSources.shorts, icon: 'tights'});
+addItem(29, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Silk Tights', 'bonuses': {'+block': 51, '+magicBlock': 31}, source: equipmentSources.wizardPants, icon: 'tights'});
+addItem(34, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Angora Tights', 'bonuses': {'+block': 59, '+magicBlock': 36}, source: equipmentSources.wizardPants, icon: 'tights'});
+addItem(39, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Velvet Tights', 'bonuses': {'+block': 67, '+magicBlock': 41}, source: equipmentSources.wizardPants, icon: 'tights'});
+addItem(44, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Embroidered Tights', 'bonuses': {'+block': 75, '+magicBlock': 46}, source: equipmentSources.wizardPants, icon: 'tights'});
+addItem(49, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Sorcerous Tights', 'bonuses': {'+block': 83, '+magicBlock': 51}, source: equipmentSources.wizardPants, icon: 'tights'});
+addItem(59, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Blessed Tights', 'bonuses': {'+block': 90, '+magicBlock': 60, '+armor': 10, '+evasion': 10, '+maxHealth': 60}, source: equipmentSources.wizardPants, icon: 'tights'});
+addItem(69, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Divine Tights', 'bonuses': {'+block': 100, '+magicBlock': 70, '+armor': 20, '+evasion': 20, '+maxHealth': 60}, source: equipmentSources.wizardPants, icon: 'tights'});
 
 //Sabatons gives armor and health
 //addItem(1, {'slot': 'feet', 'type': 'heavyArmor', 'name': 'Corroded Sabatons', 'bonuses': {'+armor': 2, '+maxHealth': 5, '-speed': 50}, 'offset': 8, icon: 'sabatons'});
@@ -250,13 +256,13 @@ addItem(10, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Winged Sandals', 'bo
 addItem(15, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Cotton Slippers', 'bonuses': {'+block': 13, '+magicBlock': 13, '+speed': 40}, 'source': equipmentSources.sandals, icon: 'shoes'});
 addItem(20, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Fur Slippers', 'bonuses': {'+block': 17, '+magicBlock': 17, '+speed': 50}, 'source': equipmentSources.sandals, icon: 'shoes'});
 addItem(25, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Cashmere Slippers', 'bonuses': {'+block': 21, '+magicBlock': 21, '+speed': 60}, 'source': equipmentSources.sandals, icon: 'shoes'});
-addItem(30, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Silk Slippers', 'bonuses': {'+block': 25, '+magicBlock': 25, '+speed': 70}, 'source': equipmentSources.sandals, icon: 'shoes'});
-addItem(35, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Angora Slippers', 'bonuses': {'+block': 29, '+magicBlock': 29, '+speed': 80}, 'source': equipmentSources.sandals, icon: 'shoes'});
-addItem(40, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Velvet Slippers', 'bonuses': {'+block': 33, '+magicBlock': 33, '+speed': 90}, 'source': equipmentSources.sandals, icon: 'shoes'});
-addItem(45, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Embroidered Slippers', 'bonuses': {'+block': 37, '+magicBlock': 37, '+speed': 100}, 'source': equipmentSources.sandals, icon: 'shoes'});
-addItem(50, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Sourcerous Slippers', 'bonuses': {'+block': 41, '+magicBlock': 41, '+speed': 110}, 'source': equipmentSources.sandals, icon: 'shoes'});
-addItem(60, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Blessed Sandals', 'bonuses': {'+block': 50, '+magicBlock': 50, '+armor': 5, '+evasion': 5, '+maxHealth': 35, '+speed': 120}, 'source': equipmentSources.sandals, icon: 'shoes'});
-addItem(70, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Divine Sandals', 'bonuses': {'+block': 70, '+magicBlock': 60, '+armor': 10, '+evasion': 10, '+maxHealth': 60, '*speed': 1.2, '+speed': 50}, 'source': equipmentSources.sandals, icon: 'shoes'});
+addItem(30, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Silk Slippers', 'bonuses': {'+block': 25, '+magicBlock': 25, '+speed': 70}, 'source': equipmentSources.wizardSandals, icon: 'shoes'});
+addItem(35, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Angora Slippers', 'bonuses': {'+block': 29, '+magicBlock': 29, '+speed': 80}, 'source': equipmentSources.wizardSandals, icon: 'shoes'});
+addItem(40, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Velvet Slippers', 'bonuses': {'+block': 33, '+magicBlock': 33, '+speed': 90}, 'source': equipmentSources.wizardSandals, icon: 'shoes'});
+addItem(45, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Embroidered Slippers', 'bonuses': {'+block': 37, '+magicBlock': 37, '+speed': 100}, 'source': equipmentSources.wizardSandals, icon: 'shoes'});
+addItem(50, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Sourcerous Slippers', 'bonuses': {'+block': 41, '+magicBlock': 41, '+speed': 110}, 'source': equipmentSources.wizardSandals, icon: 'shoes'});
+addItem(60, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Blessed Sandals', 'bonuses': {'+block': 50, '+magicBlock': 50, '+armor': 5, '+evasion': 5, '+maxHealth': 35, '+speed': 120}, 'source': equipmentSources.wizardSandals, icon: 'shoes'});
+addItem(70, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Divine Sandals', 'bonuses': {'+block': 70, '+magicBlock': 60, '+armor': 10, '+evasion': 10, '+maxHealth': 60, '*speed': 1.2, '+speed': 50}, 'source': equipmentSources.wizardSandals, icon: 'shoes'});
 
 //Heavy Shields
 addItem(2, {'slot': 'offhand', 'type': 'heavyShield', 'tags': ['shield'], 'name': 'Wooden Board', 'bonuses': {'+maxHealth': 20, '+block': 3}, 'icon': 'heavyShield'});
