@@ -223,7 +223,6 @@ function importAdventurer(adventurerData) {
     var adventurer = makeAdventurerFromData(adventurerData);
     for (var i = 0; i < ifdefor(window.testAbilities, []).length; i++) {
         adventurer.abilities.push(testAbilities[i]);
-        console.log(abilityHelpText(testAbilities[i], adventurer));
     }
     $.each(adventurerData.equipment, function (key, itemData) {
         if (itemData) {

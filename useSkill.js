@@ -26,6 +26,10 @@ function useSkill(actor, skill, target, attackStats) {
         skill.readyAt = actor.time + 1000;
         return false;
     }
+    // Healing attack adds a new healing basic attack and deactivates normal basic attack.
+    if (skill.tags['basic'] && actor.healingAttacks) {
+        return false;
+    }
     if (target && ifdefor(skill.base.targetDeadUnits) && !target.isDead) {
         // Skills that target dead units can only be used on targets that are dying.
         return false;
@@ -66,6 +70,9 @@ function useSkill(actor, skill, target, attackStats) {
             return false;
         }
         if (ifdefor(skill.base.target) === 'self' && actor !== target) {
+            return false;
+        }
+        if (ifdefor(skill.base.target) === 'otherAllies' && (actor === target || actor.allies.indexOf(target) < 0)) {
             return false;
         }
         if (ifdefor(skill.base.target) === 'allies' && actor.allies.indexOf(target) < 0) {

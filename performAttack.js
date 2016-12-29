@@ -373,6 +373,13 @@ function applyAttackToTarget(attackStats, target) {
     }
     var damage = Math.floor(attackStats.damage * multiplier * effectiveness);
     var magicDamage = Math.floor(attackStats.magicDamage * multiplier * effectiveness);
+    if (attack.heals) {
+        hitText.color = 'green';
+        hitText.value = damage + magicDamage;
+        target.health += (damage + magicDamage);
+        character.textPopups.push(hitText);
+        return true;
+    }
     attackStats.evaded = false;
     if (!ifdefor(attack.alwaysHits)) {
         var evasionRoll = (target.maxEvasion ? 1 : Math.random()) * target.evasion;

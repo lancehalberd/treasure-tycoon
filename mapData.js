@@ -1633,7 +1633,7 @@ var map = {
         'coords': [-378,451,-119],
         'background': "beach",
         'unlocks': ["tomb","paladin6","priest7"],
-        'skill': null,
+        'skill': "wandParadigmShift",
         'enemySkills': [],
         'monsters': [],
         'events': []

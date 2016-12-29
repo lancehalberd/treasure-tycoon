@@ -105,7 +105,7 @@ var abilities = {
     'wandRange': {'name': 'Wand Range', 'icon': 'gfx/496RpgIcons/buffWand.png', 'bonuses': {'+wand:weaponRange': 2, '%wand:weaponMagicDamage': .3}},
     'wandAttackSpeed': {'name': 'Wand Attack Speed', 'icon': 'gfx/496RpgIcons/buffWand.png', 'bonuses': {'%wand:attackSpeed': .2, '%wand:weaponMagicDamage': .2}},
     'wandCritChance': {'name': 'Wand Critical Chance', 'icon': 'gfx/496RpgIcons/buffWand.png', 'bonuses': {'%wand:critChance': .3, '%wand:weaponMagicDamage': .3}},
-    //'wandParadigmShift': {'name': '', 'icon': 'gfx/496RpgIcons/buffWand.png', 'bonuses': {'%:': .3, '%:': .3}},
+    'wandParadigmShift': {'name': 'Healing Attacks', 'icon': 'gfx/496RpgIcons/buffWand.png', 'bonuses': {'$wand:healingAttacks': true}, 'action': skills.healingAttack},
     'staffDamage': {'name': 'Staff Damage', 'icon': 'gfx/496RpgIcons/buffStaff.png', 'bonuses': {'%staff:weaponDamage': .5, '%staff:accuracy': .2}},
     'staffCritDamage': {'name': 'Staff Crit Damage', 'icon': 'gfx/496RpgIcons/buffStaff.png', 'bonuses': {'+staff:critDamage': .3, '%staff:weaponMagicDamage': .3}},
     'staffAccuracy': {'name': 'Staff Accuracy', 'icon': 'gfx/496RpgIcons/buffStaff.png', 'bonuses': {'%staff:accuracy': .3, '%staff:weaponDamage': .3}},

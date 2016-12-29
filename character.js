@@ -32,6 +32,7 @@ var allActorVariables = {
     // Used by Throwing Paradigm Shift which turns throwing weapons into melee weapons.
     'setRange': 'Override melee/ranged tags and weaponRange to specific values',
     'cannotAttack': 'Set to prevent a character from using actions with attack tag.',
+    'healingAttacks': 'Set to make basic attack heal allies instead of damage enemies.',
     // tracked for debuffs that deal damage over time
     'damageOverTime': '.',
     // For enemy loot and color
@@ -71,6 +72,7 @@ var commonActionVariables = {
     'cull': '.',
     'armorPenetration': '.',
     'instantCooldownChance': '.', // %chance to ignore cooldown for an action
+    'heals': 'Attack damage heals the target instead of hurting them.',
     // special flags
     'alwaysHits': '.',
     'chaining': '.',

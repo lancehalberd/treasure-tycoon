@@ -82,6 +82,7 @@ var skills = {
 
     // Attack actions
     'basicAttack': attackAction('attack', {'tags': ['basic']}, {}, 'A basic attack'),
+    'healingAttack': attackAction('attack', {'animation': 'wandHealing', 'restrictions': ['wand'], 'target': 'otherAllies'}, {'$heals': true}, 'Basic attacks heal allies instead of damage enemies.'),
     'bullseye': attackAction('attack', {'icon': 'gfx/496RpgIcons/target.png'}, {'*damage': 2, '+cooldown': 15, '$alwaysHits': 'Never misses', '$undodgeable': 'Cannot be dodged'}),
     'counterAttack': attackAction('counterAttack', {}, {'*damage': 1.5, '+chance': .1},
                             'Perform a powerful counter attack.<br/>The chance to counter is lower the further away the attacker is.'),
