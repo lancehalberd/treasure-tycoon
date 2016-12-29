@@ -43,6 +43,7 @@ var equipmentSources = {
     'sword': equipmentSource(hand, 7),
     // Accesories
     'bracelet': equipmentSource(hand, 1),
+    'ring': equipmentSource(hand, 11),
 };
 
 //Heavy Helmets gives armor and health
