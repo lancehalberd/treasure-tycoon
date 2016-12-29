@@ -71,6 +71,7 @@ function initializeProjectileAnimations() {
     projectileAnimations['fireball'] = {'image': images['gfx/projectiles.png'], 'frames': [[0, 0, 20, 20], [32, 0, 20, 20], [64, 0, 20, 20]]};
     var projectileCanvas = createCanvas(96, 96);
     var context = projectileCanvas.getContext('2d');
+    prepareTintedImage();
     var tintedRow = getTintedImage(images['gfx/projectiles.png'], 'green', .5, {'left':96, 'top':32, 'width': 96, 'height': 32});
     context.drawImage(tintedRow, 0, 0, 96, 32, 0, 0, 96, 32);
     context.save();
@@ -81,6 +82,7 @@ function initializeProjectileAnimations() {
     projectileAnimations['wandHealing'] = {'image': projectileCanvas, 'frames': [[0, 0, 20, 20], [32, 0, 20, 20], [64, 0, 20, 20], [32, 0, 20, 20]], 'fps': 20};
     context.restore();
     context.save();
+    prepareTintedImage();
     tintedRow = getTintedImage(images['gfx/projectiles.png'], 'orange', .5, {'left':96, 'top':32, 'width': 96, 'height': 32});
     context.drawImage(tintedRow, 0, 0, 96, 32, 0, 32, 96, 32);
     context.translate(32 + 10, 32 + 10);
@@ -89,6 +91,18 @@ function initializeProjectileAnimations() {
     context.drawImage(tintedRow, 32, 0, 20, 20, -10, -10, 20, 20);
     projectileAnimations['wandAttack'] = {'image': projectileCanvas, 'frames': [[0, 32, 20, 20], [32, 32, 20, 20], [64, 32, 20, 20], [32, 32, 20, 20]], 'fps': 20};
     context.restore();
+    prepareTintedImage();
+    tintedRow = getTintedImage(images['gfx/moneyIcon.png'], 'red', .5, {'left':0, 'top':0, 'width': 32, 'height': 32});
+    context.drawImage(tintedRow, 0, 0, 20, 20, 0, 64, 20, 20);
+    projectileAnimations['throwingAttack'] = {'image': projectileCanvas, 'frames': [[0, 64, 20, 20]]};
+    context.fillStyle = 'brown';
+    context.fillRect(32, 72, 15, 1);
+    context.fillRect(32, 73, 20, 1);
+    context.fillStyle = 'white';
+    context.fillRect(32, 71, 5, 1);
+    context.fillRect(32, 74, 5, 1);
+    projectileAnimations['bowAttack'] = {'image': projectileCanvas, 'frames': [[32, 64, 20, 20]]};
+    //$('body').append(projectileCanvas);
 }
 var mainCanvas, mainContext, jewelsCanvas, jewelsContext, previewContext;
 // Load any graphic assets needed by the game here.

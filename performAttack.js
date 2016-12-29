@@ -172,11 +172,18 @@ function createAttackStats(attacker, attack, target) {
         throw new Error('Missing animation for ' + animation);
     }
     animation = projectileAnimations[animation];
+    var gravity = ifdefor(attack.base.gravity);
+    if (!gravity && attacker.equipment.weapon) {
+        gravity = ifdefor(attacker.equipment.weapon.base.gravity);
+    }
+    if (!gravity) {
+        gravity = .8;
+    }
     return {
         'distance': 0,
         'animation': animation,
         'size': animation ? animation.frames[0][2] : ifdefor(attack.base.size),
-        'gravity': ifdefor(attack.gravity, ifdefor(attack.base.gravity, .8)),
+        'gravity': gravity,
         'speed': ifdefor(attack.speed, ifdefor(attack.base.speed, ifdefor(attack.range, 10) * 2.5)),
         'healthSacrificed': sacrificedHealth,
         'source': attacker,
@@ -213,7 +220,7 @@ function createSpellStats(attacker, spell, target) {
         'distance': 0,
         'animation': animation,
         'size': animation ? animation.frames[0][2] : ifdefor(attack.base.size),
-        'gravity': ifdefor(spell.gravity, ifdefor(spell.base.gravity, .8)),
+        'gravity': ifdefor(spell.base.gravity, .8),
         'speed': ifdefor(spell.speed, ifdefor(spell.base.speed, ifdefor(spell.range, 10) * 2.5)),
         'healthSacrificed': sacrificedHealth,
         'source': attacker,
