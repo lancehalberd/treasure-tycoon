@@ -269,8 +269,8 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
             mainContext.save();
             mainContext.translate(self.x - character.cameraX, groundY - self.y);
             if (self.vx < 0) mainContext.scale(-1, 1);
-            if (self.attackStats.attack.base.animation && projectileAnimations[self.attackStats.attack.base.animation]) {
-                var animation = projectileAnimations[self.attackStats.attack.base.animation];
+            if (self.attackStats.animation) {
+                var animation = self.attackStats.animation
                 var frame = animation.frames[Math.floor(self.t / 5) % animation.frames.length];
                 mainContext.drawImage(animation.image, frame[0], frame[1], frame[2], frame[3],
                                    -size / 2, -size / 2, size, size);

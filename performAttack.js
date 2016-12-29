@@ -163,8 +163,19 @@ function createAttackStats(attacker, attack, target) {
         magicDamage *= (1 + attack.critDamage);
         accuracy *= (1 + attack.critAccuracy);
     }
+    var animation = ifdefor(attack.base.animation);
+    if (!animation && attacker.equipment.weapon) {
+        animation = ifdefor(attacker.equipment.weapon.base.animation);
+    }
+    if (animation && !projectileAnimations[animation]) {
+        pause();
+        throw new Error('Missing animation for ' + animation);
+    }
+    animation = projectileAnimations[animation];
     return {
         'distance': 0,
+        'animation': animation,
+        'size': animation ? animation.frames[0][2] : ifdefor(attack.base.size),
         'gravity': ifdefor(attack.gravity, ifdefor(attack.base.gravity, .8)),
         'speed': ifdefor(attack.speed, ifdefor(attack.base.speed, ifdefor(attack.range, 10) * 2.5)),
         'healthSacrificed': sacrificedHealth,
@@ -192,8 +203,16 @@ function createSpellStats(attacker, spell, target) {
     if (isCritical) {
         magicDamage *= (1 + spell.critDamage);
     }
+    var animation = ifdefor(spell.base.animation);
+    if (animation && !projectileAnimations[animation]) {
+        pause();
+        throw new Error('Missing animation for ' + animation);
+    }
+    animation = projectileAnimations[animation];
     return {
         'distance': 0,
+        'animation': animation,
+        'size': animation ? animation.frames[0][2] : ifdefor(attack.base.size),
         'gravity': ifdefor(spell.gravity, ifdefor(spell.base.gravity, .8)),
         'speed': ifdefor(spell.speed, ifdefor(spell.base.speed, ifdefor(spell.range, 10) * 2.5)),
         'healthSacrificed': sacrificedHealth,
@@ -265,7 +284,7 @@ function performAttackProper(attackStats, target) {
             var vx = (x > currentTarget.x) ? -1 : 1;
             attacker.character.projectiles.push(projectile(
                 attackStats, x, y, vx, vy, currentTarget, i * 10, // delay is in frames
-                attackStats.isCritical ? 'yellow' : 'red', ifdefor(attackStats.attack.base.size, 20) * (attackStats.isCritical ? 1.5 : 1)));
+                attackStats.isCritical ? 'yellow' : 'red', ifdefor(attackStats.size, 20) * (attackStats.isCritical ? 1.5 : 1)));
         }
     } else if (attackStats.attack.tags['ranged']) {
         var distance = getDistance(attacker, target);
@@ -274,7 +293,7 @@ function performAttackProper(attackStats, target) {
         var v = getProjectileVelocity(attackStats, x, y, target);
         attacker.character.projectiles.push(projectile(
             attackStats, x, y, v[0], v[1], target, 0,
-            attackStats.isCritical ? 'yellow' : 'red', ifdefor(attackStats.attack.base.size, 10) * (attackStats.isCritical ? 1.5 : 1)));
+            attackStats.isCritical ? 'yellow' : 'red', ifdefor(attackStats.size, 10) * (attackStats.isCritical ? 1.5 : 1)));
     } else {
         attackStats.distance = getDistance(attacker, target);
         // apply melee attacks immediately
