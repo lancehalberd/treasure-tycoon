@@ -78,7 +78,7 @@ function initializeProjectileAnimations() {
     context.rotate(Math.PI / 8);
     context.clearRect(-10, -10, 20, 20);
     context.drawImage(tintedRow, 32, 0, 20, 20, -10, -10, 20, 20);
-    projectileAnimations['wandHealing'] = {'image': projectileCanvas, 'frames': [[0, 0, 20, 20], [32, 0, 20, 20], [64, 0, 20, 20], [32, 0, 20, 20]]};
+    projectileAnimations['wandHealing'] = {'image': projectileCanvas, 'frames': [[0, 0, 20, 20], [32, 0, 20, 20], [64, 0, 20, 20], [32, 0, 20, 20]], 'fps': 20};
     context.restore();
     context.save();
     tintedRow = getTintedImage(images['gfx/projectiles.png'], 'orange', .5, {'left':96, 'top':32, 'width': 96, 'height': 32});
@@ -87,7 +87,7 @@ function initializeProjectileAnimations() {
     context.rotate(Math.PI / 8);
     context.clearRect(-10, -10, 20, 20);
     context.drawImage(tintedRow, 32, 0, 20, 20, -10, -10, 20, 20);
-    projectileAnimations['wandAttack'] = {'image': projectileCanvas, 'frames': [[0, 32, 20, 20], [32, 32, 20, 20], [64, 32, 20, 20], [32, 32, 20, 20]]};
+    projectileAnimations['wandAttack'] = {'image': projectileCanvas, 'frames': [[0, 32, 20, 20], [32, 32, 20, 20], [64, 32, 20, 20], [32, 32, 20, 20]], 'fps': 20};
     context.restore();
 }
 var mainCanvas, mainContext, jewelsCanvas, jewelsContext, previewContext;
