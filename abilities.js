@@ -283,7 +283,7 @@ var abilities = {
         'enhanceArmor': {'name': 'Enhance Armor', 'bonuses': {'+strength': 5, '+intelligence': 10}, 'action': skills.enhanceArmor},
         'enhanceAbility': {'name': 'Enhance Ability', 'bonuses': {'+strength': 10, '+intelligence': 10}, 'action': skills.enhanceAbility},
     'sageIndex': {'name': '---Sage---'},
-        'sage': {'name': 'Profound Insight', 'bonuses': {'%cooldown': -.5}},
+        'sage': {'name': 'Profound Insight', 'bonuses': {'*cooldown': .5}},
         'stopTime': {'name': 'Stop Time', 'bonuses': {'+intelligence': 10}, 'reaction': skills.stopTime},
         'dispell': {'name': 'Dispell', 'bonuses': {'+intelligence': 15}, 'action': skills.dispell},
         'meteor': {'name': 'Meteor', 'bonuses': {'+intelligence': 20}, 'action': skills.meteor},
@@ -325,6 +325,7 @@ var abilities = {
 };
 var testJob;// = 'blackbelt';
 var testAbilities = [];
+//var testAbilities = [abilities.counterAttack, abilities.fistParadigmShift, abilities.counterChance, abilities.counterPower];
 //var testAbilities = [abilities.fireball, abilities.chainReaction, abilities.wizard];
 //var testAbilities = [abilities.freeze, abilities.absoluteZero, abilities.wizard];
 //var testAbilities = [abilities.storm, abilities.stormDuration, abilities.stormFrequency, abilities.wizard];
