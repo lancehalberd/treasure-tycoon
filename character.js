@@ -138,7 +138,6 @@ function initializeActorForAdventure(actor) {
     actor.stunned = 0;
     actor.pull = null;
     actor.time = 0;
-    actor.animationTime = 0;
     actor.isDead = false;
     actor.timeOfDeath = undefined;
     actor.attackCooldown = 0;

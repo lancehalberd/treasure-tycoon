@@ -55,7 +55,6 @@ function timeStopLoop(character, delta) {
     if (!character.timeStopEffect) return false;
     var actor = character.timeStopEffect.actor;
     actor.time += delta;
-    actor.animationTime += delta * Math.max(.1, 1 - actor.slow);
     if (actor.time >= character.timeStopEffect.endAt) {
         character.timeStopEffect = null;
         return false;
@@ -152,7 +151,6 @@ function adventureLoop(character, delta) {
     // Advance subjective time for each actor.
     everybody.forEach(function (actor) {
         actor.time += delta;
-        actor.animationTime += delta * Math.max(.1, 1 - actor.slow);
         processStatusEffects(character, actor, delta);
     });
     for (var i = 0; i < character.enemies.length; i++) {
@@ -327,7 +325,6 @@ function startNextWave(character) {
         newMonster.character = character;
         initializeActorForAdventure(newMonster);
         newMonster.time = 0;
-        newMonster.animationTime = newMonster.x;
         newMonster.allies = character.enemies;
         newMonster.enemies = character.allies;
         character.enemies.push(newMonster);

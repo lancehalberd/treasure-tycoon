@@ -358,7 +358,6 @@ skillDefinitions.minion = {
         newMonster.allies = actor.allies;
         newMonster.enemies = actor.enemies;
         newMonster.time = 0;
-        newMonster.animationTime = 0;
         addMinionBonuses(actor, minionSkill, newMonster);
         initializeActorForAdventure(newMonster);
         actor.allies.push(newMonster);
@@ -394,7 +393,6 @@ function cloneActor(actor, skill) {
     clone.slow = 0;
     clone.pull = null;
     clone.time = 0;
-    clone.animationTime = 0;
     clone.allEffects = [];
     addMinionBonuses(actor, skill, clone);
     return clone;
