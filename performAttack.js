@@ -219,7 +219,7 @@ function createSpellStats(attacker, spell, target) {
     return {
         'distance': 0,
         'animation': animation,
-        'size': animation ? animation.frames[0][2] : ifdefor(attack.base.size),
+        'size': animation ? animation.frames[0][2] : ifdefor(spell.base.size),
         'gravity': ifdefor(spell.base.gravity, .8),
         'speed': ifdefor(spell.speed, ifdefor(spell.base.speed, ifdefor(spell.range, 10) * 2.5)),
         'healthSacrificed': sacrificedHealth,
