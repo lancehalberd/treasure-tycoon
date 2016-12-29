@@ -139,7 +139,6 @@ async.mapSeries([
     'gfx/chest-closed.png', 'gfx/chest-open.png', // http://opengameart.org/content/treasure-chests
     'gfx/bat.png', // http://opengameart.org/content/bat-32x32
     'gfx/militaryIcons.png', // http://opengameart.org/content/140-military-icons-set-fixed
-    'gfx/oldMap.png', // http://subtlepatterns.com/old-map/
     'gfx/spider.png', // Stephen "Redshrike" Challener as graphic artist and William.Thompsonj as contributor. If reasonable link to this page or the OGA homepage. http://opengameart.org/content/lpc-spider
     'gfx/wolf.png' // Stephen "Redshrike" Challener as graphic artist and William.Thompsonj as contributor. If reasonable link back to this page or the OGA homepage. http://opengameart.org/content/lpc-wolf-animation
 ], loadImage, function(err, results){
