@@ -268,7 +268,7 @@ function moveActor(actor, delta) {
         return;
     }
     var goalTarget = actor.target;
-    if (!goalTarget) {
+    if (!goalTarget || goalTarget.isDead) {
         var bestDistance = 10000;
         actor.enemies.forEach(function (target) {
             if (target.isDead) return;
@@ -465,7 +465,7 @@ function runActorLoop(character, actor) {
 }
 function checkToUseSkillOnTarget(character, actor, target) {
     for(var i = 0; i < ifdefor(actor.actions, []).length; i++) {
-        if (useSkill(actor, actor.actions[i], target, false)) {
+        if (useSkill(actor, actor.actions[i], target, null)) {
             return true;
         }
     }

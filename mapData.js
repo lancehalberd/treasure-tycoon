@@ -1323,7 +1323,7 @@ var map = {
         'coords': [576,83,-147],
         'background': "beach",
         'unlocks': ["foothills","corsair6","monk7"],
-        'skill': null,
+        'skill': "fistParadigmShift",
         'enemySkills': [],
         'monsters': [],
         'events': []

@@ -31,6 +31,7 @@ var allActorVariables = {
     'castKnockBack': '.',
     // Used by Throwing Paradigm Shift which turns throwing weapons into melee weapons.
     'setRange': 'Override melee/ranged tags and weaponRange to specific values',
+    'cannotAttack': 'Set to prevent a character from using actions with attack tag.',
     // tracked for debuffs that deal damage over time
     'damageOverTime': '.',
     // For enemy loot and color
@@ -82,6 +83,7 @@ var commonActionVariables = {
     'instantCooldown': '.',
     'pullsTarget': '.',
     'undodgeable': '.',
+    'dodge': 'This ability dodges incoming attacks. Only implemented for counter attack right now.'
 };
 
 var allRoundedVariables = {
