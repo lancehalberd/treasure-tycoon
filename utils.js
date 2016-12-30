@@ -86,6 +86,19 @@ function copy(object) {
     return jQuery.extend(true, {}, object);
 }
 
+function shallowCopy(object) {
+    if (typeof(object) === 'undefined' || object === null) {
+        return null;
+    }
+    if (typeof(object) === 'string' || typeof(object) === 'number' || typeof(object) === 'boolean') {
+        return object;
+    }
+    if (object.constructor == Array) {
+        return jQuery.extend([], object);
+    }
+    return jQuery.extend({}, object);
+}
+
 function properCase(string) {
     return string.split(' ').map(function (word) {return word.charAt(0).toUpperCase() + word.substring(1)}).join(' ');
 }

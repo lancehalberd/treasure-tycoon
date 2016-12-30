@@ -71,8 +71,14 @@ function explosionEffect(attackStats, x, y) {
     if (!attack.area) {
         throw new Error('Explosion effect called with no area set.');
     }
-    var radius = attack.area * ifdefor(attackStats.effectivness, 1) * 32;
-    var height = ifdefor(attack.base.height, radius);
+    var radius = attack.area * ifdefor(attackStats.effectiveness, 1) * 32;
+    var height = radius;
+    if (attack.base.height) {
+        height = attack.base.height;
+    }
+    if (attack.base.heightRatio) {
+        height = radius * attack.base.heightRatio;
+    }
     var self = {
         'hitTargets': [], 'attack': attack, 'attackStats': attackStats, 'x': x, 'y': y, 'currentFrame': 0, 'done': false,
         'update': function (character) {
@@ -106,8 +112,8 @@ function explosionEffect(attackStats, x, y) {
             mainContext.beginPath();
             mainContext.save();
             mainContext.translate((self.x - character.cameraX), groundY - self.y);
-            mainContext.scale(1, height / currentRadius);
-            mainContext.arc(0, 0, currentRadius, 0, 2 * Math.PI);
+            mainContext.scale(1, height / radius);
+            mainContext.arc(0, 0, currentRadius, ifdefor(self.attack.base.minTheta, 0), ifdefor(self.attack.base.maxTheta, 2 * Math.PI));
             mainContext.fill();
             mainContext.restore();
             mainContext.globalAlpha = 1;
@@ -198,13 +204,14 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
             self.attackStats.distance = self.distance;
             var hit = false;
             if (attackStats.attack.tags['rain'] >= 0) {
-                self.vx = tx - self.x;
-                self.vy = Math.min(self.vy, ty - self.y);
-                var distance = Math.sqrt(self.vx * self.vx + self.vy * self.vy);
-                self.vx *= attackStats.speed / distance;
-                self.vy *= attackStats.speed / distance;
+                //self.vx = tx - self.x;
+                //self.vy = Math.min(self.vy, -self.y);
+                //var distance = Math.sqrt(self.vx * self.vx + self.vy * self.vy);
+                //self.vx *= attackStats.speed / distance;
+                //self.vy *= attackStats.speed / distance;
                 // rain hits when it touches the ground
                 hit = (self.y <= 0);
+                self.y = Math.max(self.y, 0);
             } else {
                 // normal projectiles hit when they get close to the targets center.
                 hit = Math.abs(tx - self.x) <= Math.abs(self.vx) + 1 && Math.abs(ty - self.y) <= ifdefor(self.target.height, 128) + size / 2 && self.target.health > 0;

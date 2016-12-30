@@ -338,17 +338,23 @@ function performAttackProper(attackStats, target) {
         var count = Math.floor(ifdefor(attackStats.attack.count, 1));
         var maxFrameSpread = 250;
         for (var i = 0; i < count; i++) {
+            var projectileAttackStats = shallowCopy(attackStats);
             if (!targets.length) {
                 targets = Random.shuffle(attacker.enemies);
             }
             var currentTarget = targets.pop();
-            var x = attacker.x + attacker.width / 2 + -250 + Math.random() * 750 / (count + 2);
-            var y = 600;
-            var vy = -2;
-            var vx = (x > currentTarget.x) ? -1 : 1;
+            var tx = currentTarget.x + ifdefor(currentTarget.width, 64) / 2;
+            var x = attacker.x + attacker.width / 2 + -250 + Math.random() * 750;
+            var y = 550 + Math.random() * 100;
+            // Point the meteor at the target and hope it hits!
+            var vy = -y;
+            var vx =  tx - x;
+            var mag = Math.sqrt(vx * vx + vy * vy);
+            vy *= 15 / mag;
+            vx *= 15 / mag;
             attacker.character.projectiles.push(projectile(
-                attackStats, x, y, vx, vy, currentTarget, Math.min(i * maxFrameSpread / count, i * 10), // delay is in frames
-                attackStats.isCritical ? 'yellow' : 'red', ifdefor(attackStats.size, 20) * (attackStats.isCritical ? 1.5 : 1)));
+                projectileAttackStats, x, y, vx, vy, currentTarget, Math.min(i * maxFrameSpread / count, i * 10), // delay is in frames
+                projectileAttackStats.isCritical ? 'yellow' : 'red', ifdefor(projectileAttackStats.size, 20) * (projectileAttackStats.isCritical ? 1.5 : 1)));
         }
     } else if (attackStats.attack.tags['ranged']) {
         var distance = getDistance(attacker, target);
@@ -419,7 +425,15 @@ function applyAttackToTarget(attackStats, target) {
             'accuracy': attackStats.accuracy,
             'explode': attackStats.explode - 1
         };
-        var explosion = explosionEffect(explodeAttackStats, target.x + ifdefor(target.width, 64) / 2, ifdefor(attackStats.y, getAttackY(target)));
+        var explosionX,explosionY;
+        if (attackStats.projectile) {
+            explosionX = attackStats.projectile.x;
+            explosionY = attackStats.projectile.y;
+        } else {
+            explosionX = target.x + ifdefor(target.width, 64) / 2;
+            explosionY = ifdefor(attackStats.y, getAttackY(target));
+        }
+        var explosion = explosionEffect(explodeAttackStats, explosionX, explosionY);
         attacker.character.effects.push(explosion);
         explosion.hitTargets.push(target);
     }

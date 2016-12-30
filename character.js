@@ -115,7 +115,7 @@ var coreStatBonusSource = {'bonuses': {
     '+magic:weaponMagicDamage': ['{intelligence}', '/', 10],
     '&maxHealth': '{bonusMaxHealth}',
     '+healthRegen': ['{maxHealth}', '/', 50],
-    '+magicPower': ['{intelligence}', '+', [['{minWeaponMagicDamage}', '+' ,'{maxWeaponMagicDamage}'], '/', 2]],
+    '+magicPower': [[['{intelligence}', '*', '{intelligence}'], '/', 10], '+', [['{minWeaponMagicDamage}', '+' ,'{maxWeaponMagicDamage}'], '*', 3]],
     '+minPhysicalDamage': '{minWeaponPhysicalDamage}',
     '+maxPhysicalDamage': '{maxWeaponPhysicalDamage}',
     '+minMagicDamage': '{minWeaponMagicDamage}',
