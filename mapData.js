@@ -2159,12 +2159,12 @@ var map = {
         'unlocks': ["bayou","cemetery","lostshrine"],
         'skill': "fireball",
         'enemySkills': [],
-        'monsters': ["skeleton","gnomeWizard"],
+        'monsters': ["skeleton","gnomeMage"],
         'events': [
-            ["gnomeWizard","gnomeCleric"],
-            ["gnomeWizard","gnomecromancer"],
-            ["gnomeWizard","gnomeWizard"],
-            ["frostGiant","gnomeWizard"]
+            ["gnomeMage","gnomeCleric"],
+            ["gnomeMage","gnomecromancer"],
+            ["gnomeMage","gnomeMage"],
+            ["frostGiant","gnomeMage"]
         ]
     },
     'tributaries': {

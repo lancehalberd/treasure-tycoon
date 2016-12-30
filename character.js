@@ -414,7 +414,8 @@ function updateAdventurer(adventurer) {
     adventurer.allEffects = [];
     adventurer.minionBonusSources = [];
     var adventurerBonuses = {
-        '+maxHealth': 20 * (adventurer.level + adventurer.job.dexterityBonus + adventurer.job.strengthBonus + adventurer.job.intelligenceBonus),
+        '+maxHealth': 50 + 20 * (adventurer.level + adventurer.job.dexterityBonus + adventurer.job.strengthBonus + adventurer.job.intelligenceBonus),
+        '*maxHealth': Math.pow(1.05, adventurer.level),
         '+accuracy': 2 + 2 * adventurer.level,
         '+evasion': adventurer.level,
         '+block': adventurer.level,

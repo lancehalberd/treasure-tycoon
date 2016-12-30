@@ -203,7 +203,7 @@ function getMonsterBonuses(monster) {
     var growth = monster.level - 1;
     return {
         // Health scales linearly to level 10, then 10% a level.
-        '+maxHealth': (growth <= 10) ? (10 + 20 * growth) : 200 * Math.pow(1.1, growth - 10),
+        '+maxHealth': (10 + 20 * growth) * Math.pow(1.1, growth),
         '+range': 1,
         '+minWeaponPhysicalDamage': Math.round(.9 * (5 + 6 * growth)),
         '+maxWeaponPhysicalDamage': Math.round(1.1 * (5 + 6 * growth)),
@@ -223,6 +223,7 @@ function getMonsterBonuses(monster) {
         '+strength': 5 * growth,
         '+intelligence': 5 * growth,
         '+dexterity': 5 * growth,
+        '*magicPower': .5,
         '+coins': Random.range(1, Math.floor(Math.pow(1.25, growth + 1) * 4)),
         '+anima': Random.range(1, Math.floor(Math.pow(1.25, growth + 1)))
     };
@@ -349,6 +350,12 @@ function initalizeMonsters() {
                             '+block': 4, '+armor': 4, '*armor': 1.5, '*block': 1.5, '*magicBlock': 0, '*magicResist': 0,
                             '*speed': .6},
         'abilities': [abilities.spellAOE, abilities.protect, abilities.heal, abilities.minorIntelligence], 'tags': ['ranged']
+    });
+    addMonster('gnomeMage', {'name': 'Gnome Mage', 'source': gnomeSource, 'fpsMultiplier': 1.5,
+        'implicitBonuses': {'+weaponRange': 4, '*attackSpeed': 1, '+weaponMagicDamage': 4, '*weaponMagicDamage': 1.3,
+                            '+block': 4, '+armor': 4, '*armor': 1.5, '*block': 1.5, '*magicBlock': 0, '*magicResist': 0,
+                            '*speed': .6},
+        'abilities': [abilities.fireball, abilities.wizard], 'tags': ['ranged']
     });
     addMonster('gnomeWizard', {'name': 'Gnome Wizard', 'source': gnomeSource, 'fpsMultiplier': 1.5,
         'implicitBonuses': {'+weaponRange': 4, '*attackSpeed': 1, '+weaponMagicDamage': 4, '*weaponMagicDamage': 1.3,
