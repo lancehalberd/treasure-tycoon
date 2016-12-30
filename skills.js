@@ -147,7 +147,7 @@ var skills = {
                              {'+consumeRatio': .2, '+range': 5, '+count': 0, '+duration': 0},
                              'Consume the spirits of nearby fallen enemies and allies to regenerate your health.'),
     'aiming': genericAction('effect', {'icon': 'gfx/496RpgIcons/target.png', 'target': 'self', 'restrictions': ['ranged']}, {'+cooldown': 30, '$buff': buffEffect({},
-                            {'++range': 5, '+*attackSpeed': .5, '+*weaponDamage': 1.5, '+*accuracy': 1.5, '++critChance': .2, '++critDamage': .3, '+duration': 10})},
+                            {'++range': 2, '+*attackSpeed': .5, '+*weaponDamage': 1.5, '+*accuracy': 1.5, '++critChance': .2, '++critDamage': .3, '+duration': 10})},
                             'Enter a state of heightened perception greatly increasing your sharpshooting abilities while reducing your attack speed. Grants: {$buff}'),
     'smokeBomb': genericAction('criticalCounter', {}, {'$dodgeAttack': true, '+cooldown': 100, '$globalDebuff': debuffEffect({},
                                     {'+*accuracy': 0, '+duration': 5})},
