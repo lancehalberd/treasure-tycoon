@@ -113,7 +113,7 @@ var abilities = {
     'spellCDR': {'name': 'Spell Cooldown Reduction', 'bonuses': {'%spell:cooldown': -.1}},
     'spellPower': {'name': 'Spell Power', 'bonuses': {'%spell:power': .4, '+spell:range': 2}},
     'spellPrecision': {'name': 'Spell Precision', 'bonuses': {'%spell:critChance': .3, '+spell:critDamage': .3}},
-    //'spellParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
+    'spellParadigmShift': {'name': 'Secular Spells', 'bonuses': {'$spell:magicToPhysical': 'Magic damage is dealt as physical damage.'}},
     'axePhysicalDamage': {'name': 'Axe Physical Damage', 'icon': 'gfx/496RpgIcons/buffAxe.png', 'bonuses': {'%axe:weaponPhysicalDamage': .4, '%axe:accuracy': .2}},
     'axeAttackSpeed': {'name': 'Axe Attack Speed', 'icon': 'gfx/496RpgIcons/buffAxe.png', 'bonuses': {'%axe:attackSpeed': .4, '%axe:accuracy': .2}},
     'axeCritDamage': {'name': 'Axe Critical Damage', 'icon': 'gfx/496RpgIcons/buffAxe.png', 'bonuses': {'+axe:critDamage': .3, '%axe:weaponPhysicalDamage': .3}},

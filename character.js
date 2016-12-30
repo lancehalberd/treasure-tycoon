@@ -74,6 +74,7 @@ var commonActionVariables = {
     'armorPenetration': '.',
     'instantCooldownChance': '.', // %chance to ignore cooldown for an action
     'heals': 'Attack damage heals the target instead of hurting them.',
+    'magicToPhysical': 'Magic damage applies as physical damage instead. For spell paradigm shift.',
     // special flags
     'alwaysHits': '.',
     'chaining': '.',

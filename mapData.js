@@ -2074,7 +2074,7 @@ var map = {
         'coords': [-505,291,142],
         'background': "field",
         'unlocks': ["ancientlibrary","fool5"],
-        'skill': null,
+        'skill': "spellParadigmShift",
         'enemySkills': [],
         'monsters': [],
         'events': []

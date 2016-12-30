@@ -439,6 +439,11 @@ function applyAttackToTarget(attackStats, target) {
     }
     var damage = Math.floor(attackStats.damage * multiplier * effectiveness);
     var magicDamage = Math.floor(attackStats.magicDamage * multiplier * effectiveness);
+    // Spell paradigm shift converts all magic damage to physical damage.
+    if (attack.magicToPhysical) {
+        damage += magicDamage;
+        magicDamage = 0;
+    }
     if (attack.heals) {
         hitText.color = 'green';
         hitText.value = damage + magicDamage;
