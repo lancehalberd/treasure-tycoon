@@ -64,16 +64,17 @@ function songEffect(attackStats) {
 }
 
 function explosionEffect(attackStats, x, y) {
-    var color = ifdefor(attackStats.attack.base.color, 'red');
-    var alpha = ifdefor(attackStats.attack.base.alpha, .5);
-    var frames = ifdefor(attackStats.attack.base.frames, 10);
-    if (!attackStats.attack.area) {
+    var attack = attackStats.imprintedSpell || attackStats.attack;
+    var color = ifdefor(attack.base.color, 'red');
+    var alpha = ifdefor(attack.base.alpha, .5);
+    var frames = ifdefor(attack.base.frames, 10);
+    if (!attack.area) {
         throw new Error('Explosion effect called with no area set.');
     }
-    var radius = attackStats.attack.area * ifdefor(attackStats.effectivness, 1) * 32;
-    var height = ifdefor(attackStats.attack.base.height, radius);
+    var radius = attack.area * ifdefor(attackStats.effectivness, 1) * 32;
+    var height = ifdefor(attack.base.height, radius);
     var self = {
-        'hitTargets': [], 'attackStats': attackStats, 'x': x, 'y': y, 'currentFrame': 0, 'done': false,
+        'hitTargets': [], 'attack': attack, 'attackStats': attackStats, 'x': x, 'y': y, 'currentFrame': 0, 'done': false,
         'update': function (character) {
             self.currentFrame++;
             if (self.currentFrame > frames + 5) {
@@ -84,7 +85,7 @@ function explosionEffect(attackStats, x, y) {
                 // areaCoefficient = 0 means the blast is equally effective everywhere.
                 // areaCoefficient = 1 means the blast has no effect at the edge.
                 // areaCoefficient < 0 means the blast has increased effect the further it is from the center.
-                self.attackStats.effectiveness = 1 - currentRadius / radius * ifdefor(self.attackStats.attack.areaCoefficient, 1);
+                self.attackStats.effectiveness = 1 - currentRadius / radius * ifdefor(self.attack.areaCoefficient, 1);
                 for (var i = 0; i < self.attackStats.source.enemies.length; i++) {
                     var target = self.attackStats.source.enemies[i];
                     if (self.hitTargets.indexOf(target) >= 0) continue;
@@ -116,17 +117,18 @@ function explosionEffect(attackStats, x, y) {
 }
 
 function fieldEffect(attackStats, followTarget) {
-    var color = ifdefor(attackStats.attack.base.color, 'red');
-    var alpha = ifdefor(attackStats.attack.base.alpha, .5);
-    var frames = ifdefor(attackStats.attack.base.frames, 10);
-    if (!attackStats.attack.area) {
+    var attack = attackStats.imprintedSpell || attackStats.attack;
+    var color = ifdefor(attack.base.color, 'red');
+    var alpha = ifdefor(attack.base.alpha, .5);
+    var frames = ifdefor(attack.base.frames, 10);
+    if (!attack.area) {
         throw new Error('Field effect called with no area set.');
     }
-    var radius = attackStats.attack.area * ifdefor(attackStats.effectivness, 1) * 32;
-    var height = ifdefor(attackStats.attack.base.height, radius);
-    var endTime = attackStats.source.time + attackStats.attack.duration;
-    var nextHit = attackStats.source.time + 1 / attackStats.attack.hitsPerSecond;
-    var yOffset = getAttackY(attackStats.source) + ifdefor(attackStats.attack.base.yOffset, 0);
+    var radius = attack.area * ifdefor(attackStats.effectivness, 1) * 32;
+    var height = ifdefor(attack.base.height, radius);
+    var endTime = attackStats.source.time + attack.duration;
+    var nextHit = attackStats.source.time + 1 / attack.hitsPerSecond;
+    var yOffset = getAttackY(attackStats.source) + ifdefor(attack.base.yOffset, 0);
     var self = {
         'attackStats': attackStats, 'currentFrame': 0, 'done': false,
         'update': function (character) {
@@ -138,7 +140,7 @@ function fieldEffect(attackStats, followTarget) {
             if (self.attackStats.source.time < nextHit) {
                 return;
             }
-            nextHit += 1 / attackStats.attack.hitsPerSecond;
+            nextHit += 1 / attack.hitsPerSecond;
 
             var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
             var targets = [];
@@ -174,6 +176,11 @@ function fieldEffect(attackStats, followTarget) {
 
 function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
     size = ifdefor(size, 10);
+    if (!size) {
+        pause();
+        console.log(attackStats);
+        throw new Error('Projectile found withou size');
+    }
     var self = {
         'x': x, 'y': y, 'vx': vx, 'vy': vy, 't': 0, 'done': false, 'delay': delay,
         'hit': false, 'target': target, 'attackStats': attackStats, 'hitTargets': [],
@@ -185,10 +192,11 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
             var ty = ifdefor(self.target.y, 0) + ifdefor(self.target.height, 128) / 2;
             self.x += self.vx;
             self.y += self.vy;
+            self.attackStats.distance += Math.sqrt(self.vx * self.vx + self.vy * self.vy);
             var hit = false;
             if (attackStats.attack.tags['rain'] >= 0) {
                 self.vx = tx - self.x;
-                self.vy = Math.max(self.vy, ty - self.y);
+                self.vy = Math.min(self.vy, ty - self.y);
                 var distance = Math.sqrt(self.vx * self.vx + self.vy * self.vy);
                 self.vx *= attackStats.speed / distance;
                 self.vy *= attackStats.speed / distance;
@@ -214,7 +222,6 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
             }
             // Don't do any collision detection once the projectile is spent.
             if (self.hit) return;
-            self.attackStats.distance += Math.sqrt(self.vx * self.vx + self.vy * self.vy);
             if (hit) {
                 self.hit = true;
                 if (ifdefor(self.target.reflectBarrier, 0) > 0) {
@@ -268,6 +275,8 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
             if (self.done || self.delay > 0) return
             mainContext.save();
             mainContext.translate(self.x - character.cameraX, groundY - self.y);
+            var theta = Math.atan2(self.vy, self.vx);
+            mainContext.rotate(-theta);
             if (self.vx < 0) mainContext.scale(-1, 1);
             if (self.attackStats.animation) {
                 var animation = self.attackStats.animation;

@@ -33,6 +33,7 @@ var allActorVariables = {
     'setRange': 'Override melee/ranged tags and weaponRange to specific values',
     'cannotAttack': 'Set to prevent a character from using actions with attack tag.',
     'healingAttacks': 'Set to make basic attack heal allies instead of damage enemies.',
+    'imprintSpell': 'Staff paradigm shift imprints spells on weapon to replace basic attack stats',
     // tracked for debuffs that deal damage over time
     'damageOverTime': '.',
     // For enemy loot and color
@@ -148,6 +149,7 @@ function initializeActorForAdventure(actor) {
     actor.target = null;
     actor.slow = 0;
     actor.rotation = 0;
+    actor.imprintedSpell = null;
     updateActorDimensions(actor, 0);
 }
 function returnToMap(character) {

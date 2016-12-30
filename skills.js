@@ -236,9 +236,9 @@ var skills = {
                     {'+range': 10, '+area': [8, '+', ['{magicPower}', '/', '100']], '+cooldown': 15,
                     '$alwaysHits': 'Never misses', '$debuff': debuffEffect({}, {'+*magicResist': .5, '+*magicBlock': .5, '$duration': 'forever'})},
                     'Premanently reduce the magic resistances of all enemies in a large area.'),
-    'meteor': spellAction('spell', {'icon': 'gfx/496RpgIcons/spellMeteor.png', 'tags': ['rain'], 'height': 20, 'color': 'grey', 'alpha': .4, 'size': 20},
-                       {'+count': [1, '+', ['{magicPower}', '/', '100']], '+explode': 1, '+power': ['{magicPower}', '/', 2],
-                       '+area': [2, '+', ['{magicPower}', '/', '100']], '+cooldown': 15, '$alwaysHits': 'Never misses'},
+    'meteor': spellAction('spell', {'icon': 'gfx/496RpgIcons/spellMeteor.png', 'animation': 'fireball', 'tags': ['rain'], 'height': 20, 'color': 'brown', 'alpha': .4, 'size': 30},
+                       {'+count': [2, '+', ['{magicPower}', '/', '100']], '+explode': 1, '+power': ['{magicPower}', '/', 2],
+                       '+range': 10, '+area': [2, '+', ['{magicPower}', '/', '100']], '+cooldown': 15, '$alwaysHits': 'Never misses'},
                         'Rain {+count} meteors down on your enemies each dealing {+power} damage.')
 };
 // The skill key should be applied as a tag to each skill.

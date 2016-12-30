@@ -2409,7 +2409,7 @@ var map = {
         'coords': [-585,78,-107],
         'background': "field",
         'unlocks': ["dungeon"],
-        'skill': null,
+        'skill': "staffParadigmShift",
         'enemySkills': [],
         'monsters': [],
         'events': []
