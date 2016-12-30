@@ -92,7 +92,7 @@ function initializeProjectileAnimations() {
     projectileAnimations['wandAttack'] = {'image': projectileCanvas, 'frames': [[0, 32, 20, 20], [32, 32, 20, 20], [64, 32, 20, 20], [32, 32, 20, 20]], 'fps': 20};
     context.restore();
     prepareTintedImage();
-    tintedRow = getTintedImage(images['gfx/moneyIcon.png'], 'red', .5, {'left':0, 'top':0, 'width': 32, 'height': 32});
+    tintedRow = getTintedImage(images['gfx/moneyIcon.png'], 'red', .8, {'left':0, 'top':0, 'width': 32, 'height': 32});
     context.drawImage(tintedRow, 0, 0, 20, 20, 0, 64, 20, 20);
     projectileAnimations['throwingAttack'] = {'image': projectileCanvas, 'frames': [[0, 64, 20, 20]]};
     context.fillStyle = 'brown';
