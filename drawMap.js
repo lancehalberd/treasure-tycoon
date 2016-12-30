@@ -8,17 +8,6 @@ function drawMap() {
     var context = mainContext;
 
     if (true) {
-        // Draw parchment backdrop.
-        /*var width = images['gfx/oldMap.png'].width;
-        var height = images['gfx/oldMap.png'].height;
-        for (var x = -mapLeft % width - width; x < mapWidth; x += width) {
-            if (x <= -width) continue;
-            for (var y = -mapTop % height - height; y < mapHeight; y += height) {
-                if (y <= -height) continue;
-                context.drawImage(images['gfx/oldMap.png'], 0, 0, width, height,
-                                  x, y, width, height);
-            }
-        }*/
         context.fillStyle = '#fea';
         context.fillRect(0, 0, mapWidth, mapHeight);
         var visibleRectangle = rectangle(mapLeft - 20, mapTop - 20, mapWidth + 40, mapHeight + 50);
@@ -325,6 +314,18 @@ function textureMap(ctx, texture, pts) {
     // Set clipping area so that only pixels inside the triangle will
     // be affected by the image drawing operation
     ctx.save();
+    // If we draw the triangles exactly, a small sliver of empty space is rendered between them.
+    // To get around this, we draw each triangle centered at [0, 0] scaled up to 101% to
+    // overlap the gap.
+    var center = [(x0 + x1 + x2) / 2, (y0 + y1 + y2) / 2];
+    x0 -= center[0];
+    x1 -= center[0];
+    x2 -= center[0];
+    y0 -= center[1];
+    y1 -= center[1];
+    y2 -= center[1];
+    ctx.translate(center[0], center[1]);
+    ctx.scale(1.01, 1.01);
     ctx.beginPath();
     ctx.moveTo(x0, y0);
     ctx.lineTo(x1, y1);

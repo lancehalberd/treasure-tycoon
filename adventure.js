@@ -55,7 +55,6 @@ function timeStopLoop(character, delta) {
     if (!character.timeStopEffect) return false;
     var actor = character.timeStopEffect.actor;
     actor.time += delta;
-    actor.animationTime += delta * Math.max(.1, 1 - actor.slow);
     if (actor.time >= character.timeStopEffect.endAt) {
         character.timeStopEffect = null;
         return false;
@@ -152,7 +151,6 @@ function adventureLoop(character, delta) {
     // Advance subjective time for each actor.
     everybody.forEach(function (actor) {
         actor.time += delta;
-        actor.animationTime += delta * Math.max(.1, 1 - actor.slow);
         processStatusEffects(character, actor, delta);
     });
     for (var i = 0; i < character.enemies.length; i++) {
@@ -268,7 +266,7 @@ function moveActor(actor, delta) {
         return;
     }
     var goalTarget = actor.target;
-    if (!goalTarget) {
+    if (!goalTarget || goalTarget.isDead) {
         var bestDistance = 10000;
         actor.enemies.forEach(function (target) {
             if (target.isDead) return;
@@ -327,7 +325,6 @@ function startNextWave(character) {
         newMonster.character = character;
         initializeActorForAdventure(newMonster);
         newMonster.time = 0;
-        newMonster.animationTime = newMonster.x;
         newMonster.allies = character.enemies;
         newMonster.enemies = character.allies;
         character.enemies.push(newMonster);
@@ -465,7 +462,7 @@ function runActorLoop(character, actor) {
 }
 function checkToUseSkillOnTarget(character, actor, target) {
     for(var i = 0; i < ifdefor(actor.actions, []).length; i++) {
-        if (useSkill(actor, actor.actions[i], target, false)) {
+        if (useSkill(actor, actor.actions[i], target, null)) {
             return true;
         }
     }

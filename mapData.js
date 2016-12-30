@@ -200,7 +200,7 @@ var map = {
         'background': "cave",
         'unlocks': ["savannah","dancer2"],
         'skill': "distract",
-        'enemySkills': ["sap","meleeDamage","enemyDancing","flatEvasion"],
+        'enemySkills': ["sap","meleeDamage","enemyDancing","flatEvasion","minorIntelligence"],
         'monsters': ["bat"],
         'events': [
             ["vampireBat"]
@@ -1323,7 +1323,7 @@ var map = {
         'coords': [576,83,-147],
         'background': "beach",
         'unlocks': ["foothills","corsair6","monk7"],
-        'skill': null,
+        'skill': "fistParadigmShift",
         'enemySkills': [],
         'monsters': [],
         'events': []
@@ -1633,7 +1633,7 @@ var map = {
         'coords': [-378,451,-119],
         'background': "beach",
         'unlocks': ["tomb","paladin6","priest7"],
-        'skill': null,
+        'skill': "wandParadigmShift",
         'enemySkills': [],
         'monsters': [],
         'events': []

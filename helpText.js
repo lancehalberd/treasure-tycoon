@@ -117,7 +117,10 @@ function bonusSourceHelpText(bonusSource, actor, localObject) {
         }
     });
     $.each(tagBonusSources, function (tags, tagBonusSource) {
-        sections.push(tag('div', 'tagText', tags.split(':').map(tagToCategoryDisplayName).join(',') + ':<br/>' + bonusSourceHelpText(tagBonusSource, actor)));
+        var tagBonusHelpText = bonusSourceHelpText(tagBonusSource, actor);
+        if (tagBonusHelpText) {
+            sections.push(tag('div', 'tagText', tags.split(':').map(tagToCategoryDisplayName).join(',') + ':<br/>' + tagBonusHelpText));
+        }
     });
     if (bonusSource.variableObjectType === 'effect') {
         if (bonusSource.bonuses['+area']) sections.push(renderBonusText(implicitBonusMap, '+area', bonusSource, actor, localObject));

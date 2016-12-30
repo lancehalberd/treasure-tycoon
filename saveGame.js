@@ -19,7 +19,7 @@ function exportState(state) {
     data.anima = state.anima;
     data.characters = state.characters.map(exportCharacter);
     data.visibleLevels = copy(state.visibleLevels);
-    data.maxCraftingLevel = state.maxCraftingLevel;
+    data.maxCraftingLevel = Math.min(80, state.maxCraftingLevel);
     data.craftedItems = state.craftedItems;
     data.craftingLevel = state.craftingLevel;
     data.applications = [];
@@ -213,6 +213,7 @@ function exportAdventurer(adventurer) {
         data.equipment[key] = item ? exportItem(item) : null;
     });
     data.hairOffset = adventurer.hairOffset;
+    data.skinColorOffset = adventurer.skinColorOffset;
     data.jobKey = adventurer.job.key;
     data.level = adventurer.level;
     data.name = adventurer.name;
@@ -222,7 +223,6 @@ function importAdventurer(adventurerData) {
     var adventurer = makeAdventurerFromData(adventurerData);
     for (var i = 0; i < ifdefor(window.testAbilities, []).length; i++) {
         adventurer.abilities.push(testAbilities[i]);
-        console.log(abilityHelpText(testAbilities[i], adventurer));
     }
     $.each(adventurerData.equipment, function (key, itemData) {
         if (itemData) {

@@ -341,7 +341,7 @@ function unlockItemLevel(level) {
     if (level <= state.maxCraftingLevel) {
         return
     }
-    state.maxCraftingLevel = level;
+    state.maxCraftingLevel = Math.min(80, level);
     // Don't set the current crafting level if the player might be in the middle of crafting.
     // It might make them accidentally buy something they don't intend.
     if (currentContext !== 'item') {

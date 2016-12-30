@@ -9,12 +9,14 @@
  *
  * @return boolean True if the skill was used.
  */
-function useSkill(actor, skill, targetOrAttackStats) {
+function useSkill(actor, skill, target, attackStats) {
     if (!skill) return false;
-    // This is a bit gross, but doesn't seem to be breaking anything at the moment.
-    var target = targetOrAttackStats;
     var actionIndex = actor.actions.indexOf(skill);
+    // Only process actions when called with a target.
+    if (!target && actionIndex >= 0) return false;
     var reactionIndex = actor.reactions.indexOf(skill);
+    // Only process reactions when called with attack data.
+    if (!attackStats && reactionIndex >= 0) return false;
     if (actionIndex < 0 && reactionIndex < 0) return false;
     if (skill.readyAt > actor.time) return false;
     var skillDefinition = skillDefinitions[skill.base.type];
@@ -24,10 +26,14 @@ function useSkill(actor, skill, targetOrAttackStats) {
         skill.readyAt = actor.time + 1000;
         return false;
     }
-    if (ifdefor(skill.base.targetDeadUnits) && !target.isDead) {
+    // Healing attack adds a new healing basic attack and deactivates normal basic attack.
+    if (skill.tags['basic'] && actor.healingAttacks) {
+        return false;
+    }
+    if (target && ifdefor(skill.base.targetDeadUnits) && !target.isDead) {
         // Skills that target dead units can only be used on targets that are dying.
         return false;
-    } else if (!ifdefor(skill.base.targetDeadUnits) && target.isDead) {
+    } else if (target && !ifdefor(skill.base.targetDeadUnits) && target.isDead) {
         // Normal skills may not target dying units.
         return false;
     }
@@ -42,6 +48,9 @@ function useSkill(actor, skill, targetOrAttackStats) {
     var isRain = skill.tags['rain']; // Projectiles fall from the sky at targets (meteor)
     var isSpell = skill.tags['spell'];
     var isAOE = skill.cleave || isNova || isField || isBlast || isRain;
+    if (actor.cannotAttack && actionIndex >= 0 && skill.tags['attack']) {
+        return false;
+    }
     // Action skills have targets and won't activate if that target is out of range or not of the correct type.
     if (actionIndex >= 0) {
         // Nova skills use area instead of range for checking for valid targets.
@@ -61,6 +70,9 @@ function useSkill(actor, skill, targetOrAttackStats) {
             return false;
         }
         if (ifdefor(skill.base.target) === 'self' && actor !== target) {
+            return false;
+        }
+        if (ifdefor(skill.base.target) === 'otherAllies' && (actor === target || actor.allies.indexOf(target) < 0)) {
             return false;
         }
         if (ifdefor(skill.base.target) === 'allies' && actor.allies.indexOf(target) < 0) {
@@ -87,9 +99,9 @@ function useSkill(actor, skill, targetOrAttackStats) {
             } else {
                 health = target.health;
             }
-            var attackStats = isSpell ? createSpellStats(actor, skill, target) : createAttackStats(actor, skill, target);
+            var previewAttackStats = isSpell ? createSpellStats(actor, skill, target) : createAttackStats(actor, skill, target);
             // Any life gained by this attack should be considered in the calculation as well in favor of using the attack.
-            var possibleLifeGain = (attackStats.damage + attackStats.magicDamage) * ifdefor(skill.lifeSteal, 0);
+            var possibleLifeGain = (previewAttackStats.damage + previewAttackStats.magicDamage) * ifdefor(skill.lifeSteal, 0);
             var actualLifeGain = actorCanOverHeal(actor) ? possibleLifeGain : Math.min(actor.maxHealth - actor.health, possibleLifeGain);
             // console.log([ifdefor(skill.lifeSteal, 0), possibleLifeGain, actualLifeGain]);
             // Make sure the total health of the target/combined targets is at least
@@ -98,15 +110,15 @@ function useSkill(actor, skill, targetOrAttackStats) {
             // console.log(skill.base.name + ' ' + health + ' < ' + (attackStats.damage + attackStats.magicDamage) + 2 * possibleLifeGain);
             // We weight wasted life gain very high to avoid using life stealing moves when the user has full life,
             // and then weight actual life gained even higher to encourage using life stealing moves that will restore a lot of health.
-            if (health + 8 * actualLifeGain < (attackStats.damage + attackStats.magicDamage) + 5 * possibleLifeGain) {
+            if (health + 8 * actualLifeGain < (previewAttackStats.damage + previewAttackStats.magicDamage) + 5 * possibleLifeGain) {
                 return false;
             }
         }
     }
-    if (!skillDefinition.isValid(actor, skill, target)) {
+    if (!skillDefinition.isValid(actor, skill, target || attackStats)) {
         return false;
     }
-    if (ifdefor(skill.base.consumeCorpse) && target.isDead) {
+    if (target && ifdefor(skill.base.consumeCorpse) && target.isDead) {
         removeActor(target);
     }
     // Only use skill if they meet the RNG for using it. This is currently only used by the
@@ -125,7 +137,7 @@ function useSkill(actor, skill, targetOrAttackStats) {
     }
     // Run shared code for using any action, which does not contain logic specific
     // for an actor using a skill they possess.
-    skillDefinition.use(actor, skill, target);
+    skillDefinition.use(actor, skill, target || attackStats);
     // Apply instant cooldown if it is set.
     if (skill.instantCooldown) {
         // * is wild card meaning all other skills
@@ -150,7 +162,7 @@ function useSkill(actor, skill, targetOrAttackStats) {
     }
 
     actor.lastAction = skill;
-    actor.target = target;
+    if (target) actor.target = target;
     // Every time a skill is used, we push it to the back of possible choices. That
     // way if multiple abilities are always available (such as with 100% CDR),
     // the actor will cycle through them instead of using the first one in the list
@@ -353,7 +365,6 @@ skillDefinitions.minion = {
         newMonster.allies = actor.allies;
         newMonster.enemies = actor.enemies;
         newMonster.time = 0;
-        newMonster.animationTime = 0;
         addMinionBonuses(actor, minionSkill, newMonster);
         initializeActorForAdventure(newMonster);
         actor.allies.push(newMonster);
@@ -366,6 +377,7 @@ function cloneActor(actor, skill) {
     if (actor.personCanvas) {
         clone = makeAdventurerFromJob(actor.job, actor.level, {});
         clone.hairOffset = actor.hairOffset;
+        clone.skinColorOffset = actor.skinColorOffset;
         clone.equipment = actor.equipment;
         updateAdventurer(clone);
         // Add bonuses from source character's abilities/jewel board.
@@ -388,7 +400,6 @@ function cloneActor(actor, skill) {
     clone.slow = 0;
     clone.pull = null;
     clone.time = 0;
-    clone.animationTime = 0;
     clone.allEffects = [];
     addMinionBonuses(actor, skill, clone);
     return clone;
@@ -606,14 +617,27 @@ skillDefinitions.criticalCounter = {
 
 skillDefinitions.counterAttack = {
     isValid: function (actor, counterAttackSkill, attackStats) {
-        if (attackStats.evaded) return false;
+        if (attackStats.evaded) {
+            //console.log("Attack was evaded.");
+            return false;
+        }
         var distance = getDistance(actor, attackStats.source);
-        // Can only counter attack if the target is in range, and the chance to
-        // counter attack is reduced by a factor of the distance.
-        return distance <= counterAttackSkill.range * 32
-            && Math.random() < counterAttackSkill.chance * Math.min(1, 32 / distance);
+        // Can only counter attack if the target is in range, and
+        if (distance > counterAttackSkill.range * 32 + 4) { // Give the range a tiny bit of lee way
+            //console.log("Attacker is too far away: " + [distance, counterAttackSkill.range]);
+            return false;
+        }
+        // The chance to counter attack is reduced by a factor of the distance.
+        if (Math.random() > Math.min(1, 128 / (distance + 64))) {
+            //console.log("Failed distance roll against: " + [distance, Math.min(1, 128 / (distance + 64))]);
+            return false;
+        }
+        return true;
     },
     use: function (actor, counterAttackSkill, attackStats) {
+        if (counterAttackSkill.dodge) {
+            attackStats.dodged = true;
+        }
         performAttack(actor, counterAttackSkill, attackStats.source);
     }
 };
