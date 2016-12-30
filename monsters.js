@@ -137,14 +137,14 @@ function matchingMonsterAffixes(list, monster, alreadyUsed) {
 function updateMonster(monster) {
     // Clear the character's bonuses and graphics.
     initializeVariableObject(monster, monster.base, monster);
-    addBonusSourceToObject(monster, {'bonuses': monster.base.implicitBonuses}, false);
-    addBonusSourceToObject(monster, {'bonuses': getMonsterBonuses(monster)}, false);
-    addBonusSourceToObject(monster, coreStatBonusSource, false);
     monster.actions = [];
     monster.reactions = [];
     monster.onHitEffects = [];
     monster.onCritEffects = [];
     monster.tags = recomputActorTags(monster);
+    addBonusSourceToObject(monster, {'bonuses': monster.base.implicitBonuses}, false);
+    addBonusSourceToObject(monster, {'bonuses': getMonsterBonuses(monster)}, false);
+    addBonusSourceToObject(monster, coreStatBonusSource, false);
     var enchantments = monster.prefixes.length + monster.suffixes.length;
     monster.image = monster.base.source.image.normal;
     if (enchantments > 2) {
