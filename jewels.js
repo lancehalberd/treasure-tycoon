@@ -203,7 +203,7 @@ function updateAdjacencyBonuses(jewel) {
             break;
         case 1:
             if (resonanceBonus) jewel.adjacencyBonuses['%maxHealth'] = resonanceBonus / 100;
-            if (contrastBonus) jewel.adjacencyBonuses['%damage'] = contrastBonus / 100;
+            if (contrastBonus) jewel.adjacencyBonuses['%weaponDamage'] = contrastBonus / 100;
             break;
         case 2:
             if (resonanceBonus) jewel.adjacencyBonuses['%evasion'] = resonanceBonus / 100;
@@ -226,7 +226,7 @@ function updateAdjacencyBonuses(jewel) {
             break;
         case 6:
             if (resonanceBonus) jewel.adjacencyBonuses['+magicBlock'] = resonanceBonus / 10;
-            if (contrastBonus) jewel.adjacencyBonuses['+magicDamage'] = contrastBonus / 10;
+            if (contrastBonus) jewel.adjacencyBonuses['+weaponMagicDamage'] = contrastBonus / 10;
             break;
         case 7:
             // This used to be increased experience, but we don't have xp any more

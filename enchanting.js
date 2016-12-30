@@ -168,23 +168,23 @@ addPrefix(10, 'Flexible', 'diamondring', {'%intelligence': [3, 10, 1000], '%stre
 addPrefix(40, 'Adaptable', 'diamondring', {'%intelligence': [15, 20, 1000], '%strength': [15, 20, 1000], '%dexterity': [15, 20, 1000]});
 addPrefix(80, 'Protean', 'diamondring', {'%intelligence': [26, 33, 1000], '%strength': [26, 33, 1000], '%dexterity': [26, 33, 1000]});
 
-addPrefix(2, 'Damaging', basicHolders, {'%damage': [10, 15, 100]});
-addPrefix(20, 'Harmful', basicHolders, {'%damage': [30, 50, 100]});
-addPrefix(40, 'Injurious', basicHolders, {'%damage': [60, 80, 100]});
+addPrefix(2, 'Damaging', basicHolders, {'%weaponDamage': [10, 15, 100]});
+addPrefix(20, 'Harmful', basicHolders, {'%weaponDamage': [30, 50, 100]});
+addPrefix(40, 'Injurious', basicHolders, {'%weaponDamage': [60, 80, 100]});
 
-addPrefix(2, 'Sparkling', 'choker', {'%damage': [10, 15, 100]});
-addPrefix(20, 'Glowing', 'choker', {'%damage': [30, 50, 100]});
-addPrefix(40, 'Blinding', 'choker', {'%damage': [60, 80, 100]});
+addPrefix(2, 'Sparkling', 'choker', {'%weaponDamage': [10, 15, 100]});
+addPrefix(20, 'Glowing', 'choker', {'%weaponDamage': [30, 50, 100]});
+addPrefix(40, 'Blinding', 'choker', {'%weaponDamage': [60, 80, 100]});
 
-addPrefix(20, 'Vicious', holders.concat(['band']), {'%damage': [40, 60, 100]});
-addPrefix(40, 'Malicious', holders.concat(['band']), {'%damage': [70, 90, 100]});
-addPrefix(60, 'Atrocious', holders, {'%damage': [100, 120, 100]});
-addPrefix(80, 'Inhuman', holders, {'%damage': [130, 150, 100]});
+addPrefix(20, 'Vicious', holders.concat(['band']), {'%weaponDamage': [40, 60, 100]});
+addPrefix(40, 'Malicious', holders.concat(['band']), {'%weaponDamage': [70, 90, 100]});
+addPrefix(60, 'Atrocious', holders, {'%weaponDamage': [100, 120, 100]});
+addPrefix(80, 'Inhuman', holders, {'%weaponDamage': [130, 150, 100]});
 
-addPrefix(20, 'Creative', magicHolders, {'%damage': [40, 60, 100]});
-addPrefix(40, 'Innovative', magicHolders, {'%damage': [70, 90, 100]});
-addPrefix(60, 'Inspired', magicHolders, {'%damage': [100, 120, 100]});
-addPrefix(80, 'Visionary', magicHolders, {'%damage': [130, 150, 100]});
+addPrefix(20, 'Creative', magicHolders, {'%weaponDamage': [40, 60, 100]});
+addPrefix(40, 'Innovative', magicHolders, {'%weaponDamage': [70, 90, 100]});
+addPrefix(60, 'Inspired', magicHolders, {'%weaponDamage': [100, 120, 100]});
+addPrefix(80, 'Visionary', magicHolders, {'%weaponDamage': [130, 150, 100]});
 
 addSuffix(3, 'Range', 'ranged', {'+range': [5, 10, 10]});
 addSuffix(13, 'The Owl', 'ranged', {'+range': [11, 15, 10]});
