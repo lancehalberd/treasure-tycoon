@@ -299,7 +299,7 @@ function moveActor(actor, delta) {
     if (goalTarget && !goalTarget.cloaked) {
         var basicAttackRange = getBasicAttack(actor).range;
         var distanceToTarget = getDistanceOverlap(actor, goalTarget);
-        if (distanceToTarget < (basicAttackRange - 1.5) * 32) {
+        if (distanceToTarget < (Math.min(basicAttackRange - 1.5, 10)) * 32) {
             speedBonus *= -.25;
         } else if (distanceToTarget <= basicAttackRange * 32) {
             speedBonus = 0;
