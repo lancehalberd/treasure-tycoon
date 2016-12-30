@@ -336,17 +336,18 @@ function performAttackProper(attackStats, target) {
         // attackStats.explode--;
         var targets = [];
         var count = Math.floor(ifdefor(attackStats.attack.count, 1));
+        var maxFrameSpread = 250;
         for (var i = 0; i < count; i++) {
             if (!targets.length) {
                 targets = Random.shuffle(attacker.enemies);
             }
             var currentTarget = targets.pop();
-            var x = attacker.x + attacker.width / 2 + 500 * (i + 1) / (count + 2);
+            var x = attacker.x + attacker.width / 2 + -250 + Math.random() * 750 / (count + 2);
             var y = 600;
             var vy = -2;
             var vx = (x > currentTarget.x) ? -1 : 1;
             attacker.character.projectiles.push(projectile(
-                attackStats, x, y, vx, vy, currentTarget, i * 10, // delay is in frames
+                attackStats, x, y, vx, vy, currentTarget, Math.min(i * maxFrameSpread / count, i * 10), // delay is in frames
                 attackStats.isCritical ? 'yellow' : 'red', ifdefor(attackStats.size, 20) * (attackStats.isCritical ? 1.5 : 1)));
         }
     } else if (attackStats.attack.tags['ranged']) {

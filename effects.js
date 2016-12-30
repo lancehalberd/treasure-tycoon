@@ -182,17 +182,20 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
         throw new Error('Projectile found withou size');
     }
     var self = {
-        'x': x, 'y': y, 'vx': vx, 'vy': vy, 't': 0, 'done': false, 'delay': delay,
+        'distance': 0, 'x': x, 'y': y, 'vx': vx, 'vy': vy, 't': 0, 'done': false, 'delay': delay,
         'hit': false, 'target': target, 'attackStats': attackStats, 'hitTargets': [],
         'update': function (character) {
             // Put an absolute cap on how far a projectile can travel
-            if (self.y < 0 || self.attackStats.distance > 2000) self.done = true;
+            if (self.y < 0 || self.distance > 2000) self.done = true;
             if (self.done || self.delay-- > 0) return
             var tx = self.target.x + ifdefor(self.target.width, 64) / 2;
             var ty = ifdefor(self.target.y, 0) + ifdefor(self.target.height, 128) / 2;
             self.x += self.vx;
             self.y += self.vy;
-            self.attackStats.distance += Math.sqrt(self.vx * self.vx + self.vy * self.vy);
+            self.distance += Math.sqrt(self.vx * self.vx + self.vy * self.vy);
+            // attack stats may be shared between multiple projectiles.
+            // this isn't ideal but it is probably okay to just copy local value here.
+            self.attackStats.distance = self.distance;
             var hit = false;
             if (attackStats.attack.tags['rain'] >= 0) {
                 self.vx = tx - self.x;
