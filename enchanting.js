@@ -70,6 +70,13 @@ addPrefix(32, 'Resilient', 'body', {'%maxHealth': [21, 30, 100]});
 addPrefix(52, 'Enduring', 'body', {'%maxHealth': [30, 37, 100]});
 addPrefix(72, 'Perpetual', 'body', {'%maxHealth': [37, 45, 100]});
 
+addPrefix(20, 'Regrowing', 'body', {'%healthRegen': [5, 10, 1000]});
+addPrefix(50, 'Reconstructing', 'body', {'%healthRegen': [11, 15, 1000]});
+addPrefix(70, 'Regenerating', 'body', {'%healthRegen': [16, 20, 1000]});
+
+addPrefix(20, 'Flowing', 'jadeband', {'%healthRegen': [1, 5, 1000]});
+addPrefix(40, 'Surging', 'jadeband', {'%healthRegen': [6, 10, 1000]});
+
 addPrefix(1, 'Sound', smallArmorSlots.concat(accessorySlots), {'%maxHealth': [2, 6, 100]});
 addPrefix(11, 'Hale', smallArmorSlots.concat(accessorySlots), {'%maxHealth': [5, 10, 100]});
 addPrefix(21, 'Robust', smallArmorSlots.concat(accessorySlots), {'%maxHealth': [10, 15, 100]});
@@ -82,7 +89,7 @@ addPrefix(21, 'Thick', armorSlots.concat(['Plated Cloak']), {'%armor': [5, 10, 1
 addPrefix(31, 'Refined', armorSlots.concat(['Plated Cloak']), {'%armor': [10, 15, 100]});
 addPrefix(41, 'Hardened', armorSlots.concat(['Plated Cloak']), {'%armor': [15, 20, 100]});
 addPrefix(51, 'Petrified', armorSlots.concat(['Plated Cloak']), {'%armor': [20, 25, 100]});
-addPrefix(71, 'Indomitable', armorSlots.concat(['Plated Cloak']), {'%armor': [25, 30, 100]});
+addPrefix(71, 'Unbreakable', armorSlots.concat(['Plated Cloak']), {'%armor': [25, 30, 100]});
 
 addPrefix(11, 'Circumspect', armorSlots.concat(['Travelers Cloak']), {'%evasion': [2, 6, 100]});
 addPrefix(21, 'Disguised', armorSlots.concat(['Travelers Cloak']), {'%evasion': [5, 10, 100]});
@@ -98,12 +105,12 @@ addPrefix(41, 'Halting', armorSlots.concat(['Fur Cloak']), {'%block': [15, 20, 1
 addPrefix(51, 'Arresting', armorSlots.concat(['Fur Cloak']), {'%block': [20, 25, 100]});
 addPrefix(71, 'Sequestering', armorSlots.concat(['Fur Cloak']), {'%block': [25, 30, 100]});
 
-addPrefix(11, 'Annoying', armorSlots, {'%magicBlock': [2, 6, 100]});
-addPrefix(21, 'Distracting', armorSlots, {'%magicBlock': [5, 10, 100]});
-addPrefix(31, 'Disconcerting', armorSlots, {'%magicBlock': [10, 15, 100]});
-addPrefix(41, 'Baffling', armorSlots, {'%magicBlock': [15, 20, 100]});
-addPrefix(51, 'Bewildering', armorSlots, {'%magicBlock': [20, 25, 100]});
-addPrefix(71, 'Confounding', armorSlots, {'%magicBlock': [25, 30, 100]});
+addPrefix(11, 'Annoying', armorSlots.concat(['Etched Band']), {'%magicBlock': [2, 6, 100]});
+addPrefix(21, 'Distracting', armorSlots.concat(['Etched Band']), {'%magicBlock': [5, 10, 100]});
+addPrefix(31, 'Disconcerting', armorSlots.concat(['Etched Band']), {'%magicBlock': [10, 15, 100]});
+addPrefix(41, 'Baffling', armorSlots.concat(['Etched Band']), {'%magicBlock': [15, 20, 100]});
+addPrefix(51, 'Bewildering', armorSlots.concat(['Etched Band']), {'%magicBlock': [20, 25, 100]});
+addPrefix(71, 'Confounding', armorSlots.concat(['Etched Band']), {'%magicBlock': [25, 30, 100]});
 
 addPrefix(1, 'Relaxing', armorSlots.concat(accessorySlots), {'+healthRegen': [10, 20, 10]});
 addPrefix(12, 'Relieving', armorSlots.concat(accessorySlots), {'+healthRegen': [20, 50, 10]});
@@ -129,17 +136,33 @@ addPrefix(38, 'Shielded', accessorySlots, {'+magicResist': [80, 120, 1000]});
 addPrefix(48, 'Ensorceled', accessorySlots, {'+magicResist': [120, 160, 1000]});
 addPrefix(68, 'Blessed', accessorySlots, {'+magicResist': [160, 200, 1000]});
 
-addPrefix(10, 'Immense', 'heavyArmor', {'%strength': [10, 30, 1000]});
-addPrefix(40, 'Gigantic', 'heavyArmor', {'%strength': [40, 60, 1000]});
-addPrefix(80, 'Colossal', 'heavyArmor', {'%strength': [80, 100, 1000]});
+addPrefix(10, 'Immense', ['heavyArmor', 'rubyring'], {'%strength': [10, 30, 1000]});
+addPrefix(40, 'Gigantic', ['heavyArmor', 'rubyring'], {'%strength': [40, 60, 1000]});
+addPrefix(80, 'Colossal', ['heavyArmor', 'rubyring'], {'%strength': [80, 100, 1000]});
 
-addPrefix(10, 'Duplicitous', 'lightArmor', {'%dexterity': [10, 30, 1000]});
-addPrefix(40, 'Perfidious', 'lightArmor', {'%dexterity': [40, 60, 1000]});
-addPrefix(80, 'Machiavellian', 'lightArmor', {'%dexterity': [80, 100, 1000]});
+addPrefix(10, 'Duplicitous', ['lightArmor', 'emeraldring'], {'%dexterity': [10, 30, 1000]});
+addPrefix(40, 'Perfidious', ['lightArmor', 'emeraldring'], {'%dexterity': [40, 60, 1000]});
+addPrefix(80, 'Machiavellian', ['lightArmor', 'emeraldring'], {'%dexterity': [80, 100, 1000]});
 
-addPrefix(10, 'Gifted', 'clothArmor', {'%intelligence': [10, 30, 1000]});
-addPrefix(40, 'Brilliant', 'clothArmor', {'%intelligence': [40, 60, 1000]});
-addPrefix(80, 'Unsurpassed', 'clothArmor', {'%intelligence': [80, 100, 1000]});
+addPrefix(10, 'Gifted', ['clothArmor', 'sapphirering'], {'%intelligence': [10, 30, 1000]});
+addPrefix(40, 'Brilliant', ['clothArmor', 'sapphirering'], {'%intelligence': [40, 60, 1000]});
+addPrefix(80, 'Unsurpassed', ['clothArmor', 'sapphirering'], {'%intelligence': [80, 100, 1000]});
+
+addPrefix(10, 'Vital', 'topazring', {'%strength': [5, 15, 1000], '%dexterity': [5, 15, 1000]});
+addPrefix(40, 'Fervant', 'topazring', {'%strength': [20, 30, 1000], '%dexterity': [20, 30, 1000]});
+addPrefix(80, 'Zealous', 'topazring', {'%strength': [40, 50, 1000], '%dexterity': [40, 50, 1000]});
+
+addPrefix(10, 'Glamorous', 'aquamarinering', {'%intelligence': [5, 15, 1000], '%dexterity': [5, 15, 1000]});
+addPrefix(40, 'Seductive', 'aquamarinering', {'%intelligence': [20, 30, 1000], '%dexterity': [20, 30, 1000]});
+addPrefix(80, 'Entrancing', 'aquamarinering', {'%intelligence': [40, 50, 1000], '%dexterity': [40, 50, 1000]});
+
+addPrefix(10, 'Decisive', 'amethystring', {'%intelligence': [5, 15, 1000], '%strength': [5, 15, 1000]});
+addPrefix(40, 'Resolute', 'amethystring', {'%intelligence': [20, 30, 1000], '%strength': [20, 30, 1000]});
+addPrefix(80, 'Indomitable', 'amethystring', {'%intelligence': [40, 50, 1000], '%strength': [40, 50, 1000]});
+
+addPrefix(10, 'Flexible', 'diamondring', {'%intelligence': [3, 10, 1000], '%strength': [2, 10, 1000], '%dexterity': [3, 10, 1000]});
+addPrefix(40, 'Adaptable', 'diamondring', {'%intelligence': [15, 20, 1000], '%strength': [15, 20, 1000], '%dexterity': [15, 20, 1000]});
+addPrefix(80, 'Protean', 'diamondring', {'%intelligence': [26, 33, 1000], '%strength': [26, 33, 1000], '%dexterity': [26, 33, 1000]});
 
 addPrefix(2, 'Damaging', basicHolders, {'%damage': [10, 15, 100]});
 addPrefix(20, 'Harmful', basicHolders, {'%damage': [30, 50, 100]});
@@ -149,8 +172,8 @@ addPrefix(2, 'Sparkling', 'choker', {'%damage': [10, 15, 100]});
 addPrefix(20, 'Glowing', 'choker', {'%damage': [30, 50, 100]});
 addPrefix(40, 'Blinding', 'choker', {'%damage': [60, 80, 100]});
 
-addPrefix(20, 'Vicious', holders, {'%damage': [40, 60, 100]});
-addPrefix(40, 'Malicious', holders, {'%damage': [70, 90, 100]});
+addPrefix(20, 'Vicious', holders.concat(['band']), {'%damage': [40, 60, 100]});
+addPrefix(40, 'Malicious', holders.concat(['band']), {'%damage': [70, 90, 100]});
 addPrefix(60, 'Atrocious', holders, {'%damage': [100, 120, 100]});
 addPrefix(80, 'Inhuman', holders, {'%damage': [130, 150, 100]});
 
@@ -219,12 +242,12 @@ addSuffix(40, 'Boosting', smallArmorSlots.concat(accessorySlots), {'+maxHealth':
 addSuffix(55, 'Amplifcation', smallArmorSlots.concat(accessorySlots), {'+maxHealth': [84, 96]});
 addSuffix(70, 'Maximization', smallArmorSlots.concat(accessorySlots), {'+maxHealth': [108, 120]});
 
-addSuffix(1, 'Shininess', armorSlots, {'+magicBlock': [1, 3]});
-addSuffix(9, 'Brightness', armorSlots, {'+magicBlock': [4, 6]});
-addSuffix(24, 'Lustrousness', armorSlots, {'+magicBlock': [7, 10]});
-addSuffix(39, 'Glory', armorSlots, {'+magicBlock': [11, 15]});
-addSuffix(54, 'The Moon', armorSlots, {'+magicBlock': [16, 22]});
-addSuffix(69, 'The Sun', armorSlots, {'+magicBlock': [23, 30]});
+addSuffix(1, 'Shininess', armorSlots.concat(['Etched Band']), {'+magicBlock': [1, 3]});
+addSuffix(9, 'Brightness', armorSlots.concat(['Etched Band']), {'+magicBlock': [4, 6]});
+addSuffix(24, 'Lustrousness', armorSlots.concat(['Etched Band']), {'+magicBlock': [7, 10]});
+addSuffix(39, 'Glory', armorSlots.concat(['Etched Band']), {'+magicBlock': [11, 15]});
+addSuffix(54, 'The Moon', armorSlots.concat(['Etched Band']), {'+magicBlock': [16, 22]});
+addSuffix(69, 'The Sun', armorSlots.concat(['Etched Band']), {'+magicBlock': [23, 30]});
 
 addSuffix(1, 'Toughness', armorSlots.concat(['Plated Cloak']), {'+armor': [2, 6]});
 addSuffix(10, 'Durability', armorSlots.concat(['Plated Cloak']), {'+armor': [8, 12]});
@@ -257,17 +280,17 @@ addSuffix(40, 'Shock', 'arms', {'+fist:weaponPhysicalDamage': [50, 90]});
 addSuffix(60, 'Concussion', 'arms', {'+fist:weaponPhysicalDamage': [90, 140]});
 addSuffix(80, 'Impact', 'arms', {'+fist:damagePhysicalDamage': [140, 190]});
 
-addSuffix(5, 'Courage', 'heavyArmor', {'+strength': [3, 6]});
-addSuffix(25, 'Valor', 'heavyArmor', {'+strength': [10, 20]});
-addSuffix(55, 'Heroism', 'heavyArmor', {'+strength': [30, 40]});
+addSuffix(5, 'Courage', ['heavyArmor', 'rubyring'], {'+strength': [10, 18]});
+addSuffix(25, 'Valor', ['heavyArmor', 'rubyring'], {'+strength': [20, 35]});
+addSuffix(55, 'Heroism', ['heavyArmor', 'rubyring'], {'+strength': [50, 70]});
 
-addSuffix(5, 'Finesse', 'lightArmor', {'+dexterity': [3, 6]});
-addSuffix(25, 'Mastery', 'lightArmor', {'+dexterity': [10, 20]});
-addSuffix(55, 'Preeminence', 'lightArmor', {'+dexterity': [30, 40]});
+addSuffix(5, 'Finesse', ['lightArmor', 'emeraldring'], {'+dexterity': [10, 18]});
+addSuffix(25, 'Mastery', ['lightArmor', 'emeraldring'], {'+dexterity': [20, 35]});
+addSuffix(55, 'Preeminence', ['lightArmor', 'emeraldring'], {'+dexterity': [50, 70]});
 
-addSuffix(5, 'Insight', 'clothArmor', {'+intelligence': [3, 6]});
-addSuffix(25, 'Comprehension', 'clothArmor', {'+intelligence': [10, 20]});
-addSuffix(55, 'Genius', 'clothArmor', {'+intelligence': [30, 40]});
+addSuffix(5, 'Insight', ['clothArmor', 'sapphirering'], {'+intelligence': [10, 18]});
+addSuffix(35, 'Comprehension', ['clothArmor', 'sapphirering'], {'+intelligence': [20, 35]});
+addSuffix(65, 'Genius', ['clothArmor', 'sapphirering'], {'+intelligence': [50, 70]});
 
 addSuffix(2, 'Irritation', basicHolders, {'+weaponPhysicalDamage': [3, 5]});
 addSuffix(10, 'Discomfort', basicHolders, {'+weaponPhysicalDamage': [10, 15]});
@@ -283,15 +306,19 @@ addSuffix(30, 'Burning', 'choker', {'+weaponMagicDamage': [15, 20]});
 addSuffix(40, 'Crackling', 'choker', {'+weaponMagicDamage': [20, 25]});
 addSuffix(50, 'Blazing', 'choker', {'+weaponMagicDamage': [25, 30]});
 
-addSuffix(20, 'Barbarism', holders, {'+weaponPhysicalDamage': [40, 60]});
-addSuffix(40, 'Savagery', holders, {'+weaponPhysicalDamage': [60, 100]});
+addSuffix(20, 'Barbarism', holders.concat(['meteoricband', 'adamantiumband','dragonboneband']), {'+weaponPhysicalDamage': [40, 60]});
+addSuffix(40, 'Savagery', holders.concat(['meteoricband', 'adamantiumband','dragonboneband']), {'+weaponPhysicalDamage': [60, 100]});
 addSuffix(60, 'Brutality', holders, {'+weaponPhysicalDamage': [100, 150]});
 addSuffix(80, 'Death', holders, {'+weaponPhysicalDamage': [150, 200]});
 
-addSuffix(20, 'Ravaging', magicHolders, {'+weaponMagicDamage': [20, 30]});
-addSuffix(40, 'Destruction', magicHolders, {'+weaponMagicDamage': [30, 50]});
+addSuffix(20, 'Ravaging', magicHolders.concat(['orichalcumband']), {'+weaponMagicDamage': [20, 30]});
+addSuffix(40, 'Destruction', magicHolders.concat(['orichalcumband']), {'+weaponMagicDamage': [30, 50]});
 addSuffix(60, 'Eradication', magicHolders, {'+weaponMagicDamage': [50, 75]});
 addSuffix(80, 'Disintegration', magicHolders, {'+weaponMagicDamage': [75, 100]});
+
+addSuffix(20, 'The Stream', 'jadeband', {'+healthRegen': [12, 20]});
+addSuffix(40, 'The Flood', 'jadeband', {'+healthRegen': [21, 30]});
+addSuffix(60, 'The Deluge', 'jadeband', {'+healthRegen': [31, 45]});
 
 addSuffix(1, 'Minor Strength', accessorySlots, {'+strength': [3, 6]});
 addSuffix(1, 'Minor Dexterity', accessorySlots, {'+dexterity': [3, 6]});
@@ -302,9 +329,25 @@ addSuffix(11, 'Intelligence', accessorySlots, {'+intelligence': [7, 15]});
 addSuffix(31, 'Major Strength', accessorySlots, {'+strength': [16, 30]});
 addSuffix(31, 'Major Dexterity', accessorySlots, {'+dexterity': [16, 30]});
 addSuffix(31, 'Major Intelligence', accessorySlots, {'+intelligence': [16, 30]});
-addSuffix(61, 'Unsurpassed Strength', accessorySlots, {'+strength': [31, 50]});
-addSuffix(61, 'Unsurpassed Dexterity', accessorySlots, {'+dexterity': [31, 50]});
-addSuffix(61, 'Unsurpassed Intelligence', accessorySlots, {'+intelligence': [31, 50]});
+addSuffix(61, 'Peerless Strength', accessorySlots, {'+strength': [31, 50]});
+addSuffix(61, 'Peerless Dexterity', accessorySlots, {'+dexterity': [31, 50]});
+addSuffix(61, 'Peerless Intelligence', accessorySlots, {'+intelligence': [31, 50]});
+
+addSuffix(12, 'Minor Vigor', 'topazring', {'+strength': [5, 9], '+dexterity': [5, 9]});
+addSuffix(32, 'Major Vigor', 'topazring', {'+strength': [10, 15], '+dexterity': [10, 15]});
+addSuffix(62, 'Peerless Vigor', 'topazring', {'+strength': [16, 25], '+dexterity': [16, 25]});
+
+addSuffix(12, 'Minor Charisma', 'aquamarinering', {'+intelligince': [5, 9], '+dexterity': [5, 9]});
+addSuffix(32, 'Major Charisma', 'aquamarinering', {'+intelligince': [10, 15], '+dexterity': [10, 15]});
+addSuffix(62, 'Peerless Charisma', 'aquamarinering', {'+intelligince': [16, 25], '+dexterity': [16, 25]});
+
+addSuffix(12, 'Minor Will', 'amethystring', {'+intelligince': [5, 9], '+strength': [5, 9]});
+addSuffix(32, 'Major Will', 'amethystring', {'+intelligince': [10, 15], '+strength': [10, 15]});
+addSuffix(62, 'Peerless Will', 'amethystring', {'+intelligince': [16, 25], '+strength': [16, 25]});
+
+addSuffix(12, 'Minor Versitility', 'diamondring', {'+dexterity': [3, 6], '+intelligince': [3, 6], '+strength': [3, 6]});
+addSuffix(32, 'Major Versitility', 'diamondring', {'+dexterity': [7, 10], '+intelligince': [7, 10], '+strength': [7, 10]});
+addSuffix(62, 'Peerless Versitility', 'diamondring', {'+dexterity': [11, 16], '+intelligince': [11, 16], '+strength': [11, 16]});
 
 var affixesByKey = {};
 for (var affix of allEnchantments) {

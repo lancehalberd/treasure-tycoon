@@ -29,7 +29,7 @@ addItem(13, {'slot': 'ring', 'type': 'ring', 'name': 'Aquamarine Ring', 'bonuses
 addItem(14, {'slot': 'ring', 'type': 'ring', 'name': 'Amethyst Ring', 'bonuses': {'+strength': 3, '+intelligence': 3}, icon: 'ring'});
 addItem(19, {'slot': 'ring', 'type': 'ring', 'name': 'Diamond Ring', 'bonuses': {'+strength': 2, '+dexterity': 2, '+intelligence': 2}, icon: 'ring'});
 addItem(20, {'slot': 'ring', 'type': 'ring', 'name': 'Jade Band', 'bonuses': {'+healthRegen': 5}, icon: 'band'});
-addItem(22, {'slot': 'ring', 'type': 'ring', 'name': 'Meteoric Band', 'bonuses': {'%physicalDamage': 0.2}, icon: 'band'});
-addItem(23, {'slot': 'ring', 'type': 'ring', 'name': 'Orichalcum Band', 'bonuses': {'%magicDamage': 0.2}, icon: 'band'});
-addItem(24, {'slot': 'ring', 'type': 'ring', 'name': 'Adamantium Band', 'bonuses': {'%melee:damage': 0.2}, icon: 'band'});
-addItem(25, {'slot': 'ring', 'type': 'ring', 'name': 'Dragonbone Band', 'bonuses': {'%ranged:damage': 0.2}, icon: 'band'});
+addItem(22, {'slot': 'ring', 'type': 'band', 'name': 'Meteoric Band', 'bonuses': {'%physicalDamage': 0.2}, icon: 'band'});
+addItem(23, {'slot': 'ring', 'type': 'band', 'name': 'Orichalcum Band', 'bonuses': {'%magicDamage': 0.2}, icon: 'band'});
+addItem(24, {'slot': 'ring', 'type': 'band', 'name': 'Adamantium Band', 'bonuses': {'%melee:damage': 0.2}, icon: 'band'});
+addItem(25, {'slot': 'ring', 'type': 'band', 'name': 'Dragonbone Band', 'bonuses': {'%ranged:damage': 0.2}, icon: 'band'});
