@@ -85,8 +85,9 @@ function instantiateLevel(levelData, difficulty, difficultyCompleted, level) {
     };
     var loot = [];
     var pointsFactor = difficultyCompleted ? 1 : 4;
+    var maxCoinsPerNormalEnemy = Math.floor(level * Math.pow(1.15, level));
     // coins are granted at the end of each level, but diminished after the first completion.
-    loot.push(coinsLoot([pointsFactor * level * level * 10, pointsFactor * level * level * 15]));
+    loot.push(coinsLoot([pointsFactor * maxCoinsPerNormalEnemy * 10, pointsFactor * maxCoinsPerNormalEnemy * 15]));
 
     if (!difficultyCompleted) {
         // Special Loot drops are given only the first time an adventurer complets an area on a given difficulty.

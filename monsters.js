@@ -227,8 +227,8 @@ function getMonsterBonuses(monster) {
         '+intelligence': 5 * growth,
         '+dexterity': 5 * growth,
         '*magicPower': .5,
-        '+coins': Random.range(1, Math.floor(Math.pow(1.25, growth + 1) * 4)),
-        '+anima': Random.range(1, Math.floor(Math.pow(1.25, growth + 1)))
+        '+coins': Random.range(1, Math.floor((growth + 1) * Math.pow(1.15, growth + 1) * 4)),
+        '+anima': Random.range(1, Math.floor((growth + 1) * Math.pow(1.15, growth + 1)))
     };
 }
 function setupActorSource(source) {
