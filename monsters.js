@@ -202,7 +202,7 @@ function enemySheet(key) {
 }
 function getMonsterBonuses(monster) {
     var growth = monster.level - 1;
-    var levelCoefficient = Math.pow(1.06, monster.level);
+    var levelCoefficient = Math.pow(1.07, monster.level);
     return {
         // Health scales linearly to level 10, then 10% a level.
         '+maxHealth': (10 + 25 * growth),

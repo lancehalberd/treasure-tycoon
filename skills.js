@@ -239,7 +239,7 @@ var skills = {
     'meteor': spellAction('spell', {'icon': 'gfx/496RpgIcons/spellMeteor.png', 'animation': 'fireball', 'tags': ['rain'],
                           'heightRatio': 1, 'minTheta': Math.PI, 'color': 'brown', 'alpha': .4, 'size': 30, 'gravity': .1},
                        {'+count': [2, '+', ['{intelligence}', '/', '100']], '+explode': 1, '+power': ['{magicPower}', '/', 2],
-                       '+range': 10, '+area': [3, '+', ['{intelligence}', '/', '200']], '+cooldown': 15, '$alwaysHits': 'Never misses'},
+                       '+range': 10, '+area': [3, '+', ['{intelligence}', '/', '200']], '+cooldown': 25, '$alwaysHits': 'Never misses'},
                         'Rain {+count} meteors down on your enemies each dealing {+power} damage.')
 };
 // The skill key should be applied as a tag to each skill.
