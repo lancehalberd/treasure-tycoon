@@ -463,7 +463,7 @@ function applyAttackToTarget(attackStats, target) {
     }
     if (attack.heals) {
         hitText.color = 'green';
-        hitText.value = damage + magicDamage;
+        hitText.value = (damage + magicDamage).abbreviate();
         target.health += (damage + magicDamage);
         character.textPopups.push(hitText);
         return true;
@@ -554,7 +554,7 @@ function applyAttackToTarget(attackStats, target) {
             hitText.value = 'culled!';
         } else {
             target.health -= totalDamage;
-            hitText.value = totalDamage;
+            hitText.value = totalDamage.abbreviate();
         }
         attacker.health += ifdefor(attack.lifeSteal, 0) * totalDamage
         if (imprintedSpell) attacker.health += ifdefor(imprintedSpell.lifeSteal, 0) * totalDamage
