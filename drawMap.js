@@ -238,7 +238,7 @@ function drawMap() {
         if (state.selectedCharacter.currentLevelKey === levelKey) {
             context.save();
             context.translate(levelData.left + 25, levelData.top - 40);
-            context.drawImage(state.selectedCharacter.adventurer.personCanvas, state.selectedCharacter.adventurer.source.walkFrames[1] * 32, 0 , 32, 64, 0, -0, 32, 64);
+            context.drawImage(state.selectedCharacter.adventurer.personCanvas, state.selectedCharacter.adventurer.source.walkFrames[1] * 96, 0 , 96, 64, -32, 0, 96, 64);
             context.restore();
         }
 
