@@ -81,27 +81,23 @@ function drawActor(actor) {
     if (actor.cloaked) {
         context.globalAlpha = .2;
     }
-    var top = groundY - ifdefor(source.actualHeight, ifdefor(source.height, 64)) * scale - ifdefor(actor.y, 0);
+    var top = groundY - actor.height - ifdefor(actor.y, 0);
     var left = actor.x - cameraX;
     // These values are used for determining when the mouse is hovering over the actor.
     // We only need these when the screen is displayed, so we can set them only on draw.
     actor.top = top;
     actor.left = left;
-    var xCenterOnFrame = ifdefor(source.xCenter, ifdefor(source.actualWidth, source.width) / 2 + ifdefor(source.xOffset, 0)) * scale;
-    var yCenterOnFrame = ifdefor(source.yCenter, ifdefor(source.actualHeight, ifdefor(source.height, 64)) / 2 + ifdefor(source.yOffset)) * scale;
-    var xCenterOnMap = left + xCenterOnFrame - ifdefor(source.xOffset, 0) * scale;
-    var yCenterOnMap = top + yCenterOnFrame - ifdefor(source.yOffset, 0) * scale;
+    var xCenterOnMap = left + (source.xCenter - source.xOffset) * scale;
+    var yCenterOnMap = top + (source.yCenter - source.yOffset) * scale;
     /*if (mouseDown) {
         console.log(actor.base.name ? actor.base.name : actor.name);
         console.log([actor.x, actor.y]);
         console.log(['xCenter', source.xCenter, 'actualWidth', source.actualWidth,  'width', source.width, 'xOffset', source.xOffset, 'scale', scale]);
         console.log(['yCenter', source.yCenter, 'actualHeight', source.actualHeight,  'height', source.height, 'yOffset', source.yOffset, 'scale', scale]);
         console.log([left, top, actor.width, actor.height]);
-        console.log([xCenterOnFrame, yCenterOnFrame]);
+        console.log([source.xCenter, source.yCenter]);
         console.log([xCenterOnMap, yCenterOnMap]);
     }*/
-    var drawWidth = source.width * scale;
-    var drawHeight = source.height * scale;
     context.translate(xCenterOnMap, yCenterOnMap);
     if (ifdefor(actor.rotation)) {
         context.rotate(actor.rotation * Math.PI/180);
@@ -130,8 +126,8 @@ function drawActor(actor) {
         xFrame = frame % source.framesPerRow;
         yFrame = Math.floor(frame / source.framesPerRow);
     }
-    var frameSource = {'left': xFrame * source.width, 'top': yFrame * ifdefor(source.height, 64), 'width': source.width, 'height': ifdefor(source.height, 64)};
-    var target = {'left': -xCenterOnFrame, 'top': -yCenterOnFrame, 'width': drawWidth, 'height': drawHeight};
+    var frameSource = {'left': xFrame * source.width, 'top': yFrame * source.height, 'width': source.width, 'height': source.height};
+    var target = {'left': -source.xCenter * scale, 'top': -source.yCenter * scale, 'width': source.width * scale, 'height': source.height * scale};
 
     var tints = getActorTints(actor), sourceRectangle;
     if (tints.length) {

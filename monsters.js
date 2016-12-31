@@ -234,6 +234,14 @@ function setupActorSource(source) {
         for (var i = 0; i < source.frames; i++) source.walkFrames[i] = i;
     }
     source.attackFrames = ifdefor(source.attackFrames, source.walkFrames);
+    source.width = ifdefor(source.width, 48);
+    source.height = ifdefor(source.height, 64);
+    source.actualHeight = ifdefor(source.actualHeight, source.height);
+    source.actualWidth = ifdefor(source.actualWidth, source.width);
+    source.xOffset = ifdefor(source.xOffset, 0);
+    source.yOffset = ifdefor(source.yOffset, 0);
+    source.xCenter = ifdefor(source.xCenter, source.actualWidth / 2 + source.xOffset);
+    source.yCenter = ifdefor(source.yCenter, source.actualHeight / 2 + source.yOffset);
     return source;
 }
 function initalizeMonsters() {

@@ -244,8 +244,8 @@ function adventureLoop(character, delta) {
 function updateActorDimensions(actor, index) {
     var source = actor.source;
     var scale = ifdefor(actor.scale, 1);
-    actor.width = ifdefor(source.actualWidth, source.width) * scale;
-    actor.height = ifdefor(source.actualHeight, ifdefor(source.height, 64)) * scale;
+    actor.width = source.actualWidth * scale;
+    actor.height = source.actualHeight * scale;
     if (isNaN(actor.width) || isNaN(actor.height)) {
         console.log(actor.scale);
         console.log([actor.x, actor.character.cameraX]);
