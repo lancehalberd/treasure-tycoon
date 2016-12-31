@@ -45,6 +45,20 @@ var equipmentSources = {
     'bracelet': equipmentSource(hand, 1),
     'ring': equipmentSource(hand, 11),
 };
+function weaponSource(row) {
+    return {'yOffset': row * 64}
+}
+var weaponSources = {
+    // Weapons
+    'wand': weaponSource(0),
+    'bow': weaponSource(1),
+    'sword': weaponSource(2),
+    'greatSword': weaponSource(3),
+    'dagger': weaponSource(4),
+    'ball': weaponSource(5),
+    'rock': weaponSource(6),
+    'staff': weaponSource(7),
+};
 
 //Heavy Helmets gives armor and health
 //addItem(1, {'slot': 'head', 'type': 'heavyArmor', 'name': 'Dented Bucket', 'bonuses': {'+armor': 2, '+maxHealth': 10}, 'offset': 10, icon: 'helmet'});

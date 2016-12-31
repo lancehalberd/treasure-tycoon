@@ -70,6 +70,7 @@ function initializeCoins() {
 function initializeProjectileAnimations() {
     projectileAnimations['fireball'] = {'image': images['gfx/projectiles.png'], 'frames': [[0, 0, 20, 20], [32, 0, 20, 20], [64, 0, 20, 20]]};
     var projectileCanvas = createCanvas(96, 96);
+    projectileCanvas.imageSmoothingEnabled = false;
     var context = projectileCanvas.getContext('2d');
     prepareTintedImage();
     var tintedRow = getTintedImage(images['gfx/projectiles.png'], 'green', .5, {'left':96, 'top':32, 'width': 96, 'height': 32});
@@ -91,9 +92,7 @@ function initializeProjectileAnimations() {
     context.drawImage(tintedRow, 32, 0, 20, 20, -10, -10, 20, 20);
     projectileAnimations['wandAttack'] = {'image': projectileCanvas, 'frames': [[0, 32, 20, 20], [32, 32, 20, 20], [64, 32, 20, 20], [32, 32, 20, 20]], 'fps': 20};
     context.restore();
-    prepareTintedImage();
-    tintedRow = getTintedImage(images['gfx/moneyIcon.png'], 'red', .8, {'left':0, 'top':0, 'width': 32, 'height': 32});
-    context.drawImage(tintedRow, 0, 0, 20, 20, 0, 64, 20, 20);
+    context.drawImage(images['gfx/weapons.png'], 38, 363, 10, 10, 0, 64, 20, 20);
     projectileAnimations['throwingAttack'] = {'image': projectileCanvas, 'frames': [[0, 64, 20, 20]]};
     context.fillStyle = 'brown';
     context.fillRect(32, 72, 15, 1);
@@ -108,7 +107,7 @@ var mainCanvas, mainContext, jewelsCanvas, jewelsContext, previewContext;
 // Load any graphic assets needed by the game here.
 async.mapSeries([
     // Original images from project contributors:
-    'gfx/personSprite.png', 'gfx/hair.png', 'gfx/equipment.png',
+    'gfx/personSprite.png', 'gfx/hair.png', 'gfx/equipment.png', 'gfx/weapons.png',
     'gfx/grass.png', 'gfx/cave.png', 'gfx/forest.png', 'gfx/beach.png', 'gfx/town.png',
     'gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png',
     'gfx/turtle.png', 'gfx/monarchButterfly.png', 'gfx/yellowButterfly.png',
@@ -292,14 +291,14 @@ function mainLoop() {
         var frame = arrMod(character.adventurer.source.walkFrames, Math.floor(now() * fps / 1000));
         if (state.selectedCharacter === character) {
             previewContext.clearRect(0, 0, 64, 128);
-            previewContext.drawImage(character.adventurer.personCanvas, frame * 32, 0 , 32, 64, 0, -20, 64, 128);
+            previewContext.drawImage(character.adventurer.personCanvas, frame * 96, 0 , 96, 64, -64, -20, 192, 128);
             character.characterContext.globalAlpha = 1;
         } else {
             character.characterContext.globalAlpha = .3;
         }
         //character.characterContext.fillStyle = 'white';
         character.characterContext.clearRect(0, 0, 32, 64);
-        character.characterContext.drawImage(character.adventurer.personCanvas, frame * 32, 0 , 32, 64, 0, -10, 32, 64);
+        character.characterContext.drawImage(character.adventurer.personCanvas, frame * 96, 0 , 96, 64, -32, -10, 96, 64);
     }
     if (currentContext === 'adventure') {
         if (editingLevel && !testingLevel) {

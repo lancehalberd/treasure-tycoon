@@ -307,8 +307,7 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
 function getProjectileVelocity(attackStats, x, y, target) {
     var tx = target.x + ifdefor(target.width, 64) / 2;
     var scale = ifdefor(target.scale, 1);
-    var yTop = ifdefor(target.source.yTop, 0) * scale;
-    var ty = ifdefor(target.y, 0) + (ifdefor(target.height, 128) - yTop) * 3 / 4;
+    var ty = ifdefor(target.y, 0) + ifdefor(target.height, 128) * 3 / 4;
     var v = [tx - x, ty - y];
     var distance = Math.sqrt(v[0] * v[0] + v[1] * v[1]);
     var frameEstimate = distance / attackStats.speed;

@@ -237,14 +237,14 @@ function setupActorSource(source) {
     return source;
 }
 function initalizeMonsters() {
-    var caterpillarSource = setupActorSource({'image': enemySheet('gfx/caterpillar.png'), 'width': 48,  'height': 24, 'yOffset': 40, frames: 4});
-    var gnomeSource = setupActorSource({'image': enemySheet('gfx/gnome.png'), 'width': 32, 'height': 38, 'yOffset': 26, 'flipped': true, frames: 4});
-    var skeletonSource = setupActorSource({'image': enemySheet('gfx/skeletonSmall.png'), 'width': 48, 'height': 38, 'yOffset': 26, frames: 7});
+    var caterpillarSource = setupActorSource({'image': enemySheet('gfx/caterpillar.png'), 'width': 48, 'height': 64, 'actualHeight': 24, 'yOffset': 40, frames: 4});
+    var gnomeSource = setupActorSource({'image': enemySheet('gfx/gnome.png'), 'width': 32, 'height': 64, 'actualHeight': 38, 'yOffset': 26, 'flipped': true, frames: 4});
+    var skeletonSource = setupActorSource({'image': enemySheet('gfx/skeletonSmall.png'), 'width': 48, 'height': 64, 'actualHeight': 38, 'yOffset': 26, frames: 7});
     var butterflySource = setupActorSource({'image': enemySheet('gfx/yellowButterfly.png'), 'width': 64, 'height': 64,
             framesPerRow: 7, walkFrames: [1, 2, 3, 4, 5, 6, 4, 2, 0], attackFrames: [7, 10, 11, 10], deathFrames: [7, 8, 9, 9]});
     var skeletonGiantSource = setupActorSource({'image': enemySheet('gfx/skeletonGiant.png'), 'width': 48, frames: 7});
     var dragonSource = setupActorSource({'image': enemySheet('gfx/dragonEastern.png'),
-        'width': 48, 'xCenter': 25, 'yCenter': 48, 'yTop': 24, 'flipped': true, frames: 5});
+        'width': 48, 'xCenter': 25, 'yCenter': 48, 'actualHeight': 40, 'height': 64, 'yOffset': 24, 'flipped': true, frames: 5});
     var batSource = setupActorSource({'image': enemySheet('gfx/bat.png'), 'width': 32, 'height': 32, 'flipped': true, frames: 5, 'y': 20});
     var spiderSource = setupActorSource({'image': enemySheet('gfx/spider.png'), 'width': 48, 'height': 48, 'y': -10,
             framesPerRow: 10, walkFrames: [4, 5, 6, 7, 8, 9], attackFrames: [2, 3, 0, 1], deathFrames: [10, 11, 12, 13]});
