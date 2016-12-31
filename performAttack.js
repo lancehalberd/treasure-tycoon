@@ -57,7 +57,16 @@ function updateDamageInfo(character, $statsPanel, monsterLevel) {
 
     // Expected damage against an 'average' monster of the adventurer's level.
     var level = map[character.currentLevelKey];
-    var dummy = makeMonster('dummy', ifdefor(monsterLevel, level ? level.level : adventurer.level), [], true);
+    if (!monsterLevel) {
+        if (level) {
+            if (character.levelDifficulty === 'endless') {
+                monsterLevel = getEndlessLevel(character, level);
+            } else {
+                monsterLevel = level ? level.level : adventurer.level;
+            }
+        }
+    }
+    var dummy = makeMonster('dummy', monsterLevel, [], true);
     var hitPercent;
     // tie breaker is given to hitting, so for this calculation use 1 less evasion.
     var evasion = dummy.evasion;
