@@ -203,7 +203,7 @@ function newCharacter(job) {
     character.adventurer.bonusMaxHealth = 0;
     character.adventurer.percentHealth = 1;
     character.adventurer.health = character.adventurer.maxHealth;
-    var characterCanvas = createCanvas(96, 64);
+    var characterCanvas = createCanvas(32, 64);
     character.$characterCanvas = $(characterCanvas);
     character.$characterCanvas.addClass('js-character character')
         .attr('helptext', character.adventurer.job.name + ' ' + character.adventurer.name)
