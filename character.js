@@ -6,6 +6,7 @@ var names = ['Chris', 'Leon', 'Hillary', 'Michelle', 'Rob', 'Reuben', 'Kingston'
 var pointsTypes = ['coins', 'anima', 'fame'];
 // These are the only variables on actors that can be targeted by effects.
 var allActorVariables = {
+    'levelCoefficient': 'This coefficient is used in several stats as a base for exponential scaling such as maxHealth, magicPower, armor, block and magic block',
     'dexterity': '.',
     'strength': '.',
     'intelligence': '.',
@@ -113,9 +114,14 @@ var coreStatBonusSource = {'bonuses': {
     '%magicBlock': [.002, '*', '{intelligence}'],
     '%accuracy': [.002, '*', '{intelligence}'],
     '+magic:weaponMagicDamage': ['{intelligence}', '/', 10],
+    // Note that magicResist/evasion/accuracy don't need to scale to keep up with exponential max health/damage, but block, magic block and armor do.
+    '*maxHealth': '{levelCoefficient}',
+    '*armor': '{levelCoefficient}',
+    '*block': '{levelCoefficient}',
+    '*magicBlock': '{levelCoefficient}',
     '&maxHealth': '{bonusMaxHealth}',
     '+healthRegen': ['{maxHealth}', '/', 50],
-    '+magicPower': [[['{intelligence}', '*', '{intelligence}'], '/', 10], '+', [['{minWeaponMagicDamage}', '+' ,'{maxWeaponMagicDamage}'], '*', 3]],
+    '+magicPower': [['{intelligence}', '*', '{levelCoefficient}'], '+', [['{minWeaponMagicDamage}', '+' ,'{maxWeaponMagicDamage}'], '*', 3]],
     '+minPhysicalDamage': '{minWeaponPhysicalDamage}',
     '+maxPhysicalDamage': '{maxWeaponPhysicalDamage}',
     '+minMagicDamage': '{minWeaponMagicDamage}',
@@ -415,9 +421,10 @@ function updateAdventurer(adventurer) {
     adventurer.onCritEffects = [];
     adventurer.allEffects = [];
     adventurer.minionBonusSources = [];
+    var levelCoefficient = Math.pow(1.05, adventurer.level);
     var adventurerBonuses = {
         '+maxHealth': 50 + 20 * (adventurer.level + adventurer.job.dexterityBonus + adventurer.job.strengthBonus + adventurer.job.intelligenceBonus),
-        '*maxHealth': Math.pow(1.05, adventurer.level),
+        '+levelCoefficient': levelCoefficient,
         '+accuracy': 2 + 2 * adventurer.level,
         '+evasion': adventurer.level,
         '+block': adventurer.level,

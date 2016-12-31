@@ -699,8 +699,8 @@ skillDefinitions.reflect = {
 };
 
 function gainReflectionBarrier(actor, amount) {
-    actor.reflectBarrier = ifdefor(actor.reflectBarrier, 0) + amount;
-    actor.maxReflectBarrier = Math.max(ifdefor(actor.maxReflectBarrier, 0), actor.reflectBarrier);
+    actor.maxReflectBarrier = actor.maxHealth;
+    actor.reflectBarrier = Math.min(actor.maxReflectBarrier, ifdefor(actor.reflectBarrier, 0) + amount);
 }
 
 skillDefinitions.plunder = {

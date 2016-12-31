@@ -201,19 +201,21 @@ function enemySheet(key) {
 }
 function getMonsterBonuses(monster) {
     var growth = monster.level - 1;
+    var levelCoefficient = Math.pow(1.07, monster.level);
     return {
         // Health scales linearly to level 10, then 10% a level.
-        '+maxHealth': (10 + 20 * growth) * Math.pow(1.1, growth),
+        '+maxHealth': (20 + 30 * growth),
+        '+levelCoefficient': levelCoefficient,
         '+range': 1,
-        '+minWeaponPhysicalDamage': Math.round(.9 * (5 + 6 * growth)),
-        '+maxWeaponPhysicalDamage': Math.round(1.1 * (5 + 6 * growth)),
-        '+minWeaponMagicDamage': Math.round(.9 * (1 + 1.5 * growth)),
-        '+maxWeaponMagicDamage': Math.round(1.1 * (1 + 1.5 * growth)),
+        '+minWeaponPhysicalDamage': Math.round(.9 * (5 + 6 * growth)) * levelCoefficient,
+        '+maxWeaponPhysicalDamage': Math.round(1.1 * (5 + 6 * growth)) * levelCoefficient,
+        '+minWeaponMagicDamage': Math.round(.9 * (1 + 1.5 * growth)) * levelCoefficient,
+        '+maxWeaponMagicDamage': Math.round(1.1 * (1 + 1.5 * growth)) * levelCoefficient,
         '+critChance': .05,
         '+critDamage': .5,
         '+critAccuracy': 1,
-        '+attackSpeed': 1 + .05 * growth,
-        '+speed': 100,
+        '+attackSpeed': 1 + .02 * growth,
+        '+speed': 100 + growth,
         '+accuracy': 4 + 5 * growth,
         '+evasion': 1 + growth,
         '+block': 2 * growth,
