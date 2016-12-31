@@ -441,7 +441,7 @@ function applyAttackToTarget(attackStats, target) {
     }
     var distance = attackStats.distance;
     var character = target.character;
-    var hitText = {x: target.x + 32, y: groundY - target.height - ifdefor(target.y, 0) + 10, color: 'red'};
+    var hitText = {x: target.x + 32, y: groundY - target.height - ifdefor(target.y, 0) + 10, color: 'red', vx: Math.random() * 2 - 1};
     if (target.invulnerable) {
         hitText.value = 'invulnerable';
         hitText.color = 'blue';

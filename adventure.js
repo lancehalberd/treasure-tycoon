@@ -208,6 +208,7 @@ function adventureLoop(character, delta) {
     for (var i = 0; i < character.textPopups.length; i++) {
         var textPopup = character.textPopups[i];
         textPopup.y--;
+        textPopup.x += ifdefor(textPopup.vx, 0);
         textPopup.duration = ifdefor(textPopup.duration, 30);
         if (textPopup.duration-- < 0) {
             character.textPopups.splice(i--, 1);
