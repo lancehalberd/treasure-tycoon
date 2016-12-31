@@ -193,7 +193,7 @@ var abilities = {
         'deepPockets': {'name': 'Deep Pockets', 'bonuses': {'+dexterity': 10, '+plunder:count': 1}, 'helpText': 'Steal an additional enchantment when you use plunder.'},
         'robBlind': {'name': 'Rob Blind', 'bonuses': {'+strength': 10, '+plunder:count': 2}, 'helpText': 'Steal two additional enchantments when you use plunder.'},
     'paladinIndex': {'name': '---Paladin---'},
-        'paladin': {'name': 'Faith', 'icon': 'gfx/496RpgIcons/abilityDivineBlessing.png', 'bonuses': {'*buff:duration': 2}},
+        'paladin': {'name': 'Faith', 'icon': 'gfx/496RpgIcons/abilityDivineBlessing.png', 'bonuses': {'*buff:duration': 1.5, '+buff:%damage': .1}},
         'protect': {'name': 'Protect', 'bonuses': {'+intelligence': 5}, 'action': skills.protect},
         'banishingStrike': {'name': 'Banishing Strike', 'bonuses': {'+intelligence': 5, '+strength': 5}, 'action': skills.banishingStrike},
         'purify': {'name': 'Purify', 'bonuses': {'+intelligence': 10, '+banishingStrike:purify': 4}, 'helpText': 'Remove all enchantments from enemies hit by banishing strike'},
