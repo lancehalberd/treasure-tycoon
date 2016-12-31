@@ -81,9 +81,24 @@ function drawActor(actor) {
     if (actor.cloaked) {
         context.globalAlpha = .2;
     }
-    var xCenter = ifdefor(source.xCenter, source.width / 2) * scale;
-    var yCenter = ifdefor(source.yCenter, ifdefor(source.height, 64) / 2) * scale;
-    context.translate(actor.left + xCenter, actor.top + yCenter);
+    var top = groundY - ifdefor(source.actualHeight, ifdefor(source.height, 64)) * scale - ifdefor(actor.y, 0);
+    var left = actor.x - cameraX;
+    var xCenterOnFrame = ifdefor(source.xCenter, ifdefor(source.actualWidth, source.width) / 2 + ifdefor(source.xOffset, 0)) * scale;
+    var yCenterOnFrame = ifdefor(source.yCenter, ifdefor(source.actualHeight, ifdefor(source.height, 64)) / 2 + ifdefor(source.yOffset)) * scale;
+    var xCenterOnMap = left + xCenterOnFrame - ifdefor(source.xOffset, 0) * scale;
+    var yCenterOnMap = top + yCenterOnFrame - ifdefor(source.yOffset, 0) * scale;
+    /*if (mouseDown) {
+        console.log(actor.base.name ? actor.base.name : actor.name);
+        console.log([actor.x, actor.y]);
+        console.log(['xCenter', source.xCenter, 'actualWidth', source.actualWidth,  'width', source.width, 'xOffset', source.xOffset, 'scale', scale]);
+        console.log(['yCenter', source.yCenter, 'actualHeight', source.actualHeight,  'height', source.height, 'yOffset', source.yOffset, 'scale', scale]);
+        console.log([left, top, actor.width, actor.height]);
+        console.log([xCenterOnFrame, yCenterOnFrame]);
+        console.log([xCenterOnMap, yCenterOnMap]);
+    }*/
+    var drawWidth = source.width * scale;
+    var drawHeight = source.height * scale;
+    context.translate(xCenterOnMap, yCenterOnMap);
     if (ifdefor(actor.rotation)) {
         context.rotate(actor.rotation * Math.PI/180);
     }
@@ -111,8 +126,8 @@ function drawActor(actor) {
         xFrame = frame % source.framesPerRow;
         yFrame = Math.floor(frame / source.framesPerRow);
     }
-    var frameSource = {'left': xFrame * source.width + ifdefor(source.xOffset, 0), 'top': yFrame * ifdefor(source.height, 64) + ifdefor(source.yOffset, 0), 'width': source.width, 'height': ifdefor(source.height, 64)};
-    var target = {'left': -xCenter, 'top': -yCenter, 'width': actor.width, 'height': actor.height};
+    var frameSource = {'left': xFrame * source.width, 'top': yFrame * ifdefor(source.height, 64), 'width': source.width, 'height': ifdefor(source.height, 64)};
+    var target = {'left': -xCenterOnFrame, 'top': -yCenterOnFrame, 'width': drawWidth, 'height': drawHeight};
 
     var tints = getActorTints(actor), sourceRectangle;
     if (tints.length) {
@@ -131,8 +146,8 @@ function drawActor(actor) {
 
     // life bar
     if (actor.isDead) return;
-    var x = actor.x - cameraX + actor.width / 2 - 32;
-    var y = actor.top + scale * ifdefor(source.yTop, 0) - 5;
+    var x = left + actor.width / 2 - 32;
+    var y = top - 5;
     drawBar(context, x, y, 64, 4, 'white', ifdefor(actor.lifeBarColor, 'red'), actor.health / actor.maxHealth);
     if (actor.bonusMaxHealth >= 1 && actor.health >= actor.maxHealth - actor.bonusMaxHealth) {
         // This logic is kind of a mess but it is to make sure the % of the bar that is due to bonusMaxHealth
@@ -155,8 +170,8 @@ function drawActor(actor) {
         for (var i = 0; i < 3; i++ ) {
             var theta = 2 * Math.PI * (i + 3 * actor.time) / 3;
             var scale = ifdefor(actor.scale, 1);
-            target.left = actor.left + (actor.width - shrineSource.width) / 2 + Math.cos(theta) * 30;
-            target.top = actor.top + scale * ifdefor(actor.source.yTop, 0) - 5 + Math.sin(theta) * 10;
+            target.left = left + (actor.width - shrineSource.width) / 2 + Math.cos(theta) * 30;
+            target.top = top - 5 + Math.sin(theta) * 10;
             drawImage(context, images['gfx/militaryIcons.png'], shrineSource, target);
         }
     }

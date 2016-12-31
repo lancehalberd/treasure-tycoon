@@ -246,15 +246,13 @@ function adventureLoop(character, delta) {
 function updateActorDimensions(actor, index) {
     var source = actor.source;
     var scale = ifdefor(actor.scale, 1);
-    actor.width = source.width * scale;
-    actor.height = ifdefor(source.height, 64) * scale;
-    actor.top = groundY - actor.height - ifdefor(source.y, 0) * scale - 2 * (index % maxIndex);
-    actor.left = actor.x - actor.character.cameraX;
-    if (isNaN(actor.top) || isNaN(actor.left) || isNaN(actor.width) || isNaN(actor.height)) {
+    actor.width = ifdefor(source.actualWidth, source.width) * scale;
+    actor.height = ifdefor(source.actualHeight, ifdefor(source.height, 64)) * scale;
+    if (isNaN(actor.width) || isNaN(actor.height)) {
         console.log(actor.scale);
         console.log([actor.x, actor.character.cameraX]);
         console.log(source);
-        console.log([actor.left,actor.top,actor.width,actor.height]);
+        console.log([actor.width,actor.height]);
         pause();
         return false;
     }

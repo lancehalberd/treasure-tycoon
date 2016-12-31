@@ -74,7 +74,7 @@ var mainCanvas, mainContext, jewelsCanvas, jewelsContext, previewContext;
 // Load any graphic assets needed by the game here.
 async.mapSeries([
     // Original images from project contributors:
-    'gfx/personSprite.png', 'gfx/hair.png', 'gfx/equipment.png',
+    'gfx/personSprite.png', 'gfx/hair.png', 'gfx/equipment.png', 'gfx/weapons.png',
     'gfx/grass.png', 'gfx/cave.png', 'gfx/forest.png', 'gfx/beach.png', 'gfx/town.png',
     'gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png',
     'gfx/turtle.png', 'gfx/monarchButterfly.png', 'gfx/yellowButterfly.png',
@@ -259,14 +259,14 @@ function mainLoop() {
         var frame = arrMod(character.adventurer.source.walkFrames, Math.floor(now() * fps / 1000));
         if (state.selectedCharacter === character) {
             previewContext.clearRect(0, 0, 64, 128);
-            previewContext.drawImage(character.adventurer.personCanvas, frame * 32, 0 , 32, 64, 0, -20, 64, 128);
+            previewContext.drawImage(character.adventurer.personCanvas, frame * 96, 0 , 96, 64, 0, -20, 192, 128);
             character.characterContext.globalAlpha = 1;
         } else {
             character.characterContext.globalAlpha = .3;
         }
         //character.characterContext.fillStyle = 'white';
         character.characterContext.clearRect(0, 0, 32, 64);
-        character.characterContext.drawImage(character.adventurer.personCanvas, frame * 32, 0 , 32, 64, 0, -10, 32, 64);
+        character.characterContext.drawImage(character.adventurer.personCanvas, frame * 96, 0 , 96, 64, 0, -10, 96, 64);
     }
     if (currentContext === 'adventure') {
         if (editingLevel && !testingLevel) {
