@@ -83,6 +83,10 @@ function drawActor(actor) {
     }
     var top = groundY - ifdefor(source.actualHeight, ifdefor(source.height, 64)) * scale - ifdefor(actor.y, 0);
     var left = actor.x - cameraX;
+    // These values are used for determining when the mouse is hovering over the actor.
+    // We only need these when the screen is displayed, so we can set them only on draw.
+    actor.top = top;
+    actor.left = left;
     var xCenterOnFrame = ifdefor(source.xCenter, ifdefor(source.actualWidth, source.width) / 2 + ifdefor(source.xOffset, 0)) * scale;
     var yCenterOnFrame = ifdefor(source.yCenter, ifdefor(source.actualHeight, ifdefor(source.height, 64)) / 2 + ifdefor(source.yOffset)) * scale;
     var xCenterOnMap = left + xCenterOnFrame - ifdefor(source.xOffset, 0) * scale;
