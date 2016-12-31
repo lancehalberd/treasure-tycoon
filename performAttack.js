@@ -346,7 +346,7 @@ function performAttackProper(attackStats, target) {
             }
             var currentTarget = targets.pop();
             var tx = currentTarget.x + ifdefor(currentTarget.width, 64) / 2;
-            var x = attacker.x + attacker.width / 2 + -250 + Math.random() * 750;
+            var x = attacker.x + attacker.width / 2 - 150 + Math.random() * 750;
             var y = 550 + Math.random() * 100;
             // Point the meteor at the target and hope it hits!
             var vy = -y;

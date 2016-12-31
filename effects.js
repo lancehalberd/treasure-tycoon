@@ -285,9 +285,12 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
             if (self.done || self.delay > 0) return
             mainContext.save();
             mainContext.translate(self.x - character.cameraX, groundY - self.y);
-            var theta = Math.atan2(self.vy, self.vx);
-            mainContext.rotate(-theta);
-            if (self.vx < 0) mainContext.scale(-1, 1);
+            if (self.vx < 0) {
+                mainContext.scale(-1, 1);
+                mainContext.rotate(-Math.atan2(self.vy, -self.vx));
+            } else {
+                mainContext.rotate(-Math.atan2(self.vy, self.vx));
+            }
             if (self.attackStats.animation) {
                 var animation = self.attackStats.animation;
                 var frame = animation.frames[Math.floor(ifdefor(animation.fps, 10) * self.t * 20 / 1000) % animation.frames.length];
