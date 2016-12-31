@@ -213,7 +213,7 @@ function drawEffectIcons(actor, x, y) {
             drawImage(mainContext, source.image, source, {'left': x + xOffset, 'top': y + yOffset, 'width': source.width, 'height': source.height});
         }
         effectXOffset += 16;
-        if (effectXOffset + 16 > Math.min(actor.width, 64)) {
+        if (effectXOffset + 16 > Math.max(actor.width, 64)) {
             effectXOffset = 0;
             effectYOffset += 20;
         }
