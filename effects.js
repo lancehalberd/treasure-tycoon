@@ -257,7 +257,7 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                         // distinguish bounced attacks from new attacks.
                         self.vx = -self.vx / 2;
                         var targets = self.attackStats.source.enemies.slice();
-                        if (targets.length <= 1) targets.push(attackStats.source);
+                        targets.push(attackStats.source);
                         while (targets.length) {
                             var index = Math.floor(Math.random() * targets.length);
                             var newTarget = targets[index];
