@@ -270,7 +270,7 @@ function makeAdventurerFromData(adventurerData) {
         'unlockedAbilities': {},
         'abilities': [],
         'name': adventurerData.name,
-        'hairOffset': adventurerData.hairOffset % 4,
+        'hairOffset': adventurerData.hairOffset % 6,
         'skinColorOffset': ifdefor(adventurerData.skinColorOffset, Random.range(0, 2)) % 3,
         'level': adventurerData.level,
         'image': personCanvas,
@@ -291,7 +291,7 @@ function makeAdventurerFromJob(job, level, equipment) {
         'jobKey': job.key,
         'level': level,
         'name': Random.element(names),
-        'hairOffset': Random.range(0, 3),
+        'hairOffset': Random.range(0, 6),
         'skinColorOffset': Random.range(0, 2),
         'equipment': equipment
     });
