@@ -26,6 +26,10 @@ function useSkill(actor, skill, target, attackStats) {
         skill.readyAt = actor.time + 1000;
         return false;
     }
+    // Healing attack adds a new healing basic attack and deactivates normal basic attack.
+    if (skill.tags['basic'] && actor.healingAttacks) {
+        return false;
+    }
     if (target && ifdefor(skill.base.targetDeadUnits) && !target.isDead) {
         // Skills that target dead units can only be used on targets that are dying.
         return false;
@@ -38,15 +42,15 @@ function useSkill(actor, skill, target, attackStats) {
             return false;
         }
     }
+    if (actor.cannotAttack && actionIndex >= 0 && skill.tags['attack']) {
+        return false;
+    }
     var isNova = skill.tags['nova']; // AOE centered on player (freeze)
     var isField = skill.tags['field']; // AOE with duration centered on player (thunderstorm)
     var isBlast = skill.tags['blast']; // AOE centered on target (plague, dispell, drain life)
     var isRain = skill.tags['rain']; // Projectiles fall from the sky at targets (meteor)
     var isSpell = skill.tags['spell'];
     var isAOE = skill.cleave || isNova || isField || isBlast || isRain;
-    if (actor.cannotAttack && actionIndex >= 0 && skill.tags['attack']) {
-        return false;
-    }
     // Action skills have targets and won't activate if that target is out of range or not of the correct type.
     if (actionIndex >= 0) {
         // Nova skills use area instead of range for checking for valid targets.
@@ -66,6 +70,9 @@ function useSkill(actor, skill, target, attackStats) {
             return false;
         }
         if (ifdefor(skill.base.target) === 'self' && actor !== target) {
+            return false;
+        }
+        if (ifdefor(skill.base.target) === 'otherAllies' && (actor === target || actor.allies.indexOf(target) < 0)) {
             return false;
         }
         if (ifdefor(skill.base.target) === 'allies' && actor.allies.indexOf(target) < 0) {
@@ -242,7 +249,7 @@ skillDefinitions.spell = {
         return !target.cloaked;
     },
     use: function (actor, spellSkill, target) {
-        castSpell(actor, spellSkill, target);
+        castAttackSpell(actor, spellSkill, target);
     }
 };
 
@@ -358,7 +365,6 @@ skillDefinitions.minion = {
         newMonster.allies = actor.allies;
         newMonster.enemies = actor.enemies;
         newMonster.time = 0;
-        newMonster.animationTime = 0;
         addMinionBonuses(actor, minionSkill, newMonster);
         initializeActorForAdventure(newMonster);
         actor.allies.push(newMonster);
@@ -394,7 +400,6 @@ function cloneActor(actor, skill) {
     clone.slow = 0;
     clone.pull = null;
     clone.time = 0;
-    clone.animationTime = 0;
     clone.allEffects = [];
     addMinionBonuses(actor, skill, clone);
     return clone;

@@ -163,9 +163,27 @@ function createAttackStats(attacker, attack, target) {
         magicDamage *= (1 + attack.critDamage);
         accuracy *= (1 + attack.critAccuracy);
     }
+    var animation = ifdefor(attack.base.animation);
+    if (!animation && attacker.equipment.weapon) {
+        animation = ifdefor(attacker.equipment.weapon.base.animation);
+    }
+    if (animation && !projectileAnimations[animation]) {
+        pause();
+        throw new Error('Missing animation for ' + animation);
+    }
+    if (animation) animation = projectileAnimations[animation];
+    var gravity = ifdefor(attack.base.gravity);
+    if (!gravity && attacker.equipment.weapon) {
+        gravity = ifdefor(attacker.equipment.weapon.base.gravity);
+    }
+    if (!gravity) {
+        gravity = .8;
+    }
     return {
         'distance': 0,
-        'gravity': ifdefor(attack.gravity, ifdefor(attack.base.gravity, .8)),
+        'animation': animation,
+        'size': animation ? animation.frames[0][2] : ifdefor(attack.base.size, 10),
+        'gravity': gravity,
         'speed': ifdefor(attack.speed, ifdefor(attack.base.speed, ifdefor(attack.range, 10) * 2.5)),
         'healthSacrificed': sacrificedHealth,
         'source': attacker,
@@ -192,9 +210,17 @@ function createSpellStats(attacker, spell, target) {
     if (isCritical) {
         magicDamage *= (1 + spell.critDamage);
     }
+    var animation = ifdefor(spell.base.animation);
+    if (animation && !projectileAnimations[animation]) {
+        pause();
+        throw new Error('Missing animation for ' + animation);
+    }
+    if (animation) animation = projectileAnimations[animation];
     return {
         'distance': 0,
-        'gravity': ifdefor(spell.gravity, ifdefor(spell.base.gravity, .8)),
+        'animation': animation,
+        'size': animation ? animation.frames[0][2] : ifdefor(spell.base.size, 10),
+        'gravity': ifdefor(spell.base.gravity, .8),
         'speed': ifdefor(spell.speed, ifdefor(spell.base.speed, ifdefor(spell.range, 10) * 2.5)),
         'healthSacrificed': sacrificedHealth,
         'source': attacker,
@@ -208,8 +234,63 @@ function createSpellStats(attacker, spell, target) {
         'strikes': 1
     };
 }
+
+function createSpellImprintedAttackStats(attacker, attack, spell, target) {
+    var isCritical = Math.random() <= spell.critChance;
+    if (ifdefor(spell.firstStrike)) {
+        isCritical = isCritical || target.health >= target.maxHealth;
+    }
+    var magicDamage = spell.power;
+    var sacrificedHealth = Math.floor(attacker.health * ifdefor(spell.healthSacrifice, 0));
+    magicDamage += sacrificedHealth;
+    var accuracy = Math.random() * attack.accuracy;
+    if (isCritical) {
+        magicDamage *= (1 + spell.critDamage);
+        accuracy *= (1 + attack.critAccuracy);
+    }
+    var animation = ifdefor(attack.base.animation);
+    if (!animation && attacker.equipment.weapon) {
+        animation = ifdefor(attacker.equipment.weapon.base.animation);
+    }
+    if (animation && !projectileAnimations[animation]) {
+        pause();
+        throw new Error('Missing animation for ' + animation);
+    }
+    if (animation) animation = projectileAnimations[animation];
+    var gravity = ifdefor(attack.base.gravity);
+    if (!gravity && attacker.equipment.weapon) {
+        gravity = ifdefor(attacker.equipment.weapon.base.gravity);
+    }
+    if (!gravity) {
+        gravity = .8;
+    }
+    return {
+        'distance': 0,
+        'animation': animation,
+        'size': animation ? animation.frames[0][2] : ifdefor(attack.base.size, 10),
+        'gravity': gravity,
+        'speed': ifdefor(attack.speed, ifdefor(attack.base.speed, ifdefor(attack.range, 10) * 2.5)),
+        'healthSacrificed': sacrificedHealth,
+        'source': attacker,
+        'attack': attack,
+        'imprintedSpell': spell,
+        'isCritical': isCritical,
+        'damage': 0,
+        'magicDamage': magicDamage,
+        'accuracy': accuracy,
+        'explode': ifdefor(spell.explode, 0),
+        'cleave': ifdefor(attack.cleave, 0),
+        'piercing': ifdefor(attack.criticalPiercing) ? isCritical : false,
+        'strikes': ifdefor(attack.doubleStrike) ? 2 : 1
+    };
+}
 function performAttack(attacker, attack, target) {
-    var attackStats = createAttackStats(attacker, attack, target);
+    var attackStats;
+    if (attack.tags['basic'] && attacker.imprintSpell && attacker.imprintedSpell) {
+        attackStats = createSpellImprintedAttackStats(attacker, attack, attacker.imprintedSpell, target);
+    } else {
+        attackStats = createAttackStats(attacker, attack, target);
+    }
     attacker.health -= attackStats.healthSacrificed;
     attacker.attackCooldown = attacker.time + 1 / (attackStats.attack.attackSpeed * Math.max(.1, (1 - attacker.slow)));
     attacker.moveCooldown = attacker.time + .2;
@@ -217,7 +298,7 @@ function performAttack(attacker, attack, target) {
     performAttackProper(attackStats, target);
     return attackStats;
 }
-function castSpell(attacker, spell, target) {
+function castAttackSpell(attacker, spell, target) {
     var attackStats = createSpellStats(attacker, spell, target);
     attacker.health -= attackStats.healthSacrificed;
     attacker.attackCooldown = attacker.time + .2;
@@ -225,6 +306,7 @@ function castSpell(attacker, spell, target) {
     attacker.attackFrame = 0;
     performAttackProper(attackStats, target);
     attacker.stunned = attacker.time + .3;
+    if (attacker.imprintSpell) attacker.imprintedSpell = spell;
     return attackStats;
 }
 function performAttackProper(attackStats, target) {
@@ -265,7 +347,7 @@ function performAttackProper(attackStats, target) {
             var vx = (x > currentTarget.x) ? -1 : 1;
             attacker.character.projectiles.push(projectile(
                 attackStats, x, y, vx, vy, currentTarget, i * 10, // delay is in frames
-                attackStats.isCritical ? 'yellow' : 'red', ifdefor(attackStats.attack.base.size, 20) * (attackStats.isCritical ? 1.5 : 1)));
+                attackStats.isCritical ? 'yellow' : 'red', ifdefor(attackStats.size, 20) * (attackStats.isCritical ? 1.5 : 1)));
         }
     } else if (attackStats.attack.tags['ranged']) {
         var distance = getDistance(attacker, target);
@@ -274,7 +356,7 @@ function performAttackProper(attackStats, target) {
         var v = getProjectileVelocity(attackStats, x, y, target);
         attacker.character.projectiles.push(projectile(
             attackStats, x, y, v[0], v[1], target, 0,
-            attackStats.isCritical ? 'yellow' : 'red', ifdefor(attackStats.attack.base.size, 10) * (attackStats.isCritical ? 1.5 : 1)));
+            attackStats.isCritical ? 'yellow' : 'red', ifdefor(attackStats.size, 10) * (attackStats.isCritical ? 1.5 : 1)));
     } else {
         attackStats.distance = getDistance(attacker, target);
         // apply melee attacks immediately
@@ -288,6 +370,7 @@ function getAttackY(attacker) {
 }
 function applyAttackToTarget(attackStats, target) {
     var attack = attackStats.attack;
+    var imprintedSpell = attackStats.imprintedSpell;
     var attacker = attackStats.source;
     var effectiveness = ifdefor(attackStats.effectiveness, 1);
     if (ifdefor(attackStats.strikes, 1) > 1) {
@@ -300,6 +383,7 @@ function applyAttackToTarget(attackStats, target) {
             'distance': 0,
             'source': attackStats.source,
             'attack': attackStats.attack,
+            'imprintedSpell': attackStats.imprintedSpell,
             'isCritical': attackStats.isCritical,
             // Apply cleave damage by the coefficient.
             'damage': attackStats.damage * attackStats.cleave,
@@ -327,6 +411,7 @@ function applyAttackToTarget(attackStats, target) {
             'distance': 0,
             'source': attackStats.source,
             'attack': attackStats.attack,
+            'imprintedSpell': attackStats.imprintedSpell,
             'isCritical': attackStats.isCritical,
             'damage': attackStats.damage,
             'magicDamage': attackStats.magicDamage,
@@ -354,6 +439,18 @@ function applyAttackToTarget(attackStats, target) {
     }
     var damage = Math.floor(attackStats.damage * multiplier * effectiveness);
     var magicDamage = Math.floor(attackStats.magicDamage * multiplier * effectiveness);
+    // Spell paradigm shift converts all magic damage to physical damage.
+    if (attack.magicToPhysical) {
+        damage += magicDamage;
+        magicDamage = 0;
+    }
+    if (attack.heals) {
+        hitText.color = 'green';
+        hitText.value = damage + magicDamage;
+        target.health += (damage + magicDamage);
+        character.textPopups.push(hitText);
+        return true;
+    }
     attackStats.evaded = false;
     if (!ifdefor(attack.alwaysHits)) {
         var evasionRoll = (target.maxEvasion ? 1 : Math.random()) * target.evasion;
@@ -408,10 +505,16 @@ function applyAttackToTarget(attackStats, target) {
     if (attackStats.dodged && !ifdefor(attack.undodgeable)) {
         return false;
     }
-    attacker.health += ifdefor(attack.healthGainOnHit * effectiveness, 0);
-    target.slow += ifdefor(attack.slowOnHit * effectiveness, 0);
-    if (ifdefor(attack.debuff)) {
+    attacker.health += ifdefor(attack.healthGainOnHit, 0) * effectiveness;
+    target.slow += ifdefor(attack.slowOnHit, 0) * effectiveness;
+    if (imprintedSpell) {
+        target.slow += ifdefor(imprintedSpell.slowOnHit, 0) * effectiveness;
+    }
+    if (attack.debuff) {
         addTimedEffect(target, attack.debuff);
+    }
+    if (imprintedSpell && imprintedSpell.debuff) {
+        addTimedEffect(target, imprintedSpell.debuff);
     }
     var effects = ifdefor(attacker.onHitEffects, []);
     if (attackStats.isCritical) {
@@ -428,7 +531,8 @@ function applyAttackToTarget(attackStats, target) {
         }
     }
     if (totalDamage > 0) {
-        if (ifdefor(attack.cull, 0) > 0 && target.health / target.maxHealth <= attack.cull) {
+        var cull = Math.max(ifdefor(attack.cull, 0), imprintedSpell ? ifdefor(imprintedSpell.cull, 0) : 0);
+        if (cull > 0 && target.health / target.maxHealth <= cull) {
             target.health = 0;
             hitText.value = 'culled!';
         } else {
@@ -436,14 +540,19 @@ function applyAttackToTarget(attackStats, target) {
             hitText.value = totalDamage;
         }
         attacker.health += ifdefor(attack.lifeSteal, 0) * totalDamage
+        if (imprintedSpell) attacker.health += ifdefor(imprintedSpell.lifeSteal, 0) * totalDamage
         if (ifdefor(attack.poison)) {
             addTimedEffect(target, {'bonuses': {'+damageOverTime': totalDamage * attack.poison}});
         }
-        // Some attacks pull the target towards the attacker
-        if (attack.stun) {
-            target.stunned = Math.max(ifdefor(target.stunned, 0), target.time + attack.stun * effectiveness);
+        if (imprintedSpell && ifdefor(imprintedSpell.poison)) {
+            addTimedEffect(target, {'bonuses': {'+damageOverTime': totalDamage * imprintedSpell.poison}});
+        }
+        var stun = Math.max(ifdefor(attack.stun, 0), imprintedSpell ? ifdefor(imprintedSpell.stun, 0) : 0);
+        if (stun) {
+            target.stunned = Math.max(ifdefor(target.stunned, 0), target.time + stun * effectiveness);
             hitText.value += ' stunned!';
         }
+        // Some attacks pull the target towards the attacker
         var direction = (target.x < attacker.x) ? -1 : 1;
         if (Math.random() < ifdefor(attack.knockbackChance, 0)) {
             var targetX = target.x + direction * 32 * ifdefor(attack.knockbackDistance, 1);

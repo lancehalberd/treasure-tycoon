@@ -32,6 +32,8 @@ var allActorVariables = {
     // Used by Throwing Paradigm Shift which turns throwing weapons into melee weapons.
     'setRange': 'Override melee/ranged tags and weaponRange to specific values',
     'cannotAttack': 'Set to prevent a character from using actions with attack tag.',
+    'healingAttacks': 'Set to make basic attack heal allies instead of damage enemies.',
+    'imprintSpell': 'Staff paradigm shift imprints spells on weapon to replace basic attack stats',
     // tracked for debuffs that deal damage over time
     'damageOverTime': '.',
     // For enemy loot and color
@@ -71,6 +73,8 @@ var commonActionVariables = {
     'cull': '.',
     'armorPenetration': '.',
     'instantCooldownChance': '.', // %chance to ignore cooldown for an action
+    'heals': 'Attack damage heals the target instead of hurting them.',
+    'magicToPhysical': 'Magic damage applies as physical damage instead. For spell paradigm shift.',
     // special flags
     'alwaysHits': '.',
     'chaining': '.',
@@ -101,14 +105,14 @@ var allRoundedVariables = {
 var coreStatBonusSource = {'bonuses': {
     '%evasion': [.002, '*', '{dexterity}'],
     '%attackSpeed': [.002, '*', '{dexterity}'],
-    '+ranged:physicalDamage': ['{dexterity}', '/', 10],
+    '+ranged:weaponPhysicalDamage': ['{dexterity}', '/', 10],
     '%maxHealth': [.002, '*', '{strength}'],
-    '%physicalDamage': [.002, '*', '{strength}'],
-    '+melee:physicalDamage': ['{strength}', '/', 10],
+    '%weaponPhysicalDamage': [.002, '*', '{strength}'],
+    '+melee:weaponPhysicalDamage': ['{strength}', '/', 10],
     '%block': [.002, '*', '{intelligence}'],
     '%magicBlock': [.002, '*', '{intelligence}'],
     '%accuracy': [.002, '*', '{intelligence}'],
-    '+magic:magicDamage': ['{intelligence}', '/', 10],
+    '+magic:weaponMagicDamage': ['{intelligence}', '/', 10],
     '&maxHealth': '{bonusMaxHealth}',
     '+healthRegen': ['{maxHealth}', '/', 50],
     '+magicPower': ['{intelligence}', '+', [['{minWeaponMagicDamage}', '+' ,'{maxWeaponMagicDamage}'], '/', 2]],
@@ -138,7 +142,6 @@ function initializeActorForAdventure(actor) {
     actor.stunned = 0;
     actor.pull = null;
     actor.time = 0;
-    actor.animationTime = 0;
     actor.isDead = false;
     actor.timeOfDeath = undefined;
     actor.attackCooldown = 0;
@@ -147,6 +150,7 @@ function initializeActorForAdventure(actor) {
     actor.target = null;
     actor.slow = 0;
     actor.rotation = 0;
+    actor.imprintedSpell = null;
     updateActorDimensions(actor, 0);
 }
 function returnToMap(character) {

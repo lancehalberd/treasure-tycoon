@@ -8,17 +8,6 @@ function drawMap() {
     var context = mainContext;
 
     if (true) {
-        // Draw parchment backdrop.
-        /*var width = images['gfx/oldMap.png'].width;
-        var height = images['gfx/oldMap.png'].height;
-        for (var x = -mapLeft % width - width; x < mapWidth; x += width) {
-            if (x <= -width) continue;
-            for (var y = -mapTop % height - height; y < mapHeight; y += height) {
-                if (y <= -height) continue;
-                context.drawImage(images['gfx/oldMap.png'], 0, 0, width, height,
-                                  x, y, width, height);
-            }
-        }*/
         context.fillStyle = '#fea';
         context.fillRect(0, 0, mapWidth, mapHeight);
         var visibleRectangle = rectangle(mapLeft - 20, mapTop - 20, mapWidth + 40, mapHeight + 50);

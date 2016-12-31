@@ -82,6 +82,7 @@ var skills = {
 
     // Attack actions
     'basicAttack': attackAction('attack', {'tags': ['basic']}, {}, 'A basic attack'),
+    'healingAttack': attackAction('attack', {'animation': 'wandHealing', 'restrictions': ['wand'], 'target': 'otherAllies'}, {'$heals': true}, 'Basic attacks heal allies instead of damage enemies.'),
     'bullseye': attackAction('attack', {'icon': 'gfx/496RpgIcons/target.png'}, {'*damage': 2, '+cooldown': 15, '$alwaysHits': 'Never misses', '$undodgeable': 'Cannot be dodged'}),
     'counterAttack': attackAction('counterAttack', {}, {'*damage': 1.5, '+chance': .1},
                             'Perform a powerful counter attack.<br/>The chance to counter is lower the further away the attacker is.'),
@@ -92,7 +93,7 @@ var skills = {
                             'Throw a hook to damage and pull enemies closer.'),
     'banishingStrike': attackAction('banish', {'restrictions': ['melee']}, {'+cooldown': 30, '*damage': 2, '+distance': [6, '+', ['{strength}' , '/', 20]],
                 '$alwaysHits': 'Never misses', '+purify': 0, '+shockwave': 0, '+knockbackRotation': 30,
-                '$debuff': debuffEffect({}, {'+*damage': .5, '+*magicDamage': .5, '+duration': ['{intelligence}', '/', 20]}),
+                '$debuff': debuffEffect({}, {'+*weaponDamage': .5, '+duration': ['{intelligence}', '/', 20]}),
                 '$otherDebuff': debuffEffect({}, {'+*speed': .1, '+duration': ['{intelligence}', '/', 20]})},
                 'Perform a mighty strike that inflicts the enemy with: {$debuff} And knocks all other enemies away, slowing them.'),
     'evadeAndCounter': attackAction('evadeAndCounter', {'restrictions': ['melee']}, {'$alwaysHits': 'Never misses'}, 'Counter whenever you successfully evade an attack.'),
@@ -140,13 +141,13 @@ var skills = {
     'net': genericAction('effect', {}, {'+cooldown': 10, '+range': 10, '$debuff': debuffEffect({}, {'+*speed': 0, '+duration': 3})},
                          'Throw a net to ensnare a distant enemy.'),
     'sicem': genericAction('effect', {}, {'+cooldown': [60, '*', [100, '/', [100, '+', '{dexterity}']]],
-                            '+range': 10, '$allyBuff': buffEffect({}, {'+*speed': 2, '+*attackSpeed': 2, '+*damage': 2, '+duration': 2})},
+                            '+range': 10, '$allyBuff': buffEffect({}, {'+*speed': 2, '+*attackSpeed': 2, '+*weaponDamage': 2, '+duration': 2})},
                             'Incite your allies to fiercely attack the enemy granting them: {$allyBuff}'),
     'consume': genericAction('consume', {'icon': 'gfx/496RpgIcons/abilityConsume.png', 'target': 'all', 'targetDeadUnits': true, 'consumeCorpse': true},
                              {'+consumeRatio': .2, '+range': 5, '+count': 0, '+duration': 0},
                              'Consume the spirits of nearby fallen enemies and allies to regenerate your health.'),
     'aiming': genericAction('effect', {'icon': 'gfx/496RpgIcons/target.png', 'target': 'self', 'restrictions': ['ranged']}, {'+cooldown': 30, '$buff': buffEffect({},
-                            {'++range': 5, '+*attackSpeed': .5, '+*damage': 1.5, '+*accuracy': 1.5, '++critChance': .2, '++critDamage': .3, '+duration': 10})},
+                            {'++range': 5, '+*attackSpeed': .5, '+*weaponDamage': 1.5, '+*accuracy': 1.5, '++critChance': .2, '++critDamage': .3, '+duration': 10})},
                             'Enter a state of heightened perception greatly increasing your sharpshooting abilities while reducing your attack speed. Grants: {$buff}'),
     'smokeBomb': genericAction('criticalCounter', {}, {'$dodgeAttack': true, '+cooldown': 100, '$globalDebuff': debuffEffect({},
                                     {'+*accuracy': 0, '+duration': 5})},
@@ -154,7 +155,7 @@ var skills = {
     'shadowClone': genericAction('clone', {'icon': 'gfx/496RpgIcons/abilityShadowClone.png', 'tags': ['minion']}, {'+limit': 10, '+chance': .1},
                         'Chance to summon a weak clone of yourself on taking damage'),
     'enhanceWeapon': genericAction('effect', {'icon': 'gfx/496RpgIcons/auraAttack.png', 'tags': ['spell'], 'target': 'self'}, {'+cooldown': 30, '$buff': buffEffect({'icons': [effectSourceUp, effectSourceSword]}, {
-                            '++physicalDamage': ['{strength}', '/', 10], '++magicDamage': ['{intelligence}', '/', 10],
+                            '++weaponPhysicalDamage': ['{strength}', '/', 10], '++weaponMagicDamage': ['{intelligence}', '/', 10],
                             '++critDamage': ['{dexterity}', '/', 500], '+duration': 10})},
                     'Enhance the strength of your weapon granting: {$buff}'),
     'enhanceArmor': genericAction('effect', {'icon': 'gfx/496RpgIcons/auraDefense.png', 'tags': ['spell'], 'target': 'self'}, {'+cooldown': 30, '$buff': buffEffect({'icons': [effectSourceUp, effectSourceArmor]}, {
@@ -164,14 +165,14 @@ var skills = {
     'enhanceAbility': genericAction('effect', {'icon': 'gfx/496RpgIcons/auraAbility.png', 'tags': ['spell'], 'target': 'self'}, {'+cooldown': 20, '$buff': buffEffect({}, {
                             // This buff increases magicPower from magicDamage by 44% since that counts both damage and magicPower.
                             // Making a note here in case I want to change this *damage bonus to *physicalDamage later to balance this.
-                            '+%cooldown': -.2, '+*magicPower': 1.2, '+*damage': 1.2, '+*range': 1.2, '+duration': 5})},
+                            '+%cooldown': -.2, '+*magicPower': 1.2, '+*weaponDamage': 1.2, '+*range': 1.2, '+duration': 5})},
                     'Enhance your own abilities granting: {$buff}'),
     // Song buffs should be based on the singer's stats, not the stats of the targets. Not sure if this is the case or not.
     'attackSong': genericAction('song', {'tags': ['song', 'field'], 'target': 'allies', 'color': 'orange', 'alpha': .2},
                                 {'+area': 8, '+cooldown': 30, '+duration': 10, '$buff': buffEffect({'icons': [effectSourceUp, effectSourceSword]}, {
                                     '+%attackSpeed': [.2, '+', ['{dexterity}', '/', 1000]],
                                     '+%accuracy': [.2, '+', ['{intelligence}', '/', 1000]],
-                                    '+%damage': [.2, '+', ['{strength}', '/', 1000]]})},
+                                    '+%weaponDamage': [.2, '+', ['{strength}', '/', 1000]]})},
             'Play a tune that inspires you and your allies to attack more fiercely, granting all allies in range: {$buff}'),
     'defenseSong': genericAction('song', {'tags': ['song', 'field'], 'target': 'allies', 'color': 'purple', 'alpha': .2},
                                  {'+area': 10, '+cooldown': 45, '+duration': 20, '$buff': buffEffect({'icons': [effectSourceUp, effectSourceArmor]}, {
@@ -235,9 +236,9 @@ var skills = {
                     {'+range': 10, '+area': [8, '+', ['{magicPower}', '/', '100']], '+cooldown': 15,
                     '$alwaysHits': 'Never misses', '$debuff': debuffEffect({}, {'+*magicResist': .5, '+*magicBlock': .5, '$duration': 'forever'})},
                     'Premanently reduce the magic resistances of all enemies in a large area.'),
-    'meteor': spellAction('spell', {'icon': 'gfx/496RpgIcons/spellMeteor.png', 'tags': ['rain'], 'height': 20, 'color': 'grey', 'alpha': .4, 'size': 20},
-                       {'+count': [1, '+', ['{magicPower}', '/', '100']], '+explode': 1, '+power': ['{magicPower}', '/', 2],
-                       '+area': [2, '+', ['{magicPower}', '/', '100']], '+cooldown': 15, '$alwaysHits': 'Never misses'},
+    'meteor': spellAction('spell', {'icon': 'gfx/496RpgIcons/spellMeteor.png', 'animation': 'fireball', 'tags': ['rain'], 'height': 20, 'color': 'brown', 'alpha': .4, 'size': 30},
+                       {'+count': [2, '+', ['{magicPower}', '/', '100']], '+explode': 1, '+power': ['{magicPower}', '/', 2],
+                       '+range': 10, '+area': [2, '+', ['{magicPower}', '/', '100']], '+cooldown': 15, '$alwaysHits': 'Never misses'},
                         'Rain {+count} meteors down on your enemies each dealing {+power} damage.')
 };
 // The skill key should be applied as a tag to each skill.
