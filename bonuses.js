@@ -90,7 +90,7 @@ function initializeVariableObject(object, baseObject, actor) {
             break;
         case 'effect':
             object.bonuses = {};
-            for (var effectStat of ['duration', 'area']) {
+            for (var effectStat of ['duration', 'area', 'maxStacks']) {
                 object.dirtyStats[effectStat] = true;
             }
             break;
@@ -292,7 +292,7 @@ function doesStatApplyToObject(stat, object) {
         case 'action':
             return ifdefor(object[stat]) !== null || commonActionVariables[stat];
         case 'effect':
-            return stat === 'duration' || stat === 'area' || operations[stat.charAt(0)];
+            return stat === 'duration' || stat === 'area' || state === 'maxStacks' || operations[stat.charAt(0)];
         case 'trigger':
             return false;
         default:

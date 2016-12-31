@@ -337,12 +337,12 @@ function initalizeMonsters() {
     // Designed to favor mage classes.
     addMonster('gnome', {'name': 'Gnome', 'source': gnomeSource, 'fpsMultiplier': 1.5,
         'implicitBonuses': {'+weaponRange': 4, '*attackSpeed': 1, '+weaponMagicDamage': 4, '*weaponMagicDamage': 1.3,
-                            '+block': 4, '+armor': 4, '*armor': 1.5, '*block': 1.5, '*magicBlock': 0, '*magicResist': 0,
+                            '+block': 4, '+armor': 4, '*armor': 1.5, '*block': 1.5, '*magicBlock': 0.1, '*magicResist': 0.1,
                             '*speed': .6}, 'tags': ['ranged']
     });
     addMonster('gnomecromancer', {'name': 'Gnomecromancer', 'source': gnomeSource, 'fpsMultiplier': 1.5,
         'implicitBonuses': {'+weaponRange': 6, '*attackSpeed': 1, '+weaponMagicDamage': 4, '*weaponMagicDamage': 1.3,
-                            '+block': 4, '+armor': 4, '*armor': 1.5, '*block': 1.5, '*magicBlock': 0, '*magicResist': 0,
+                            '+block': 4, '+armor': 4, '*armor': 1.5, '*block': 1.5, '*magicBlock': 0.1, '*magicResist': 0.1,
                             '*speed': .6},
         'abilities': [abilities.summonSkeleton, abilities.summoner, abilities.darkknight, abilities.consume, abilities.consumeRange], 'tags': ['ranged']
     });
@@ -351,54 +351,54 @@ function initalizeMonsters() {
                             '+scale': [2, '*', ['{bonusMaxHealth}', '/', '{maxHealth}']],
                             '*cooldown': [.1, '+', ['{bonusMaxHealth}', '/', '{maxHealth}']],
                             '*weaponDamage': [1, '+', ['{bonusMaxHealth}', '/', '{maxHealth}']],
-                            '+block': 4, '+armor': 4, '*armor': 1.5, '*block': 1.5, '*magicBlock': 0, '*magicResist': 0,
+                            '+block': 4, '+armor': 4, '*armor': 1.5, '*block': 1.5, '*magicBlock': 0.1, '*magicResist': 0.1,
                             '*speed': .6},
         'abilities': [abilities.summonSkeleton, abilities.summoner, abilities.darkknight, abilities.consume, abilities.consumeRange, abilities.consumeRatio], 'tags': ['ranged']
     });
     addMonster('gnomeCleric', {'name': 'Gnome Cleric', 'source': gnomeSource, 'fpsMultiplier': 1.5,
         'implicitBonuses': {'+weaponRange': 4, '*attackSpeed': 1, '+weaponMagicDamage': 4, '*weaponMagicDamage': 1.3,
                             '*intelligence': 2,
-                            '+block': 4, '+armor': 4, '*armor': 1.5, '*block': 1.5, '*magicBlock': 0, '*magicResist': 0,
+                            '+block': 4, '+armor': 4, '*armor': 1.5, '*block': 1.5, '*magicBlock': 0.1, '*magicResist': 0.1,
                             '*speed': .6},
         'abilities': [abilities.spellAOE, abilities.protect, abilities.heal, abilities.minorIntelligence], 'tags': ['ranged']
     });
     addMonster('gnomeMage', {'name': 'Gnome Mage', 'source': gnomeSource, 'fpsMultiplier': 1.5,
         'implicitBonuses': {'+weaponRange': 4, '*attackSpeed': 1, '+weaponMagicDamage': 4, '*weaponMagicDamage': 1.3,
-                            '+block': 4, '+armor': 4, '*armor': 1.5, '*block': 1.5, '*magicBlock': 0, '*magicResist': 0,
+                            '+block': 4, '+armor': 4, '*armor': 1.5, '*block': 1.5, '*magicBlock': 0.1, '*magicResist': 0.1,
                             '*speed': .6},
         'abilities': [abilities.fireball, abilities.wizard], 'tags': ['ranged']
     });
     addMonster('gnomeWizard', {'name': 'Gnome Wizard', 'source': gnomeSource, 'fpsMultiplier': 1.5,
         'implicitBonuses': {'+weaponRange': 4, '*attackSpeed': 1, '+weaponMagicDamage': 4, '*weaponMagicDamage': 1.3,
-                            '+block': 4, '+armor': 4, '*armor': 1.5, '*block': 1.5, '*magicBlock': 0, '*magicResist': 0,
+                            '+block': 4, '+armor': 4, '*armor': 1.5, '*block': 1.5, '*magicBlock': 0.1, '*magicResist': 0.1,
                             '*speed': .6},
         'abilities': [abilities.fireball, abilities.freeze, abilities.wizard], 'tags': ['ranged']
     });
     addMonster('skeleton', {'name': 'Skeleton', 'source': skeletonSource,
         // Fast to counter ranged heroes, low range+damage + fast attacks to be weak to armored heroes.
         'implicitBonuses': {'+weaponRange': -.5, '+accuracy': 2, '*attackSpeed': 2, '*weaponMagicDamage': 0,
-                            '*evasion': 1.3, '*magicBlock': 0, '*magicResist': 0,
+                            '*evasion': 1.3, '*magicBlock': 0.1, '*magicResist': 0.1,
                             '*speed': 2},
         'abilities': [abilities.sideStep]
     });
     addMonster('skeletalBuccaneer', {'name': 'Skeletal Buccaneer', 'source': skeletonSource,
         // Deflect to counter ranged champions.
         'implicitBonuses': {'+weaponRange': -.5, '*minPhysicalDamage': .4, '*maxPhysicalDamage': .4, '+accuracy': 2, '*attackSpeed': 2, '*weaponMagicDamage': 0,
-                            '*block': 0, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
+                            '*block': 0, '+armor': 2, '*magicBlock': 0.1, '*magicResist': 0.1,
                             '*speed': 1, 'scale': 1.5},
         'abilities': [abilities.deflect, abilities.deflectDamage, abilities.sage, abilities.majorDexterity]
     });
     addMonster('undeadPaladin', {'name': 'Undead Paladin', 'source': skeletonSource,
         // Deflect to counter ranged champions.
         'implicitBonuses': {'*minPhysicalDamage': .4, '*maxPhysicalDamage': .4, '+accuracy': 2, '*attackSpeed': 2,
-                            '*block': 1.5, '+armor': 2, '*magicBlock': 1.5, '*magicResist': 0,
+                            '*block': 1.5, '+armor': 2, '*magicBlock': 1.5, '*magicResist': 0.1,
                             '*speed': 1, '*scale': 1.5},
         'abilities': [abilities.reflect, abilities.majorIntelligence, abilities.aegis, abilities.heal]
     });
     addMonster('undeadWarrior', {'name': 'Undead Warrior', 'source': skeletonSource,
         // Fast to counter ranged heroes, low range+damage + fast attacks to be weak to armored heroes.
         'implicitBonuses': {'+weaponRange': -.5, '*minPhysicalDamage': .4, '*maxPhysicalDamage': .4, '+accuracy': 2, '*attackSpeed': 2, '*weaponMagicDamage': 0,
-                            '*block': 0, '+armor': 2, '*magicBlock': 0, '*magicResist': 0,
+                            '*block': 0, '+armor': 2, '*magicBlock': 0.1, '*magicResist': 0.1,
                             '*speed': 2},
         'abilities': [abilities.blinkStrike, abilities.soulStrike, abilities.majorStrength, abilities.vitality]
     });
@@ -406,47 +406,47 @@ function initalizeMonsters() {
     addMonster('butterfly', {'name': 'Butterfly', 'source': butterflySource, 'fpsMultiplier': 4,
         'implicitBonuses': {'*maxHealth': 1.5, '+weaponRange': 4, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5, '*accuracy': 2,
                             '*weaponMagicDamage': .4, '*weaponDamage': .8,
-                            '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
+                            '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0.1,
                             '*speed': .8}, 'tags': ['ranged']
     });
     addMonster('battlefly', {'name': 'Battlefly', 'source': butterflySource, 'fpsMultiplier': 4,
         'implicitBonuses': {'*maxHealth': 2, '+weaponRange': 5, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5, '*accuracy': 2,
                             '*weaponMagicDamage': 0,
-                            '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
+                            '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0.1,
                             '*speed': .8}, 'tags': ['ranged'],
         'abilities': [abilities.powerShot, abilities.powerShotKnockback]
     });
     addMonster('motherfly', {'name': 'Motherfly', 'source': monarchSource, 'fpsMultiplier': 4,
         'implicitBonuses': {'+maxHealth': 20, '*maxHealth': 3, '+weaponRange': 5, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5, '*accuracy': 2,
                             '*minPhysicalDamage': .8, '*maxPhysicalDamage': .8, '*attackSpeed': .5, '*weaponMagicDamage': .5,
-                            '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
+                            '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0.1,
                             '*speed': .8}, 'tags': ['ranged'],
         'abilities': [abilities.summonCaterpillar, abilities.summoner]
     });
     addMonster('lightningBug', {'name': 'Lightning Bug', 'source': butterflySource, 'fpsMultiplier': 4,
         'implicitBonuses': {'*maxHealth': 1.5, '+weaponRange': 4, '+critChance': .05, '+critDamage': .1, '+critAccuracy': .5, '*accuracy': 2,
                             '*minPhysicalDamage': .8, '*maxPhysicalDamage': .8, '*attackSpeed': .5, '*weaponMagicDamage': .5,
-                            '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0,
+                            '*block': 0, '*armor': .5, '*magicBlock': 1.5, '*magicResist': 0.1,
                             '*speed': .8}, 'tags': ['ranged'],
         'abilities': [abilities.storm]
     });
     addMonster('giantSkeleton', {'name': 'Skelegiant', 'source': skeletonGiantSource,
         'implicitBonuses': {'*maxHealth': 2, '+critDamage': .5, '*weaponMagicDamage': 0, '*accuracy': 2,
-                            '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 0, '*magicResist': 0}
+                            '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 0.1, '*magicResist': 0.1}
     });
     addMonster('skeletonOgre', {'name': 'Skeleton Ogre', 'source': skeletonGiantSource,
         'implicitBonuses': {'*maxHealth': 3, '+critDamage': .5, '*weaponMagicDamage': 0, '*accuracy': 2,
-                            '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 0, '*magicResist': 0},
+                            '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 0.1, '*magicResist': 0.1},
         'abilities': [abilities.hook, abilities.hookRange, abilities.hookStun, abilities.dodge, abilities.acrobatics, abilities.acrobatics, abilities.dodgeHook, abilities.deflect]
     });
     addMonster('butcher', {'name': 'Butcher', 'source': skeletonGiantSource,
         'implicitBonuses': {'*maxHealth': 3, '+critDamage': .5, '*weaponMagicDamage': 0, '*accuracy': 2,
-                            '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 0, '*magicResist': 0},
+                            '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 0.1, '*magicResist': 0.1},
         'abilities': [abilities.hook]
     });
     addMonster('frostGiant', {'name': 'Frost Giant', 'source': skeletonGiantSource,
         'implicitBonuses': {'*maxHealth': 2, '+critDamage': .5, '*weaponMagicDamage': 0, '*accuracy': 2,
-                            '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 0, '*magicResist': 0},
+                            '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 0.1, '*magicResist': 0.1},
         'abilities': [abilities.freeze]
     });
     addMonster('dragon', {'name': 'Dragon', 'source': dragonSource, 'stationary': true, // speed still effects animation

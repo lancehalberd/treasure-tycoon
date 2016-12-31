@@ -234,7 +234,7 @@ var skills = {
                 'Gain a temporal shield that protects you by stopping time whenever you are in danger. Can stop time for up to {+duration} seconds per adventure.'),
     'dispell': spellAction('spell', {'tags': ['blast'], 'height': 20, 'color': 'grey', 'alpha': .4},
                     {'+range': 10, '+area': [8, '+', ['{intelligence}', '/', '100']], '+cooldown': 15,
-                    '$alwaysHits': 'Never misses', '$debuff': debuffEffect({}, {'+*magicResist': .5, '+*magicBlock': .5, '$duration': 'forever'})},
+                    '$alwaysHits': 'Never misses', '$debuff': debuffEffect({}, {'+*magicResist': .5, '+*magicBlock': .5, '$duration': 'forever', '+maxStacks': 3})},
                     'Premanently reduce the magic resistances of all enemies in a large area.'),
     'meteor': spellAction('spell', {'icon': 'gfx/496RpgIcons/spellMeteor.png', 'animation': 'fireball', 'tags': ['rain'],
                           'heightRatio': 1, 'minTheta': Math.PI, 'color': 'brown', 'alpha': .4, 'size': 30, 'gravity': .1},

@@ -241,7 +241,7 @@ var abilities = {
         'blinkStrike': {'name': 'Blink Strike', 'bonuses': {'+dexterity': 5}, 'action': skills.blinkStrike},
         'cull': {'name': 'Cull', 'bonuses': {'+strength': 10, '+cull': .1}},
         'cripple': {'name': 'Cripple', 'bonuses': {'+strength': 10, '+dexterity': 10},
-                'onCritEffect': {'variableObjectType': 'trigger', 'bonuses': {'$debuff': debuffEffect({}, {'+*speed': .5, '+*attackSpeed': .5, '+duration': 5})}}},
+                'onCritEffect': {'variableObjectType': 'trigger', 'bonuses': {'$debuff': debuffEffect({}, {'+*speed': .5, '+*attackSpeed': .5, '+duration': 5, '+maxStacks': 1})}}},
     'darkknightIndex': {'name': '---Dark Knight---'},
         'darkknight': {'name': 'Blood Lust', 'bonuses': {'+overHeal': .5, '+lifeSteal': .05}},
         'consume': {'name': 'Consume', 'bonuses': {'+intelligence': 5}, 'action': skills.consume},

@@ -353,7 +353,8 @@ function addTimedEffect(actor, effect, area) {
     effect = {
         'base': effect.base,
         'bonuses': effect.bonuses,
-        'duration': effect.duration
+        'duration': effect.duration,
+        'maxStacks': effect.maxStacks ? effect.maxStacks : 50
     };
     if (area) {
         actor.allies.forEach(function (ally) {
@@ -366,7 +367,7 @@ function addTimedEffect(actor, effect, area) {
     ifdefor(actor.allEffects, []).forEach(function (currentEffect) {
         if (currentEffect.base === effect.base) count++;
     });
-    if (count < 50) {
+    if (count < effect.maxStacks) {
         addEffectToActor(actor, effect, true);
     }
 }
