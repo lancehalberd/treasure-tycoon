@@ -254,7 +254,7 @@ function makeAdventurerFromData(adventurerData) {
             'actualHeight': 50,
             'xOffset': 39,
             'actualWidth': 18,
-            'attackY': 30, // Measured from the bottom of the source
+            'attackY': 19, // Measured from the bottom of the source
             'walkFrames': [0, 1, 0, 2],
             'attackFrames': [4, 3, 0, 3]
         }),
