@@ -495,19 +495,19 @@ function updateEnchantmentOptions() {
         .attr('helptext', 'Offer ' + points('anima', mutationPrice) + ' to randomize the magical properties of this item.');
 }
 function resetCost(item) {
-    return sellValue(item) * 10;
+    return sellValue(item) * 2;
 }
 function enchantCost(item) {
-    return sellValue(item) * 5;
+    return sellValue(item) * 2;
 }
 function imbueCost(item) {
-    return sellValue(item) * 25;
+    return sellValue(item) * 10;
 }
 function augmentCost(item) {
-    return sellValue(item) * ((item.prefixes.length && item.suffixes.length) ? 50 : 10);
+    return sellValue(item) * ((item.prefixes.length && item.suffixes.length) ? 6 : 3);
 }
 function mutateCost(item) {
-    return sellValue(item) * ((item.prefixes.length < 2 && item.suffixes.length < 2) ? 6 : 30);
+    return sellValue(item) * ((item.prefixes.length < 2 && item.suffixes.length < 2) ? 3 : 5);
 }
 function resetItem() {
     var item = getEnchantingItem();
