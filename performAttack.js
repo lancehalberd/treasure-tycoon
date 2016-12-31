@@ -441,7 +441,7 @@ function applyAttackToTarget(attackStats, target) {
     }
     var distance = attackStats.distance;
     var character = target.character;
-    var hitText = {x: target.x + 32, y: groundY - target.height - ifdefor(target.y, 0) + 10, color: 'red', vx: Math.random() * 2 - 1};
+    var hitText = {x: target.x + 32, y: groundY - target.height - ifdefor(target.y, 0) + 10, color: 'red', 'vx': Math.random() * 2 - 1, 'vy': -1};
     if (target.invulnerable) {
         hitText.value = 'invulnerable';
         hitText.color = 'blue';
@@ -465,6 +465,9 @@ function applyAttackToTarget(attackStats, target) {
         hitText.color = 'green';
         hitText.value = (damage + magicDamage).abbreviate();
         target.health += (damage + magicDamage);
+        var speed = 1 + Math.log(damage+magicDamage) / 5;
+        hitText.vy *= speed;
+        hitText.vx *= speed;
         character.textPopups.push(hitText);
         return true;
     }
@@ -555,6 +558,9 @@ function applyAttackToTarget(attackStats, target) {
         } else {
             target.health -= totalDamage;
             hitText.value = totalDamage.abbreviate();
+            var speed = 1 + Math.log(totalDamage) / 5;
+            hitText.vy *= speed;
+            hitText.vx *= speed;
         }
         attacker.health += ifdefor(attack.lifeSteal, 0) * totalDamage
         if (imprintedSpell) attacker.health += ifdefor(imprintedSpell.lifeSteal, 0) * totalDamage
