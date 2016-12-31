@@ -234,7 +234,9 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
             if (self.hit) return;
             if (hit) {
                 self.hit = true;
-                if (ifdefor(self.target.reflectBarrier, 0) > 0) {
+                // Juggler can bounce attacks back to himself with friendly set to true to allow him to bounce
+                // attacks back to himself without injuring himself.
+                if (!ifdefor(attackStats.friendly) && ifdefor(self.target.reflectBarrier, 0) > 0) {
                     // Allow reflect barrier to become negative so that it can take time to restore after being hit by a much more powerful attack.
                     self.target.reflectBarrier = self.target.reflectBarrier - self.attackStats.magicDamage - self.attackStats.damage;
                     self.hit = false;
@@ -244,7 +246,8 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                     var v = getProjectileVelocity(self.attackStats, self.x, self.y, newTarget);
                     self.vx = v[0];
                     self.vy = v[1];
-                } else if (applyAttackToTarget(self.attackStats, self.target)) {
+                } else if (ifdefor(attackStats.friendly) || applyAttackToTarget(self.attackStats, self.target)) {
+                    attackStats.friendly = false;
                     self.done = true;
                     if (ifdefor(attackStats.attack.chaining)) {
                         self.done = false;
@@ -254,6 +257,7 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                         // distinguish bounced attacks from new attacks.
                         self.vx = -self.vx / 2;
                         var targets = self.attackStats.source.enemies.slice();
+                        if (targets.length <= 1) targets.push(attackStats.source);
                         while (targets.length) {
                             var index = Math.floor(Math.random() * targets.length);
                             var newTarget = targets[index];
@@ -265,6 +269,9 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                             }
                             self.hit = false;
                             self.target = newTarget;
+                            if (newTarget === attackStats.source) {
+                                attackStats.friendly = true;
+                            }
                             // Calculate new velocity
                             var v = getProjectileVelocity(self.attackStats, self.x, self.y, newTarget);
                             self.vx = v[0];
