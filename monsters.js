@@ -82,6 +82,7 @@ function makeMonster(monsterData, level, extraSkills, noRarity) {
     monster.base = baseMonster;
     monster.source = baseMonster.source;
     monster.stationary = ifdefor(baseMonster.stationary);
+    monster.y = ifdefor(monster.source.y, 0);
     /* $.each(baseMonster, function (key, value) {
         monster[key] = value;
     }); */
@@ -255,7 +256,7 @@ function initalizeMonsters() {
     var skeletonGiantSource = setupActorSource({'image': enemySheet('gfx/skeletonGiant.png'), 'width': 48, frames: 7});
     var dragonSource = setupActorSource({'image': enemySheet('gfx/dragonEastern.png'),
         'width': 48, 'xCenter': 25, 'yCenter': 48, 'actualHeight': 40, 'height': 64, 'yOffset': 24, 'flipped': true, frames: 5});
-    var batSource = setupActorSource({'image': enemySheet('gfx/bat.png'), 'width': 32, 'height': 32, 'flipped': true, frames: 5, 'y': 20});
+    var batSource = setupActorSource({'image': enemySheet('gfx/bat.png'), 'width': 32, 'height': 32, 'flipped': true, frames: 5, 'y': 30});
     var spiderSource = setupActorSource({'image': enemySheet('gfx/spider.png'), 'width': 48, 'height': 48, 'y': -10,
             framesPerRow: 10, walkFrames: [4, 5, 6, 7, 8, 9], attackFrames: [2, 3, 0, 1], deathFrames: [10, 11, 12, 13]});
     var wolfSource = setupActorSource({'image': enemySheet('gfx/wolf.png'), 'width': 64, 'height': 32,
