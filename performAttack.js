@@ -1,8 +1,10 @@
 function getBasicAttack(adventurer) {
-    for (var i = 0; i < adventurer.actions.length; i++) {
-        var attack = adventurer.actions[i];
-        if (attack.tags['basic']) {
-            return attack;
+    return findActionByTag(adventurer.actions, 'basic');
+}
+function findActionByTag(actions, tag) {
+    for (var action of actions) {
+        if (action.tags[tag]) {
+            return action;
         }
     }
     return null;

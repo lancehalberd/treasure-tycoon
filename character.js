@@ -157,6 +157,8 @@ function initializeActorForAdventure(actor) {
     actor.slow = 0;
     actor.rotation = 0;
     actor.imprintedSpell = null;
+    var stopTimeAction = findActionByTag(actor.reactions, 'stopTime');
+    actor.temporalShield = actor.maxTemporalShield = (stopTimeAction ? stopTimeAction.duration : 0);
     updateActorDimensions(actor, 0);
 }
 function returnToMap(character) {
@@ -585,6 +587,9 @@ function actorHelpText(actor) {
     if (prefixNames.length) name = prefixNames.join(', ') + ' ' + name;
     if (suffixNames.length) name = name + ' of ' + suffixNames.join(' and ');
     var sections = [name + ' ' + Math.ceil(actor.health).abbreviate() + '/' + Math.ceil(actor.maxHealth).abbreviate()];
+    if (actor.temporalShield > 0) {
+        sections.push('Temporal Shield: ' + actor.temporalShield.format(1) + 's');
+    }
     if (actor.reflectBarrier > 0) {
         sections.push('Reflect: ' + actor.reflectBarrier.format(0).abbreviate());
     }

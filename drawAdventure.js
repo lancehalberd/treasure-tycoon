@@ -160,9 +160,15 @@ function drawActor(actor) {
         mainContext.fillRect(x + 1 + normalWidth, y + 1, bonusWidth, 2);
     }
     if (ifdefor(actor.reflectBarrier, 0) > 0) {
+        y -= 3;
         var width = Math.ceil(Math.min(1, actor.maxReflectBarrier / actor.maxHealth) * 64);
-        drawBar(context, x, y - 2, width, 4, 'white', 'blue', actor.reflectBarrier / actor.maxReflectBarrier);
+        drawBar(context, x, y, width, 4, 'white', 'blue', actor.reflectBarrier / actor.maxReflectBarrier);
     }
+    if (ifdefor(actor.temporalShield, 0) > 0) {
+        y -= 3;
+        drawBar(context, x, y, 64, 4, 'white', '#aaa', actor.temporalShield / actor.maxTemporalShield);
+    }
+    var y = top - 5;
     drawEffectIcons(actor, x, y);
     if (!actor.isDead && actor.stunned) {
         var shrineSource = {'left': 102, 'top': 125, 'width': 16, 'height': 16};

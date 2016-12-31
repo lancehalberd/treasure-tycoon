@@ -42,12 +42,18 @@ function startArea(character, index) {
     saveGame();
 }
 function checkIfActorDied(actor) {
-    if (!actor.isDead && actor.health <= 0 && !actor.undying && !actor.pull) {
-        actor.isDead = true;
-        actor.timeOfDeath = actor.time;
-        if (actor.character.enemies.indexOf(actor) >= 0 ) {
-            defeatedEnemy(actor.character, actor);
-        }
+    // The actor who has stopped time cannot die while the effect is in place.
+    if (actor.character.timeStopEffect && actor.character.timeStopEffect.actor === actor) return;
+    // Actor has not died if they are already dead, have postiive health, cannot die or are currently being pulled.
+    if (actor.isDead || actor.health > 0 || actor.undying || actor.pull) return;
+    // If the actor is about to die, check to activate their temporal shield if they have ont.
+    var stopTimeAction = findActionByTag(actor.reactions, 'stopTime');
+    if (useSkill(actor, stopTimeAction, null, {})) return;
+    // The actor has actually died, mark them as such and begin their death animation and drop spoils.
+    actor.isDead = true;
+    actor.timeOfDeath = actor.time;
+    if (actor.character.enemies.indexOf(actor) >= 0 ) {
+        defeatedEnemy(actor.character, actor);
     }
 }
 
@@ -55,16 +61,12 @@ function timeStopLoop(character, delta) {
     if (!character.timeStopEffect) return false;
     var actor = character.timeStopEffect.actor;
     actor.time += delta;
-    if (actor.time >= character.timeStopEffect.endAt) {
+    actor.temporalShield -= delta;
+    if (actor.temporalShield <= 0 || actor.health / actor.maxHealth > .5) {
         character.timeStopEffect = null;
         return false;
     }
     processStatusEffects(character, actor, delta);
-    checkIfActorDied(actor);
-    if (actor.isDead) {
-        character.timeStopEffect = null;
-        return false;
-    }
     // The enemies of the time stopper can still die. This wil stop their life
     // bars from going negative.
     for (var i = 0; i < actor.enemies.length; i++) {

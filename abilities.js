@@ -284,7 +284,7 @@ var abilities = {
         'enhanceAbility': {'name': 'Enhance Ability', 'bonuses': {'+strength': 10, '+intelligence': 10}, 'action': skills.enhanceAbility},
     'sageIndex': {'name': '---Sage---'},
         'sage': {'name': 'Profound Insight', 'bonuses': {'*cooldown': .5}},
-        'stopTime': {'name': 'Stop Time', 'bonuses': {'+intelligence': 10}, 'reaction': skills.stopTime},
+        'stopTime': {'name': 'Temporal Shield', 'bonuses': {'+intelligence': 10}, 'reaction': skills.stopTime},
         'dispell': {'name': 'Dispell', 'bonuses': {'+intelligence': 15}, 'action': skills.dispell},
         'meteor': {'name': 'Meteor', 'bonuses': {'+intelligence': 20}, 'action': skills.meteor},
         'meteorShower': {'name': 'Meteor Shower', 'bonuses': {'+intelligence': 10, '+meteor:count': ['{intelligence}', '/', '50'],

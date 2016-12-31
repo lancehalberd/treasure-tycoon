@@ -325,15 +325,12 @@ skillDefinitions.revive = {
 
 skillDefinitions.stop = {
     isValid: function (actor, stopSkill, attackStats) {
-        if (attackStats.evaded) return false;
-        // Cast stop only when the incoming hit would deal more than half of the
-        // character's remaining health in damage.
-        return ifdefor(attackStats.totalDamage, 0) >= actor.health / 2;
+        return (actor.health / actor.maxHealth < .1) && (actor.temporalShield > 0);
     },
     use: function (actor, stopSkill, attackStats) {
-        attackStats.stopped = true;
         actor.stunned = actor.time + .3;
-        actor.character.timeStopEffect = {'actor': actor, 'endAt': actor.time + stopSkill.duration}
+        actor.character.timeStopEffect = {'actor': actor};
+        if (actor.health <= 0) actor.health = 1;
     }
 };
 

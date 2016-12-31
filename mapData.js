@@ -1,16 +1,20 @@
 var map = {
     'academy': {
         'name': "Academy",
-        'description': "",
+        'description': "A Gnome Wizard has infiltrated the Academy and obtained the secrets to temporal magic! \n\nBeware, the monsters here are being protected by the power of time itself!",
         'level': 6,
         'x': 0, 'y': 0,
         'coords': [-443,-152,-375],
         'background': "cave",
         'unlocks': ["sage2"],
         'skill': "stopTime",
-        'enemySkills': [],
-        'monsters': [],
-        'events': []
+        'enemySkills': ["stopTime"],
+        'monsters': ["gnome","bat","spider"],
+        'events': [
+            ["gnome","gnomeMage"],
+            ["gnomeMage","gnomeCleric"],
+            ["gnomeWizard","gnomeCleric"]
+        ]
     },
     'ancientforest': {
         'name': "Ancient Forest",
