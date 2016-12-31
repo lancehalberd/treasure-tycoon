@@ -189,7 +189,7 @@ var skills = {
                                     '+%critChance': ['{dexterity}', '/', 500]})},
             'Play a ballade to inspire heroic feats granting all allies in range: {$buff}'),
     'raiseDead': genericAction('minion', {'target': 'enemies', 'targetDeadUnits': true, 'consumeCorpse': true, 'tags': ['spell']},
-                               {'+limit': 10, '+chance': .4, '+cooldown': .5},
+                               {'+limit': 10, '+range': 10, '+chance': .4, '+cooldown': .5},
                                 'Chance to raise defeated enemies to fight for you.'),
     'tomFoolery': genericAction('dodge', {}, {'+cooldown': 30, '$buff': buffEffect({}, {
                 '+*accuracy': 0, '$$maxEvasion': 'Evasion checks are always perfect', '+duration': 5})},
