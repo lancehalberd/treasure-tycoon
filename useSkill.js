@@ -318,7 +318,7 @@ skillDefinitions.revive = {
         actor.percentHealth = actor.health / actor.maxHealth;
         actor.stunned = actor.time + .3;
         if (reviveSkill.buff) {
-            addTimedEffect(actor, reviveSkill.buff);
+            addTimedEffect(actor, reviveSkill.buff, 0);
         }
     }
 };
@@ -521,7 +521,7 @@ skillDefinitions.effect = {
         if (effectSkill.allyBuff) {
             for (var i = 0; i < actor.allies.length; i++) {
                 if (actor.allies[i] === actor) continue;
-                addTimedEffect(actor.allies[i], effectSkill.allyBuff);
+                addTimedEffect(actor.allies[i], effectSkill.allyBuff, 0);
             }
         }
         if (effectSkill.debuff) {
@@ -545,11 +545,11 @@ skillDefinitions.dodge = {
             actor.pull = {'x': actor.x + actor.direction * dodgeSkill.distance, 'time': actor.time + ifdefor(dodgeSkill.moveDuration, .3), 'damage': 0};
         }
         if (ifdefor(dodgeSkill.buff)) {
-            addTimedEffect(actor, dodgeSkill.buff);
+            addTimedEffect(actor, dodgeSkill.buff, 0);
         }
         if (ifdefor(dodgeSkill.globalDebuff)) {
             actor.enemies.forEach(function (enemy) {
-                addTimedEffect(enemy, dodgeSkill.globalDebuff);
+                addTimedEffect(enemy, dodgeSkill.globalDebuff, 0);
             });
         }
     }
@@ -578,11 +578,11 @@ skillDefinitions.sideStep = {
             }
         }
         if (ifdefor(dodgeSkill.buff)) {
-            addTimedEffect(actor, dodgeSkill.buff);
+            addTimedEffect(actor, dodgeSkill.buff, 0);
         }
         if (ifdefor(dodgeSkill.globalDebuff)) {
             actor.enemies.forEach(function (enemy) {
-                addTimedEffect(enemy, dodgeSkill.globalDebuff);
+                addTimedEffect(enemy, dodgeSkill.globalDebuff, 0);
             });
         }
     }
@@ -602,11 +602,11 @@ skillDefinitions.criticalCounter = {
             actor.pull = {'x': actor.x + actor.direction * ifdefor(counterSkill.distance, 64), 'time': actor.time + ifdefor(counterSkill.moveDuration, .3), 'damage': 0};
         }
         if (ifdefor(counterSkill.buff)) {
-            addTimedEffect(actor, counterSkill.buff);
+            addTimedEffect(actor, counterSkill.buff, 0);
         }
         if (ifdefor(counterSkill.globalDebuff)) {
             actor.enemies.forEach(function (enemy) {
-                addTimedEffect(enemy, counterSkill.globalDebuff);
+                addTimedEffect(enemy, counterSkill.globalDebuff, 0);
             });
         }
     }
@@ -723,7 +723,7 @@ function stealAffixes(actor, target, skill) {
             'bonuses': affix.bonuses,
             'duration': skill.duration
         };
-        addTimedEffect(actor, effect);
+        addTimedEffect(actor, effect, 0);
         allAffixes = target.prefixes.concat(target.suffixes);
         removeBonusSourceFromObject(target, affix);
     }
@@ -762,7 +762,7 @@ skillDefinitions.banish = {
                     enemy.pull.attackStats = attackStats;
                 }
                 if (ifdefor(banishSkill.otherDebuff)) {
-                    addTimedEffect(enemy, banishSkill.otherDebuff);
+                    addTimedEffect(enemy, banishSkill.otherDebuff, 0);
                 }
             }
         });

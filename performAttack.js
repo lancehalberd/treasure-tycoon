@@ -540,10 +540,10 @@ function applyAttackToTarget(attackStats, target) {
         target.slow += ifdefor(imprintedSpell.slowOnHit, 0) * effectiveness;
     }
     if (attack.debuff) {
-        addTimedEffect(target, attack.debuff);
+        addTimedEffect(target, attack.debuff, 0);
     }
     if (imprintedSpell && imprintedSpell.debuff) {
-        addTimedEffect(target, imprintedSpell.debuff);
+        addTimedEffect(target, imprintedSpell.debuff, 0);
     }
     var effects = ifdefor(attacker.onHitEffects, []);
     if (attackStats.isCritical) {
@@ -552,11 +552,11 @@ function applyAttackToTarget(attackStats, target) {
     for (var effect of effects) {
         // Some abilities like corsairs venom add a stacking debuff to the target every hit.
         if (ifdefor(effect.debuff)) {
-            addTimedEffect(target, effect.debuff);
+            addTimedEffect(target, effect.debuff, 0);
         }
         // Some abilities like dancer's whirling dervish add a stacking buff to the attacker every hit.
         if (ifdefor(effect.buff)) {
-            addTimedEffect(attacker, effect.buff);
+            addTimedEffect(attacker, effect.buff, 0);
         }
     }
     if (totalDamage > 0) {
@@ -574,10 +574,10 @@ function applyAttackToTarget(attackStats, target) {
         attacker.health += ifdefor(attack.lifeSteal, 0) * totalDamage
         if (imprintedSpell) attacker.health += ifdefor(imprintedSpell.lifeSteal, 0) * totalDamage
         if (ifdefor(attack.poison)) {
-            addTimedEffect(target, {'bonuses': {'+damageOverTime': totalDamage * attack.poison}});
+            addTimedEffect(target, {'bonuses': {'+damageOverTime': totalDamage * attack.poison}}, 0);
         }
         if (imprintedSpell && ifdefor(imprintedSpell.poison)) {
-            addTimedEffect(target, {'bonuses': {'+damageOverTime': totalDamage * imprintedSpell.poison}});
+            addTimedEffect(target, {'bonuses': {'+damageOverTime': totalDamage * imprintedSpell.poison}}, 0);
         }
         var stun = Math.max(ifdefor(attack.stun, 0), imprintedSpell ? ifdefor(imprintedSpell.stun, 0) : 0);
         if (stun) {
