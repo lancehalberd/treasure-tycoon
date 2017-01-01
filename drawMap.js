@@ -82,30 +82,34 @@ function drawMap() {
             }
             context.stroke();
         }
-        context.strokeStyle = '#000';
-        context.beginPath();
-        for (var rho = Math.PI / 10; rho < Math.PI; rho += Math.PI / 10) {
-            var lastPoint = null;
-            for (var theta = 0; theta < Math.PI * 2 + .1; theta += Math.PI / 6) {
-                var z = Math.cos(rho) * world.radius;
-                var r = Math.sin(rho) * world.radius;
-                var x = Math.cos(theta) * r;
-                var y = Math.sin(theta) * r;
-                //console.log(point);
-                if (new Vector([x, y, z]).dotProduct(camera.forward) > 0) {
-                    lastPoint = null;
-                    continue;
-                }
-                var point = camera.projectPoint([x, y, z]);
-                if (lastPoint) {
-                    context.lineTo(point[0] - mapLeft, point[1] - mapTop);
-                } else {
-                    lastPoint = point;
-                    context.moveTo(point[0] - mapLeft, point[1] - mapTop);
+        if (editingMap) {
+            context.strokeStyle = '#000';
+            context.globalAlpha = .5;
+            context.beginPath();
+            for (var rho = Math.PI / 10; rho < Math.PI; rho += Math.PI / 10) {
+                var lastPoint = null;
+                for (var theta = 0; theta < Math.PI * 2 + .1; theta += Math.PI / 6) {
+                    var z = Math.cos(rho) * world.radius;
+                    var r = Math.sin(rho) * world.radius;
+                    var x = Math.cos(theta) * r;
+                    var y = Math.sin(theta) * r;
+                    //console.log(point);
+                    if (new Vector([x, y, z]).dotProduct(camera.forward) > 0) {
+                        lastPoint = null;
+                        continue;
+                    }
+                    var point = camera.projectPoint([x, y, z]);
+                    if (lastPoint) {
+                        context.lineTo(point[0] - mapLeft, point[1] - mapTop);
+                    } else {
+                        lastPoint = point;
+                        context.moveTo(point[0] - mapLeft, point[1] - mapTop);
+                    }
                 }
             }
+            context.stroke();
+            context.globalAlpha = 1;
         }
-        context.stroke();
         visibleNodes = {};
         $.each(map, function (levelKey, levelData) {
             if (!editingMap && !state.visibleLevels[levelKey]) {
@@ -132,6 +136,38 @@ function drawMap() {
         });
         movedMap = false;
     }
+    // Draw lines connecting connected nodes.
+    context.save();
+    if (!editingMap) {
+        context.strokeStyle = 'black';
+        context.setLineDash([8, 12]);
+        context.lineWidth = 1;
+        context.globalAlpha = .5;
+    } else {
+        context.lineWidth = 5;
+    }
+    $.each(visibleNodes, function (levelKey, levelData){
+        levelData.unlocks.forEach(function (nextLevelKey) {
+            if ((editingMap || (state.visibleLevels[levelKey] && state.visibleLevels[nextLevelKey])) && (visibleNodes[levelKey] && visibleNodes[nextLevelKey])) {
+                var nextLevelData = map[nextLevelKey];
+                context.beginPath();
+                // Draw a triangle while editing the map so it is obvious which levels are unlocked by completing a level.
+                if (editingMap) {
+                    context.strokeStyle = 'white';
+                    if (editingMap && (selectedMapNodes.indexOf(levelData) >= 0 || selectedMapNodes.indexOf(nextLevelData) >= 0)) {
+                        context.strokeStyle = '#f00';
+                    }
+                    drawMapArrow(context, levelData, nextLevelData);
+                } else {
+                    drawMapPath(context, levelData, nextLevelData);
+                    context.moveTo(levelData.left + levelData.width / 2, levelData.top + levelData.height / 2);
+                    context.lineTo(nextLevelData.left + nextLevelData.width / 2, nextLevelData.top + nextLevelData.height / 2);
+                    context.stroke();
+                }
+            }
+        });
+    });
+    context.restore();
     // Draw ovals for each node.
     $.each(visibleNodes, function (levelKey, levelData){
         context.fillStyle = 'white';
@@ -146,31 +182,6 @@ function drawMap() {
         context.fill();
         context.restore();
     });
-
-    // Draw lines connecting connected nodes.
-    context.save();
-    context.lineWidth = 5;
-    $.each(visibleNodes, function (levelKey, levelData){
-        levelData.unlocks.forEach(function (nextLevelKey) {
-            if ((editingMap || (state.visibleLevels[levelKey] && state.visibleLevels[nextLevelKey])) && (visibleNodes[levelKey] && visibleNodes[nextLevelKey])) {
-                var nextLevelData = map[nextLevelKey];
-                context.beginPath();
-                context.strokeStyle = 'white';
-                if (editingMap && (selectedMapNodes.indexOf(levelData) >= 0 || selectedMapNodes.indexOf(nextLevelData) >= 0)) {
-                    context.strokeStyle = '#f00';
-                }
-                // Draw a triangle while editing the map so it is obvious which levels are unlocked by completing a level.
-                if (editingMap) {
-                    drawMapArrow(context, levelData, nextLevelData);
-                } /*else {
-                    context.moveTo(levelData.left + levelData.width / 2, levelData.top + levelData.height / 2);
-                    context.lineTo(nextLevelData.left + nextLevelData.width / 2, nextLevelData.top + nextLevelData.height / 2);
-                    context.stroke();
-                }*/
-            }
-        });
-    });
-    context.restore();
     // Draw treasure chests on each node.
     var shrineSource = {'image': images['gfx/militaryIcons.png'], 'xOffset': 102, 'yOffset': 125, 'width': 16, 'height': 16};
     var circleSource = {'image': images['gfx/militaryIcons.png'], 'xOffset': 51, 'yOffset': 90, 'width': 16, 'height': 16};
@@ -302,6 +313,16 @@ function drawMapArrow(context, targetA, targetB) {
     context.lineTo(tx - v[0] * 30 - v[1] * 5, ty - v[1] * 30 + v[0] * 5);
     context.lineTo(tx - v[0] * 30 + v[1] * 5, ty - v[1] * 30 - v[0] * 5);
     context.lineTo(tx - v[0] * 20, ty - v[1] * 20);
+    context.stroke();
+}
+function drawMapPath(context, targetA, targetB) {
+    var sx = targetA.left + targetA.width / 2;
+    var sy = targetA.top + targetA.height / 2;
+    var tx = targetB.left + targetB.width / 2;
+    var ty = targetB.top + targetB.height / 2;
+    context.beginPath();
+    context.moveTo(sx, sy);
+    context.lineTo(tx, ty);
     context.stroke();
 }
 
