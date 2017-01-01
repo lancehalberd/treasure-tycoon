@@ -84,7 +84,7 @@ function useSkill(actor, skill, target, attackStats) {
         // Let's be careful about using any ability that can't be used more than once every 10 seconds.
         // For enemies, ignore this code if they are targeting the main character since hitting the main character is
         // always sufficient reason to use their most powerful abilities.
-        if (!target.isMainCharacter && ifdefor(skill.cooldown, 0) >= 10 && ifdefor(skill.base.target, 'enemies') === 'enemies') {
+        if (!target.isMainCharacter && ifdefor(skill.cooldown, 0) > 10 && ifdefor(skill.base.target, 'enemies') === 'enemies') {
             var health = 0;
             if (isAOE) {
                 var targetsInRange = getEnemiesLikelyToBeHitIfEnemyIsTargetedBySkill(actor, skill, target);
@@ -772,7 +772,7 @@ function banishTarget(actor, target, range, rotation) {
     // Adding the delay here creates a shockwave effect where the enemies
     // all get pushed from a certain point at the same time, rather than
     // them all immediately moving towards the point initially.
-    target.pull = {'x': actor.x + actor.direction * (64 + 32 * range), 'delay': target.time +  getDistance(actor, target) * .02 / 32, 'time': target.time + range * .02, 'damage': 0};
+    target.pull = {'x': actor.x + actor.direction * (64 + 32 * range), 'delay': target.time + getDistance(actor, target) * .02 / 32, 'time': target.time + range * .02, 'damage': 0};
     target.rotation = actor.direction * rotation;
 }
 
@@ -792,7 +792,7 @@ skillDefinitions.charm = {
 };
 skillDefinitions.charge = {
     isValid: function (actor, chargeSkill, target) {
-        return !target.cloaked;
+        return !target.cloaked && getDistance(actor, target) >= 128;
     },
     use: function (actor, chargeSkill, target) {
         actor.chargeEffect = {

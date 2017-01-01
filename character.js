@@ -147,6 +147,7 @@ function initializeActorForAdventure(actor) {
     actor.bonusMaxHealth = 0;
     actor.stunned = 0;
     actor.pull = null;
+    actor.chargeEffect = null;
     actor.time = 0;
     actor.isDead = false;
     actor.timeOfDeath = undefined;
