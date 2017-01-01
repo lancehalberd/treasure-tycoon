@@ -131,9 +131,9 @@ function useSkill(actor, skill, target, attackStats) {
     // Show the name of the skill used if it isn't a basic attack. When skills have distinct
     // visible animations, we should probably remove this.
     if (!skill.tags['basic']) {
-        var hitText = {x: actor.x + 32, y: actor.top, color: 'white', font: "15px sans-serif"};
+        var hitText = {x: actor.x + 32, y: actor.top, color: 'white', fontSize: 15, 'vx': 0, 'vy': -1, 'gravity': -.1};
         hitText.value = skill.base.name;
-        actor.character.textPopups.push(hitText);
+        appendTextPopup(actor.character, hitText, true);
     }
     // Run shared code for using any action, which does not contain logic specific
     // for an actor using a skill they possess.

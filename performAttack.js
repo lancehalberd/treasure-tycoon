@@ -450,18 +450,18 @@ function applyAttackToTarget(attackStats, target) {
     }
     var distance = attackStats.distance;
     var character = target.character;
-    var hitText = {x: target.x + 32, y: groundY - target.height - ifdefor(target.y, 0) + 10, color: 'red', 'vx': Math.random() * 2 - 1, 'vy': -1};
+    var hitText = {x: target.x + 32, y: groundY - target.height - ifdefor(target.y, 0) + 10, color: 'red', 'vx': -(Math.random() * 2 + 2) * target.direction, 'vy': -5};
     if (target.invulnerable) {
         hitText.value = 'invulnerable';
         hitText.color = 'blue';
-        hitText.font, "15px sans-serif"
-        character.textPopups.push(hitText);
+        hitText.fontSize = 15;
+        appendTextPopup(character, hitText);
         return false;
     }
     var multiplier = ifdefor(attack.rangeDamage) ? (1 + attack.rangeDamage * distance / 32) : 1;
     if (attackStats.isCritical) {
         hitText.color = 'yellow';
-        hitText.font = "30px sans-serif"
+        hitText.fontSize = 30;
     }
     var damage = Math.floor(attackStats.damage * multiplier * effectiveness);
     var magicDamage = Math.floor(attackStats.magicDamage * multiplier * effectiveness);
@@ -477,7 +477,7 @@ function applyAttackToTarget(attackStats, target) {
         var speed = 1 + Math.log(damage+magicDamage) / 5;
         hitText.vy *= speed;
         hitText.vx *= speed;
-        character.textPopups.push(hitText);
+        appendTextPopup(character, hitText);
         return true;
     }
     attackStats.evaded = false;
@@ -494,8 +494,8 @@ function applyAttackToTarget(attackStats, target) {
             }
             // Target has evaded the attack.
             hitText.color = 'blue';
-            hitText.font, "15px sans-serif"
-            character.textPopups.push(hitText);
+            hitText.font = 15;
+            appendTextPopup(character, hitText);
             attackStats.evaded = true;
         }
         // Chaining attack accuracy is reduced by the evasion roll of each target hit.
@@ -610,10 +610,14 @@ function applyAttackToTarget(attackStats, target) {
     } else {
         hitText.value = 'blocked';
         hitText.color = 'blue';
-        hitText.font, "15px sans-serif"
+        hitText.font = 15;
     }
-    character.textPopups.push(hitText);
+    appendTextPopup(character, hitText);
     return true;
+}
+
+function appendTextPopup(character, hitText, important) {
+    if (important || character.textPopups.length < 100) character.textPopups.push(hitText);
 }
 
 function applyArmorToDamage(damage, armor) {
