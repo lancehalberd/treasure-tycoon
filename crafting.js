@@ -154,7 +154,7 @@ function getReforgeCost() {
     return Math.floor(getCurrentCraftingCost() / 5);
 }
 function getForgeItemCost() {
-    return Math.floor(5 * (state.craftingLevel * state.craftingLevel * state.craftingLevel + Math.pow(1.3, state.craftingLevel)));
+    return Math.floor(5 * baseItemLevelCost(state.craftingLevel));
 }
 function getForgeArmorCost() {
     return getForgeItemCost() * 2;

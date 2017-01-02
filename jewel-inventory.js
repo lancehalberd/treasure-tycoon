@@ -439,8 +439,8 @@ function stopJewelDrag() {
         $target.before($jewelItem.detach());
     }
     if (!draggedJewel) return;
-    appendDraggedJewelToElement($('.js-jewelInventory'));
     filterJewel(draggedJewel.$item);
+    appendDraggedJewelToElement($('.js-jewelInventory'));
 }
 
 function stopBoardDrag() {

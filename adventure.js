@@ -209,7 +209,8 @@ function adventureLoop(character, delta) {
         var textPopup = character.textPopups[i];
         textPopup.y += ifdefor(textPopup.vy, -1);
         textPopup.x += ifdefor(textPopup.vx, 0);
-        textPopup.duration = ifdefor(textPopup.duration, 30);
+        textPopup.duration = ifdefor(textPopup.duration, 35);
+        textPopup.vy += ifdefor(textPopup.gravity, .5);
         if (textPopup.duration-- < 0) {
             character.textPopups.splice(i--, 1);
         }
@@ -295,11 +296,13 @@ function moveActor(actor, delta) {
     if (actor.chargeEffect) {
         speedBonus *= actor.chargeEffect.chargeSkill.speedBonus;
         actor.chargeEffect.distance += speedBonus * actor.speed * Math.max(.1, 1 - actor.slow) * delta;
-    }
-    // If the character is closer than they need to be to auto attack then they can back away f
-    if (goalTarget && !goalTarget.cloaked) {
+    } else if (goalTarget && !goalTarget.cloaked) {
+        // If the character is closer than they need to be to auto attack then they can back away from
+        // them slowly to try and stay at range.
         var basicAttackRange = getBasicAttack(actor).range;
         var distanceToTarget = getDistanceOverlap(actor, goalTarget);
+        // Set the max distance to back away to to 10, otherwise they will back out of the range
+        // of many activated abilities like fireball and meteor.
         if (distanceToTarget < (Math.min(basicAttackRange - 1.5, 10)) * 32) {
             speedBonus *= -.25;
         } else if (distanceToTarget <= basicAttackRange * 32) {
