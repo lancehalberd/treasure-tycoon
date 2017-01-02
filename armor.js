@@ -93,8 +93,8 @@ addItem(68, {'slot': 'head', 'type': 'lightArmor', 'name': 'Dragon Helmet', 'bon
 
 //Hoods gives block and magic block
 addItem(1, {'slot': 'head', 'type': 'clothArmor', 'name': 'Straw Hat', 'bonuses': {'+block': 2, '+magicBlock': 1}, 'source': equipmentSources.strawHat, icon: 'mageHat'});
-addItem(3, {'slot': 'head', 'type': 'clothArmor', 'name': 'Wool Cap', 'bonuses': {'+block': 10, '+magicBlock': 5}, 'source': equipmentSources.strawHat, icon: 'mageHat'});
-addItem(7, {'slot': 'head', 'type': 'clothArmor', 'name': 'Winged Cap', 'bonuses': {'+block': 18, '+magicBlock': 9}, 'source': equipmentSources.strawHat, icon: 'mageHat'});
+addItem(3, {'slot': 'head', 'type': 'clothArmor', 'name': 'Wool Cap', 'bonuses': {'+block': 10, '+magicBlock': 5}, 'source': equipmentSources.hood, icon: 'mageHat'});
+addItem(7, {'slot': 'head', 'type': 'clothArmor', 'name': 'Winged Cap', 'bonuses': {'+block': 18, '+magicBlock': 9}, 'source': equipmentSources.hood, icon: 'mageHat'});
 addItem(12, {'slot': 'head', 'type': 'clothArmor', 'name': 'Cotten Hood', 'bonuses': {'+block': 26, '+magicBlock': 13}, 'source': equipmentSources.hood, icon: 'mageHat'});
 addItem(17, {'slot': 'head', 'type': 'clothArmor', 'name': 'Fur Hood', 'bonuses': {'+block': 34, '+magicBlock': 17}, 'source': equipmentSources.hood,icon: 'mageHat'});
 addItem(22, {'slot': 'head', 'type': 'clothArmor', 'name': 'Cashmere Hood', 'bonuses': {'+block': 42, '+magicBlock': 21}, 'source': equipmentSources.hood, icon: 'mageHat'});
@@ -138,7 +138,7 @@ addItem(72, {'slot': 'body', 'type': 'lightArmor', 'name': 'Dragon Armor', 'bonu
 
 // Cloth Armor gives armor, block and magic block
 addItem(1, {'slot': 'body', 'type': 'clothArmor', 'name': 'Wool Shirt', 'bonuses': {'+armor': 2, '+block': 4, '+magicBlock': 2}, 'source': equipmentSources.vest, icon: 'clothArmor'});
-addItem(6, {'slot': 'body', 'type': 'clothArmor', 'name': 'Hemp Frock', 'bonuses': {'+armor': 4, '+block': 10, '+magicBlock': 6}, 'source': equipmentSources.vest, icon: 'clothArmor'});
+addItem(6, {'slot': 'body', 'type': 'clothArmor', 'name': 'Hemp Frock', 'bonuses': {'+armor': 4, '+block': 10, '+magicBlock': 6}, 'source': equipmentSources.blueRobe, icon: 'clothArmor'});
 addItem(11, {'slot': 'body', 'type': 'clothArmor', 'name': 'Linen Frock', 'bonuses': {'+armor': 7, '+block': 17, '+magicBlock': 11}, 'source': equipmentSources.blueRobe, icon: 'clothArmor'});
 addItem(16, {'slot': 'body', 'type': 'clothArmor', 'name': 'Cotten Frock', 'bonuses': {'+armor': 10, '+block': 24, '+magicBlock': 16}, 'source': equipmentSources.blueRobe, icon: 'clothArmor'});
 addItem(21, {'slot': 'body', 'type': 'clothArmor', 'name': 'Fur Coat', 'bonuses': {'+armor': 13, '+block': 31, '+magicBlock': 21}, 'source': equipmentSources.blueRobe, icon: 'clothArmor'});
@@ -228,11 +228,11 @@ addItem(70, {'slot': 'legs', 'type': 'lightArmor', 'name': 'Dragon Pants', 'bonu
 
 //Tights gives block and magic block
 addItem(1, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Tattered Shorts', 'bonuses': {'+block': 3, '+magicBlock': 1}, source: equipmentSources.shorts, icon: 'tights'});
-addItem(4, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Hemp Shorts', 'bonuses': {'+block': 11, '+magicBlock': 6}, source: equipmentSources.shorts, icon: 'tights'});
-addItem(9, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Linen Shorts', 'bonuses': {'+block': 19, '+magicBlock': 11}, source: equipmentSources.shorts, icon: 'tights'});
-addItem(14, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Cotten Shorts', 'bonuses': {'+block': 27, '+magicBlock': 16}, source: equipmentSources.shorts, icon: 'tights'});
-addItem(19, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Fur Tights', 'bonuses': {'+block': 35, '+magicBlock': 21}, source: equipmentSources.shorts, icon: 'tights'});
-addItem(24, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Cashmere Tights', 'bonuses': {'+block': 43, '+magicBlock': 26}, source: equipmentSources.shorts, icon: 'tights'});
+addItem(4, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Hemp Shorts', 'bonuses': {'+block': 11, '+magicBlock': 6}, source: equipmentSources.wizardPants, icon: 'tights'});
+addItem(9, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Linen Shorts', 'bonuses': {'+block': 19, '+magicBlock': 11}, source: equipmentSources.wizardPants, icon: 'tights'});
+addItem(14, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Cotten Shorts', 'bonuses': {'+block': 27, '+magicBlock': 16}, source: equipmentSources.wizardPants, icon: 'tights'});
+addItem(19, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Fur Tights', 'bonuses': {'+block': 35, '+magicBlock': 21}, source: equipmentSources.wizardPants, icon: 'tights'});
+addItem(24, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Cashmere Tights', 'bonuses': {'+block': 43, '+magicBlock': 26}, source: equipmentSources.wizardPants, icon: 'tights'});
 addItem(29, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Silk Tights', 'bonuses': {'+block': 51, '+magicBlock': 31}, source: equipmentSources.wizardPants, icon: 'tights'});
 addItem(34, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Angora Tights', 'bonuses': {'+block': 59, '+magicBlock': 36}, source: equipmentSources.wizardPants, icon: 'tights'});
 addItem(39, {'slot': 'legs', 'type': 'clothArmor', 'name': 'Velvet Tights', 'bonuses': {'+block': 67, '+magicBlock': 41}, source: equipmentSources.wizardPants, icon: 'tights'});
@@ -273,11 +273,11 @@ addItem(71, {'slot': 'feet', 'type': 'lightArmor', 'name': 'Dragon Boots', 'bonu
 
 //Sandals/Slippers gives block and magic block
 addItem(1, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Broken Sandals', 'bonuses': {'+block': 1, '+magicBlock': 1, '-speed': 10}, 'source': equipmentSources.sandals, icon: 'shoes'});
-addItem(5, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Leather Sandals', 'bonuses': {'+block': 5, '+magicBlock': 5, '+speed': 10}, 'source': equipmentSources.sandals, icon: 'shoes'});
-addItem(10, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Winged Sandals', 'bonuses': {'+block': 9, '+magicBlock': 9, '+speed': 50}, 'source': equipmentSources.sandals, icon: 'shoes'});
-addItem(15, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Cotton Slippers', 'bonuses': {'+block': 13, '+magicBlock': 13, '+speed': 40}, 'source': equipmentSources.sandals, icon: 'shoes'});
-addItem(20, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Fur Slippers', 'bonuses': {'+block': 17, '+magicBlock': 17, '+speed': 50}, 'source': equipmentSources.sandals, icon: 'shoes'});
-addItem(25, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Cashmere Slippers', 'bonuses': {'+block': 21, '+magicBlock': 21, '+speed': 60}, 'source': equipmentSources.sandals, icon: 'shoes'});
+addItem(5, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Leather Sandals', 'bonuses': {'+block': 5, '+magicBlock': 5, '+speed': 10}, 'source': equipmentSources.wizardSandals, icon: 'shoes'});
+addItem(10, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Winged Sandals', 'bonuses': {'+block': 9, '+magicBlock': 9, '+speed': 50}, 'source': equipmentSources.wizardSandals, icon: 'shoes'});
+addItem(15, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Cotton Slippers', 'bonuses': {'+block': 13, '+magicBlock': 13, '+speed': 40}, 'source': equipmentSources.wizardSandals, icon: 'shoes'});
+addItem(20, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Fur Slippers', 'bonuses': {'+block': 17, '+magicBlock': 17, '+speed': 50}, 'source': equipmentSources.wizardSandals, icon: 'shoes'});
+addItem(25, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Cashmere Slippers', 'bonuses': {'+block': 21, '+magicBlock': 21, '+speed': 60}, 'source': equipmentSources.wizardSandals, icon: 'shoes'});
 addItem(30, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Silk Slippers', 'bonuses': {'+block': 25, '+magicBlock': 25, '+speed': 70}, 'source': equipmentSources.wizardSandals, icon: 'shoes'});
 addItem(35, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Angora Slippers', 'bonuses': {'+block': 29, '+magicBlock': 29, '+speed': 80}, 'source': equipmentSources.wizardSandals, icon: 'shoes'});
 addItem(40, {'slot': 'feet', 'type': 'clothArmor', 'name': 'Velvet Slippers', 'bonuses': {'+block': 33, '+magicBlock': 33, '+speed': 90}, 'source': equipmentSources.wizardSandals, icon: 'shoes'});
