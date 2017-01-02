@@ -32,15 +32,14 @@ var equipmentSources = {
     // Robes
     'blueRobe': equipmentSource(body, 6),
     'purpleRobe': equipmentSource(body, 7),
-    // Other Helmets
+    // Other Hats
     'devilHelmet': equipmentSource(head, 4),
     'oversizedHelmet': equipmentSource(head, 5),
+    'hood': equipmentSource(head, 14),
     // Other Shoes
     'redShoes': equipmentSource(feet, 5),
     // Other Gloves
     'leatherGloves': equipmentSource(hand, 6),
-    // Weapons
-    'sword': equipmentSource(hand, 7),
     // Accesories
     'bracelet': equipmentSource(hand, 1),
     'ring': equipmentSource(hand, 11),
@@ -58,6 +57,8 @@ var weaponSources = {
     'ball': weaponSource(5),
     'rock': weaponSource(6),
     'staff': weaponSource(7),
+    'axe': weaponSource(8),
+    'bigAxe': weaponSource(9),
 };
 
 //Heavy Helmets gives armor and health
@@ -94,12 +95,12 @@ addItem(68, {'slot': 'head', 'type': 'lightArmor', 'name': 'Dragon Helmet', 'bon
 addItem(1, {'slot': 'head', 'type': 'clothArmor', 'name': 'Straw Hat', 'bonuses': {'+block': 2, '+magicBlock': 1}, 'source': equipmentSources.strawHat, icon: 'mageHat'});
 addItem(3, {'slot': 'head', 'type': 'clothArmor', 'name': 'Wool Cap', 'bonuses': {'+block': 10, '+magicBlock': 5}, 'source': equipmentSources.strawHat, icon: 'mageHat'});
 addItem(7, {'slot': 'head', 'type': 'clothArmor', 'name': 'Winged Cap', 'bonuses': {'+block': 18, '+magicBlock': 9}, 'source': equipmentSources.strawHat, icon: 'mageHat'});
-addItem(12, {'slot': 'head', 'type': 'clothArmor', 'name': 'Cotten Hood', 'bonuses': {'+block': 26, '+magicBlock': 13}, 'source': equipmentSources.strawHat, icon: 'mageHat'});
-addItem(17, {'slot': 'head', 'type': 'clothArmor', 'name': 'Fur Hood', 'bonuses': {'+block': 34, '+magicBlock': 17}, 'source': equipmentSources.strawHat,icon: 'mageHat'});
-addItem(22, {'slot': 'head', 'type': 'clothArmor', 'name': 'Cashmere Hood', 'bonuses': {'+block': 42, '+magicBlock': 21}, 'source': equipmentSources.strawHat, icon: 'mageHat'});
-addItem(27, {'slot': 'head', 'type': 'clothArmor', 'name': 'Silk Hood', 'bonuses': {'+block': 50, '+magicBlock': 25}, 'source': equipmentSources.strawHat, icon: 'mageHat'});
-addItem(32, {'slot': 'head', 'type': 'clothArmor', 'name': 'Angora Hood', 'bonuses': {'+block': 58, '+magicBlock': 29}, 'source': equipmentSources.strawHat, icon: 'mageHat'});
-addItem(37, {'slot': 'head', 'type': 'clothArmor', 'name': 'Velvet Hood', 'bonuses': {'+block': 66, '+magicBlock': 33}, 'source': equipmentSources.wizardHat, icon: 'mageHat'});
+addItem(12, {'slot': 'head', 'type': 'clothArmor', 'name': 'Cotten Hood', 'bonuses': {'+block': 26, '+magicBlock': 13}, 'source': equipmentSources.hood, icon: 'mageHat'});
+addItem(17, {'slot': 'head', 'type': 'clothArmor', 'name': 'Fur Hood', 'bonuses': {'+block': 34, '+magicBlock': 17}, 'source': equipmentSources.hood,icon: 'mageHat'});
+addItem(22, {'slot': 'head', 'type': 'clothArmor', 'name': 'Cashmere Hood', 'bonuses': {'+block': 42, '+magicBlock': 21}, 'source': equipmentSources.hood, icon: 'mageHat'});
+addItem(27, {'slot': 'head', 'type': 'clothArmor', 'name': 'Silk Hood', 'bonuses': {'+block': 50, '+magicBlock': 25}, 'source': equipmentSources.hood, icon: 'mageHat'});
+addItem(32, {'slot': 'head', 'type': 'clothArmor', 'name': 'Angora Hood', 'bonuses': {'+block': 58, '+magicBlock': 29}, 'source': equipmentSources.hood, icon: 'mageHat'});
+addItem(37, {'slot': 'head', 'type': 'clothArmor', 'name': 'Velvet Hood', 'bonuses': {'+block': 66, '+magicBlock': 33}, 'source': equipmentSources.hood, icon: 'mageHat'});
 addItem(42, {'slot': 'head', 'type': 'clothArmor', 'name': 'Embroidered Hat', 'bonuses': {'+block': 74, '+magicBlock': 37}, 'source': equipmentSources.wizardHat, icon: 'mageHat'});
 addItem(47, {'slot': 'head', 'type': 'clothArmor', 'name': 'Wizards Hat', 'bonuses': {'+block': 82, '+magicBlock': 41}, 'source': equipmentSources.wizardHat, icon: 'mageHat'});
 addItem(57, {'slot': 'head', 'type': 'clothArmor', 'name': 'Blessed Cowl', 'bonuses': {'+block': 85, '+magicBlock': 50, '+armor': 5, '+evasion': 5, '+maxHealth': 35}, 'source': equipmentSources.wizardHat, icon: 'mageHat'});
@@ -138,11 +139,11 @@ addItem(72, {'slot': 'body', 'type': 'lightArmor', 'name': 'Dragon Armor', 'bonu
 // Cloth Armor gives armor, block and magic block
 addItem(1, {'slot': 'body', 'type': 'clothArmor', 'name': 'Wool Shirt', 'bonuses': {'+armor': 2, '+block': 4, '+magicBlock': 2}, 'source': equipmentSources.vest, icon: 'clothArmor'});
 addItem(6, {'slot': 'body', 'type': 'clothArmor', 'name': 'Hemp Frock', 'bonuses': {'+armor': 4, '+block': 10, '+magicBlock': 6}, 'source': equipmentSources.vest, icon: 'clothArmor'});
-addItem(11, {'slot': 'body', 'type': 'clothArmor', 'name': 'Linen Frock', 'bonuses': {'+armor': 7, '+block': 17, '+magicBlock': 11}, 'source': equipmentSources.vest, icon: 'clothArmor'});
-addItem(16, {'slot': 'body', 'type': 'clothArmor', 'name': 'Cotten Frock', 'bonuses': {'+armor': 10, '+block': 24, '+magicBlock': 16}, 'source': equipmentSources.vest, icon: 'clothArmor'});
-addItem(21, {'slot': 'body', 'type': 'clothArmor', 'name': 'Fur Coat', 'bonuses': {'+armor': 13, '+block': 31, '+magicBlock': 21}, 'source': equipmentSources.vest, icon: 'clothArmor'});
-addItem(26, {'slot': 'body', 'type': 'clothArmor', 'name': 'Cashmere Robe', 'bonuses': {'+armor': 16, '+block': 38, '+magicBlock': 26}, 'source': equipmentSources.blueRobe, icon: 'clothArmor'});
-addItem(31, {'slot': 'body', 'type': 'clothArmor', 'name': 'Silk Robe', 'bonuses': {'+armor': 19, '+block': 45, '+magicBlock': 31}, 'source': equipmentSources.blueRobe, icon: 'clothArmor'});
+addItem(11, {'slot': 'body', 'type': 'clothArmor', 'name': 'Linen Frock', 'bonuses': {'+armor': 7, '+block': 17, '+magicBlock': 11}, 'source': equipmentSources.blueRobe, icon: 'clothArmor'});
+addItem(16, {'slot': 'body', 'type': 'clothArmor', 'name': 'Cotten Frock', 'bonuses': {'+armor': 10, '+block': 24, '+magicBlock': 16}, 'source': equipmentSources.blueRobe, icon: 'clothArmor'});
+addItem(21, {'slot': 'body', 'type': 'clothArmor', 'name': 'Fur Coat', 'bonuses': {'+armor': 13, '+block': 31, '+magicBlock': 21}, 'source': equipmentSources.blueRobe, icon: 'clothArmor'});
+addItem(26, {'slot': 'body', 'type': 'clothArmor', 'name': 'Cashmere Robe', 'bonuses': {'+armor': 16, '+block': 38, '+magicBlock': 26}, 'source': equipmentSources.purpleRobe, icon: 'clothArmor'});
+addItem(31, {'slot': 'body', 'type': 'clothArmor', 'name': 'Silk Robe', 'bonuses': {'+armor': 19, '+block': 45, '+magicBlock': 31}, 'source': equipmentSources.purpleRobe, icon: 'clothArmor'});
 addItem(36, {'slot': 'body', 'type': 'clothArmor', 'name': 'Angora Robe', 'bonuses': {'+armor': 22, '+block': 52, '+magicBlock': 36}, 'source': equipmentSources.purpleRobe, icon: 'clothArmor'});
 addItem(41, {'slot': 'body', 'type': 'clothArmor', 'name': 'Velvet Robe', 'bonuses': {'+armor': 25, '+block': 59, '+magicBlock': 41}, 'source': equipmentSources.purpleRobe, icon: 'clothArmor'});
 addItem(46, {'slot': 'body', 'type': 'clothArmor', 'name': 'Embroidered Robe', 'bonuses': {'+armor': 28, '+block': 66, '+magicBlock': 46}, 'source': equipmentSources.wizardRobe, icon: 'clothArmor'});

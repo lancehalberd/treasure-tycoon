@@ -67,6 +67,10 @@ function initializeCraftingImage() {
     $(craftingViewCanvas).on('mousedown', function (event) {
         var offset = relativeMousePosition($(this));
         var level = Math.floor((offset[0] - 2) / craftingSlotTotal) + 1;
+        if (event.shiftKey) { //check if 'shift' key is held down
+            addToInventory(makeItem(overCraftingItem));
+            return;
+        }
         setCraftingLevel(level);
     });
     $(craftingViewCanvas).on('mouseout', function () {
