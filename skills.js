@@ -237,7 +237,7 @@ var skills = {
                     '$alwaysHits': 'Never misses', '$debuff': debuffEffect({}, {'+*magicResist': .5, '+*magicBlock': .5, '$duration': 'forever', '+maxStacks': 3})},
                     'Premanently reduce the magic resistances of all enemies in a large area.'),
     'meteor': spellAction('spell', {'icon': 'gfx/496RpgIcons/spellMeteor.png', 'animation': 'fireball', 'tags': ['rain'],
-                          'heightRatio': 1, 'minTheta': Math.PI, 'color': 'brown', 'alpha': .4, 'size': 30, 'gravity': .1},
+                          'heightRatio': 1, 'minTheta': Math.PI, 'color': 'brown', 'alpha': .4, 'size': 30, 'gravity': .5},
                        {'+count': [2, '+', ['{intelligence}', '/', '100']], '+explode': 1, '+power': ['{magicPower}', '/', 2],
                        '+range': 10, '+area': [3, '+', ['{intelligence}', '/', '200']], '+cooldown': 25, '$alwaysHits': 'Never misses'},
                         'Rain {+count} meteors down on your enemies each dealing {+power} damage.')

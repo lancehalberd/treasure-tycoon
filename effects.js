@@ -94,7 +94,7 @@ function explosionEffect(attackStats, x, y) {
                 self.attackStats.effectiveness = 1 - currentRadius / radius * ifdefor(self.attack.areaCoefficient, 1);
                 for (var i = 0; i < self.attackStats.source.enemies.length; i++) {
                     var target = self.attackStats.source.enemies[i];
-                    if (self.hitTargets.indexOf(target) >= 0) continue;
+                    if (target.isDead || self.hitTargets.indexOf(target) >= 0) continue;
                     // distance is 1d right now, maybe we should change that?
                     var distance = Math.max(0,  (self.x > target.x) ? (self.x - target.x - target.width) : (target.x - self.x));
                     if (distance > currentRadius) continue;
@@ -210,8 +210,12 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                 //self.vx *= attackStats.speed / distance;
                 //self.vy *= attackStats.speed / distance;
                 // rain hits when it touches the ground
-                hit = (self.y <= 0);
-                self.y = Math.max(self.y, 0);
+                if (self.y <= 0) {
+                    self.y = 0;
+                    applyAttackToTarget(self.attackStats, null);
+                    self.hit = true;
+                    self.done = true;
+                }
             } else {
                 // normal projectiles hit when they get close to the targets center.
                 hit = Math.abs(tx - self.x) <= Math.abs(self.vx) + 1 && Math.abs(ty - self.y) <= ifdefor(self.target.height, 128) + size / 2 && self.target.health > 0;

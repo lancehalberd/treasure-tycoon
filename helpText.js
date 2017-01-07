@@ -119,7 +119,7 @@ function bonusSourceHelpText(bonusSource, actor, localObject) {
     $.each(tagBonusSources, function (tags, tagBonusSource) {
         var tagBonusHelpText = bonusSourceHelpText(tagBonusSource, actor);
         if (tagBonusHelpText) {
-            sections.push(tag('div', 'tagText', tags.split(':').map(tagToCategoryDisplayName).join(',') + ':<br/>' + tagBonusHelpText));
+            sections.push(tag('div', 'tagText', tags.split(':').map(tagToCategoryDisplayName).join(', ') + ':<br/>' + tagBonusHelpText));
         }
     });
     if (bonusSource.variableObjectType === 'effect') {

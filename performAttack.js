@@ -355,7 +355,7 @@ function performAttackProper(attackStats, target) {
             }
             var currentTarget = targets.pop();
             var tx = currentTarget.x + ifdefor(currentTarget.width, 64) / 2;
-            var x = attacker.x + attacker.width / 2 - 150 + Math.random() * 750;
+            var x = attacker.x + attacker.width / 2 - 250 + Math.random() * 400 + 10 * i;
             var y = 550 + Math.random() * 100;
             // Point the meteor at the target and hope it hits!
             var vy = -y;
@@ -440,13 +440,20 @@ function applyAttackToTarget(attackStats, target) {
         if (attackStats.projectile) {
             explosionX = attackStats.projectile.x;
             explosionY = attackStats.projectile.y;
-        } else {
+        } else if (target) {
             explosionX = target.x + ifdefor(target.width, 64) / 2;
             explosionY = ifdefor(attackStats.y, getAttackY(target));
+        } else {
+            explosionX = attacker.x + ifdefor(attacker.width, 64) / 2;
+            explosionY = ifdefor(attackStats.y, getAttackY(attacker));
         }
         var explosion = explosionEffect(explodeAttackStats, explosionX, explosionY);
         attacker.character.effects.push(explosion);
-        explosion.hitTargets.push(target);
+        // Meteor calls applyAttackToTarget with a null target so it can explode
+        // anywhere. If that has happened, just return once the explosion has
+        // been created.
+        if (target) explosion.hitTargets.push(target);
+        else return true;
     }
     var distance = attackStats.distance;
     var character = target.character;
