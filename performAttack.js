@@ -474,7 +474,7 @@ function applyAttackToTarget(attackStats, target) {
         hitText.color = 'green';
         hitText.value = (damage + magicDamage).abbreviate();
         target.health += (damage + magicDamage);
-        var speed = 1 + Math.log(damage+magicDamage) / 5;
+        var speed = 1 + Math.log(damage+magicDamage) / 10;
         hitText.vy *= speed;
         hitText.vx *= speed;
         appendTextPopup(character, hitText);
@@ -567,7 +567,7 @@ function applyAttackToTarget(attackStats, target) {
         } else {
             target.health -= totalDamage;
             hitText.value = totalDamage.abbreviate();
-            var speed = 1 + Math.log(totalDamage) / 5;
+            var speed = 1 + Math.log(totalDamage) / 10;
             hitText.vy *= speed;
             hitText.vx *= speed;
         }

@@ -156,7 +156,7 @@ var abilities = {
     //'daggerParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
 'tier1Index': {'name': '------Tier 1------'},
     'jugglerIndex': {'name': '---Juggler---'},
-        'juggler': {'name': 'Juggling', 'icon': 'gfx/496RpgIcons/buffThrown.png', 'bonuses': {'$throwing:chaining': 'Projectiles ricochet between targets until they miss.'}},
+        'juggler': {'name': 'Juggling', 'icon': 'gfx/496RpgIcons/buffThrown.png', 'bonuses': {'$throwing:attack:chaining': 'Projectiles ricochet between targets until they miss.'}},
         'sap': {'name': 'Sap', 'icon': 'gfx/496RpgIcons/openScroll.png', 'bonuses': {'+slowOnHit': .1, '+healthGainOnHit': 1}},
         'dodge': {'name': 'Dodge', 'bonuses': {'+evasion': 2}, 'reaction': skills.dodge},
         'acrobatics': {'name': 'Acrobatics', 'icon': 'gfx/496RpgIcons/openScroll.png', 'bonuses': {'+evasion': 2, '+dodge:cooldown': -2, '*dodge:distance': 2}},
