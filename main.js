@@ -199,6 +199,7 @@ async.mapSeries([
         });
     }
     updateItemsThatWillBeCrafted();
+    updateEnchantmentOptions();
     for (var tier1JobKey of jobRanks[0]) {
         var job = characterClasses[tier1JobKey];
         unlockMapLevel(job.levelKey);

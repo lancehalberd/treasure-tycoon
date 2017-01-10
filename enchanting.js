@@ -457,7 +457,7 @@ function getEnchantingItem() {
 function updateEnchantmentOptions() {
     var item = getEnchantingItem();
     if (!item) {
-        $('.js-enchant,.js-imbue,.js-augment,.js-mutate').addClass('disabled');
+        $('.js-resetEnchantments,.js-enchant,.js-imbue,.js-augment,.js-mutate').addClass('disabled');
         return;
     }
     var prefixes = item.prefixes.length;

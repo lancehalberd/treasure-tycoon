@@ -48,9 +48,9 @@ function initializeCraftingGrid() {
                     if (!iconSources[icon]) {
                         var $itemDiv = $tag('div', 'icon ' + icon);
                         $itemDiv.appendTo($('body'));
-                        var imageFileName = 'gfx/' + $itemDiv.css('background-image').split('/gfx/')[1].split('"')[0];
+                        var imageFileName = 'gfx/' + $itemDiv.css('background-image').split('/gfx/')[1].split('"')[0].split(')')[0];
                         if (!images[imageFileName]) {
-                            console.log("Need to preload " + imageFile + " for crafting icons.");
+                            console.log("Need to preload " + imageFileName + " for crafting icons.");
                             continue;
                         }
                         var image = images[imageFileName];
