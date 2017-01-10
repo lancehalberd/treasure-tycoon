@@ -653,7 +653,6 @@ select {
 .characterColumn {
     width: 240px;
     background: transparent;
-    pointer-events: none;
 }
 
 .icon.treasure {
@@ -686,10 +685,12 @@ select {
 }
 
 .jewelBonuses {
-    height: 280px;
+    height: 340px;
     line-height: 20px;
     white-space: normal;
     padding: 5px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .recruitmentColumn {
