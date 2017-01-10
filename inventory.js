@@ -331,16 +331,9 @@ function stopDrag() {
         if ($('.js-craftingSelectOptions .js-itemSlot').length > $('.js-craftingSelectOptions .js-itemSlot .js-item').length) {
             $('.js-craftingSelectOptions .js-itemSlot').empty();
             $('.js-craftingSelectOptions').hide();
-            $('.js-craftingOptions').show();
-            state.craftingTypeFilter = 'all';
-            updateItemCrafting();
+            state.craftingLevel = null;
+            state.craftingTypeFilter = null;
             saveGame();
-        }
-    } else {
-        // Hide the enchantment options if there is no longer an item in the enchantment slot.
-        if (!$('.js-enchantmentSlot').find('.js-item').length) {
-            $('.js-enchantmentOptions').hide();
-            $('.js-craftingOptions').show();
         }
     }
     stopInventoryDrag();
@@ -531,10 +524,6 @@ $(document).on('keydown', function(event) {
     }
     if (event.which == 76) { // 'l'
         if (overCraftingItem) {
-            if (lastCraftedItem) {
-                craftingContext.fillStyle = ifdefor(lastCraftedItem.craftedUnique ? '#44ccff' : 'green');
-                craftingContext.fillRect(lastCraftedItem.craftingX, lastCraftedItem.craftingY, craftingSlotSize, craftingSlotSize);
-            }
             overCraftingItem.crafted = true;
             var item = makeItem(overCraftingItem, craftingLevel);
             updateItem(item);
@@ -546,10 +535,7 @@ $(document).on('keydown', function(event) {
                 $('.js-inventory').prepend(item.$item);
                 overCraftingItem.craftedUnique = true;
             }
-            craftingContext.fillStyle = ifdefor(overCraftingItem.craftedUnique) ? '#0088ff' : 'orange';
-            craftingContext.fillRect(overCraftingItem.craftingX, overCraftingItem.craftingY, craftingSlotSize, craftingSlotSize);
             $('.js-inventorySlot').hide();
-            drawCraftingViewCanvas();
             lastCraftedItem = overCraftingItem;
         }
     }

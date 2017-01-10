@@ -38,13 +38,14 @@
     display: inline-block;
     vertical-align: top;
     text-align: right;
+    width: 65px;
 }
 .points {
     padding: 2px;
     display: inline-block;
     margin-right: 20px;
     margin-left: 20px;
-    width: 80px;
+    width: 90px;
     background-color: #ccc;
     border: 2px solid black;
     border-top: none;
@@ -110,17 +111,6 @@
     background-color: white;
     margin-bottom: 5px;
 }
-.craftingBar {
-    position: relative;
-    overflow-x: auto;
-    background-color: #CCC;
-    margin-bottom: 5px;
-    height: 205px;
-}
-.craftingBar .craftingCanvas {
-    position: absolute;
-    bottom: 0px;
-}
 .playerPanel .infoMode {
     position: relative;
     width: 800px;
@@ -134,7 +124,8 @@
     overflow-x: hidden;
     overflow-y: scroll;
     box-sizing: border-box;
-    width: 170px;
+    width: 360px;
+    height: 270px;
     white-space: normal;
     background-color: #AAA;
 }
@@ -414,6 +405,7 @@ button {
     width: 50px;
     padding: 2px;
     box-sizing: border-box;
+    color: black;
 }
 .itemSlot.active {
     background-color: #88ff88;
@@ -498,16 +490,41 @@ button {
     margin-bottom: 5px;
 }
 
-.itemCraftingSelect {
-    width: 100px;
+.itemPanel {
+    display: inline-block;
+    width: 560px;
+    height: 570px;
 }
+
 .itemCrafting {
-    position: relative;
-    width: 390px;
+    height: 300px;
 }
-.craftingPanel {
+.craftingCanvasContainer {
     position: relative;
-    height: 200px;
+}
+/* This element covers the crafting canvas when it is display, forcing the player to collect an item before trying to craft again. */
+.craftingSelectOptions {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, .8);
+    padding-top: 10px;
+    text-align: center;
+    font-family: sans-serif;
+    font-size: 20px;
+    color: white;
+}
+/* Align the crafted items roughly in the center of the crafting canvas. */
+.craftingSelectOptionsAligner {
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    width: 190px;
+}
+.craftingCanvas {
+    cursor: pointer;
 }
 .itemCraftingOption {
     display: inline-block;
@@ -526,25 +543,25 @@ button {
     border-color: red;
 }
 
-.itemCrafting .centerSlot {
+.itemPanel .centerSlot {
     position: absolute;
-    left: 170px;
-    top: 60px;
+    left: 70px;
+    top: 110px;
 }
-.itemCrafting .topSlot {
+.itemPanel .topSlot {
     position: absolute;
-    left: 170px;
-    top: 0px;
+    left: 70px;
+    top: 50px;
 }
-.itemCrafting .bottomLeftSlot {
+.itemPanel .bottomLeftSlot {
     position: absolute;
-    left: 110px;
-    top: 100px;
+    left: 10px;
+    top: 150px;
 }
-.itemCrafting .bottomRightSlot {
+.itemPanel .bottomRightSlot {
     position: absolute;
-    left: 230px;
-    top: 100px;
+    left: 130px;
+    top: 150px;
 }
 
 
@@ -562,6 +579,13 @@ button {
 }
 .itemCraftingOption:hover .multiplier {
     display: block;
+}
+
+.enchantmentOptions {
+    display: inline-block;
+    position: relative;
+    width: 200px;
+    height: 270px;
 }
 
 

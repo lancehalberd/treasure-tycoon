@@ -31,14 +31,13 @@ var state = {
     coins: 0,
     anima: 0,
     maxCraftingLevel: 1,
+    craftingXOffset: 0,
     craftedItems: {},
     craftingLevel: 1,
     craftingTypeFilter: 'all',
     applicationSlots: 2
 };
-var craftingViewCanvas = $('.js-craftingCanvas')[0];
-var craftingViewContext = craftingViewCanvas.getContext('2d');
-var craftingCanvas = createCanvas(craftingViewCanvas.width, craftingViewCanvas.height);
+var craftingCanvas = $('.js-craftingCanvas')[0];
 var craftingContext = craftingCanvas.getContext('2d');
 var coins, animaDrops;
 var projectileAnimations = [];
@@ -112,6 +111,9 @@ async.mapSeries([
     'gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png',
     'gfx/turtle.png', 'gfx/monarchButterfly.png', 'gfx/yellowButterfly.png',
     'gfx/treasureChest.png', 'gfx/moneyIcon.png', 'gfx/projectiles.png',
+    'gfx/iconSet.png',
+    /* 'game-icons.png' from http://game-icons.net/about.html */
+    'gfx/game-icons.png',
     // http://opengameart.org/content/496-pixel-art-icons-for-medievalfantasy-rpg
     'gfx/496RpgIcons/abilityCharm.png',
     'gfx/496RpgIcons/abilityConsume.png',
@@ -160,10 +162,9 @@ async.mapSeries([
     showContext('adventure');
     initalizeMonsters();
     initializeBackground();
-    initializeCraftingImage();
+    initializeCraftingGrid();
     initializeCoins();
     initializeProjectileAnimations();
-    updateItemCrafting();
     mainCanvas = $('.js-mainCanvas')[0];
     mainContext = mainCanvas.getContext('2d');
     mainContext.imageSmoothingEnabled = false;
@@ -197,6 +198,7 @@ async.mapSeries([
             createNewHeroApplicant($(this), otherKeys.pop());
         });
     }
+    updateItemsThatWillBeCrafted();
     for (var tier1JobKey of jobRanks[0]) {
         var job = characterClasses[tier1JobKey];
         unlockMapLevel(job.levelKey);
@@ -316,6 +318,10 @@ function mainLoop() {
             updateMap();
             drawMap();
         }
+    }
+    if (currentContext === 'item') {
+        updateCraftingCanvas();
+        drawCraftingCanvas();
     }
     if (editingMap && distributingMapNodes) {
         /*for (var selectedNode of selectedMapNodes) {

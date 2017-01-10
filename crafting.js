@@ -1,155 +1,258 @@
 var CRAFTED_NORMAL = 1;
 var CRAFTED_UNIQUE = 2;
 var overCraftingItem = null;
-var craftingCanvasYOffset = 0;
 var lastCraftedItem = null;
-var totalRows;
-var slotCraftingOffsets;
-var craftingSlotSize = 16;
-var craftingSlotSpacing = 1;
+// Same size as icons for equipment.
+var craftingSlotSize = 32;
+var craftingSlotSpacing = 2;
 var craftingSlotTotal = craftingSlotSize + craftingSlotSpacing;
-function initializeCraftingImage() {
-    var offset = 0
-    var offsets = {'weapon': offset, 'offhand': offset+=3, 'head': offset+=1,
-        'body': offset+=1, 'arms': offset+=1, 'legs': offset+=1, 'feet': offset+=1,
-        'back': offset+=1, 'ring': offset += 1};
-    slotCraftingOffsets = offsets;
-    totalRows = offset + 2;
-    craftingCanvas.width = 4 + craftingSlotTotal * 74;
-    craftingCanvas.height = 4 + craftingSlotTotal * (totalRows - 1);
-    craftingContext.font = (craftingSlotSize - 2) + "px sans-serif";
-    craftingContext.textBaseline = "middle";
-    craftingContext.textAlign = 'center'
-    $.each(offsets, function (slot, offset) {
-        for (var i = 0; i < items.length; i++) {
-            var x = 2 + (i - 1) * craftingSlotTotal;
-            for (var j = 0; j < ifdefor(itemsBySlotAndLevel[slot][i], []).length; j++) {
-                var y = 2 + (offset + j) * craftingSlotTotal;
-                craftingContext.fillStyle = '#888';
-                craftingContext.fillRect(x, y, craftingSlotSize, craftingSlotSize);
-                craftingContext.fillStyle = 'white';
-                craftingContext.fillText('?', x + craftingSlotSize / 2, y + craftingSlotSize / 2);
-                var item = itemsBySlotAndLevel[slot][i][j];
-                item.craftingX = x;
-                item.craftingY = y;
+var craftingHeaderSize = 4 + craftingSlotSize / 2 + craftingSlotSpacing;
+var craftingGrid = [];
+var craftingCanvasMousePosition = null;
+function initializeCraftingGrid() {
+    craftingCanvas.width = 2 + 16 * craftingSlotTotal;
+    craftingCanvas.height = craftingHeaderSize + 6 * craftingSlotTotal + 1;
+    var offset = 0;
+    var craftingSections = [
+        {'height': 2, 'slots': ['weapon']},
+        {'height': 3, 'slots': ['offhand', 'head', 'body', 'arms', 'legs', 'feet']},
+        {'height': 1, 'slots': ['back', 'ring']}
+    ];
+    var iconSources = {};
+    var row = 0, column = 0;
+    for (var craftingSection of craftingSections) {
+        for (var i = 1; i < items.length; i++) {
+            column = 2 * (i - 1);
+            var subColumn = 0, subRow = 0;
+            for (var slot of craftingSection.slots) {
+                for (var item of ifdefor(itemsBySlotAndLevel[slot][i], [])) {
+                    if (subColumn > 1) {
+                        console.log(craftingSection.slots);
+                        console.log(new Error("Too many items in crafting section at level " + i));
+                    }
+                    var x = 2 + (column + subColumn) * craftingSlotTotal;
+                    var y = craftingHeaderSize + (row + subRow) * craftingSlotTotal;
+                    item.craftingX = x;
+                    item.craftingY = y;
+                    craftingGrid[row + subRow] = ifdefor(craftingGrid[row + subRow], []);
+                    craftingGrid[row + subRow][column + subColumn] = item;
+                    subRow++;
+                    if (subRow >= craftingSection.height) {
+                        subRow = 0;
+                        subColumn++;
+                    }
+                    // Some hacky code to read the icon from the css styles. Make a div for the item,
+                    // briefly add to the page and then read the background image/position info and translate
+                    // into values I can use.
+                    var icon = item.icon;
+                    if (!iconSources[icon]) {
+                        var $itemDiv = $tag('div', 'icon ' + icon);
+                        $itemDiv.appendTo($('body'));
+                        var imageFileName = 'gfx/' + $itemDiv.css('background-image').split('/gfx/')[1].split('"')[0];
+                        if (!images[imageFileName]) {
+                            console.log("Need to preload " + imageFile + " for crafting icons.");
+                            continue;
+                        }
+                        var image = images[imageFileName];
+                        var backgroundSizeValue = $itemDiv.css('background-size');
+                        var scale = 1;
+                        if (backgroundSizeValue && backgroundSizeValue != 'initial') {
+                            var sizes = backgroundSizeValue.split(' ').map(function (string) { return parseInt(string);});
+                            scale = sizes[0] / image.width;
+                        }
+                        var offsets = $itemDiv.css('background-position').split(' ').map(function (string) { return -parseInt(string);});
+                        // console.log([imageFile, offsets.join(',')]);
+                        $itemDiv.remove();
+                        iconSources[icon] = {
+                            'image': image,
+                            'left': offsets[0] / scale,
+                            'top': offsets[1] / scale,
+                            'width': craftingSlotSize / scale,
+                            'height': craftingSlotSize / scale
+                        };
+                    }
+                    item.iconSource = iconSources[icon];
+                }
             }
         }
+        row += craftingSection.height;
+    }
+    $(craftingCanvas).on('mousemove', function () {
+        craftingCanvasMousePosition = relativeMousePosition($(this));
+        updateOverCraftingItem();
     });
-    $(craftingViewCanvas).on('mousemove', function () {
-        var offset = relativeMousePosition($(this));
-        var tx = Math.floor((offset[0] - 2) / craftingSlotTotal);
-        var subX = offset[0] - tx * craftingSlotTotal - 2;
-        var ty = Math.floor((offset[1] - 2) / craftingSlotTotal);
-        var subY = offset[1] - ty * craftingSlotTotal - 2;
-        var level = tx + 1;
-        var slotOffset = 0;
-        var overSlot = 'weapon';
-        $.each(offsets, function (slot, offset) {
-            if (ty >= offset) {
-                slotOffset = offset;
-                overSlot = slot;
-            }
-            return ty >= offset;
-        });
-        var items = ifdefor(ifdefor(itemsBySlotAndLevel[overSlot], [])[level], []);
-        var index = ty - slotOffset;
-        // subX/subY values are used to make sure we don't show hover when mouse
-        // is actually in between crafting tiles.
-        if (level <= state.maxCraftingLevel && index < items.length && subY <= 16 && subX <= 16) {
-            overCraftingItem = items[index];
-        } else {
-            overCraftingItem = null
-        }
-        if (mouseDown) {
-            setCraftingLevel(level);
-        }
-    });
-    $(craftingViewCanvas).on('mousedown', function (event) {
-        var offset = relativeMousePosition($(this));
-        var level = Math.floor((offset[0] - 2) / craftingSlotTotal) + 1;
-        if (event.shiftKey) { //check if 'shift' key is held down
+    $(craftingCanvas).on('mousedown', function (event) {
+        if (event.shiftKey && overCraftingItem) { //check if 'shift' key is held down
             addToInventory(makeItem(overCraftingItem, 1));
             return;
         }
-        setCraftingLevel(level);
+        craftNewItems();
     });
-    $(craftingViewCanvas).on('mouseout', function () {
-        overCraftingItem = null
+    $(craftingCanvas).on('mouseout', function () {
+        overCraftingItem = null;
+        if (!$('.js-craftingSelectOptions:visible').length) {
+            state.craftingLevel = null;
+            state.craftingTypeFilter = null;
+        }
+        craftingCanvasMousePosition = null;
+        hidePointsPreview();
     });
-    drawCraftingViewCanvas();
 }
-function setCraftingLevel(level) {
-    if (!$('.js-craftingOptions:visible').length) {
+function updateOverCraftingItem() {
+    var x = craftingCanvasMousePosition[0] + state.craftingXOffset;
+    var y = craftingCanvasMousePosition[1];
+    var column = Math.floor((x - 2) / craftingSlotTotal);
+    var row = Math.floor((y - craftingHeaderSize) / craftingSlotTotal);
+    state.craftingLevel = Math.min(state.maxCraftingLevel, Math.floor(column / 2) + 1);
+    if (row < 0) {
+        state.craftingTypeFilter = 'all';
+    } else if (row < 2) {
+        state.craftingTypeFilter = 'weapon';
+    } else if (row < 5) {
+        state.craftingTypeFilter = 'armor';
+    } else {
+        state.craftingTypeFilter = 'accessory';
+    }
+    updateItemsThatWillBeCrafted();
+    previewPointsChange('coins', -getCurrentCraftingCost());
+    var craftingRow = ifdefor(craftingGrid[row], []);
+    var item = craftingRow[column];
+    if (!item || item.level > state.maxCraftingLevel) {
+        overCraftingItem = null;
         return;
     }
-    state.craftingLevel = Math.max(1, Math.min(state.maxCraftingLevel, level));
-    updateItemCrafting();
+    x -= item.craftingX;
+    y -= item.craftingY;
+    if (x < 0 || x > craftingSlotSize || y < 0|| y > craftingSlotSize) {
+        overCraftingItem = null;
+        return;
+    }
+    overCraftingItem = item;
+    checkToShowCraftingToopTip();
 }
-function drawCraftingViewCanvas() {
+function craftNewItems() {
+    var totalCost = getCurrentCraftingCost();
+    if (!spend('coins', totalCost)) {
+        return;
+    }
+    $('.js-craftingSelectOptions').show();
+    $('.js-craftingSelectOptions .js-itemSlot').each(function () {
+        var item = craftItem();
+        $(this).append(item.$item);
+    });
+    saveGame();
+}
+function updateCraftingCanvas() {
     if (!state.selectedCharacter) return;
-    var canvas = craftingViewCanvas;
-    var maxLevel = state.maxCraftingLevel;
-    canvas.width = Math.max(390, 4 + craftingSlotTotal * maxLevel);
-    canvas.height = 4 + craftingSlotTotal * (totalRows - 1);
-    var context = craftingViewContext;
-    var offset = 0;
-    var rows = totalRows;
-    switch (state.craftingTypeFilter) {
-        case 'all':
-            break;
-        case 'weapon':
-            rows = 3;
-            break;
-        case 'armor':
-            offset = slotCraftingOffsets['offhand'];
-            rows = slotCraftingOffsets['feet'] - offset + 1;
-            break;
-        case 'accessory':
-            offset = slotCraftingOffsets['back'];
-            rows = slotCraftingOffsets['ring'] - offset + 1;
-            break
-        default:
-            offset = slotCraftingOffsets[state.craftingTypeFilter];
-            rows = 1;
+    if (!craftingCanvasMousePosition) return;
+    var maxX = state.maxCraftingLevel * 2 * craftingSlotTotal + 4 - craftingCanvas.width;
+    var x = craftingCanvasMousePosition[0];
+    var vx = 0;
+    if (x < 100) vx = (x - 100) / 5;
+    else if (x > craftingCanvas.width - 100) vx = (100 - (craftingCanvas.width - x)) / 5;
+    if (vx) {
+        state.craftingXOffset = Math.max(0, Math.min(maxX, state.craftingXOffset + vx));
+        updateOverCraftingItem();
     }
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    context.fillStyle = '#8F8';
-    context.fillRect(0, offset * craftingSlotTotal, 4 + craftingSlotTotal * Math.min(state.selectedCharacter.adventurer.level, state.craftingLevel), 3 + rows * craftingSlotTotal);
-    var levelsOverCurrent = state.craftingLevel - state.selectedCharacter.adventurer.level
-    if (levelsOverCurrent > 0) {
-        context.fillStyle = '#F88';
-        context.fillRect(2 + craftingSlotTotal * state.selectedCharacter.adventurer.level, offset * craftingSlotTotal, craftingSlotTotal * levelsOverCurrent, 3 + rows * craftingSlotTotal);
+}
+function drawCraftingCanvas() {
+    if (!state.selectedCharacter) return;
+    var context = craftingContext;
+    context.clearRect(0, 0, craftingCanvas.width, craftingCanvas.height);
+    context.save();
+    context.textBaseline = "middle";
+    context.textAlign = 'center'
+    context.translate(-state.craftingXOffset, 0);
+
+    var firstColumn = Math.floor(state.craftingXOffset / craftingSlotTotal);
+    for (var column = firstColumn; column < firstColumn + 17; column++) {
+        if (column % 4 > 1) {
+            context.fillStyle = '#ededed';
+            context.fillRect(1 + column * craftingSlotTotal, 0, craftingSlotTotal, craftingCanvas.height);
+        }
     }
-    context.drawImage(craftingCanvas, 0, 0, Math.min(craftingCanvas.width, 2 + craftingSlotTotal * maxLevel), craftingCanvas.height,
-                      0, 0, Math.min(craftingCanvas.width, 2 + craftingSlotTotal * maxLevel), craftingCanvas.height);
+
+    // Highlight the crafting items if the user has their mouse over the crafting canvas.
+    if (state.craftingLevel && state.craftingTypeFilter) {
+        var offset = 0;
+        var rows = 6;
+        switch (state.craftingTypeFilter) {
+            case 'all':
+                offset = -1;
+                rows = 7;
+                break;
+            case 'weapon':
+                rows = 2;
+                break;
+            case 'armor':
+                offset = 2;
+                rows = 3;
+                break;
+            case 'accessory':
+                offset = 5;
+                rows = 1;
+                break
+        }
+        context.fillStyle = '#8F8';
+        context.fillRect(0, craftingHeaderSize + offset * craftingSlotTotal, 4 + 2 * craftingSlotTotal * Math.min(state.selectedCharacter.adventurer.level, state.craftingLevel), 3 + rows * craftingSlotTotal);
+        var levelsOverCurrent = state.craftingLevel - state.selectedCharacter.adventurer.level
+        if (levelsOverCurrent > 0) {
+            context.fillStyle = '#F88';
+            context.fillRect(2 + 2 * craftingSlotTotal * state.selectedCharacter.adventurer.level, craftingHeaderSize + offset * craftingSlotTotal, 2 * craftingSlotTotal * levelsOverCurrent, 3 + rows * craftingSlotTotal);
+        }
+    }
+
+    context.fillStyle = '#444';
+    context.font = "20px sans-serif";
+    for (var column = firstColumn; column < firstColumn + 17; column++) {
+        var level = Math.floor(column / 2) + 1;
+        context.fillText(level, 2 + (2 * level - 1.5) * craftingSlotTotal + craftingSlotSize / 2,  12);
+    }
+
+
+    context.font = (craftingSlotSize - 5) + "px sans-serif";
+    for (var column = firstColumn; column < firstColumn + 17; column++) {
+        var level = Math.floor(column / 2) + 1;
+        if (level > state.maxCraftingLevel) continue;
+
+        for (var row = 0; row < 6; row++) {
+            var gridRow = ifdefor(craftingGrid[row], []);
+            var item = gridRow[column];
+            if (!item) continue;
+            if (!state.craftedItems[item.key]) {
+                context.fillStyle = '#888';
+                context.beginPath();
+                context.arc(item.craftingX + craftingSlotSize / 2, item.craftingY + craftingSlotSize / 2, craftingSlotSize / 2, 0, 2 * Math.PI);
+                context.fill();
+                context.fillStyle = 'white';
+                context.fillText('?', item.craftingX + craftingSlotSize / 2, item.craftingY + craftingSlotSize / 2);
+            } else if (item.iconSource) {
+                context.fillStyle = '#aaa';
+                context.beginPath();
+                context.arc(item.craftingX + craftingSlotSize / 2, item.craftingY + craftingSlotSize / 2, craftingSlotSize / 2, 0, 2 * Math.PI);
+                context.fill();
+                context.fillStyle = '#ccc';
+                context.beginPath();
+                context.arc(item.craftingX + craftingSlotSize / 2, item.craftingY + craftingSlotSize / 2, craftingSlotSize / 2 - 2, 0, 2 * Math.PI);
+                context.fill();
+                var color = (state.craftedItems[item.key] & CRAFTED_UNIQUE) ? '#4af' : '#4c4';
+                var tint = (state.craftedItems[item.key] & CRAFTED_UNIQUE) ? .7 : 0;
+                drawTintedImage(context, item.iconSource.image, color, tint,
+                            item.iconSource,
+                            {'left': item.craftingX, 'top': item.craftingY, 'width': craftingSlotSize, 'height': craftingSlotSize});
+                //context.drawImage(item.iconSource.image, item.iconSource.left, item.iconSource.top, item.iconSource.width, item.iconSource.height,
+                 //               item.craftingX, item.craftingY, craftingSlotSize, craftingSlotSize);
+            } else {
+                context.fillStyle = '#080';
+                context.fillRect(item.craftingX, item.craftingY, craftingSlotSize, craftingSlotSize);
+            }
+        }
+    }
+    context.restore();
 }
 
 var itemsFilteredByType = [];
 var selectedCraftingWeight = 0;
-function updateItemCrafting() {
-    /*$('.js-itemCraftingOption.js-allOption').attr('helptext', 'For an item of any type, offer ' + points('coins', getForgeItemCost()));
-    $('.js-itemCraftingOption.js-armorOption').attr('helptext', 'For armor, offer ' + points('coins', getForgeArmorCost()));
-    $('.js-itemCraftingOption.js-weaponOption').attr('helptext', 'For a weapon, offer ' + points('coins', getForgeWeaponCost()));
-    $('.js-itemCraftingOption.js-accessoryOption').attr('helptext', 'For an accessory, offer ' + points('coins', getForgeAccessoryCost()));*/
-    var text = ['Drag one of the 3 items to your inventory or click here to offer ' + points('coins', Math.floor(getCurrentCraftingCost() / 5)) + ' for 3 new choices.',
-        'You can type \'r\' as a shortcut for clicking this button.'];
-    $('.js-reforge').attr('helptext', text.join('<br/>'));
-    updateCraftingButtons();
-    var itemsFilteredByLevel = [];
-    itemsFilteredByType = [];
-    for (var itemLevel = 0; itemLevel <= state.craftingLevel && itemLevel < items.length; itemLevel++) {
-        ifdefor(items[itemLevel], []).forEach(function (item) {
-            itemsFilteredByLevel.push(item);
-            if (itemMatchesFilter(item, state.craftingTypeFilter)) {
-                itemsFilteredByType.push(item);
-            }
-        });
-    }
-    $('.js-craftingLevel').text(state.craftingLevel);
-    $('.js-levelMultiplier').html((getForgeItemCost()).coins());
-    updateSelectedCraftingWeight();
-    drawCraftingViewCanvas();
-}
 function getReforgeCost() {
     return Math.floor(getCurrentCraftingCost() / 5);
 }
@@ -173,48 +276,26 @@ function getCurrentCraftingCost(filter) {
         default: return getForgeItemCost();
     }
 }
-function updateCraftingButtons() {
-    $('.js-itemCraftingOption.js-allOption').toggleClass('disabled', state.coins < getForgeItemCost());
-    $('.js-itemCraftingOption.js-armorOption').toggleClass('disabled', state.coins < getForgeArmorCost());
-    $('.js-itemCraftingOption.js-weaponOption').toggleClass('disabled', state.coins < getForgeWeaponCost());
-    $('.js-itemCraftingOption.js-accessoryOption').toggleClass('disabled', state.coins < getForgeAccessoryCost());
+function updateReforgeButton() {
     $('.js-reforge').toggleClass('disabled', state.coins < getReforgeCost());
+    var text = ['Offer ' + points('coins', Math.floor(getCurrentCraftingCost() / 5)) + ' to try again.', '',
+        'You can type \'r\' as a shortcut for clicking this button.'];
+    $('.js-reforge').attr('helptext', text.join('<br/>'));
 }
-function updateSelectedCraftingWeight() {
+function updateItemsThatWillBeCrafted() {
+    itemsFilteredByType = [];
+    for (var itemLevel = 1; itemLevel <= state.craftingLevel && itemLevel < items.length; itemLevel++) {
+        for (var item of ifdefor(items[itemLevel], [])) {
+            if (itemMatchesFilter(item, state.craftingTypeFilter)) {
+                itemsFilteredByType.push(item);
+            }
+        }
+    }
     selectedCraftingWeight = 0;
     itemsFilteredByType.forEach(function (item) {
         selectedCraftingWeight += item.craftingWeight;
     });
 }
-$('.js-itemCraftingOption').on('mouseover', function () {
-    state.craftingTypeFilter = $(this).data('filter');
-    updateItemCrafting();
-});
-$('.js-itemCraftingOption').on('mouseout', function () {
-    // Don't reset the state.craftingTypeFilter if crafting options aren't being displayed,
-    // otherwise we lose the filter during the item selection step.
-    if ($('.js-craftingOptions:visible').length) {
-        state.craftingTypeFilter = 'all';
-        updateItemCrafting();
-    }
-});
-$('.js-itemCraftingOption').on('click', function () {
-    state.craftingTypeFilter = $(this).data('filter');
-    var totalCost = getCurrentCraftingCost();
-    if (!spend('coins', totalCost)) {
-        return;
-    }
-    $('.js-craftingOptions').hide();
-    $('.js-craftingSelectOptions').show();
-    $('.js-craftingSelectOptions .js-itemSlot').each(function () {
-        var item = craftItem();
-        $(this).append(item.$item);
-    });
-    updateItemCrafting();
-    saveGame();
-});
-$('.js-itemCraftingOption').on('mouseover', function () { previewPointsChange('coins', -getCurrentCraftingCost());});
-$('.js-itemCraftingOption').on('mouseout', hidePointsPreview);
 $('.js-reforge').on('click', reforgeItems);
 $('.js-reforge').on('mouseover', function () { previewPointsChange('coins', -getReforgeCost());});
 $('.js-reforge').on('mouseout', hidePointsPreview);
@@ -227,7 +308,7 @@ function reforgeItems() {
         var item = craftItem();
         $(this).append(item.$item);
     });
-    updateCraftingButtons();
+    updateReforgeButton();
     saveGame();
 }
 
@@ -253,7 +334,7 @@ function craftItem() {
     itemsFilteredByType.forEach(function (item) {
         item.craftingWeight += distributedCraftingWeight * item.level * item.level * 5 / totalCraftingWeight;
     });
-    updateSelectedCraftingWeight();
+    updateItemsThatWillBeCrafted();
     var item = makeItem(craftedItem, state.craftingLevel);
     // Rolling a plain item has a chance to create a unique if one exists for
     // this base type.
@@ -274,23 +355,10 @@ function craftItem() {
         }
     }
     state.craftedItems[craftedItem.key] |= ifdefor(state.craftedItems[craftedItem.key], 0) | CRAFTED_NORMAL;
-    updateCraftingContext(craftedItem);
-    drawCraftingViewCanvas();
+
     updateItem(item);
     lastCraftedItem = craftedItem;
     return item;
-}
-
-function redrawCraftingContext() {
-    for (var itemKey of Object.keys(state.craftedItems)) {
-        updateCraftingContext(itemsByKey[itemKey]);
-    }
-}
-function updateCraftingContext(craftedItem) {
-    // Sometimes old saves have invalid item types in them.
-    if (!craftedItem) return;
-    craftingContext.fillStyle = (state.craftedItems[craftedItem.key] & CRAFTED_UNIQUE) ? '#44ccff' : 'green';
-    craftingContext.fillRect(craftedItem.craftingX, craftedItem.craftingY, craftingSlotSize, craftingSlotSize);
 }
 
 function itemMatchesFilter(item, typeFilter) {
@@ -306,7 +374,6 @@ function itemMatchesFilter(item, typeFilter) {
     }
 }
 
-$('.js-mouseContainer').on('mouseover mousemove', checkToShowCraftingToopTip);
 function checkToShowCraftingToopTip() {
     if (!overCraftingItem) {
         return;
@@ -324,15 +391,15 @@ function checkToShowCraftingToopTip() {
         sections.push('Requires level ' + overCraftingItem.level);
         sections.push('');
         sections.push(bonusSourceHelpText(overCraftingItem, state.selectedCharacter.adventurer));
-        if (ifdefor(overCraftingItem.craftedUnique)) {
-            sections.push(tag('div', 'uniqueText', 'Unique Variant: </br>' + overCraftingItem.unique.displayName + '<br/>' + (100 * overCraftingItem.unique.chance).format(1) + '% chance'));
+        if (state.craftedItems[overCraftingItem.key] & CRAFTED_UNIQUE) {
+            sections.push(tag('div', 'uniqueText', 'Unique Variant: </br>' + overCraftingItem.unique.displayName + '<br/>' + (100 * overCraftingItem.unique.chance).format(1) + '% chance for unique'));
         }
     } else {
         sections = ['??? ' + overCraftingItem.slot, 'Requires level ' + overCraftingItem.level, ''];
     }
     if (itemsFilteredByType.indexOf(overCraftingItem) >= 0) {
         sections.push('');
-        sections.push((100 * overCraftingItem.craftingWeight / selectedCraftingWeight).format(1) + '% chance to craft');
+        sections.push((100 * overCraftingItem.craftingWeight / selectedCraftingWeight).format(1) + '% chance to obtain');
     }
     $popup = $tag('div', 'toolTip js-toolTip', sections.join('<br/>'));
     $popup.data('item', overCraftingItem);
@@ -346,10 +413,4 @@ function unlockItemLevel(level) {
         return
     }
     state.maxCraftingLevel = Math.min(80, level);
-    // Don't set the current crafting level if the player might be in the middle of crafting.
-    // It might make them accidentally buy something they don't intend.
-    if (currentContext !== 'item') {
-        setCraftingLevel(level);
-    }
-    updateItemCrafting();
 }

@@ -20,6 +20,7 @@ function exportState(state) {
     data.characters = state.characters.map(exportCharacter);
     data.visibleLevels = copy(state.visibleLevels);
     data.maxCraftingLevel = Math.min(80, state.maxCraftingLevel);
+    data.craftingXOffset = state.craftingXOffset;
     data.craftedItems = state.craftedItems;
     data.craftingLevel = state.craftingLevel;
     data.applications = [];
@@ -82,8 +83,8 @@ function importState(stateData) {
     state.characters = [];
     state.visibleLevels = copy(ifdefor(stateData.visibleLevels, {}));
     state.maxCraftingLevel = stateData.maxCraftingLevel;
+    state.craftingXOffset = ifdefor(stateData.craftingXOffset, 0)
     state.craftedItems = ifdefor(stateData.craftedItems, {});
-    redrawCraftingContext();
     $('.js-charactersBox').empty();
     var characters = stateData.characters.map(importCharacter);
     characters.forEach(function (character) {
@@ -138,16 +139,12 @@ function importState(stateData) {
     }
     state.craftingLevel = stateData.craftingLevel;
     state.craftingTypeFilter = stateData.craftingTypeFilter;
-    drawCraftingViewCanvas();
     changedPoints('coins');
     changedPoints('anima');
     changedPoints('fame');
-    updateItemCrafting();
     updateRetireButtons();
     var selectedCharacterIndex = Math.max(0, Math.min(ifdefor(stateData.selectedCharacterIndex, 0), state.characters.length - 1));
     setSelectedCharacter(state.characters[selectedCharacterIndex]);
-    // Update crafting view canvas in case new items were imported.
-    drawCraftingViewCanvas();
     return state;
 }
 function exportCharacter(character) {

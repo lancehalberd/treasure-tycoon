@@ -163,36 +163,34 @@
                     <div class="js-jewelCraftingSlot jewelCraftingSlot"></div>
                 </div>
             </div>
-        </div><div class="js-inventory displayColumn inventory js-itemContext"><div class="js-inventorySlot js-itemSlot itemSlot inventorySlot" helptext="Drag an item here to move it into your inventory."></div></div><div class="js-itemCrafting displayColumn itemCrafting js-itemContext">
-            <div class="panelTitle">Temple of Fortune</div>
-            <div class="js-craftingBar craftingBar">
-                <canvas class="js-craftingCanvas craftingCanvas" height="210" width="1100" style="background-color: white;"></canvas>
+        </div><div class="js-itemPanel itemPanel js-itemContext">
+            <div class="js-itemCrafting itemCrafting">
+                <div class="panelTitle">Temple of Fortune</div>
+                <div class="craftingHelp">Offer your wealth to recieve a blessing from the goddess.</div>
+                <div class="craftingCanvasContainer">
+                    <canvas class="js-craftingCanvas craftingCanvas" height="210" width="1100" style="background-color: white;"></canvas>
+                    <div class="js-craftingSelectOptions craftingSelectOptions" style="display: none;">
+                        <div class="craftingSelectOptionsAligner">
+                            Receive Your Blessing
+                            <div class="js-reforge itemCraftingOption centerSlot"><div class="icon anvil"></div></div>
+                            <div class="js-itemSlot itemSlot bottomLeftSlot"></div>
+                            <div class="js-itemSlot itemSlot topSlot"></div>
+                            <div class="js-itemSlot itemSlot bottomRightSlot"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="craftingHelp">Complete harder levels to unlock higher equipment levels.</div>
             </div>
-            <div class="craftingPrice">Level <span class='js-craftingLevel'>1</span> crafting costs <span class="js-levelMultiplier"></span> per attempt.</div>
-            <div class="craftingHelp">Click and drag above to choose crafting level.<br/>Complete harder levels to unlock new crafting levels.</div>
-            <div class="js-craftingPanel js-infoPanel infoPanel craftingPanel">
-                <div class="js-craftingOptions">
-                    <div class="js-itemCraftingOption js-allOption itemCraftingOption centerSlot" data-filter="all"><div class="icon bag"></div><div class="multiplier"><span class="icon coin"></span>x1</div></div>
-                    <div class="js-itemCraftingOption js-weaponOption itemCraftingOption bottomLeftSlot" data-filter="weapon"><div class="icon sword"></div><div class="multiplier"><span class="icon coin"></span>x3</div></div>
-                    <div class="js-itemCraftingOption js-armorOption itemCraftingOption topSlot" data-filter="armor"><div class="icon heavyShield"></div><div class="multiplier"><span class="icon coin"></span>x2</div></div>
-                    <div class="js-itemCraftingOption js-accessoryOption itemCraftingOption bottomRightSlot" data-filter="accessory"><div class="icon band"></div><div class="multiplier"><span class="icon coin"></span>x5</div></div>
-                </div>
-                <div class="js-craftingSelectOptions" style="display: none;">
-                    <div class="js-reforge itemCraftingOption centerSlot"><div class="icon anvil"></div></div>
-                    <div class="js-itemSlot itemSlot bottomLeftSlot"></div>
-                    <div class="js-itemSlot itemSlot topSlot"></div>
-                    <div class="js-itemSlot itemSlot bottomRightSlot"></div>
-                </div>
-                <div class="js-enchantmentOptions" style="display: none;">
-                    <div class="js-enchantmentSlot js-itemSlot itemSlot centerSlot"></div>
-                    <div class="js-enchant itemCraftingOption topSlot"><div class="icon bag"></div></div>
-                    <div class="js-augment itemCraftingOption topSlot"><div class="icon bag"></div></div>
+            <div class="js-inventory displayColumn inventory"><div class="js-inventorySlot js-itemSlot itemSlot inventorySlot" helptext="Drag an item here to move it into your inventory."></div></div>
+            <div class="js-enchantmentOptions enchantmentOptions">
+                <div class="js-enchantmentSlot js-itemSlot itemSlot centerSlot"></div>
+                <div class="js-enchant itemCraftingOption topSlot"><div class="icon bag"></div></div>
+                <div class="js-augment itemCraftingOption topSlot"><div class="icon bag"></div></div>
 
-                    <div class="js-imbue itemCraftingOption bottomLeftSlot"><div class="icon wand"></div></div>
-                    <div class="js-mutate itemCraftingOption bottomLeftSlot"><div class="icon wand"></div></div>
+                <div class="js-imbue itemCraftingOption bottomLeftSlot"><div class="icon wand"></div></div>
+                <div class="js-mutate itemCraftingOption bottomLeftSlot"><div class="icon wand"></div></div>
 
-                    <div class="js-resetEnchantments itemCraftingOption bottomRightSlot"><div class="icon anvil"></div></div>
-                </div>
+                <div class="js-resetEnchantments itemCraftingOption bottomRightSlot"><div class="icon anvil"></div></div>
                 <button class="js-sellItem sellItem" disabled helptext="Drag items here to sell them. <br/> You can also hover over an item and type 'S' to sell quickly."><div class="icon money"></div></button>
             </div>
         </div>

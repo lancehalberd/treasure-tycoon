@@ -298,10 +298,8 @@ function makeAdventurerFromJob(job, level, equipment) {
     });
     $.each(equipment, function (key, item) {
         state.craftedItems[item.key] = ifdefor(state.craftedItems[item.key], 0) | CRAFTED_NORMAL;
-        updateCraftingContext(item);
         equipItem(adventurer, makeItem(item, 1), false);
     });
-    drawCraftingViewCanvas();
     updateAdventurer(adventurer);
     return adventurer;
 }
@@ -350,7 +348,7 @@ function spend(pointsType, amount) {
 }
 function changedPoints(pointsType) {
     if (pointsType == 'fame') updateHireButtons();
-    else updateCraftingButtons();
+    else updateReforgeButton();
     $('.js-global-' + pointsType).text(state[pointsType].abbreviate());
 }
 
@@ -625,7 +623,6 @@ function gainLevel(adventurer) {
     updateAdventurer(adventurer);
     refreshStatsPanel();
     updateEquipableItems();
-    drawCraftingViewCanvas();
 }
 function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonus, startingEquipment, jewelLoot, levelKey) {
     var key = name.replace(/\s*/g, '').toLowerCase();
@@ -716,8 +713,6 @@ function setSelectedCharacter(character) {
     updateAdventureButtons();
     updateConfirmSkillButton();
     updateEquipableItems();
-    // Need to update which crafting levels are drawn in green/red.
-    drawCraftingViewCanvas();
 }
 
 $('.js-jewelBoard').on('mouseover', function () {
