@@ -10,7 +10,7 @@ var craftingHeaderSize = 4 + craftingSlotSize / 2 + craftingSlotSpacing;
 var craftingGrid = [];
 var craftingCanvasMousePosition = null;
 function initializeCraftingGrid() {
-    craftingCanvas.width = 2 + 16 * craftingSlotTotal;
+    craftingCanvas.width = 5 + 16 * craftingSlotTotal;
     craftingCanvas.height = craftingHeaderSize + 6 * craftingSlotTotal + 1;
     var offset = 0;
     var craftingSections = [
@@ -80,6 +80,7 @@ function initializeCraftingGrid() {
     $(craftingCanvas).on('mousemove', function () {
         craftingCanvasMousePosition = relativeMousePosition($(this));
         updateOverCraftingItem();
+        checkToShowCraftingToopTip();
     });
     $(craftingCanvas).on('mousedown', function (event) {
         if (event.shiftKey && overCraftingItem) { //check if 'shift' key is held down
@@ -128,7 +129,6 @@ function updateOverCraftingItem() {
         return;
     }
     overCraftingItem = item;
-    checkToShowCraftingToopTip();
 }
 function craftNewItems() {
     var totalCost = getCurrentCraftingCost();

@@ -33,8 +33,8 @@ var state = {
     maxCraftingLevel: 1,
     craftingXOffset: 0,
     craftedItems: {},
-    craftingLevel: 1,
-    craftingTypeFilter: 'all',
+    craftingLevel: null,
+    craftingTypeFilter: null,
     applicationSlots: 2
 };
 var craftingCanvas = $('.js-craftingCanvas')[0];

@@ -420,31 +420,31 @@ function affixMatchesItem(baseItem, affix) {
 $('.js-resetEnchantments').on('click', resetItem);
 $('.js-resetEnchantments').on('mouseover', function () {
     var item = getEnchantingItem();
-    if (item.prefixes.length + item.suffixes.length > 0) previewPointsChange('coins', -resetCost(item));
+    if (item && item.prefixes.length + item.suffixes.length > 0) previewPointsChange('coins', -resetCost(item));
 });
 $('.js-resetEnchantments').on('mouseout', hidePointsPreview);
 $('.js-enchant').on('click', enchantItem);
 $('.js-enchant').on('mouseover', function () {
     var item = getEnchantingItem();
-    if (!item.unique && item.prefixes.length + item.suffixes.length === 0) previewPointsChange('anima', -enchantCost(item));
+    if (item && !item.unique && item.prefixes.length + item.suffixes.length === 0) previewPointsChange('anima', -enchantCost(item));
 });
 $('.js-enchant').on('mouseout', hidePointsPreview);
 $('.js-imbue').on('click', imbueItem);
 $('.js-imbue').on('mouseover', function () {
     var item = getEnchantingItem();
-    if (!item.unique && item.prefixes.length + item.suffixes.length === 0) previewPointsChange('anima', -imbueCost(item));
+    if (item && !item.unique && item.prefixes.length + item.suffixes.length === 0) previewPointsChange('anima', -imbueCost(item));
 });
 $('.js-imbue').on('mouseout', hidePointsPreview);
 $('.js-augment').on('click', augmentItem);
 $('.js-augment').on('mouseover', function () {
     var item = getEnchantingItem();
-    if (!item.unique && item.prefixes.length + item.suffixes.length < 4) previewPointsChange('anima', -augmentCost(item));
+    if (item && !item.unique && item.prefixes.length + item.suffixes.length < 4) previewPointsChange('anima', -augmentCost(item));
 });
 $('.js-augment').on('mouseout', hidePointsPreview);
 $('.js-mutate').on('click', mutateItem);
 $('.js-mutate').on('mouseover', function () {
     var item = getEnchantingItem();
-    if (!item.unique && item.prefixes.length + item.suffixes.length > 0) previewPointsChange('anima', -mutateCost(item));
+    if (item && !item.unique && item.prefixes.length + item.suffixes.length > 0) previewPointsChange('anima', -mutateCost(item));
 });
 $('.js-mutate').on('mouseout', hidePointsPreview);
 function getEnchantingItem() {
@@ -457,6 +457,7 @@ function getEnchantingItem() {
 function updateEnchantmentOptions() {
     var item = getEnchantingItem();
     if (!item) {
+        $('.js-enchant,.js-imbue,.js-augment,.js-mutate').addClass('disabled');
         return;
     }
     var prefixes = item.prefixes.length;
@@ -511,7 +512,7 @@ function mutateCost(item) {
 }
 function resetItem() {
     var item = getEnchantingItem();
-    if (!spend('coins', resetCost(item))) {
+    if (!item || !spend('coins', resetCost(item))) {
         return;
     }
     item.prefixes = [];
@@ -524,7 +525,7 @@ function resetItem() {
 }
 function enchantItem() {
     var item = getEnchantingItem();
-    if (!spend('anima', enchantCost(item))) return;
+    if (!item || !spend('anima', enchantCost(item))) return;
     enchantItemProper(item);
     saveGame();
 }
@@ -543,7 +544,7 @@ function enchantItemProper(item) {
 }
 function imbueItem() {
     var item = getEnchantingItem();
-    if (!spend('anima', imbueCost(item))) return;
+    if (!item || !spend('anima', imbueCost(item))) return;
     imbueItemProper(item);
     saveGame();
 }
@@ -564,7 +565,7 @@ function imbueItemProper(item) {
 }
 function augmentItem() {
     var item = getEnchantingItem();
-    if (item.prefixes.length + item.suffixes.length >= 4) return;
+    if (!item || item.prefixes.length + item.suffixes.length >= 4) return;
     if (!spend('anima', augmentCost(item))) return;
     augmentItemProper(item);
     updateEnchantmentOptions();
@@ -596,7 +597,7 @@ function augmentItemProper(item) {
 }
 function mutateItem() {
     var item = getEnchantingItem();
-    if (!spend('anima', mutateCost(item))) {
+    if (!item || !spend('anima', mutateCost(item))) {
         return;
     }
     if (item.prefixes.length < 2 && item.suffixes.length < 2) enchantItemProper(item);
