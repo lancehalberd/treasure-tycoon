@@ -139,9 +139,6 @@ $('body').on('mousedown', function (event) {
             return;
         }
         draggingBoardJewel = overJewel;
-        if (!overJewel.confirmed && state.selectedCharacter.area) {
-            pause();
-        }
         dragged = false;
         return;
     }
