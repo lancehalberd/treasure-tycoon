@@ -186,13 +186,13 @@ function monsterWave(monsters) {
 function eventWave(monsters) {
     var self =  basicWave(monsters, [], 'M');
     self.draw = function (context, completed, x, y) {
-        var source = {'image': images['gfx/militaryIcons.png'], 'xOffset': 136, 'yOffset': 23, 'width': 16, 'height': 16};
+        var source = {'image': images['gfx/militaryIcons.png'], 'left': 136, 'top': 23, 'width': 16, 'height': 16};
         if (completed) {
-            source = {'image': images['gfx/militaryIcons.png'], 'xOffset': 68, 'yOffset': 90, 'width': 16, 'height': 16};
-            context.drawImage(source.image, source.xOffset, source.yOffset, source.width, source.height,
+            source = {'image': images['gfx/militaryIcons.png'], 'left': 68, 'top': 90, 'width': 16, 'height': 16};
+            context.drawImage(source.image, source.left, source.top, source.width, source.height,
                               x - 16, y - 18, 32, 32);
         } else {
-            context.drawImage(source.image, source.xOffset, source.yOffset, source.width, source.height,
+            context.drawImage(source.image, source.left, source.top, source.width, source.height,
                               x - 16, y - 14, 32, 32);
         }
     }
@@ -201,12 +201,12 @@ function eventWave(monsters) {
 function bossWave(monsters) {
     var self =  basicWave(monsters, [], 'B', bossMonsterBonuses);
     self.draw = function (context, completed, x, y) {
-        var source = {'image': images['gfx/militaryIcons.png'], 'xOffset': 119, 'yOffset': 23, 'width': 16, 'height': 16};
-        context.drawImage(source.image, source.xOffset, source.yOffset, source.width, source.height,
+        var source = {'image': images['gfx/militaryIcons.png'], 'left': 119, 'top': 23, 'width': 16, 'height': 16};
+        context.drawImage(source.image, source.left, source.top, source.width, source.height,
                           x - 16, y - 18, 32, 32);
         if (completed) {
-            source = {'image': images['gfx/militaryIcons.png'], 'xOffset': 51, 'yOffset': 90, 'width': 16, 'height': 16};
-            context.drawImage(source.image, source.xOffset, source.yOffset, source.width, source.height,
+            source = {'image': images['gfx/militaryIcons.png'], 'left': 51, 'top': 90, 'width': 16, 'height': 16};
+            context.drawImage(source.image, source.left, source.top, source.width, source.height,
                               x - 16, y - 18, 32, 32);
         }
     }
@@ -216,7 +216,7 @@ function chestWave(chest) {
     var self =  basicWave([], [chest, abilityShrine()], 'T');
     self.draw = function (context, completed, x, y) {
         var source = (completed || chest.open) ? chest.openImage : chest.closedImage;
-        context.drawImage(source.image, source.xOffset, 0, source.width, source.height,
+        context.drawImage(source.image, source.left, source.top, source.width, source.height,
                           x - 16, y - 18, 32, 32);
     }
     return self;
