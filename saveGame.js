@@ -284,9 +284,6 @@ function exportJewelBoard(board) {
     });
     data.jewels = board.jewels.map(exportJewel);
     data.spaces = board.spaces.map(exportShape);
-    if (board.boardPreview) {
-        data.boardPreview = exportJewelBoard(board.boardPreview);
-    }
     return data;
 }
 // In addition to creating the jewel board, it also applies abilities to the adventurer.
@@ -312,9 +309,6 @@ function importJewelBoard(jewelBoardData, character) {
     });
     jewelBoard.jewels = jewelBoardData.jewels.map(importJewel);
     jewelBoard.spaces = jewelBoardData.spaces.map(importShape);
-    if (jewelBoardData.boardPreview) {
-        jewelBoard.boardPreview = importJewelBoard(jewelBoardData.boardPreview, character);
-    }
     return jewelBoard;
 }
 function exportJewel(jewel) {

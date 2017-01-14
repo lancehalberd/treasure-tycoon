@@ -41,12 +41,12 @@ function drawBoardJewels(character, canvas) {
     drawBoardJewelsProper(context, relativeMousePosition(canvas), board, isMouseOver($(canvas)));
 }
 function drawBoardJewelsProper(context, lightSource, board, mouseIsOverBoard) {
-    var focusedJewelIsOnBoard = false;
+    //var focusedJewelIsOnBoard = false;
     var fixedJewels = board.fixed;
     for (var i = 0; i < board.jewels.length; i++) {
         var jewel = board.jewels[i];
         drawJewel(context, jewel.shape, lightSource);
-        focusedJewelIsOnBoard = focusedJewelIsOnBoard || draggedJewel == jewel || overJewel == jewel;
+        //focusedJewelIsOnBoard = focusedJewelIsOnBoard || draggedJewel == jewel || overJewel == jewel;
     }
     for (var i = 0; i < fixedJewels.length; i++) {
         var jewel = fixedJewels[i];
@@ -68,34 +68,47 @@ function drawBoardJewelsProper(context, lightSource, board, mouseIsOverBoard) {
         }
     }
     if (board.boardPreview) {
-        context.globalAlpha = .5;
-        context.lineWidth = 5;
-        context.lineCap = 'round';
-        context.lineJoin = 'round';
-        context.fillStyle = '#888888';
-        context.strokeStyle = '#888888';
-        drawShapesPath(context, board.boardPreview.spaces, true, true);
-        context.lineWidth = 1;
-        context.fillStyle = '#555555';
-        context.strokeStyle = '#555555';
-        drawShapesPath(context, board.boardPreview.spaces, true, true);
-        var fixedJewel = board.boardPreview.fixed[0];
-        context.globalAlpha = 1;
-        drawJewel(context, fixedJewel.shape, lightSource);
-        var iconSource = getAbilityIconSource(jewel.ability);
-        if (mouseIsOverBoard && iconSource) {
-            drawAbilityIcon(context, iconSource,
-                {'left': jewel.shape.center[0] - iconSource.width / 3, 'top': jewel.shape.center[1] - iconSource.height / 3,
-                'width': iconSource.width * 2 / 3, 'height': iconSource.height * 2 / 3});
-        }
-        focusedJewelIsOnBoard = focusedJewelIsOnBoard || draggingBoardJewel == fixedJewel || overJewel == fixedJewel;
-
-        context.globalAlpha = .5 + .2 * Math.sin(now() / 150);
-        context.fillStyle = '#ff0';
-        drawShapesPath(context, [fixedJewel.shape], true, false);
-        context.globalAlpha = 1;
+        context.save();
+        context.globalAlpha = .6;
+        drawBoardPreview(context, lightSource, board.boardPreview, mouseIsOverBoard)
+        context.restore();
     }
-    if (overVertex && focusedJewelIsOnBoard) {
+    /*if (overVertex && focusedJewelIsOnBoard) {
+        context.strokeStyle = 'black';
+        context.lineWidth = 1;
+        context.beginPath();
+        context.arc(overVertex[0], overVertex[1], 4, 0, Math.PI * 2);
+        context.stroke();
+    }*/
+}
+
+function drawBoardPreview(context, lightSource, boardPreview, showIcon) {
+    context.lineWidth = 5;
+    context.lineCap = 'round';
+    context.lineJoin = 'round';
+    context.fillStyle = '#888888';
+    context.strokeStyle = '#888888';
+    drawShapesPath(context, boardPreview.spaces, true, true);
+    context.lineWidth = 1;
+    context.fillStyle = '#555555';
+    context.strokeStyle = '#555555';
+    drawShapesPath(context, boardPreview.spaces, true, true);
+    var fixedJewel = boardPreview.fixed[0];
+    context.globalAlpha = 1;
+    drawJewel(context, fixedJewel.shape, lightSource);
+    var iconSource = getAbilityIconSource(fixedJewel.ability);
+    if (showIcon && iconSource) {
+        drawAbilityIcon(context, iconSource,
+            {'left': fixedJewel.shape.center[0] - iconSource.width / 3, 'top': fixedJewel.shape.center[1] - iconSource.height / 3,
+            'width': iconSource.width * 2 / 3, 'height': iconSource.height * 2 / 3});
+    }
+    // Fixed jewel on board previews should glow to draw attention to it.
+    context.save();
+    context.globalAlpha = .5 + .2 * Math.sin(now() / 150);
+    context.fillStyle = '#ff0';
+    drawShapesPath(context, [fixedJewel.shape], true, false);
+    context.restore();
+    if (overVertex && (draggedJewel == fixedJewel || overJewel == fixedJewel)) {
         context.strokeStyle = 'black';
         context.lineWidth = 1;
         context.beginPath();

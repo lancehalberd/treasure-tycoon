@@ -246,6 +246,10 @@ function treasureChest(loot, closedImage, openImage) {
     };
     return self;
 }
+function messageCharacter(character, text) {
+    var actor = character.adventurer;
+    appendTextPopup(character, {'value': text, 'duration': 70, 'x': actor.x + 64, y: actor.top, color: 'white', fontSize: 15, 'vx': 0, 'vy': -.5, 'gravity': -.05}, true);
+}
 function abilityShrine() {
     var self = {
         'x': 0,
@@ -277,17 +281,18 @@ function abilityShrine() {
                 throw new Error("Could not find ability: " + level.skill);
             }
             if (character.adventurer.level >= maxLevel) {
-                // Show message character is max level.
+                messageCharacter(character, character.adventurer.name + ' is already max level');
                 self.done = true;
                 return;
             }
             if (character.adventurer.unlockedAbilities[level.skill]) {
-                // Show message that the character has already unlocked this shrine.
+                messageCharacter(character, 'Ability already learned');
                 self.done = true;
                 return;
             }
-            if (character.divinity < totalCostForNextLevel(character, level)) {
-                // Show message that the character still needs N more divinity to use this shrine.
+            var divinityNeeded = totalCostForNextLevel(character, level) - character.divinity;
+            if (divinityNeeded > 0) {
+                messageCharacter(character, 'Still need ' + divinityNeeded.abbreviate() + ' Divinity');
                 self.done = true;
                 return;
             }
@@ -360,7 +365,7 @@ function adventureBoardPreview(boardPreview) {
             character.board.boardPreview = null;
             updateConfirmSkillButton();
             centerShapesInRectangle(self.boardPreview.fixed.map(jewelToShape).concat(self.boardPreview.spaces), rectangle(self.x - character.cameraX - 5, groundY - self.y -5, 10, 10));
-            drawBoardJewelsProper(mainContext, [0, 0], {'fixed': [], 'jewels': [], 'boardPreview': self.boardPreview}, true);
+            drawBoardPreview(mainContext, [0, 0], self.boardPreview, true);
         },
         'helpMethod': function () {
             return "<b>Divine Blessing</b><hr><p>Click on this Jewel Board Augmentation to preview adding it to this hero's Jewel Board.</p><p>A hero must augment their Jewel Board to learn new abilities and Level Up</p>";
