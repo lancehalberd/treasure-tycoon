@@ -136,11 +136,11 @@
             <button class="js-jewelSortDiamond">Diamond</button>
             <button class="js-jewelSortQuality">Quality</button>
             <br/>
-            Tier: <label class="js-jewelTier1 js-jewelTierLabel" helptext="Click to toggle display of Tier 1 (Level 1) Jewels"><input type="checkbox" checked="checked" value="1"/> 1</label>
-            <label class="js-jewelTier2 js-jewelTierLabel" helptext="Click to toggle display of Tier 2 (Level 10) Jewels"><input type="checkbox" checked="checked" value="2"/> 2</label>
-            <label class="js-jewelTier3 js-jewelTierLabel" helptext="Click to toggle display of Tier 3 (Level 20) Jewels"><input type="checkbox" checked="checked" value="3"/> 3</label>
-            <label class="js-jewelTier4 js-jewelTierLabel" helptext="Click to toggle display of Tier 4 (Level 40) Jewels"><input type="checkbox" checked="checked" value="4"/> 4</label>
-            <label class="js-jewelTier5 js-jewelTierLabel" helptext="Click to toggle display of Tier 5 (Level 60) Jewels"><input type="checkbox" checked="checked" value="5"/> 5</label>
+            Tier: <label class="js-jewelTier1 js-jewelTierLabel" helptext="Toggle display of Tier 1 (Level 1) Jewels"><input type="checkbox" checked="checked" value="1"/> 1</label>
+            <label class="js-jewelTier2 js-jewelTierLabel" helptext="Toggle display of Tier 2 (Level 10) Jewels"><input type="checkbox" checked="checked" value="2"/> 2</label>
+            <label class="js-jewelTier3 js-jewelTierLabel" helptext="Toggle display of Tier 3 (Level 20) Jewels"><input type="checkbox" checked="checked" value="3"/> 3</label>
+            <label class="js-jewelTier4 js-jewelTierLabel" helptext="Toggle display of Tier 4 (Level 40) Jewels"><input type="checkbox" checked="checked" value="4"/> 4</label>
+            <label class="js-jewelTier5 js-jewelTierLabel" helptext="Toggle display of Tier 5 (Level 60) Jewels"><input type="checkbox" checked="checked" value="5"/> 5</label>
         </div><div class="js-jewelInventory jewel-inventory"></div></div><div class="js-jewelColumn displayColumn js-jewelContext">
             <div class="js-jewelBoard jewelBoard">
                 <canvas class="js-canvas js-skillCanvas" width="320" height="320"></canvas>
@@ -183,13 +183,10 @@
             <div class="js-inventory displayColumn inventory"><div class="js-inventorySlot js-itemSlot itemSlot inventorySlot" helptext="Drag an item here to move it into your inventory."></div></div>
             <div class="js-enchantmentOptions enchantmentOptions">
                 <div class="js-enchantmentSlot js-itemSlot itemSlot centerSlot"></div>
-                <div class="js-enchant itemCraftingOption topSlot"><div class="icon bag"></div></div>
-                <div class="js-augment itemCraftingOption topSlot"><div class="icon bag"></div></div>
-
-                <div class="js-imbue itemCraftingOption bottomLeftSlot"><div class="icon wand"></div></div>
-                <div class="js-mutate itemCraftingOption bottomLeftSlot"><div class="icon wand"></div></div>
-
-                <div class="js-resetEnchantments itemCraftingOption bottomRightSlot"><div class="icon anvil"></div></div>
+                <div class="js-enchant enchantingOption topSlot"><div class="icon wand"></div></div>
+                <div class="js-mutate enchantingOption leftSlot"><div class="icon bag"></div></div>
+                <div class="js-imbue enchantingOption rightSlot"><div class="icon enchanting"></div></div>
+                <div class="js-resetEnchantments enchantingOption bottomSlot"><div class="icon anvil"></div></div>
                 <button class="js-sellItem sellItem" disabled helptext="Drag items here to sell them. <br/> You can also hover over an item and type 'S' to sell quickly."><div class="icon money"></div></button>
             </div>
         </div>

@@ -134,7 +134,6 @@ function checkToStartNextWave(character) {
                 character.finishTime = character.time + 2;
                 character.completionTime = character.time - character.startTime;
             } else if (character.finishTime <= character.time) {
-                completeLevel(character);
                 returnToMap(character);
                 return;
             }
@@ -312,6 +311,7 @@ function moveActor(actor, delta) {
     actor.x += speedBonus * actor.speed * actor.direction * Math.max(.1, 1 - actor.slow) * delta;
 }
 function startNextWave(character) {
+    character.waveIndex = character.area.waves.length - 1;
     var wave = character.area.waves[character.waveIndex];
     var x = character.adventurer.x + 800;
     wave.monsters.forEach(function (entityData) {
@@ -341,7 +341,13 @@ function startNextWave(character) {
             character.objects.push(entityData);
             return;
         }
-    throw Error("Unrecognized object: " + JSON.stringify(entityData));
+        if (entityData.type === 'shrine') {
+            entityData.x = x + 128;
+            entityData.y = 25;
+            character.objects.push(entityData);
+            return;
+        }
+        throw Error("Unrecognized object: " + JSON.stringify(entityData));
     });
     character.waveIndex++;
 }

@@ -9,6 +9,22 @@ function redrawInventoryJewel(jewel) {
         jewel.context.arc(overVertex[0], overVertex[1], 4, 0, Math.PI * 2);
         jewel.context.stroke();
     }
+   /* jewel.context.textBaseline = "middle";
+    jewel.context.textAlign = 'center'
+    jewel.context.font = "15px sans-serif";
+    jewel.context.fillStyle = '#fff';
+    jewel.context.fillText(jewel.quality.format(2), jewel.canvas.width / 2,  jewel.canvas.height / 2);
+    jewel.context.fillStyle = '#000';
+    jewel.context.fillText(jewel.quality.format(2), jewel.canvas.width / 2 - 1,  jewel.canvas.height / 2 - 1);*/
+    jewel.context.textBaseline = "bottom";
+    jewel.context.textAlign = 'right'
+    jewel.context.font = "15px sans-serif";
+    jewel.context.fillStyle = '#fff';
+    jewel.context.fillText(jewel.quality.format(2), jewel.canvas.width - 5,  jewel.canvas.height);
+    jewel.context.fillStyle = '#aaa';
+    jewel.context.fillText(jewel.quality.format(2), jewel.canvas.width - 5 - 1,  jewel.canvas.height - 1);
+    jewel.context.fillStyle = '#000';
+    jewel.context.fillText(jewel.quality.format(2), jewel.canvas.width - 5 - 2,  jewel.canvas.height - 2);
 }
 function redrawInventoryJewels() {
     var $container = $('.js-jewelInventory');

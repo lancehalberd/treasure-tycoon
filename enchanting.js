@@ -435,12 +435,6 @@ $('.js-imbue').on('mouseover', function () {
     if (item && !item.unique && item.prefixes.length + item.suffixes.length === 0) previewPointsChange('anima', -imbueCost(item));
 });
 $('.js-imbue').on('mouseout', hidePointsPreview);
-$('.js-augment').on('click', augmentItem);
-$('.js-augment').on('mouseover', function () {
-    var item = getEnchantingItem();
-    if (item && !item.unique && item.prefixes.length + item.suffixes.length < 4) previewPointsChange('anima', -augmentCost(item));
-});
-$('.js-augment').on('mouseout', hidePointsPreview);
 $('.js-mutate').on('click', mutateItem);
 $('.js-mutate').on('mouseover', function () {
     var item = getEnchantingItem();
@@ -456,8 +450,10 @@ function getEnchantingItem() {
 }
 function updateEnchantmentOptions() {
     var item = getEnchantingItem();
+    $('.js-resetEnchantments,.js-enchant,.js-imbue,.js-augment,.js-mutate').addClass('disabled');
+    removeToolTip();
     if (!item) {
-        $('.js-resetEnchantments,.js-enchant,.js-imbue,.js-augment,.js-mutate').addClass('disabled');
+        $('.js-resetEnchantments,.js-enchant,.js-imbue,.js-augment,.js-mutate').attr('helptext', 'Drag an item to the alter to enchant it.');
         return;
     }
     var prefixes = item.prefixes.length;
@@ -467,45 +463,44 @@ function updateEnchantmentOptions() {
         $('.js-resetEnchantments').toggleClass('disabled', state.coins < resetCost(item))
             .attr('helptext', 'Offer ' + points('coins', resetCost(item)) + ' to remove all enchantments from an item.<br/>This will allow you to enchant it again differently.');
     } else {
-        $('.js-resetEnchantments').addClass('disabled').attr('helptext', 'This item has no enchantments on it.');
+        $('.js-resetEnchantments').attr('helptext', 'This item has no enchantments to remove.');
     }
-    $('.js-enchant,.js-imbue').show();
-    $('.js-augment,.js-mutate').hide();
     if (item.unique) {
-        $('.js-enchant,.js-imbue').addClass('disabled').attr('helptext', 'This item is unique and cannot be further enchanted.');
+        $('.js-enchant,.js-imbue,.js-mutate').attr('helptext', 'This item is unique and cannot be further enchanted.');
         return;
     }
     if (total === 0) {
+        $('.js-mutate').attr('helptext', 'This item has no enchantments to mutate.');
+    } else {
+        var mutationPrice = mutateCost(item);
+        $('.js-mutate').toggleClass('disabled', state.anima < mutationPrice)
+            .attr('helptext', 'Offer ' + points('anima', mutationPrice) + ' to randomize the magical properties of this item.');
+    }
+    if (total < 2) {
         $('.js-enchant').toggleClass('disabled', state.anima < enchantCost(item))
             .attr('helptext', 'Offer ' + points('anima', enchantCost(item)) + ' to add up to two magical properties to this item');
-        $('.js-imbue').toggleClass('disabled', state.anima < imbueCost(item))
-            .attr('helptext', 'Offer ' + points('anima', imbueCost(item)) + ' to add three to four magical properties to this item');
-        return;
-    }
-    $('.js-enchant,.js-imbue').hide();
-    $('.js-augment,.js-mutate').show();
-    if (total < 4) {
-        var augmentPrice = augmentCost(item);
-        $('.js-augment').toggleClass('disabled', state.anima < augmentPrice)
-            .attr('helptext', 'Offer ' + points('anima', augmentPrice) + ' to add another magical property to this item.');
     } else {
-        $('.js-augment').addClass('disabled').attr('helptext', 'This item cannot hold any more enchantments.');
+        $('.js-enchant').attr('helptext', 'This item already has at least two magical properties.');
     }
-    var mutationPrice = mutateCost(item);
-    $('.js-mutate').toggleClass('disabled', state.anima < mutationPrice)
-        .attr('helptext', 'Offer ' + points('anima', mutationPrice) + ' to randomize the magical properties of this item.');
+    if (total < 4) {
+        $('.js-imbue').toggleClass('disabled', state.anima < imbueCost(item))
+            .attr('helptext', 'Offer ' + points('anima', imbueCost(item)) + ' to add up to four magical properties to this item');
+    } else {
+        $('.js-imbue,.js-enchant').attr('helptext', 'This item cannot hold any more enchantments.');
+    }
 }
 function resetCost(item) {
     return sellValue(item) * 2;
 }
 function enchantCost(item) {
+    if (item.prefixes.length + item.suffixes.length == 0) return sellValue(item);
     return sellValue(item) * 2;
 }
 function imbueCost(item) {
-    return sellValue(item) * 10;
-}
-function augmentCost(item) {
-    return sellValue(item) * ((item.prefixes.length && item.suffixes.length) ? 6 : 3);
+    if (item.prefixes.length + item.suffixes.length == 0) return sellValue(item) * 4;
+    if (item.prefixes.length + item.suffixes.length == 1) return sellValue(item) * 5;
+    if (item.prefixes.length + item.suffixes.length == 2) return sellValue(item) * 6;
+    return sellValue(item) * 8;
 }
 function mutateCost(item) {
     return sellValue(item) * ((item.prefixes.length < 2 && item.suffixes.length < 2) ? 3 : 5);
@@ -526,7 +521,13 @@ function resetItem() {
 function enchantItem() {
     var item = getEnchantingItem();
     if (!item || !spend('anima', enchantCost(item))) return;
-    enchantItemProper(item);
+    if (item.prefixes + item.suffixes.length === 0) {
+        enchantItemProper(item);
+    } else if (item.prefixes.length + item.suffixes.length < 2) {
+        augmentItemProper(item);
+    } else {
+        console.log("Tried to enchant item with 2+ enchantments");
+    }
     saveGame();
 }
 function enchantItemProper(item) {
@@ -545,7 +546,16 @@ function enchantItemProper(item) {
 function imbueItem() {
     var item = getEnchantingItem();
     if (!item || !spend('anima', imbueCost(item))) return;
-    imbueItemProper(item);
+    if (item.prefixes.length + item.suffixes.length === 0) {
+        imbueItemProper(item);
+    } else if (item.prefixes.length + item.suffixes.length < 4) {
+        augmentItemProper(item);
+    } else {
+        console.log("Tried to imbue item with 4+ enchantments");
+    }
+    if (item.prefixes.length + item.suffixes.length < 3) {
+        augmentItemProper(item);
+    }
     saveGame();
 }
 function imbueItemProper(item) {
@@ -562,14 +572,6 @@ function imbueItemProper(item) {
     }
     updateItem(item);
     updateEnchantmentOptions();
-}
-function augmentItem() {
-    var item = getEnchantingItem();
-    if (!item || item.prefixes.length + item.suffixes.length >= 4) return;
-    if (!spend('anima', augmentCost(item))) return;
-    augmentItemProper(item);
-    updateEnchantmentOptions();
-    saveGame();
 }
 function augmentItemProper(item) {
     if (!item.prefixes.length && !item.suffixes.length) {
@@ -594,6 +596,7 @@ function augmentItemProper(item) {
         }
     }
     updateItem(item);
+    updateEnchantmentOptions();
 }
 function mutateItem() {
     var item = getEnchantingItem();

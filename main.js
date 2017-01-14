@@ -157,8 +157,8 @@ async.mapSeries([
     'gfx/spider.png', // Stephen "Redshrike" Challener as graphic artist and William.Thompsonj as contributor. If reasonable link to this page or the OGA homepage. http://opengameart.org/content/lpc-spider
     'gfx/wolf.png' // Stephen "Redshrike" Challener as graphic artist and William.Thompsonj as contributor. If reasonable link back to this page or the OGA homepage. http://opengameart.org/content/lpc-wolf-animation
 ], loadImage, function(err, results){
-    closedChestSource = {'image': images['gfx/chest-closed.png'], 'xOffset': 0, 'width': 32, 'height': 32};
-    openChestSource = {'image': images['gfx/chest-open.png'], 'xOffset': 0, 'width': 32, 'height': 32};
+    closedChestSource = {'image': images['gfx/chest-closed.png'], 'left': 0, 'top': 0, 'width': 32, 'height': 32};
+    openChestSource = {'image': images['gfx/chest-open.png'], 'left': 0, 'top': 0, 'width': 32, 'height': 32};
     showContext('adventure');
     initalizeMonsters();
     initializeBackground();
@@ -430,6 +430,9 @@ $('.js-mouseContainer').on('click', '.js-mainCanvas', function (event) {
     var x = event.pageX - $(this).offset().left;
     var y = event.pageY - $(this).offset().top;
     canvasCoords = [x, y];
+    if (canvasPopupTarget && canvasPopupTarget.onClick) {
+        canvasPopupTarget.onClick(state.selectedCharacter);
+    }
 });
 $('.js-mouseContainer').on('mouseout', '.js-mainCanvas', function (event) {
     canvasCoords = [];
@@ -442,13 +445,28 @@ function checkToShowAdventureToolTip(x, y) {
     }
     canvasPopupTarget = null;
     if (state.selectedCharacter.area) {
-        state.selectedCharacter.allies.concat(state.selectedCharacter.enemies).forEach(function (actor) {
+        for (var actor of state.selectedCharacter.allies.concat(state.selectedCharacter.enemies)) {
             if (!actor.isDead && isPointInRect(x, y, actor.left, actor.top, actor.width, actor.height)) {
                 canvasPopupTarget = actor;
-                return false;
+                break;
             }
-            return true;
-        });
+        }
+        if (!canvasPopupTarget) {
+            for (var object of state.selectedCharacter.objects) {
+                // (x,y) of objects is the bottom middle of their graphic.
+                var left = ifdefor(object.left, object.x - state.selectedCharacter.cameraX - object.width / 2);
+                var top = ifdefor(object.top, groundY - object.y - object.height);
+                if (object.isOver) {
+                    if (object.isOver(x, y)) {
+                        canvasPopupTarget = object;
+                        break;
+                    }
+                } else if (isPointInRect(x, y, left, top, object.width, object.height)) {
+                    canvasPopupTarget = object;
+                    break;
+                }
+            }
+        }
     } else {
         canvasPopupTarget = getMapPopupTarget(x, y);
     }
@@ -634,6 +652,9 @@ function showContext(context) {
         $('.js-areaMenu').hide();
     } else {
         $('.js-mainCanvasContainer').show();
+    }
+    if (context === 'jewel') {
+        drawBoardJewels(state.selectedCharacter, jewelsCanvas);
     }
     $('.js-adventureContext, .js-jewelContext, .js-itemContext').not('.js-' + context + 'Context').hide();
     $('.js-' + context + 'Context').show();

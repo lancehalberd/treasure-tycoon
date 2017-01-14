@@ -159,7 +159,7 @@ var abilities = {
         'juggler': {'name': 'Juggling', 'icon': 'gfx/496RpgIcons/buffThrown.png', 'bonuses': {'$throwing:attack:chaining': 'Projectiles ricochet between targets until they miss.'}},
         'sap': {'name': 'Sap', 'icon': 'gfx/496RpgIcons/openScroll.png', 'bonuses': {'+slowOnHit': .1, '+healthGainOnHit': 1}},
         'dodge': {'name': 'Dodge', 'bonuses': {'+evasion': 2}, 'reaction': skills.dodge},
-        'acrobatics': {'name': 'Acrobatics', 'icon': 'gfx/496RpgIcons/openScroll.png', 'bonuses': {'+evasion': 2, '+dodge:cooldown': -2, '*dodge:distance': 2}},
+        'acrobatics': {'name': 'Acrobatics', 'icon': 'gfx/496RpgIcons/openScroll.png', 'bonuses': {'+evasion': 2, '-dodge:cooldown': 2, '*dodge:distance': 2}},
         'bullseye': {'name': 'Bullseye', 'action': skills.bullseye},
         'bullseyeCritical': {'name': 'Dead On', 'icon': 'gfx/496RpgIcons/target.png', 'bonuses': {'+bullseye:critChance': 1}, 'helpText': 'Bullseye always strikes critically.'},
     'blackbeltIndex': {'name': '---Blackbelt---'},
@@ -370,5 +370,5 @@ function getAbilityIconSource(ability, defaultSource) {
     if (ability.action) icon = icon || ability.action.icon;
     if (ability.reaction) icon = icon || ability.reaction.icon;
     if (!icon) return ifdefor(defaultSource);
-    return {'image': images[icon], 'xOffset': 0, 'yOffset': 0, 'width': 34, 'height': 34};
+    return {'image': images[icon], 'left': 0, 'top': 0, 'width': 34, 'height': 34};
 }

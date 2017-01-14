@@ -213,7 +213,7 @@ function bossWave(monsters) {
     return self;
 }
 function chestWave(chest) {
-    var self =  basicWave([], [chest], 'T');
+    var self =  basicWave([], [chest, abilityShrine()], 'T');
     self.draw = function (context, completed, x, y) {
         var source = (completed || chest.open) ? chest.openImage : chest.closedImage;
         context.drawImage(source.image, source.xOffset, 0, source.width, source.height,

@@ -124,7 +124,7 @@
     overflow-x: hidden;
     overflow-y: scroll;
     box-sizing: border-box;
-    width: 360px;
+    width: 365px;
     height: 270px;
     white-space: normal;
     background-color: #AAA;
@@ -393,10 +393,10 @@ button {
 }
 .icon.enchanting {
     background-image: url('gfx/moneyIcon.png');
-    background-size: auto;
-    width: 32px;
-    height: 32px;
-    background-position: -192px -64px;
+    background-size: 320px 160px;
+    width: 40px;
+    height: 40px;
+    background-position: -240px -80px;
 }
 
 .itemSlot {
@@ -526,7 +526,7 @@ button {
 .craftingCanvas {
     cursor: pointer;
 }
-.itemCraftingOption {
+.itemCraftingOption, .enchantingOption {
     display: inline-block;
     width: 50px;
     height: 50px;
@@ -535,12 +535,12 @@ button {
     cursor: pointer;
     vertical-align: top;
     border-radius: 25px;
-    border: 2px solid #0f0;
-    padding: 3px;
+    border: 4px solid #fe0;
+    padding: 1px;
 }
-.itemCraftingOption.disabled {
+.itemCraftingOption.disabled, .enchantingOption.disabled {
     opacity: .5;
-    border-color: red;
+    border-color: #aaa;
 }
 
 .itemPanel .centerSlot {
@@ -564,6 +564,27 @@ button {
     top: 150px;
 }
 
+.itemPanel .topSlot {
+    position: absolute;
+    left: 70px;
+    top: 50px;
+}
+.itemPanel .leftSlot {
+    position: absolute;
+    left: 10px;
+    top: 110px;
+}
+.itemPanel .rightSlot {
+    position: absolute;
+    left: 130px;
+    top: 110px;
+}
+.itemPanel .bottomSlot {
+    position: absolute;
+    left: 70px;
+    top: 170px;
+}
+
 
 .itemCraftingOption .multiplier {
     display: none;
@@ -584,7 +605,7 @@ button {
 .enchantmentOptions {
     display: inline-block;
     position: relative;
-    width: 200px;
+    width: 195px;
     height: 270px;
 }
 

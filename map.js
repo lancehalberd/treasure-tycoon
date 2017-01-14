@@ -297,17 +297,13 @@ $('.js-mouseContainer').on('mousedown', '.js-mainCanvas', function (event) {
     if (event.which != 1) return; // Handle only left click.
     if (!editingMap && newMapTarget) {
         if (currentMapTarget.isShrine) {
-            if (state.selectedCharacter.currentLevelKey === currentMapTarget.level.levelKey && state.selectedCharacter.board.boardPreview) {
-                showContext('jewel');
-                return;
-            } else if (state.selectedCharacter.currentLevelKey !== currentMapTarget.level.levelKey) {
-                // Show them the area menu if they click on the shrine from a different area.
-                state.selectedCharacter.selectedLevelKey = currentMapTarget.level.levelKey;
-                displayAreaMenu();
-                currentMapTarget = null;
-                $('.js-mainCanvas').toggleClass('clickable', false);
-            }
-        } else if (!currentMapTarget.isShrine && currentMapTarget.levelKey) {
+            // Show them the area menu if they click on the shrine from a different area.
+            state.selectedCharacter.selectedLevelKey = currentMapTarget.level.levelKey;
+            displayAreaMenu();
+            currentMapTarget = null;
+            $('.js-mainCanvas').toggleClass('clickable', false);
+            return;
+        } else if (currentMapTarget.levelKey) {
             state.selectedCharacter.selectedLevelKey = currentMapTarget.levelKey;
             displayAreaMenu();
             currentMapTarget = null;
@@ -539,20 +535,6 @@ function completeLevel(character) {
         var oldTime = ifdefor(character.levelTimes[character.currentLevelKey][character.levelDifficulty], 99999);
         character.levelTimes[character.currentLevelKey][character.levelDifficulty] = Math.min(character.completionTime, oldTime);
         character.levelCompleted = true;
-    }
-
-    // This code will be used when they activate a shrine
-    if (character.adventurer.level < maxLevel && level.skill && !character.adventurer.unlockedAbilities[level.skill] && character.divinity >= totalCostForNextLevel(character, level)) {
-        if (!abilities[level.skill]) {
-            throw new Error("Could not find ability: " + level.skill);
-        }
-        var boardData = getBoardDataForLevel(level);
-        var boardPreview = readBoardFromData(boardData, character, abilities[level.skill]);
-        centerShapesInRectangle(boardPreview.fixed.map(jewelToShape).concat(boardPreview.spaces), rectangle(0, 0, character.boardCanvas.width, character.boardCanvas.height));
-        snapBoardToBoard(boardPreview, character.board);
-        character.board.boardPreview = boardPreview;
-        // This will show the confirm skill button if this character is selected.
-        updateConfirmSkillButton();
     }
     saveGame();
 }

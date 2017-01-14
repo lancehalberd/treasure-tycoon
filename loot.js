@@ -205,6 +205,7 @@ function treasureChest(loot, closedImage, openImage) {
         'y': 0,
         'type': 'chest',
         'width': 64,
+        'height': 64,
         'loot': loot,
         'closedImage': closedImage,
         'openImage': openImage,
@@ -239,8 +240,128 @@ function treasureChest(loot, closedImage, openImage) {
             mainContext.drawImage(images['gfx/treasureChest.png'], frameOffset, 0, 64, 64,
                 (self.x - 32) - character.cameraX, groundY - self.y - 64, 64, 64);
         },
-        'clone': function() {
-            return treasureChest(copy(loot), closedImage, openImage);
+        'helpMethod': function () {
+            return "<b>Treasure Chest</b><hr><p>The rewards from these chests is much greater the first time an adventurer completes an adventure on a given difficulty.</p>";
+        }
+    };
+    return self;
+}
+function abilityShrine() {
+    var self = {
+        'x': 0,
+        'y': 0,
+        'type': 'shrine',
+        'width': 128,
+        'height': 128,
+        'done': false,
+        'activated': false,
+        'update': function (character) {
+            if (self.done) return;
+            if (self.activated)  {
+                character.adventurer.stunned = character.adventurer.time + 1;
+                return;
+            }
+            if (character.adventurer.x + character.adventurer.width < self.x) return;
+            // Call complete level before checking the shrine so they can use divinity gained from this level
+            // to activate the shrine.
+            // TBD show a popup for gaining divinity here.
+            completeLevel(character);
+            var level = map[character.currentLevelKey];
+            if (!level.skill ) {
+                // In this case we can just not display the shrine.
+                self.done = true;
+                return;
+            }
+            if (!abilities[level.skill]) {
+                self.done = true;
+                throw new Error("Could not find ability: " + level.skill);
+            }
+            if (character.adventurer.level >= maxLevel) {
+                // Show message character is max level.
+                self.done = true;
+                return;
+            }
+            if (character.adventurer.unlockedAbilities[level.skill]) {
+                // Show message that the character has already unlocked this shrine.
+                self.done = true;
+                return;
+            }
+            if (character.divinity < totalCostForNextLevel(character, level)) {
+                // Show message that the character still needs N more divinity to use this shrine.
+                self.done = true;
+                return;
+            }
+            // TBD: Make this number depend on the game state so it can be improved over time.
+            var boardOptions = 2;
+            for (var i = 0; i < boardOptions; i++) {
+                var boardData = getBoardDataForLevel(level);
+                var boardPreview = readBoardFromData(boardData, character, abilities[level.skill]);
+                var boardPreviewSprite = adventureBoardPreview(boardPreview);
+                boardPreviewSprite.x = self.x - (boardOptions * 150 - 150) / 2 + 150 * i;
+                boardPreviewSprite.y = 200;
+                character.objects.push(boardPreviewSprite);
+            }
+            self.activated = true;
+        },
+        'draw': function (character) {
+            var level = map[character.currentLevelKey];
+            if (!level.skill || !abilities[level.skill]) {
+                return;
+            }
+            var skill = abilities[level.skill];
+            var shrineSource = {'image': images['gfx/militaryIcons.png'], 'left': 102, 'top': 125, 'width': 16, 'height': 16};
+            drawTintedImage(mainContext, shrineSource.image, '#ff0', self.activated ? (.5 + Math.cos(now() / 100) / 5) : 0,
+                shrineSource, {'left': self.x - 64 - character.cameraX, 'top': groundY - self.y - 128, 'width': 128, 'height': 128});
+            //var abilitySource = getAbilityIconSource(skill, shrineSource);
+            //drawImage(mainContext, abilitySource.image, abilitySource, {'left': self.x - 16 - character.cameraX, 'top': groundY - self.y - 140, 'width': 32, 'height': 32})
+        },
+        'helpMethod': function () {
+            return "<b>Divine Shrine</b><hr><p>You can use divinity as an offering at these shrines to receive a blessing from the Gods and grow more powerful.</p>";
+        }
+    };
+    return self;
+}
+
+function adventureBoardPreview(boardPreview) {
+    var self = {
+        'x': 0,
+        'y': 0,
+        'type': 'shrine',
+        'width': 150,
+        'height': 150,
+        'done': false,
+        'activated': false,
+        'boardPreview': boardPreview,
+        'update': function (character) {
+        },
+        'isOver': function (x, y) {
+            for (var shape of self.boardPreview.fixed.map(jewelToShape).concat(self.boardPreview.spaces)) {
+                if (isPointInPoints([x, y], shape.points)) {
+                    return true;
+                }
+            }
+            return false;
+        },
+        'onClick': function (character) {
+            console.log("Clicked a board augmentation!");
+            centerShapesInRectangle(self.boardPreview.fixed.map(jewelToShape).concat(self.boardPreview.spaces), rectangle(0, 0, character.boardCanvas.width, character.boardCanvas.height));
+            snapBoardToBoard(self.boardPreview, character.board);
+            character.board.boardPreview = self.boardPreview;
+            // This will show the confirm skill button if this character is selected.
+            updateConfirmSkillButton();
+            showContext('jewel');
+        },
+        'draw': function (character) {
+            // Remove the preview from the character if we draw it to the adventure screen since they both use the same coordinate variables
+            // and displaying it in the adventure screen will mess up the display of it on the character's board. I think this will be okay
+            // since they can't look at both screens at once.
+            character.board.boardPreview = null;
+            updateConfirmSkillButton();
+            centerShapesInRectangle(self.boardPreview.fixed.map(jewelToShape).concat(self.boardPreview.spaces), rectangle(self.x - character.cameraX - 5, groundY - self.y -5, 10, 10));
+            drawBoardJewelsProper(mainContext, [0, 0], {'fixed': [], 'jewels': [], 'boardPreview': self.boardPreview}, true);
+        },
+        'helpMethod': function () {
+            return "<b>Divine Blessing</b><hr><p>Click on this Jewel Board Augmentation to preview adding it to this hero's Jewel Board.</p><p>A hero must augment their Jewel Board to learn new abilities and Level Up</p>";
         }
     };
     return self;

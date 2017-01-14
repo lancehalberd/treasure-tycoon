@@ -183,16 +183,15 @@ function drawMap() {
         context.restore();
     });
     // Draw treasure chests on each node.
-    var shrineSource = {'image': images['gfx/militaryIcons.png'], 'xOffset': 102, 'yOffset': 125, 'width': 16, 'height': 16};
-    var circleSource = {'image': images['gfx/militaryIcons.png'], 'xOffset': 51, 'yOffset': 90, 'width': 16, 'height': 16};
-    var checkSource = {'image': images['gfx/militaryIcons.png'], 'xOffset': 68, 'yOffset': 90, 'width': 16, 'height': 16};
-    var bronzeSource = {'image': images['gfx/militaryIcons.png'], 'xOffset': 102, 'yOffset': 40, 'width': 16, 'height': 16};
-    var silverSource = {'image': images['gfx/militaryIcons.png'], 'xOffset': 85, 'yOffset': 40, 'width': 16, 'height': 16};
-    var goldSource = {'image': images['gfx/militaryIcons.png'], 'xOffset': 68, 'yOffset': 40, 'width': 16, 'height': 16};
+    var shrineSource = {'image': images['gfx/militaryIcons.png'], 'left': 102, 'top': 125, 'width': 16, 'height': 16};
+    var checkSource = {'image': images['gfx/militaryIcons.png'], 'left': 68, 'top': 90, 'width': 16, 'height': 16};
+    var bronzeSource = {'image': images['gfx/militaryIcons.png'], 'left': 102, 'top': 40, 'width': 16, 'height': 16};
+    var silverSource = {'image': images['gfx/militaryIcons.png'], 'left': 85, 'top': 40, 'width': 16, 'height': 16};
+    var goldSource = {'image': images['gfx/militaryIcons.png'], 'left': 68, 'top': 40, 'width': 16, 'height': 16};
     $.each(visibleNodes, function (levelKey, levelData){
         if (editingMap) {
             var source = closedChestSource;
-            context.drawImage(source.image, source.xOffset, 0, source.width, source.height,
+            context.drawImage(source.image, source.left, source.top, source.width, source.height,
                               levelData.left + levelData.width / 2 - 16, levelData.top + levelData.height / 2 - 18, 32, 32);
             context.fillStyle = new Vector(levelData.coords).dotProduct(camera.forward) >= 0 ? 'red' : 'black';
             context.fillRect(levelData.left - 30, levelData.top + 19, 100, 15);
@@ -229,20 +228,15 @@ function drawMap() {
             // Make the shrine flash if the player can currently activate it.
             if (levelCompleted && !skillLearned && canAffordSkill && state.selectedCharacter.adventurer.level < maxLevel) {
                 drawTintedImage(context, abilitySource.image, '#ff0', .5 + Math.cos(now() / 100) / 5,
-                            {'left': abilitySource.xOffset, 'top' :abilitySource.yOffset, 'width': abilitySource.width, 'height': abilitySource.height},
-                            shrine);
+                            abilitySource, shrine);
             } else {
-                context.drawImage(abilitySource.image, abilitySource.xOffset, abilitySource.yOffset, abilitySource.width, abilitySource.height,
+                context.drawImage(abilitySource.image, abilitySource.left, abilitySource.top, abilitySource.width, abilitySource.height,
                                 shrine.left, shrine.top, shrine.width, shrine.height);
             }
             if (skillLearned) {
                 // If the character has learned the ability for this level, draw a check mark on the shrine.
-                context.drawImage(checkSource.image, checkSource.xOffset, checkSource.yOffset, checkSource.width, checkSource.height,
+                context.drawImage(checkSource.image, checkSource.left, checkSource.top, checkSource.width, checkSource.height,
                                     shrine.left, shrine.top, shrine.width, shrine.height);
-            } else if (!canAffordSkill) {
-                // If the character can't afford the ability for this leve, draw a red circle around the shrine.
-                //context.drawImage(circleSource.image, circleSource.xOffset, circleSource.yOffset, circleSource.width, circleSource.height,
-                //                    shrine.left, shrine.top, shrine.width, shrine.height);
             }
             context.restore();
         }
@@ -255,7 +249,7 @@ function drawMap() {
 
         var times = ifdefor(state.selectedCharacter.levelTimes[levelKey], {});
         var source = (times['easy'] && times['normal'] && times['hard']) ? openChestSource : closedChestSource;
-        context.drawImage(source.image, source.xOffset, 0, source.width, source.height,
+        context.drawImage(source.image, source.left, source.top, source.width, source.height,
                             levelData.left + levelData.width / 2 - 16, levelData.top + levelData.height / 2 - 18, 32, 32);
 
         context.save();
@@ -282,7 +276,7 @@ function drawMap() {
             } else {
                 source = bronzeSource;
             }
-            context.drawImage(source.image, source.xOffset, source.yOffset, source.width, source.height,
+            context.drawImage(source.image, source.left, source.top, source.width, source.height,
                               levelData.left - 10, levelData.top + 34, 16, 16);
         }
         return true;
