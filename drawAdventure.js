@@ -199,9 +199,6 @@ function getActorTints(actor) {
     }
     return tints;
 }
-function drawImage(context, image, source, target) {
-    context.drawImage(image, source.left, source.top, source.width, source.height, target.left, target.top, target.width, target.height);
-}
 function drawEffectIcons(actor, x, y) {
     var effectXOffset = 0;
     var effectYOffset = 2;

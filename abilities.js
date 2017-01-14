@@ -32,46 +32,79 @@ xxx Major stat boost (shared)
 xxx 9: Specialization boost 3
 xxx 10: Ability 3
 */
+var tintCompositeCanvas = createCanvas(64, 64);
+var tintCompositeContext = tintCompositeCanvas.getContext('2d');
+function drawTintIcon(context, target) {
+    var compositeTarget = {'left': 0, 'top': 0, 'width': this.width, 'height': this.height};
+    // Draw the tinted section the specified color.
+    drawTintedImage(tintCompositeContext, images[this.imageFile], this.color, 1, this, compositeTarget);
+    // Draw the untinted section on top of the tinted section.
+    drawImage(tintCompositeContext, images[this.imageFile],
+        {'left': this.left, 'top': this.top + this.height, 'width': this.width, 'height': this.height}, compositeTarget);
+    drawImage(context, tintCompositeCanvas,
+        compositeTarget, target);
+}
+function tintIcon(imageFile, color) {
+    requireImage(imageFile);
+    return {
+        'imageFile': imageFile,
+        'left': 0,
+        'top': 0,
+        'width': 32,
+        'height': 32,
+        'color': color,
+        'drawImage': drawTintIcon
+    };
+}
+
+function getAbilityIconSource(ability, defaultSource) {
+    if (!ability) return null;
+    var icon = ifdefor(ability.icon);
+    if (ability.action) icon = icon || ability.action.icon;
+    if (ability.reaction) icon = icon || ability.reaction.icon;
+    if (!icon) return ifdefor(defaultSource);
+    if (icon.drawImage) return icon;
+    return {'image': images[icon], 'left': 0, 'top': 0, 'width': 34, 'height': 34};
+}
 var abilities = {
     'basicAttack': {'name': 'Basic Attack', 'action': skills.basicAttack},
-
 'passiveBonus': {'name': '-----Core Passives-----'},
-    'minorDexterity': {'name': 'Minor Dexterity', 'bonuses': {'+dexterity': [10, '+', '{level}']}},
+    'minorDexterity': {'name': 'Minor Dexterity', 'bonuses': {'+dexterity': [10, '+', '{level}']}, 'icon': tintIcon('gfx/upArrowsTint.png', '#0f0')},
     'flatEvasion': {'name': 'Basic Evasion', 'bonuses': {'+evasion': 10}},
     'flatRangedAttackDamage':  {'name': 'Archery', 'bonuses': {'+ranged:attack:weaponPhysicalDamage': 8}},
     'percentEvasion': {'name': 'Enhanced Evasion', 'bonuses': {'%evasion': 0.2}},
     'percentAttackSpeed': {'name': 'Finesse', 'bonuses': {'%attackSpeed': 0.2}},
-    'majorDexterity': {'name': 'Major Dexterity', 'bonuses': {'+dexterity': 30, '*dexterity': 1.1}},
-    'minorIntelligence': {'name': 'Minor Intelligence', 'bonuses': {'+intelligence': [10, '+', '{level}']}},
+    'majorDexterity': {'name': 'Major Dexterity', 'bonuses': {'+dexterity': 30, '*dexterity': 1.1}, 'icon': tintIcon('gfx/upArrowsTint.png', '#0f0')},
+    'minorIntelligence': {'name': 'Minor Intelligence', 'bonuses': {'+intelligence': [10, '+', '{level}']}, 'icon': tintIcon('gfx/upArrowsTint.png', '#00f')},
     'flatBlock': {'name': 'Basic Blocking', 'bonuses': {'+block': 10}},
     'flatMagicDamage':  {'name': 'Ensorcel', 'bonuses': {'+magic:weaponMagicDamage': 6}},
     'percentBlocking': {'name': 'Enhanced Blocking', 'bonuses': {'%block': 0.2}},
     'percentMagicDamage': {'name': 'Resonance', 'bonuses': {'%weaponMagicDamage': .2}},
-    'majorIntelligence': {'name': 'Major Intelligence', 'bonuses': {'+intelligence': 30, '*intelligence': 1.1}},
-    'minorStrength': {'name': 'Minor Strength', 'bonuses': {'+strength': [10, '+', '{level}']}},
+    'majorIntelligence': {'name': 'Major Intelligence', 'bonuses': {'+intelligence': 30, '*intelligence': 1.1}, 'icon': tintIcon('gfx/upArrowsTint.png', '#00f')},
+    'minorStrength': {'name': 'Minor Strength', 'bonuses': {'+strength': [10, '+', '{level}']}, 'icon': tintIcon('gfx/upArrowsTint.png', '#f00')},
     'flatArmor': {'name': 'Basic Toughness', 'bonuses': {'+armor': 10}},
     'flatMeleeAttackDamage':  {'name': 'Sparring', 'bonuses': {'+melee:attack:weaponPhysicalDamage': 10}},
     'percentArmor': {'name': 'Enhanced Toughness', 'bonuses': {'%armor': 0.2}},
     'percentPhysicalDamage': {'name': 'Ferocity', 'bonuses': {'%weaponPhysicalDamage': 0.2}},
-    'majorStrength': {'name': 'Major Strength', 'bonuses': {'+strength': 30, '*strength': 1.1}},
-    'minorVigor': {'name': 'Minor Vigor', 'bonuses': {'+dexterity': [5, '+', ['{level}', '/', 2]], '+strength': [5, '+', ['{level}', '/', 2]]}},
+    'majorStrength': {'name': 'Major Strength', 'bonuses': {'+strength': 30, '*strength': 1.1}, 'icon': tintIcon('gfx/upArrowsTint.png', '#f00')},
+    'minorVigor': {'name': 'Minor Vigor', 'bonuses': {'+dexterity': [5, '+', ['{level}', '/', 2]], '+strength': [5, '+', ['{level}', '/', 2]]}, 'icon': tintIcon('gfx/upArrowsTint.png', '#ff0')},
     'flatMovementSpeed': {'name': 'Basic Mobility', 'bonuses': {'+speed': 20}},
     'flatCriticalChance':  {'name': 'Find Weakness', 'bonuses': {'+critChance': 0.02}},
     'percentMovementSpeed': {'name': 'Enhanced Mobility', 'bonuses': {'%speed': 0.2}},
     'percentCriticalChance': {'name': 'Precision', 'bonuses': {'%critChance': 0.2}},
-    'majorVigor': {'name': 'Major Vigor', 'bonuses': {'+dexterity': 15, '*dexterity': 1.05, '+strength': 15, '*strength': 1.05}},
-    'minorWill': {'name': 'Minor Will', 'bonuses': {'+strength': [5, '+', ['{level}', '/', 2]], '+intelligence': [5, '+', ['{level}', '/', 2]]}},
+    'majorVigor': {'name': 'Major Vigor', 'bonuses': {'+dexterity': 15, '*dexterity': 1.05, '+strength': 15, '*strength': 1.05}, 'icon': tintIcon('gfx/upArrowsTint.png', '#ff0')},
+    'minorWill': {'name': 'Minor Will', 'bonuses': {'+strength': [5, '+', ['{level}', '/', 2]], '+intelligence': [5, '+', ['{level}', '/', 2]]}, 'icon': tintIcon('gfx/upArrowsTint.png', '#f0f')},
     'flatMagicBlock': {'name': 'Basic Warding', 'bonuses': {'+magicBlock': 5}},
     'flatMagicPower':  {'name': 'Arcane Potency', 'bonuses': {'+magicPower': 60}},
     'percentMagicBlock': {'name': 'Enhanced Warding', 'bonuses': {'%magicBlock': 0.2}},
     'percentMagicPower': {'name': 'Amplify', 'bonuses': {'%magicPower': 0.4}},
-    'majorWill': {'name': 'Major Will', 'bonuses': {'+strength': 15, '*strength': 1.05, '+intelligence': 15, '*intelligence': 1.05}},
-    'minorCharisma': {'name': 'Minor Charisma', 'bonuses': {'+dexterity': [5, '+', ['{level}', '/', 2]], '+intelligence': [5, '+', ['{level}', '/', 2]]}},
+    'majorWill': {'name': 'Major Will', 'bonuses': {'+strength': 15, '*strength': 1.05, '+intelligence': 15, '*intelligence': 1.05}, 'icon': tintIcon('gfx/upArrowsTint.png', '#f0f')},
+    'minorCharisma': {'name': 'Minor Charisma', 'bonuses': {'+dexterity': [5, '+', ['{level}', '/', 2]], '+intelligence': [5, '+', ['{level}', '/', 2]]}, 'icon': tintIcon('gfx/upArrowsTint.png', '#0ff')},
     'flatDuration': {'name': 'Basic Channeling', 'bonuses': {'+duration': 2}},
     'flatAreaOfEffect':  {'name': 'Extension', 'bonuses': {'+area': 2}},
     'percentDuration': {'name': 'Enhanced Channeling', 'bonuses': {'%duration': 0.2}},
     'percentAreaOfEffect': {'name': 'Influence', 'bonuses': {'%area': 0.2}},
-    'majorCharisma': {'name': 'Major Charisma', 'bonuses': {'+dexterity': 15, '*dexterity': 1.05, '+intelligence': 15, '*intelligence': 1.05}},
+    'majorCharisma': {'name': 'Major Charisma', 'bonuses': {'+dexterity': 15, '*dexterity': 1.05, '+intelligence': 15, '*intelligence': 1.05}, 'icon': tintIcon('gfx/upArrowsTint.png', '#0ff')},
     'healthPerLevel': {'name': 'Life Force', 'bonuses': {'+maxHealth': [5, '*', '{level}']}},
     'flatRange': {'name': 'Farsight', 'bonuses': {'+range': 1}},
     'percentHealth': {'name': 'Larger than Life', 'bonuses': {'%maxHealth': 0.2, '+scale': .2}},
@@ -363,12 +396,3 @@ $.each(abilities, function (key, ability) {
         ability.reaction.key = key;
     }
 });
-
-function getAbilityIconSource(ability, defaultSource) {
-    if (!ability) return null;
-    var icon = ifdefor(ability.icon);
-    if (ability.action) icon = icon || ability.action.icon;
-    if (ability.reaction) icon = icon || ability.reaction.icon;
-    if (!icon) return ifdefor(defaultSource);
-    return {'image': images[icon], 'left': 0, 'top': 0, 'width': 34, 'height': 34};
-}

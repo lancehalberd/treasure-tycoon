@@ -122,7 +122,7 @@ function drawMap() {
                 visibleNodes[levelKey] = levelData;
                 var skill = abilities[levelData.skill];
                 if (skill) {
-                    levelData.shrine = rectangle(levelData.left - 12, levelData.top - 12, 24, 24);
+                    levelData.shrine = rectangle(levelData.left - 16, levelData.top - 16, 32, 32);
                     levelData.shrine.isShrine = true;
                     levelData.shrine.level = levelData;
                 }
@@ -206,6 +206,8 @@ function drawMap() {
                 context.fillStyle = 'white';
                 context.fillText(levelData.skill, levelData.left + 20, levelData.top + 45);
             }
+            var skill = abilities[levelData.skill];
+            if (skill) drawAbilityIcon(context, getAbilityIconSource(skill, shrineSource), levelData.shrine);
             return true;
         }
         var divinityScore = ifdefor(state.selectedCharacter.divinityScores[levelKey], 0);
@@ -214,30 +216,15 @@ function drawMap() {
         if (skill) {
             // Draw the shrine only if the level grants a skill.
             context.save();
-            var shrine = levelData.shrine;
-            var levelCompleted = (state.selectedCharacter.currentLevelKey === levelKey) && state.selectedCharacter.levelCompleted;
             var skillLearned = state.selectedCharacter.adventurer.unlockedAbilities[skill.key];
             var canAffordSkill = state.selectedCharacter.divinity >= totalCostForNextLevel(state.selectedCharacter, levelData);
-            // Disable shrine if the character did not just complete this area.
-            if (!skillLearned && !canAffordSkill) {
-                context.globalAlpha = .7;
-            } else {
-                context.globalAlpha = 1;
-            }
-            var abilitySource = getAbilityIconSource(skill, shrineSource);
-            // Make the shrine flash if the player can currently activate it.
-            if (levelCompleted && !skillLearned && canAffordSkill && state.selectedCharacter.adventurer.level < maxLevel) {
-                drawTintedImage(context, abilitySource.image, '#ff0', .5 + Math.cos(now() / 100) / 5,
-                            abilitySource, shrine);
-            } else {
-                context.drawImage(abilitySource.image, abilitySource.left, abilitySource.top, abilitySource.width, abilitySource.height,
-                                shrine.left, shrine.top, shrine.width, shrine.height);
-            }
-            if (skillLearned) {
-                // If the character has learned the ability for this level, draw a check mark on the shrine.
-                context.drawImage(checkSource.image, checkSource.left, checkSource.top, checkSource.width, checkSource.height,
-                                    shrine.left, shrine.top, shrine.width, shrine.height);
-            }
+            // Draw she shrine partially tansparent if the character needs more divinity to learn this skill.
+            if (!skillLearned && !canAffordSkill) context.globalAlpha = .5;
+            else context.globalAlpha = 1;
+            drawAbilityIcon(context, getAbilityIconSource(skill, shrineSource), levelData.shrine);
+            // If the character has learned the ability for this level, draw a check mark on the shrine.
+            context.globalAlpha = .7;
+            if (skillLearned) drawImage(context, checkSource.image, checkSource, levelData.shrine);
             context.restore();
         }
         if (state.selectedCharacter.currentLevelKey === levelKey) {

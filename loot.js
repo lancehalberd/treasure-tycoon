@@ -310,7 +310,9 @@ function abilityShrine() {
             }
             var skill = abilities[level.skill];
             var shrineSource = {'image': images['gfx/militaryIcons.png'], 'left': 102, 'top': 125, 'width': 16, 'height': 16};
-            drawTintedImage(mainContext, shrineSource.image, '#ff0', self.activated ? (.5 + Math.cos(now() / 100) / 5) : 0,
+            //drawTintedImage(mainContext, shrineSource.image, '#ff0', self.activated ? (.5 + Math.cos(now() / 100) / 5) : 0,
+            //    shrineSource, {'left': self.x - 64 - character.cameraX, 'top': groundY - self.y - 128, 'width': 128, 'height': 128});
+            drawImage(mainContext, shrineSource.image,
                 shrineSource, {'left': self.x - 64 - character.cameraX, 'top': groundY - self.y - 128, 'width': 128, 'height': 128});
             //var abilitySource = getAbilityIconSource(skill, shrineSource);
             //drawImage(mainContext, abilitySource.image, abilitySource, {'left': self.x - 16 - character.cameraX, 'top': groundY - self.y - 140, 'width': 32, 'height': 32})

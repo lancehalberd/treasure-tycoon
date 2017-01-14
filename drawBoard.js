@@ -62,8 +62,9 @@ function drawBoardJewelsProper(context, lightSource, board, mouseIsOverBoard) {
         }
         var iconSource = getAbilityIconSource(jewel.ability);
         if (mouseIsOverBoard && iconSource) {
-            context.drawImage(iconSource.image, iconSource.left, iconSource.top, iconSource.width, iconSource.height,
-                jewel.shape.center[0] - iconSource.width / 3, jewel.shape.center[1] - iconSource.height / 3, iconSource.width * 2 / 3, iconSource.height * 2 / 3);
+            drawAbilityIcon(context, iconSource,
+                {'left': jewel.shape.center[0] - iconSource.width / 3, 'top': jewel.shape.center[1] - iconSource.height / 3,
+                'width': iconSource.width * 2 / 3, 'height': iconSource.height * 2 / 3});
         }
     }
     if (board.boardPreview) {
@@ -81,10 +82,11 @@ function drawBoardJewelsProper(context, lightSource, board, mouseIsOverBoard) {
         var fixedJewel = board.boardPreview.fixed[0];
         context.globalAlpha = 1;
         drawJewel(context, fixedJewel.shape, lightSource);
-        var iconSource = getAbilityIconSource(fixedJewel.ability);
+        var iconSource = getAbilityIconSource(jewel.ability);
         if (mouseIsOverBoard && iconSource) {
-            context.drawImage(iconSource.image, iconSource.left, iconSource.top, iconSource.width, iconSource.height,
-                fixedJewel.shape.center[0] - iconSource.width / 3, fixedJewel.shape.center[1] - iconSource.height / 3, iconSource.width * 2 / 3, iconSource.height * 2 / 3);
+            drawAbilityIcon(context, iconSource,
+                {'left': jewel.shape.center[0] - iconSource.width / 3, 'top': jewel.shape.center[1] - iconSource.height / 3,
+                'width': iconSource.width * 2 / 3, 'height': iconSource.height * 2 / 3});
         }
         focusedJewelIsOnBoard = focusedJewelIsOnBoard || draggingBoardJewel == fixedJewel || overJewel == fixedJewel;
 
