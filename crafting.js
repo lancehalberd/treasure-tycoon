@@ -342,16 +342,13 @@ function craftItem() {
     if (item.unique) {
         state.craftedItems[craftedItem.key] |= ifdefor(state.craftedItems[craftedItem.key], 0) | CRAFTED_UNIQUE;
     } else {
-        // Items created below the specified crafting level are automatically enchanted.
+        // Always get at least 1 enchantment on lower level items.
         // This way getting low level items is less disappointing.
-        if (craftedItem.level < state.craftingLevel) {
-            // Always get at least 1 enchantment.
+        if (craftedItem.level < state.craftingLevel) augmentItemProper(item);
+        // Get up to 4 enchantments with higher chance the greater the disparity is.
+        var buffChance = Math.min(.8, .1 + .05 * (state.craftingLevel - craftedItem.level));
+        while (Math.random() < buffChance && item.prefixes.length + item.suffixes.length < 4){
             augmentItemProper(item);
-            // Get up to 4 enchantments with higher chance the greater the disparity is.
-            var buffChance = .1 * (state.craftingLevel - craftedItem.level);
-            while (Math.random() < buffChance && item.prefixes.length + item.suffixes.length < 4){
-                augmentItemProper(item);
-            }
         }
     }
     state.craftedItems[craftedItem.key] |= ifdefor(state.craftedItems[craftedItem.key], 0) | CRAFTED_NORMAL;
