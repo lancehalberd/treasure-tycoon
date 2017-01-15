@@ -197,6 +197,7 @@ function drawMap() {
             context.fillStyle = 'white';
             context.font = '10px sans-serif';
             context.textAlign = 'center'
+            context.textBaseline = null;
             //context.fillText(levelData.coords.map(function (number) { return number.toFixed(0);}).join(', '), levelData.left + 20, levelData.top + 45);
             context.fillText(levelData.level + ' ' + levelData.name, levelData.left + 20, levelData.top + 30);
             if (levelData.skill) {
@@ -247,6 +248,7 @@ function drawMap() {
         context.fillStyle = '#fff';
         context.font = 'bold 16px sans-serif';
         context.textAlign = 'center'
+        context.textBaseline = null;
         context.fillText(levelData.level, levelData.left + 20, levelData.top + 32);
         if (divinityScore > 0) {
             context.fillStyle = 'black';
