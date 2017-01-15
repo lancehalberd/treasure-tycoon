@@ -11,6 +11,9 @@ function loadSavedData() {
 function saveGame() {
     $.jStorage.set("savedGame", exportState(state));
 }
+function eraseSave() {
+    $.jStorage.set("savedGame", null);
+}
 
 function exportState(state) {
     var data = {};

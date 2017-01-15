@@ -59,6 +59,11 @@ function initializeGame() {
     var jewelButtonCanvas = $('.js-jewelButtonCanvas')[0];
     centerShapesInRectangle([testShape], rectangle(0, 0, jewelButtonCanvas.width, jewelButtonCanvas.height));
     drawJewel(jewelButtonCanvas.getContext('2d'), testShape, [0, 0], 'black');
+    if (window.location.search.substr(1) === 'new') {
+        if (confirm('Are you sure you want to clear your saved data? This cannot be undone.')) {
+            eraseSave();
+        }
+    }
     if (!loadSavedData()) {
         gainJewel(makeJewel(1, 'triangle', [90, 5, 5], 1.1));
         gainJewel(makeJewel(1, 'triangle', [5, 90, 5], 1.1));
