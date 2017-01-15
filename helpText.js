@@ -9,12 +9,24 @@ function getNameWithAffixes(name, prefixes, suffixes) {
 function getItemHelpText($item) {
     var item = $item.data('item');
     var sections = [];
+    var actor = state.selectedCharacter.adventurer;
     // Unique items have a distinct display name that is used instead of the affix generated name.
     if (ifdefor(item.displayName)) sections.push(item.displayName);
     else sections.push(getNameWithAffixes(item.base.name, item.prefixes, item.suffixes));
-    if (item.base.tags) sections.push(Object.keys(item.base.tags).map(tagToDisplayName).join(', '));
+    if (item.base.tags) {
+        var tagParts = [];
+        for (var tag in item.base.tags) {
+            if (tag === 'offhand' && isTwoHandedWeapon(actor.equipment.weapon) && !ifdefor(actor.twoToOneHanded)) {
+                tagParts.push('<span style="color: #c00;">' + tagToDisplayName(tag) + '</span>');
+            } else {
+                tagParts.push(tagToDisplayName(tag));
+            }
+        }
+        sections.push(tagParts.join(', '));
+    }
+
     if (item.level > state.selectedCharacter.adventurer.level) {
-        sections.push('<span style="color: #f00;">Requires level ' + item.level + '</span>');
+        sections.push('<span style="color: #c00;">Requires level ' + item.level + '</span>');
     } else {
         sections.push('Requires level ' + item.level);
     }
@@ -71,7 +83,7 @@ function bonusSourceHelpText(bonusSource, actor, localObject) {
     for (var restriction of ifdefor(bonusSource.restrictions, [])) {
         var style = '';
         if (!state.selectedCharacter.adventurer.tags[restriction]) {
-            style = ' style="color: #f00;"';
+            style = ' style="color: #c00;"';
         }
         sections.push('<u' + style + '>' + restrictionToCategoryDisplayName(restriction) + ' Only</u>');
     }

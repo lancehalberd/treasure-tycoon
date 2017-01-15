@@ -298,7 +298,7 @@ function makeAdventurerFromJob(job, level, equipment) {
     });
     $.each(equipment, function (key, item) {
         state.craftedItems[item.key] = ifdefor(state.craftedItems[item.key], 0) | CRAFTED_NORMAL;
-        equipItem(adventurer, makeItem(item, 1), false);
+        equipItemProper(adventurer, makeItem(item, 1), false);
     });
     updateAdventurer(adventurer);
     return adventurer;

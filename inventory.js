@@ -1,4 +1,4 @@
-function equipItem(actor, item, update) {
+function equipItemProper(actor, item, update) {
     //console.log("equip " + item.base.slot);
     if (actor.equipment[item.base.slot]) {
         console.log("Tried to equip an item without first unequiping!");
@@ -33,6 +33,7 @@ function equipItem(actor, item, update) {
         updateAdventurerGraphics(actor);
         updateOffhandDisplay();
         unequipRestrictedGear();
+        updateEquipableItems();
     }
 }
 function unequipSlot(actor, slotKey, update) {
@@ -60,6 +61,7 @@ function unequipSlot(actor, slotKey, update) {
             updateAdventurerGraphics(actor);
             updateOffhandDisplay();
             unequipRestrictedGear();
+            updateEquipableItems();
         }
     }
 }
@@ -306,6 +308,9 @@ function canEquipItem(actor, item) {
     if (item.level > actor.level) {
         return false;
     }
+    if (item.base.slot === 'offhand' && isTwoHandedWeapon(actor.equipment.weapon) && !ifdefor(actor.twoToOneHanded)) {
+        return false;
+    }
     for (var requiredTag of ifdefor(item.base.restrictions, [])) {
         if (!actor.tags[requiredTag]) {
             return false;
@@ -340,6 +345,23 @@ function stopDrag() {
     }
     stopInventoryDrag();
 }
+function equipItem(actor, item) {
+    if (!canEquipItem(actor, item)) return false;
+    // Unequip anything that might be currently equipped in the target character.
+    var currentMain = actor.equipment[item.base.slot];
+    unequipSlot(actor, item.base.slot, false);
+    if (currentMain) addToInventory(currentMain);
+    // Now equip the item on the target character and update stats so we can
+    // tell if they can still equip an offhand.
+    equipItemProper(actor, item, true);
+    // Unequip the offhand if the equipping character can no longer hold an offhand.
+    if (isTwoHandedWeapon(item) && !ifdefor(actor.twoToOneHanded)) {
+        var currentSub = actor.equipment.offhand;
+        unequipSlot(actor, 'offhand', true);
+        if (currentSub) addToInventory(currentSub);
+    }
+    return true;
+}
 function applyDragResults() {
     if (!$dragHelper) {
         return;
@@ -370,32 +392,9 @@ function applyDragResults() {
     }
     var hit = false;
     $('.js-equipment .js-' + item.base.slot).each(function (index, element) {
-        if (!collision($dragHelper, $(element))) {
-            return true;
-        }
-        var targetCharacter = state.selectedCharacter;
-        if (!canEquipItem(targetCharacter.adventurer, item)) {
-            return false;
-        }
-        var sourceCharacter = state.selectedCharacter;
-        hit = true
-        // If the item is coming from a source character, unequip it from them.
-        if (sourceCharacter && sourceCharacter !== targetCharacter) {
-            unequipSlot(sourceCharacter.adventurer, item.base.slot, true);
-        }
-        // Unequip anything that might be currently equipped in the target character.
-        var currentMain = targetCharacter.adventurer.equipment[item.base.slot];
-        unequipSlot(targetCharacter.adventurer, item.base.slot, false);
-        if (currentMain) addToInventory(currentMain);
-        // Now equip the item on the target character and update stats so we can
-        // tell if they can still equip an offhand.
-        equipItem(targetCharacter.adventurer, item, true);
-        // Unequip the offhand if the equipping character can no longer hold an offhand.
-        if (isTwoHandedWeapon(item) && !ifdefor(targetCharacter.adventurer.twoToOneHanded)) {
-            var currentSub = targetCharacter.adventurer.equipment.offhand;
-            unequipSlot(targetCharacter.adventurer, 'offhand', true);
-            if (currentSub) addToInventory(currentSub);
-        }
+        if (!collision($dragHelper, $(element))) return true;
+        hit = true;
+        equipItem(state.selectedCharacter, item)
         return false;
     });
     if (!hit) {
@@ -523,6 +522,15 @@ $(document).on('keydown', function(event) {
                 unlockMapLevel(key);
             });
         });
+    }
+    if (event.which == 69) { // 'e'
+        if (!$popupTarget || $popupTarget.closest('.js-inventory').length === 0) {
+            return;
+        }
+        var actor = state.selectedCharacter.adventurer;
+        var item = $popupTarget.data('item');
+        if (item) equipItem(actor, item);
+        return;
     }
     if (event.which == 76) { // 'l'
         if (overCraftingItem) {

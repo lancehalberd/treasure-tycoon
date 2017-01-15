@@ -237,7 +237,7 @@ function importAdventurer(adventurerData) {
     $.each(adventurerData.equipment, function (key, itemData) {
         if (itemData) {
             var item = importItem(itemData);
-            if (item) equipItem(adventurer, item, false);
+            if (item) equipItemProper(adventurer, item, false);
         }
     });
     return adventurer;
