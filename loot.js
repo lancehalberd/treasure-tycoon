@@ -296,6 +296,11 @@ function abilityShrine() {
                 self.done = true;
                 return;
             }
+            if (character.skipShrines) {
+                messageCharacter(character, 'Skipping shrine');
+                self.done = true;
+                return;
+            }
             // TBD: Make this number depend on the game state so it can be improved over time.
             var boardOptions = 2;
             for (var i = 0; i < boardOptions; i++) {

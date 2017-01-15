@@ -25,7 +25,8 @@ var state = {
     craftedItems: {},
     craftingLevel: null,
     craftingTypeFilter: null,
-    applicationSlots: 2
+    applicationSlots: 2,
+    skipShrinesEnabled: false
 };
 var craftingCanvas = $('.js-craftingCanvas')[0];
 var craftingContext = craftingCanvas.getContext('2d');
@@ -75,6 +76,9 @@ function initializeGame() {
         $('.js-heroApplication').each(function () {
             createNewHeroApplicant($(this), otherKeys.pop());
         });
+    }
+    if (state.skipShrinesEnabled) {
+        $('.js-shrineButton').show();
     }
     updateItemsThatWillBeCrafted();
     updateEnchantmentOptions();
@@ -470,6 +474,10 @@ $('body').on('click', '.js-slowMotionButton', function (event) {
     }
     updateAdventureButtons();
 });
+$('body').on('click', '.js-shrineButton', function (event) {
+    state.selectedCharacter.skipShrines = !state.selectedCharacter.skipShrines;
+    updateAdventureButtons();
+});
 
 var currentContext;
 function showContext(context) {
@@ -495,6 +503,7 @@ function updateAdventureButtons() {
     $('.js-pauseButton').toggleClass('disabled', !character.paused);
     $('.js-fastforwardButton').toggleClass('disabled', character.gameSpeed !== 3);
     $('.js-slowMotionButton').toggleClass('disabled', character.loopSkip !== 5);
+    $('.js-shrineButton').toggleClass('disabled', !!character.skipShrines);
 }
 function canRecall(character) {
     return character.area && character.waveIndex < character.area.waves.length;

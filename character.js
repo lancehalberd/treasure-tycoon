@@ -623,6 +623,9 @@ function gainLevel(adventurer) {
     updateAdventurer(adventurer);
     refreshStatsPanel();
     updateEquipableItems();
+    // Enable the skipShrines option only once an adventurer levels the first time.
+    state.skipShrinesEnabled = true;
+    $('.js-shrineButton').show();
 }
 function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonus, startingEquipment, jewelLoot, levelKey) {
     var key = name.replace(/\s*/g, '').toLowerCase();

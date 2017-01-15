@@ -24,6 +24,7 @@ function exportState(state) {
     data.craftedItems = state.craftedItems;
     data.craftingLevel = state.craftingLevel;
     data.applications = [];
+    data.skipShrinesEnabled = state.skipShrinesEnabled;
     $('.js-heroApplication').each(function () {
         var application = $(this).data('character');
         data.applications.push(exportCharacter(application));
@@ -78,6 +79,7 @@ function importState(stateData) {
         $('.js-recruitmentColumn').append($applicationPanel);
         setHeroApplication($applicationPanel, application);
     });
+    state.skipShrinesEnabled = ifdefor(stateData.skipShrinesEnabled, true);
     // Clean up the last slot.
     $slot.data('character', null).remove();
     state.characters = [];
