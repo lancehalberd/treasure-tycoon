@@ -310,7 +310,6 @@ function moveActor(actor, delta) {
     actor.x += speedBonus * actor.speed * actor.direction * Math.max(.1, 1 - actor.slow) * delta;
 }
 function startNextWave(character) {
-    character.waveIndex = character.area.waves.length - 1;
     var wave = character.area.waves[character.waveIndex];
     var x = character.adventurer.x + 800;
     wave.monsters.forEach(function (entityData) {
