@@ -306,6 +306,14 @@ function abilityShrine() {
                 boardPreviewSprite.y = 200;
                 character.objects.push(boardPreviewSprite);
             }
+            var blessingText = objectText('Choose Your Blessing');
+            blessingText.x = self.x;
+            blessingText.y = 300;
+            character.objects.push(blessingText);
+            var skipButton = iconButton({'image': images['gfx/nielsenIcons.png'], 'left': 160, 'top': 160, 'width': 32, 'height': 32}, 64, 64, finishShrine, 'Continue without leveling');
+            skipButton.x = self.x + 128;
+            skipButton.y = 112;
+            character.objects.push(skipButton);
             self.activated = true;
         },
         'draw': function (character) {
@@ -315,12 +323,8 @@ function abilityShrine() {
             }
             var skill = abilities[level.skill];
             var shrineSource = {'image': images['gfx/militaryIcons.png'], 'left': 102, 'top': 125, 'width': 16, 'height': 16};
-            //drawTintedImage(mainContext, shrineSource.image, '#ff0', self.activated ? (.5 + Math.cos(now() / 100) / 5) : 0,
-            //    shrineSource, {'left': self.x - 64 - character.cameraX, 'top': groundY - self.y - 128, 'width': 128, 'height': 128});
             drawImage(mainContext, shrineSource.image,
                 shrineSource, {'left': self.x - 64 - character.cameraX, 'top': groundY - self.y - 128, 'width': 128, 'height': 128});
-            //var abilitySource = getAbilityIconSource(skill, shrineSource);
-            //drawImage(mainContext, abilitySource.image, abilitySource, {'left': self.x - 16 - character.cameraX, 'top': groundY - self.y - 140, 'width': 32, 'height': 32})
         },
         'helpMethod': function () {
             return "<b>Divine Shrine</b><hr><p>You can use divinity as an offering at these shrines to receive a blessing from the Gods and grow more powerful.</p>";
@@ -332,7 +336,7 @@ function abilityShrine() {
 function finishShrine(character) {
     for (var i = 0; i < character.objects.length; i++) {
         var object = character.objects[i];
-        if (object.type === 'button') {
+        if (object.type === 'button' || object.type === 'text') {
             character.objects.splice(i--, 1);
         } else if (object.type === 'shrine') {
             object.done = true;
@@ -383,7 +387,7 @@ function adventureBoardPreview(boardPreview) {
     return self;
 }
 
-function iconButton(iconSource, width, height, onClick) {
+function iconButton(iconSource, width, height, onClick, helpText) {
     var self = {
         'x': 0,
         'y': 0,
@@ -391,12 +395,33 @@ function iconButton(iconSource, width, height, onClick) {
         'width': width,
         'height': height,
         'update': function (character) {
-            self.left = x - width / 2;
-            self.top = y - height / 2;
+            self.left = self.x - character.cameraX - self.width / 2;
+            self.top = groundY - self.y - self.height / 2;
         },
         'onClick': onClick,
         'draw': function (character) {
             drawImage(mainContext, iconSource.image, iconSource, self);
+        },
+        'helpMethod': function () {
+            return ifdefor(helpText, '');
+        }
+    };
+    return self;
+}
+
+function objectText(text) {
+    var self = {
+        'x': 0,
+        'y': 0,
+        'type': 'text',
+        'isOver': function (x, y) {return false;},
+        'update': function (character) {},
+        'draw': function (character) {
+            mainContext.fillStyle = 'white';
+            mainContext.textBaseline = "middle";
+            mainContext.textAlign = 'center'
+            mainContext.font = "30px sans-serif";
+            mainContext.fillText(text, self.x - character.cameraX, groundY - self.y);
         }
     };
     return self;

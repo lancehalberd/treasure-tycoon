@@ -299,7 +299,9 @@ function checkToShowAdventureToolTip(x, y) {
     if (!canvasPopupTarget) {
         return;
     }
-    $popup = $tag('div', 'toolTip js-toolTip', canvasPopupTarget.helpMethod ? canvasPopupTarget.helpMethod(canvasPopupTarget) : canvasPopupTarget.helptext);
+    var popupText = canvasPopupTarget.helpMethod ? canvasPopupTarget.helpMethod(canvasPopupTarget) : canvasPopupTarget.helptext;
+    if (!popupText) return;
+    $popup = $tag('div', 'toolTip js-toolTip', popupText);
     $popup.data('canvasTarget', canvasPopupTarget);
     $('.js-mouseContainer').append($popup);
     updateToolTip(mousePosition[0], mousePosition[1], $popup);

@@ -30,6 +30,8 @@ var initialImagesToLoad = [
     'gfx/iconSet.png',
     /* 'game-icons.png' from http://game-icons.net/about.html */
     'gfx/game-icons.png',
+    /* nielsenIcons.png from Søren Nielsen at http://opengameart.org/content/grayscale-icons */
+    'gfx/nielsenIcons.png',
     // http://opengameart.org/content/496-pixel-art-icons-for-medievalfantasy-rpg
     'gfx/496RpgIcons/abilityCharm.png',
     'gfx/496RpgIcons/abilityConsume.png',
