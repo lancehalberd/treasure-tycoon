@@ -347,6 +347,10 @@ function startNextWave(character) {
             character.objects.push(entityData);
             return;
         }
+        if (entityData.type === 'button') {
+            character.objects.push(entityData);
+            return;
+        }
         throw Error("Unrecognized object: " + JSON.stringify(entityData));
     });
     character.waveIndex++;

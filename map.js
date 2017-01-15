@@ -558,6 +558,8 @@ $('body').on('click', '.js-confirmSkill', function (event) {
     drawBoardBackground(character.boardContext, character.board);
     gainLevel(character.adventurer);
     updateConfirmSkillButton();
+    finishShrine(character);
+    showContext('adventure');
     saveGame();
 });
 function unlockMapLevel(levelKey) {

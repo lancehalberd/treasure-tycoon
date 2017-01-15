@@ -329,15 +329,25 @@ function abilityShrine() {
     return self;
 }
 
+function finishShrine(character) {
+    for (var i = 0; i < character.objects.length; i++) {
+        var object = character.objects[i];
+        if (object.type === 'button') {
+            character.objects.splice(i--, 1);
+        } else if (object.type === 'shrine') {
+            object.done = true;
+        }
+    }
+    character.adventurer.stunned = 0;
+}
+
 function adventureBoardPreview(boardPreview) {
     var self = {
         'x': 0,
         'y': 0,
-        'type': 'shrine',
+        'type': 'button',
         'width': 150,
         'height': 150,
-        'done': false,
-        'activated': false,
         'boardPreview': boardPreview,
         'update': function (character) {
         },
@@ -369,6 +379,25 @@ function adventureBoardPreview(boardPreview) {
         },
         'helpMethod': function () {
             return "<b>Divine Blessing</b><hr><p>Click on this Jewel Board Augmentation to preview adding it to this hero's Jewel Board.</p><p>A hero must augment their Jewel Board to learn new abilities and Level Up</p>";
+        }
+    };
+    return self;
+}
+
+function iconButton(iconSource, width, height, onClick) {
+    var self = {
+        'x': 0,
+        'y': 0,
+        'type': 'button',
+        'width': width,
+        'height': height,
+        'update': function (character) {
+            self.left = x - width / 2;
+            self.top = y - height / 2;
+        },
+        'onClick': onClick,
+        'draw': function (character) {
+            drawImage(mainContext, iconSource.image, iconSource, self);
         }
     };
     return self;
