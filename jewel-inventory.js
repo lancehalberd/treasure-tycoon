@@ -783,17 +783,20 @@ function sortJewelDivs(sortFunction) {
 
 $('.js-jewelSortRuby').on('click', function () {
     sortJewelDivs(function(jewelA, jewelB) {
-        return jewelB.components[0] - jewelA.components[0];
+        return jewelB.components[0] / (jewelB.components[0] + jewelB.components[1] + jewelB.components[2])
+            - jewelA.components[0] / (jewelA.components[0] + jewelA.components[1] + jewelA.components[2]);
     });
 });
 $('.js-jewelSortEmerald').on('click', function () {
     sortJewelDivs(function(jewelA, jewelB) {
-        return jewelB.components[1] - jewelA.components[1];
+        return jewelB.components[1] / (jewelB.components[0] + jewelB.components[1] + jewelB.components[2])
+            - jewelA.components[1] / (jewelA.components[0] + jewelA.components[1] + jewelA.components[2]);
     });
 });
 $('.js-jewelSortSaphire').on('click', function () {
     sortJewelDivs(function(jewelA, jewelB) {
-        return jewelB.components[2] - jewelA.components[2];
+        return jewelB.components[2] / (jewelB.components[0] + jewelB.components[1] + jewelB.components[2])
+            - jewelA.components[2] / (jewelA.components[0] + jewelA.components[1] + jewelA.components[2]);
     });
 });
 
