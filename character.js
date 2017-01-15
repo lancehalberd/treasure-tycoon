@@ -711,7 +711,7 @@ function setSelectedCharacter(character) {
     $('.js-jewelBonuses .js-content').empty().append(bonusSourceHelpText(character.jewelBonuses, character.adventurer));
     centerMapOnLevel(map[character.currentLevelKey]);
     updateAdventureButtons();
-    updateConfirmSkillButton();
+    updateConfirmSkillConfirmationButtons();
     updateEquipableItems();
 }
 

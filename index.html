@@ -144,7 +144,10 @@
         </div><div class="js-jewelInventory jewel-inventory"></div></div><div class="js-jewelColumn displayColumn js-jewelContext">
             <div class="js-jewelBoard jewelBoard">
                 <canvas class="js-canvas js-skillCanvas" width="320" height="320"></canvas>
-                <button class="js-confirmSkill confirmSkill" helptext="Finalize augmentation and level this character." style="display: none;">Apply</button>
+                <div class="js-augmentConfirmationButtons augmentConfirmationButtons">
+                    <button class="js-confirmSkill confirmSkill" helptext="Finalize augmentation"><span class="icon confirm"></span></button>
+                    <button class="js-cancelSkill cancelSkill" helptext="Cancel this augmentation"><span class="icon cancel"></span></button>
+                </div>
             </div>
             <div class="js-jewelPanel infoPanel jewelCrafting">
                 <div class="panelTitle" style="text-align: center;">Altar of Creation</div>

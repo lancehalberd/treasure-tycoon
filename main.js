@@ -497,8 +497,8 @@ function updateAdventureButtons() {
 function canRecall(character) {
     return character.area && character.waveIndex < character.area.waves.length;
 }
-function updateConfirmSkillButton() {
-    $('.js-confirmSkill').toggle(!!state.selectedCharacter.board.boardPreview);
+function updateConfirmSkillConfirmationButtons() {
+    $('.js-augmentConfirmationButtons').toggle(!!state.selectedCharacter.board.boardPreview);
 }
 $('.js-charactersBox').on('click', '.js-character', function () {
     setSelectedCharacter($(this).data('character'));

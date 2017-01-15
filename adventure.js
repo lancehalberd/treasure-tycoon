@@ -7,7 +7,6 @@ function startArea(character, index) {
         character.levelCompleted = false;
         character.board.boardPreview = null;
         drawBoardBackground(character.boardContext, character.board);
-        updateConfirmSkillButton();
     }
     character.currentLevelKey = index;
     var levelCompleted = ifdefor(character.divinityScores[index], 0) !== 0;

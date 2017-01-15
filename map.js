@@ -557,10 +557,15 @@ $('body').on('click', '.js-confirmSkill', function (event) {
     character.board.boardPreview = null;
     drawBoardBackground(character.boardContext, character.board);
     gainLevel(character.adventurer);
-    updateConfirmSkillButton();
-    finishShrine(character);
-    showContext('adventure');
+    updateConfirmSkillConfirmationButtons();
     saveGame();
+    setTimeout(function () {
+        showContext('adventure');
+        finishShrine(character);
+    }, 500);
+});
+$('body').on('click', '.js-cancelSkill', function (event) {
+    showContext('adventure');
 });
 function unlockMapLevel(levelKey) {
     state.visibleLevels[levelKey] = true;

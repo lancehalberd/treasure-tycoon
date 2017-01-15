@@ -360,12 +360,11 @@ function adventureBoardPreview(boardPreview) {
             return false;
         },
         'onClick': function (character) {
-            console.log("Clicked a board augmentation!");
             centerShapesInRectangle(self.boardPreview.fixed.map(jewelToShape).concat(self.boardPreview.spaces), rectangle(0, 0, character.boardCanvas.width, character.boardCanvas.height));
             snapBoardToBoard(self.boardPreview, character.board);
             character.board.boardPreview = self.boardPreview;
             // This will show the confirm skill button if this character is selected.
-            updateConfirmSkillButton();
+            updateConfirmSkillConfirmationButtons();
             showContext('jewel');
         },
         'draw': function (character) {
@@ -373,7 +372,7 @@ function adventureBoardPreview(boardPreview) {
             // and displaying it in the adventure screen will mess up the display of it on the character's board. I think this will be okay
             // since they can't look at both screens at once.
             character.board.boardPreview = null;
-            updateConfirmSkillButton();
+            updateConfirmSkillConfirmationButtons();
             centerShapesInRectangle(self.boardPreview.fixed.map(jewelToShape).concat(self.boardPreview.spaces), rectangle(self.x - character.cameraX - 5, groundY - self.y -5, 10, 10));
             drawBoardPreview(mainContext, [0, 0], self.boardPreview, true);
         },

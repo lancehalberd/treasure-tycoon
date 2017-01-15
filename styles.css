@@ -296,10 +296,13 @@ button {
     position: relative;
     background-color: skyblue;
 }
-.confirmSkill {
+.augmentConfirmationButtons {
     position: absolute;
-    right: 25px;
-    top: 2px;
+    right: 15px;
+    bottom: 15px;
+}
+.augmentConfirmationButtons button {
+    margin-left: 5px;
 }
 
 .equipment > .head {
@@ -927,6 +930,23 @@ select {
     width: 16px;
     height: 16px;
     background-position: -102px -40px;
+}
+
+
+.icon.confirm {
+    background-image: url('gfx/militaryIcons.png');
+    background-size: 406px 410px;
+    width: 32px;
+    height: 32px;
+    background-position: -136px -182px;
+}
+
+.icon.cancel {
+    background-image: url('gfx/militaryIcons.png');
+    background-size: 406px 410px;
+    width: 32px;
+    height: 32px;
+    background-position: -102px -182px;
 }
 
 /* 'game-icons.png' from http://game-icons.net/about.html */
