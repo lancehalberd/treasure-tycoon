@@ -639,7 +639,7 @@ $(document).on('keydown', function(event) {
     if (!editingMap && !editingLevel && event.which === 67) { // 'c'
         pasteCharacterToClipBoard(state.selectedCharacter);
     }
-    if (event.which === 69) { // 'e'
+    if (window.location.search.substr(1) === 'edit' && event.which === 69) { // 'e'
         if (currentContext !== 'adventure' || state.selectedCharacter.area) {
             return;
         }
@@ -655,7 +655,7 @@ $(document).on('keydown', function(event) {
     if (editingMap && event.which === 70) { // 'f' float
         distributingMapNodes = !distributingMapNodes;
     }
-    if (event.which === 76) { // 'l'
+    if (window.location.search.substr(1) === 'edit' && event.which === 76) { // 'l'
         if (currentMapTarget && currentMapTarget.levelKey) {
             state.selectedCharacter.currentLevelKey = currentMapTarget.levelKey;
             if (!state.selectedCharacter.completionTime) {

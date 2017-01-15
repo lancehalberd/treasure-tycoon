@@ -510,11 +510,14 @@ $(document).on('keydown', function(event) {
             });
         }
     }
-    if (!editingLevel && event.which == 68 && event.shiftKey) { // 'd'
+    if (window.location.search.substr(1) === 'edit' && !editingLevel && event.which == 68 && event.shiftKey) { // 'd'
         gain('coins', 1000);
         gain('anima', 1000);
         $.each(itemsByKey, function (key, item) {
-            item.crafted = true;
+            state.craftedItems[key] |= CRAFTED_NORMAL;
+            if (item.unique) {
+                state.craftedItems[key] |= CRAFTED_UNIQUE;
+            }
         });
         unlockItemLevel(73);
         state.characters.forEach(function (character) {
@@ -532,18 +535,18 @@ $(document).on('keydown', function(event) {
         if (item) equipItem(actor, item);
         return;
     }
-    if (event.which == 76) { // 'l'
+    if (window.location.search.substr(1) === 'edit' && event.which == 76) { // 'l'
         if (overCraftingItem) {
-            overCraftingItem.crafted = true;
-            var item = makeItem(overCraftingItem, craftingLevel);
+            state.craftedItems[overCraftingItem.key] |= CRAFTED_NORMAL;
+            var item = makeItem(overCraftingItem, overCraftingItem.level);
             updateItem(item);
             $('.js-inventory').prepend(item.$item);
             if (item.base.unique) {
-                item = makeItem(overCraftingItem, craftingLevel);
+                item = makeItem(overCraftingItem, overCraftingItem.level);
                 makeItemUnique(item);
                 updateItem(item);
                 $('.js-inventory').prepend(item.$item);
-                overCraftingItem.craftedUnique = true;
+                state.craftedItems[overCraftingItem.key] |= CRAFTED_UNIQUE;
             }
             $('.js-inventorySlot').hide();
             lastCraftedItem = overCraftingItem;
