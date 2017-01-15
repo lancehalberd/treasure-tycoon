@@ -197,14 +197,14 @@ function drawMap() {
             context.fillStyle = 'white';
             context.font = '10px sans-serif';
             context.textAlign = 'center'
-            context.textBaseline = null;
+            context.textBaseline = 'middle';
             //context.fillText(levelData.coords.map(function (number) { return number.toFixed(0);}).join(', '), levelData.left + 20, levelData.top + 45);
-            context.fillText(levelData.level + ' ' + levelData.name, levelData.left + 20, levelData.top + 30);
+            context.fillText(levelData.level + ' ' + levelData.name, levelData.left + 20, levelData.top + 27);
             if (levelData.skill) {
                 context.fillStyle = new Vector(levelData.coords).dotProduct(camera.forward) >= 0 ? 'red' : 'black';
                 context.fillRect(levelData.left - 30, levelData.top + 34, 100, 15);
                 context.fillStyle = 'white';
-                context.fillText(levelData.skill, levelData.left + 20, levelData.top + 45);
+                context.fillText(levelData.skill, levelData.left + 20, levelData.top + 41);
             }
             var skill = abilities[levelData.skill];
             if (skill) drawAbilityIcon(context, getAbilityIconSource(skill, shrineSource), levelData.shrine);
@@ -248,7 +248,7 @@ function drawMap() {
         context.fillStyle = '#fff';
         context.font = 'bold 16px sans-serif';
         context.textAlign = 'center'
-        context.textBaseline = null;
+        context.textBaseline = 'middle';
         context.fillText(levelData.level, levelData.left + 20, levelData.top + 32);
         if (divinityScore > 0) {
             context.fillStyle = 'black';
@@ -256,7 +256,7 @@ function drawMap() {
             context.fillStyle = 'white';
             context.font = '10px sans-serif';
             context.textAlign = 'center'
-            context.fillText(divinityScore.abbreviate(), levelData.left + 20, levelData.top + 45);
+            context.fillText(divinityScore.abbreviate(), levelData.left + 20, levelData.top + 42);
             if (divinityScore >= Math.round(difficultyBonusMap.hard * 1.2 * baseDivinity(levelData.level))) {
                 source = goldSource;
             } else if (divinityScore >= Math.round(baseDivinity(levelData.level))) {
