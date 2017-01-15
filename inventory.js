@@ -394,7 +394,7 @@ function applyDragResults() {
     $('.js-equipment .js-' + item.base.slot).each(function (index, element) {
         if (!collision($dragHelper, $(element))) return true;
         hit = true;
-        equipItem(state.selectedCharacter, item)
+        equipItem(state.selectedCharacter.adventurer, item)
         return false;
     });
     if (!hit) {
