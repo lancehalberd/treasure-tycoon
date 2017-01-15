@@ -95,6 +95,8 @@ function initializeGame() {
     }
 }
 var frameMilliseconds = 20;
+var homeSource = {'image': requireImage('gfx/nielsenIcons.png'), 'left': 32, 'top': 128, 'width': 32, 'height': 32};
+var shrineSource = {'image': requireImage('gfx/militaryIcons.png'), 'left': 102, 'top': 125, 'width': 16, 'height': 16};
 function mainLoop() {
     // Initially we don't do any of the main game logic until preloading finishes
     // then we initialize the game and start running the main game loop.
@@ -142,6 +144,14 @@ function mainLoop() {
         //character.characterContext.fillStyle = 'white';
         character.characterContext.clearRect(0, 0, 32, 64);
         character.characterContext.drawImage(character.adventurer.personCanvas, frame * 96, 0 , 96, 64, -32, -10, 96, 64);
+        character.characterContext.globalAlpha = 1;
+        if (state.selectedCharacter !== character) {
+            if (ifdefor(character.isStuckAtShrine)) {
+                drawImage(character.characterContext, shrineSource.image, shrineSource, rectangle(0, 0, 16, 16));
+            } else if (!character.area) {
+                drawImage(character.characterContext, homeSource.image, homeSource, rectangle(0, 0, 16, 16));
+            }
+        }
     }
     if (currentContext === 'adventure') {
         if (editingLevel && !testingLevel) {

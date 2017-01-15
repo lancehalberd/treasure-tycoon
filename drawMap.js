@@ -183,7 +183,6 @@ function drawMap() {
         context.restore();
     });
     // Draw treasure chests on each node.
-    var shrineSource = {'image': images['gfx/militaryIcons.png'], 'left': 102, 'top': 125, 'width': 16, 'height': 16};
     var checkSource = {'image': images['gfx/militaryIcons.png'], 'left': 68, 'top': 90, 'width': 16, 'height': 16};
     var bronzeSource = {'image': images['gfx/militaryIcons.png'], 'left': 102, 'top': 40, 'width': 16, 'height': 16};
     var silverSource = {'image': images['gfx/militaryIcons.png'], 'left': 85, 'top': 40, 'width': 16, 'height': 16};

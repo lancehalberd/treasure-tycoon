@@ -259,6 +259,10 @@ function updateActorDimensions(actor, index) {
     return true;
 }
 function moveActor(actor, delta) {
+    if (ifdefor(actor.character.isStuckAtShrine)) {
+        actor.walkFrame = 0;
+        return;
+    }
     if (actor.target && actor.target.pull) {
         actor.target = null;
     }

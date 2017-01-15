@@ -7,16 +7,14 @@ function loadImage(source, callback) {
         callback();
     };
     images[source].src = source + '?v=' + assetVersion;
+    return images[source];
 }
 
-var imagesToLoad = {};
 var numberOfImagesLeftToLoad = 0;
 function requireImage(imageFile) {
-    if (images[imageFile] || imagesToLoad[imageFile]) return;
-    imagesToLoad[imageFile] = true;
+    if (images[imageFile]) return images[imageFile];
     numberOfImagesLeftToLoad++;
-    loadImage(imageFile, function () {
-        delete imagesToLoad[imageFile];
+    return loadImage(imageFile, function () {
         numberOfImagesLeftToLoad--;
     });
 }

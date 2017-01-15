@@ -260,11 +260,7 @@ function abilityShrine() {
         'done': false,
         'activated': false,
         'update': function (character) {
-            if (self.done) return;
-            if (self.activated)  {
-                character.adventurer.stunned = character.adventurer.time + 1;
-                return;
-            }
+            if (self.done || self.activated) return;
             if (character.adventurer.x + character.adventurer.width < self.x) return;
             // Call complete level before checking the shrine so they can use divinity gained from this level
             // to activate the shrine.
@@ -320,6 +316,7 @@ function abilityShrine() {
             skipButton.y = 112;
             character.objects.push(skipButton);
             self.activated = true;
+            character.isStuckAtShrine = true;
         },
         'draw': function (character) {
             var level = map[character.currentLevelKey];
@@ -327,7 +324,6 @@ function abilityShrine() {
                 return;
             }
             var skill = abilities[level.skill];
-            var shrineSource = {'image': images['gfx/militaryIcons.png'], 'left': 102, 'top': 125, 'width': 16, 'height': 16};
             drawImage(mainContext, shrineSource.image,
                 shrineSource, {'left': self.x - 64 - character.cameraX, 'top': groundY - self.y - 128, 'width': 128, 'height': 128});
         },
@@ -347,7 +343,7 @@ function finishShrine(character) {
             object.done = true;
         }
     }
-    character.adventurer.stunned = 0;
+    character.isStuckAtShrine = false;
 }
 
 function adventureBoardPreview(boardPreview) {

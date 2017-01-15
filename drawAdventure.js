@@ -172,14 +172,13 @@ function drawActor(actor) {
     var y = top - 5;
     drawEffectIcons(actor, x, y);
     if (!actor.isDead && actor.stunned) {
-        var shrineSource = {'left': 102, 'top': 125, 'width': 16, 'height': 16};
         var target =  {'left': 0, 'top': 0, 'width': shrineSource.width, 'height': shrineSource.height}
         for (var i = 0; i < 3; i++ ) {
             var theta = 2 * Math.PI * (i + 3 * actor.time) / 3;
             var scale = ifdefor(actor.scale, 1);
             target.left = left + (actor.width - shrineSource.width) / 2 + Math.cos(theta) * 30;
             target.top = top - 5 + Math.sin(theta) * 10;
-            drawImage(context, images['gfx/militaryIcons.png'], shrineSource, target);
+            drawImage(context, shrineSource.image, shrineSource, target);
         }
     }
 }
