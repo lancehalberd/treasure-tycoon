@@ -171,6 +171,7 @@ $('body').on('mousemove', '.js-jewel', function (event) {
     if (draggedJewel || $dragHelper || draggingBoardJewel) {
         return;
     }
+    updateMousePosition(event);
     overJewel = null;
     overVertex = null;
     var jewel = $(this).data('jewel');
@@ -178,12 +179,14 @@ $('body').on('mousemove', '.js-jewel', function (event) {
     var relativePosition = relativeMousePosition(jewel.canvas);
     if (isPointInPoints(relativePosition, points)) {
         overJewel = jewel;
+        checkToShowJewelToolTip();
         return;
     }
     for (var j = 0; j < points.length; j++) {
         if (distanceSquared(points[j], relativePosition) < 25) {
             overJewel = jewel;
             overVertex = points[j].concat();
+            checkToShowJewelToolTip();
             return;
         }
     }
@@ -192,6 +195,7 @@ $('body').on('mousemove', '.js-skillCanvas', function (event) {
     if (draggedJewel || $dragHelper || draggingBoardJewel) {
         return;
     }
+    updateMousePosition(event);
     overJewel = null;
     overVertex = null;
     var character = $(this).data('character');
@@ -202,6 +206,7 @@ $('body').on('mousemove', '.js-skillCanvas', function (event) {
         var points = jewel.shape.points;
         if (isPointInPoints(relativePosition, points)) {
             overJewel = jewel;
+            checkToShowJewelToolTip();
             return;
         }
         // Disable rotation on the jewel board, it is ambiguous which vertex will be grabbed.
@@ -222,12 +227,14 @@ $('body').on('mousemove', '.js-skillCanvas', function (event) {
         var points = jewel.shape.points;
         if (isPointInPoints(relativePosition, points)) {
             overJewel = jewel;
+            checkToShowJewelToolTip();
             return;
         }
         for (var j = 0; j < points.length; j++) {
             if (distanceSquared(points[j], relativePosition) < 25) {
                 overJewel = jewel;
                 overVertex = points[j].concat();
+                checkToShowJewelToolTip();
                 return;
             }
         }
