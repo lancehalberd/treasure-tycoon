@@ -11,6 +11,7 @@ function equipItem(actor, item, update) {
     item.$item.detach();
     if (state.selectedCharacter && state.selectedCharacter.adventurer === actor) {
         $('.js-equipment .js-' + item.base.slot).append(item.$item);
+        $('.js-equipment .js-' + item.base.slot + ' .js-placeholder').hide();
     }
     item.actor = actor;
     actor.equipment[item.base.slot] = item;
@@ -54,6 +55,7 @@ function unequipSlot(actor, slotKey, update) {
             updateTags(actor, recomputActorTags(actor), true);
             if (state.selectedCharacter === actor.character) {
                 refreshStatsPanel(actor.character, $('.js-characterColumn .js-stats'));
+                $('.js-equipment .js-' + slotKey + ' .js-placeholder').show();
             }
             updateAdventurerGraphics(actor);
             updateOffhandDisplay();
@@ -105,14 +107,14 @@ function makeItem(base, level) {
     item.$item.data('item', item);
     item.$item.attr('helptext', '-').data('helpMethod', getItemHelpText);
     if (state.selectedCharacter) {
-        item.$item.toggleClass('equipable', item.level <= state.selectedCharacter.adventurer.level);
+        item.$item.toggleClass('equipable', canEquipItem(state.selectedCharacter.adventurer, item));
     }
     return item;
 }
 function updateEquipableItems() {
     $('.js-item').each(function () {
         var item = $(this).data('item');
-        $(this).toggleClass('equipable', item.level <= state.selectedCharacter.adventurer.level);
+        $(this).toggleClass('equipable', canEquipItem(state.selectedCharacter.adventurer, item));
     })
 }
 function updateItem(item) {

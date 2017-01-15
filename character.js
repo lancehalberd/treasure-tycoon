@@ -704,6 +704,7 @@ function setSelectedCharacter(character) {
         if (equipment) {
             $('.js-equipment .js-' + type).append(equipment.$item);
         }
+        $('.js-equipment .js-' + type + ' .js-placeholder').toggle(!equipment);
     });
     // update stats panel.
     refreshStatsPanel(character, $('.js-characterColumn .js-stats'));

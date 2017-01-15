@@ -939,6 +939,10 @@ select {
     background-position: -102px -40px;
 }
 
+.itemSlot .icon.placeholder {
+    opacity: .4;
+    margin: 8px;
+}
 
 .icon.confirm {
     background-image: url('gfx/militaryIcons.png');
