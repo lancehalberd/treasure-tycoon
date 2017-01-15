@@ -565,9 +565,13 @@ function applyAttackToTarget(attackStats, target) {
     }
     if (totalDamage > 0) {
         var percentPhysical = damage / totalDamage;
+        var percentMagic = 1 - percentPhysical;
+        var percentOffset = Math.min(.9 - percentPhysical, .9 - percentMagic);
+        percentPhysical += percentOffset;
+        percentMagic += percentOffset;
         var critBonus = attackStats.isCritical ? 30 : 0;
         var r = toHex(Math.floor(220 * percentPhysical) + critBonus);
-        var b = toHex(Math.floor(220 * (1 - percentPhysical)) + critBonus);
+        var b = toHex(Math.floor(220 * percentMagic) + critBonus);
         var g = toHex(critBonus * 5);
         hitText.color = "#" + r + g + b;
         var cull = Math.max(ifdefor(attack.cull, 0), imprintedSpell ? ifdefor(imprintedSpell.cull, 0) : 0);
