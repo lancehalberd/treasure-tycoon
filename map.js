@@ -433,6 +433,7 @@ function displayAreaMenu() {
             }
             $medal.show();
         }
+        $('.js-areaMenu .js-hardDifficulty').toggle(!!state.completedLevels[selectedLevel.levelKey]);
         $('.js-areaMenu .js-challengeDifficulty').hide();
         if (times['hard']) {
             $('.js-areaMenu .js-endlessDifficulty').text('Endless -' + getEndlessLevel(state.selectedCharacter, selectedLevel) + '-').show();
@@ -508,6 +509,7 @@ function completeLevel(character) {
         gain('fame', level.level);
         // Unlock the next areas.
         var levelData = map[character.currentLevelKey];
+        state.completedLevels[character.currentLevelKey] = true;
         levelData.unlocks.forEach(function (levelKey) {
             unlockMapLevel(levelKey);
         });

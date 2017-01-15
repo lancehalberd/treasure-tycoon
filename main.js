@@ -15,6 +15,7 @@ function points(type, value) {
 var fps = 6;
 var state = {
     selectedCharacter: null,
+    completedLevels: {},
     visibleLevels: {}, // {'grove': true, 'orchard': true}
     characters: [],
     fame: 0,

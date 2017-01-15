@@ -18,7 +18,7 @@ function exportState(state) {
     data.coins = state.coins;
     data.anima = state.anima;
     data.characters = state.characters.map(exportCharacter);
-    data.visibleLevels = copy(state.visibleLevels);
+    data.completedLevels = copy(state.completedLevels);
     data.maxCraftingLevel = Math.min(80, state.maxCraftingLevel);
     data.craftingXOffset = state.craftingXOffset;
     data.craftedItems = state.craftedItems;
@@ -83,7 +83,8 @@ function importState(stateData) {
     // Clean up the last slot.
     $slot.data('character', null).remove();
     state.characters = [];
-    state.visibleLevels = copy(ifdefor(stateData.visibleLevels, {}));
+    state.completedLevels = copy(ifdefor(stateData.completedLevels, {}));
+    state.visibleLevels = {};
     state.maxCraftingLevel = stateData.maxCraftingLevel;
     state.craftingXOffset = ifdefor(stateData.craftingXOffset, 0)
     state.craftedItems = ifdefor(stateData.craftedItems, {});
@@ -103,13 +104,20 @@ function importState(stateData) {
             if (isNaN(character.divinityScores[levelKey])) {
                 delete character.divinityScores[levelKey];
             }
-            state.visibleLevels[levelKey] = true;
-            for (var nextLevelKey of level.unlocks) {
-                state.visibleLevels[nextLevelKey] = true;
-            }
+            state.completedLevels[levelKey] = true;
         }
         $('.js-charactersBox').append(character.$characterCanvas);
     });
+    for (var completedLevelKey in state.completedLevels) {
+        var level = map[completedLevelKey];
+        if (!level) {
+            delete state.completedLevels[completedLevelKey];
+        }
+        state.visibleLevels[completedLevelKey] = true;
+        for (var nextLevelKey of level.unlocks) {
+            state.visibleLevels[nextLevelKey] = true;
+        }
+    }
 
     stateData.jewels.forEach(function (jewelData) {
         var jewel = importJewel(jewelData);
