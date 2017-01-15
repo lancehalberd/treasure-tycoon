@@ -457,17 +457,15 @@ function applyAttackToTarget(attackStats, target) {
     }
     var distance = attackStats.distance;
     var character = target.character;
-    var hitText = {x: target.x + 32, y: groundY - target.height - ifdefor(target.y, 0) + 10, color: 'red', 'vx': -(Math.random() * 3 + 2) * target.direction, 'vy': -5};
+    var hitText = {x: target.x + 32, y: groundY - target.height - ifdefor(target.y, 0) + 10, color: 'grey', 'vx': -(Math.random() * 3 + 2) * target.direction, 'vy': -5};
     if (target.invulnerable) {
         hitText.value = 'invulnerable';
-        hitText.color = 'blue';
         hitText.fontSize = 15;
         appendTextPopup(character, hitText);
         return false;
     }
     var multiplier = ifdefor(attack.rangeDamage) ? (1 + attack.rangeDamage * distance / 32) : 1;
     if (attackStats.isCritical) {
-        hitText.color = 'yellow';
         hitText.fontSize = 30;
     }
     var damage = Math.floor(attackStats.damage * multiplier * effectiveness);
@@ -500,7 +498,6 @@ function applyAttackToTarget(attackStats, target) {
                 hitText.value = 'miss (' + damageOnMiss + ')';
             }
             // Target has evaded the attack.
-            hitText.color = 'blue';
             hitText.font = 15;
             appendTextPopup(character, hitText);
             attackStats.evaded = true;
@@ -567,6 +564,12 @@ function applyAttackToTarget(attackStats, target) {
         }
     }
     if (totalDamage > 0) {
+        var percentPhysical = damage / totalDamage;
+        var critBonus = attackStats.isCritical ? 30 : 0;
+        var r = toHex(Math.floor(220 * percentPhysical) + critBonus);
+        var b = toHex(Math.floor(220 * (1 - percentPhysical)) + critBonus);
+        var g = toHex(critBonus * 5);
+        hitText.color = "#" + r + g + b;
         var cull = Math.max(ifdefor(attack.cull, 0), imprintedSpell ? ifdefor(imprintedSpell.cull, 0) : 0);
         if (cull > 0 && target.health / target.maxHealth <= cull) {
             target.health = 0;
@@ -616,7 +619,6 @@ function applyAttackToTarget(attackStats, target) {
         }
     } else {
         hitText.value = 'blocked';
-        hitText.color = 'blue';
         hitText.font = 15;
     }
     appendTextPopup(character, hitText);
