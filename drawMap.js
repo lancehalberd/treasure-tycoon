@@ -249,7 +249,7 @@ function drawMap() {
         context.font = 'bold 16px sans-serif';
         context.textAlign = 'center'
         context.textBaseline = 'middle';
-        context.fillText(levelData.level, levelData.left + 20, levelData.top + 32);
+        context.fillText(levelData.level, levelData.left + 20, levelData.top + 26);
         if (divinityScore > 0) {
             context.fillStyle = 'black';
             context.fillRect(levelData.left, levelData.top + 34, 40, 15);
