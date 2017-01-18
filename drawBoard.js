@@ -63,8 +63,7 @@ function drawBoardJewelsProper(context, lightSource, board, mouseIsOverBoard) {
         var iconSource = getAbilityIconSource(jewel.ability);
         if (mouseIsOverBoard && iconSource) {
             drawAbilityIcon(context, iconSource,
-                {'left': jewel.shape.center[0] - iconSource.width / 3, 'top': jewel.shape.center[1] - iconSource.height / 3,
-                'width': iconSource.width * 2 / 3, 'height': iconSource.height * 2 / 3});
+                {'left': jewel.shape.center[0] - 10, 'top': jewel.shape.center[1] - 10, 'width': 20, 'height': 20});
         }
     }
     if (board.boardPreview) {
@@ -99,8 +98,7 @@ function drawBoardPreview(context, lightSource, boardPreview, showIcon) {
     var iconSource = getAbilityIconSource(fixedJewel.ability);
     if (showIcon && iconSource) {
         drawAbilityIcon(context, iconSource,
-            {'left': fixedJewel.shape.center[0] - iconSource.width / 3, 'top': fixedJewel.shape.center[1] - iconSource.height / 3,
-            'width': iconSource.width * 2 / 3, 'height': iconSource.height * 2 / 3});
+                {'left': fixedJewel.shape.center[0] - 10, 'top': fixedJewel.shape.center[1] - 10, 'width': 20, 'height': 20});
     }
     // Fixed jewel on board previews should glow to draw attention to it.
     context.save();

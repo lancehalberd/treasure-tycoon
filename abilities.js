@@ -57,12 +57,11 @@ function tintIcon(imageFile, color) {
     };
 }
 
-function getAbilityIconSource(ability, defaultSource) {
+function getAbilityIconSource(ability) {
     if (!ability) return null;
     var icon = ifdefor(ability.icon);
     if (ability.action) icon = icon || ability.action.icon;
     if (ability.reaction) icon = icon || ability.reaction.icon;
-    if (!icon && !defaultSource) return null;
     if (!icon) icon = 'gfx/496RpgIcons/openScroll.png';
     if (icon.drawImage) return icon;
     return {'image': images[icon], 'left': 0, 'top': 0, 'width': 34, 'height': 34};
@@ -190,7 +189,7 @@ var abilities = {
     //'daggerParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
 'tier1Index': {'name': '------Tier 1------'},
     'jugglerIndex': {'name': '---Juggler---'},
-        'juggler': {'name': 'Juggling', 'icon': 'gfx/496RpgIcons/buffThrown.png', 'bonuses': {'$throwing:attack:chaining': 'Projectiles ricochet between targets until they miss.'}},
+        'juggler': {'name': 'Juggling', 'icon': jobIcon(4, 0), 'bonuses': {'$throwing:attack:chaining': 'Projectiles ricochet between targets until they miss.'}},
         'sap': {'name': 'Sap', 'icon': jobIcon(4, 0), 'bonuses': {'+slowOnHit': .1, '+healthGainOnHit': 1}},
         'dodge': {'name': 'Dodge', 'bonuses': {'+evasion': 2}, 'reaction': skills.dodge},
         'acrobatics': {'name': 'Acrobatics', 'icon': jobIcon(3, 0), 'bonuses': {'+evasion': 2, '-dodge:cooldown': 2, '*dodge:distance': 2}},
