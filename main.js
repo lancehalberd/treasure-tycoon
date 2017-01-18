@@ -140,16 +140,18 @@ function mainLoop() {
             }
         }
         var frame = arrMod(character.adventurer.source.walkFrames, Math.floor(now() * fps / 1000));
+        character.characterContext.clearRect(0, 0, 40, 64);
         if (state.selectedCharacter === character) {
             previewContext.clearRect(0, 0, 64, 128);
             previewContext.drawImage(character.adventurer.personCanvas, frame * 96, 0 , 96, 64, -64, -20, 192, 128);
             character.characterContext.globalAlpha = 1;
         } else {
-            character.characterContext.globalAlpha = .3;
+            character.characterContext.globalAlpha = .5;
         }
+        var jobSource = character.adventurer.job.iconSource;
+        drawImage(character.characterContext, jobSource.image, jobSource, {'left': 16, 'top': 0, 'width': 20, 'height': 20});
         //character.characterContext.fillStyle = 'white';
-        character.characterContext.clearRect(0, 0, 32, 64);
-        character.characterContext.drawImage(character.adventurer.personCanvas, frame * 96, 0 , 96, 64, -32, -10, 96, 64);
+        character.characterContext.drawImage(character.adventurer.personCanvas, frame * 96, 0 , 96, 64, -32, -2, 96, 64);
         character.characterContext.globalAlpha = 1;
         if (state.selectedCharacter !== character) {
             if (ifdefor(character.isStuckAtShrine)) {

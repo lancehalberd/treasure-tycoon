@@ -251,7 +251,7 @@ button {
     pointer-events: auto;
 }
 .stats {
-    padding-top: 20px; /* Leave space for "Level X Job Name" abs positioned at top */
+    padding-top: 25px; /* Leave space for "Level X Job Name" abs positioned at top */
     padding-left: 65px; /* Leave space for preview image on the left */
 }
 .triStatBox {
@@ -696,7 +696,7 @@ select {
 .characterBox {
     position: absolute;
     pointer-events: auto;
-    bottom: -37px;
+    bottom: -30px;
     left: 160px;
     padding-left: 5px;
     /* http://subtlepatterns.com/old-map/ */
@@ -748,13 +748,10 @@ select {
     background-image: url('gfx/oldMap.png');
     background-color: burlywood;
 }
-.heroApplication canvas {
-    opacity: .6;
-}
 
 .hideOnBottom {
     position: relative;
-    bottom: -275px;
+    bottom: -265px;
     -webkit-transition: bottom .5s;
     transition: bottom .5s;
 }

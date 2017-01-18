@@ -46,7 +46,11 @@ function setHeroApplication($applicationPanel, character) {
     var applicantPreviewContext = $applicationPanel.find('.js-previewCanvas')[0].getContext("2d");
     applicantPreviewContext.imageSmoothingEnabled = false;
     applicantPreviewContext.clearRect(0, 0, 64, 128);
-    applicantPreviewContext.drawImage(character.adventurer.personCanvas, character.adventurer.source.walkFrames[0] * 96, 0, 96, 64, -64, -20, 192, 128);
+    applicantPreviewContext.globalAlpha = 1;
+    var jobSource = character.adventurer.job.iconSource;
+    drawImage(applicantPreviewContext, jobSource.image, jobSource, {'left': 0, 'top': 0, 'width': 32, 'height': 32});
+    applicantPreviewContext.globalAlpha = .6;
+    applicantPreviewContext.drawImage(character.adventurer.personCanvas, character.adventurer.source.walkFrames[0] * 96, 0, 96, 64, -64, 0, 192, 128);
     drawBoardJewels(character, $applicationPanel.find('.js-skillCanvas')[0]);
 }
 
