@@ -215,3 +215,13 @@ function drawAbilityIcon(context, icon, target) {
     // Default icon style is: {'image': images[icon], 'left': 0, 'top': 0, 'width': 34, 'height': 34};
     drawImage(context, icon.image, icon, target);
 }
+
+function jobIcon(column, row) {
+    return {'image': requireImage('gfx/jobIcons.png'), 'width': 40, 'height': 40,
+        'left': column * 40, 'top': row * 40 + (row > 0 ? 1 : 0),
+        'drawImage': drawJobIcon};
+}
+function drawJobIcon(context, target) {
+    drawImage(context, this.image, this, target);
+}
+

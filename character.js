@@ -644,9 +644,6 @@ function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonu
         'iconSource': iconSource
     };
 }
-function jobIcon(column, row) {
-    return {'image': requireImage('gfx/jobIcons.png'), 'width': 40, 'height': 40, 'left': column * 40, 'top': row * 40 + (row > 0 ? 1 : 0)};
-}
 function jobJewels(r,g,b) {
     var base = (r + g + b) * 5;
     return [jewelLoot(['triangle'], [1, 1],

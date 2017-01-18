@@ -62,7 +62,8 @@ function getAbilityIconSource(ability, defaultSource) {
     var icon = ifdefor(ability.icon);
     if (ability.action) icon = icon || ability.action.icon;
     if (ability.reaction) icon = icon || ability.reaction.icon;
-    if (!icon) return ifdefor(defaultSource);
+    if (!icon && !defaultSource) return null;
+    if (!icon) icon = 'gfx/496RpgIcons/openScroll.png';
     if (icon.drawImage) return icon;
     return {'image': images[icon], 'left': 0, 'top': 0, 'width': 34, 'height': 34};
 }
@@ -175,9 +176,9 @@ var abilities = {
     'movementDamage': {'name': 'Movement Damage', 'bonuses': {'%movement:damage': .3, '%movement:critDamage': .3}},
     'movementPrecision': {'name': 'Movement Precision', 'bonuses': {'%movement:accuracy': .3, '%movement:critChance': .3}},
     //'movementParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
-    'minionToughness': {'name': 'Ally Toughness', 'bonuses': {'%minion:maxHealth': .5, '%minion:armor': .3}},
-    'minionDamage': {'name': 'Ally Damage', 'bonuses': {'%minion:damage': .3, '%minion:accuracy': .3}},
-    'minionFerocity': {'name': 'Ally Ferocity', 'bonuses': {'%minion:attackSpeed': .5, '%minion:critChance': .3}},
+    'minionToughness': {'name': 'Ally Toughness', 'icon': jobIcon(4, 2), 'bonuses': {'%minion:maxHealth': .5, '%minion:armor': .3}},
+    'minionDamage': {'name': 'Ally Damage', 'icon': jobIcon(4, 2), 'bonuses': {'%minion:damage': .3, '%minion:accuracy': .3}},
+    'minionFerocity': {'name': 'Ally Ferocity', 'icon': jobIcon(4, 2), 'bonuses': {'%minion:attackSpeed': .5, '%minion:critChance': .3}},
     //'minionParadigmShift': {'name': '', 'bonuses': {'%:': .3, '%:': .3}},
     'magicMagicDamage': {'name': 'Magic Weapon Magic Damage', 'bonuses': {'%magic:weaponMagicDamage': .3, '%magic:accuracy': .3}},
     'magicAttackSpeed': {'name': 'Magic Weapon Attack Speed', 'bonuses': {'%magic:attackSpeed': .2, '%magic:critChance': .2}},
@@ -190,19 +191,19 @@ var abilities = {
 'tier1Index': {'name': '------Tier 1------'},
     'jugglerIndex': {'name': '---Juggler---'},
         'juggler': {'name': 'Juggling', 'icon': 'gfx/496RpgIcons/buffThrown.png', 'bonuses': {'$throwing:attack:chaining': 'Projectiles ricochet between targets until they miss.'}},
-        'sap': {'name': 'Sap', 'icon': 'gfx/496RpgIcons/openScroll.png', 'bonuses': {'+slowOnHit': .1, '+healthGainOnHit': 1}},
+        'sap': {'name': 'Sap', 'icon': jobIcon(4, 0), 'bonuses': {'+slowOnHit': .1, '+healthGainOnHit': 1}},
         'dodge': {'name': 'Dodge', 'bonuses': {'+evasion': 2}, 'reaction': skills.dodge},
-        'acrobatics': {'name': 'Acrobatics', 'icon': 'gfx/496RpgIcons/openScroll.png', 'bonuses': {'+evasion': 2, '-dodge:cooldown': 2, '*dodge:distance': 2}},
+        'acrobatics': {'name': 'Acrobatics', 'icon': jobIcon(3, 0), 'bonuses': {'+evasion': 2, '-dodge:cooldown': 2, '*dodge:distance': 2}},
         'bullseye': {'name': 'Bullseye', 'action': skills.bullseye},
         'bullseyeCritical': {'name': 'Dead On', 'icon': 'gfx/496RpgIcons/target.png', 'bonuses': {'+bullseye:critChance': 1}, 'helpText': 'Bullseye always strikes critically.'},
     'blackbeltIndex': {'name': '---Blackbelt---'},
-        'blackbelt': {'name': 'Martial Arts', 'icon': 'gfx/496RpgIcons/buffFist.png',
+        'blackbelt': {'name': 'Martial Arts', 'icon': jobIcon(0, 1),
             'bonuses': {'*unarmed:damage': 3, '*unarmed:attackSpeed': 1.5, '+unarmed:critChance': .15, '*unarmed:critDamage': 2, '*unarmed:critAccuracy': 2}},
-        'vitality': {'name': 'Vitality', 'icon': 'gfx/496RpgIcons/openScroll.png', 'bonuses': {'+healthRegen': ['{strength}', '/', 10], '+strength': 5}},
-        'counterAttack': {'name': 'Counter Attack', 'icon': 'gfx/496RpgIcons/buffFist.png', 'bonuses': {'+strength': 5}, 'reaction': skills.counterAttack},
-        'counterPower': {'name': 'Improved Counter', 'icon': 'gfx/496RpgIcons/buffFist.png', 'bonuses': {'+strength': 5, '+counterAttack:attackPower': .5, '*counterAttack:accuracy': 1.5}},
-        'counterChance': {'name': 'Heightened Reflexes', 'icon': 'gfx/496RpgIcons/buffFist.png', 'bonuses': {'+dexterity': 5, '+counterAttack:chance': .1}},
-        'dragonPunch': {'name': 'Dragon Punch', 'icon': 'gfx/496RpgIcons/buffFist.png', 'action': skills.dragonPunch},
+        'vitality': {'name': 'Vitality', 'icon': jobIcon(0, 1), 'bonuses': {'+healthRegen': ['{strength}', '/', 10], '+strength': 5}},
+        'counterAttack': {'name': 'Counter Attack', 'icon': jobIcon(0, 1), 'bonuses': {'+strength': 5}, 'reaction': skills.counterAttack},
+        'counterPower': {'name': 'Improved Counter', 'icon': jobIcon(0, 1), 'bonuses': {'+strength': 5, '+counterAttack:attackPower': .5, '*counterAttack:accuracy': 1.5}},
+        'counterChance': {'name': 'Heightened Reflexes', 'icon': jobIcon(0, 1), 'bonuses': {'+dexterity': 5, '+counterAttack:chance': .1}},
+        'dragonPunch': {'name': 'Dragon Punch', 'icon': jobIcon(0, 1), 'action': skills.dragonPunch},
     'priestIndex': {'name': '---Priest---'},
         'priest': {'name': 'Divine Blessing', 'icon': 'gfx/496RpgIcons/abilityDivineBlessing.png', 'bonuses': {'+healOnCast': .1, '+overHealReflection': .5, '+castKnockBack': 9}},
         'heal': {'name': 'Heal', 'bonuses': {'+intelligence': 5}, 'action': skills.heal},
