@@ -162,7 +162,7 @@ var skills = {
                             '++armor': ['{strength}', '/', 10], '++magicBlock': ['{intelligence}', '/', 20],
                             '++block': ['{intelligence}', '/', 10], '++evasion': ['{dexterity}', '/', 10], '+duration': 15})},
                     'Enhance the strength of your armor granting: {$buff}'),
-    'enhanceAbility': genericAction('effect', {'icon': 'gfx/496RpgIcons/auraAbility.png', 'tags': ['spell'], 'target': 'self'}, {'+cooldown': 20, '$buff': buffEffect({}, {
+    'enhanceAbility': genericAction('effect', {'icon': jobIcon(3, 3), 'tags': ['spell'], 'target': 'self'}, {'+cooldown': 20, '$buff': buffEffect({}, {
                             // This buff increases magicPower from magicDamage by 44% since that counts both damage and magicPower.
                             // Making a note here in case I want to change this *damage bonus to *physicalDamage later to balance this.
                             '+%cooldown': -.2, '+*magicPower': 1.2, '+*weaponDamage': 1.2, '+*range': 1.2, '+duration': 5})},

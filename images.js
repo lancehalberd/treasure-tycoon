@@ -38,7 +38,6 @@ var initialImagesToLoad = [
     'gfx/496RpgIcons/abilityShadowClone.png',
     'gfx/496RpgIcons/abilityThrowWeapon.png',
     'gfx/496RpgIcons/abilityVenom.png',
-    'gfx/496RpgIcons/auraAbility.png',
     'gfx/496RpgIcons/auraAttack.png',
     'gfx/496RpgIcons/auraDefense.png',
     'gfx/496RpgIcons/buffAxe.png',
@@ -218,10 +217,9 @@ function drawAbilityIcon(context, icon, target) {
 
 function jobIcon(column, row) {
     return {'image': requireImage('gfx/jobIcons.png'), 'width': 40, 'height': 40,
-        'left': column * 40, 'top': row * 40 + (row > 0 ? 1 : 0),
+        'left': column * 41, 'top': row * 41,
         'drawImage': drawJobIcon};
 }
 function drawJobIcon(context, target) {
     drawImage(context, this.image, this, target);
 }
-
