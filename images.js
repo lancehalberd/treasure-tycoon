@@ -1,5 +1,5 @@
 
-var assetVersion = '0.1';
+var assetVersion = '0.2';
 var images = {};
 function loadImage(source, callback) {
     images[source] = new Image();
