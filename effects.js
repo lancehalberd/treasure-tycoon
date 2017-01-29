@@ -16,8 +16,12 @@ function songEffect(attackStats) {
     var effectedTargets = [];
     var self = {
         'attackStats': attackStats, 'currentFrame': 0, 'done': false,
+        'x': followTarget.x,
+        'y': followTarget.y,
         'update': function (character) {
             self.currentFrame++;
+            self.x = followTarget.x;
+            self.y = followTarget.y;
             if (followTarget.time > endTime || attackStats.source.isDead) {
                 self.done = true;
                 while (effectedTargets.length) removeEffectFromActor(effectedTargets.pop(), self.attackStats.attack.buff, true);
@@ -29,7 +33,7 @@ function songEffect(attackStats) {
             for (var i = 0; i < self.attackStats.source.allies.length; i++) {
                 var target = self.attackStats.source.allies[i];
                 // distance is 1d right now, maybe we should change that?
-                var distance = Math.max(0,  (followTarget.x > target.x) ? (followTarget.x - target.x - target.width) : (target.x - followTarget.x));
+                var distance = getDistance(self, target);
                 if (distance > currentRadius) continue;
                 currentTargets.push(target);
                 var oldIndex = oldTargets.indexOf(target);
@@ -72,21 +76,24 @@ function explosionEffect(attackStats, x, y) {
         throw new Error('Explosion effect called with no area set.');
     }
     var radius = attack.area * ifdefor(attackStats.effectiveness, 1) * 32;
-    var height = radius;
+    var height = radius * 2;
     if (attack.base.height) {
         height = attack.base.height;
     }
     if (attack.base.heightRatio) {
-        height = radius * attack.base.heightRatio;
+        height = radius * 2 * attack.base.heightRatio;
     }
     var self = {
-        'hitTargets': [], 'attack': attack, 'attackStats': attackStats, 'x': x, 'y': y, 'currentFrame': 0, 'done': false,
+        'hitTargets': [], 'attack': attack, 'attackStats': attackStats, 'x': x, 'y': y, 'width': 0, 'height': 0, 'currentFrame': 0, 'done': false,
         'update': function (character) {
             self.currentFrame++;
             if (self.currentFrame > frames + 5) {
                 self.done = true;
             } else {
                 var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
+                self.width = currentRadius * 2;
+                self.height = height * currentRadius / radius;
+                self.height = self.width * currentRadius / radius;
                 // areaCoefficient is the amount of effectiveness lost at the very edge of the radius.
                 // areaCoefficient = 0 means the blast is equally effective everywhere.
                 // areaCoefficient = 1 means the blast has no effect at the edge.
@@ -95,9 +102,8 @@ function explosionEffect(attackStats, x, y) {
                 for (var i = 0; i < self.attackStats.source.enemies.length; i++) {
                     var target = self.attackStats.source.enemies[i];
                     if (target.isDead || self.hitTargets.indexOf(target) >= 0) continue;
-                    // distance is 1d right now, maybe we should change that?
-                    var distance = Math.max(0,  (self.x > target.x) ? (self.x - target.x - target.width) : (target.x - self.x));
-                    if (distance > currentRadius) continue;
+                    var distance = getDistance(self, target);
+                    if (distance > 0) continue;
                     applyAttackToTarget(attackStats, target);
                     // console.log("Hit with effectiveness " + attackStats.effectiveness);
                     self.hitTargets.push(target);
@@ -112,7 +118,7 @@ function explosionEffect(attackStats, x, y) {
             mainContext.beginPath();
             mainContext.save();
             mainContext.translate((self.x - character.cameraX), groundY - self.y);
-            mainContext.scale(1, height / radius);
+            mainContext.scale(1, height / (2 * radius));
             mainContext.arc(0, 0, currentRadius, ifdefor(self.attack.base.minTheta, 0), ifdefor(self.attack.base.maxTheta, 2 * Math.PI));
             mainContext.fill();
             mainContext.restore();
@@ -131,29 +137,36 @@ function fieldEffect(attackStats, followTarget) {
         throw new Error('Field effect called with no area set.');
     }
     var radius = attack.area * ifdefor(attackStats.effectivness, 1) * 32;
-    var height = ifdefor(attack.base.height, radius);
+    var height = ifdefor(attack.base.height, radius * 2);
     var endTime = attackStats.source.time + attack.duration;
     var nextHit = attackStats.source.time + 1 / attack.hitsPerSecond;
     var yOffset = getAttackY(attackStats.source) + ifdefor(attack.base.yOffset, 0);
     var self = {
-        'attackStats': attackStats, 'currentFrame': 0, 'done': false,
+        'attackStats': attackStats,
+        'x': followTarget.x,
+        'y': followTarget.y,
+        'width': radius * 2, 'height': height,
+        'currentFrame': 0, 'done': false,
         'update': function (character) {
             self.currentFrame++;
             if (self.attackStats.source.time > endTime || attackStats.source.isDead) {
                 self.done = true;
                 return;
             }
+            var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
+            self.width = currentRadius * 2;
+            self.x = followTarget.x;
+            self.y = followTarget.y;
+            self.height = height * currentRadius / radius;
             if (self.attackStats.source.time < nextHit) {
                 return;
             }
             nextHit += 1 / attack.hitsPerSecond;
 
-            var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
             var targets = [];
             for (var i = 0; i < self.attackStats.source.enemies.length; i++) {
                 var target = self.attackStats.source.enemies[i];
-                // distance is 1d right now, maybe we should change that?
-                var distance = Math.max(0,  (followTarget.x > target.x) ? (followTarget.x - target.x - target.width) : (target.x - followTarget.x));
+                var distance = getDistance(self, target);
                 if (distance > currentRadius) continue;
                 targets.push(target);
             }
@@ -170,7 +183,7 @@ function fieldEffect(attackStats, followTarget) {
             mainContext.beginPath();
             mainContext.save();
             mainContext.translate((followTarget.x - character.cameraX), groundY - yOffset);
-            mainContext.scale(1, height / currentRadius);
+            mainContext.scale(1, height / (2 * currentRadius));
             mainContext.arc(0, 0, currentRadius, 0, 2 * Math.PI);
             mainContext.fill();
             mainContext.restore();
@@ -204,11 +217,6 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
             self.attackStats.distance = self.distance;
             var hit = false;
             if (attackStats.attack.tags['rain'] >= 0) {
-                //self.vx = tx - self.x;
-                //self.vy = Math.min(self.vy, -self.y);
-                //var distance = Math.sqrt(self.vx * self.vx + self.vy * self.vy);
-                //self.vx *= attackStats.speed / distance;
-                //self.vy *= attackStats.speed / distance;
                 // rain hits when it touches the ground
                 if (self.y <= 0) {
                     self.y = 0;

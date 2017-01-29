@@ -122,7 +122,7 @@ function drawMap() {
                 visibleNodes[levelKey] = levelData;
                 var skill = abilities[levelData.skill];
                 if (skill) {
-                    levelData.shrine = rectangle(levelData.left - 16, levelData.top - 16, 32, 32);
+                    levelData.shrine = rectangle(levelData.left - 20, levelData.top - 20, 40, 40);
                     levelData.shrine.isShrine = true;
                     levelData.shrine.level = levelData;
                 }

@@ -1,5 +1,5 @@
 
-var assetVersion = '0.2';
+var assetVersion = '0.3';
 var images = {};
 function loadImage(source, callback) {
     images[source] = new Image();
@@ -207,12 +207,18 @@ function drawBar(context, x, y, width, height, background, color, percent) {
 
 function drawAbilityIcon(context, icon, target) {
     if (!icon) return;
+    // Don't scale up ability icons.
+    var width = Math.min(icon.width, target.width);
+    var hPadding = (target.width - width) / 2;
+    var height = Math.min(icon.height, target.height);
+    var vPadding = (target.height - height) / 2;
+    var drawTarget = {'left': target.left + Math.ceil(hPadding), 'top': target.top + Math.ceil(vPadding), 'width': width, 'height': height};
     if (icon.drawImage) {
-        icon.drawImage(context, target);
+        icon.drawImage(context, drawTarget);
         return;
     }
     // Default icon style is: {'image': images[icon], 'left': 0, 'top': 0, 'width': 34, 'height': 34};
-    drawImage(context, icon.image, icon, target);
+    drawImage(context, icon.image, icon, drawTarget);
 }
 
 function jobIcon(column, row) {
