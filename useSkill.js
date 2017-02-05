@@ -347,17 +347,20 @@ skillDefinitions.minion = {
         return count < minionSkill.limit;
     },
     use: function (actor, minionSkill, target) {
-        actor.pull = {'x': actor.x - actor.direction * 64, 'time': actor.time + .3, 'damage': 0};
         var newMonster;
         if (minionSkill.base.consumeCorpse) {
             newMonster = makeMonster({'key': target.base.key}, target.level, [], true);
             newMonster.x = target.x;
+            newMonster.y = target.y;
+            newMonster.z = target.z;
         } else {
             newMonster = makeMonster({'key': minionSkill.base.monsterKey}, actor.level, [], true);
-            newMonster.x = actor.x + actor.direction * 32;
+            newMonster.x = actor.x + actor.heading[0] * 32;
+            newMonster.y = actor.y + actor.heading[1] * 32;
+            newMonster.z = actor.z + actor.heading[2] * 32;
         }
         newMonster.character = actor.character;
-        newMonster.direction = actor.direction;
+        newMonster.heading = actor.heading.slice();
         newMonster.skillSource = minionSkill;
         newMonster.allies = actor.allies;
         newMonster.enemies = actor.enemies;
@@ -386,11 +389,12 @@ function cloneActor(actor, skill) {
     } else {
         clone = makeMonster({'key': actor.base.key}, actor.level, [], true);
     }
-    clone.x = actor.x + actor.direction * 32;
+    clone.x = actor.x + actor.heading[0] * 32;
+    clone.y = actor.y + actor.heading[1] * 32;
+    clone.z = actor.z + actor.heading[2] * 32;
     clone.character = actor.character;
-    clone.direction = actor.direction;
+    clone.heading = actor.heading.slice();
     initializeActorForAdventure(clone);
-    actor.pull = {'x': actor.x - actor.direction * 64, 'time': actor.time + .3, 'damage': 0};
     clone.allies = actor.allies;
     clone.enemies = actor.enemies;
     clone.stunned = 0;
@@ -399,6 +403,7 @@ function cloneActor(actor, skill) {
     clone.time = 0;
     clone.allEffects = [];
     addMinionBonuses(actor, skill, clone);
+    actor.stunned = actor.time + .3;
     return clone;
 }
 function addMinionBonuses(actor, skill, minion) {
@@ -542,7 +547,9 @@ skillDefinitions.dodge = {
     use: function (actor, dodgeSkill, attackStats) {
         attackStats.dodged = true;
         if (ifdefor(dodgeSkill.distance)) {
-            actor.pull = {'x': actor.x + actor.direction * dodgeSkill.distance, 'time': actor.time + ifdefor(dodgeSkill.moveDuration, .3), 'damage': 0};
+            actor.pull = {'x': actor.x + actor.heading[0] * dodgeSkill.distance,
+                        'z': actor.z + actor.heading[2] * dodgeSkill.distance,
+                        'time': actor.time + ifdefor(dodgeSkill.moveDuration, .3), 'damage': 0};
         }
         if (ifdefor(dodgeSkill.buff)) {
             addTimedEffect(actor, dodgeSkill.buff, 0);
@@ -571,11 +578,11 @@ skillDefinitions.sideStep = {
         attackStats.dodged = true;
         if (ifdefor(dodgeSkill.distance)) {
             var attacker = attackStats.source;
-            if (attacker.x > actor.x) {
-                actor.pull = {'x': Math.min(actor.x + actor.direction * dodgeSkill.distance, attacker.x - actor.width), 'time': actor.time + ifdefor(dodgeSkill.moveDuration, .3), 'damage': 0};
-            } else {
-                actor.pull = {'x': Math.max(actor.x + actor.direction * dodgeSkill.distance, attacker.x + attacker.width), 'time': actor.time + ifdefor(dodgeSkill.moveDuration, .3), 'damage': 0};
-            }
+            actor.pull = {'time': actor.time + ifdefor(dodgeSkill.moveDuration, .3), 'damage': 0};
+            if (attacker.x > actor.x) actor.pull.x = Math.min(actor.x + actor.heading[0] * dodgeSkill.distance, attacker.x - (attacker.width + actor.width) / 2);
+            else actor.pull.x = Math.max(actor.x + actor.heading[0] * dodgeSkill.distance, attacker.x + (attacker.width + actor.width) / 2);
+            if (attacker.z > actor.z) actor.pull.z = Math.min(actor.z + actor.heading[2] * dodgeSkill.distance, attacker.z - (attacker.width + actor.width) / 2);
+            else actor.pull.z = Math.max(actor.z + actor.heading[2] * dodgeSkill.distance, attacker.z + (attacker.width + actor.width) / 2);
         }
         if (ifdefor(dodgeSkill.buff)) {
             addTimedEffect(actor, dodgeSkill.buff, 0);
@@ -599,7 +606,9 @@ skillDefinitions.criticalCounter = {
         if (counterSkill.dodgeAttack) attackStats.dodged = true;
         if (counterSkill.stopAttack) attackStats.stopped = true;
         if (ifdefor(counterSkill.distance)) {
-            actor.pull = {'x': actor.x + actor.direction * ifdefor(counterSkill.distance, 64), 'time': actor.time + ifdefor(counterSkill.moveDuration, .3), 'damage': 0};
+            actor.pull = {'x': actor.x + actor.heading[0] * ifdefor(counterSkill.distance, 64),
+                        'z': actor.z + actor.heading[2] * ifdefor(counterSkill.distance, 64),
+                        'time': actor.time + ifdefor(counterSkill.moveDuration, .3), 'damage': 0};
         }
         if (ifdefor(counterSkill.buff)) {
             addTimedEffect(actor, counterSkill.buff, 0);
@@ -772,8 +781,12 @@ function banishTarget(actor, target, range, rotation) {
     // Adding the delay here creates a shockwave effect where the enemies
     // all get pushed from a certain point at the same time, rather than
     // them all immediately moving towards the point initially.
-    target.pull = {'x': actor.x + actor.direction * (64 + 32 * range), 'delay': target.time + getDistance(actor, target) * .02 / 32, 'time': target.time + range * .02, 'damage': 0};
-    target.rotation = actor.direction * rotation;
+    target.pull = {'x': actor.x + actor.heading[0] * (64 + 32 * range), 'z': actor.z + actor.heading[2] * (64 + 32 * range), 'delay': target.time + getDistance(actor, target) * .02 / 32, 'time': target.time + range * .02, 'damage': 0};
+    target.rotation = getXDirection(actor) * rotation;
+}
+
+function getXDirection(actor) {
+    return ((actor.heading[0] > 0) ? 1 : -1);
 }
 
 skillDefinitions.charm = {
@@ -786,7 +799,7 @@ skillDefinitions.charm = {
         addBonusSourceToObject(target, getMinionSpeedBonus(actor, target), true);
         actor.enemies.splice(actor.enemies.indexOf(target), 1);
         actor.allies.push(target);
-        target.direction = actor.direction;
+        target.heading = actor.heading.slice();
         actor.stunned = actor.time + 1;
     }
 };

@@ -178,7 +178,7 @@ function importCharacter(characterData) {
     var character = {};
     character.adventurer = importAdventurer(characterData.adventurer);
     character.adventurer.character = character;
-    character.adventurer.direction = 1; // Character moves left to right.
+    character.adventurer.heading = [1, 0, 0]; // Character moves left to right.
     character.adventurer.isMainCharacter = true;
     character.adventurer.bonusMaxHealth = 0;
     character.adventurer.percentHealth = 1;

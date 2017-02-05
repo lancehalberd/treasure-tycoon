@@ -158,6 +158,7 @@ function initializeActorForAdventure(actor) {
     actor.slow = 0;
     actor.rotation = 0;
     actor.imprintedSpell = null;
+    // actor.heading = [1, 0, 0];
     var stopTimeAction = findActionByTag(actor.reactions, 'stopTime');
     actor.temporalShield = actor.maxTemporalShield = (stopTimeAction ? stopTimeAction.duration : 0);
     updateActorDimensions(actor, 0);
@@ -199,7 +200,7 @@ function newCharacter(job) {
     var character = {};
     character.adventurer = makeAdventurerFromJob(job, 1, ifdefor(job.startingEquipment, {}));
     character.adventurer.character = character;
-    character.adventurer.direction = 1; // Character moves left to right.
+    character.adventurer.heading = [1, 0, 0]; // Character moves left to right by default.
     character.adventurer.isMainCharacter = true;
     character.adventurer.bonusMaxHealth = 0;
     character.adventurer.percentHealth = 1;
@@ -253,6 +254,8 @@ function makeAdventurerFromData(adventurerData) {
     personContext.imageSmoothingEnabled = false;
     var adventurer = {
         'x': 0,
+        'y': 0,
+        'z': 0,
         'equipment': {},
         'job': characterClasses[adventurerData.jobKey],
         'source': setupActorSource({

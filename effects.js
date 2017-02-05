@@ -18,6 +18,9 @@ function songEffect(attackStats) {
         'attackStats': attackStats, 'currentFrame': 0, 'done': false,
         'x': followTarget.x,
         'y': followTarget.y,
+        'z': followTarget.z,
+        'width': 0,
+        'height': 0,
         'update': function (character) {
             self.currentFrame++;
             self.x = followTarget.x;
@@ -67,7 +70,7 @@ function songEffect(attackStats) {
     return self;
 }
 
-function explosionEffect(attackStats, x, y) {
+function explosionEffect(attackStats, x, y, z) {
     var attack = attackStats.imprintedSpell || attackStats.attack;
     var color = ifdefor(attack.base.color, 'red');
     var alpha = ifdefor(attack.base.alpha, .5);
@@ -84,7 +87,7 @@ function explosionEffect(attackStats, x, y) {
         height = radius * 2 * attack.base.heightRatio;
     }
     var self = {
-        'hitTargets': [], 'attack': attack, 'attackStats': attackStats, 'x': x, 'y': y, 'width': 0, 'height': 0, 'currentFrame': 0, 'done': false,
+        'hitTargets': [], 'attack': attack, 'attackStats': attackStats, 'x': x, 'y': y, 'z': z, 'width': 0, 'height': 0, 'currentFrame': 0, 'done': false,
         'update': function (character) {
             self.currentFrame++;
             if (self.currentFrame > frames + 5) {
@@ -145,6 +148,7 @@ function fieldEffect(attackStats, followTarget) {
         'attackStats': attackStats,
         'x': followTarget.x,
         'y': followTarget.y,
+        'z': followTarget.z,
         'width': radius * 2, 'height': height,
         'currentFrame': 0, 'done': false,
         'update': function (character) {
@@ -167,7 +171,7 @@ function fieldEffect(attackStats, followTarget) {
             for (var i = 0; i < self.attackStats.source.enemies.length; i++) {
                 var target = self.attackStats.source.enemies[i];
                 var distance = getDistance(self, target);
-                if (distance > currentRadius) continue;
+                if (distance > 0) continue;
                 targets.push(target);
             }
             if (!targets.length) {
@@ -193,7 +197,7 @@ function fieldEffect(attackStats, followTarget) {
     return self;
 }
 
-function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
+function projectile(attackStats, x, y, z, vx, vy, vz, target, delay, color, size) {
     size = ifdefor(size, 10);
     if (!size) {
         pause();
@@ -201,17 +205,17 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
         throw new Error('Projectile found withou size');
     }
     var self = {
-        'distance': 0, 'x': x, 'y': y, 'vx': vx, 'vy': vy, 't': 0, 'done': false, 'delay': delay,
+        'distance': 0, 'x': x, 'y': y, 'z': z, 'vx': vx, 'vy': vy, 'vz': vz, 't': 0, 'done': false, 'delay': delay,
+        'width': size, 'height': size,
         'hit': false, 'target': target, 'attackStats': attackStats, 'hitTargets': [],
         'update': function (character) {
             // Put an absolute cap on how far a projectile can travel
             if (self.y < 0 || self.distance > 2000) self.done = true;
             if (self.done || self.delay-- > 0) return
-            var tx = self.target.x + ifdefor(self.target.width, 64) / 2;
-            var ty = ifdefor(self.target.y, 0) + ifdefor(self.target.height, 128) / 2;
             self.x += self.vx;
             self.y += self.vy;
-            self.distance += Math.sqrt(self.vx * self.vx + self.vy * self.vy);
+            self.z += self.vz;
+            self.distance += Math.sqrt(self.vx * self.vx + self.vy * self.vy + self.vz * self.vz);
             // attack stats may be shared between multiple projectiles.
             // this isn't ideal but it is probably okay to just copy local value here.
             self.attackStats.distance = self.distance;
@@ -225,8 +229,8 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                     self.done = true;
                 }
             } else {
-                // normal projectiles hit when they get close to the targets center.
-                hit = Math.abs(tx - self.x) <= Math.abs(self.vx) + 1 && Math.abs(ty - self.y) <= ifdefor(self.target.height, 128) + size / 2 && self.target.health > 0;
+                // normal projectiles hit when they overlap the target.
+                hit = (getDistance(self, target) <= 0) && self.target.health > 0;
             }
             self.vy -= attackStats.gravity;
             self.t += 1;
@@ -236,7 +240,7 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                     if (enemy === self.target || self.hitTargets.indexOf(enemy) >= 0) {
                         continue;
                     }
-                    if (Math.abs(enemy.x + ifdefor(enemy.width, 64) / 2 - self.x) <= Math.abs(self.vx) + 1 && Math.abs(ifdefor(enemy.y, 0) + ifdefor(enemy.height, 128) / 2 - self.y) < ifdefor(self.target.height, 128) + size / 2 && enemy.health > 0) {
+                    if (getDistance(self, enemy) && enemy.health > 0) {
                         applyAttackToTarget(self.attackStats, enemy);
                         self.hitTargets.push(enemy);
                     }
@@ -255,9 +259,10 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                     var newTarget = self.attackStats.source;
                     self.attackStats.source = self.target;
                     self.target = newTarget;
-                    var v = getProjectileVelocity(self.attackStats, self.x, self.y, newTarget);
+                    var v = getProjectileVelocity(self.attackStats, self.x, self.y, self.z, newTarget);
                     self.vx = v[0];
                     self.vy = v[1];
+                    self.vz = v[2];
                 } else if (ifdefor(attackStats.friendly) || applyAttackToTarget(self.attackStats, self.target)) {
                     attackStats.friendly = false;
                     self.done = true;
@@ -268,6 +273,7 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                         // reduce the speed. This seems realistic and make it easier to
                         // distinguish bounced attacks from new attacks.
                         self.vx = -self.vx / 2;
+                        self.vz = -self.vz / 2;
                         var targets = self.attackStats.source.enemies.slice();
                         targets.push(attackStats.source);
                         while (targets.length) {
@@ -285,9 +291,10 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                                 attackStats.friendly = true;
                             }
                             // Calculate new velocity
-                            var v = getProjectileVelocity(self.attackStats, self.x, self.y, newTarget);
+                            var v = getProjectileVelocity(self.attackStats, self.x, self.y, self.z, newTarget);
                             self.vx = v[0];
                             self.vy = v[1];
+                            self.vz = v[2];
                             break;
                         }
                     } else if (ifdefor(self.attackStats.piercing)) {
@@ -295,15 +302,12 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
                         //console.log('pierce');
                     }
                 }
-            } else if (self.target.health > 0 && self.vx * (tx - self.x) <= 0) {
-                //self.vx = -self.vx;
-                // console.log([tx, self.x, self.vx, 'y', ty, self.y, size / 2, ifdefor(self.target.height, 128) / 2]);
             }
         },
         'draw': function (character) {
             if (self.done || self.delay > 0) return
             mainContext.save();
-            mainContext.translate(self.x - character.cameraX, groundY - self.y);
+            mainContext.translate(self.x - character.cameraX, groundY - self.y - self.z / 2);
             if (self.vx < 0) {
                 mainContext.scale(-1, 1);
                 mainContext.rotate(-Math.atan2(self.vy, -self.vx));
@@ -326,27 +330,26 @@ function projectile(attackStats, x, y, vx, vy, target, delay, color, size) {
     return self;
 }
 
-function getProjectileVelocity(attackStats, x, y, target) {
-    var tx = target.x + ifdefor(target.width, 64) / 2;
+function getProjectileVelocity(attackStats, x, y, z, target) {
     var scale = ifdefor(target.scale, 1);
     var ty = ifdefor(target.y, 0) + ifdefor(target.height, 128) * 3 / 4;
-    var v = [tx - x, ty - y];
-    var distance = Math.sqrt(v[0] * v[0] + v[1] * v[1]);
+    var v = [target.x - x, ty - y, target.z - z];
+    var distance = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
     var frameEstimate = distance / attackStats.speed;
     // Over a period of N frames, the projectile will fall roughly N^2 / 2, update target velocity accordingly
     v[1] += attackStats.gravity * frameEstimate * frameEstimate / 2;
-    distance = Math.sqrt(v[0] * v[0] + v[1] * v[1]);
+    distance = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
     if (distance === 0 || isNaN(distance) || isNaN(v[0]) || isNaN(v[1])) {
         console.log("invalid velocity");
         console.log([attackStats.speed, attackStats.gravity]);
-        console.log([x, y, tx, ty]);
+        console.log([x, y, z, target.x, ty, target.z]);
         console.log([target.x, target.y, target.width, target.height]);
         console.log(target);
         console.log(distance);
         console.log(v);
         pause();
     }
-    return [v[0] * attackStats.speed / distance, v[1] * attackStats.speed / distance];
+    return [v[0] * attackStats.speed / distance, v[1] * attackStats.speed / distance, v[2] * attackStats.speed / distance];
 }
 
 

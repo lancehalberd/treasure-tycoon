@@ -28,7 +28,7 @@ function drawAdventure(character) {
             context.drawImage(source.image, source.x, source.y, source.width, source.height,
                                   x, y, width, height);
             if (x !== Math.round(x) || y !== Math.round(y) || width != Math.round(width) || height != Math.round(height)) {
-                console.log([x, y, width, height]);
+                console.log(JSON.stringify([[source.x, x], [source.y, source.z, y], width, height]));
             }
         }
         context.globalAlpha = 1;
@@ -82,7 +82,7 @@ function drawActor(actor) {
     if (actor.cloaked) {
         context.globalAlpha = .2;
     }
-    var top = groundY - actor.height - ifdefor(actor.y, 0);
+    var top = groundY - actor.height - ifdefor(actor.y, 0) - ifdefor(actor.z, 0) / 2;
     var left = actor.x - cameraX;
     // These values are used for determining when the mouse is hovering over the actor.
     // We only need these when the screen is displayed, so we can set them only on draw.
@@ -103,7 +103,7 @@ function drawActor(actor) {
     if (ifdefor(actor.rotation)) {
         context.rotate(actor.rotation * Math.PI/180);
     }
-    if ((!source.flipped && actor.direction < 0) || (source.flipped && actor.direction > 0)) {
+    if ((!source.flipped && actor.heading[0] < 0) || (source.flipped && actor.heading[0] > 0)) {
         context.scale(-1, 1);
     }
     if (actor.isDead && !ifdefor(source.deathFrames)) {

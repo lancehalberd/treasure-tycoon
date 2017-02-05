@@ -20,6 +20,8 @@ function startArea(character, index) {
     initializeActorForAdventure(character.adventurer);
     character.waveIndex = 0;
     character.adventurer.x = 0;
+    character.adventurer.y = 0;
+    character.adventurer.z = 0;
     character.finishTime = false;
     character.startTime = character.time;
     character.enemies = [];
@@ -269,7 +271,7 @@ function moveActor(actor, delta) {
     if (actor.isDead || actor.stunned || actor.pull || ifdefor(actor.stationary) || actor.moveCooldown > actor.time) {
         return;
     }
-    var goalTarget = actor.target;
+    var goalTarget = actor.target !== actor ? actor.target : null;
     if (!goalTarget || goalTarget.isDead) {
         var bestDistance = 10000;
         actor.enemies.forEach(function (target) {
@@ -281,11 +283,14 @@ function moveActor(actor, delta) {
             }
         });
     }
+    // if (goalTarget) console.log(JSON.stringify(['goal:', goalTarget.x, goalTarget.y, goalTarget.z]));
+    // console.log(JSON.stringify(['actor:', actor.x, actor.y, actor.z]));
     if (goalTarget) {
-        actor.direction = (goalTarget.x < actor.x) ? -1 : 1;
+        actor.heading = new Vector([goalTarget.x - actor.x, 0, goalTarget.z - actor.z]).normalize().getArrayValue();
     } else {
-        actor.direction = 1;
+        actor.heading = [1, 0, 0];
     }
+    //console.log(JSON.stringify(actor.heading));
     // Make sure the main character doesn't run in front of their allies.
     // If the allies are fast enough, this shouldn't be an isse.
     var speedBonus = 1;
@@ -293,8 +298,6 @@ function moveActor(actor, delta) {
     for (var i = 0; i < actor.allies.length; i++) {
         xOffset += actor.x - actor.allies[i].x;
     }
-    //speedBonus -= actor.direction * xOffset / 1000;
-    //speedBonus = Math.min(1.25, Math.max(speedBonus, .2));
     if (actor.chargeEffect) {
         speedBonus *= actor.chargeEffect.chargeSkill.speedBonus;
         actor.chargeEffect.distance += speedBonus * actor.speed * Math.max(.1, 1 - actor.slow) * delta;
@@ -311,7 +314,8 @@ function moveActor(actor, delta) {
             speedBonus = 0;
         }
     }
-    actor.x += speedBonus * actor.speed * actor.direction * Math.max(.1, 1 - actor.slow) * delta;
+    actor.x += speedBonus * actor.speed * actor.heading[0] * Math.max(.1, 1 - actor.slow) * delta;
+    actor.z += speedBonus * actor.speed * actor.heading[2] * Math.max(.1, 1 - actor.slow) * delta;
 }
 function startNextWave(character) {
     var wave = character.area.waves[character.waveIndex];
@@ -326,8 +330,10 @@ function startNextWave(character) {
             extraSkills.push(hardBonuses);
         }
         var newMonster = makeMonster(entityData, character.area.level, extraSkills, !!wave.extraBonuses);
-        newMonster.direction = -1; // Monsters move right to left
+        newMonster.heading = [-1, 0, 0]; // Monsters move right to left
         newMonster.x = x;
+        newMonster.y = ifdefor(newMonster.y, 0);
+        newMonster.z = -90 + Math.random() * 180;
         newMonster.character = character;
         initializeActorForAdventure(newMonster);
         newMonster.time = 0;
@@ -340,12 +346,14 @@ function startNextWave(character) {
         if (entityData.type === 'chest') {
             entityData.x = x;
             entityData.y = 0;
+            entityData.z = 20;
             character.objects.push(entityData);
             return;
         }
         if (entityData.type === 'shrine') {
             entityData.x = x + 128;
-            entityData.y = 25;
+            entityData.y = 0;
+            entityData.z = 50;
             character.objects.push(entityData);
             return;
         }
@@ -485,15 +493,20 @@ function checkToUseSkillOnTarget(character, actor, target) {
     return false;
 }
 
-function getDistance(actorA, actorB) {
-    return Math.max(0, (actorA.x > actorB.x)
-        ? (actorA.x - actorB.x - ifdefor(actorB.width, 64))
-        : (actorB.x - actorA.x - ifdefor(actorA.width, 64)));
+// The distance functions assume objects are circular in the x/z plane and are calculating
+// only distance within that plane, ignoring the height of objects and their y positions.
+function getDistance(spriteA, spriteB) {
+    var distance = getDistanceOverlap(spriteA, spriteB);
+    if (isNaN(distance)) {
+        console.log(JSON.stringify(['A:', spriteA.x, spriteA.y, spriteA.z, spriteA.width]));
+        console.log(JSON.stringify(['B:', spriteB.x, spriteB.y, spriteB.z, spriteB.width]));
+    }
+    return Math.max(0, distance);
 }
-function getDistanceOverlap(actorA, actorB) {
-    return (actorA.x > actorB.x)
-        ? (actorA.x - actorB.x - ifdefor(actorB.width, 64))
-        : (actorB.x - actorA.x - ifdefor(actorA.width, 64));
+function getDistanceOverlap(spriteA, spriteB) {
+    var dx = spriteA.x - spriteB.x;
+    var dz = spriteA.z - spriteB.z;
+    return Math.sqrt(dx*dx + dz*dz) - (spriteA.width + spriteB.width) / 2;
 }
 
 function defeatedEnemy(character, enemy) {

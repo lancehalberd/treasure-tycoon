@@ -127,12 +127,15 @@ function mainLoop() {
             }
             for (var i = 0; i < character.gameSpeed && character.area; i++) {
                 character.time += frameMilliseconds / 1000;
-                // Original this branch was designed to make the camera change for opening the treasure
-                // But it actually applies to both the chest and the boss, which turned out to be fine.
-                var centerX = character.adventurer.x + 200 * character.adventurer.direction;
-                //if (character.cameraX < centerX - 400 || character.cameraX > centerX - 400) {
-                    character.cameraX = (character.cameraX * 10 + centerX - 400) / 11;
-                //}
+                // By default center the camera slightly ahead of the character.
+                var centerX = character.adventurer.x + 200 * character.adventurer.heading[0];
+                // When the character is targeting a unit, try to keep the camera centered between them
+                // unless that would leave the character off screen.
+                if (character.adventurer.target && character.adventurer.target !== character.adventurer) {
+                    centerX = Math.max(character.adventurer.x - 350, Math.min(character.adventurer.x + 350, (character.adventurer.x + character.adventurer.target.x) / 2));
+                }
+                if (Math.abs(character.cameraX - (centerX - 400)) < 200) character.cameraX = (character.cameraX * 20 + centerX - 400) / 21;
+                else character.cameraX = (character.cameraX * 10 + centerX - 400) / 11;
                 adventureLoop(character, frameMilliseconds / 1000);
                 if (!character.area) {
                     return
