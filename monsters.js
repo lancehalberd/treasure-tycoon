@@ -147,7 +147,8 @@ function updateMonster(monster) {
     addBonusSourceToObject(monster, {'bonuses': getMonsterBonuses(monster)}, false);
     addBonusSourceToObject(monster, coreStatBonusSource, false);
     var enchantments = monster.prefixes.length + monster.suffixes.length;
-    monster.image = monster.base.source.image.normal;
+    if (monster.base.source.image.normal) monster.image = monster.base.source.image.normal;
+    else monster.image = monster.base.source.image;
     if (enchantments > 2) {
         addBonusSourceToObject(monster, imbuedMonsterBonuses, false);
     } else if (enchantments) {
@@ -192,13 +193,6 @@ function addMonster(key, data) {
     data.key = key;
     data.variableObjectType = 'actor';
     monsters[key] = data;
-}
-function enemySheet(key) {
-    return {
-        'normal': images[key],
-        //'enchanted': images[key + '-enchanted'],
-        //'imbued': images[key + '-imbued'],
-    }
 }
 function getMonsterBonuses(monster) {
     var growth = monster.level - 1;
@@ -247,24 +241,170 @@ function setupActorSource(source) {
     source.yCenter = ifdefor(source.yCenter, source.actualHeight / 2 + source.yOffset);
     return source;
 }
+function createEquippedActorSource(baseImage, row, equipment) {
+    var actorCanvas = createCanvas(personFrames * 96, 64);
+    var actorContext = actorCanvas.getContext('2d');
+    //return baseImage;
+    var hideHair = true;
+    //var hairYOffset = actor.hairOffset;
+    for (var frame = 0; frame < personFrames; frame++) {
+        // Draw the person legs then body then hair then under garment then leg gear then body gear.
+        actorContext.drawImage(baseImage, frame * 96 + 64, row * 64 , 32, 64, frame * 96 + 32, 0, 32, 64); //legs
+        actorContext.drawImage(baseImage, frame * 96, row * 64 , 32, 64, frame * 96 + 32, 0, 32, 64); //body
+        /*
+        if (!hideHair) {
+            actor.actorContext.drawImage(images['gfx/hair.png'], frame * 96, hairYOffset * 64, 32, 64, frame * 96 + 32, 0, 32, 64); //hair
+        }
+        */
+        // To avoid drawing 'naked' characters, draw an undergarment (black dress?) if they
+        // don't have both a pants and a shirt on.
+        // But monsters can be naked! (I think?)
+        /*
+        if ((!actor.equipment.body || !actor.equipment.body.base.source)
+                || (!actor.equipment.legs || !actor.equipment.legs.base.source)) {
+            actorContext.drawImage(images['gfx/equipment.png'], frame * 96, 8 * 64 , 32, 64, frame * 96 + 32, 0, 32, 64); //undergarment
+        }
+        */
+        // leg + body gear
+        for (var subX of [64, 0]) {
+            equipmentSlots.forEach(function (type) {
+                var item = equipment[type];
+                if (!item || !item.base.source) return;
+                var source = item.base.source;
+                if (source.xOffset !== subX) return;
+                actorContext.drawImage(images['gfx/equipment.png'], frame * 96 + source.xOffset, source.yOffset, 32, 64, frame * 96 + 32, 0, 32, 64);
+            });
+        }
+        // Draw the weapon under the arm
+        var weapon = equipment.weapon;
+        if (weapon && weapon.base.source) {
+            var source = weapon.base.source;
+            actorContext.drawImage(images['gfx/weapons.png'], frame * 96, source.yOffset, 96, 64, frame * 96, 0, 96, 64);
+        }
+        // Draw the person arm then arm gear
+        actorContext.drawImage(baseImage, frame * 96 + 32, row * 64 , 32, 64, frame * 96 + 32, 0, 32, 64); // arm
+        //arm gear
+        equipmentSlots.forEach(function (type) {
+            var item = equipment[type];
+            if (!item || !item.base.source) return;
+            var source = item.base.source;
+            if (source.xOffset !== 32) return; // don't draw this if it isn't arm gear
+            actorContext.drawImage(images['gfx/equipment.png'], frame * 96 + source.xOffset, source.yOffset, 32, 64, frame * 96 + 32, 0, 32, 64);
+        });
+    }
+    return actorCanvas;
+}
 function initalizeMonsters() {
-    var caterpillarSource = setupActorSource({'image': enemySheet('gfx/caterpillar.png'), 'width': 48, 'height': 64, 'actualHeight': 24, 'yOffset': 40, frames: 4});
-    var gnomeSource = setupActorSource({'image': enemySheet('gfx/gnome.png'), 'width': 32, 'height': 64, 'actualHeight': 38, 'yOffset': 26, 'flipped': true, frames: 4});
-    var skeletonSource = setupActorSource({'image': enemySheet('gfx/skeletonSmall.png'), 'width': 48, 'height': 64, 'actualHeight': 38, 'yOffset': 26, frames: 7});
-    var butterflySource = setupActorSource({'image': enemySheet('gfx/yellowButterfly.png'), 'width': 64, 'height': 64,
+    var caterpillarSource = setupActorSource({'image': requireImage('gfx/caterpillar.png'), 'width': 48, 'height': 64, 'actualHeight': 24, 'yOffset': 40, frames: 4});
+    var gnomeSource = setupActorSource({'image': requireImage('gfx/gnome.png'), 'width': 32, 'height': 64, 'actualHeight': 38, 'yOffset': 26, 'flipped': true, frames: 4});
+    var skeletonSource = setupActorSource({'image': requireImage('gfx/skeletonSmall.png'), 'width': 48, 'height': 64, 'actualHeight': 38, 'yOffset': 26, frames: 7});
+    var butterflySource = setupActorSource({'image': requireImage('gfx/yellowButterfly.png'), 'width': 64, 'height': 64,
             framesPerRow: 7, walkFrames: [1, 2, 3, 4, 5, 6, 4, 2, 0], attackFrames: [7, 10, 11, 10], deathFrames: [7, 8, 9, 9]});
-    var skeletonGiantSource = setupActorSource({'image': enemySheet('gfx/skeletonGiant.png'), 'width': 48, frames: 7});
-    var dragonSource = setupActorSource({'image': enemySheet('gfx/dragonEastern.png'),
+    var skeletonGiantSource = setupActorSource({'image': requireImage('gfx/skeletonGiant.png'), 'width': 48, frames: 7});
+    var dragonSource = setupActorSource({'image': requireImage('gfx/dragonEastern.png'),
         'width': 48, 'xCenter': 25, 'yCenter': 48, 'actualHeight': 40, 'height': 64, 'yOffset': 24, 'flipped': true, frames: 5});
-    var batSource = setupActorSource({'image': enemySheet('gfx/bat.png'), 'width': 32, 'height': 32, 'flipped': true, frames: 5, 'y': 30});
-    var spiderSource = setupActorSource({'image': enemySheet('gfx/spider.png'), 'width': 48, 'height': 48, 'y': -10,
+    var batSource = setupActorSource({'image': requireImage('gfx/bat.png'), 'width': 32, 'height': 32, 'flipped': true, frames: 5, 'y': 30});
+    var spiderSource = setupActorSource({'image': requireImage('gfx/spider.png'), 'width': 48, 'height': 48, 'y': -10,
             framesPerRow: 10, walkFrames: [4, 5, 6, 7, 8, 9], attackFrames: [2, 3, 0, 1], deathFrames: [10, 11, 12, 13]});
-    var wolfSource = setupActorSource({'image': enemySheet('gfx/wolf.png'), 'width': 64, 'height': 32,
+    var wolfSource = setupActorSource({'image': requireImage('gfx/wolf.png'), 'width': 64, 'height': 32,
             framesPerRow: 7, walkFrames: [0, 1, 2, 3], attackFrames: [6, 4, 5, 0], deathFrames: [0, 7, 8, 9]});
-    var turtleSource = {'image': enemySheet('gfx/turtle.png'), 'xOffset': 0, 'width': 64, 'height': 64,
+    var turtleSource = {'image': requireImage('gfx/turtle.png'), 'xOffset': 0, 'width': 64, 'height': 64,
             framesPerRow: 5, walkFrames: [0, 1, 2, 3], attackFrames: [5, 6], deathFrames: [5, 7, 8, 9]};
-    var monarchSource = setupActorSource({'image': enemySheet('gfx/monarchButterfly.png'), 'width': 64, 'height': 64,
+    var monarchSource = setupActorSource({'image': requireImage('gfx/monarchButterfly.png'), 'width': 64, 'height': 64,
             framesPerRow: 7, walkFrames: [1, 2, 3, 4, 5, 6, 4, 2, 0], attackFrames: [7, 10, 11, 10], deathFrames: [7, 8, 9, 9]});
+    var skeletonRow = 0;
+    var goblinRow = 1;
+    var vampireRow = 2;
+    var skeletonWithHatCanvas = createEquippedActorSource(requireImage('gfx/monsterPeople.png'), skeletonRow, {'head': makeItem(itemsByKey.strawhat, 1)});
+    var skeletonWithHelmetCanvas = createEquippedActorSource(requireImage('gfx/monsterPeople.png'), skeletonRow, {'head': makeItem(itemsByKey.copperhelmet, 1), 'weapon': makeItem(itemsByKey.gladius, 1)});
+    var skeletonNakedCanvas = createEquippedActorSource(requireImage('gfx/monsterPeople.png'), skeletonRow, {});
+    var skeletonWarriorCanvas = createEquippedActorSource(requireImage('gfx/monsterPeople.png'), skeletonRow, {'weapon': makeItem(itemsByKey.hatchet, 1), 'head': makeItem(itemsByKey.irongreathelm, 1)});
+    var goblinWithHeavyArmorCanvas = createEquippedActorSource(requireImage('gfx/monsterPeople.png'), goblinRow, {'body': makeItem(itemsByKey.platedcoat, 1), 'legs': makeItem(itemsByKey.copperskirt, 1), 'head': makeItem(itemsByKey.copperhelmet, 1), 'feet': makeItem(itemsByKey.coppersabatons, 1)});
+    var goblinTatteredShortsCanvas = createEquippedActorSource(requireImage('gfx/monsterPeople.png'), goblinRow, {'legs': makeItem(itemsByKey.leatherkilt, 1)});
+    var skeletonWithHatSource = setupActorSource({
+            'image': skeletonWithHatCanvas,
+            'width': 96,
+            'height': 64,
+            'yCenter': 44, // Measured from the top of the source
+            'yOffset': 14, // Measured from the top of the source
+            'actualHeight': 50,
+            'xOffset': 39,
+            'actualWidth': 18,
+            'attackY': 19, // Measured from the bottom of the source
+            'walkFrames': [0, 1, 0, 2],
+            'attackFrames': [4, 3, 0, 3]
+        });
+    var skeletonWithHelmetSource = setupActorSource({
+            'image': skeletonWithHelmetCanvas,
+            'width': 96,
+            'height': 64,
+            'yCenter': 44, // Measured from the top of the source
+            'yOffset': 14, // Measured from the top of the source
+            'actualHeight': 50,
+            'xOffset': 39,
+            'actualWidth': 18,
+            'attackY': 19, // Measured from the bottom of the source
+            'walkFrames': [0, 1, 0, 2],
+            'attackFrames': [4, 3, 0, 3]
+        });
+    var skeletonWarriorSource = setupActorSource({
+            'image': skeletonWarriorCanvas,
+            'width': 96,
+            'height': 64,
+            'yCenter': 44, // Measured from the top of the source
+            'yOffset': 14, // Measured from the top of the source
+            'actualHeight': 50,
+            'xOffset': 39,
+            'actualWidth': 18,
+            'attackY': 19, // Measured from the bottom of the source
+            'walkFrames': [0, 1, 0, 2],
+            'attackFrames': [4, 3, 0, 3]
+        });
+    var skeletonNakedSource = setupActorSource({
+            'image': skeletonNakedCanvas,
+            'width': 96,
+            'height': 64,
+            'yCenter': 44, // Measured from the top of the source
+            'yOffset': 14, // Measured from the top of the source
+            'actualHeight': 50,
+            'xOffset': 39,
+            'actualWidth': 18,
+            'attackY': 19, // Measured from the bottom of the source
+            'walkFrames': [0, 1, 0, 2],
+            'attackFrames': [4, 3, 0, 3]
+        });
+    //skeletonNakedSource.image = {'normal': skeletonNakedSource.image};
+    var goblinWithHeavyArmorSource = setupActorSource({
+            'image': goblinWithHeavyArmorCanvas,
+            'width': 96,
+            'height': 64,
+            'yCenter': 44, // Measured from the top of the source
+            'yOffset': 14, // Measured from the top of the source
+            'actualHeight': 50,
+            'xOffset': 39,
+            'actualWidth': 18,
+            'attackY': 19, // Measured from the bottom of the source
+            'walkFrames': [0, 1, 0, 2],
+            'attackFrames': [4, 3, 0, 3]
+        });
+    var goblinTatteredShortsSource = setupActorSource({
+            'image': goblinTatteredShortsCanvas,
+            'width': 96,
+            'height': 64,
+            'yCenter': 44, // Measured from the top of the source
+            'yOffset': 14, // Measured from the top of the source
+            'actualHeight': 50,
+            'xOffset': 39,
+            'actualWidth': 18,
+            'attackY': 19, // Measured from the bottom of the source
+            'walkFrames': [0, 1, 0, 2],
+            'attackFrames': [4, 3, 0, 3]
+        });
+    //$('body').append(skeletonNakedCanvas);
+    //$('body').append(skeletonWithHatCanvas);
+    //$('body').append(goblinWithHeavyArmorCanvas);
+    //$('body').append(goblinTatteredShortsCanvas);
+
     addMonster('dummy', {
         'name': 'Dummy', 'source': caterpillarSource,
         'implicitBonuses': {}
@@ -374,28 +514,28 @@ function initalizeMonsters() {
                             '*speed': .6},
         'abilities': [abilities.fireball, abilities.freeze, abilities.wizard], 'tags': ['ranged']
     });
-    addMonster('skeleton', {'name': 'Skeleton', 'source': skeletonSource,
+    addMonster('skeleton', {'name': 'Skeleton', 'source': skeletonNakedSource,
         // Fast to counter ranged heroes, low range+damage + fast attacks to be weak to armored heroes.
         'implicitBonuses': {'+weaponRange': -.5, '+accuracy': 2, '*attackSpeed': 2, '*weaponMagicDamage': 0,
                             '*evasion': 1.3, '*magicBlock': 0.1, '*magicResist': 0.1,
                             '*speed': 2},
         'abilities': [abilities.sideStep]
     });
-    addMonster('skeletalBuccaneer', {'name': 'Skeletal Buccaneer', 'source': skeletonSource,
+    addMonster('skeletalBuccaneer', {'name': 'Skeletal Buccaneer', 'source': skeletonWithHatSource,
         // Deflect to counter ranged champions.
         'implicitBonuses': {'+weaponRange': -.5, '*minPhysicalDamage': .4, '*maxPhysicalDamage': .4, '+accuracy': 2, '*attackSpeed': 2, '*weaponMagicDamage': 0,
                             '*block': 0, '+armor': 2, '*magicBlock': 0.1, '*magicResist': 0.1,
                             '*speed': 1, 'scale': 1.5},
         'abilities': [abilities.deflect, abilities.deflectDamage, abilities.sage, abilities.majorDexterity]
     });
-    addMonster('undeadPaladin', {'name': 'Undead Paladin', 'source': skeletonSource,
+    addMonster('undeadPaladin', {'name': 'Undead Paladin', 'source': skeletonWithHelmetSource,
         // Deflect to counter ranged champions.
         'implicitBonuses': {'*minPhysicalDamage': .4, '*maxPhysicalDamage': .4, '+accuracy': 2, '*attackSpeed': 2,
                             '*block': 1.5, '+armor': 2, '*magicBlock': 1.5, '*magicResist': 0.1,
                             '*speed': 1, '*scale': 1.5},
         'abilities': [abilities.reflect, abilities.majorIntelligence, abilities.aegis, abilities.heal]
     });
-    addMonster('undeadWarrior', {'name': 'Undead Warrior', 'source': skeletonSource,
+    addMonster('undeadWarrior', {'name': 'Undead Warrior', 'source': skeletonWarriorSource,
         // Fast to counter ranged heroes, low range+damage + fast attacks to be weak to armored heroes.
         'implicitBonuses': {'+weaponRange': -.5, '*minPhysicalDamage': .4, '*maxPhysicalDamage': .4, '+accuracy': 2, '*attackSpeed': 2, '*weaponMagicDamage': 0,
                             '*block': 0, '+armor': 2, '*magicBlock': 0.1, '*magicResist': 0.1,

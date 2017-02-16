@@ -26,6 +26,7 @@ var initialImagesToLoad = [
     'gfx/turtle.png', 'gfx/monarchButterfly.png', 'gfx/yellowButterfly.png',
     'gfx/treasureChest.png', 'gfx/moneyIcon.png', 'gfx/projectiles.png',
     'gfx/iconSet.png',
+    'gfx/monsterPeople.png',
     /* 'game-icons.png' from http://game-icons.net/about.html */
     'gfx/game-icons.png',
     /* nielsenIcons.png from Søren Nielsen at http://opengameart.org/content/grayscale-icons */
@@ -224,4 +225,3 @@ function jobIcon(column, row) {
 function drawJobIcon(context, target) {
     drawImage(context, this.image, this, target);
 }
-
