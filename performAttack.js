@@ -326,11 +326,11 @@ function performAttackProper(attackStats, target) {
     var teleport = ifdefor(attackStats.attack.teleport, 0) * 32;
     if (teleport) {
         // It is easier for me to understand this code if I break it up into facing right and facing left cases.
-        if (attacker.direction > 0) {
+        if (attacker.heading[0] > 0) {
             // Teleport to the location furthest from enemies that leaves the enemy within range to attack.
-            attacker.x = Math.max(attacker.x - teleport, Math.min(attacker.x + teleport, target.x - attackStats.attack.range * 32 - attacker.width));
+            attacker.x = Math.max(attacker.x - teleport, Math.min(attacker.x + teleport, target.x - attackStats.attack.range * 32 - attacker.width / 2 - target.width / 2));
         } else {
-            attacker.x = Math.min(attacker.x + teleport, Math.max(attacker.x - teleport, target.x + target.width + attackStats.attack.range * 32));
+            attacker.x = Math.min(attacker.x + teleport, Math.max(attacker.x - teleport, target.x + target.width / 2 + attacker.width / 2 + attackStats.attack.range * 32));
         }
     }
     if (attackStats.attack.tags['song']) {
@@ -339,10 +339,10 @@ function performAttackProper(attackStats, target) {
         attacker.character.effects.push(fieldEffect(attackStats, attacker));
     } else if (attackStats.attack.tags['nova']) {
         // attackStats.explode--;
-        attacker.character.effects.push(explosionEffect(attackStats, attacker.x + attacker.width / 2 + attacker.direction * attacker.width / 4, getAttackY(attacker)));
+        attacker.character.effects.push(explosionEffect(attackStats, attacker.x, getAttackY(attacker), attacker.z));
     } else if (attackStats.attack.tags['blast']) {
         // attackStats.explode--;
-        attacker.character.effects.push(explosionEffect(attackStats, target.x + target.width / 2 + target.direction * target.width / 4, getAttackY(attacker)));
+        attacker.character.effects.push(explosionEffect(attackStats, target.x, getAttackY(attacker), target.z));
     } else if (attackStats.attack.tags['rain']) {
         // attackStats.explode--;
         var targets = [];
@@ -354,26 +354,30 @@ function performAttackProper(attackStats, target) {
                 targets = Random.shuffle(attacker.enemies);
             }
             var currentTarget = targets.pop();
-            var tx = currentTarget.x + ifdefor(currentTarget.width, 64) / 2;
-            var x = attacker.x + attacker.width / 2 - 250 + Math.random() * 400 + 10 * i;
+            var x = attacker.x - 250 + Math.random() * 400 + 10 * i;
+            var z = attacker.z - 90 + Math.random() * 180;
             var y = 550 + Math.random() * 100;
             // Point the meteor at the target and hope it hits!
             var vy = -y;
-            var vx =  tx - x;
-            var mag = Math.sqrt(vx * vx + vy * vy);
+            var vx = currentTarget.x - x;
+            var vz = currentTarget.z - z;
+            // Normalize starting speed at 15px per frame.
+            var mag = Math.sqrt(vx * vx + vy * vy + vz * vz);
             vy *= 15 / mag;
             vx *= 15 / mag;
+            vz *= 15 / mag;
             attacker.character.projectiles.push(projectile(
-                projectileAttackStats, x, y, vx, vy, currentTarget, Math.min(i * maxFrameSpread / count, i * 10), // delay is in frames
+                projectileAttackStats, x, y, z, vx, vy, vz,currentTarget, Math.min(i * maxFrameSpread / count, i * 10), // delay is in frames
                 projectileAttackStats.isCritical ? 'yellow' : 'red', ifdefor(projectileAttackStats.size, 20) * (projectileAttackStats.isCritical ? 1.5 : 1)));
         }
     } else if (attackStats.attack.tags['ranged']) {
         var distance = getDistance(attacker, target);
-        var x = attacker.x + attacker.width / 2 + attacker.direction * attacker.width / 4;
+        var x = attacker.x + getXDirection(attacker) * attacker.width / 4;
         var y = getAttackY(attacker);
-        var v = getProjectileVelocity(attackStats, x, y, target);
+        var z = attacker.z;
+        var v = getProjectileVelocity(attackStats, x, y, z, target);
         attacker.character.projectiles.push(projectile(
-            attackStats, x, y, v[0], v[1], target, 0,
+            attackStats, x, y, z, v[0], v[1], v[2], target, 0,
             attackStats.isCritical ? 'yellow' : 'red', ifdefor(attackStats.size, 10) * (attackStats.isCritical ? 1.5 : 1)));
     } else {
         attackStats.distance = getDistance(attacker, target);
@@ -416,7 +420,7 @@ function applyAttackToTarget(attackStats, target) {
                 continue;
             }
             // ignore targets that got behind the attacker.
-            if ((cleaveTarget.x - attacker.x) * attacker.direction < 0) {
+            if ((cleaveTarget.x - attacker.x) * attacker.heading[0] < 0) {
                 continue;
             }
             var distance = getDistance(attacker, cleaveTarget);
@@ -436,18 +440,21 @@ function applyAttackToTarget(attackStats, target) {
             'accuracy': attackStats.accuracy,
             'explode': attackStats.explode - 1
         };
-        var explosionX,explosionY;
+        var explosionX,explosionY,explosionZ;
         if (attackStats.projectile) {
             explosionX = attackStats.projectile.x;
             explosionY = attackStats.projectile.y;
+            explosionZ = attackStats.projectile.z;
         } else if (target) {
-            explosionX = target.x + ifdefor(target.width, 64) / 2;
+            explosionX = target.x;
             explosionY = ifdefor(attackStats.y, getAttackY(target));
+            explosionZ = target.z;
         } else {
-            explosionX = attacker.x + ifdefor(attacker.width, 64) / 2;
+            explosionX = attacker.x;
             explosionY = ifdefor(attackStats.y, getAttackY(attacker));
+            explosionZ = target.z;
         }
-        var explosion = explosionEffect(explodeAttackStats, explosionX, explosionY);
+        var explosion = explosionEffect(explodeAttackStats, explosionX, explosionY, explosionZ);
         attacker.character.effects.push(explosion);
         // Meteor calls applyAttackToTarget with a null target so it can explode
         // anywhere. If that has happened, just return once the explosion has
@@ -457,7 +464,7 @@ function applyAttackToTarget(attackStats, target) {
     }
     var distance = attackStats.distance;
     var character = target.character;
-    var hitText = {x: target.x + 32, y: groundY - target.height - ifdefor(target.y, 0) + 10, color: 'grey', 'vx': -(Math.random() * 3 + 2) * target.direction, 'vy': -5};
+    var hitText = {x: target.x, y: target.height + 10, z: target.z, color: 'grey', 'vx': -(Math.random() * 3 + 2) * target.heading[0], 'vy': 5};
     if (target.invulnerable) {
         hitText.value = 'invulnerable';
         hitText.fontSize = 15;

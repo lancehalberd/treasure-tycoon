@@ -83,7 +83,7 @@ var skills = {
     // Attack actions
     'basicAttack': attackAction('attack', {'tags': ['basic']}, {}, 'A basic attack'),
     'healingAttack': attackAction('attack', {'animation': 'wandHealing', 'restrictions': ['wand'], 'target': 'otherAllies'}, {'$heals': true}, 'Basic attacks heal allies instead of damage enemies.'),
-    'bullseye': attackAction('attack', {'icon': 'gfx/496RpgIcons/target.png'}, {'*damage': 2, '+cooldown': 15, '$alwaysHits': 'Never misses', '$undodgeable': 'Cannot be dodged'}),
+    'bullseye': attackAction('attack', {'icon': jobIcon(4, 0)}, {'*damage': 2, '+cooldown': 15, '$alwaysHits': 'Never misses', '$undodgeable': 'Cannot be dodged'}),
     'counterAttack': attackAction('counterAttack', {'icon': jobIcon(0, 1)}, {'*damage': 1.5, '+chance': .1},
                             'Perform a powerful counter attack.<br/>The chance to counter is lower the further away the attacker is.'),
     'dragonPunch': attackAction('attack', {'icon': jobIcon(0, 1), 'restrictions': ['fist']},
@@ -91,7 +91,7 @@ var skills = {
                                         '+distance': 256, '$domino': 'Knocks target away possibly damaging other enemies.'}),
     'hook':  attackAction('attack', {'icon': jobIcon(2, 3)}, {'+cooldown': 10, '+range': 10, '+dragDamage': 0, '+dragStun': 0, '+knockbackRotation': -60, '+rangeDamage': 0, '$alwaysHits': 'Never misses', '$pullsTarget': 'Pulls target'},
                             'Throw a hook to damage and pull enemies closer.'),
-    'banishingStrike': attackAction('banish', {'icon': jobIcon(3, 2), 'restrictions': ['melee']}, {'+cooldown': 30, '*damage': 2, '+distance': [6, '+', ['{strength}' , '/', 20]],
+    'banishingStrike': attackAction('banish', {'icon': jobIcon(2, 2), 'restrictions': ['melee']}, {'+cooldown': 30, '*damage': 2, '+distance': [6, '+', ['{strength}' , '/', 20]],
                 '$alwaysHits': 'Never misses', '+purify': 0, '+shockwave': 0, '+knockbackRotation': 30,
                 '$debuff': debuffEffect({}, {'+*weaponDamage': .5, '+duration': ['{intelligence}', '/', 20]}),
                 '$otherDebuff': debuffEffect({}, {'+*speed': .1, '+duration': ['{intelligence}', '/', 20]})},
@@ -162,7 +162,7 @@ var skills = {
                             '++armor': ['{strength}', '/', 10], '++magicBlock': ['{intelligence}', '/', 20],
                             '++block': ['{intelligence}', '/', 10], '++evasion': ['{dexterity}', '/', 10], '+duration': 15})},
                     'Enhance the strength of your armor granting: {$buff}'),
-    'enhanceAbility': genericAction('effect', {'icon': 'gfx/496RpgIcons/auraAbility.png', 'tags': ['spell'], 'target': 'self'}, {'+cooldown': 20, '$buff': buffEffect({}, {
+    'enhanceAbility': genericAction('effect', {'icon': jobIcon(3, 3), 'tags': ['spell'], 'target': 'self'}, {'+cooldown': 20, '$buff': buffEffect({}, {
                             // This buff increases magicPower from magicDamage by 44% since that counts both damage and magicPower.
                             // Making a note here in case I want to change this *damage bonus to *physicalDamage later to balance this.
                             '+%cooldown': -.2, '+*magicPower': 1.2, '+*weaponDamage': 1.2, '+*range': 1.2, '+duration': 5})},
@@ -207,7 +207,7 @@ var skills = {
             'Upon receiving a lethal blow, cast a spell that brings you back to life with {+power} health.'),
     'protect': spellAction('effect', {'icon': 'gfx/496RpgIcons/spellProtect.png', 'target': 'allies'}, {'+cooldown': 30, '+range': 10, '$buff': buffEffect({'icons': [effectSourceUp, effectSourceArmor]}, {'++armor': ['{intelligence}'], '+duration': 20})},
                            'Create a magic barrier that grants: {$buff}'),
-    'aegis': spellAction('criticalCounter', {}, {'+cooldown': 60, '+stopAttack': 1,
+    'aegis': spellAction('criticalCounter', {'icon': 'gfx/496RpgIcons/buffShield.png'}, {'+cooldown': 60, '+stopAttack': 1,
                 '$buff': buffEffect({}, {'$$maxBlock': 'Block checks are always perfect', '$$maxMagicBlock': 'Magic Block checks are always perfect', '+duration': 5})},
                 'If an attack would deal more than half of your remaining life, prevent it and cast an enchantment that grants you: {$buff}'),
     'fireball': spellAction('spell', {'icon': 'gfx/496RpgIcons/spellFire.png', 'tags': ['ranged'], 'animation': 'fireball', 'size': 32, 'color': 'red', 'gravity': 0},
@@ -217,7 +217,7 @@ var skills = {
                                     {'+power': ['{magicPower}', '/', 2], '+area': [4, '+', ['{intelligence}', '/', '50']],
                                     '+areaCoefficient': 1, '+cooldown': 10, '$alwaysHits': 'Never misses', '+slowOnHit': 1},
                         'Emit a blast of icy air that deals {+power} damage and slows enemies. The effect is less the further away the enemy is.'),
-    'storm': spellAction('spell', {'icon': 'gfx/496RpgIcons/spellStorm.png', 'tags': ['field'], 'yOffset': 100, 'height': 40, 'color': 'yellow', 'alpha': .2},
+    'storm': spellAction('spell', {'icon': 'gfx/496RpgIcons/spellStorm.png', 'tags': ['field'], 'yOffset': 100, 'height': 80, 'color': 'yellow', 'alpha': .2},
                          {'+hitsPerSecond': 2, '+duration': 5, '+power': ['{magicPower}', '/', 4],
                          '+area': [5, '+', ['{intelligence}', '/', '200']], '+cooldown': 20, '$alwaysHits': 'Never misses'},
                         'Create a cloud of static electricity that randomly deals magic damage to nearby enemies.'),

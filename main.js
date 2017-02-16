@@ -119,6 +119,7 @@ function mainLoop() {
     }
     var fps = Math.floor(3 * 5 / 3);
     var characters = testingLevel ? [state.selectedCharacter] : state.characters;
+    var mousePosition = relativeMousePosition($(mainCanvas));
     for (var character of characters) {
         if (character.area && !character.paused) {
             character.loopCount = ifdefor(character.loopCount) + 1;
@@ -127,12 +128,23 @@ function mainLoop() {
             }
             for (var i = 0; i < character.gameSpeed && character.area; i++) {
                 character.time += frameMilliseconds / 1000;
-                // Original this branch was designed to make the camera change for opening the treasure
-                // But it actually applies to both the chest and the boss, which turned out to be fine.
-                var centerX = character.adventurer.x + 200 * character.adventurer.direction;
-                //if (character.cameraX < centerX - 400 || character.cameraX > centerX - 400) {
-                    character.cameraX = (character.cameraX * 10 + centerX - 400) / 11;
-                //}
+                // By default center the camera slightly ahead of the character.
+                var centerX = character.adventurer.x;
+                var mouseX = character.cameraX + Math.max(0, Math.min(800, mousePosition[0]));
+                if (character.adventurer.activity && character.adventurer.activity.type === 'move') {
+                    centerX = (centerX + character.adventurer.activity.x) / 2;
+                } else if (mouseX > centerX + 200) {
+                    centerX = (centerX + mouseX - 200) / 2;
+                } else if (mouseX < centerX - 200) {
+                    centerX = (centerX + mouseX + 200) / 2;
+                }
+                // When the character is targeting a unit, try to keep the camera centered between them
+                // unless that would leave the character off screen.
+                if (character.adventurer.target && character.adventurer.target !== character.adventurer) {
+                    centerX = Math.max(character.adventurer.x - 350, Math.min(character.adventurer.x + 350, (character.adventurer.x + character.adventurer.target.x) / 2));
+                }
+                if (Math.abs(character.cameraX - (centerX - 400)) < 200) character.cameraX = (character.cameraX * 20 + centerX - 400) / 21;
+                else character.cameraX = (character.cameraX * 10 + centerX - 400) / 11;
                 adventureLoop(character, frameMilliseconds / 1000);
                 if (!character.area) {
                     return
@@ -177,63 +189,17 @@ function mainLoop() {
             updateMap();
             drawMap();
         }
+        var hero = state.selectedCharacter.adventurer;
+        if (mouseDown && state.selectedCharacter.area && hero.activity && hero.activity.type == 'move') {
+            var targetZ = -(mousePosition[1] - groundY) * 2;
+            if (targetZ >= -200 || targetZ <= 200) {
+                setActorDestination(hero, {'x':state.selectedCharacter.cameraX + mousePosition[0], 'z': targetZ});
+            }
+        }
     }
     if (currentContext === 'item') {
         updateCraftingCanvas();
         drawCraftingCanvas();
-    }
-    if (editingMap && distributingMapNodes) {
-        /*for (var selectedNode of selectedMapNodes) {
-            var coordinateSum = [0, 0, 0];
-            var sumCount = 0;
-            for (var key in map) {
-                var otherNode = map[key];
-                var delta = [otherNode.coords[0] - selectedNode.coords[0], otherNode.coords[1] - selectedNode.coords[1], otherNode.coords[2] - selectedNode.coords[2]];
-                if (delta[0] * delta[0] + delta[1] * delta[1] + delta[2] * delta[2] < 20000) {
-                    coordinateSum[0] += otherNode.coords[0];
-                    coordinateSum[1] += otherNode.coords[1];
-                    coordinateSum[2] += otherNode.coords[2];
-                    sumCount++;
-                }
-            }
-            console.log(sumCount);
-            if (sumCount > 3) {
-                selectedNode.coords[0] = coordinateSum[0] / sumCount;
-                selectedNode.coords[1] = coordinateSum[1] / sumCount;
-                selectedNode.coords[2] = coordinateSum[2] / sumCount;
-                var C = 600 / Math.sqrt(selectedNode.coords[0] * selectedNode.coords[0] + selectedNode.coords[1]*selectedNode.coords[1] + selectedNode.coords[2]*selectedNode.coords[2]);
-                selectedNode.coords[0] *= C;
-                selectedNode.coords[1] *= C;
-                selectedNode.coords[2] *= C;
-            }
-        }*/
-        /*for (var key in map) {
-            var level = map[key];
-            if (selectedMapNodes.indexOf(level) >= 0 && level.v) {
-                level.coords[0] += level.v[0];
-                level.coords[1] += level.v[1];
-                level.coords[2] += level.v[2];
-                var C = 600 / Math.sqrt(level.coords[0] * level.coords[0] + level.coords[1]*level.coords[1] + level.coords[2]*level.coords[2]);
-                level.coords[0] *= C;
-                level.coords[1] *= C;
-                level.coords[2] *= C;
-            }
-            level.v = [0, 0, 0];
-        }
-        for (var i = 0; i < mapKeys.length; i++) {
-            var level1 = map[mapKeys[i]];
-            for (var j = i + 1; j < mapKeys.length; j++) {
-                var level2 = map[mapKeys[j]];
-                var delta = [level2.coords[0] - level1.coords[0], level2.coords[1] - level1.coords[1], level2.coords[2] - level1.coords[2]];
-                var mag = (delta[0] * delta[0] * delta[0] + delta[1] * delta[1] * delta[1] + delta[2] * delta[2] * delta[2]) / 500;
-                level1.v[0] -= delta[0] / mag;
-                level1.v[1] -= delta[1] / mag;
-                level1.v[2] -= delta[2] / mag;
-                level2.v[0] += delta[0] / mag;
-                level2.v[1] += delta[1] / mag;
-                level2.v[2] += delta[2] / mag;
-            }
-        }*/
     }
     if (state.selectedCharacter.area) {
         refreshStatsPanel(state.selectedCharacter, $('.js-characterColumn .js-stats'))
@@ -274,14 +240,43 @@ $('.js-mouseContainer').on('mouseover mousemove', '.js-mainCanvas', function (ev
     canvasCoords = [x, y];
     checkToShowAdventureToolTip(x, y);
 });
-$('.js-mouseContainer').on('click', '.js-mainCanvas', function (event) {
+$('.js-mouseContainer').on('mousedown', '.js-mainCanvas', function (event) {
     var x = event.pageX - $(this).offset().left;
     var y = event.pageY - $(this).offset().top;
     canvasCoords = [x, y];
-    if (canvasPopupTarget && canvasPopupTarget.onClick) {
-        canvasPopupTarget.onClick(state.selectedCharacter);
+    var hero = state.selectedCharacter.adventurer;
+    if (canvasPopupTarget) {
+        if (canvasPopupTarget.onClick) {
+            canvasPopupTarget.onClick(state.selectedCharacter);
+        } else if (currentContext === 'adventure' && state.selectedCharacter.area) {
+            if (hero.enemies.indexOf(canvasPopupTarget) >= 0) {
+                setActorAttackTarget(hero, canvasPopupTarget);
+            } else {
+                setActorDestination(hero, canvasPopupTarget);
+            }
+        }
+    } else if (currentContext === 'adventure' && state.selectedCharacter.area) {
+        var targetZ = -(y - groundY) * 2;
+        if (targetZ >= -200 || targetZ <= 200) {
+            setActorDestination(hero, {'x':state.selectedCharacter.cameraX + x, 'z': targetZ});
+        }
     }
 });
+function setActorDestination(actor, target) {
+    actor.activity = {
+        'type': 'move',
+        'x': target.x,
+        'y': 0,
+        'z': Math.max(-180 + actor.width / 2, Math.min(180 - actor.width / 2, target.z))
+    };
+    actor.target = null;
+}
+function setActorAttackTarget(actor, target) {
+    actor.activity = {
+        'type': 'attack',
+        'target': target
+    };
+}
 $('.js-mouseContainer').on('mouseout', '.js-mainCanvas', function (event) {
     canvasCoords = [];
 });

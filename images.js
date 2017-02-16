@@ -1,5 +1,5 @@
 
-var assetVersion = '0.1';
+var assetVersion = '0.3';
 var images = {};
 function loadImage(source, callback) {
     images[source] = new Image();
@@ -39,7 +39,6 @@ var initialImagesToLoad = [
     'gfx/496RpgIcons/abilityShadowClone.png',
     'gfx/496RpgIcons/abilityThrowWeapon.png',
     'gfx/496RpgIcons/abilityVenom.png',
-    'gfx/496RpgIcons/auraAbility.png',
     'gfx/496RpgIcons/auraAttack.png',
     'gfx/496RpgIcons/auraDefense.png',
     'gfx/496RpgIcons/buffAxe.png',
@@ -209,17 +208,23 @@ function drawBar(context, x, y, width, height, background, color, percent) {
 
 function drawAbilityIcon(context, icon, target) {
     if (!icon) return;
+    // Don't scale up ability icons.
+    var width = Math.min(icon.width, target.width);
+    var hPadding = (target.width - width) / 2;
+    var height = Math.min(icon.height, target.height);
+    var vPadding = (target.height - height) / 2;
+    var drawTarget = {'left': target.left + Math.ceil(hPadding), 'top': target.top + Math.ceil(vPadding), 'width': width, 'height': height};
     if (icon.drawImage) {
-        icon.drawImage(context, target);
+        icon.drawImage(context, drawTarget);
         return;
     }
     // Default icon style is: {'image': images[icon], 'left': 0, 'top': 0, 'width': 34, 'height': 34};
-    drawImage(context, icon.image, icon, target);
+    drawImage(context, icon.image, icon, drawTarget);
 }
 
 function jobIcon(column, row) {
     return {'image': requireImage('gfx/jobIcons.png'), 'width': 40, 'height': 40,
-        'left': column * 40, 'top': row * 40 + (row > 0 ? 1 : 0),
+        'left': column * 41, 'top': row * 41,
         'drawImage': drawJobIcon};
 }
 function drawJobIcon(context, target) {

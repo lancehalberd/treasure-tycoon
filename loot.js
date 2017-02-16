@@ -238,7 +238,7 @@ function treasureChest(loot, closedImage, openImage) {
         'draw': function (character) {
             var frameOffset = self.open ? 64 : 0;
             mainContext.drawImage(images['gfx/treasureChest.png'], frameOffset, 0, 64, 64,
-                (self.x - 32) - character.cameraX, groundY - self.y - 64, 64, 64);
+                (self.x - 32) - character.cameraX, groundY - self.y - self.z / 2 - 64, 64, 64);
         },
         'helpMethod': function () {
             return "<b>Treasure Chest</b><hr><p>The rewards from these chests is much greater the first time an adventurer completes an adventure on a given difficulty.</p>";
@@ -248,7 +248,7 @@ function treasureChest(loot, closedImage, openImage) {
 }
 function messageCharacter(character, text) {
     var actor = character.adventurer;
-    appendTextPopup(character, {'value': text, 'duration': 70, 'x': actor.x + 64, y: actor.top, color: 'white', fontSize: 15, 'vx': 0, 'vy': -.5, 'gravity': -.05}, true);
+    appendTextPopup(character, {'value': text, 'duration': 70, 'x': actor.x + 32, y: actor.height, z: actor.z, color: 'white', fontSize: 15, 'vx': 0, 'vy': .5, 'gravity': .05}, true);
 }
 function abilityShrine() {
     var self = {
@@ -325,7 +325,7 @@ function abilityShrine() {
             }
             var skill = abilities[level.skill];
             drawImage(mainContext, shrineSource.image,
-                shrineSource, {'left': self.x - 64 - character.cameraX, 'top': groundY - self.y - 128, 'width': 128, 'height': 128});
+                shrineSource, {'left': self.x - 64 - character.cameraX, 'top': groundY - self.y - self.z / 2 - 128, 'width': 128, 'height': 128});
         },
         'helpMethod': function () {
             return "<b>Divine Shrine</b><hr><p>You can use divinity as an offering at these shrines to receive a blessing from the Gods and grow more powerful.</p>";

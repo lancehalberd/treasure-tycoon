@@ -261,7 +261,6 @@ function toggleLevelLink(levelA, levelB) {
 var mapDragX = mapDragY = null, draggedMap = false;
 var selectionStartPoint = null;
 var originalSelectedNodes = [];
-var distributingMapNodes = false;
 
 // Disable context menu while editing the map because the right click is used for making nodes and edges.
 $('.js-mouseContainer').on('contextmenu', '.js-mainCanvas', function (event) {
@@ -651,9 +650,6 @@ $(document).on('keydown', function(event) {
             if (!editingMap) startMapEditing();
             else stopMapEditing();
         }
-    }
-    if (editingMap && event.which === 70) { // 'f' float
-        distributingMapNodes = !distributingMapNodes;
     }
     if (window.location.search.substr(1) === 'edit' && event.which === 76) { // 'l'
         if (currentMapTarget && currentMapTarget.levelKey) {
