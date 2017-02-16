@@ -248,7 +248,7 @@ function treasureChest(loot, closedImage, openImage) {
 }
 function messageCharacter(character, text) {
     var actor = character.adventurer;
-    appendTextPopup(character, {'value': text, 'duration': 70, 'x': actor.x + 64, y: actor.top, color: 'white', fontSize: 15, 'vx': 0, 'vy': -.5, 'gravity': -.05}, true);
+    appendTextPopup(character, {'value': text, 'duration': 70, 'x': actor.x + 32, y: actor.height, z: actor.z, color: 'white', fontSize: 15, 'vx': 0, 'vy': .5, 'gravity': .05}, true);
 }
 function abilityShrine() {
     var self = {

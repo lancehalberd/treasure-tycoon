@@ -230,7 +230,7 @@ function projectile(attackStats, x, y, z, vx, vy, vz, target, delay, color, size
                 }
             } else {
                 // normal projectiles hit when they overlap the target.
-                hit = (getDistance(self, target) <= 0) && self.target.health > 0;
+                hit = (getDistance(self, self.target) <= 0) && self.target.health > 0;
             }
             self.vy -= attackStats.gravity;
             self.t += 1;

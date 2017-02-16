@@ -251,7 +251,7 @@ function initalizeMonsters() {
     var caterpillarSource = setupActorSource({'image': enemySheet('gfx/caterpillar.png'), 'width': 48, 'height': 64, 'actualHeight': 24, 'yOffset': 40, frames: 4});
     var gnomeSource = setupActorSource({'image': enemySheet('gfx/gnome.png'), 'width': 32, 'height': 64, 'actualHeight': 38, 'yOffset': 26, 'flipped': true, frames: 4});
     var skeletonSource = setupActorSource({'image': enemySheet('gfx/skeletonSmall.png'), 'width': 48, 'height': 64, 'actualHeight': 38, 'yOffset': 26, frames: 7});
-    var butterflySource = setupActorSource({'image': enemySheet('gfx/yellowButterfly.png'), 'width': 64, 'height': 64,
+    var butterflySource = setupActorSource({'image': enemySheet('gfx/yellowButterfly.png'), 'width': 64, 'actualWidth': 48, 'height': 64,
             framesPerRow: 7, walkFrames: [1, 2, 3, 4, 5, 6, 4, 2, 0], attackFrames: [7, 10, 11, 10], deathFrames: [7, 8, 9, 9]});
     var skeletonGiantSource = setupActorSource({'image': enemySheet('gfx/skeletonGiant.png'), 'width': 48, frames: 7});
     var dragonSource = setupActorSource({'image': enemySheet('gfx/dragonEastern.png'),
@@ -263,7 +263,7 @@ function initalizeMonsters() {
             framesPerRow: 7, walkFrames: [0, 1, 2, 3], attackFrames: [6, 4, 5, 0], deathFrames: [0, 7, 8, 9]});
     var turtleSource = {'image': enemySheet('gfx/turtle.png'), 'xOffset': 0, 'width': 64, 'height': 64,
             framesPerRow: 5, walkFrames: [0, 1, 2, 3], attackFrames: [5, 6], deathFrames: [5, 7, 8, 9]};
-    var monarchSource = setupActorSource({'image': enemySheet('gfx/monarchButterfly.png'), 'width': 64, 'height': 64,
+    var monarchSource = setupActorSource({'image': enemySheet('gfx/monarchButterfly.png'), 'width': 64, 'actualWidth': 48, 'height': 64,
             framesPerRow: 7, walkFrames: [1, 2, 3, 4, 5, 6, 4, 2, 0], attackFrames: [7, 10, 11, 10], deathFrames: [7, 8, 9, 9]});
     addMonster('dummy', {
         'name': 'Dummy', 'source': caterpillarSource,

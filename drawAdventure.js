@@ -36,8 +36,10 @@ function drawAdventure(character) {
     ifdefor(character.objects, []).forEach(function (object) {
         object.draw(character);
     });
-    ifdefor(character.enemies, []).forEach(drawActor);
-    ifdefor(character.allies, []).forEach(drawActor);
+    var sortedActors = character.allies.concat(character.enemies).sort(function (spriteA, spriteB) {
+        return spriteB.z - spriteA.z;
+    });
+    sortedActors.forEach(drawActor);
     // Draw text popups such as damage dealt, item points gained, and so on.
     context.fillStyle = 'red';
     for (var i = 0; i < ifdefor(character.treasurePopups, []).length; i++) {
@@ -55,7 +57,7 @@ function drawAdventure(character) {
         var scale = Math.max(0, Math.min(1.5, ifdefor(textPopup.duration, 0) / 10));
         context.font = Math.round(scale * ifdefor(textPopup.fontSize, 20)) + 'px sans-serif';
         context.textAlign = 'center'
-        context.fillText(textPopup.value, textPopup.x - cameraX, textPopup.y);
+        context.fillText(textPopup.value, textPopup.x - cameraX, groundY - textPopup.y - textPopup.z / 2);
     }
     drawMinimap(character);
 }
@@ -83,7 +85,7 @@ function drawActor(actor) {
         context.globalAlpha = .2;
     }
     var top = groundY - actor.height - ifdefor(actor.y, 0) - ifdefor(actor.z, 0) / 2;
-    var left = actor.x - cameraX;
+    var left = actor.x - actor.width / 2 - cameraX;
     // These values are used for determining when the mouse is hovering over the actor.
     // We only need these when the screen is displayed, so we can set them only on draw.
     actor.top = top;

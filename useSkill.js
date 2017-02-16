@@ -3,9 +3,10 @@
  *
  * The skill must be one the actor possesses, and it must be ready to be used.
  *
- * @param object actor  The actor performing the skill.
- * @param object skill  The skill being performed.
- * @param object target The target to attack or the attackStats of the attack to react to.
+ * @param object actor       The actor performing the skill.
+ * @param object skill       The skill being performed.
+ * @param object target      The target to attack for active abilities.
+ * @param object attackStats The attackStats of the attack to react to for reactions.
  *
  * @return boolean True if the skill was used.
  */
@@ -14,6 +15,10 @@ function useSkill(actor, skill, target, attackStats) {
     var actionIndex = actor.actions.indexOf(skill);
     // Only process actions when called with a target.
     if (!target && actionIndex >= 0) return false;
+    // Cannot use abilities on targets you are not facing.
+    if (target && (target.x - actor.x) * actor.heading[0] < 0) {
+        return false;
+    }
     var reactionIndex = actor.reactions.indexOf(skill);
     // Only process reactions when called with attack data.
     if (!attackStats && reactionIndex >= 0) return false;
@@ -131,7 +136,7 @@ function useSkill(actor, skill, target, attackStats) {
     // Show the name of the skill used if it isn't a basic attack. When skills have distinct
     // visible animations, we should probably remove this.
     if (!skill.tags['basic']) {
-        var hitText = {x: actor.x + 32, y: actor.top, color: 'white', fontSize: 15, 'vx': 0, 'vy': -1, 'gravity': -.1};
+        var hitText = {x: actor.x, y: actor.height, z: actor.z, color: 'white', fontSize: 15, 'vx': 0, 'vy': 1, 'gravity': .1};
         hitText.value = skill.base.name;
         appendTextPopup(actor.character, hitText, true);
     }

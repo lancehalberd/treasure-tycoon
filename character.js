@@ -157,11 +157,12 @@ function initializeActorForAdventure(actor) {
     actor.target = null;
     actor.slow = 0;
     actor.rotation = 0;
+    actor.activity = null;
     actor.imprintedSpell = null;
     // actor.heading = [1, 0, 0];
     var stopTimeAction = findActionByTag(actor.reactions, 'stopTime');
     actor.temporalShield = actor.maxTemporalShield = (stopTimeAction ? stopTimeAction.duration : 0);
-    updateActorDimensions(actor, 0);
+    updateActorDimensions(actor);
 }
 function returnToMap(character) {
     removeAdventureEffects(character.adventurer);
@@ -263,7 +264,7 @@ function makeAdventurerFromData(adventurerData) {
             'height': 64,
             'yCenter': 44, // Measured from the top of the source
             'yOffset': 14, // Measured from the top of the source
-            'actualHeight': 50,
+            'actualHeight': 45,
             'xOffset': 39,
             'actualWidth': 18,
             'attackY': 19, // Measured from the bottom of the source
