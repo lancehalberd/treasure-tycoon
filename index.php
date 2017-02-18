@@ -1,8 +1,8 @@
 <?php
-    $version = '0.4';
+    $version = '0.5';
     function addScripts($scriptNames) {
-        global $version;
         foreach ($scriptNames as $scriptName) {
+            $version = hash_file('md5', $scriptName);
             ?>
 <script src="<?=  $scriptName . '?v=' . $version ?>"></script><?php
         }
@@ -46,7 +46,7 @@
     <script>
         var assetVersion = '<?= $version ?>';
     </script>
-    <link rel="stylesheet" type="text/css" href="styles.css?v=<?= $version ?>"/>
+    <link rel="stylesheet" type="text/css" href="styles.css?v=<?= hash_file('md5', 'styles.css') ?>"/>
     <script src="lib/jquery.min.js"></script>
     <script src="lib/jstorage.min.js"></script>
     <script src="lib/async.js"></script>
