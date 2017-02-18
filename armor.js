@@ -13,7 +13,7 @@ var equipmentSources = {
     'sandals': equipmentSource(feet, 3),
     // Knight
     'heavyHelmet': equipmentSource(head, 1),
-    'heavyArmor': equipmentSource(body, 0),
+    'heavyShirt': equipmentSource(body, 0),
     'heavySleeves': equipmentSource(arm, 0),
     'heavyPants': equipmentSource(legs, 0),
     'heavyBoots': equipmentSource(feet, 1),
@@ -29,6 +29,12 @@ var equipmentSources = {
     'leatherLongGloves': equipmentSource(arm, 12),
     'leatherPants': equipmentSource(legs, 12),
     'leatherBoots': equipmentSource(feet, 13),
+    // Chainmail
+    'chainmailHelm': equipmentSource(head, 17),
+    'chainmailShirt': equipmentSource(body, 18),
+    'chainmailSleeves': equipmentSource(arm, 18),
+    'chainmailSkirt': equipmentSource(legs, 17),
+    'chainmailGloves': equipmentSource(hand, 17),
     // Robes
     'blueRobe': equipmentSource(body, 6),
     'purpleRobe': equipmentSource(body, 7),
@@ -68,13 +74,13 @@ addItem(9, {'slot': 'head', 'type': 'heavyArmor', 'name': 'Copper Helmet', 'bonu
 addItem(14, {'slot': 'head', 'type': 'heavyArmor', 'name': 'Bronze Helmet', 'bonuses': {'+armor': 26, '+maxHealth': 130}, 'source': equipmentSources.heavyHelmet, icon: 'helmet'});
 addItem(19, {'slot': 'head', 'type': 'heavyArmor', 'name': 'Iron Helmet', 'bonuses': {'+armor': 34, '+maxHealth': 170}, 'source': equipmentSources.heavyHelmet, icon: 'helmet'});
 addItem(24, {'slot': 'head', 'type': 'heavyArmor', 'name': 'Steel Helmet', 'bonuses': {'+armor': 42, '+maxHealth': 210}, 'source': equipmentSources.heavyHelmet, icon: 'helmet'});
-addItem(29, {'slot': 'head', 'type': 'heavyArmor', 'name': 'Chainmail Coif', 'bonuses': {'+armor': 50, '+maxHealth': 250}, 'source': equipmentSources.heavyHelmet, icon: 'helmet'});
-addItem(34, {'slot': 'head', 'type': 'heavyArmor', 'name': 'Scalemail Coif', 'bonuses': {'+armor': 58, '+maxHealth': 290}, 'source': equipmentSources.heavyHelmet, icon: 'helmet'});
-addItem(39, {'slot': 'head', 'type': 'heavyArmor', 'name': 'Platemail Coif', 'bonuses': {'+armor': 66, '+maxHealth': 330}, 'source': equipmentSources.heavyHelmet, icon: 'helmet'});
-addItem(44, {'slot': 'head', 'type': 'heavyArmor', 'name': 'Iron Great Helm', 'bonuses': {'+armor': 74, '+maxHealth': 370}, 'source': equipmentSources.heavyHelmet, icon: 'helmet'});
-addItem(49, {'slot': 'head', 'type': 'heavyArmor', 'name': 'Steel Great Helm', 'bonuses': {'+armor': 82, '+maxHealth': 410}, 'source': equipmentSources.heavyHelmet, icon: 'helmet'});
-addItem(59, {'slot': 'head', 'type': 'heavyArmor', 'name': 'Adamantium Great Helm', 'bonuses': {'+armor': 110, '+maxHealth': 500, '+evasion': 10, '+block': 10, '+magicBlock': 5, '%speed': -0.05}, 'source': equipmentSources.heavyHelmet, icon: 'helmet'});
-addItem(69, {'slot': 'head', 'type': 'heavyArmor', 'name': 'Orichalcum Great Helm', 'bonuses': {'+armor': 100, '+maxHealth': 550, '+evasion': 10, '+block': 10, '+magicBlock': 10}, 'source': equipmentSources.heavyHelmet, icon: 'helmet'});
+addItem(29, {'slot': 'head', 'type': 'heavyArmor', 'name': 'Chainmail Coif', 'bonuses': {'+armor': 50, '+maxHealth': 250}, 'source': equipmentSources.chainmailHelm, icon: 'helmet'});
+addItem(34, {'slot': 'head', 'type': 'heavyArmor', 'name': 'Scalemail Coif', 'bonuses': {'+armor': 58, '+maxHealth': 290}, 'source': equipmentSources.chainmailHelm, icon: 'helmet'});
+addItem(39, {'slot': 'head', 'type': 'heavyArmor', 'name': 'Platemail Coif', 'bonuses': {'+armor': 66, '+maxHealth': 330}, 'source': equipmentSources.chainmailHelm, icon: 'helmet'});
+addItem(44, {'slot': 'head', 'type': 'heavyArmor', 'name': 'Iron Great Helm', 'bonuses': {'+armor': 74, '+maxHealth': 370}, 'source': equipmentSources.devilHelmet, icon: 'helmet'});
+addItem(49, {'slot': 'head', 'type': 'heavyArmor', 'name': 'Steel Great Helm', 'bonuses': {'+armor': 82, '+maxHealth': 410}, 'source': equipmentSources.devilHelmet, icon: 'helmet'});
+addItem(59, {'slot': 'head', 'type': 'heavyArmor', 'name': 'Adamantium Great Helm', 'bonuses': {'+armor': 110, '+maxHealth': 500, '+evasion': 10, '+block': 10, '+magicBlock': 5, '%speed': -0.05}, 'source': equipmentSources.devilHelmet, icon: 'helmet'});
+addItem(69, {'slot': 'head', 'type': 'heavyArmor', 'name': 'Orichalcum Great Helm', 'bonuses': {'+armor': 100, '+maxHealth': 550, '+evasion': 10, '+block': 10, '+magicBlock': 10}, 'source': equipmentSources.devilHelmet, icon: 'helmet'});
 
 //Light Helmets gives armor and evasion
 //addItem(1, {'slot': 'head', 'type': 'lightArmor', 'name': 'Rotten Bucket', 'bonuses': {'+armor': 1, '+evasion': 3}, 'offset': 10, icon: 'featherHat'});
@@ -107,19 +113,19 @@ addItem(57, {'slot': 'head', 'type': 'clothArmor', 'name': 'Blessed Cowl', 'bonu
 addItem(67, {'slot': 'head', 'type': 'clothArmor', 'name': 'Divine Cowl', 'bonuses': {'+block': 100, '+magicBlock': 60, '+armor': 10, '+evasion': 10, '+maxHealth': 50}, 'source': equipmentSources.wizardHat, icon: 'mageHat'});
 
 //Heavy Armor gives armor + health
-addItem(3, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Lamellar', 'bonuses': {'+armor': 8, '+maxHealth': 40}, 'source': equipmentSources.heavyArmor, icon: 'heavyArmor'});
-addItem(8, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Bamboo Armor', 'bonuses': {'+armor': 13, '+maxHealth': 65}, 'source': equipmentSources.heavyArmor, icon: 'heavyArmor'});
-addItem(13, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Panoply', 'bonuses': {'+armor': 23, '+maxHealth': 115}, 'source': equipmentSources.heavyArmor, icon: 'heavyArmor'});
-addItem(18, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Plated Coat', 'bonuses': {'+armor': 33, '+maxHealth': 165}, 'source': equipmentSources.heavyArmor, icon: 'heavyArmor'});
-addItem(23, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Brigandine', 'bonuses': {'+armor': 43, '+maxHealth': 215}, 'source': equipmentSources.heavyArmor, icon: 'heavyArmor'});
-addItem(28, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Cuirass', 'bonuses': {'+armor': 53, '+maxHealth': 265}, 'source': equipmentSources.heavyArmor, icon: 'heavyArmor'});
-addItem(33, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Chainmall', 'bonuses': {'+armor': 63, '+maxHealth': 315}, 'source': equipmentSources.heavyArmor, icon: 'heavyArmor'});
-addItem(38, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Scalemail', 'bonuses': {'+armor': 73, '+maxHealth': 365}, 'source': equipmentSources.heavyArmor, icon: 'heavyArmor'});
-addItem(43, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Platemail', 'bonuses': {'+armor': 83, '+maxHealth': 415}, 'source': equipmentSources.heavyArmor, icon: 'heavyArmor'});
-addItem(48, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Half Plate', 'bonuses': {'+armor': 93, '+maxHealth': 465}, 'source': equipmentSources.heavyArmor, icon: 'heavyArmor'});
-addItem(53, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Full Plate', 'bonuses': {'+armor': 103, '+maxHealth': 515}, 'source': equipmentSources.heavyArmor, icon: 'heavyArmor'});
-addItem(63, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Adamantium Plate', 'bonuses': {'+armor': 130, '+maxHealth': 700, '+evasion': 20, '+block': 20, '+magicBlock': 10, '%speed': -0.2}, 'source': equipmentSources.heavyArmor, icon: 'heavyArmor'});
-addItem(73, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Orichalcum Plate', 'bonuses': {'+armor': 120, '+maxHealth': 700, '+evasion': 20, '+block': 20, '+magicBlock': 20}, 'source': equipmentSources.heavyArmor, icon: 'heavyArmor'});
+addItem(3, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Lamellar', 'bonuses': {'+armor': 8, '+maxHealth': 40}, 'source': equipmentSources.heavyShirt, icon: 'heavyArmor'});
+addItem(8, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Bamboo Armor', 'bonuses': {'+armor': 13, '+maxHealth': 65}, 'source': equipmentSources.heavyShirt, icon: 'heavyArmor'});
+addItem(13, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Panoply', 'bonuses': {'+armor': 23, '+maxHealth': 115}, 'source': equipmentSources.heavyShirt, icon: 'heavyArmor'});
+addItem(18, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Plated Coat', 'bonuses': {'+armor': 33, '+maxHealth': 165}, 'source': equipmentSources.heavyShirt, icon: 'heavyArmor'});
+addItem(23, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Brigandine', 'bonuses': {'+armor': 43, '+maxHealth': 215}, 'source': equipmentSources.heavyShirt, icon: 'heavyArmor'});
+addItem(28, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Cuirass', 'bonuses': {'+armor': 53, '+maxHealth': 265}, 'source': equipmentSources.heavyShirt, icon: 'heavyArmor'});
+addItem(33, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Chainmall', 'bonuses': {'+armor': 63, '+maxHealth': 315}, 'source': equipmentSources.chainmailShirt, icon: 'heavyArmor'});
+addItem(38, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Scalemail', 'bonuses': {'+armor': 73, '+maxHealth': 365}, 'source': equipmentSources.chainmailShirt, icon: 'heavyArmor'});
+addItem(43, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Platemail', 'bonuses': {'+armor': 83, '+maxHealth': 415}, 'source': equipmentSources.chainmailShirt, icon: 'heavyArmor'});
+addItem(48, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Half Plate', 'bonuses': {'+armor': 93, '+maxHealth': 465}, 'source': equipmentSources.heavyShirt, icon: 'heavyArmor'});
+addItem(53, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Full Plate', 'bonuses': {'+armor': 103, '+maxHealth': 515}, 'source': equipmentSources.heavyShirt, icon: 'heavyArmor'});
+addItem(63, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Adamantium Plate', 'bonuses': {'+armor': 130, '+maxHealth': 700, '+evasion': 20, '+block': 20, '+magicBlock': 10, '%speed': -0.2}, 'source': equipmentSources.heavyShirt, icon: 'heavyArmor'});
+addItem(73, {'slot': 'body', 'type': 'heavyArmor', 'name': 'Orichalcum Plate', 'bonuses': {'+armor': 120, '+maxHealth': 700, '+evasion': 20, '+block': 20, '+magicBlock': 20}, 'source': equipmentSources.heavyShirt, icon: 'heavyArmor'});
 
 //Light Armor gives armor and evasion
 addItem(2, {'slot': 'body', 'type': 'lightArmor', 'name': 'Cloth Tunic', 'bonuses': {'+armor': 2, '+evasion': 4}, 'source': equipmentSources.leatherVest, icon: 'lightArmor'});
@@ -159,9 +165,9 @@ addItem(15, {'slot': 'arms', 'type': 'heavyArmor', 'name': 'Bronze Vambracers', 
 addItem(20, {'slot': 'arms', 'type': 'heavyArmor', 'name': 'Iron Vambracers', 'bonuses': {'+armor': 34, '+maxHealth': 170}, 'source': equipmentSources.heavySleeves, icon: 'vambracers'});
 addItem(25, {'slot': 'arms', 'type': 'heavyArmor', 'name': 'Black Vambracers', 'bonuses': {'+armor': 42, '+maxHealth': 210}, 'source': equipmentSources.heavySleeves, icon: 'vambracers'});
 addItem(30, {'slot': 'arms', 'type': 'heavyArmor', 'name': 'Forged Vambracers', 'bonuses': {'+armor': 50, '+maxHealth': 250}, 'source': equipmentSources.heavySleeves, icon: 'vambracers'});
-addItem(35, {'slot': 'arms', 'type': 'heavyArmor', 'name': 'Steel Vambracers', 'bonuses': {'+armor': 58, '+maxHealth': 290}, 'source': equipmentSources.heavySleeves, icon: 'vambracers'});
-addItem(40, {'slot': 'arms', 'type': 'heavyArmor', 'name': 'Stainless Vambracers', 'bonuses': {'+armor': 66, '+maxHealth': 330}, 'source': equipmentSources.heavySleeves, icon: 'vambracers'});
-addItem(45, {'slot': 'arms', 'type': 'heavyArmor', 'name': 'Engraved Vambracers', 'bonuses': {'+armor': 74, '+maxHealth': 370}, 'source': equipmentSources.heavySleeves, icon: 'vambracers'});
+addItem(35, {'slot': 'arms', 'type': 'heavyArmor', 'name': 'Steel Vambracers', 'bonuses': {'+armor': 58, '+maxHealth': 290}, 'source': equipmentSources.chainmailGloves, icon: 'vambracers'});
+addItem(40, {'slot': 'arms', 'type': 'heavyArmor', 'name': 'Stainless Vambracers', 'bonuses': {'+armor': 66, '+maxHealth': 330}, 'source': equipmentSources.chainmailGloves, icon: 'vambracers'});
+addItem(45, {'slot': 'arms', 'type': 'heavyArmor', 'name': 'Engraved Vambracers', 'bonuses': {'+armor': 74, '+maxHealth': 370}, 'source': equipmentSources.chainmailGloves, icon: 'vambracers'});
 addItem(50, {'slot': 'arms', 'type': 'heavyArmor', 'name': 'Meteoric Vambracers', 'bonuses': {'+armor': 82, '+maxHealth': 410}, 'source': equipmentSources.heavySleeves, icon: 'vambracers'});
 addItem(60, {'slot': 'arms', 'type': 'heavyArmor', 'name': 'Adamantium Vambracers', 'bonuses': {'+armor': 110, '+maxHealth': 500, '+evasion': 10, '+block': 10, '+magicBlock': 5, '%speed': -0.05}, 'source': equipmentSources.heavySleeves, icon: 'vambracers'});
 addItem(70, {'slot': 'arms', 'type': 'heavyArmor', 'name': 'Orichalcum Vambracers', 'bonuses': {'+armor': 100, '+maxHealth': 550, '+evasion': 10, '+block': 10, '+magicBlock': 10}, 'source': equipmentSources.heavySleeves, icon: 'vambracers'});
@@ -204,9 +210,9 @@ addItem(16, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Bronze Greaves', 'bo
 addItem(21, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Iron Greaves', 'bonuses': {'+armor': 39, '+maxHealth': 190}, 'source': equipmentSources.heavyPants, icon: 'greaves'});
 addItem(26, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Black Greaves', 'bonuses': {'+armor': 48, '+maxHealth': 235}, 'source': equipmentSources.heavyPants, icon: 'greaves'});
 addItem(31, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Forged Greaves', 'bonuses': {'+armor': 57, '+maxHealth': 280}, 'source': equipmentSources.heavyPants, icon: 'greaves'});
-addItem(36, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Steel Greaves', 'bonuses': {'+armor': 66, '+maxHealth': 325}, 'source': equipmentSources.heavyPants, icon: 'greaves'});
-addItem(41, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Stainless Greaves', 'bonuses': {'+armor': 75, '+maxHealth': 370}, 'source': equipmentSources.heavyPants, icon: 'greaves'});
-addItem(46, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Engraved Greaves', 'bonuses': {'+armor': 84, '+maxHealth': 415}, 'source': equipmentSources.heavyPants, icon: 'greaves'});
+addItem(36, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Steel Greaves', 'bonuses': {'+armor': 66, '+maxHealth': 325}, 'source': equipmentSources.chainmailSkirt, icon: 'greaves'});
+addItem(41, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Stainless Greaves', 'bonuses': {'+armor': 75, '+maxHealth': 370}, 'source': equipmentSources.chainmailSkirt, icon: 'greaves'});
+addItem(46, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Engraved Greaves', 'bonuses': {'+armor': 84, '+maxHealth': 415}, 'source': equipmentSources.chainmailSkirt, icon: 'greaves'});
 addItem(51, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Meteoric Greaves', 'bonuses': {'+armor': 93, '+maxHealth': 460}, 'source': equipmentSources.heavyPants, icon: 'greaves'});
 addItem(61, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Adamantium Greaves', 'bonuses': {'+armor': 110, '+maxHealth': 550, '+evasion': 20, '+block': 20, '+magicBlock': 10, '%speed': -0.1}, 'source': equipmentSources.heavyPants, icon: 'greaves'});
 addItem(71, {'slot': 'legs', 'type': 'heavyArmor', 'name': 'Orichalcum Greaves', 'bonuses': {'+armor': 100, '+maxHealth': 550, '+evasion': 20, '+block': 20, '+magicBlock': 20}, 'source': equipmentSources.heavyPants, icon: 'greaves'});
