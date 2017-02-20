@@ -303,20 +303,13 @@ function performAttack(attacker, attack, target) {
         attackStats = createAttackStats(attacker, attack, target);
     }
     attacker.health -= attackStats.healthSacrificed;
-    attacker.attackCooldown = attacker.time + 1 / (attackStats.attack.attackSpeed * Math.max(.1, (1 - attacker.slow)));
-    attacker.moveCooldown = attacker.time + .2;
-    attacker.attackFrame = 0;
     performAttackProper(attackStats, target);
     return attackStats;
 }
 function castAttackSpell(attacker, spell, target) {
     var attackStats = createSpellStats(attacker, spell, target);
     attacker.health -= attackStats.healthSacrificed;
-    attacker.attackCooldown = attacker.time + .2;
-    attacker.moveCooldown = attacker.time + .2;
-    attacker.attackFrame = 0;
     performAttackProper(attackStats, target);
-    attacker.stunned = attacker.time + .3;
     if (attacker.imprintSpell) attacker.imprintedSpell = spell;
     return attackStats;
 }
@@ -609,8 +602,6 @@ function applyAttackToTarget(attackStats, target) {
         var direction = (target.x < attacker.x) ? -1 : 1;
         if (Math.random() < ifdefor(attack.knockbackChance, 0)) {
             var targetX = target.x + direction * 32 * ifdefor(attack.knockbackDistance, 1);
-            // unset the current target since they are being pushed away.
-            attacker.target = null;
             target.pull = {'x': targetX, 'time': target.time + .3, 'damage': 0};
             target.rotation = direction * ifdefor(attack.knockbackRotation, 45);
         }

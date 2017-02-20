@@ -63,15 +63,19 @@ function drawAdventure(character) {
 }
 function updateActorAnimationFrame(actor) {
     if (actor.pull || actor.stunned || actor.isDead ) {
-        actor.walkFrame = actor.attackFrame = 0;
-    } else if (actor.target && actor.lastAction && actor.lastAction.attackSpeed) { // attacking loop
-        var attackFps = 1 / ((1 / actor.lastAction.attackSpeed) / actor.source.attackFrames.length);
-        actor.attackFrame = ifdefor(actor.attackFrame, 0) + attackFps * frameMilliseconds / 1000;
         actor.walkFrame = 0;
-    } else {
+    } else if (actor.skillInUse) { // attacking loop
+        if (actor.recoveryTime === 0) {
+            actor.attackFrame = actor.skillInUse.preparationTime / actor.skillInUse.totalPreparationTime * actor.source.attackPreparationFrames.length;
+        } else {
+            actor.attackFrame = actor.recoveryTime / actor.totalRecoveryTime * actor.source.attackRecoveryFrames.length;
+        }
+        actor.walkFrame = 0;
+    } else if (actor.isMoving) {
         var walkFps = ifdefor(actor.base.fpsMultiplier, 1) * 3 * actor.speed / 100;
         actor.walkFrame = ifdefor(actor.walkFrame, 0) + walkFps * frameMilliseconds * Math.max(.1, 1 - actor.slow) / 1000;
-        actor.attackFrame = 0;
+    } else {
+        actor.walkFrame = 0;
     }
 }
 function drawActor(actor) {
@@ -117,10 +121,17 @@ function drawActor(actor) {
         var deathFps = 1.5 * source.deathFrames.length;
         frame = Math.min(source.deathFrames.length - 1, Math.floor((actor.time - actor.timeOfDeath) * deathFps));
         frame = arrMod(source.deathFrames, frame);
-    } else if ((actor.target || actor.time < actor.moveCooldown) && actor.lastAction && actor.lastAction.attackSpeed) { // attacking loop
-        frame = arrMod(source.attackFrames, Math.floor(actor.attackFrame));
-    } else {
+    } else if (actor.skillInUse) { // attacking loop
+        if (actor.recoveryTime === 0) {
+            frame = arrMod(source.attackPreparationFrames, Math.floor(actor.attackFrame));
+        } else {
+            frame = arrMod(source.attackRecoveryFrames, Math.floor(actor.attackFrame));
+        }
+    } else if (actor.isMoving) {
         frame = arrMod(source.walkFrames, Math.floor(actor.walkFrame));
+    } else {
+        // actor does not animate by default (unless we add an idling animation).
+        frame = 0;
     }
     var xFrame = frame;
     var yFrame = 0;
@@ -195,9 +206,6 @@ function getActorTints(actor) {
         tints.push([actor.tint, center + Math.cos(actor.time * 5) * radius]);
     }
     if (actor.slow > 0) tints.push(['#fff', Math.min(1, actor.slow)]);
-    if (mouseDown) {
-        if (actor === state.selectedCharacter.adventurer.target) tints.push(['#00f', .5]);
-    }
     return tints;
 }
 function drawEffectIcons(actor, x, y) {

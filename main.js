@@ -138,11 +138,6 @@ function mainLoop() {
                 } else if (mouseX < centerX - 200) {
                     centerX = (centerX + mouseX + 200) / 2;
                 }
-                // When the character is targeting a unit, try to keep the camera centered between them
-                // unless that would leave the character off screen.
-                if (character.adventurer.target && character.adventurer.target !== character.adventurer) {
-                    centerX = Math.max(character.adventurer.x - 350, Math.min(character.adventurer.x + 350, (character.adventurer.x + character.adventurer.target.x) / 2));
-                }
                 if (Math.abs(character.cameraX - (centerX - 400)) < 200) character.cameraX = (character.cameraX * 20 + centerX - 400) / 21;
                 else character.cameraX = (character.cameraX * 10 + centerX - 400) / 11;
                 adventureLoop(character, frameMilliseconds / 1000);
@@ -269,7 +264,6 @@ function setActorDestination(actor, target) {
         'y': 0,
         'z': Math.max(-180 + actor.width / 2, Math.min(180 - actor.width / 2, target.z))
     };
-    actor.target = null;
 }
 function setActorAttackTarget(actor, target) {
     actor.activity = {

@@ -1,4 +1,252 @@
 /**
+ * Checks whether an actor may use a skill on a given target.
+ *
+ * @param object actor       The actor performing the skill.
+ * @param object skill       The skill being performed.
+ * @param object target      The target to attack for active abilities.
+ */
+function canUseSkillOnTarget(actor, skill, target) {
+    if (!actor) throw new Error('No actor was passed to canUseSkillOnTarget');
+    if (!skill) throw new Error('No skill was passed to canUseSkillOnTarget');
+    if (!target) throw new Error('No target was passed to canUseSkillOnTarget');
+    if (skill.readyAt > actor.time) return false; // Skill is still on cool down.
+    if (skill.tags['basic'] && actor.healingAttacks) return false;
+    if (!!ifdefor(skill.base.targetDeadUnits) !== target.isDead) return false; // targetDeadUnits must match target.isDead.
+    for (var i = 0; i < ifdefor(skill.base.restrictions, []).length; i++) {
+        if (!actor.tags[skill.base.restrictions[i]]) {
+            return false;
+        }
+    }
+    if (actor.cannotAttack && skill.tags['attack']) return false; // Jujutsu prevents a user from using active attacks.
+    // Make sure target matches the target type of the skill.
+    if (ifdefor(skill.base.target) === 'self' && actor !== target) return false;
+    if (ifdefor(skill.base.target) === 'otherAllies' && (actor === target || actor.allies.indexOf(target) < 0)) return false;
+    if (ifdefor(skill.base.target) === 'allies' && actor.allies.indexOf(target) < 0) return false;
+    if (ifdefor(skill.base.target, 'enemies') === 'enemies' && actor.enemies.indexOf(target) < 0) return false;
+    var skillDefinition = skillDefinitions[skill.base.type];
+    if (!skillDefinition) return false; // Invalid skill, maybe from a bad/old save file.
+    return skillDefinition.isValid(actor, skill, target);
+}
+
+/**
+ * Checks whether an actor may use a reaction in response to a given attack targeting them.
+ *
+ * @param object actor       The actor performing the skill.
+ * @param object skill       The skill being performed.
+ * @param object target      The target to attack for active abilities.
+ */
+function canUseReaction(actor, reaction, attackStats) {
+    if (!actor) throw new Error('No actor was passed to canUseReaction');
+    if (!reaction) throw new Error('No reaction was passed to canUseReaction');
+    if (!target) throw new Error('No target was passed to canUseReaction');
+    if (reaction.readyAt > actor.time) return false;
+    var reactionDefinition = skillDefinitions[reaction.base.type];
+    if (!reactionDefinition) return false;
+    for (var i = 0; i < ifdefor(reaction.base.restrictions, []).length; i++) {
+        if (!actor.tags[reaction.base.restrictions[i]]) {
+            return false;
+        }
+    }
+    return reactionDefinition.isValid(actor, reaction, attackStats);
+}
+
+/**
+ * Checks whether a target is currently within range of a particular skill.
+ *
+ * @param object actor       The actor performing the skill.
+ * @param object skill       The skill being performed.
+ * @param object target      The target to attack for active abilities.
+ */
+function isTargetInRangeOfSkill(actor, skill, pointOrTarget) {
+    var isAOE = skill.cleave || skill.tags['nova'] || skill.tags['field'] || skill.tags['blast'] || skill.tags['rain'];
+    // Nova skills use area instead of range for checking for valid targets.
+    if (skill.tags['nova']) return getDistance(actor, pointOrTarget) < skill.area * 32 / 2;
+    if (skill.tags['field']) return getDistance(actor, pointOrTarget) < skill.area * 32 / 2;
+    return getDistance(actor, pointOrTarget) < (skill.range + ifdefor(skill.teleport, 0)) * 32;
+}
+
+/**
+ * Checks if the AI thinks the actor should use a skill.
+ *
+ * The idea is that if the skill has a long cooldown, it won't be used unless it is
+ * worthwhile, for example, healing and damage won't be wasted.
+ *
+ * This should only be called after confirming that canUseSkillOnTarget and isTargetInRangeOfSkill
+ * are true.
+ *
+ * @param object actor       The actor performing the skill.
+ * @param object skill       The skill being performed.
+ * @param object target      The target to attack for active abilities.
+ *
+ * @return boolean True if the skill was used.
+ */
+function shouldUseSkillOnTarget(actor, skill, target) {
+    if (target.isMainCharacter) return true; // Enemies always use skills on the hero, since they win if the hero dies.
+    if (ifdefor(skill.cooldown, 0) < 10) return true; // Don't worry about wasting skills with short cool downs.
+    if (ifdefor(skill.cooldown, 0) < 10) return true; // Don't worry about wasting skills with short cool downs.
+    // Make sure combined health of enemies in range is less than the raw damage of the attack, or that the ability
+    // will result in life gain that makes it worth using
+    if (ifdefor(skill.base.target, 'enemies') === 'enemies') {
+        var health = 0;
+        if (skill.cleave || skill.tags['nova'] || skill.tags['field'] || skill.tags['blast'] || skill.tags['rain']) {
+            var targetsInRange = getEnemiesLikelyToBeHitIfEnemyIsTargetedBySkill(actor, skill, target);
+            if (targetsInRange.length === 0) {
+                return false;
+            }
+            targetsInRange.forEach(function (target) {
+                health += target.health;
+            })
+            // scale health by number of targets for aoe attacks.
+            health *= targetsInRange.length;
+        } else {
+            health = target.health;
+        }
+        var previewAttackStats = isSpell ? createSpellStats(actor, skill, target) : createAttackStats(actor, skill, target);
+        // Any life gained by this attack should be considered in the calculation as well in favor of using the attack.
+        var possibleLifeGain = (previewAttackStats.damage + previewAttackStats.magicDamage) * ifdefor(skill.lifeSteal, 0);
+        var actualLifeGain = actorCanOverHeal(actor) ? possibleLifeGain : Math.min(actor.maxHealth - actor.health, possibleLifeGain);
+        // Make sure the total health of the target/combined targets is at least
+        // the damage output of the attack.
+        // We weight wasted life gain very high to avoid using life stealing moves when the user has full life,
+        // and then weight actual life gained even higher to encourage using life stealing moves that will restore a lot of health.
+        if (health + 8 * actualLifeGain < (previewAttackStats.damage + previewAttackStats.magicDamage) + 5 * possibleLifeGain) {
+            return false;
+        }
+    }
+    // Some (but not all) skill definitions have specific criteria for using them or not (like heal checks that the full heal will be used or you might die soon).
+    var skillDefinition = skillDefinitions[skill.base.type];
+    if (skillDefinition.shouldUse && !skillDefinition.shouldUse(actor, skill, target)) return false;
+    return true;
+}
+
+/**
+ * Causes an actor to start performing a skill on the given target.
+ *
+ * This method actually performs the skill without any validation, so validation should
+ * be checked before calling this code.
+ *
+ * The skill isn't actually used until the preparation time of the skill is finished,
+ * and it can be interrupted if the user loses control before then.
+ *
+ * @param object actor       The actor performing the skill.
+ * @param object skill       The skill being performed.
+ * @param object target      The target to attack for active abilities.
+ *
+ * @return boolean True if the skill was used. Only false if the ability is probabilistic like raise dead.
+ */
+function prepareToUseSkillOnTarget(actor, skill, target) {
+    if (target && ifdefor(skill.base.consumeCorpse) && target.isDead) {
+        removeActor(target);
+    }
+    // Only use skill if they meet the RNG for using it. This is currently only used by the
+    // 15% chance to raise dead on unit, which is why it comes after consuming the corpse.
+    if (ifdefor(skill.chance, 1) < Math.random()) {
+        return;
+    }
+    if (skill.tags['attack']) {
+        // The wind up for an attack is at most .2s but is typically half the attack duration.
+        // We don't make it longer than .2s because the wind up stops user movement and leaves the
+        // attacker vulnerable to interrupt and because the attack animation looks bad slow during
+        // the attack stage. Making the recovery stage be > .2s is fine because the user can still
+        // move (slowly) and the recover animation doesn't look terrible slow.
+        skill.totalPreparationTime = Math.min(.2, (1 / skill.attackSpeed) / 2);
+        // Whatever portion of the attack time isn't used by the prep time is designated as recoveryTime.
+        actor.totalRecoveryTime = 1 / skill.attackSpeed - skill.totalPreparationTime;
+    } else {
+        // As of writing this, no skill uses prepTime, but we could use it to make certain spells
+        // take longer to cast than others.
+        skill.totalPreparationTime = ifdefor(skill.prepTime, .2);
+        actor.totalRecoveryTime = ifdefor(skill.recoveryTime, .1);
+    }
+    actor.skillInUse = skill;
+    actor.skillTarget = target;
+    // These values will count up until completion. If a character is slowed, it will reduce how quickly these numbers accrue.
+    skill.preparationTime = actor.recoveryTime = 0;
+}
+
+/**
+ * Call to make an actor actually use the skill they have been preparing.
+ *
+ * @param object actor The actor performing the skill.
+ *
+ * @return boolean True if the skill was used. Only false if the ability is probabilistic like raise dead.
+ */
+function useSkill(actor) {
+    var skill = actor.skillInUse;
+    var target = actor.skillTarget
+    if (!skill || !target) {
+        actor.skillInUse = actor.skillTarget = null;
+        return;
+    }
+    skill.readyAt = actor.time + ifdefor(skill.cooldown, 0);
+    // Show the name of the skill used if it isn't a basic attack. When skills have distinct
+    // visible animations, we should probably remove this.
+    if (!skill.tags['basic']) {
+        var hitText = {x: actor.x, y: actor.height, z: actor.z, color: 'white', fontSize: 15, 'vx': 0, 'vy': 1, 'gravity': .1};
+        hitText.value = skill.base.name;
+        appendTextPopup(actor.character, hitText, true);
+    }
+    skillDefinitions[skill.base.type].use(actor, skill, target);
+    triggerSkillEffects(actor, skill);
+}
+
+/**
+ * Use a reaction in response to a given attack targeting an actor.
+ *
+ * This should only be called after canUseReaction returns true for the same arguments.
+ *
+ * @param object actor  The actor performing the skill.
+ * @param object skill  The skill being performed.
+ * @param object target The target to attack for active abilities.
+ */
+function useReaction(actor, reaction, attackStats) {
+    reaction.readyAt = actor.time + ifdefor(reaction.cooldown, 0);
+    // Show the name of the skill. When skills have distinct visible animations, we should probably remove this.
+    var skillPopupText = {x: actor.x, y: actor.height, z: actor.z, color: 'white', fontSize: 15, 'vx': 0, 'vy': 1, 'gravity': .1};
+    skillPopupText.value = reaction.base.name;
+    appendTextPopup(actor.character, skillPopupText, true);
+    skillDefinition.use(actor, reaction, attackStats);
+    triggerSkillEffects(actor, reaction);
+}
+
+/**
+ * Triggers effects that occur when a skill is used.
+ *
+ * This applies to both active skills and reactions and is used for things like:
+ * Instant cooldown effects common on unique mobs that reset one skill when another is used.
+ * Priest's heal/knockback on spell cast.
+ *
+ * @param object actor The actor performing the skill.
+ * @param object skill The skill being performed.
+ *
+ * @return void
+ */
+function triggerSkillEffects(actor, skill) {
+    // Apply instant cooldown if it is set.
+    if (skill.instantCooldown) {
+        // * is wild card meaning all other skills
+        for(var otherSkill of ifdefor(actor.actions, [])) {
+            if ((skill !== otherSkill && skill.instantCooldown === '*') || otherSkill.tags[skill.instantCooldown]) {
+                otherSkill.readyAt = actor.time;
+            }
+        }
+        for(var otherSkill of ifdefor(actor.reactions, [])) {
+            if ((skill !== otherSkill && skill.instantCooldown === '*') || otherSkill.tags[skill.instantCooldown]) {
+                otherSkill.readyAt = actor.time;
+            }
+        }
+    }
+    if (skill.tags.spell && actor.castKnockBack) {
+        for (var enemy of getActorsInRange(actor, actor.castKnockBack, actor.enemies)) {
+            banishTarget(actor, enemy, actor.castKnockBack, 30);
+        }
+    }
+    if (skill.tags.spell && actor.healOnCast) {
+        actor.health += actor.maxHealth * actor.healOnCast;
+    }
+}
+
+/**
  * Causes an actor to perform a skill on the given target if valid.
  *
  * The skill must be one the actor possesses, and it must be ready to be used.
@@ -10,15 +258,13 @@
  *
  * @return boolean True if the skill was used.
  */
-function useSkill(actor, skill, target, attackStats) {
+function oldUseSkillLogic(actor, skill, target, attackStats) {
     if (!skill) return false;
     var actionIndex = actor.actions.indexOf(skill);
     // Only process actions when called with a target.
     if (!target && actionIndex >= 0) return false;
     // Cannot use abilities on targets you are not facing.
-    if (target && (target.x - actor.x) * actor.heading[0] < 0) {
-        return false;
-    }
+    if (target && (target.x - actor.x) * actor.heading[0] < 0) return false;
     var reactionIndex = actor.reactions.indexOf(skill);
     // Only process reactions when called with attack data.
     if (!attackStats && reactionIndex >= 0) return false;
@@ -32,9 +278,7 @@ function useSkill(actor, skill, target, attackStats) {
         return false;
     }
     // Healing attack adds a new healing basic attack and deactivates normal basic attack.
-    if (skill.tags['basic'] && actor.healingAttacks) {
-        return false;
-    }
+    if (skill.tags['basic'] && actor.healingAttacks) return false;
     if (target && ifdefor(skill.base.targetDeadUnits) && !target.isDead) {
         // Skills that target dead units can only be used on targets that are dying.
         return false;
@@ -275,7 +519,6 @@ skillDefinitions.song = {
         var attackStats = createSpellStats(actor, songSkill, target);
         actor.attackCooldown = actor.time + .2;
         actor.moveCooldown = actor.time + .2;
-        actor.attackFrame = 0;
         performAttackProper(attackStats, target);
         return attackStats;
     }
@@ -303,9 +546,6 @@ skillDefinitions.heroSong = {
     },
     use: function (actor, songSkill, target) {
         var attackStats = createSpellStats(actor, songSkill, target);
-        actor.attackCooldown = actor.time + .2;
-        actor.moveCooldown = actor.time + .2;
-        actor.attackFrame = 0;
         performAttackProper(attackStats, target);
         return attackStats;
     }

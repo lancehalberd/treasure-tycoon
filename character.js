@@ -151,10 +151,7 @@ function initializeActorForAdventure(actor) {
     actor.time = 0;
     actor.isDead = false;
     actor.timeOfDeath = undefined;
-    actor.attackCooldown = 0;
-    actor.moveCooldown = 0;
-    actor.attackFrame = 0;
-    actor.target = null;
+    actor.skillInUse = null;
     actor.slow = 0;
     actor.rotation = 0;
     actor.activity = null;
@@ -269,7 +266,8 @@ function makeAdventurerFromData(adventurerData) {
             'actualWidth': 18,
             'attackY': 19, // Measured from the bottom of the source
             'walkFrames': [0, 1, 0, 2],
-            'attackFrames': [4, 3, 0, 3]
+            'attackPreparationFrames': [0, 3, 4],
+            'attackRecoveryFrames': [4, 3]
         }),
         'bonuses': [],
         'unlockedAbilities': {},

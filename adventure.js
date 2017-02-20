@@ -259,20 +259,17 @@ function moveActor(actor, delta) {
         actor.walkFrame = 0;
         return;
     }
-    if (actor.target && actor.target.pull) {
-        actor.target = null;
-    }
-    if (actor.isDead || actor.stunned || actor.pull || ifdefor(actor.stationary) || actor.moveCooldown > actor.time) {
+    if (actor.isDead || actor.stunned || actor.pull || ifdefor(actor.stationary) || (actor.skillInUse && actor.skillInUse.preparationTime < actor.skillInUse.totalPreparationTime)) {
         return;
     }
-    var goalTarget = actor.target !== actor ? actor.target : null;
-    var moving = false;
+    var goalTarget = actor.skillTarget !== actor ? actor.skillTarget : null;
+    actor.isMoving = false;
     if (actor.activity) {
         switch (actor.activity.type) {
             case 'move':
                 goalTarget = null;
                 actor.heading = [actor.activity.x - actor.x, 0, actor.activity.z - actor.z];
-                moving = true;
+                actor.isMoving = true;
                 break;
             case 'attack':
                 goalTarget = actor.activity.target;
@@ -293,10 +290,10 @@ function moveActor(actor, delta) {
     if (goalTarget) {
         actor.heading = [goalTarget.x - actor.x, 0, goalTarget.z - actor.z];
         actor.heading[2] -= actor.z / 180;
-        moving = true;
+        actor.isMoving = true;
     }
     actor.heading = new Vector(actor.heading).normalize().getArrayValue();
-    if (!moving) {
+    if (!actor.isMoving) {
         return;
     }
     //console.log(JSON.stringify(actor.heading));
@@ -310,6 +307,10 @@ function moveActor(actor, delta) {
     if (actor.chargeEffect) {
         speedBonus *= actor.chargeEffect.chargeSkill.speedBonus;
         actor.chargeEffect.distance += speedBonus * actor.speed * Math.max(.1, 1 - actor.slow) * delta;
+        // Cancel charge if they run for too long.
+        if (actor.chargeEffect.distance > 2000) {
+            actor.chargeEffect = null;
+        }
     } else if (goalTarget && !goalTarget.cloaked) {
         // If the character is closer than they need to be to auto attack then they can back away from
         // them slowly to try and stay at range.
@@ -330,16 +331,34 @@ function moveActor(actor, delta) {
         actor.x = currentX + speedBonus * actor.speed * actor.heading[0] * Math.max(.1, 1 - actor.slow) * delta;
         actor.z = currentZ + speedBonus * actor.speed * actor.heading[2] * Math.max(.1, 1 - actor.slow) * delta;
         var collision = false;
-        for (var ally of actor.allies) {
-            if (!ally.isDead && actor !== ally && getDistanceOverlap(actor, ally) <= -16 && new Vector([speedBonus * actor.heading[0], speedBonus * actor.heading[2]]).dotProduct(new Vector([ally.x - actor.x, ally.z - actor.z])) > 0) {
-                collision = true;
-                break;
+        // Ignore ally collision during charge effects.
+        if (!actor.chargeEffect) {
+            for (var ally of actor.allies) {
+                if (!ally.isDead && actor !== ally && getDistanceOverlap(actor, ally) <= -16 && new Vector([speedBonus * actor.heading[0], speedBonus * actor.heading[2]]).dotProduct(new Vector([ally.x - actor.x, ally.z - actor.z])) > 0) {
+                    collision = true;
+                    break;
+                }
             }
         }
-        for (var enemy of actor.enemies) {
-            if (!enemy.isDead && actor !== enemy && getDistanceOverlap(actor, enemy) <= -16 && new Vector([speedBonus * actor.heading[0], speedBonus * actor.heading[2]]).dotProduct(new Vector([enemy.x - actor.x, enemy.z - actor.z])) > 0) {
-                collision = true;
-                break;
+        if (!collision) {
+            for (var enemy of actor.enemies) {
+                var distance = getDistanceOverlap(actor, enemy);
+                if (distance <= 0 && actor.chargeEffect) {
+                    var attackStats = createAttackStats(actor, actor.chargeEffect.chargeSkill, enemy);
+                    attackStats.distance = actor.chargeEffect.distance;
+                    var hitTargets = getAllInRange(enemy.x, actor.chargeEffect.chargeSkill.area, actor.enemies);
+                    for (var hitTarget of hitTargets) {
+                        applyAttackToTarget(attackStats, hitTarget);
+                    }
+                    actor.chargeEffect = null;
+                    // Although this is a collision, don't mark it as one so that the move will complete.
+                    collision = false;
+                    break;
+                }
+                if (!enemy.isDead && actor !== enemy && distance <= -16 && new Vector([speedBonus * actor.heading[0], speedBonus * actor.heading[2]]).dotProduct(new Vector([enemy.x - actor.x, enemy.z - actor.z])) > 0) {
+                    collision = true;
+                    break;
+                }
             }
         }
         if (!collision) break;
@@ -466,13 +485,25 @@ function getAllInRange(x, range, targets) {
     return targetsInRange
 }
 function runActorLoop(character, actor) {
-    if (actor.isDead || actor.stunned) return;
-    // An actor that is being pulled cannot perform any actions.
-    if (actor.pull || actor.chargeEffect) {
-        actor.target = null;
+    if (actor.isDead || actor.stunned || actor.pull || actor.chargeEffect) {
+        actor.skillInUse = null;
         return;
     }
-    var attackIsOnCooldown = ifdefor(actor.attackCooldown, 0) > actor.time;
+    if (actor.skillInUse) {
+        var actionDelta = frameMilliseconds / 1000 * Math.max(.1, 1 - actor.slow);
+        if (actor.skillInUse.preparationTime < actor.skillInUse.totalPreparationTime) {
+            actor.skillInUse.preparationTime += actionDelta;
+            if (actor.skillInUse.preparationTime >= actor.skillInUse.totalPreparationTime) {
+                useSkill(actor);
+            }
+            return;
+        } else if (actor.recoveryTime < actor.totalRecoveryTime) {
+            actor.recoveryTime += actionDelta;
+            return;
+        } else {
+            actor.skillInUse = null;
+        }
+    }
     if (actor.activity) {
         switch (actor.activity.type) {
             case 'move':
@@ -484,45 +515,24 @@ function runActorLoop(character, actor) {
                 if (actor.activity.target.isDead) {
                     actor.activity = null;
                 } else {
-                    actor.target = actor.activity.target;
-                    if (!attackIsOnCooldown) {
-                        checkToUseSkillOnTarget(character, actor, actor.target);
-                    }
+                    checkToUseSkillOnTarget(actor, actor.activity.target);
                 }
                 break;
         }
         return;
     }
-    // Don't choose a new target until they are dead or basic attack cooldown is up.
-    if (!(!actor.target || actor.target.isDead) && attackIsOnCooldown) {
-        return;
-    }
     var targets = [];
-    for (var i = 0; i < actor.allies.length; i++) {
-        var target = actor.allies[i];
-        target.priority = getDistance(actor, target) - 1000;
-        targets.push(target);
+    for (var ally of actor.allies) {
+        ally.priority = getDistance(actor, ally) - 1000;
+        targets.push(ally);
     }
-    for (var i = 0; i < actor.enemies.length; i++) {
-        var target = actor.enemies[i];
-        target.priority = getDistance(actor, target);
-        if (target.priority <= 0) {
-            if (actor.chargeEffect) {
-                var attackStats = createAttackStats(actor, actor.chargeEffect.chargeSkill, target);
-                attackStats.distance = actor.chargeEffect.distance;
-                var hitTargets = getAllInRange(target.x, actor.chargeEffect.chargeSkill.area, actor.enemies);
-                for (var j = 0; j < hitTargets.length; j++) {
-                    applyAttackToTarget(attackStats, hitTargets[j]);
-                }
-                actor.chargeEffect = null;
-                actor.target = target;
-                return;
-            }
-        }
-        if (target === actor.target) {
-            target.priority -= 100;
-        }
-        targets.push(target);
+    for (var enemy of actor.enemies) {
+        enemy.priority = getDistance(actor, enemy);
+        // actor.skillTarget will hold the last target the actor tried to use a skill on.
+        // This lines causes the actor to prefer to continue attacking the same enemy continuously
+        // even if they aren't the closest target any longer.
+        if (enemy === actor.skillTarget) enemy.priority -= 100;
+        targets.push(enemy);
     }
     // The main purpose of this is to prevent pulled actors from passing through their enemies.
      // Character is assumed to not be blocked each frame
@@ -530,27 +540,27 @@ function runActorLoop(character, actor) {
     targets.sort(function (A, B) {
         return A.priority - B.priority;
     });
-    actor.target = null;
-    if (attackIsOnCooldown){
-        return;
-    }
-    for (var i = 0; i < targets.length; i++) {
-        var target = targets[i];
-        // Returns true if the actor chose an action. May actually take an action
-        // that doesn't target an enemy, but that's okay, we set target anyway
-        // to indicate that he has acted this frame.
-        if (checkToUseSkillOnTarget(character, actor, target)) {
-            actor.target = target;
+    for (var target of targets) {
+        if (checkToUseSkillOnTarget(actor, target)) {
             break;
         }
     }
-    actor.cloaked = (actor.cloaking && !actor.target);
+    actor.cloaked = (actor.cloaking && !actor.skillInUse);
 }
-function checkToUseSkillOnTarget(character, actor, target) {
-    for(var i = 0; i < ifdefor(actor.actions, []).length; i++) {
-        if (useSkill(actor, actor.actions[i], target, null)) {
-            return true;
+function checkToUseSkillOnTarget(actor, target) {
+    for(var action of ifdefor(actor.actions, [])) {
+        if (!canUseSkillOnTarget(actor, action, target)) {
+            //console.log("cannot use skill");
+            continue;
         }
+        if (!isTargetInRangeOfSkill(actor, action, target)) {
+            continue;
+        }
+        if (!shouldUseSkillOnTarget(actor, action, target)) {
+            continue;
+        }
+        prepareToUseSkillOnTarget(actor, action, target);
+        return true;
     }
     return false;
 }
@@ -559,16 +569,17 @@ function checkToUseSkillOnTarget(character, actor, target) {
 // only distance within that plane, ignoring the height of objects and their y positions.
 function getDistance(spriteA, spriteB) {
     var distance = getDistanceOverlap(spriteA, spriteB);
-    if (isNaN(distance)) {
-        console.log(JSON.stringify(['A:', spriteA.x, spriteA.y, spriteA.z, spriteA.width]));
-        console.log(JSON.stringify(['B:', spriteB.x, spriteB.y, spriteB.z, spriteB.width]));
-    }
     return Math.max(0, distance);
 }
 function getDistanceOverlap(spriteA, spriteB) {
     var dx = spriteA.x - spriteB.x;
     var dz = spriteA.z - spriteB.z;
-    return Math.sqrt(dx*dx + dz*dz) - (spriteA.width + spriteB.width) / 2;
+    var distance = Math.sqrt(dx*dx + dz*dz) - (ifdefor(spriteA.width, 0) + ifdefor(spriteB.width, 0)) / 2;
+    if (isNaN(distance)) {
+        console.log(JSON.stringify(['A:', spriteA.x, spriteA.y, spriteA.z, spriteA.width]));
+        console.log(JSON.stringify(['B:', spriteB.x, spriteB.y, spriteB.z, spriteB.width]));
+    }
+    return distance;
 }
 function getDistanceBetweenPointsSquared(pointA, pointB) {
     var dx = pointA.x - pointB.x;
