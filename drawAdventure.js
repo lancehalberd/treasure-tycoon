@@ -64,16 +64,16 @@ function drawAdventure(character) {
 function updateActorAnimationFrame(actor) {
     if (actor.pull || actor.stunned || actor.isDead ) {
         actor.walkFrame = 0;
-    } else if (actor.skillInUse) { // attacking loop
+    } else if (actor.skillInUse && actor.recoveryTime < Math.min(actor.totalRecoveryTime, .3)) { // attacking loop
         if (actor.recoveryTime === 0) {
-            actor.attackFrame = actor.skillInUse.preparationTime / actor.skillInUse.totalPreparationTime * actor.source.attackPreparationFrames.length;
+            actor.attackFrame = actor.skillInUse.preparationTime / actor.skillInUse.totalPreparationTime * (actor.source.attackPreparationFrames.length - 1);
         } else {
-            actor.attackFrame = actor.recoveryTime / actor.totalRecoveryTime * actor.source.attackRecoveryFrames.length;
+            actor.attackFrame = actor.recoveryTime / actor.totalRecoveryTime * (actor.source.attackRecoveryFrames.length - 1);
         }
         actor.walkFrame = 0;
     } else if (actor.isMoving) {
         var walkFps = ifdefor(actor.base.fpsMultiplier, 1) * 3 * actor.speed / 100;
-        actor.walkFrame = ifdefor(actor.walkFrame, 0) + walkFps * frameMilliseconds * Math.max(.1, 1 - actor.slow) / 1000;
+        actor.walkFrame = ifdefor(actor.walkFrame, 0) + walkFps * frameMilliseconds * Math.max(.1, 1 - actor.slow) * (actor.skillInUse ? .25 : 1) / 1000;
     } else {
         actor.walkFrame = 0;
     }
@@ -121,7 +121,7 @@ function drawActor(actor) {
         var deathFps = 1.5 * source.deathFrames.length;
         frame = Math.min(source.deathFrames.length - 1, Math.floor((actor.time - actor.timeOfDeath) * deathFps));
         frame = arrMod(source.deathFrames, frame);
-    } else if (actor.skillInUse) { // attacking loop
+    } else if (actor.skillInUse && actor.recoveryTime < Math.min(actor.totalRecoveryTime, .3)) { // attacking loop
         if (actor.recoveryTime === 0) {
             frame = arrMod(source.attackPreparationFrames, Math.floor(actor.attackFrame));
         } else {

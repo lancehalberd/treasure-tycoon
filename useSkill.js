@@ -23,9 +23,10 @@ function canUseSkillOnTarget(actor, skill, target) {
     if (ifdefor(skill.base.target) === 'otherAllies' && (actor === target || actor.allies.indexOf(target) < 0)) return false;
     if (ifdefor(skill.base.target) === 'allies' && actor.allies.indexOf(target) < 0) return false;
     if (ifdefor(skill.base.target, 'enemies') === 'enemies' && actor.enemies.indexOf(target) < 0) return false;
+    if (ifdefor(skill.base.target, 'enemies') === 'enemies' && target.cloaked) return false;
     var skillDefinition = skillDefinitions[skill.base.type];
     if (!skillDefinition) return false; // Invalid skill, maybe from a bad/old save file.
-    return skillDefinition.isValid(actor, skill, target);
+    return !skillDefinition.isValid || skillDefinition.isValid(actor, skill, target);
 }
 
 /**
@@ -47,7 +48,7 @@ function canUseReaction(actor, reaction, attackStats) {
             return false;
         }
     }
-    return reactionDefinition.isValid(actor, reaction, attackStats);
+    return !reactionDefinition.isValid || reactionDefinition.isValid(actor, reaction, attackStats);
 }
 
 /**
@@ -364,7 +365,7 @@ function oldUseSkillLogic(actor, skill, target, attackStats) {
             }
         }
     }
-    if (!skillDefinition.isValid(actor, skill, target || attackStats)) {
+    if (skillDefinition && !skillDefinition.isValid(actor, skill, target || attackStats)) {
         return false;
     }
     if (target && ifdefor(skill.base.consumeCorpse) && target.isDead) {
@@ -485,46 +486,35 @@ function closestEnemyDistance(actor) {
 var skillDefinitions = {};
 
 skillDefinitions.attack = {
-    isValid: function (actor, attackSkill, target) {
-        return !target.cloaked;
-    },
     use: function (actor, attackSkill, target) {
         performAttack(actor, attackSkill, target);
     }
 };
 
 skillDefinitions.spell = {
-    isValid: function (actor, spellSkill, target) {
-        return !target.cloaked;
-    },
     use: function (actor, spellSkill, target) {
         castAttackSpell(actor, spellSkill, target);
     }
 };
 
 skillDefinitions.consume = {
-    isValid: function (actor, consumeSkill, target) {
-        return true;
-    },
     use: function (actor, consumeSkill, target) {
         actor.health += target.maxHealth * ifdefor(consumeSkill.consumeRatio, 1);
         stealAffixes(actor, target, consumeSkill);
     }
 };
 skillDefinitions.song = {
-    isValid: function (actor, songSkill, target) {
+    shouldUse: function (actor, songSkill, target) {
         return closestEnemyDistance(actor) < 500;
     },
     use: function (actor, songSkill, target) {
         var attackStats = createSpellStats(actor, songSkill, target);
-        actor.attackCooldown = actor.time + .2;
-        actor.moveCooldown = actor.time + .2;
         performAttackProper(attackStats, target);
         return attackStats;
     }
 };
 skillDefinitions.heroSong = {
-    isValid: function (actor, songSkill, target) {
+    shouldUse: function (actor, songSkill, target) {
         var healthValues = target.healthValues;
         // healthValues might not be set right when a target spawns.
         if (!healthValues || target.isMainCharacter) {
@@ -712,7 +702,7 @@ skillDefinitions.decoy = {
 skillDefinitions.explode = {
     isValid: function (actor, explodeSkill, attackStats) {
         if (attackStats.evaded) return false;
-        // Cast revive only when the incoming hit would kill the character.
+        // Cast only on death.
         return actor.health - ifdefor(attackStats.totalDamage, 0) <= 0;
     },
     use: function (actor, explodeSkill, attackStats) {
@@ -734,9 +724,7 @@ skillDefinitions.explode = {
 };
 
 skillDefinitions.heal = {
-    isValid: function (actor, healSkill, target) {
-        // Only heal allies.
-        if (actor.allies.indexOf(target) < 0) return false;
+    shouldUse: function (actor, healSkill, target) {
         // Don't use a heal ability unless none of it will be wasted or the actor is below half life.
         return actorCanOverHeal(actor) || (target.health + healSkill.power <= target.maxHealth) || (target.health <= target.maxHealth / 2);
     },
@@ -752,7 +740,7 @@ skillDefinitions.heal = {
 };
 
 skillDefinitions.effect = {
-    isValid: function (actor, effectSkill, target) {
+    shouldUse: function (actor, effectSkill, target) {
         if (closestEnemyDistance(target) >= 500) {
             return false;
         }
@@ -938,8 +926,15 @@ skillDefinitions.mimic = {
 };
 
 skillDefinitions.reflect = {
-    isValid: function (actor, reflectSkill, target) {
-        return true;
+    isValid: function (actor, plunderSkill, target) {
+        return ifdefor(actor.reflectBarrier, 0) < actor.maxHealth;
+    },
+    shouldUse: function (actor, reflectSkill, target) {
+        // Only use reflection if it is at least 60% effective
+        var currentBarrier = Math.max(0, ifdefor(actor.reflectBarrier, 0));
+        var maxPossibleGain = Math.min(reflectSkill.power, actor.maxHealth);
+        var actualGain = Math.min(reflectSkill.power, actor.maxHealth - currentBarrier);
+        return actualGain / maxPossibleGain >= .6;
     },
     use: function (actor, reflectSkill, target) {
         // Reset reflection barrier back to 0 when using the reflection barrier spell.
@@ -993,9 +988,6 @@ function stealAffixes(actor, target, skill) {
 }
 
 skillDefinitions.banish = {
-    isValid: function (actor, banishSkill, target) {
-        return !target.cloaked;
-    },
     use: function (actor, banishSkill, target) {
         var attackStats = performAttack(actor, banishSkill, target);
         // The purify upgrade removes all enchantments from a target.
@@ -1036,7 +1028,7 @@ function getXDirection(actor) {
 
 skillDefinitions.charm = {
     isValid: function (actor, charmSkill, target) {
-        return !target.cloaked && !(target.uncontrollable || target.stationary);
+        return !(target.uncontrollable || target.stationary);
     },
     use: function (actor, charmSkill, target) {
         target.allies = actor.allies;
@@ -1049,8 +1041,8 @@ skillDefinitions.charm = {
     }
 };
 skillDefinitions.charge = {
-    isValid: function (actor, chargeSkill, target) {
-        return !target.cloaked && getDistance(actor, target) >= 128;
+    shouldUse: function (actor, chargeSkill, target) {
+        return getDistance(actor, target) >= 128;
     },
     use: function (actor, chargeSkill, target) {
         actor.chargeEffect = {

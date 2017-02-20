@@ -262,13 +262,22 @@ function moveActor(actor, delta) {
     if (actor.isDead || actor.stunned || actor.pull || ifdefor(actor.stationary) || (actor.skillInUse && actor.skillInUse.preparationTime < actor.skillInUse.totalPreparationTime)) {
         return;
     }
-    var goalTarget = actor.skillTarget !== actor ? actor.skillTarget : null;
+    var goalTarget = (actor.skillInUse && actor.skillTarget !== actor) ? actor.skillTarget : null;
     actor.isMoving = false;
+    var speedBonus = 1;
     if (actor.activity) {
         switch (actor.activity.type) {
             case 'move':
                 goalTarget = null;
-                actor.heading = [actor.activity.x - actor.x, 0, actor.activity.z - actor.z];
+                if (actor.skillInUse) {
+                    if (actor.heading[0] * (actor.activity.x - actor.x) < 0) {
+                        speedBonus = -.25;
+                    } else {
+                        speedBonus = .25;
+                    }
+                } else {
+                    actor.heading = [actor.activity.x - actor.x, 0, actor.activity.z - actor.z];
+                }
                 actor.isMoving = true;
                 break;
             case 'attack':
@@ -299,7 +308,6 @@ function moveActor(actor, delta) {
     //console.log(JSON.stringify(actor.heading));
     // Make sure the main character doesn't run in front of their allies.
     // If the allies are fast enough, this shouldn't be an isse.
-    var speedBonus = 1;
     var xOffset = 0;
     for (var i = 0; i < actor.allies.length; i++) {
         xOffset += actor.x - actor.allies[i].x;
@@ -402,7 +410,7 @@ function startNextWave(character) {
         newMonster.allies = character.enemies;
         newMonster.enemies = character.allies;
         character.enemies.push(newMonster);
-        x += 120 + Math.floor(Math.random() * 50);
+        x += 40 + Math.floor(Math.random() * 40);
     });
     wave.objects.forEach(function (entityData) {
         if (entityData.type === 'chest') {
