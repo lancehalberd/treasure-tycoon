@@ -27,6 +27,12 @@ var initialImagesToLoad = [
     'gfx/treasureChest.png', 'gfx/moneyIcon.png', 'gfx/projectiles.png',
     'gfx/iconSet.png',
     'gfx/monsterPeople.png',
+    /**
+     * Job Icons by Abhimanyu Sandal created specifically for this project. He does not
+     * wish for his to work to be in the public domain so do not reuse these images without
+     * his consent.
+     */
+    'gfx/jobIcons.png',
     /* 'game-icons.png' from http://game-icons.net/about.html */
     'gfx/game-icons.png',
     /* nielsenIcons.png from Søren Nielsen at http://opengameart.org/content/grayscale-icons */
@@ -66,7 +72,6 @@ var initialImagesToLoad = [
     'gfx/496RpgIcons/target.png',
     // http://topps.diku.dk/torbenm/maps.msp
     'gfx/squareMap.bmp',
-    // Public domain images:
     'gfx/chest-closed.png', 'gfx/chest-open.png', // http://opengameart.org/content/treasure-chests
     'gfx/bat.png', // http://opengameart.org/content/bat-32x32
     'gfx/militaryIcons.png', // http://opengameart.org/content/140-military-icons-set-fixed
