@@ -41,7 +41,6 @@ function initializeGame() {
     openChestSource = {'image': images['gfx/chest-open.png'], 'left': 0, 'top': 0, 'width': 32, 'height': 32};
     showContext('adventure');
     initalizeMonsters();
-    initializeBackground();
     initializeCraftingGrid();
     initializeCoins();
     initializeProjectileAnimations();

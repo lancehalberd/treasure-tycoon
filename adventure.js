@@ -269,6 +269,9 @@ function moveActor(actor, delta) {
         switch (actor.activity.type) {
             case 'move':
                 goalTarget = null;
+                // If the actor is currently using a skill, they cannot adjust their heading,
+                // but we do allow them to move forward/backward in their current direction at 25% speed
+                // if they are in recovery.
                 if (actor.skillInUse) {
                     if (actor.heading[0] * (actor.activity.x - actor.x) < 0) {
                         speedBonus = -.25;

@@ -1,54 +1,63 @@
 var backgrounds = {}; // fully defined background composed of sections.
-var bgSections = {}; // fully defined section with source, parallax, etc.
+var bgSections = {}; // fully defined section with source, parallax, etc. Currently unused.
 var bgSources = {}; // single rectangle from an image.
 function backgroundSource(image, xFrame, y, width, height) {
     return { image: image, x: xFrame * 60, y: ifdefor(y, 0), width: ifdefor(width, 60), height: ifdefor(height, 300)};
 }
-function initializeBackground() {
-    // Forest sources
-    bgSources.forest = backgroundSource(images['gfx/forest.png'], 0);
-    bgSources.treeTops = backgroundSource(images['gfx/forest.png'], 1, 0, 60, 150);
-    bgSources.tallTrees = backgroundSource(images['gfx/forest.png'], 2, 0, 60, 150);
-    bgSources.shortTrees = backgroundSource(images['gfx/forest.png'], 3, 0, 60, 150);
-    bgSources.roses = backgroundSource(images['gfx/forest.png'], 4, 0, 60, 150);
-    bgSources.rootsA = backgroundSource(images['gfx/forest.png'], 1, 240, 60, 60);
-    bgSources.rootsB = backgroundSource(images['gfx/forest.png'], 2, 240, 60, 60);
-    bgSources.denseLeaves = backgroundSource(images['gfx/forest.png'], 1, 150, 60, 90);
-    bgSources.leavesAndStick = backgroundSource(images['gfx/forest.png'], 2, 150, 60, 90);
-    bgSources.stick = backgroundSource(images['gfx/forest.png'], 3, 150, 60, 90);
-    bgSources.leaf = backgroundSource(images['gfx/forest.png'], 4, 150, 60, 90);
-    // Field sources
-    bgSources.field = backgroundSource(images['gfx/grass.png'], 0);
-    bgSources.skinnyCloud = backgroundSource(images['gfx/grass.png'], 1, 0, 60, 150)
-    bgSources.tinyCloud = backgroundSource(images['gfx/grass.png'], 2, 0, 60, 150)
-    bgSources.mediumCloud = backgroundSource(images['gfx/grass.png'], 3, 0, 60, 150)
-    bgSources.grassEdge = backgroundSource(images['gfx/grass.png'], 1, 150, 60, 90);
-    bgSources.grassA = backgroundSource(images['gfx/grass.png'], 2, 150, 60, 90);
-    bgSources.grassB = backgroundSource(images['gfx/grass.png'], 3, 150, 60, 90);
-    bgSources.grassC = backgroundSource(images['gfx/grass.png'], 4, 150, 60, 90);
-    bgSources.dirtCracksA = backgroundSource(images['gfx/grass.png'], 1, 240, 60, 60);
-    bgSources.dirtCracksB = backgroundSource(images['gfx/grass.png'], 2, 240, 60, 60);
-    // Cave sources
-    bgSources.cave = backgroundSource(images['gfx/cave.png'], 0);
-    bgSources.rocks = backgroundSource(images['gfx/cave.png'], 1, 210, 60, 60);
-    bgSources.spikesA = backgroundSource(images['gfx/cave.png'], 1, 0, 60, 60);
-    bgSources.spikesB = backgroundSource(images['gfx/cave.png'], 2, 0, 60, 60);
-    bgSources.spikesC = backgroundSource(images['gfx/cave.png'], 3, 0, 60, 60);
-    bgSources.tombstone = backgroundSource(images['gfx/cave.png'], 1, 60, 60, 150);
-    // Beach sources
+(function initializeBackground() {
+    var forestImage = requireImage('gfx/forest.png')
+    bgSources.forest = backgroundSource(forestImage, 0);
+    bgSources.treeTops = backgroundSource(forestImage, 1, 0, 60, 150);
+    bgSources.tallTrees = backgroundSource(forestImage, 2, 0, 60, 150);
+    bgSources.shortTrees = backgroundSource(forestImage, 3, 0, 60, 150);
+    bgSources.roses = backgroundSource(forestImage, 4, 0, 60, 150);
+    bgSources.rootsA = backgroundSource(forestImage, 1, 240, 60, 60);
+    bgSources.rootsB = backgroundSource(forestImage, 2, 240, 60, 60);
+    bgSources.denseLeaves = backgroundSource(forestImage, 1, 150, 60, 90);
+    bgSources.leavesAndStick = backgroundSource(forestImage, 2, 150, 60, 90);
+    bgSources.stick = backgroundSource(forestImage, 3, 150, 60, 90);
+    bgSources.leaf = backgroundSource(forestImage, 4, 150, 60, 90);
+    var fieldImage = requireImage('gfx/grass.png')
+    bgSources.field = backgroundSource(fieldImage, 0);
+    bgSources.skinnyCloud = backgroundSource(fieldImage, 1, 0, 60, 150)
+    bgSources.tinyCloud = backgroundSource(fieldImage, 2, 0, 60, 150)
+    bgSources.mediumCloud = backgroundSource(fieldImage, 3, 0, 60, 150)
+    bgSources.grassEdge = backgroundSource(fieldImage, 1, 150, 60, 90);
+    bgSources.grassA = backgroundSource(fieldImage, 2, 150, 60, 90);
+    bgSources.grassB = backgroundSource(fieldImage, 3, 150, 60, 90);
+    bgSources.grassC = backgroundSource(fieldImage, 4, 150, 60, 90);
+    bgSources.dirtCracksA = backgroundSource(fieldImage, 1, 240, 60, 60);
+    bgSources.dirtCracksB = backgroundSource(fieldImage, 2, 240, 60, 60);
+    var caveImage = requireImage('gfx/cave.png')
+    bgSources.cave = backgroundSource(caveImage, 0);
+    bgSources.rocks = backgroundSource(caveImage, 1, 210, 60, 60);
+    bgSources.spikesA = backgroundSource(caveImage, 1, 0, 60, 60);
+    bgSources.spikesB = backgroundSource(caveImage, 2, 0, 60, 60);
+    bgSources.spikesC = backgroundSource(caveImage, 3, 0, 60, 60);
+    bgSources.tombstone = backgroundSource(caveImage, 1, 60, 60, 150);
+    var beachImage = requireImage('gfx/beach.png')
     // underground: y240; floor: y150; sky: y0; floor: height=90
-    bgSources.beach = backgroundSource(images['gfx/beach.png'], 0);
-    bgSources.water1 = backgroundSource(images['gfx/beach.png'], 1, 150, 60, 60);
-    bgSources.water2 = backgroundSource(images['gfx/beach.png'], 2, 150, 60, 60);
-    bgSources.shells1 = backgroundSource(images['gfx/beach.png'], 3, 240, 60, 60);
-    bgSources.shells2 = backgroundSource(images['gfx/beach.png'], 4, 240, 60, 60);
-    // Town sources
+    bgSources.beach = backgroundSource(beachImage, 0);
+    bgSources.water1 = backgroundSource(beachImage, 1, 150, 60, 60);
+    bgSources.water2 = backgroundSource(beachImage, 2, 150, 60, 60);
+    bgSources.shells1 = backgroundSource(beachImage, 3, 240, 60, 60);
+    bgSources.shells2 = backgroundSource(beachImage, 4, 240, 60, 60);
+    var townImage = requireImage('gfx/town.png')
     // underground: y240; floor: y150; sky: y0; floor: height=90; sky: height=150
-    bgSources.town = backgroundSource(images['gfx/town.png'], 0);
-    bgSources.cobblestone = backgroundSource(images['gfx/town.png'], 1, 150, 60, 90);
-    bgSources.houseCurtains = backgroundSource(images['gfx/town.png'], 2, 0, 60, 150);
-    bgSources.houseTiles = backgroundSource(images['gfx/town.png'], 3, 0, 60, 150);
-    bgSources.fountain = backgroundSource(images['gfx/town.png'], 4, 0, 60, 150);
+    bgSources.town = backgroundSource(townImage, 0);
+    bgSources.cobblestone = backgroundSource(townImage, 1, 150, 60, 90);
+    bgSources.houseCurtains = backgroundSource(townImage, 2, 0, 60, 150);
+    bgSources.houseTiles = backgroundSource(townImage, 3, 0, 60, 150);
+    bgSources.fountain = backgroundSource(townImage, 4, 0, 60, 150);
+    var guildImage = requireImage('gfx/guildhall.png');
+    bgSources.crackedWall = backgroundSource(guildImage, 1, 0, 60, 150);
+    bgSources.oldFloorBoards = backgroundSource(guildImage, 1, 150, 60, 90);
+    bgSources.woodFloorEdge = backgroundSource(guildImage, 1, 240, 60, 60);
+    backgrounds.oldGuild = [
+        {'source': bgSources.crackedWall},
+        {'source': bgSources.oldFloorBoards},
+        {'source': bgSources.woodFloorEdge}
+    ];
     backgrounds.forest = [
         {'source': bgSources.forest},
         {'source': bgSources.treeTops, 'parallax': .2},
@@ -122,4 +131,4 @@ function initializeBackground() {
         {'source': bgSources.houseCurtains, 'spacing': 3},
         {'source': bgSources.houseTiles, 'spacing': 2},
     ];
-}
+})();
