@@ -298,8 +298,8 @@ addScripts(['utils.js', 'mouse.js', 'drawDashedRectangle.js', 'images.js', 'bonu
     'evaluate.js','helpText.js','jewels.js','jewel-inventory.js','skills.js','abilities.js',
     'loot.js','boards.js','character.js','crafting.js','enchanting.js','uniques.js',
     'heroApplication.js', 'effects.js','performAttack.js','useSkill.js',
-    'adventure.js', 'drawAdventure.js','monsters.js','levels.js','vector.js',
-    'sphereVector.js','camera.js','mapData.js','map.js','drawMap.js','editLevel.js',
+    'adventure.js', 'drawAdventure.js', 'monsters.js','levels.js','vector.js',
+    'sphereVector.js','camera.js','mapData.js', 'guild.js', 'map.js','drawMap.js','editLevel.js',
     'polygon.js','backgrounds.js', 'testCharacters.js','saveGame.js','main.js']);
 ?>
 </html>

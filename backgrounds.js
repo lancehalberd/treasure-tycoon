@@ -52,7 +52,7 @@ function backgroundSource(image, xFrame, y, width, height) {
     var guildImage = requireImage('gfx/guildhall.png');
     bgSources.crackedWall = backgroundSource(guildImage, 1, 0, 60, 150);
     bgSources.oldFloorBoards = backgroundSource(guildImage, 1, 150, 60, 90);
-    bgSources.woodFloorEdge = backgroundSource(guildImage, 1, 240, 60, 60);
+    bgSources.woodFloorEdge = backgroundSource(guildImage, 0, 240, 60, 60);
     backgrounds.oldGuild = [
         {'source': bgSources.crackedWall},
         {'source': bgSources.oldFloorBoards},

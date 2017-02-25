@@ -161,7 +161,7 @@ function updateDamageInfo(character, $statsPanel, monsterLevel) {
 
 function createAttackStats(attacker, attack, target) {
     var isCritical = Math.random() <= attack.critChance;
-    if (ifdefor(attack.firstStrike)) {
+    if (ifdefor(attack.firstStrike) && target) {
         isCritical = isCritical || target.health >= target.maxHealth;
     }
     var damage = Random.range(attack.minPhysicalDamage, attack.maxPhysicalDamage);
@@ -212,7 +212,7 @@ function createAttackStats(attacker, attack, target) {
 
 function createSpellStats(attacker, spell, target) {
     var isCritical = Math.random() <= spell.critChance;
-    if (ifdefor(spell.firstStrike)) {
+    if (ifdefor(spell.firstStrike) && target) {
         isCritical = isCritical || target.health >= target.maxHealth;
     }
     var magicDamage = spell.power;
@@ -248,7 +248,7 @@ function createSpellStats(attacker, spell, target) {
 
 function createSpellImprintedAttackStats(attacker, attack, spell, target) {
     var isCritical = Math.random() <= spell.critChance;
-    if (ifdefor(spell.firstStrike)) {
+    if (ifdefor(spell.firstStrike) && target) {
         isCritical = isCritical || target.health >= target.maxHealth;
     }
     var magicDamage = spell.power;

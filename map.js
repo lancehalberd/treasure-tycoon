@@ -367,6 +367,9 @@ $(document).on('mouseup',function (event) {
 var arrowTargetLeft, arrowTargetTop;
 $('.js-mouseContainer').on('mousemove', function (event) {
     if (!mouseDown && !rightMouseDown) return;
+    if (state.context !== 'adventure' || state.selectedCharacter.area) {
+        return;
+    }
     draggedMap = true;
     var x = event.pageX - $(this).offset().left;
     var y = event.pageY - $(this).offset().top;

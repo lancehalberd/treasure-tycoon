@@ -148,7 +148,13 @@ function initializeProjectileAnimations() {
 }
 
 function drawImage(context, image, source, target) {
-    context.drawImage(image, source.left, source.top, source.width, source.height, target.left, target.top, target.width, target.height);
+    context.save();
+    context.translate(target.left + target.width / 2, target.top + target.height / 2);
+    if (target.xScale || target.yScale) {
+        context.scale(ifdefor(target.xScale, 1), ifdefor(target.yScale, 1));
+    }
+    context.drawImage(image, source.left, source.top, source.width, source.height, -target.width / 2, -target.height / 2, target.width, target.height);
+    context.restore();
 }
 
 function makeTintedImage(image, tint) {
@@ -195,6 +201,20 @@ function prepareTintedImage() {
 function getTintedImage(image, tint, amount, sourceRectangle) {
     drawTintedImage(globalCompositeContext, image, tint, amount, sourceRectangle, {'left': 0, 'top': 0, 'width': sourceRectangle.width, 'height': sourceRectangle.height});
     return globalCompositeCanvas;
+}
+
+function drawOutlinedImage(context, image, color, thickness, source, target) {
+    context.save();
+    var smallTarget = {'width': target.width, 'height': target.height};
+    for (var dy = -1; dy < 2; dy++) {
+        for (var dx = -1; dx < 2; dx++) {
+            if (dy == 0 && dx == 0) continue;
+            smallTarget.left = target.left + dx * thickness;
+            smallTarget.top = target.top + dy * thickness;
+            drawTintedImage(context, image, color, 1, source, smallTarget);
+        }
+    }
+    drawImage(context, image, source, target);
 }
 function logPixel(context, x, y) {
     var imgd = context.getImageData(x, y, 1, 1);
