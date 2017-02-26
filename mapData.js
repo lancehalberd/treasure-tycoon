@@ -183,7 +183,7 @@ var map = {
     },
     'batcave': {
         'name': "Bat Cave",
-        'description': "These bats will be tough opponents if your accuracy is too low.\n\nYou will need to visit the <span class=\"js-showCraftingPanel action\">Temple of Fortune</span> to make and equip stronger gear to complete harder areas.\n\nThe Distract ability gives 100% chance to dodge an attack every 10 seconds.",
+        'description': "These bats will be tough opponents if your accuracy is too low.\n\nVisit the 'Shrine of Fortune' in your guild to obtain and equip stronger gear to complete harder areas.\n\nThe Distract ability gives 100% chance to dodge an attack every 10 seconds.",
         'level': 2,
         'coords': [-189,-105,-560],
         'background': "cave",
@@ -901,7 +901,7 @@ var map = {
     },
     'gnometemple': {
         'name': "Gnome Temple",
-        'description': "The Gnome Clerics specialize in defensive and healing magic. Try equipping a magic wand or staff to defeat them.\n\nYou will need to visit the <span class=\"js-showCraftingPanel action\">Temple of Fortune</span> to make and equip stronger gear to complete harder areas.\n\nThe Protect spell gives a powerful armor buff to spell casters but only while it lasts!",
+        'description': "The Gnome Clerics specialize in defensive and healing magic. Try equipping a magic wand or staff to defeat them.\n\nVisit the 'Shrine of Fortune' in your guild to obtain and equip stronger gear to complete harder areas.\n\nThe Protect spell gives a powerful armor buff to spell casters but only while it lasts!",
         'level': 2,
         'coords': [0,219,-559],
         'background': "cave",
@@ -1803,7 +1803,7 @@ var map = {
     },
     'shipgraveyard': {
         'name': "Ship Graveyard",
-        'description': "These skeletal pirates specialize in countering ranged attacks.\n\nYou will need to visit the <span class=\"js-showCraftingPanel action\">Temple of Fortune</span> to make and equip stronger gear to complete harder areas.\n\nThe Hook ability learned here may give melee adventurers the edge they need against ranged foes.",
+        'description': "These skeletal pirates specialize in countering ranged attacks.\n\nVisit the 'Shrine of Fortune' in your guild to obtain and equip stronger gear to complete harder areas.\n\nThe Hook ability learned here may give melee adventurers the edge they need against ranged foes.",
         'level': 2,
         'coords': [188,-110,-559],
         'background': "cemetery",

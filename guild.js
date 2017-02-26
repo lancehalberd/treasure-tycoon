@@ -6,11 +6,14 @@ function objectSource(image, coords, size) {
 function openWorldMap() {
     setContext('map');
 }
+function openCrafting() {
+    setContext('item');
+}
 var areaObjects = {
     'mapTable': {'name': 'World Map', 'source': objectSource(guildImage, [360, 120], [120, 50, 60]), 'action': openWorldMap},
     'crackedOrb': {'name': 'Cracked Anima Orb', 'source': objectSource(guildImage, [240, 100], [60, 60, 30])},
     'crackedPot': {'name': 'Cracked Pot', 'source': objectSource(guildImage, [300, 100], [60, 60, 30])},
-    'woodenShrine': {'name': 'Shrine of Fortune', 'source': objectSource(guildImage, [540, 100], [60, 70, 40])},
+    'woodenShrine': {'name': 'Shrine of Fortune', 'source': objectSource(guildImage, [540, 100], [60, 70, 40]), 'action': openCrafting},
     'candles': {'source': objectSource(guildImage, [240, 30], [60, 70, 0])}
 }
 var wallZ = 180;
@@ -73,8 +76,14 @@ guildAreas.guildFoyer = initializeGuldArea({
     ]
 });
 var guildFrontDoor = {'areaKey': 'guildFoyer', 'x': 120, 'z': 0};
-
+function leaveCurrentArea(character) {
+    if (!character.area) return;
+    var allyIndex = character.area.allies.indexOf(character.adventurer);
+    if (allyIndex >= 0) character.area.allies.splice(allyIndex, 1);
+    character.area = null;
+}
 function enterGuildArea(character, door) {
+    leaveCurrentArea(character);
     character.context = 'guild'
     character.currentLevelKey = 'guild';
     character.guildAreaKey = door.areaKey;

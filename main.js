@@ -475,10 +475,6 @@ $('body').on('click', '.js-retire', function (event) {
     saveGame();
     updateRetireButtons();
 });
-// World Map button doubles for recall button now.
-$('body').on('click', '.js-showCraftingPanel', function (event) {
-    setContext('item');
-});
 $('body').on('click', '.js-showJewelsPanel', function (event) {
     setContext('jewel');
 });
@@ -534,6 +530,10 @@ $('body').on('click', '.js-shrineButton', function (event) {
 
 function setContext(context) {
     state.selectedCharacter.context = context;
+    // If the player is not already in the guild when we return to the guild context, move them to the foyer.
+    if (context === 'guild' && (!state.selectedCharacter.area || !state.selectedCharacter.area.isGuildArea)) {
+        enterGuildArea(state.selectedCharacter, guildFrontDoor);
+    }
     showContext(context);
 }
 function showContext(context) {

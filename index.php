@@ -178,7 +178,7 @@
             </div>
         </div><div class="js-itemPanel itemPanel js-itemContext">
             <div class="js-itemCrafting itemCrafting">
-                <div class="panelTitle">Temple of Fortune</div>
+                <div class="panelTitle">Shrine of Fortune</div>
                 <div class="craftingHelp">Offer coins for blessings from The Goddess</div>
                 <div class="craftingCanvasContainer">
                     <canvas class="js-craftingCanvas craftingCanvas" height="210" width="1100" style="background-color: white;"></canvas>
@@ -263,7 +263,6 @@
             </div>
         </div>
         <div class="js-controlBar controlBar">
-            <button class="js-showCraftingPanel item"><div class="icon crafting"></div></button>
             <button class="js-showJewelsPanel item"><canvas class="js-jewelButtonCanvas" width="40" height="40"></canvas></button>
         </div><div class="js-charactersBox characterBox"></div><div class="js-recruitmentColumn js-adventureContext displayColumn recruitmentColumn">
             <div class="js-heroApplication heroApplication hideOnBottom">

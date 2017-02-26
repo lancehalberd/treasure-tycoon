@@ -10,31 +10,33 @@ function startArea(character, index) {
     character.currentLevelKey = index;
     var levelCompleted = ifdefor(character.divinityScores[index], 0) !== 0;
     var difficultyCompleted = !!ifdefor(character.levelTimes[index], {})[character.levelDifficulty];
+    leaveCurrentArea(character);
     if (character.levelDifficulty === 'endless') {
         character.area = instantiateLevel(map[index], character.levelDifficulty, difficultyCompleted, getEndlessLevel(character, map[index]));
     } else {
         character.area = instantiateLevel(map[index], character.levelDifficulty, difficultyCompleted);
     }
     character.cameraX = -60;
-    initializeActorForAdventure(character.adventurer);
+    var hero = character.adventurer;
+    initializeActorForAdventure(hero);
     character.waveIndex = 0;
-    character.adventurer.x = 0;
-    character.adventurer.y = 0;
-    character.adventurer.z = 0;
     character.finishTime = false;
     character.startTime = character.time;
     character.enemies = [];
-    character.objects = [];
-    character.projectiles = [];
-    character.effects = [];
-    character.allies = [character.adventurer];
-    character.adventurer.allies = character.allies;
-    character.adventurer.enemies = character.enemies;
-    character.treasurePopups = [];
-    character.textPopups = [];
-    character.timeStopEffect = null;
-    character.adventurer.activity = null;
-    character.adventurer.actions.concat(character.adventurer.reactions).forEach(function (action) {
+    character.area.objects = character.objects = [];
+    character.area.projectiles = character.projectiles = [];
+    character.area.effects = character.effects = [];
+    character.allies = [hero];
+    character.area.allies = hero.allies = character.allies;
+    character.area.enemies = hero.enemies = character.enemies;
+    character.area.treasurePopups = character.treasurePopups = [];
+    character.area.textPopups = character.textPopups = [];
+    character.area.timeStopEffect = character.timeStopEffect = null;
+    hero.x = 0;
+    hero.y = 0;
+    hero.z = 0;
+    hero.activity = null;
+    hero.actions.concat(hero.reactions).forEach(function (action) {
         action.readyAt = 0;
     });
     if (state.selectedCharacter === character) {

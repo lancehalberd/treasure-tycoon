@@ -164,7 +164,7 @@ function initializeActorForAdventure(actor) {
 function returnToMap(character) {
     removeAdventureEffects(character.adventurer);
     character.paused = false;
-    character.area = null;
+    leaveCurrentArea(character);
     updateAdventureButtons();
     if (character.replay) {
         startArea(character, character.currentLevelKey);

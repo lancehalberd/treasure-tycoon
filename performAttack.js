@@ -59,7 +59,9 @@ function updateDamageInfo(character, $statsPanel, monsterLevel) {
     var level = map[character.currentLevelKey];
     if (!monsterLevel) {
         if (level) {
-            if (character.levelDifficulty === 'endless') {
+            if (character.currentLevelKey === 'guild') {
+                monsterLevel = 1;
+            } else if (character.levelDifficulty === 'endless') {
                 monsterLevel = getEndlessLevel(character, level);
             } else {
                 monsterLevel = level ? level.level : adventurer.level;

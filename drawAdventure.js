@@ -4,11 +4,10 @@ var groundY = 390;
 // Indicates how much to shift drawing the map/level based on the needs of other UI elements.
 var screenYOffset = 0;
 function drawAdventure(character) {
-    var adventurer = character.adventurer;
+    var area = editingLevelInstance ? editingLevelInstance : character.area;
     var context = mainContext;
     var cameraX = character.cameraX;
     context.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
-    var area = editingLevelInstance ? editingLevelInstance : character.area;
     var background = ifdefor(backgrounds[area.background], backgrounds.field);
     var cloudX = cameraX + character.time * .5;
     var tileWidth = 120;
@@ -33,26 +32,18 @@ function drawAdventure(character) {
         }
         context.globalAlpha = 1;
     });
-    ifdefor(character.objects, []).forEach(function (object) {
+    ifdefor(area.objects, []).forEach(function (object) {
         object.draw(character);
     });
-    var sortedActors = character.allies.concat(character.enemies).sort(function (spriteA, spriteB) {
+    var sortedActors = area.allies.concat(area.enemies).sort(function (spriteA, spriteB) {
         return spriteB.z - spriteA.z;
     });
     sortedActors.forEach(drawActor);
+    for (var treasurePopup of ifdefor(area.treasurePopups, [])) treasurePopup.draw(character);
+    for (var projectile of ifdefor(area.projectiles, [])) projectile.draw(character);
+    for (var effect of ifdefor(area.effects, [])) effect.draw(character);
     // Draw text popups such as damage dealt, item points gained, and so on.
-    context.fillStyle = 'red';
-    for (var i = 0; i < ifdefor(character.treasurePopups, []).length; i++) {
-        character.treasurePopups[i].draw(character);
-    }
-    for (var i = 0; i < ifdefor(character.projectiles, []).length; i++) {
-        character.projectiles[i].draw(character);
-    }
-    for (var i = 0; i < ifdefor(character.effects, []).length; i++) {
-        character.effects[i].draw(character);
-    }
-    for (var i = 0; i < ifdefor(character.textPopups, []).length; i++) {
-        var textPopup = character.textPopups[i];
+    for (var textPopup of ifdefor(character.textPopups, [])) {
         context.fillStyle = ifdefor(textPopup.color, "red");
         var scale = Math.max(0, Math.min(1.5, ifdefor(textPopup.duration, 0) / 10));
         context.font = Math.round(scale * ifdefor(textPopup.fontSize, 20)) + 'px sans-serif';
