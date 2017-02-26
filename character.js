@@ -166,13 +166,14 @@ function returnToMap(character) {
     character.paused = false;
     character.area = null;
     updateAdventureButtons();
-    if (state.selectedCharacter === character) {
-        refreshStatsPanel(character, $('.js-characterColumn .js-stats'));
-    }
     if (character.replay) {
         startArea(character, character.currentLevelKey);
     } else if (testingLevel) {
         stopTestingLevel();
+    }
+    if (state.selectedCharacter === character) {
+        setContext('map');
+        refreshStatsPanel(character, $('.js-characterColumn .js-stats'));
     }
 }
 function refreshStatsPanel(character, $statsPanel) {
@@ -217,8 +218,7 @@ function newCharacter(job) {
     character.divinityScores = {};
     character.levelTimes = {};
     character.divinity = 0;
-    character.currentLevelKey = ifdefor(job.levelKey, 'meadow');
-    character.levelCompleted = false;
+    character.currentLevelKey = 'guild';
     character.fame = 1;
     var abilityKey = ifdefor(abilities[job.key]) ? job.key : 'heal';
     character.adventurer.abilities.push(abilities[abilityKey]);
@@ -629,7 +629,7 @@ function gainLevel(adventurer) {
     state.skipShrinesEnabled = true;
     $('.js-shrineButton').show();
 }
-function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonus, startingEquipment, jewelLoot, levelKey, iconSource) {
+function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonus, startingEquipment, jewelLoot, iconSource) {
     var key = name.replace(/\s*/g, '').toLowerCase();
     startingEquipment = ifdefor(startingEquipment, {});
     startingEquipment.body = ifdefor(startingEquipment.body, itemsByKey.woolshirt);
@@ -642,7 +642,6 @@ function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonu
         'startingEquipment': startingEquipment,
         'startingBoard': ifdefor(classBoards[key], squareBoard),
         'jewelLoot': jewelLoot,
-        'levelKey': ifdefor(levelKey, 'meadow'),
         'iconSource': iconSource
     };
 }
@@ -655,33 +654,33 @@ function jobJewels(r,g,b) {
 }
 
 var characterClasses = {};
-addCharacterClass('Fool', 0, 0, 0, {}, [], 'master1', jobIcon(0, 2));
+addCharacterClass('Fool', 0, 0, 0, {}, [], jobIcon(0, 2));
 
-addCharacterClass('Black Belt', 0, 2, 1, {}, jobJewels(1,0,0), 'meadow', jobIcon(0, 1));
-addCharacterClass('Warrior', 1, 3, 1, {'weapon': itemsByKey.stick}, jobJewels(1,0,0), 'meadow', jobIcon(1, 1));
-addCharacterClass('Samurai', 2, 4, 1, {'weapon': itemsByKey.stick}, jobJewels(1,0,0), 'meadow', jobIcon(2, 1));
+addCharacterClass('Black Belt', 0, 2, 1, {}, jobJewels(1,0,0), jobIcon(0, 1));
+addCharacterClass('Warrior', 1, 3, 1, {'weapon': itemsByKey.stick}, jobJewels(1,0,0), jobIcon(1, 1));
+addCharacterClass('Samurai', 2, 4, 1, {'weapon': itemsByKey.stick}, jobJewels(1,0,0), jobIcon(2, 1));
 
-addCharacterClass('Juggler', 2, 1, 0, {'weapon': itemsByKey.ball}, jobJewels(0,1,0), 'grove', jobIcon(4, 0));
-addCharacterClass('Ranger', 3, 1, 1, {'weapon': itemsByKey.ball}, jobJewels(0,1,0), 'grove', jobIcon(4, 2));
-addCharacterClass('Sniper', 4, 1, 2, {'weapon': itemsByKey.ball}, jobJewels(0,1,0), 'grove', jobIcon(0, 0));
+addCharacterClass('Juggler', 2, 1, 0, {'weapon': itemsByKey.ball}, jobJewels(0,1,0),  jobIcon(4, 0));
+addCharacterClass('Ranger', 3, 1, 1, {'weapon': itemsByKey.ball}, jobJewels(0,1,0), jobIcon(4, 2));
+addCharacterClass('Sniper', 4, 1, 2, {'weapon': itemsByKey.ball}, jobJewels(0,1,0), jobIcon(0, 0));
 
-addCharacterClass('Priest', 1, 0, 2, {'weapon': itemsByKey.stick}, jobJewels(0,0,1), 'cave', jobIcon(0, 3));
-addCharacterClass('Wizard', 1, 1, 3, {'weapon': itemsByKey.stick}, jobJewels(0,0,1), 'cave', jobIcon(4, 3));
-addCharacterClass('Sorcerer', 1, 2, 4, {'weapon': itemsByKey.stick}, jobJewels(0,0,1), 'cave', jobIcon(1, 3));
+addCharacterClass('Priest', 1, 0, 2, {'weapon': itemsByKey.stick}, jobJewels(0,0,1), jobIcon(0, 3));
+addCharacterClass('Wizard', 1, 1, 3, {'weapon': itemsByKey.stick}, jobJewels(0,0,1), jobIcon(4, 3));
+addCharacterClass('Sorcerer', 1, 2, 4, {'weapon': itemsByKey.stick}, jobJewels(0,0,1), jobIcon(1, 3));
 
-addCharacterClass('Corsair', 2, 2, 1, {'weapon': itemsByKey.rock}, jobJewels(1,1,0), 'shipgraveyard', jobIcon(2, 3));
-addCharacterClass('Assassin', 3, 2, 1, {'weapon': itemsByKey.rock}, jobJewels(1,1,0), 'shipgraveyard', jobIcon(3, 1));
-addCharacterClass('Ninja', 4, 4, 2, {'weapon': itemsByKey.rock}, jobJewels(1,1,0), 'shipgraveyard', jobIcon(4, 1));
+addCharacterClass('Corsair', 2, 2, 1, {'weapon': itemsByKey.rock}, jobJewels(1,1,0), jobIcon(2, 3));
+addCharacterClass('Assassin', 3, 2, 1, {'weapon': itemsByKey.rock}, jobJewels(1,1,0), jobIcon(3, 1));
+addCharacterClass('Ninja', 4, 4, 2, {'weapon': itemsByKey.rock}, jobJewels(1,1,0), jobIcon(4, 1));
 
-addCharacterClass('Dancer', 2, 1, 2, {'weapon': itemsByKey.ball}, jobJewels(0,1,1), 'batcave', jobIcon(3, 0));
-addCharacterClass('Bard', 2, 1, 3, {'weapon': itemsByKey.stick}, jobJewels(1,0,1), 'batcave', jobIcon(2, 0));
-addCharacterClass('Sage', 4, 2, 4, {'weapon': itemsByKey.stick}, jobJewels(1,0,1), 'batcave', jobIcon(1, 0));
+addCharacterClass('Dancer', 2, 1, 2, {'weapon': itemsByKey.ball}, jobJewels(0,1,1), jobIcon(3, 0));
+addCharacterClass('Bard', 2, 1, 3, {'weapon': itemsByKey.stick}, jobJewels(1,0,1), jobIcon(2, 0));
+addCharacterClass('Sage', 4, 2, 4, {'weapon': itemsByKey.stick}, jobJewels(1,0,1), jobIcon(1, 0));
 
-addCharacterClass('Paladin', 1, 2, 2, {'weapon': itemsByKey.stick}, jobJewels(1,0,1), 'gnometemple', jobIcon(2, 2));
-addCharacterClass('Dark Knight', 1, 3, 2, {'weapon': itemsByKey.ball}, jobJewels(0,1,1), 'gnometemple', jobIcon(3, 2));
-addCharacterClass('Enhancer', 2, 4, 4, {'weapon': itemsByKey.ball}, jobJewels(0,1,1), 'gnometemple', jobIcon(3, 3));
+addCharacterClass('Paladin', 1, 2, 2, {'weapon': itemsByKey.stick}, jobJewels(1,0,1), jobIcon(2, 2));
+addCharacterClass('Dark Knight', 1, 3, 2, {'weapon': itemsByKey.ball}, jobJewels(0,1,1),  jobIcon(3, 2));
+addCharacterClass('Enhancer', 2, 4, 4, {'weapon': itemsByKey.ball}, jobJewels(0,1,1), jobIcon(3, 3));
 
-addCharacterClass('Master', 4, 4, 4, {'weapon': itemsByKey.rock}, jobJewels(0,1,1), 'master1', jobIcon(1, 2));
+addCharacterClass('Master', 4, 4, 4, {'weapon': itemsByKey.rock}, jobJewels(0,1,1), jobIcon(1, 2));
 
 function divinityToLevelUp(currentLevel) {
     return Math.ceil(baseDivinity(currentLevel)*(1 + (currentLevel - 1) / 10));

@@ -1,9 +1,3 @@
-
-var world = {radius: 600};
-var camera = new Camera(world, 800, 600);
-var mapLocation = new SphereVector(world);
-var movedMap = true;
-
 function drawMap() {
     var context = mainContext;
 
@@ -112,7 +106,7 @@ function drawMap() {
         }
         visibleNodes = {};
         $.each(map, function (levelKey, levelData) {
-            if (!editingMap && !state.visibleLevels[levelKey]) {
+            if (!editingMap && !levelData.isGuildArea && !state.visibleLevels[levelKey]) {
                 return;
             }
             if (new Vector(levelData.coords).dotProduct(camera.forward) <= 0) {
@@ -147,7 +141,7 @@ function drawMap() {
         context.lineWidth = 5;
     }
     $.each(visibleNodes, function (levelKey, levelData){
-        levelData.unlocks.forEach(function (nextLevelKey) {
+        ifdefor(levelData.unlocks, []).forEach(function (nextLevelKey) {
             if ((editingMap || (state.visibleLevels[levelKey] && state.visibleLevels[nextLevelKey])) && (visibleNodes[levelKey] && visibleNodes[nextLevelKey])) {
                 var nextLevelData = map[nextLevelKey];
                 context.beginPath();
@@ -199,7 +193,7 @@ function drawMap() {
             context.textAlign = 'center'
             context.textBaseline = 'middle';
             //context.fillText(levelData.coords.map(function (number) { return number.toFixed(0);}).join(', '), levelData.left + 20, levelData.top + 45);
-            context.fillText(levelData.level + ' ' + levelData.name, levelData.left + 20, levelData.top + 27);
+            context.fillText(ifdefor(levelData.level, '') + ' ' + levelData.name, levelData.left + 20, levelData.top + 27);
             if (levelData.skill) {
                 context.fillStyle = new Vector(levelData.coords).dotProduct(camera.forward) >= 0 ? 'red' : 'black';
                 context.fillRect(levelData.left - 30, levelData.top + 34, 100, 15);
@@ -249,7 +243,7 @@ function drawMap() {
         context.font = 'bold 16px sans-serif';
         context.textAlign = 'center'
         context.textBaseline = 'middle';
-        context.fillText(levelData.level, levelData.left + 20, levelData.top + 26);
+        context.fillText(ifdefor(levelData.level, ''), levelData.left + 20, levelData.top + 26);
         if (divinityScore > 0) {
             context.fillStyle = 'black';
             context.fillRect(levelData.left, levelData.top + 34, 40, 15);

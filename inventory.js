@@ -488,7 +488,7 @@ function addItem(level, data) {
 $(document).on('keydown', function(event) {
     if (event.which == 82 && !$dragHelper && !(event.metaKey || event.ctrlKey)) { // 'r' without ctrl/cmd while not dragging an item.
         // If they are looking at the item screen and the reforge option is available.
-        if (currentContext === 'item' && $('.js-craftingSelectOptions:visible').length) {
+        if (state.selectedCharacter.context === 'item' && $('.js-craftingSelectOptions:visible').length) {
             reforgeItems();
             return;
         }

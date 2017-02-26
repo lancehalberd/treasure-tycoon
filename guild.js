@@ -3,8 +3,11 @@ function objectSource(image, coords, size) {
     return {'image': image, 'left': coords[0], 'top': coords[1],
             'width': size[0], 'height': size[1], 'depth': size[2]};
 }
+function openWorldMap() {
+    setContext('map');
+}
 var areaObjects = {
-    'mapTable': {'name': 'World Map', 'source': objectSource(guildImage, [360, 120], [120, 50, 60])},
+    'mapTable': {'name': 'World Map', 'source': objectSource(guildImage, [360, 120], [120, 50, 60]), 'action': openWorldMap},
     'crackedOrb': {'name': 'Cracked Anima Orb', 'source': objectSource(guildImage, [240, 100], [60, 60, 30])},
     'crackedPot': {'name': 'Cracked Pot', 'source': objectSource(guildImage, [300, 100], [60, 60, 30])},
     'woodenShrine': {'name': 'Shrine of Fortune', 'source': objectSource(guildImage, [540, 100], [60, 70, 40])},
@@ -25,8 +28,9 @@ function initializeGuldArea(guildArea) {
     return guildArea;
 }
 function fixedObject(objectKey, coords, properties) {
-    var imageSource = areaObjects[objectKey].source;
-    return $.extend({'key': objectKey, 'fixed': true, 'base': areaObjects[objectKey], 'x': coords[0], 'y': coords[1], 'z': coords[2],
+    var base = areaObjects[objectKey];
+    var imageSource = base.source;
+    return $.extend({'key': objectKey, 'fixed': true, 'base': areaObjects[objectKey], 'action': base.action, 'x': coords[0], 'y': coords[1], 'z': coords[2],
                     'width': imageSource.width, 'height': imageSource.height, 'depth': imageSource.depth,
                     'draw': drawFixedObject,
                     'helpMethod': fixedObjectHelpText}, ifdefor(properties, {}));
@@ -50,7 +54,8 @@ function drawFixedObject(area) {
     if (canvasPopupTarget === this) drawOutlinedImage(mainContext, imageSource.image, '#fff', 2, imageSource, this)
     else drawImage(mainContext, imageSource.image, imageSource, this);
 }
-map.guildFoyer = initializeGuldArea({
+var guildAreas = {};
+guildAreas.guildFoyer = initializeGuldArea({
     'key': 'guildFoyer',
     'width': 1000,
     'backgroundPatterns': {'0': 'oldGuild'},
@@ -67,11 +72,13 @@ map.guildFoyer = initializeGuldArea({
         fixedObject('crackedOrb', [545, 0, 150])
     ]
 });
-
+var guildFrontDoor = {'areaKey': 'guildFoyer', 'x': 120, 'z': 0};
 
 function enterGuildArea(character, door) {
-    character.currentLevelKey = door.areaKey;
-    var guildArea = map[door.areaKey];
+    character.context = 'guild'
+    character.currentLevelKey = 'guild';
+    character.guildAreaKey = door.areaKey;
+    var guildArea = guildAreas[door.areaKey];
     character.area = guildArea;
     character.cameraX = guildArea.cameraX;
     initializeActorForAdventure(character.adventurer);
@@ -82,7 +89,7 @@ function enterGuildArea(character, door) {
     guildArea.allies.push(hero);
     character.allies = hero.allies = guildArea.allies;
     character.enemies = hero.enemies = guildArea.enemies;
-    character.objects = hero.objects = guildArea.objects;
+    character.objects = guildArea.objects;
     hero.activity = null;
     hero.actions.concat(hero.reactions).forEach(function (action) {
         action.readyAt = 0;
@@ -90,6 +97,7 @@ function enterGuildArea(character, door) {
     if (state.selectedCharacter === character) {
         guildArea.cameraX = hero.x - 300;
         updateAdventureButtons();
+        showContext('guild');
     }
     saveGame();
 }

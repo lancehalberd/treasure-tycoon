@@ -1,4 +1,9 @@
 var editingMap = false;
+var world = {radius: 600};
+var camera = new Camera(world, 800, 600);
+var mapLocation = new SphereVector(world);
+var movedMap = true;
+
 $.each(map, function (levelKey, levelData) {
     levelData.levelKey = levelKey;
 });
@@ -8,10 +13,17 @@ function exportMap() {
     Object.keys(map).sort().forEach(function (levelKey) {
         var levelData = map[levelKey];
         var levelLines = ["    '" + levelKey+"': {"];
+        if (levelKey === 'guild') {
+            levelLines.push("        'name': " + JSON.stringify(levelData.name) + ",");
+            levelLines.push("        'coords': " + JSON.stringify(levelData.coords.map(function (number) { return Number(number.toFixed(0));})) + ",");
+            levelLines.push("        'unlocks': " + JSON.stringify(levelData.unlocks) + ",");
+            levelLines.push("    }");
+            lines.push(levelLines.join("\n"));
+            return;
+        }
         levelLines.push("        'name': " + JSON.stringify(levelData.name) + ",");
         levelLines.push("        'description': " + JSON.stringify(ifdefor(levelData.description, '')) + ",");
         levelLines.push("        'level': " + JSON.stringify(levelData.level) + ",");
-        levelLines.push("        'x': " + JSON.stringify(levelData.x) + ", 'y': " + JSON.stringify(levelData.y) + ",");
         levelLines.push("        'coords': " + JSON.stringify(levelData.coords.map(function (number) { return Number(number.toFixed(0));})) + ",");
         for (var key of ['background', 'unlocks', 'skill', 'enemySkills', 'monsters']) {
             levelLines.push("        '" + key + "': " + JSON.stringify(levelData[key]) + ",");
@@ -83,33 +95,6 @@ function updateMap() {
             camera.updateRotationMatrix();
         }
     }
-  /*  var minX = minY = 1000000, maxX = maxY = -10000000;
-
-    $.each(map, function (levelKey, levelData){
-        if (!editingMap && !state.visibleLevels[levelKey]) {
-            return;
-        }
-        minX = Math.min(levelData.x * 40, minX);
-        minY = Math.min(levelData.y * 40, minY);
-        maxX = Math.max(levelData.x * 40 + 40, maxX);
-        maxY = Math.max(levelData.y * 40 + 40, maxY);
-    });
-    if (mapLeft < minX - mapWidth / 2) {
-        mapLeft = (mapLeft * 5 + minX - mapWidth / 2) / 6;
-        movedMap = true;
-    }
-    if (mapLeft > maxX - mapWidth / 2) {
-        mapLeft = (mapLeft * 5 + maxX - mapWidth / 2) / 6;
-        movedMap = true;
-    }
-    if (mapTop < minY - mapHeight / 2) {
-        mapTop = (mapTop * 5 + minY - mapHeight / 2) / 6;
-        movedMap = true;
-    }
-    if (mapTop > maxY - mapHeight / 2) {
-        mapTop = (mapTop * 5 + maxY - mapHeight / 2) / 6;
-        movedMap = true;
-    }*/
 }
 function centerMapOnLevel(levelData, instant) {
     centerInstantly = instant;
@@ -161,6 +146,9 @@ function getMapPopupTargetProper(x, y) {
 
 function getMapLevelHelpText(level) {
     var helpText;
+    if (level.levelKey === 'guild') {
+        return 'Guild';
+    }
     if (!editingMap) {
         helpText = '<p style="font-weight: bold">Level ' + level.level + ' ' + level.name + '</p>';
     } else {
@@ -189,9 +177,6 @@ function getMapShrineHelpText(shrine) {
     var skill = abilities[shrine.level.skill];
     var totalCost = totalCostForNextLevel(state.selectedCharacter, shrine.level);
     var helpText = ''
-    if (state.selectedCharacter.currentLevelKey !== shrine.level.levelKey || !state.selectedCharacter.levelCompleted) {
-        helpText += '<p style="font-size: 12">An adventurer can only visit the shrine for the last adventure they completed.</p><br/>';
-    }
     var skillAlreadyLearned = state.selectedCharacter.adventurer.unlockedAbilities[skill.key];
     if (!skillAlreadyLearned && state.selectedCharacter.adventurer.level >= maxLevel) {
         helpText += '<p style="font-size: 12">' + state.selectedCharacter.adventurer.name + ' has reached the maximum level and can no longer learn new abilities.</p><br/>';
@@ -266,12 +251,8 @@ var originalSelectedNodes = [];
 $('.js-mouseContainer').on('contextmenu', '.js-mainCanvas', function (event) {
     return !editingMap;
 });
-$('.js-mouseContainer').on('mousedown', '.js-mainCanvas', function (event) {
-    if (state.selectedCharacter.area) return;
-    var x = event.pageX - $(this).offset().left;
-    var y = event.pageY - $(this).offset().top;
+function handleMapClick(x, y, event) {
     //console.log(camera.unprojectPoint(x + mapLeft, y + mapTop, world.radius));
-
     var newMapTarget = getMapTarget(x, y);
     if (editingMap) {
         if (event.which === 3) {
@@ -295,7 +276,11 @@ $('.js-mouseContainer').on('mousedown', '.js-mainCanvas', function (event) {
     }
     if (event.which != 1) return; // Handle only left click.
     if (!editingMap && newMapTarget) {
-        if (currentMapTarget.isShrine) {
+        if (currentMapTarget.levelKey === 'guild') {
+            currentMapTarget = null;
+            setContext('guild');
+            return;
+        } else if (currentMapTarget.isShrine) {
             // Show them the area menu if they click on the shrine from a different area.
             state.selectedCharacter.selectedLevelKey = currentMapTarget.level.levelKey;
             displayAreaMenu();
@@ -313,7 +298,7 @@ $('.js-mouseContainer').on('mousedown', '.js-mainCanvas', function (event) {
     draggedMap = false;
     mapDragX = x;
     mapDragY = y;
-});
+}
 $('.js-mouseContainer').on('dblclick', '.js-mainCanvas', function (event) {
     var x = event.pageX - $(this).offset().left;
     var y = event.pageY - $(this).offset().top;
@@ -367,9 +352,7 @@ $(document).on('mouseup',function (event) {
 var arrowTargetLeft, arrowTargetTop;
 $('.js-mouseContainer').on('mousemove', function (event) {
     if (!mouseDown && !rightMouseDown) return;
-    if (state.context !== 'adventure' || state.selectedCharacter.area) {
-        return;
-    }
+    if (state.selectedCharacter.context !== 'map') return;
     draggedMap = true;
     var x = event.pageX - $(this).offset().left;
     var y = event.pageY - $(this).offset().top;
@@ -450,37 +433,32 @@ function displayAreaMenu() {
 $('.js-easyDifficulty').on('click', function (event) {
     $('.js-areaMenu').hide();
     state.selectedCharacter.levelDifficulty = 'easy';
+    setContext('adventure');
     startArea(state.selectedCharacter, state.selectedCharacter.selectedLevelKey);
-    // Sometimes divinity points preview is stuck open at beginning of level, not sure how.
-    hidePointsPreview();
 });
 $('.js-normalDifficulty').on('click', function (event) {
     $('.js-areaMenu').hide();
     state.selectedCharacter.levelDifficulty = 'normal';
+    setContext('adventure');
     startArea(state.selectedCharacter, state.selectedCharacter.selectedLevelKey);
-    // Sometimes divinity points preview is stuck open at beginning of level, not sure how.
-    hidePointsPreview();
 });
 $('.js-hardDifficulty').on('click', function (event) {
     $('.js-areaMenu').hide();
     state.selectedCharacter.levelDifficulty = 'hard';
+    setContext('adventure');
     startArea(state.selectedCharacter, state.selectedCharacter.selectedLevelKey);
-    // Sometimes divinity points preview is stuck open at beginning of level, not sure how.
-    hidePointsPreview();
 });
 $('.js-challengeDifficulty').on('click', function (event) {
     $('.js-areaMenu').hide();
     state.selectedCharacter.levelDifficulty = 'challenge';
+    setContext('adventure');
     startArea(state.selectedCharacter, state.selectedCharacter.selectedLevelKey);
-    // Sometimes divinity points preview is stuck open at beginning of level, not sure how.
-    hidePointsPreview();
 });
 $('.js-endlessDifficulty').on('click', function (event) {
     $('.js-areaMenu').hide();
     state.selectedCharacter.levelDifficulty = 'endless';
+    setContext('adventure');
     startArea(state.selectedCharacter, state.selectedCharacter.selectedLevelKey);
-    // Sometimes divinity points preview is stuck open at beginning of level, not sure how.
-    hidePointsPreview();
 });
 
 function getEndlessLevel(character, level) {
@@ -538,7 +516,6 @@ function completeLevel(character) {
         unlockItemLevel(level.level + 1);
         var oldTime = ifdefor(character.levelTimes[character.currentLevelKey][character.levelDifficulty], 99999);
         character.levelTimes[character.currentLevelKey][character.levelDifficulty] = Math.min(character.completionTime, oldTime);
-        character.levelCompleted = true;
     }
     saveGame();
 }
@@ -564,12 +541,12 @@ $('body').on('click', '.js-confirmSkill', function (event) {
     updateConfirmSkillConfirmationButtons();
     saveGame();
     setTimeout(function () {
-        showContext('adventure');
+        setContext('adventure');
         finishShrine(character);
     }, 500);
 });
 $('body').on('click', '.js-cancelSkill', function (event) {
-    showContext('adventure');
+    setContext('adventure');
 });
 function unlockMapLevel(levelKey) {
     state.visibleLevels[levelKey] = true;
@@ -625,13 +602,23 @@ $(document).on('keydown', function(event) {
         if (editingMap) {
             stopMapEditing();
         } else if (!testingLevel) {
-            if (currentContext !== 'adventure') {
-                showContext('adventure');
+            if (state.selectedCharacter.context === 'map') {
+                if ($('.js-areaMenu').is(':visible')) $('.js-areaMenu').hide();
+                else if (!state.selectedCharacter.area) {
+                    enterGuildArea(state.selectedCharacter, guildFrontDoor);
+                } else {
+                    setContext('guild');
+                }
+            } else if (state.selectedCharacter.context === 'jewel' || state.selectedCharacter.context === 'item') {
+                setContext('guild');
+            }
+            /*if (state.selectedCharacter.context !== 'adventure') {
+                setContext('adventure');
             } else if (state.selectedCharacter.area) {
                 recallSelectedCharacter();
             } else {
                 $('.js-areaMenu').hide();
-            }
+            }*/
         }
     }
     if (editingMap && event.which === 67) { // 'c'
@@ -642,9 +629,7 @@ $(document).on('keydown', function(event) {
         pasteCharacterToClipBoard(state.selectedCharacter);
     }
     if (window.location.search.substr(1) === 'edit' && event.which === 69) { // 'e'
-        if (currentContext !== 'adventure' || state.selectedCharacter.area) {
-            return;
-        }
+        if (state.selectedCharacter.context !== 'map') return;
         if (currentMapTarget) {
             startEditingLevel(currentMapTarget);
             return;

@@ -4,7 +4,6 @@ function startArea(character, index) {
     }
 
     if (character.currentLevelKey !== index) {
-        character.levelCompleted = false;
         character.board.boardPreview = null;
         drawBoardBackground(character.boardContext, character.board);
     }
@@ -123,7 +122,7 @@ function removeActor(actor) {
             character.levelTimes[character.currentLevelKey][character.levelDifficulty] = currentEndlessLevel - 1;
         }
         returnToMap(actor.character);
-        if (actor.character === state.selectedCharacter && !actor.character.replay && !testingLevel && currentContext === 'adventure') {
+        if (actor.character === state.selectedCharacter && !actor.character.replay && !testingLevel) {
             displayAreaMenu();
         }
     }
@@ -258,11 +257,9 @@ function moveActor(actor) {
     var delta = frameMilliseconds / 1000;
     if (ifdefor(actor.character.isStuckAtShrine)) {
         actor.walkFrame = 0;
-        console.log('stuck')
         return;
     }
     if (actor.isDead || actor.stunned || actor.pull || ifdefor(actor.stationary) || (actor.skillInUse && actor.skillInUse.preparationTime < actor.skillInUse.totalPreparationTime)) {
-        console.log('dead or something');
         return;
     }
     var goalTarget = (actor.skillInUse && actor.skillTarget !== actor) ? actor.skillTarget : null;
@@ -292,6 +289,9 @@ function moveActor(actor) {
                 break;
             case 'interact':
                 if (getDistanceOverlap(actor, actor.activity.target) <= 5) {
+                    if (actor.activity.target.action) {
+                        actor.activity.target.action();
+                    }
                     actor.activity = null;
                     break;
                 }
@@ -375,7 +375,7 @@ function moveActor(actor) {
             }
         }
         if (!collision) {
-            for (var object of actor.objects) {
+            for (var object of actor.character.objects) {
                 var distance = getDistanceOverlap(actor, object);
                 if (distance <= -8 && new Vector([speedBonus * (actor.x - currentX), speedBonus * (actor.z - currentZ)]).dotProduct(new Vector([object.x - currentX, object.z - currentZ])) > 0) {
                     collision = true;

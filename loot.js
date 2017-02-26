@@ -370,7 +370,7 @@ function adventureBoardPreview(boardPreview) {
             character.board.boardPreview = self.boardPreview;
             // This will show the confirm skill button if this character is selected.
             updateConfirmSkillConfirmationButtons();
-            showContext('jewel');
+            setContext('jewel');
         },
         'draw': function (character) {
             // Remove the preview from the character if we draw it to the adventure screen since they both use the same coordinate variables

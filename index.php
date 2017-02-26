@@ -68,7 +68,7 @@
     </script>
     <div class="js-gameContent gameContent" style="display: none">
         <div class="js-jewelContext js-itemContext pointsBarPadding"> </div>
-        <div class="js-mainCanvasContainer mainCanvasContainer">
+        <div class="js-mainCanvasContainer mainCanvasContainer js-adventureContext js-guildContext js-mapContext">
             <canvas class="js-mainCanvas mainCanvas" width="800" height="600" style="background-color: blue;"></canvas>
             <div class="js-editingControls editingControlsTop" style="display: none">
                 <select class="js-levelSelect"></select>
@@ -263,7 +263,6 @@
             </div>
         </div>
         <div class="js-controlBar controlBar">
-            <button class="js-showAdventurePanel item"><div class="icon world"></div></button>
             <button class="js-showCraftingPanel item"><div class="icon crafting"></div></button>
             <button class="js-showJewelsPanel item"><canvas class="js-jewelButtonCanvas" width="40" height="40"></canvas></button>
         </div><div class="js-charactersBox characterBox"></div><div class="js-recruitmentColumn js-adventureContext displayColumn recruitmentColumn">
@@ -299,7 +298,7 @@ addScripts(['utils.js', 'mouse.js', 'drawDashedRectangle.js', 'images.js', 'bonu
     'loot.js','boards.js','character.js','crafting.js','enchanting.js','uniques.js',
     'heroApplication.js', 'effects.js','performAttack.js','useSkill.js',
     'adventure.js', 'drawAdventure.js', 'monsters.js','levels.js','vector.js',
-    'sphereVector.js','camera.js','mapData.js', 'guild.js', 'map.js','drawMap.js','editLevel.js',
+    'sphereVector.js','camera.js','mapData.js', 'map.js', 'guild.js', 'drawMap.js','editLevel.js',
     'polygon.js','backgrounds.js', 'testCharacters.js','saveGame.js','main.js']);
 ?>
 </html>

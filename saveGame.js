@@ -109,6 +109,9 @@ function importState(stateData) {
             }
             state.completedLevels[levelKey] = true;
         }
+        if (!character.context) {
+            enterGuildArea(character, {'areaKey': 'guildFoyer', 'x': 120, 'z': 0});
+        }
         $('.js-charactersBox').append(character.$characterCanvas);
     });
     for (var completedLevelKey in state.completedLevels) {
@@ -170,7 +173,6 @@ function exportCharacter(character) {
     data.fame = character.fame;
     data.divinity = character.divinity;
     data.currentLevelKey = character.currentLevelKey;
-    data.levelCompleted = character.levelCompleted;
     data.applicationAge = ifdefor(character.applicationAge, 0);
     return data;
 }
@@ -197,12 +199,8 @@ function importCharacter(characterData) {
     character.divinityScores = ifdefor(characterData.divinityScores, {});
     character.levelTimes = ifdefor(characterData.levelTimes, {});
     character.divinity = ifdefor(characterData.divinity, 0);
-    character.currentLevelKey = ifdefor(characterData.currentLevelKey, ifdefor(character.adventurer.job.levelKey, 'meadow'));
-    character.levelCompleted = ifdefor(characterData.levelCompleted, false);
-    if (!map[character.currentLevelKey]) {
-        character.currentLevelKey = ifdefor(character.adventurer.job.levelKey, 'meadow');
-        character.levelCompleted = false;
-    }
+    character.currentLevelKey = ifdefor(characterData.currentLevelKey, 'guild');
+    if (!map[character.currentLevelKey]) character.currentLevelKey = 'guild';
     character.board = importJewelBoard(characterData.board, character);
     character.fame = ifdefor(characterData.fame, Math.ceil(character.divinity / 10));
     character.applicationAge = ifdefor(characterData.applicationAge, 0);
