@@ -37,8 +37,6 @@ var mainLoopId = setInterval(mainLoop, 20);
 // Load any graphic assets needed by the game here.
 function initializeGame() {
     gameHasBeenInitialized = true;
-    closedChestSource = {'image': images['gfx/chest-closed.png'], 'left': 0, 'top': 0, 'width': 32, 'height': 32};
-    openChestSource = {'image': images['gfx/chest-open.png'], 'left': 0, 'top': 0, 'width': 32, 'height': 32};
     initalizeMonsters();
     initializeCraftingGrid();
     initializeCoins();
@@ -54,9 +52,6 @@ function initializeGame() {
     $('.js-gameContent').show();
     initializeLevelEditing();
     var testShape = makeShape(0, 0, 0, shapeDefinitions.triangle[0]).scale(originalJewelScale);
-    var jewelButtonCanvas = $('.js-jewelButtonCanvas')[0];
-    centerShapesInRectangle([testShape], rectangle(0, 0, jewelButtonCanvas.width, jewelButtonCanvas.height));
-    drawJewel(jewelButtonCanvas.getContext('2d'), testShape, [0, 0], 'black');
     if (window.location.search.substr(1) === 'new') {
         if (confirm('Are you sure you want to clear your saved data? This cannot be undone.')) {
             eraseSave();
@@ -131,32 +126,37 @@ function mainLoop() {
             }
             for (var i = 0; i < character.gameSpeed && character.area; i++) {
                 character.time += frameMilliseconds / 1000;
-                // By default center the camera slightly ahead of the character.
-                var centerX = character.adventurer.x;
-                var mouseX = character.cameraX + Math.max(0, Math.min(800, mousePosition[0]));
-                if (character.adventurer.activity && character.adventurer.activity.type === 'move') {
-                    centerX = (centerX + character.adventurer.activity.x) / 2;
-                } else if (mouseX > centerX + 200) {
-                    centerX = (centerX + mouseX - 200) / 2;
-                } else if (mouseX < centerX - 200) {
-                    centerX = (centerX + mouseX + 200) / 2;
-                }
-                if (Math.abs(character.cameraX - (centerX - 400)) < 200) character.cameraX = (character.cameraX * 20 + centerX - 400) / 21;
-                else character.cameraX = (character.cameraX * 10 + centerX - 400) / 11;
                 if (character.context === 'adventure') adventureLoop(character, frameMilliseconds / 1000);
-                else if (character.context === 'guild'){
-                    if (character === state.selectedCharacter) {
-                        state.selectedCharacter.area.cameraX = Math.max(0, Math.min(state.selectedCharacter.area.width - 800, character.cameraX));
-                    }
-                    activeGuildAreaHash[character.guildAreaKey] = true;
-                }
+                else if (character.context === 'guild') activeGuildAreaHash[character.guildAreaKey] = true;
                 if (character.context !== 'adventure' && character.context !== 'guild') {
                     return;
+                }
+                var area = character.area;
+                // Only update the camera for the guild for the selected character, but
+                // always update the camera for characters in adventure areas.
+                if (character === state.selectedCharacter || !area.isGuildArea) {
+                    // By default center the camera slightly ahead of the character.
+                    var centerX = character.adventurer.x;
+                    var cameraX = area.cameraX;
+                    var mouseX = cameraX + Math.max(0, Math.min(800, mousePosition[0]));
+                    if (character.adventurer.activity && character.adventurer.activity.type === 'move') {
+                        centerX = (centerX + character.adventurer.activity.x) / 2;
+                    } else if (mouseX > centerX + 200) {
+                        centerX = (centerX + mouseX - 200) / 2;
+                    } else if (mouseX < centerX - 200) {
+                        centerX = (centerX + mouseX + 200) / 2;
+                    }
+                    if (Math.abs(cameraX - (centerX - 400)) < 200) cameraX = (cameraX * 20 + centerX - 400) / 21;
+                    else cameraX = (cameraX * 10 + centerX - 400) / 11;
+                    character.area.cameraX = Math.max(ifdefor(character.area.left, 0), cameraX);
+                    if (character.area.width) {
+                        character.area.cameraX = Math.min(character.area.width - 800, character.area.cameraX);
+                    }
                 }
             }
         }
         var frame = arrMod(character.adventurer.source.walkFrames, Math.floor(now() * fps / 1000));
-        character.characterContext.clearRect(0, 0, 40, 64);
+        character.characterContext.clearRect(0, 0, 40, 20);
         if (state.selectedCharacter === character) {
             previewContext.clearRect(0, 0, 64, 128);
             previewContext.drawImage(character.adventurer.personCanvas, frame * 96, 0 , 96, 64, -64, -20, 192, 128);
@@ -165,9 +165,9 @@ function mainLoop() {
             character.characterContext.globalAlpha = .5;
         }
         var jobSource = character.adventurer.job.iconSource;
-        drawImage(character.characterContext, jobSource.image, jobSource, {'left': 16, 'top': 0, 'width': 20, 'height': 20});
+        drawImage(character.characterContext, jobSource.image, jobSource, {'left': 0, 'top': 0, 'width': 20, 'height': 20});
         //character.characterContext.fillStyle = 'white';
-        character.characterContext.drawImage(character.adventurer.personCanvas, frame * 96, 0 , 96, 64, -32, -2, 96, 64);
+        character.characterContext.drawImage(character.adventurer.personCanvas, frame * 96, 0 , 96, 64, -20, -18, 96, 64);
         character.characterContext.globalAlpha = 1;
         if (state.selectedCharacter !== character) {
             if (ifdefor(character.isStuckAtShrine)) {
@@ -198,7 +198,7 @@ function mainLoop() {
         if (mouseDown && state.selectedCharacter.area && clickedToMove) {
             var targetZ = -(mousePosition[1] - groundY) * 2;
             if (targetZ >= -200 || targetZ <= 200) {
-                setActorDestination(hero, {'x':state.selectedCharacter.cameraX + mousePosition[0], 'z': targetZ});
+                setActorDestination(hero, {'x': hero.area.cameraX + mousePosition[0], 'z': targetZ});
             }
         }
     }
@@ -212,6 +212,9 @@ function mainLoop() {
     }
     if (state.selectedCharacter.context === 'jewel') {
         drawBoardJewels(state.selectedCharacter, jewelsCanvas);
+    }
+    if ($('.js-mainCanvas').is(':visible')) {
+        drawHud();
     }
     if (state.selectedCharacter.area) {
         refreshStatsPanel(state.selectedCharacter, $('.js-characterColumn .js-stats'))
@@ -284,7 +287,7 @@ function handleAdventureClick(x, y, event) {
     } else {
         var targetZ = -(y - groundY) * 2;
         if (targetZ >= -200 || targetZ <= 200) {
-            setActorDestination(hero, {'x':state.selectedCharacter.cameraX + x, 'z': targetZ});
+            setActorDestination(hero, {'x': hero.area.cameraX + x, 'z': targetZ});
             clickedToMove = true;
         }
     }
@@ -321,23 +324,46 @@ function setActorInteractionTarget(actor, target) {
 $('.js-mouseContainer').on('mouseout', '.js-mainCanvas', function (event) {
     canvasCoords = [];
 });
-$('.js-mouseContainer').on('mouseover mousemove', checkToShowJewelToolTip);
+
+function drawHudElement() {
+    if (canvasPopupTarget === this) drawOutlinedImage(mainContext, this.source.image, '#fff', 2, this.source, this);
+    else if (this.flashColor) drawTintedImage(mainContext, this.source.image, this.flashColor, .5 + .2 * Math.sin(now() / 150), this.source, this)
+    else drawImage(mainContext, this.source.image, this.source, this);
+}
+
+function drawMapButton() {
+    this.flashColor = state.selectedCharacter.area.completed ? 'white' : null;
+    drawHudElement.call(this);
+}
+
+var returnToMapButton = {'source': {'image': requireImage('gfx/worldIcon.png'), 'top': 0, 'left': 0, 'width': 72, 'height': 72},
+    'isVisible': function () {
+        return state.selectedCharacter.context === 'adventure';
+    },
+    'draw': drawMapButton,
+    'top': 500, 'left': 20, 'width': 54, 'height': 54, 'helpText': 'Return to Map', 'onClick': returnToMap}
+
+var globalHud = [
+    returnToMapButton
+];
+
 function checkToShowMainCanvasToolTip(x, y) {
     if (ifdefor(x) === null) return;
     if ($popup || !$('.js-mainCanvas').is(':visible')) return;
     canvasPopupTarget = null;
+    var area = state.selectedCharacter.area;
     if (state.selectedCharacter.context === 'map') canvasPopupTarget = getMapPopupTarget(x, y);
-    else {
-        for (var actor of state.selectedCharacter.allies.concat(state.selectedCharacter.enemies)) {
+    else if (area) {
+        for (var actor of area.allies.concat(area.enemies)) {
             if (!actor.isDead && isPointInRect(x, y, actor.left, actor.top, actor.width, actor.height)) {
                 canvasPopupTarget = actor;
                 break;
             }
         }
         if (!canvasPopupTarget) {
-            for (var object of state.selectedCharacter.objects) {
+            for (var object of area.objects.concat(globalHud)) {
                 // (x,y) of objects is the bottom middle of their graphic.
-                var left = ifdefor(object.left, object.x - state.selectedCharacter.cameraX - object.width / 2);
+                var left = ifdefor(object.left, object.x - area.cameraX - object.width / 2);
                 var top = ifdefor(object.top, groundY - object.y - object.height);
                 if (object.isOver) {
                     if (object.isOver(x, y)) {
@@ -355,7 +381,7 @@ function checkToShowMainCanvasToolTip(x, y) {
     if (!canvasPopupTarget) {
         return;
     }
-    var popupText = canvasPopupTarget.helpMethod ? canvasPopupTarget.helpMethod(canvasPopupTarget) : canvasPopupTarget.helptext;
+    var popupText = canvasPopupTarget.helpMethod ? canvasPopupTarget.helpMethod(canvasPopupTarget) : canvasPopupTarget.helpText;
     if (!popupText) return;
     $popup = $tag('div', 'toolTip js-toolTip', popupText);
     $popup.data('canvasTarget', canvasPopupTarget);
@@ -467,11 +493,12 @@ $('body').on('click', '.js-retire', function (event) {
     }
     var $panel = $(this).closest('.js-playerPanel');
     $panel.remove();
-    var index = state.characters.indexOf(state.selectedCharacter);
+    var removedCharacter = state.selectedCharacter;
+    var index = state.characters.indexOf(removedCharacter);
     state.characters.splice(index, 1);
     state.selectedCharacter = state.characters[Math.min(index, state.characters.length)];
-    $($('.js-charactersBox .js-character')[index]).remove();
     setSelectedCharacter(state.characters[Math.min(index, state.characters.length - 1)]);
+    removedCharacter.$characterCanvas.remove();
     saveGame();
     updateRetireButtons();
 });
@@ -559,6 +586,6 @@ function canRecall(character) {
 function updateConfirmSkillConfirmationButtons() {
     $('.js-augmentConfirmationButtons').toggle(!!state.selectedCharacter.board.boardPreview);
 }
-$('.js-charactersBox').on('click', '.js-character', function () {
+$('.js-divinityPoints').on('click', '.js-character', function () {
     setSelectedCharacter($(this).data('character'));
 })

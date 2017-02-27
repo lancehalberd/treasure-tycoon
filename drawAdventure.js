@@ -6,7 +6,7 @@ var screenYOffset = 0;
 function drawAdventure(character) {
     var area = editingLevelInstance ? editingLevelInstance : character.area;
     var context = mainContext;
-    var cameraX = character.cameraX;
+    var cameraX = area.cameraX;
     context.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
     var background = ifdefor(backgrounds[area.background], backgrounds.field);
     var cloudX = cameraX + character.time * .5;
@@ -32,18 +32,18 @@ function drawAdventure(character) {
         }
         context.globalAlpha = 1;
     });
-    ifdefor(area.objects, []).forEach(function (object) {
-        object.draw(character);
-    });
-    var sortedActors = area.allies.concat(area.enemies).sort(function (spriteA, spriteB) {
+    var sortedSprites = area.allies.concat(area.enemies).concat(area.objects).sort(function (spriteA, spriteB) {
         return spriteB.z - spriteA.z;
     });
-    sortedActors.forEach(drawActor);
-    for (var treasurePopup of ifdefor(area.treasurePopups, [])) treasurePopup.draw(character);
-    for (var projectile of ifdefor(area.projectiles, [])) projectile.draw(character);
-    for (var effect of ifdefor(area.effects, [])) effect.draw(character);
+    for (var sprite of sortedSprites) {
+        if (sprite.draw) sprite.draw(area);
+        else drawActor(sprite);
+    }
+    for (var treasurePopup of ifdefor(area.treasurePopups, [])) treasurePopup.draw(area);
+    for (var projectile of ifdefor(area.projectiles, [])) projectile.draw(area);
+    for (var effect of ifdefor(area.effects, [])) effect.draw(area);
     // Draw text popups such as damage dealt, item points gained, and so on.
-    for (var textPopup of ifdefor(character.textPopups, [])) {
+    for (var textPopup of ifdefor(area.textPopups, [])) {
         context.fillStyle = ifdefor(textPopup.color, "red");
         var scale = Math.max(0, Math.min(1.5, ifdefor(textPopup.duration, 0) / 10));
         context.font = Math.round(scale * ifdefor(textPopup.fontSize, 20)) + 'px sans-serif';
@@ -70,7 +70,7 @@ function updateActorAnimationFrame(actor) {
     }
 }
 function drawActor(actor) {
-    var cameraX = actor.character.cameraX;
+    var cameraX = actor.character.area.cameraX;
     var context = mainContext;
     var source = actor.source;
     var scale = ifdefor(actor.scale, 1);
@@ -218,7 +218,7 @@ function drawEffectIcons(actor, x, y) {
     }
 }
 function drawMinimap(character) {
-    var y = 600 - 65;
+    var y = 600 - 30;
     var height = 6;
     var x = 10;
     var width = 750;
@@ -246,5 +246,13 @@ function drawMinimap(character) {
         }
         var waveCompleted = (i < character.waveIndex - 1)  || (i <= character.waveIndex - 1 && (ifdefor(character.enemies, []).length + ifdefor(character.objects, []).length) === 0);
         area.waves[i].draw(context, waveCompleted, centerX, centerY);
+    }
+}
+
+
+function drawHud() {
+    for (var element of globalHud) {
+        if (element.isVisible && !element.isVisible()) continue;
+        element.draw();
     }
 }

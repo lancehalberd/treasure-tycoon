@@ -87,13 +87,6 @@
     overflow-x: hidden;
     overflow-y: scroll;
 }
-.controlBar {
-    position: absolute;
-    padding: 5px;
-    pointer-events: auto;
-    bottom: 0;
-    left: 0;
-}
 .playerControlBar {
     height: 30px;
     padding: 3px;
@@ -670,10 +663,6 @@ select {
     right: 2px;
 }
 
-.controlBar .item {
-    vertical-align: top;
-    background-color: #CCC;
-}
 .characterColumn {
     width: 240px;
     background: transparent;

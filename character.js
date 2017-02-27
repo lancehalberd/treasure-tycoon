@@ -197,17 +197,18 @@ function refreshStatsPanel(character, $statsPanel) {
 }
 function newCharacter(job) {
     var character = {};
-    character.adventurer = makeAdventurerFromJob(job, 1, ifdefor(job.startingEquipment, {}));
-    character.adventurer.character = character;
-    character.adventurer.heading = [1, 0, 0]; // Character moves left to right by default.
-    character.adventurer.isMainCharacter = true;
-    character.adventurer.bonusMaxHealth = 0;
-    character.adventurer.percentHealth = 1;
-    character.adventurer.health = character.adventurer.maxHealth;
-    var characterCanvas = createCanvas(36, 64);
+    var hero = makeAdventurerFromJob(job, 1, ifdefor(job.startingEquipment, {}));
+    character.adventurer = hero;
+    hero.character = character;
+    hero.heading = [1, 0, 0]; // Character moves left to right by default.
+    hero.isMainCharacter = true;
+    hero.bonusMaxHealth = 0;
+    hero.percentHealth = 1;
+    hero.health = hero.maxHealth;
+    var characterCanvas = createCanvas(40, 20);
     character.$characterCanvas = $(characterCanvas);
     character.$characterCanvas.addClass('js-character character')
-        .attr('helptext', character.adventurer.job.name + ' ' + character.adventurer.name)
+        .attr('helptext', hero.job.name + ' ' + hero.name)
         .data('character', character);
     character.characterContext = characterCanvas.getContext("2d");
     character.boardCanvas = createCanvas(jewelsCanvas.width, jewelsCanvas.height);
@@ -221,10 +222,10 @@ function newCharacter(job) {
     character.currentLevelKey = 'guild';
     character.fame = 1;
     var abilityKey = ifdefor(abilities[job.key]) ? job.key : 'heal';
-    character.adventurer.abilities.push(abilities[abilityKey]);
+    hero.abilities.push(abilities[abilityKey]);
     for (var i = 0; i < ifdefor(window.testAbilities, []).length; i++) {
-        character.adventurer.abilities.push(testAbilities[i]);
-        console.log(abilityHelpText(testAbilities[i], character.adventurer));
+        hero.abilities.push(testAbilities[i]);
+        console.log(abilityHelpText(testAbilities[i], hero));
     }
     character.board = readBoardFromData(job.startingBoard, character, abilities[abilityKey], true);
     centerShapesInRectangle(character.board.fixed.map(jewelToShape).concat(character.board.spaces), rectangle(0, 0, character.boardCanvas.width, character.boardCanvas.height));
@@ -233,7 +234,7 @@ function newCharacter(job) {
         // Technically this gives the player the jewel, which we don't want to do for characters
         // generated that they don't control, but it immediately assigns it to the character,
         // so as long as this doesn't fail, that should not matter.
-        draggedJewel = loot.generateLootDrop().gainLoot(character);
+        draggedJewel = loot.generateLootDrop().gainLoot(hero);
         draggedJewel.shape.setCenterPosition(jewelsCanvas.width / 2, jewelsCanvas.width / 2);
         if (!equipJewel(character, false, false)) {
             console.log("Failed to place jewel on starting board.");

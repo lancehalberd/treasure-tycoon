@@ -91,7 +91,6 @@ function importState(stateData) {
     state.maxCraftingLevel = stateData.maxCraftingLevel;
     state.craftingXOffset = ifdefor(stateData.craftingXOffset, 0)
     state.craftedItems = ifdefor(stateData.craftedItems, {});
-    $('.js-charactersBox').empty();
     var characters = stateData.characters.map(importCharacter);
     characters.forEach(function (character) {
         if (isNaN(character.divinity) || typeof(character.divinity) !== "number") {
@@ -112,7 +111,7 @@ function importState(stateData) {
         if (!character.context) {
             enterGuildArea(character, {'areaKey': 'guildFoyer', 'x': 120, 'z': 0});
         }
-        $('.js-charactersBox').append(character.$characterCanvas);
+        $('.js-divinityPoints').append(character.$characterCanvas);
     });
     for (var completedLevelKey in state.completedLevels) {
         var level = map[completedLevelKey];
@@ -185,7 +184,7 @@ function importCharacter(characterData) {
     character.adventurer.bonusMaxHealth = 0;
     character.adventurer.percentHealth = 1;
     character.adventurer.health = character.adventurer.maxHealth;
-    var characterCanvas = createCanvas(36, 64);
+    var characterCanvas = createCanvas(40, 20);
     character.$characterCanvas = $(characterCanvas);
     character.$characterCanvas.addClass('js-character character')
         .attr('helptext', character.adventurer.job.name + ' ' + character.adventurer.name)

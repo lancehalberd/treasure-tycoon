@@ -11,28 +11,30 @@ function startArea(character, index) {
     var levelCompleted = ifdefor(character.divinityScores[index], 0) !== 0;
     var difficultyCompleted = !!ifdefor(character.levelTimes[index], {})[character.levelDifficulty];
     leaveCurrentArea(character);
+    var area;
     if (character.levelDifficulty === 'endless') {
-        character.area = instantiateLevel(map[index], character.levelDifficulty, difficultyCompleted, getEndlessLevel(character, map[index]));
+        area = instantiateLevel(map[index], character.levelDifficulty, difficultyCompleted, getEndlessLevel(character, map[index]));
     } else {
-        character.area = instantiateLevel(map[index], character.levelDifficulty, difficultyCompleted);
+        area = instantiateLevel(map[index], character.levelDifficulty, difficultyCompleted);
     }
-    character.cameraX = -60;
     var hero = character.adventurer;
+    hero.area = character.area = area;
     initializeActorForAdventure(hero);
     character.waveIndex = 0;
     character.finishTime = false;
     character.startTime = character.time;
     character.enemies = [];
-    character.area.objects = character.objects = [];
-    character.area.projectiles = character.projectiles = [];
-    character.area.effects = character.effects = [];
+    area.objects = character.objects = [];
+    area.projectiles = character.projectiles = [];
+    area.effects = character.effects = [];
     character.allies = [hero];
-    character.area.allies = hero.allies = character.allies;
-    character.area.enemies = hero.enemies = character.enemies;
-    character.area.treasurePopups = character.treasurePopups = [];
-    character.area.textPopups = character.textPopups = [];
-    character.area.timeStopEffect = character.timeStopEffect = null;
-    hero.x = 0;
+    area.cameraX = 0;
+    area.allies = hero.allies = character.allies;
+    area.enemies = hero.enemies = character.enemies;
+    area.treasurePopups = [];
+    area.textPopups = [];
+    area.timeStopEffect = character.timeStopEffect = null;
+    hero.x = 120;
     hero.y = 0;
     hero.z = 0;
     hero.activity = null;
@@ -56,7 +58,7 @@ function checkIfActorDied(actor) {
     actor.isDead = true;
     actor.timeOfDeath = actor.time;
     if (actor.character.enemies.indexOf(actor) >= 0 ) {
-        defeatedEnemy(actor.character, actor);
+        defeatedEnemy(actor, actor);
     }
 }
 
@@ -78,7 +80,7 @@ function timeStopLoop(character, delta) {
     }
     checkToStartNextWave(character);
     if (!character.area) return false;
-    expireTimedEffects(character, actor);
+    expireTimedEffects(actor);
     runActorLoop(character, actor);
     moveActor(actor);
     capHealth(actor);
@@ -136,7 +138,7 @@ function checkToStartNextWave(character) {
             returnToMap(character);
         } else {
             if (character.waveIndex >= character.area.waves.length - 1) {
-                character.completionTime = character.time - character.startTime;
+                completeLevel(character, character.time - character.startTime);
             }
             startNextWave(character);
             updateAdventureButtons();
@@ -144,6 +146,7 @@ function checkToStartNextWave(character) {
     }
 }
 function adventureLoop(character, delta) {
+    var area = character.area;
     if (timeStopLoop(character, delta)) {
         return;
     }
@@ -157,21 +160,19 @@ function adventureLoop(character, delta) {
     for (var i = 0; i < character.enemies.length; i++) {
         var enemy = character.enemies[i];
         checkIfActorDied(enemy);
-        expireTimedEffects(character, enemy);
+        expireTimedEffects(enemy);
     }
     for (var i = 0; i < character.allies.length; i++) {
         var ally = character.allies[i];
         checkIfActorDied(ally);
-        expireTimedEffects(character, ally);
+        expireTimedEffects(ally);
     }
     for (var i = 0; i < character.objects.length; i++) {
         var object = character.objects[i];
-        if (object.x < character.adventurer.x && object.x + object.width - character.cameraX < 0 ) {
+        if (object.x < character.adventurer.x && object.x + object.width - area.cameraX < 0 ) {
             character.objects.splice(i--, 1);
             continue;
-        } else {
-            object.update(character);
-        }
+        } else if (object.update) object.update(character);
     }
     checkToStartNextWave(character);
     if (!character.area) return;
@@ -186,33 +187,25 @@ function adventureLoop(character, delta) {
     everybody.forEach(function (actor) {
         moveActor(actor);
     });
-    for (var i = 0; i < character.projectiles.length; i++) {
-        character.projectiles[i].update(character);
-        if (character.projectiles[i].done) {
-            character.projectiles.splice(i--, 1);
-        }
+    for (var i = 0; i < area.projectiles.length; i++) {
+        area.projectiles[i].update(area);
+        if (area.projectiles[i].done) area.projectiles.splice(i--, 1);
     }
-    for (var i = 0; i < character.effects.length; i++) {
-        character.effects[i].update(character);
-        if (character.effects[i].done) {
-            character.effects.splice(i--, 1);
-        }
+    for (var i = 0; i < area.effects.length; i++) {
+        area.effects[i].update(area);
+        if (area.effects[i].done) area.effects.splice(i--, 1);
     }
-    for (var i = 0; i < character.treasurePopups.length; i++) {
-        character.treasurePopups[i].update(character);
-        if (character.treasurePopups[i].done) {
-            character.treasurePopups.splice(i--, 1);
-        }
+    for (var i = 0; i < area.treasurePopups.length; i++) {
+        area.treasurePopups[i].update(character);
+        if (area.treasurePopups[i].done) area.treasurePopups.splice(i--, 1);
     }
-    for (var i = 0; i < character.textPopups.length; i++) {
-        var textPopup = character.textPopups[i];
+    for (var i = 0; i < area.textPopups.length; i++) {
+        var textPopup = area.textPopups[i];
         textPopup.y += ifdefor(textPopup.vy, -1);
         textPopup.x += ifdefor(textPopup.vx, 0);
         textPopup.duration = ifdefor(textPopup.duration, 35);
         textPopup.vy += ifdefor(textPopup.gravity, -.5);
-        if (textPopup.duration-- < 0) {
-            character.textPopups.splice(i--, 1);
-        }
+        if (textPopup.duration-- < 0) area.textPopups.splice(i--, 1);
     }
     everybody.forEach(function (actor) {
         if (actor.timeOfDeath < actor.time - 1) {
@@ -245,7 +238,7 @@ function updateActorDimensions(actor) {
     actor.height = source.actualHeight * scale;
     if (isNaN(actor.width) || isNaN(actor.height)) {
         console.log(actor.scale);
-        console.log([actor.x, actor.character.cameraX]);
+        console.log(actor.x);
         console.log(source);
         console.log([actor.width,actor.height]);
         pause();
@@ -292,7 +285,7 @@ function moveActor(actor) {
             case 'interact':
                 if (getDistanceOverlap(actor, actor.activity.target) <= 5) {
                     if (actor.activity.target.action) {
-                        actor.activity.target.action();
+                        actor.activity.target.action(actor);
                     }
                     actor.activity = null;
                     break;
@@ -474,28 +467,22 @@ function startNextWave(character) {
         character.enemies.push(newMonster);
         x += 40 + Math.floor(Math.random() * 40);
     });
-    wave.objects.forEach(function (entityData) {
-        if (entityData.type === 'chest') {
-            entityData.x = x;
-            entityData.y = 0;
-            entityData.z = 20;
-            character.objects.push(entityData);
-            return;
+    for (var object of wave.objects) {
+        if (object.fixed) {
+            object.z = (150 - object.width / 2) * (Math.random() * 2 - 1);
+            object.x = x + object.width / 2;
+            x += object.width + 60;
+        } else if (entityData.type === 'button') {
+        } else {
+            throw Error("Unrecognized object: " + JSON.stringify(entityData));
         }
-        if (entityData.type === 'shrine') {
-            entityData.x = x + 128;
-            entityData.y = 0;
-            entityData.z = 50;
-            character.objects.push(entityData);
-            return;
-        }
-        if (entityData.type === 'button') {
-            character.objects.push(entityData);
-            return;
-        }
-        throw Error("Unrecognized object: " + JSON.stringify(entityData));
-    });
+        object.area = character.area;
+        character.objects.push(object);
+    }
     character.waveIndex++;
+    if (character.waveIndex >= character.area.waves.length) {
+        character.area.width = x + 400;
+    }
 }
 function processStatusEffects(character, target, delta) {
     if (target.isDead ) return;
@@ -653,15 +640,63 @@ function getDistanceBetweenPointsSquared(pointA, pointB) {
     return dx*dx + dy*dy + dz*dz;
 }
 
-function defeatedEnemy(character, enemy) {
-    if (character.adventurer.health <= 0) {
+function defeatedEnemy(hero, enemy) {
+    if (hero.health <= 0) {
         return;
     }
     var loot = [];
     if (enemy.coins) loot.push(coinsLootDrop(enemy.coins));
     if (enemy.anima) loot.push(animaLootDrop(enemy.anima));
     loot.forEach(function (loot, index) {
-        loot.gainLoot(character);
-        loot.addTreasurePopup(character, enemy.x + index * 20, enemy.height, 0, 1, index * 10);
+        loot.gainLoot(hero);
+        loot.addTreasurePopup(hero, enemy.x + index * 20, enemy.height, 0, 1, index * 10);
     });
+}
+
+function completeLevel(character, completionTime) {
+    character.area.completed = true;
+    // If the character beat the last adventure open to them, unlock the next one
+    var level = map[character.currentLevelKey];
+    increaseAgeOfApplications();
+    var oldDivinityScore = ifdefor(character.divinityScores[character.currentLevelKey], 0);
+    if (oldDivinityScore === 0) {
+        character.fame += level.level;
+        gain('fame', level.level);
+        // Unlock the next areas.
+        var levelData = map[character.currentLevelKey];
+        state.completedLevels[character.currentLevelKey] = true;
+        levelData.unlocks.forEach(function (levelKey) {
+            unlockMapLevel(levelKey);
+        });
+    }
+    var newDivinityScore;
+    var currentEndlessLevel = getEndlessLevel(character, level);
+    if (character.levelDifficulty === 'endless') {
+        newDivinityScore = Math.max(10, Math.round(baseDivinity(currentEndlessLevel)));
+    } else {
+        var difficultyBonus = difficultyBonusMap[character.levelDifficulty];
+        var timeBonus = .8;
+        if (completionTime <= getGoldTimeLimit(level, difficultyBonus)) timeBonus = 1.2;
+        else if (completionTime <= getSilverTimeLimit(level, difficultyBonus)) timeBonus = 1;
+        newDivinityScore = Math.max(10, Math.round(difficultyBonus * timeBonus * baseDivinity(level.level)));
+    }
+    var gainedDivinity = newDivinityScore - oldDivinityScore;
+    if (gainedDivinity > 0) {
+        character.divinity += gainedDivinity;
+        var hero = character.adventurer;
+        var textPopup = {value:'+' + gainedDivinity.abbreviate() + ' Divinity', x: hero.x, y: hero.height, z: hero.z, color: 'gold', fontSize: 15, 'vx': 0, 'vy': 1, 'gravity': .1};
+        appendTextPopup(character.area, textPopup, true);
+    }
+    character.divinityScores[character.currentLevelKey] = Math.max(oldDivinityScore, newDivinityScore);
+    // Initialize level times for this level if not yet set.
+    character.levelTimes[character.currentLevelKey] = ifdefor(character.levelTimes[character.currentLevelKey], {});
+    if (character.levelDifficulty === 'endless') {
+        unlockItemLevel(currentEndlessLevel + 1);
+        character.levelTimes[character.currentLevelKey][character.levelDifficulty] = currentEndlessLevel + 5;
+    } else {
+        unlockItemLevel(level.level + 1);
+        var oldTime = ifdefor(character.levelTimes[character.currentLevelKey][character.levelDifficulty], 99999);
+        character.levelTimes[character.currentLevelKey][character.levelDifficulty] = Math.min(completionTime, oldTime);
+    }
+    saveGame();
 }

@@ -185,7 +185,7 @@ function useSkill(actor) {
     if (!skill.tags['basic']) {
         var hitText = {x: actor.x, y: actor.height, z: actor.z, color: 'white', fontSize: 15, 'vx': 0, 'vy': 1, 'gravity': .1};
         hitText.value = skill.base.name;
-        appendTextPopup(actor.character, hitText, true);
+        appendTextPopup(actor.character.area, hitText, true);
     }
     skillDefinitions[skill.base.type].use(actor, skill, target);
     triggerSkillEffects(actor, skill);
@@ -205,7 +205,7 @@ function useReaction(actor, reaction, attackStats) {
     // Show the name of the skill. When skills have distinct visible animations, we should probably remove this.
     var skillPopupText = {x: actor.x, y: actor.height, z: actor.z, color: 'white', fontSize: 15, 'vx': 0, 'vy': 1, 'gravity': .1};
     skillPopupText.value = reaction.base.name;
-    appendTextPopup(actor.character, skillPopupText, true);
+    appendTextPopup(actor.character.area, skillPopupText, true);
     skillDefinition.use(actor, reaction, attackStats);
     triggerSkillEffects(actor, reaction);
 }
@@ -383,7 +383,7 @@ function oldUseSkillLogic(actor, skill, target, attackStats) {
     if (!skill.tags['basic']) {
         var hitText = {x: actor.x, y: actor.height, z: actor.z, color: 'white', fontSize: 15, 'vx': 0, 'vy': 1, 'gravity': .1};
         hitText.value = skill.base.name;
-        appendTextPopup(actor.character, hitText, true);
+        appendTextPopup(actor.character.area, hitText, true);
     }
     // Run shared code for using any action, which does not contain logic specific
     // for an actor using a skill they possess.

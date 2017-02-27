@@ -3,18 +3,24 @@ function objectSource(image, coords, size) {
     return {'image': image, 'left': coords[0], 'top': coords[1],
             'width': size[0], 'height': size[1], 'depth': size[2]};
 }
-function openWorldMap() {
+function openWorldMap(actor) {
     setContext('map');
 }
-function openCrafting() {
+function openCrafting(actor) {
     setContext('item');
 }
+
 var areaObjects = {
     'mapTable': {'name': 'World Map', 'source': objectSource(guildImage, [360, 120], [120, 50, 60]), 'action': openWorldMap},
     'crackedOrb': {'name': 'Cracked Anima Orb', 'source': objectSource(guildImage, [240, 100], [60, 60, 30])},
     'crackedPot': {'name': 'Cracked Pot', 'source': objectSource(guildImage, [300, 100], [60, 60, 30])},
     'woodenShrine': {'name': 'Shrine of Fortune', 'source': objectSource(guildImage, [540, 100], [60, 70, 40]), 'action': openCrafting},
-    'candles': {'source': objectSource(guildImage, [240, 30], [60, 70, 0])}
+    'candles': {'source': objectSource(guildImage, [240, 30], [60, 70, 0])},
+    'skillShrine': {'name': 'Shrine of Divinity', 'source': objectSource(requireImage('gfx/militaryIcons.png'), [102, 125], [16, 16, 4]), 'action': activateShrine},
+    'closedChest': {'name': 'Treasure Chest', 'source': objectSource(requireImage('gfx/treasureChest.png'), [0, 0], [64, 64, 64]), 'action': openChest},
+    'openChest': {'name': 'Opened Treasure Chest', 'source': objectSource(requireImage('gfx/treasureChest.png'), [64, 0], [64, 64, 64]), 'action': function (actor) {
+        messageCharacter(actor.character, 'Empty');
+    }},
 }
 var wallZ = 180;
 function initializeGuldArea(guildArea) {
@@ -31,12 +37,14 @@ function initializeGuldArea(guildArea) {
     return guildArea;
 }
 function fixedObject(objectKey, coords, properties) {
+    properties = ifdefor(properties, {});
+    var scale = ifdefor(properties.scale, 1);
     var base = areaObjects[objectKey];
     var imageSource = base.source;
     return $.extend({'key': objectKey, 'fixed': true, 'base': areaObjects[objectKey], 'action': base.action, 'x': coords[0], 'y': coords[1], 'z': coords[2],
-                    'width': imageSource.width, 'height': imageSource.height, 'depth': imageSource.depth,
+                    'width': imageSource.width * scale, 'height': imageSource.height * scale, 'depth': imageSource.depth * scale,
                     'draw': drawFixedObject,
-                    'helpMethod': fixedObjectHelpText}, ifdefor(properties, {}));
+                    'helpMethod': ifdefor(properties.helpMethod, fixedObjectHelpText)}, ifdefor(properties, {}));
 }
 function fixedObjectHelpText(object) {
     return object.base.name;
@@ -88,10 +96,9 @@ function enterGuildArea(character, door) {
     character.currentLevelKey = 'guild';
     character.guildAreaKey = door.areaKey;
     var guildArea = guildAreas[door.areaKey];
-    character.area = guildArea;
-    character.cameraX = guildArea.cameraX;
     initializeActorForAdventure(character.adventurer);
     var hero = character.adventurer;
+    hero.area = character.area = guildArea;
     hero.x = door.x;
     hero.y = 0;
     hero.z = door.z;
@@ -156,6 +163,10 @@ function guildAreaLoop(guildArea) {
 function drawGuildArea(guildArea) {
     mainContext.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
     for (var xOffset in guildArea.backgroundPatterns) {
+        xOffset = parseInt(xOffset);
+        if (xOffset < guildArea.cameraX) {
+            //code
+        }
         var backgroundKey = guildArea.backgroundPatterns[xOffset];
         var background = backgrounds[backgroundKey];
         var tileWidth = 120;
@@ -172,6 +183,8 @@ function drawGuildArea(guildArea) {
             mainContext.globalAlpha = alpha;
             for (var i = 0; i <= fullDrawingWidth; i += tileWidth * spacing) {
                 var x = Math.round((fullDrawingWidth + (i - (guildArea.cameraX - guildArea.time * velocity) * parallax) % fullDrawingWidth) % fullDrawingWidth - tileWidth);
+                var realX = guildArea.cameraX + x;
+                if (realX + tileWidth < xOffset) continue;
                 mainContext.drawImage(source.image, source.x, source.y, source.width, source.height,
                                       x, y, width, height);
                 if (x !== Math.round(x) || y !== Math.round(y) || width != Math.round(width) || height != Math.round(height)) {
@@ -190,29 +203,17 @@ function drawGuildArea(guildArea) {
     });
     for (var sprite of sortedSprites) {
         if (sprite.draw) sprite.draw(guildArea);
-        else {
-            sprite.character.cameraX = guildArea.cameraX;
-            drawActor(sprite);
-        }
+        else drawActor(sprite);
     }
+    for (var treasurePopup of ifdefor(guildArea.treasurePopups, [])) treasurePopup.draw(guildArea);
+    for (var projectile of ifdefor(guildArea.projectiles, [])) projectile.draw(guildArea);
+    for (var effect of ifdefor(guildArea.effects, [])) effect.draw(guildArea);
     // Draw text popups such as damage dealt, item points gained, and so on.
-    /*context.fillStyle = 'red';
-    for (var i = 0; i < ifdefor(character.treasurePopups, []).length; i++) {
-        character.treasurePopups[i].draw(character);
-    }
-    for (var i = 0; i < ifdefor(character.projectiles, []).length; i++) {
-        character.projectiles[i].draw(character);
-    }
-    for (var i = 0; i < ifdefor(character.effects, []).length; i++) {
-        character.effects[i].draw(character);
-    }
-    for (var i = 0; i < ifdefor(character.textPopups, []).length; i++) {
-        var textPopup = character.textPopups[i];
-        context.fillStyle = ifdefor(textPopup.color, "red");
+    for (var textPopup of ifdefor(guildArea.textPopups, [])) {
+        mainContext.fillStyle = ifdefor(textPopup.color, "red");
         var scale = Math.max(0, Math.min(1.5, ifdefor(textPopup.duration, 0) / 10));
-        context.font = Math.round(scale * ifdefor(textPopup.fontSize, 20)) + 'px sans-serif';
-        context.textAlign = 'center'
-        context.fillText(textPopup.value, textPopup.x - cameraX, groundY - textPopup.y - textPopup.z / 2);
+        mainContext.font = Math.round(scale * ifdefor(textPopup.fontSize, 20)) + 'px sans-serif';
+        mainContext.textAlign = 'center'
+        mainContext.fillText(textPopup.value, textPopup.x - guildArea.cameraX, groundY - textPopup.y - textPopup.z / 2);
     }
-    drawMinimap(character);*/
 }

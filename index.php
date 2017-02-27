@@ -262,9 +262,7 @@
                 Beware! The venom from the spiders in these woods will suppress your health regeneration.
             </div>
         </div>
-        <div class="js-controlBar controlBar">
-            <button class="js-showJewelsPanel item"><canvas class="js-jewelButtonCanvas" width="40" height="40"></canvas></button>
-        </div><div class="js-charactersBox characterBox"></div><div class="js-recruitmentColumn js-adventureContext displayColumn recruitmentColumn">
+        <div class="js-recruitmentColumn displayColumn recruitmentColumn" style="display: none;">
             <div class="js-heroApplication heroApplication hideOnBottom">
                 <div class="heroApplicationBody"><div class="js-stats stats playerBox">
                         <div style="position: absolute; left: 35px; top: 0px;">Hire <span class="js-playerName controlBarEntry">X</span></div>

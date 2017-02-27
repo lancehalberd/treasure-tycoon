@@ -459,11 +459,12 @@ function applyAttackToTarget(attackStats, target) {
     }
     var distance = attackStats.distance;
     var character = target.character;
+    var area = character.area;
     var hitText = {x: target.x, y: target.height + 10, z: target.z, color: 'grey', 'vx': -(Math.random() * 3 + 2) * target.heading[0], 'vy': 5};
     if (target.invulnerable) {
         hitText.value = 'invulnerable';
         hitText.fontSize = 15;
-        appendTextPopup(character, hitText);
+        appendTextPopup(area, hitText);
         return false;
     }
     var multiplier = ifdefor(attack.rangeDamage) ? (1 + attack.rangeDamage * distance / 32) : 1;
@@ -484,7 +485,7 @@ function applyAttackToTarget(attackStats, target) {
         var speed = 1 + Math.log(damage+magicDamage) / 10;
         hitText.vy *= speed;
         hitText.vx *= speed;
-        appendTextPopup(character, hitText);
+        appendTextPopup(area, hitText);
         return true;
     }
     attackStats.evaded = false;
@@ -501,7 +502,7 @@ function applyAttackToTarget(attackStats, target) {
             }
             // Target has evaded the attack.
             hitText.font = 15;
-            appendTextPopup(character, hitText);
+            appendTextPopup(area, hitText);
             attackStats.evaded = true;
         }
         // Chaining attack accuracy is reduced by the evasion roll of each target hit.
@@ -625,12 +626,12 @@ function applyAttackToTarget(attackStats, target) {
         hitText.value = 'blocked';
         hitText.font = 15;
     }
-    appendTextPopup(character, hitText);
+    appendTextPopup(area, hitText);
     return true;
 }
 
-function appendTextPopup(character, hitText, important) {
-    if (important || character.textPopups.length < 100) character.textPopups.push(hitText);
+function appendTextPopup(area, hitText, important) {
+    if (important || area.textPopups.length < 100) area.textPopups.push(hitText);
 }
 
 function applyArmorToDamage(damage, armor) {

@@ -21,7 +21,7 @@ function songEffect(attackStats) {
         'z': followTarget.z,
         'width': 0,
         'height': 0,
-        'update': function (character) {
+        'update': function (area) {
             self.currentFrame++;
             self.x = followTarget.x;
             self.y = followTarget.y;
@@ -53,14 +53,14 @@ function songEffect(attackStats) {
 
             effectedTargets = currentTargets;
         },
-        'draw': function (character) {
+        'draw': function (area) {
             if (self.done) return;
             var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
             mainContext.save();
             mainContext.globalAlpha = alpha;
             mainContext.fillStyle = color;
             mainContext.beginPath();
-            mainContext.translate((followTarget.x - character.cameraX), groundY - yOffset);
+            mainContext.translate((followTarget.x - area.cameraX), groundY - yOffset);
             mainContext.scale(1, height / currentRadius);
             mainContext.arc(0, 0, currentRadius, 0, 2 * Math.PI);
             mainContext.fill();
@@ -88,7 +88,7 @@ function explosionEffect(attackStats, x, y, z) {
     }
     var self = {
         'hitTargets': [], 'attack': attack, 'attackStats': attackStats, 'x': x, 'y': y, 'z': z, 'width': 0, 'height': 0, 'currentFrame': 0, 'done': false,
-        'update': function (character) {
+        'update': function (area) {
             self.currentFrame++;
             if (self.currentFrame > frames + 5) {
                 self.done = true;
@@ -113,14 +113,14 @@ function explosionEffect(attackStats, x, y, z) {
                 }
             }
         },
-        'draw': function (character) {
+        'draw': function (area) {
             if (self.done) return
             var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
             mainContext.globalAlpha = alpha;
             mainContext.fillStyle = color;
             mainContext.beginPath();
             mainContext.save();
-            mainContext.translate((self.x - character.cameraX), groundY - self.y);
+            mainContext.translate((self.x - area.cameraX), groundY - self.y);
             mainContext.scale(1, height / (2 * radius));
             mainContext.arc(0, 0, currentRadius, ifdefor(self.attack.base.minTheta, 0), ifdefor(self.attack.base.maxTheta, 2 * Math.PI));
             mainContext.fill();
@@ -151,7 +151,7 @@ function fieldEffect(attackStats, followTarget) {
         'z': followTarget.z,
         'width': radius * 2, 'height': height,
         'currentFrame': 0, 'done': false,
-        'update': function (character) {
+        'update': function (area) {
             self.currentFrame++;
             if (self.attackStats.source.time > endTime || attackStats.source.isDead) {
                 self.done = true;
@@ -179,14 +179,14 @@ function fieldEffect(attackStats, followTarget) {
             }
             applyAttackToTarget(attackStats, Random.element(targets));
         },
-        'draw': function (character) {
+        'draw': function (area) {
             if (self.done) return
             var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
             mainContext.globalAlpha = alpha;
             mainContext.fillStyle = color;
             mainContext.beginPath();
             mainContext.save();
-            mainContext.translate((followTarget.x - character.cameraX), groundY - yOffset);
+            mainContext.translate((followTarget.x - area.cameraX), groundY - yOffset);
             mainContext.scale(1, height / (2 * currentRadius));
             mainContext.arc(0, 0, currentRadius, 0, 2 * Math.PI);
             mainContext.fill();
@@ -208,7 +208,7 @@ function projectile(attackStats, x, y, z, vx, vy, vz, target, delay, color, size
         'distance': 0, 'x': x, 'y': y, 'z': z, 'vx': vx, 'vy': vy, 'vz': vz, 't': 0, 'done': false, 'delay': delay,
         'width': size, 'height': size,
         'hit': false, 'target': target, 'attackStats': attackStats, 'hitTargets': [],
-        'update': function (character) {
+        'update': function (area) {
             // Put an absolute cap on how far a projectile can travel
             if (self.y < 0 || self.distance > 2000) self.done = true;
             if (self.done || self.delay-- > 0) return
@@ -304,10 +304,10 @@ function projectile(attackStats, x, y, z, vx, vy, vz, target, delay, color, size
                 }
             }
         },
-        'draw': function (character) {
+        'draw': function (area) {
             if (self.done || self.delay > 0) return
             mainContext.save();
-            mainContext.translate(self.x - character.cameraX, groundY - self.y - self.z / 2);
+            mainContext.translate(self.x - area.cameraX, groundY - self.y - self.z / 2);
             if (self.vx < 0) {
                 mainContext.scale(-1, 1);
                 mainContext.rotate(-Math.atan2(self.vy, -self.vx));
@@ -353,7 +353,7 @@ function getProjectileVelocity(attackStats, x, y, z, target) {
 }
 
 
-function expireTimedEffects(character, actor) {
+function expireTimedEffects(actor) {
     if (actor.isDead ) return;
     var changed = false;
     for (var i = 0; i < actor.allEffects.length; i++) {

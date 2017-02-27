@@ -179,8 +179,8 @@ function startEditingLevel(level) {
     currentMapTarget = null;
     editingMap = false;
     editingLevelInstance = instantiateLevel(editingLevel, 'normal', false);
-    state.selectedCharacter.x = 0;
-    state.selectedCharacter.cameraX = -60;
+    state.selectedCharacter.x = 120;
+    editingLevelInstance.cameraX = 0;
     state.selectedCharacter.startTime = state.selectedCharacter.time;
     state.selectedCharacter.adventurer.isDead = false;
     state.selectedCharacter.adventurer.timeOfDeath = undefined;

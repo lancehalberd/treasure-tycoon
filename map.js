@@ -479,46 +479,6 @@ function getSilverTimeLimit(level, difficultyMultiplier) {
     var numberOfWaves = Math.max(level.events.length,  Math.floor(5 * Math.sqrt(level.level))) + 1; // Count the chest as a wave.
     return difficultyMultiplier * numberOfWaves * (10 + level.level);
 }
-function completeLevel(character) {
-    // If the character beat the last adventure open to them, unlock the next one
-    var level = map[character.currentLevelKey];
-    increaseAgeOfApplications();
-    var oldDivinityScore = ifdefor(character.divinityScores[character.currentLevelKey], 0);
-    if (oldDivinityScore === 0) {
-        character.fame += level.level;
-        gain('fame', level.level);
-        // Unlock the next areas.
-        var levelData = map[character.currentLevelKey];
-        state.completedLevels[character.currentLevelKey] = true;
-        levelData.unlocks.forEach(function (levelKey) {
-            unlockMapLevel(levelKey);
-        });
-    }
-    var newDivinityScore;
-    var currentEndlessLevel = getEndlessLevel(character, level);
-    if (character.levelDifficulty === 'endless') {
-        newDivinityScore = Math.max(10, Math.round(baseDivinity(currentEndlessLevel)));
-    } else {
-        var difficultyBonus = difficultyBonusMap[character.levelDifficulty];
-        var timeBonus = .8;
-        if (character.completionTime <= getGoldTimeLimit(level, difficultyBonus)) timeBonus = 1.2;
-        else if (character.completionTime <= getSilverTimeLimit(level, difficultyBonus)) timeBonus = 1;
-        newDivinityScore = Math.max(10, Math.round(difficultyBonus * timeBonus * baseDivinity(level.level)));
-    }
-    character.divinity += Math.max(0, newDivinityScore - oldDivinityScore);
-    character.divinityScores[character.currentLevelKey] = Math.max(oldDivinityScore, newDivinityScore);
-    // Initialize level times for this level if not yet set.
-    character.levelTimes[character.currentLevelKey] = ifdefor(character.levelTimes[character.currentLevelKey], {});
-    if (character.levelDifficulty === 'endless') {
-        unlockItemLevel(currentEndlessLevel + 1);
-        character.levelTimes[character.currentLevelKey][character.levelDifficulty] = currentEndlessLevel + 5;
-    } else {
-        unlockItemLevel(level.level + 1);
-        var oldTime = ifdefor(character.levelTimes[character.currentLevelKey][character.levelDifficulty], 99999);
-        character.levelTimes[character.currentLevelKey][character.levelDifficulty] = Math.min(character.completionTime, oldTime);
-    }
-    saveGame();
-}
 $('body').on('click', '.js-confirmSkill', function (event) {
     var character = state.selectedCharacter;
     var level = map[character.currentLevelKey];
@@ -580,9 +540,6 @@ function updateEditingState() {
     $('.js-mainCanvas').attr('height', mapHeight);
     // Image smoothing seems to get enabled again after changing the canvas size, so disable it again.
     $('.js-mainCanvas')[0].getContext('2d').imageSmoothingEnabled = false;
-    // Use !! to cast testingLevel to boolean, otherwise jquery will do something strange with the value.
-    $('.js-controlBar').toggle(inAdventureMode);
-    $('.js-charactersBox').toggle(!isEditing);
     $('.js-recruitmentColumn').toggle(!isEditing);
     $('.js-mainCanvasContainer').css('top', inAdventureMode ? 'auto' : '-330px');
 }
@@ -647,7 +604,7 @@ $(document).on('keydown', function(event) {
             } else {
                 state.selectedCharacter.completionTime -= 10;
             }
-            completeLevel(state.selectedCharacter);
+            completeLevel(state.selectedCharacter, state.selectedCharacter.completionTime);
         }
     }
 });
