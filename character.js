@@ -156,6 +156,7 @@ function initializeActorForAdventure(actor) {
     actor.rotation = 0;
     actor.activity = null;
     actor.imprintedSpell = null;
+    actor.area = actor.character.area;
     // actor.heading = [1, 0, 0];
     var stopTimeAction = findActionByTag(actor.reactions, 'stopTime');
     actor.temporalShield = actor.maxTemporalShield = (stopTimeAction ? stopTimeAction.duration : 0);
@@ -721,8 +722,10 @@ function setSelectedCharacter(character) {
     updateAdventureButtons();
     updateConfirmSkillConfirmationButtons();
     updateEquipableItems();
-    $('.js-charactersBox').prepend($('.js-divinityPoints'));
-    $('.js-charactersBox').prepend(character.$characterCanvas);
+    character.$characterCanvas.after($('.js-divinityPoints'));
+    //$('.js-charactersBox').prepend($('.js-divinityPoints'));
+    //$('.js-charactersBox').prepend(character.$characterCanvas);
+    showContext(character.context);
 }
 
 $('.js-jewelBoard').on('mouseover', function () {

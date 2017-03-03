@@ -466,7 +466,6 @@ function startNextWave(character) {
         newMonster.time = 0;
         newMonster.allies = character.enemies;
         newMonster.enemies = character.allies;
-        newMonster.area = character.area;
         character.enemies.push(newMonster);
         x += 40 + Math.floor(Math.random() * 40);
     });
