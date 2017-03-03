@@ -119,18 +119,16 @@ function mainLoop() {
     var mousePosition = relativeMousePosition($(mainCanvas));
     var activeGuildAreaHash = {};
     for (var character of characters) {
-        if ((character.context === 'adventure' && !character.paused) || character.context === 'guild') {
+        if ((character.context === 'adventure' && !(character.autoplay && character.paused)) || character.context === 'guild') {
             character.loopCount = ifdefor(character.loopCount) + 1;
-            if (character.loopCount % ifdefor(character.loopSkip)) {
-                return;
-            }
-            for (var i = 0; i < character.gameSpeed && character.area; i++) {
+            var loopSkip = (character.autoplay) ? ifdefor(character.loopSkip, 1) : 1;
+            if (character.loopCount % loopSkip) break;
+            var gameSpeed = (character.autoplay) ? character.gameSpeed : 1;
+            for (var i = 0; i < gameSpeed  && character.area; i++) {
                 character.time += frameMilliseconds / 1000;
                 if (character.context === 'adventure') adventureLoop(character, frameMilliseconds / 1000);
                 else if (character.context === 'guild') activeGuildAreaHash[character.guildAreaKey] = true;
-                if (character.context !== 'adventure' && character.context !== 'guild') {
-                    return;
-                }
+                if (character.context !== 'adventure' && character.context !== 'guild') break;
                 var area = character.area;
                 // Only update the camera for the guild for the selected character, but
                 // always update the camera for characters in adventure areas.
@@ -533,6 +531,10 @@ function pause() {
     state.selectedCharacter.paused = true;
     updateAdventureButtons();
 }
+$('body').on('click', '.js-autoplayButton', function (event) {
+    state.selectedCharacter.autoplay = !state.selectedCharacter.autoplay;
+    updateAdventureButtons();
+});
 $('body').on('click', '.js-fastforwardButton', function (event) {
     if (state.selectedCharacter.gameSpeed !== 3) {
         state.selectedCharacter.gameSpeed = 3;
@@ -573,12 +575,17 @@ function showContext(context) {
 }
 function updateAdventureButtons() {
     var character = state.selectedCharacter;
-    $('.js-recallButton').toggleClass('disabled', !canRecall(character));
-    $('.js-repeatButton').toggleClass('disabled', !character.replay);
-    $('.js-pauseButton').toggleClass('disabled', !character.paused);
-    $('.js-fastforwardButton').toggleClass('disabled', character.gameSpeed !== 3);
-    $('.js-slowMotionButton').toggleClass('disabled', character.loopSkip !== 5);
-    $('.js-shrineButton').toggleClass('disabled', !!character.skipShrines);
+    $('.js-autoplayButton').toggleClass('disabled', !character.autoplay);
+    if (character.autoplay) {
+        $('.js-repeatButton, .js-pauseButton, .js-fastforwardButton, .js-slowMotionButton, .js-shrineButton').show();
+        $('.js-repeatButton').toggleClass('disabled', !character.replay);
+        $('.js-pauseButton').toggleClass('disabled', !character.paused);
+        $('.js-fastforwardButton').toggleClass('disabled', character.gameSpeed !== 3);
+        $('.js-slowMotionButton').toggleClass('disabled', character.loopSkip !== 5);
+        $('.js-shrineButton').toggleClass('disabled', !!character.skipShrines);
+    } else {
+        $('.js-repeatButton, .js-pauseButton, .js-fastforwardButton, .js-slowMotionButton, .js-shrineButton').hide();
+    }
 }
 function canRecall(character) {
     return character.area && !character.area.isGuildArea && character.waveIndex < character.area.waves.length;

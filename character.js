@@ -167,12 +167,11 @@ function returnToMap(character) {
     character.paused = false;
     leaveCurrentArea(character);
     updateAdventureButtons();
-    if (character.replay) {
+    if (character.autoplay && character.replay) {
         startArea(character, character.currentLevelKey);
     } else if (testingLevel) {
         stopTestingLevel();
-    }
-    if (state.selectedCharacter === character) {
+    } else if (state.selectedCharacter === character) {
         setContext('map');
         refreshStatsPanel(character, $('.js-characterColumn .js-stats'));
     }

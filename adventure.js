@@ -132,18 +132,13 @@ function removeActor(actor) {
     }
 }
 function checkToStartNextWave(character) {
-    // Check to start next wave/complete level.
-    if (character.enemies.length + character.objects.length == 0) {
-        if (character.waveIndex >= character.area.waves.length) {
-            returnToMap(character);
-        } else {
-            if (character.waveIndex >= character.area.waves.length - 1) {
-                completeLevel(character, character.time - character.startTime);
-            }
-            startNextWave(character);
-            updateAdventureButtons();
-        }
+    if (character.waveIndex >= character.area.waves.length) return;
+    for (var enemy of character.enemies) if (!enemy.isDead) return;
+    if (character.waveIndex >= character.area.waves.length - 1) {
+        completeLevel(character, character.time - character.startTime);
     }
+    startNextWave(character);
+    updateAdventureButtons();
 }
 function adventureLoop(character, delta) {
     var area = character.area;
@@ -298,7 +293,7 @@ function moveActor(actor) {
                 break;
         }
     }
-    if (!actor.isMainCharacter && (!goalTarget || goalTarget.isDead)) {
+    if (!(actor.isMainCharacter && !actor.character.autoplay) && (!goalTarget || goalTarget.isDead)) {
         var bestDistance = 10000;
         actor.enemies.forEach(function (target) {
             if (target.isDead) return;
@@ -358,8 +353,10 @@ function moveActor(actor) {
         actor.z = currentZ + speedBonus * actor.speed * actor.heading[2] * Math.max(.1, 1 - actor.slow) * delta;
         // Actor is not allowed to leave the path.
         actor.z = Math.max(-180 + actor.width / 2, Math.min(180 - actor.width / 2, actor.z));
-        actor.x = Math.max(ifdefor(actor.area.left, 0) + 35 + actor.z / 16, actor.x);
-        actor.x = Math.min(actor.area.width - 35 - actor.z / 16, actor.x);
+        if (actor.area.leftWall) actor.x = Math.max(ifdefor(actor.area.left, 0) + 55 + actor.width / 2 + actor.z / 7, actor.x);
+        else actor.x = Math.max(ifdefor(actor.area.left, 0) + actor.width / 2, actor.x);
+        if (actor.area.rightWall) actor.x = Math.min(actor.area.width - 55 - actor.width / 2 - actor.z / 7, actor.x);
+        else actor.x = Math.min(actor.area.width - actor.width / 2, actor.x);
         var collision = false;
         // Ignore ally collision during charge effects.
         if (!actor.chargeEffect) {
@@ -482,7 +479,7 @@ function startNextWave(character) {
         character.objects.push(object);
     }
     character.waveIndex++;
-    character.area.left = character.adventurer.x - 400;
+    character.area.left = character.adventurer.x - 800;
     character.area.width = x + 400;
 }
 function processStatusEffects(character, target, delta) {
@@ -573,6 +570,29 @@ function runActorLoop(character, actor) {
                 break;
         }
         return;
+    } else if (actor.isMainCharacter && actor.character.autoplay && actor.character.waveIndex >= actor.character.area.waves.length) {
+        // Code for intracting with chest/shrine at the end of level and leaving the area.
+        for (var object of actor.area.objects) {
+            if (object.considered) continue;
+            // The AI only considers each object once.
+            object.considered = true;
+            if (object.key === 'closedChest') {
+                setActorInteractionTarget(actor, object);
+                break;
+            }
+            if (object.key === 'skillShrine' && !actor.character.skipShrines) {
+                setActorInteractionTarget(actor, object);
+                break;
+            }
+        }
+        if (!actor.activity && !actor.character.isStuckAtShrine) {
+            if (!actor.character.finishTime) {
+                actor.character.finishTime = actor.character.time + 1;
+            }
+            if (actor.character.time >= actor.character.finishTime) {
+                returnToMap(actor.character);
+            }
+        }
     }
     var targets = [];
     for (var ally of actor.allies) {

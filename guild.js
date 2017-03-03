@@ -83,7 +83,7 @@ guildAreas.guildYard = initializeGuldArea({
     'backgroundPatterns': {'0': 'forest'},
     'wallDecorations': [],
     'objects': [
-        fixedObject('door', [995, 0, 0], {'scale': 2, 'exit': guildFoyerFrontDoor})
+        fixedObject('door', [1000, 0, 0], {'scale': 2, 'exit': guildFoyerFrontDoor})
     ],
     'leftWall': null
 });
@@ -102,8 +102,8 @@ guildAreas.guildFoyer = initializeGuldArea({
         fixedObject('crackedPot', [455, 0, 150]),
         fixedObject('woodenShrine', [500, 0, 150]),
         fixedObject('crackedOrb', [545, 0, 150]),
-        fixedObject('door', [5, 0, 0], {'scale': 2, 'xScale': -1, 'exit': {'areaKey': 'guildYard', 'x': 900, 'z': 0}}),
-        fixedObject('door', [995, 0, 0], {'scale': 2, 'exit': {'areaKey': 'guildFrontHall', 'x': 120, 'z': 0}})
+        fixedObject('door', [0, 0, 0], {'scale': 2, 'xScale': -1, 'exit': {'areaKey': 'guildYard', 'x': 900, 'z': 0}}),
+        fixedObject('door', [1000, 0, 0], {'scale': 2, 'exit': {'areaKey': 'guildFrontHall', 'x': 120, 'z': 0}})
     ]
 });
 guildAreas.guildFrontHall = initializeGuldArea({
@@ -117,7 +117,7 @@ guildAreas.guildFrontHall = initializeGuldArea({
         fixedObject('candles', [835, 50, wallZ]),
     ],
     'objects': [
-        fixedObject('door', [5, 0, 0], {'scale': 2, 'xScale': -1, 'exit': {'areaKey': 'guildFoyer', 'x': 900, 'z': 0}}),
+        fixedObject('door', [0, 0, 0], {'scale': 2, 'xScale': -1, 'exit': {'areaKey': 'guildFoyer', 'x': 900, 'z': 0}}),
     ]
 });
 function leaveCurrentArea(character) {

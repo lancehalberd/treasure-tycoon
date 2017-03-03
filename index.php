@@ -78,6 +78,7 @@
                 <textarea class="js-levelDescriptionInput levelDescriptionInput" rows="8" cols="40" placeholder="Level Description"></textarea>
             </div>
             <div class="js-adventureControls js-adventureContext adventureControls" style="display: none;">
+                <span class="js-autoplayButton icon autoplayButton adventureButton" helptext="Auto Explore"></span>
                 <span class="js-repeatButton icon repeatButton adventureButton" helptext="Repeat this adventure"></span>
                 <span class="js-fastforwardButton icon fastforwardButton adventureButton" helptext="Fast Forward"></span>
                 <span class="js-pauseButton icon pauseButton adventureButton" helptext="Pause this adventure"></span>

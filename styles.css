@@ -791,6 +791,14 @@ select {
     height: 32px;
     background-position: -32px -128px;
 }
+
+.icon.autoplayButton {
+    background-image: url('gfx/nielsenIcons.png');
+    background-size: initial;
+    width: 32px;
+    height: 32px;
+    background-position: -32px -96px;
+}
 .icon.repeatButton {
     background-image: url('gfx/nielsenIcons.png');
     background-size: initial;

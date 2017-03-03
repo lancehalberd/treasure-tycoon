@@ -166,6 +166,7 @@ function exportCharacter(character) {
     var data = {};
     data.adventurer = exportAdventurer(character.adventurer);
     data.board = exportJewelBoard(character.board);
+    data.autoplay = character.autoplay;
     data.gameSpeed = character.gameSpeed;
     data.divinityScores = character.divinityScores;
     data.levelTimes = character.levelTimes;
@@ -193,6 +194,7 @@ function importCharacter(characterData) {
     character.boardCanvas = createCanvas(jewelsCanvas.width, jewelsCanvas.height);
     character.boardContext = character.boardCanvas.getContext("2d");
     character.time = now();
+    character.autoplay = characterData.autoplay;
     character.gameSpeed = characterData.gameSpeed;
     character.replay = false;
     character.divinityScores = ifdefor(characterData.divinityScores, {});
