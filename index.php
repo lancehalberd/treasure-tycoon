@@ -1,5 +1,5 @@
 <?php
-    $version = '0.5';
+    $version = '0.6';
     function addScripts($scriptNames) {
         foreach ($scriptNames as $scriptName) {
             $version = hash_file('md5', $scriptName);

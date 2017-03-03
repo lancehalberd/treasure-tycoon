@@ -9,6 +9,9 @@ function openWorldMap(actor) {
 function openCrafting(actor) {
     setContext('item');
 }
+function useDoor(actor) {
+    enterGuildArea(actor.character, this.exit);
+}
 
 var areaObjects = {
     'mapTable': {'name': 'World Map', 'source': objectSource(guildImage, [360, 120], [120, 50, 60]), 'action': openWorldMap},
@@ -17,8 +20,8 @@ var areaObjects = {
     'woodenShrine': {'name': 'Shrine of Fortune', 'source': objectSource(guildImage, [540, 100], [60, 70, 40]), 'action': openCrafting},
     'candles': {'source': objectSource(guildImage, [240, 30], [60, 70, 0])},
 
-    'door': {'source': objectSource(guildImage, [600, 0], [60, 240, 180])},
-    'wall': {'source': objectSource(guildImage, [720, 0], [60, 240, 180])},
+    'wall': {'source': objectSource(guildImage, [600, 0], [60, 240, 180])},
+    'door': {'source': objectSource(guildImage, [660, 90], [60, 120, 90]), 'action': useDoor},
 
     'skillShrine': {'name': 'Shrine of Divinity', 'source': objectSource(requireImage('gfx/militaryIcons.png'), [102, 125], [16, 16, 4]), 'action': activateShrine},
     'closedChest': {'name': 'Treasure Chest', 'source': objectSource(requireImage('gfx/treasureChest.png'), [0, 0], [64, 64, 64]), 'action': openChest},
@@ -31,6 +34,7 @@ function initializeGuldArea(guildArea) {
     guildArea.isGuildArea = true;
     guildArea.allies = [];
     guildArea.enemies = [];
+    guildArea.left = 0;
     guildArea.cameraX = 0;
     guildArea.time = 0;
     guildArea.textPopups = [];
@@ -38,8 +42,8 @@ function initializeGuldArea(guildArea) {
     for (var object of guildArea.objects) {
         object.area = guildArea;
     }
-    guildArea.leftWall = fixedObject('wall', [10, 0, 15], {'scale': 2.2, 'xScale': -1});
-    guildArea.rightWall = fixedObject('wall', [guildArea.width - 10, 0, 15], {'scale': 2.2});
+    guildArea.leftWall = ifdefor(guildArea.leftWall, fixedObject('wall', [10, 0, 15], {'scale': 2.2, 'xScale': -1}));
+    guildArea.rightWall = ifdefor(guildArea.rightWall, fixedObject('wall', [guildArea.width - 10, 0, 15], {'scale': 2.2}));
     return guildArea;
 }
 function fixedObject(objectKey, coords, properties) {
@@ -72,6 +76,17 @@ function drawFixedObject(area) {
     else drawImage(mainContext, imageSource.image, imageSource, this);
 }
 var guildAreas = {};
+var guildFoyerFrontDoor = {'areaKey': 'guildFoyer', 'x': 120, 'z': 0};
+guildAreas.guildYard = initializeGuldArea({
+    'key': 'guildYard',
+    'width': 1000,
+    'backgroundPatterns': {'0': 'forest'},
+    'wallDecorations': [],
+    'objects': [
+        fixedObject('door', [995, 0, 0], {'scale': 2, 'exit': guildFoyerFrontDoor})
+    ],
+    'leftWall': null
+});
 guildAreas.guildFoyer = initializeGuldArea({
     'key': 'guildFoyer',
     'width': 1000,
@@ -86,11 +101,13 @@ guildAreas.guildFoyer = initializeGuldArea({
         fixedObject('mapTable', [250, 0, 90]),
         fixedObject('crackedPot', [455, 0, 150]),
         fixedObject('woodenShrine', [500, 0, 150]),
-        fixedObject('crackedOrb', [545, 0, 150])
+        fixedObject('crackedOrb', [545, 0, 150]),
+        fixedObject('door', [5, 0, 0], {'scale': 2, 'xScale': -1, 'exit': {'areaKey': 'guildYard', 'x': 900, 'z': 0}}),
+        fixedObject('door', [995, 0, 0], {'scale': 2, 'exit': {'areaKey': 'guildFrontHall', 'x': 120, 'z': 0}})
     ]
 });
-guildAreas.frontHall = initializeGuldArea({
-    'key': 'frontHall',
+guildAreas.guildFrontHall = initializeGuldArea({
+    'key': 'guildFrontHall',
     'width': 1000,
     'backgroundPatterns': {'0': 'oldGuild'},
     'wallDecorations': [
@@ -100,13 +117,9 @@ guildAreas.frontHall = initializeGuldArea({
         fixedObject('candles', [835, 50, wallZ]),
     ],
     'objects': [
-        fixedObject('mapTable', [250, 0, 90]),
-        fixedObject('crackedPot', [455, 0, 150]),
-        fixedObject('woodenShrine', [500, 0, 150]),
-        fixedObject('crackedOrb', [545, 0, 150])
+        fixedObject('door', [5, 0, 0], {'scale': 2, 'xScale': -1, 'exit': {'areaKey': 'guildFoyer', 'x': 900, 'z': 0}}),
     ]
 });
-var guildFrontDoor = {'areaKey': 'guildFoyer', 'x': 120, 'z': 0};
 function leaveCurrentArea(character) {
     if (!character.area) return;
     var allyIndex = character.area.allies.indexOf(character.adventurer);
@@ -134,7 +147,7 @@ function enterGuildArea(character, door) {
         action.readyAt = 0;
     });
     if (state.selectedCharacter === character) {
-        guildArea.cameraX = hero.x - 300;
+        guildArea.cameraX = Math.max(guildArea.left, Math.min(guildArea.width - 800, hero.x - 400));
         updateAdventureButtons();
         showContext('guild');
     }
@@ -217,8 +230,8 @@ function drawGuildArea(guildArea) {
             mainContext.globalAlpha = 1;
         });
     }
-    guildArea.leftWall.draw(guildArea);
-    guildArea.rightWall.draw(guildArea);
+    if (guildArea.leftWall) guildArea.leftWall.draw(guildArea);
+    if (guildArea.rightWall) guildArea.rightWall.draw(guildArea);
     for (var object of guildArea.wallDecorations) {
         object.draw(guildArea);
     }

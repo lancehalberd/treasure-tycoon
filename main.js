@@ -77,7 +77,7 @@ function initializeGame() {
         $('.js-heroApplication').each(function () {
             createNewHeroApplicant($(this), otherKeys.pop());
         });
-        enterGuildArea(state.selectedCharacter, guildFrontDoor);
+        enterGuildArea(state.selectedCharacter, guildFoyerFrontDoor);
     }
     state.visibleLevels['guild'] = true;
     for (var levelKey of map.guild.unlocks) {
@@ -560,7 +560,7 @@ function setContext(context) {
     state.selectedCharacter.context = context;
     // If the player is not already in the guild when we return to the guild context, move them to the foyer.
     if (context === 'guild' && (!state.selectedCharacter.area || !state.selectedCharacter.area.isGuildArea)) {
-        enterGuildArea(state.selectedCharacter, guildFrontDoor);
+        enterGuildArea(state.selectedCharacter, guildFoyerFrontDoor);
     }
     showContext(context);
 }

@@ -562,7 +562,7 @@ $(document).on('keydown', function(event) {
             if (state.selectedCharacter.context === 'map') {
                 if ($('.js-areaMenu').is(':visible')) $('.js-areaMenu').hide();
                 else if (!state.selectedCharacter.area) {
-                    enterGuildArea(state.selectedCharacter, guildFrontDoor);
+                    enterGuildArea(state.selectedCharacter, guildFoyerFrontDoor);
                 } else {
                     setContext('guild');
                 }
