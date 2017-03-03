@@ -362,6 +362,7 @@ function checkToShowMainCanvasToolTip(x, y) {
         }
         if (!canvasPopupTarget) {
             for (var object of area.objects.concat(globalHud)) {
+                if (object.isVisible && !object.isVisible()) continue;
                 // (x,y) of objects is the bottom middle of their graphic.
                 var left = ifdefor(object.left, object.x - area.cameraX - object.width / 2);
                 var top = ifdefor(object.top, groundY - object.y - object.height);
@@ -572,7 +573,6 @@ function showContext(context) {
 }
 function updateAdventureButtons() {
     var character = state.selectedCharacter;
-    $('.js-adventureControls').toggle(!!character.area);
     $('.js-recallButton').toggleClass('disabled', !canRecall(character));
     $('.js-repeatButton').toggleClass('disabled', !character.replay);
     $('.js-pauseButton').toggleClass('disabled', !character.paused);
