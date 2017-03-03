@@ -723,8 +723,6 @@ function setSelectedCharacter(character) {
     updateConfirmSkillConfirmationButtons();
     updateEquipableItems();
     character.$characterCanvas.after($('.js-divinityPoints'));
-    //$('.js-charactersBox').prepend($('.js-divinityPoints'));
-    //$('.js-charactersBox').prepend(character.$characterCanvas);
     showContext(character.context);
 }
 
