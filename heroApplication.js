@@ -128,5 +128,5 @@ function hireCharacter(character) {
     gain('fame', character.fame);
     state.characters.push(character);
     setSelectedCharacter(character);
-    $('.js-divinityPoints').append(character.$characterCanvas);
+    $('.js-charactersBox').append(character.$characterCanvas);
 }

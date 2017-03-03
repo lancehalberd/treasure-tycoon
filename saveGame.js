@@ -111,7 +111,7 @@ function importState(stateData) {
         if (!character.context) {
             enterGuildArea(character, {'areaKey': 'guildFoyer', 'x': 120, 'z': 0});
         }
-        $('.js-divinityPoints').append(character.$characterCanvas);
+        $('.js-charactersBox').append(character.$characterCanvas);
     });
     for (var completedLevelKey in state.completedLevels) {
         var level = map[completedLevelKey];

@@ -721,6 +721,8 @@ function setSelectedCharacter(character) {
     updateAdventureButtons();
     updateConfirmSkillConfirmationButtons();
     updateEquipableItems();
+    $('.js-charactersBox').prepend($('.js-divinityPoints'));
+    $('.js-charactersBox').prepend(character.$characterCanvas);
 }
 
 $('.js-jewelBoard').on('mouseover', function () {

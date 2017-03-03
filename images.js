@@ -157,6 +157,19 @@ function drawImage(context, image, source, target) {
     context.restore();
 }
 
+function drawSolidTintedImage(context, image, tint, source, target) {
+    // First make a solid color in the shape of the image to tint.
+    globalTintContext.save();
+    globalTintContext.fillStyle = tint;
+    globalTintContext.clearRect(0, 0, source.width, source.height);
+    var tintRectangle = {'left': 0, 'top': 0, 'width': source.width, 'height': source.height};
+    drawImage(globalTintContext, image, source, tintRectangle)
+    globalTintContext.globalCompositeOperation = "source-in";
+    globalTintContext.fillRect(0, 0, source.width, source.height);
+    drawImage(context, globalTintCanvas, tintRectangle, target);
+    globalTintContext.restore();
+}
+
 function makeTintedImage(image, tint) {
     var tintCanvas = createCanvas(image.width, image.height);
     var tintContext = tintCanvas.getContext('2d');
@@ -173,7 +186,7 @@ function makeTintedImage(image, tint) {
     resultContext.globalAlpha = 1;
     return resultCanvas;
 }
-var globalTintCanvas = createCanvas(150, 150);
+var globalTintCanvas = createCanvas(150, 300);
 var globalTintContext = globalTintCanvas.getContext('2d');
 globalTintContext.imageSmoothingEnabled = false;
 function drawTintedImage(context, image, tint, amount, source, target) {
@@ -205,13 +218,13 @@ function getTintedImage(image, tint, amount, sourceRectangle) {
 
 function drawOutlinedImage(context, image, color, thickness, source, target) {
     context.save();
-    var smallTarget = {'width': target.width, 'height': target.height};
+    var smallTarget = $.extend({}, target);
     for (var dy = -1; dy < 2; dy++) {
         for (var dx = -1; dx < 2; dx++) {
             if (dy == 0 && dx == 0) continue;
             smallTarget.left = target.left + dx * thickness;
             smallTarget.top = target.top + dy * thickness;
-            drawTintedImage(context, image, color, 1, source, smallTarget);
+            drawSolidTintedImage(context, image, color, source, smallTarget);
         }
     }
     drawImage(context, image, source, target);

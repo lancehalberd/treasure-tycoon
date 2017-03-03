@@ -586,6 +586,6 @@ function canRecall(character) {
 function updateConfirmSkillConfirmationButtons() {
     $('.js-augmentConfirmationButtons').toggle(!!state.selectedCharacter.board.boardPreview);
 }
-$('.js-divinityPoints').on('click', '.js-character', function () {
+$('.js-charactersBox').on('click', '.js-character', function () {
     setSelectedCharacter($(this).data('character'));
 })

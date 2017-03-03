@@ -16,6 +16,10 @@ var areaObjects = {
     'crackedPot': {'name': 'Cracked Pot', 'source': objectSource(guildImage, [300, 100], [60, 60, 30])},
     'woodenShrine': {'name': 'Shrine of Fortune', 'source': objectSource(guildImage, [540, 100], [60, 70, 40]), 'action': openCrafting},
     'candles': {'source': objectSource(guildImage, [240, 30], [60, 70, 0])},
+
+    'door': {'source': objectSource(guildImage, [600, 0], [60, 240, 180])},
+    'wall': {'source': objectSource(guildImage, [720, 0], [60, 240, 180])},
+
     'skillShrine': {'name': 'Shrine of Divinity', 'source': objectSource(requireImage('gfx/militaryIcons.png'), [102, 125], [16, 16, 4]), 'action': activateShrine},
     'closedChest': {'name': 'Treasure Chest', 'source': objectSource(requireImage('gfx/treasureChest.png'), [0, 0], [64, 64, 64]), 'action': openChest},
     'openChest': {'name': 'Opened Treasure Chest', 'source': objectSource(requireImage('gfx/treasureChest.png'), [64, 0], [64, 64, 64]), 'action': function (actor) {
@@ -34,6 +38,8 @@ function initializeGuldArea(guildArea) {
     for (var object of guildArea.objects) {
         object.area = guildArea;
     }
+    guildArea.leftWall = fixedObject('wall', [10, 0, 15], {'scale': 2.2, 'xScale': -1});
+    guildArea.rightWall = fixedObject('wall', [guildArea.width - 10, 0, 15], {'scale': 2.2});
     return guildArea;
 }
 function fixedObject(objectKey, coords, properties) {
@@ -57,10 +63,10 @@ function drawFixedObject(area) {
     var objectHeight = this.height - this.depth / 2;
     this.top = groundY - this.y - objectHeight - (this.z + this.depth / 2) / 2;
     /*if (this.y === 0) {
-        mainContext.fillStyle = '#00f';
-        mainContext.fillRect(this.left, groundY - (this.z + this.depth / 2) / 2, this.width, this.depth / 2);
         mainContext.fillStyle = '#f0f';
         mainContext.fillRect(this.left, this.top, this.width, this.height);
+        mainContext.fillStyle = '#00f';
+        mainContext.fillRect(this.left, groundY - this.y - objectHeight - (this.z + this.depth / 2) / 2, this.width, this.depth / 2);
     }*/
     if (canvasPopupTarget === this) drawOutlinedImage(mainContext, imageSource.image, '#fff', 2, imageSource, this)
     else drawImage(mainContext, imageSource.image, imageSource, this);
@@ -68,6 +74,23 @@ function drawFixedObject(area) {
 var guildAreas = {};
 guildAreas.guildFoyer = initializeGuldArea({
     'key': 'guildFoyer',
+    'width': 1000,
+    'backgroundPatterns': {'0': 'oldGuild'},
+    'wallDecorations': [
+        fixedObject('candles', [165, 50, wallZ], {'xScale': -1}),
+        fixedObject('candles', [440, 70, wallZ], {'xScale': -1}),
+        fixedObject('candles', [560, 70, wallZ]),
+        fixedObject('candles', [835, 50, wallZ]),
+    ],
+    'objects': [
+        fixedObject('mapTable', [250, 0, 90]),
+        fixedObject('crackedPot', [455, 0, 150]),
+        fixedObject('woodenShrine', [500, 0, 150]),
+        fixedObject('crackedOrb', [545, 0, 150])
+    ]
+});
+guildAreas.frontHall = initializeGuldArea({
+    'key': 'frontHall',
     'width': 1000,
     'backgroundPatterns': {'0': 'oldGuild'},
     'wallDecorations': [
@@ -194,6 +217,8 @@ function drawGuildArea(guildArea) {
             mainContext.globalAlpha = 1;
         });
     }
+    guildArea.leftWall.draw(guildArea);
+    guildArea.rightWall.draw(guildArea);
     for (var object of guildArea.wallDecorations) {
         object.draw(guildArea);
     }

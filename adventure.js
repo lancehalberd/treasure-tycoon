@@ -172,7 +172,7 @@ function adventureLoop(character, delta) {
         if (object.x < character.adventurer.x && object.x + object.width - area.cameraX < 0 ) {
             character.objects.splice(i--, 1);
             continue;
-        } else if (object.update) object.update(character);
+        } else if (object.update) object.update(area);
     }
     checkToStartNextWave(character);
     if (!character.area) return;
@@ -196,7 +196,7 @@ function adventureLoop(character, delta) {
         if (area.effects[i].done) area.effects.splice(i--, 1);
     }
     for (var i = 0; i < area.treasurePopups.length; i++) {
-        area.treasurePopups[i].update(character);
+        area.treasurePopups[i].update(area);
         if (area.treasurePopups[i].done) area.treasurePopups.splice(i--, 1);
     }
     for (var i = 0; i < area.textPopups.length; i++) {
@@ -358,6 +358,8 @@ function moveActor(actor) {
         actor.z = currentZ + speedBonus * actor.speed * actor.heading[2] * Math.max(.1, 1 - actor.slow) * delta;
         // Actor is not allowed to leave the path.
         actor.z = Math.max(-180 + actor.width / 2, Math.min(180 - actor.width / 2, actor.z));
+        actor.x = Math.max(ifdefor(actor.area.left, 0) + 35 + actor.z / 16, actor.x);
+        actor.x = Math.min(actor.area.width - 35 - actor.z / 16, actor.x);
         var collision = false;
         // Ignore ally collision during charge effects.
         if (!actor.chargeEffect) {
@@ -464,6 +466,7 @@ function startNextWave(character) {
         newMonster.time = 0;
         newMonster.allies = character.enemies;
         newMonster.enemies = character.allies;
+        newMonster.area = character.area;
         character.enemies.push(newMonster);
         x += 40 + Math.floor(Math.random() * 40);
     });
@@ -480,9 +483,8 @@ function startNextWave(character) {
         character.objects.push(object);
     }
     character.waveIndex++;
-    if (character.waveIndex >= character.area.waves.length) {
-        character.area.width = x + 400;
-    }
+    character.area.left = character.adventurer.x - 400;
+    character.area.width = x + 400;
 }
 function processStatusEffects(character, target, delta) {
     if (target.isDead ) return;

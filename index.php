@@ -204,14 +204,16 @@
                 <button class="js-sellItem sellItem" disabled helptext="Drag items here to sell them. <br/> You can also hover over an item and type 'S' to sell quickly."><div class="icon money"></div></button>
             </div>
         </div>
-        <div class="js-divinityPoints points divinityPoints" helptext="Divinity can be used at shrines to level up and gain new bonuses and abilities. <br/><br/> Completing new adventures grants divinity and access to the shrine for that area. <br/><br/> Leveling allows you to equip more powerful gear and increases health and basic stats slightly.">
-            <div class="pointsIcon"><span class="icon divinity"></span></div>
-            <div class="pointsColumn">
-                <span class="js-global-divinity divinity">1000</span>
-                <br/>
-                <span class="js-amount" style="display: none;">-200</span>
-                <hr class="js-bottomLine bottomLine" style="display: none;">
-                <span class="js-balance divinity" style="display: none;">800</span>
+        <div class="js-charactersBox points charactersBox" helptext="Divinity can be used at shrines to level up and gain new bonuses and abilities. <br/><br/> Completing new adventures grants divinity and access to the shrine for that area. <br/><br/> Leveling allows you to equip more powerful gear and increases health and basic stats slightly.">
+            <div class="js-divinityPoints divinityPoints">
+                <div class="pointsIcon"><span class="icon divinity"></span></div>
+                <div class="pointsColumn">
+                    <span class="js-global-divinity divinity">1000</span>
+                    <br/>
+                    <span class="js-amount" style="display: none;">-200</span>
+                    <hr class="js-bottomLine bottomLine" style="display: none;">
+                    <span class="js-balance divinity" style="display: none;">800</span>
+                </div>
             </div>
         </div>
         <div class="js-pointsBar pointsBar">

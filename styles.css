@@ -51,10 +51,18 @@
     border-top: none;
     pointer-events: auto;
 }
-.divinityPoints {
+.charactersBox {
     position: absolute;
+    width: auto;
     left: 20px;
     top: 0px;
+}
+.charactersBox .character {
+    cursor: pointer;
+    vertical-align: top;
+}
+.divinityPoints {
+    display: inline-block;
 }
 .fame {
     color: #D80;
