@@ -12,13 +12,38 @@ function openCrafting(actor) {
 function useDoor(actor) {
     enterGuildArea(actor.character, this.exit);
 }
-
+function showApplication(actor) {
+    setHeroApplication($('.js-heroApplication'), this);
+    $('.js-heroApplication').show();
+}
+$('.js-mouseContainer').on('mousedown', function (event) {
+    if (!$(event.target).closest('.js-heroApplication').length) $('.js-heroApplication').hide();
+});
 var areaObjects = {
     'mapTable': {'name': 'World Map', 'source': objectSource(guildImage, [360, 120], [120, 50, 60]), 'action': openWorldMap},
     'crackedOrb': {'name': 'Cracked Anima Orb', 'source': objectSource(guildImage, [240, 100], [60, 60, 30])},
     'crackedPot': {'name': 'Cracked Pot', 'source': objectSource(guildImage, [300, 100], [60, 60, 30])},
     'woodenShrine': {'name': 'Shrine of Fortune', 'source': objectSource(guildImage, [540, 100], [60, 70, 40]), 'action': openCrafting},
     'candles': {'source': objectSource(guildImage, [240, 30], [60, 70, 0])},
+
+    'heroApplication': {'name': 'Application', 'source': {'width': 40, 'height': 60, 'depth': 0}, 'action': showApplication, 'draw': function (area) {
+        this.left = this.x - this.width / 2 - area.cameraX;
+        this.top = groundY - this.y - this.height - this.z / 2;
+        if (canvasPopupTarget === this) {
+            mainContext.fillStyle = 'white';
+            mainContext.fillRect(this.left - 2, this.top - 2, this.width + 4, this.height + 4);
+        }
+        mainContext.fillStyle = '#fc8';
+        mainContext.fillRect(this.left, this.top, this.width, this.height);
+        if (!this.character) {
+            this.character = createNewHeroApplicant();
+        }
+        var jobSource = this.character.adventurer.job.iconSource;
+        mainContext.save();
+        mainContext.globalAlpha = .6;
+        drawImage(mainContext, jobSource.image, jobSource, {'left': this.left + 4, 'top': this.top + 14, 'width': 32, 'height': 32});
+        mainContext.restore();
+    }},
 
     'wall': {'source': objectSource(guildImage, [600, 0], [60, 240, 180])},
     'door': {'source': objectSource(guildImage, [660, 90], [60, 120, 90]), 'action': useDoor},
@@ -39,8 +64,13 @@ function initializeGuldArea(guildArea) {
     guildArea.time = 0;
     guildArea.textPopups = [];
     guildArea.treasurePopups = [];
+    guildArea.objects = guildArea.objects || [];
     for (var object of guildArea.objects) {
         object.area = guildArea;
+    }
+    guildArea.wallDecorations = guildArea.wallDecorations || [];
+    for (var wallDecoration of guildArea.wallDecorations) {
+        wallDecoration.area = guildArea;
     }
     guildArea.leftWall = ifdefor(guildArea.leftWall, fixedObject('wall', [10, 0, 15], {'scale': 2.2, 'xScale': -1}));
     guildArea.rightWall = ifdefor(guildArea.rightWall, fixedObject('wall', [guildArea.width - 10, 0, 15], {'scale': 2.2}));
@@ -51,10 +81,11 @@ function fixedObject(objectKey, coords, properties) {
     var scale = ifdefor(properties.scale, 1);
     var base = areaObjects[objectKey];
     var imageSource = base.source;
-    return $.extend({'key': objectKey, 'fixed': true, 'base': areaObjects[objectKey], 'action': base.action, 'x': coords[0], 'y': coords[1], 'z': coords[2],
+    return $.extend({'key': objectKey, 'fixed': true, 'base': areaObjects[objectKey], 'x': coords[0], 'y': coords[1], 'z': coords[2],
                     'width': imageSource.width * scale, 'height': imageSource.height * scale, 'depth': imageSource.depth * scale,
-                    'draw': drawFixedObject,
-                    'helpMethod': ifdefor(properties.helpMethod, fixedObjectHelpText)}, ifdefor(properties, {}));
+                    'action': properties.action || base.action,
+                    'draw': properties.draw || base.draw || drawFixedObject,
+                    'helpMethod': properties.helpMethod || fixedObjectHelpText}, properties || {});
 }
 function fixedObjectHelpText(object) {
     return object.base.name;
@@ -77,6 +108,10 @@ function drawFixedObject(area) {
 }
 var guildAreas = {};
 var guildFoyerFrontDoor = {'areaKey': 'guildFoyer', 'x': 120, 'z': 0};
+var allApplications = [
+    fixedObject('heroApplication', [190, 50, wallZ]),
+    fixedObject('heroApplication', [240, 50, wallZ])
+];
 guildAreas.guildYard = initializeGuldArea({
     'key': 'guildYard',
     'width': 1000,
@@ -92,10 +127,12 @@ guildAreas.guildFoyer = initializeGuldArea({
     'width': 1000,
     'backgroundPatterns': {'0': 'oldGuild'},
     'wallDecorations': [
-        fixedObject('candles', [165, 50, wallZ], {'xScale': -1}),
+        allApplications[0],
+        allApplications[1],
+        fixedObject('candles', [140, 50, wallZ], {'xScale': -1}),
         fixedObject('candles', [440, 70, wallZ], {'xScale': -1}),
         fixedObject('candles', [560, 70, wallZ]),
-        fixedObject('candles', [835, 50, wallZ]),
+        fixedObject('candles', [860, 50, wallZ]),
     ],
     'objects': [
         fixedObject('mapTable', [250, 0, 90]),
@@ -151,7 +188,6 @@ function enterGuildArea(character, door) {
         updateAdventureButtons();
         showContext('guild');
     }
-    saveGame();
 }
 
 function guildAreaLoop(guildArea) {

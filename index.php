@@ -265,27 +265,25 @@
                 Beware! The venom from the spiders in these woods will suppress your health regeneration.
             </div>
         </div>
-        <div class="js-recruitmentColumn displayColumn recruitmentColumn" style="display: none;">
-            <div class="js-heroApplication heroApplication hideOnBottom">
-                <div class="heroApplicationBody"><div class="js-stats stats playerBox">
-                        <div style="position: absolute; left: 35px; top: 0px;">Hire <span class="js-playerName controlBarEntry">X</span></div>
-                        <canvas class="js-canvas js-previewCanvas" width="64" height="128" style="position: absolute; left: -2px; top: 0px;"></canvas>
-                        <span helptext="How famous this adventurer is. Famous adventurers are more powerful but also more expensive.<br/> Hiring famous adventurers increases the fame of your guild.">
-                            <span class="icon fame"></span> <span class="js-fame">X</span>
-                        </span>
-                        <span helptext="Starting health for each adventure."><span class="icon health"></span> <span class="js-maxHealth">X</span></span>
-                        <div style="position: relative; overflow: hidden; height: 160px; width: 160px;">
-                            <canvas class="js-canvas js-skillCanvas" width="360" height="360" style="width: 360px; height: 360px; position: relative; left: -80px; top: -80px; opacity: .6"></canvas>
-                        </div>
-                        <div class="statGrowth">
-                            <div class="js-dexterityGrowth statGrowthBar dexterity" helptext="Dexterity increases attack speed, evasion and damage with ranged weapons."></div>
-                            <div class="js-strengthGrowth statGrowthBar strength" helptext="Strength increases physical damage, health and damage with melee weapons."></div>
-                            <div class="js-intelligenceGrowth statGrowthBar intelligence" helptext="Intelligence increases accuracy, block and magic block and damage with magic weapons."></div>
-                        </div>
+        <div class="js-heroApplication heroApplication singleHeroApplication" style="display: none;">
+            <div class="heroApplicationBody"><div class="js-stats stats playerBox">
+                    <div style="position: absolute; left: 35px; top: 0px;"><span class="js-playerName controlBarEntry">X</span></div>
+                    <canvas class="js-canvas js-previewCanvas" width="64" height="128" style="position: absolute; left: -2px; top: 0px;"></canvas>
+                    <span helptext="How famous this adventurer is. Famous adventurers are more powerful but also more expensive.<br/> Hiring famous adventurers increases the fame of your guild.">
+                        <span class="icon fame"></span> <span class="js-fame">X</span>
+                    </span>
+                    <span helptext="Starting health for each adventure."><span class="icon health"></span> <span class="js-maxHealth">X</span></span>
+                    <div style="position: relative; overflow: hidden; height: 160px; width: 160px;">
+                        <canvas class="js-canvas js-skillCanvas" width="360" height="360" style="width: 360px; height: 360px; position: relative; left: -80px; top: -80px; opacity: .6"></canvas>
                     </div>
-                    <p><button class="js-hireApplicant heroApplicationButton" helptext="Hire this adventurer. The more famous your guild is, the cheaper it is to hire adventurers.">Hire <span class="js-hirePrice"></span></button></p>
-                    <p><button class="js-seekNewApplicant heroApplicationButton" helptext="Seek another guild applicant. Completing adventures will reduce this price.">Seek Another <span class="js-seekPrice"></span></button></p>
+                    <div class="statGrowth">
+                        <div class="js-dexterityGrowth statGrowthBar dexterity" helptext="Dexterity increases attack speed, evasion and damage with ranged weapons."></div>
+                        <div class="js-strengthGrowth statGrowthBar strength" helptext="Strength increases physical damage, health and damage with melee weapons."></div>
+                        <div class="js-intelligenceGrowth statGrowthBar intelligence" helptext="Intelligence increases accuracy, block and magic block and damage with magic weapons."></div>
+                    </div>
                 </div>
+                <p><button class="js-hireApplicant heroApplicationButton" helptext="Hire this adventurer. The more famous your guild is, the cheaper it is to hire adventurers.">Hire <span class="js-hirePrice"></span></button></p>
+                <p><button class="js-seekNewApplicant heroApplicationButton" helptext="Seek another guild applicant. Completing adventures will reduce this price.">Seek Another <span class="js-seekPrice"></span></button></p>
             </div>
         </div>
     </div>

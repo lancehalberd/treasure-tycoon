@@ -102,7 +102,7 @@ function shouldUseSkillOnTarget(actor, skill, target) {
         } else {
             health = target.health;
         }
-        var previewAttackStats = isSpell ? createSpellStats(actor, skill, target) : createAttackStats(actor, skill, target);
+        var previewAttackStats = skill.tags['spell'] ? createSpellStats(actor, skill, target) : createAttackStats(actor, skill, target);
         // Any life gained by this attack should be considered in the calculation as well in favor of using the attack.
         var possibleLifeGain = (previewAttackStats.damage + previewAttackStats.magicDamage) * ifdefor(skill.lifeSteal, 0);
         var actualLifeGain = actorCanOverHeal(actor) ? possibleLifeGain : Math.min(actor.maxHealth - actor.health, possibleLifeGain);

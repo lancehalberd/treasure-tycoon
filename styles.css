@@ -736,6 +736,12 @@ select {
     pointer-events: auto;
     box-shadow: -2px -1px 3px black;
 }
+.singleHeroApplication {
+    position: absolute;
+    margin: 0;
+    left: 280px;
+    top: 100px;
+}
 .heroApplicationBody {
     /* I can't figure out where this 2px gap comes from.*/
     margin-top: -2px;

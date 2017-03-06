@@ -74,9 +74,9 @@ function initializeGame() {
         $('.js-heroApplication').after($('.js-heroApplication').clone());
         var otherKeys = jobRanks[0].slice();
         removeElementFromArray(otherKeys, jobKey, true);
-        $('.js-heroApplication').each(function () {
-            createNewHeroApplicant($(this), otherKeys.pop());
-        });
+        for (var i = 0; i < allApplications.length && otherKeys.length; i++) {
+            allApplications[i].character = createNewHeroApplicant(otherKeys.pop());
+        }
         enterGuildArea(state.selectedCharacter, guildFoyerFrontDoor);
     }
     state.visibleLevels['guild'] = true;
@@ -139,10 +139,10 @@ function mainLoop() {
                     var mouseX = cameraX + Math.max(0, Math.min(800, mousePosition[0]));
                     if (character.adventurer.activity && character.adventurer.activity.type === 'move') {
                         centerX = (centerX + character.adventurer.activity.x) / 2;
-                    } else if (mouseX > centerX + 200) {
-                        centerX = (centerX + mouseX - 200) / 2;
-                    } else if (mouseX < centerX - 200) {
-                        centerX = (centerX + mouseX + 200) / 2;
+                    } else if (mouseX > centerX + 300) {
+                        centerX = (centerX + mouseX - 300) / 2;
+                    } else if (mouseX < centerX - 300) {
+                        centerX = (centerX + mouseX + 300) / 2;
                     }
                     if (Math.abs(cameraX - (centerX - 400)) < 200) cameraX = (cameraX * 20 + centerX - 400) / 21;
                     else cameraX = (cameraX * 10 + centerX - 400) / 11;
@@ -258,6 +258,7 @@ $('.js-mouseContainer').on('mouseover mousemove', '.js-mainCanvas', function (ev
     checkToShowMainCanvasToolTip(x, y);
 });
 var clickedToMove = false;
+
 $('.js-mouseContainer').on('mousedown', '.js-mainCanvas', function (event) {
     var x = event.pageX - $(this).offset().left;
     var y = event.pageY - $(this).offset().top;
@@ -339,7 +340,10 @@ var returnToMapButton = {'source': {'image': requireImage('gfx/worldIcon.png'), 
         return state.selectedCharacter.context === 'adventure';
     },
     'draw': drawMapButton,
-    'top': 500, 'left': 20, 'width': 54, 'height': 54, 'helpText': 'Return to Map', 'onClick': returnToMap}
+    'top': 500, 'left': 20, 'width': 54, 'height': 54, 'helpText': 'Return to Map', 'onClick': function () {
+        state.selectedCharacter.replay = false;
+        returnToMap(state.selectedCharacter);
+}};
 
 var globalHud = [
     returnToMapButton
@@ -359,7 +363,8 @@ function checkToShowMainCanvasToolTip(x, y) {
             }
         }
         if (!canvasPopupTarget) {
-            for (var object of area.objects.concat(globalHud)) {
+            for (var object of area.objects.concat(ifdefor(area.wallDecorations, [])).concat(globalHud)) {
+                if (!object.action && !object.onClick) continue;
                 if (object.isVisible && !object.isVisible()) continue;
                 // (x,y) of objects is the bottom middle of their graphic.
                 var left = ifdefor(object.left, object.x - area.cameraX - object.width / 2);
@@ -504,20 +509,6 @@ $('body').on('click', '.js-retire', function (event) {
 $('body').on('click', '.js-showJewelsPanel', function (event) {
     setContext('jewel');
 });
-$('body').on('click', '.js-recallButton', recallSelectedCharacter);
-function recallSelectedCharacter() {
-    var character = state.selectedCharacter;
-    // The last wave of an area is always the bonus treasure chest. In order to prevent
-    // the player from missing this chest or opening it without clearing the level,
-    // which would allow them to claim the reward again, we disable recall during
-    // this wave.
-    if (!canRecall(character)) {
-        return;
-    }
-    character.replay = false;
-    updateAdventureButtons();
-    returnToMap(character);
-}
 $('body').on('click', '.js-repeatButton', function (event) {
     state.selectedCharacter.replay = !state.selectedCharacter.replay;
     updateAdventureButtons();

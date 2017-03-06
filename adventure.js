@@ -58,7 +58,7 @@ function checkIfActorDied(actor) {
     actor.isDead = true;
     actor.timeOfDeath = actor.time;
     if (actor.character.enemies.indexOf(actor) >= 0 ) {
-        defeatedEnemy(actor, actor);
+        defeatedEnemy(actor.character.adventurer, actor);
     }
 }
 
@@ -382,7 +382,7 @@ function moveActor(actor) {
                 if (enemy.isDead || actor === enemy) continue;
                 var distance = getDistanceOverlap(actor, enemy);
                 if (distance <= 0 && actor.chargeEffect) {
-                    finishChargeEffect(enemy);
+                    finishChargeEffect(actor, enemy);
                     // Although this is a collision, don't mark it as one so that the move will complete.
                     collision = false;
                     break;
@@ -429,10 +429,10 @@ function moveActor(actor) {
     // If the actor hit something, complete the charge effect. The splash may still hit enemies,
     // and if it had an animation, it should play.
     if (collision && actor.chargeEffect) {
-        finishChargeEffect(null);
+        finishChargeEffect(actor, null);
     }
 }
-function finishChargeEffect(target) {
+function finishChargeEffect(actor, target) {
     var attackStats = createAttackStats(actor, actor.chargeEffect.chargeSkill, target);
     attackStats.distance = actor.chargeEffect.distance;
     var hitTargets = getAllInRange(target ? target.x : actor.x, actor.chargeEffect.chargeSkill.area, actor.enemies);

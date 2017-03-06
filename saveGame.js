@@ -28,10 +28,9 @@ function exportState(state) {
     data.craftingLevel = state.craftingLevel;
     data.applications = [];
     data.skipShrinesEnabled = state.skipShrinesEnabled;
-    $('.js-heroApplication').each(function () {
-        var application = $(this).data('character');
-        data.applications.push(exportCharacter(application));
-    });
+    for (var i = 0; i < allApplications.length; i++) {
+        if (allApplications[i].character) data.applications.push(exportCharacter(allApplications[i].character));
+    }
     data.jewels = [];
     $('.js-jewelInventory .js-jewel').each(function () {
         data.jewels.push(exportJewel($(this).data('jewel')));
@@ -67,24 +66,11 @@ function importState(stateData) {
     state.fame = fixNumber(stateData.fame);
     state.coins = fixNumber(stateData.coins);
     state.anima = fixNumber(stateData.anima);
-    // Grab one slot to serve as the template for the applications we will add.
-    var $slot = $('.js-heroApplication').first().detach();
-    // Clean up all the slots on the page.
-    $('.js-heroApplication').data('character', null).remove();
     var applications = ifdefor(stateData.applications, []).map(importCharacter);
-    while ($('.js-heroApplication').length + applications.length < 2) {
-        var $applicationPanel = $slot.clone();
-        $('.js-recruitmentColumn').append($applicationPanel);
-        createNewHeroApplicant($applicationPanel);
+    for (var i = 0; i < applications.length; i++) {
+        allApplications[i].character = applications[i];
     }
-    applications.forEach(function (application) {
-        var $applicationPanel = $slot.clone();
-        $('.js-recruitmentColumn').append($applicationPanel);
-        setHeroApplication($applicationPanel, application);
-    });
     state.skipShrinesEnabled = ifdefor(stateData.skipShrinesEnabled, true);
-    // Clean up the last slot.
-    $slot.data('character', null).remove();
     state.characters = [];
     state.completedLevels = copy(ifdefor(stateData.completedLevels, {}));
     state.visibleLevels = {};

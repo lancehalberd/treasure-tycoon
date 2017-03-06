@@ -567,7 +567,11 @@ $(document).on('keydown', function(event) {
                     setContext('guild');
                 }
             } else if (state.selectedCharacter.context === 'jewel' || state.selectedCharacter.context === 'item') {
-                setContext('guild');
+                if (state.selectedCharacter.area && !state.selectedCharacter.area.isGuildArea) {
+                    setContext('adventure');
+                } else {
+                    setContext('guild');
+                }
             }
             /*if (state.selectedCharacter.context !== 'adventure') {
                 setContext('adventure');
