@@ -32,8 +32,8 @@ woodDoor: (675, 150, 26, 51)
 */
 var areaObjects = {
     'mapTable': {'name': 'World Map', 'source': objectSource(guildImage, [360, 130], [60, 27, 30]), 'action': openWorldMap},
-    'crackedOrb': {'name': 'Cracked Anima Orb', 'source': objectSource(guildImage, [260, 160-27], [18, 27, 15])},
-    'crackedPot': {'name': 'Cracked Pot', 'source': objectSource(guildImage, [300, 100-28], [22, 28, 15])},
+    'crackedOrb': {'name': 'Cracked Anima Orb', 'source': objectSource(guildImage, [260, 130], [18, 27, 15])},
+    'crackedPot': {'name': 'Cracked Pot', 'source': objectSource(guildImage, [320, 130], [22, 28, 15])},
     'woodenShrine': {'name': 'Shrine of Fortune', 'source': objectSource(guildImage, [500, 161-30], [20, 30, 20]), 'action': openCrafting},
     'candles': {'source': objectSource(guildImage, [260, 98-40], [25, 40, 0])},
     'bed': {'name': 'Worn Cot', 'source': objectSource(guildImage, [541, 160-24], [58, 24, 30])},
@@ -141,7 +141,7 @@ guildAreas.guildFoyer = initializeGuldArea({
     'wallDecorations': [
         allApplications[0],
         allApplications[1],
-        fixedObject('candles', [165, 50, wallZ], {'scale': 1.5}),
+        fixedObject('candles', [135, 50, wallZ], {'scale': 1.5}),
         fixedObject('candles', [440, 70, wallZ], {'scale': 1.5}),
         fixedObject('candles', [560, 70, wallZ], {'scale': 1.5}),
         fixedObject('candles', [835, 50, wallZ], {'scale': 1.5}),
@@ -151,6 +151,7 @@ guildAreas.guildFoyer = initializeGuldArea({
         fixedObject('crackedPot', [455, 0, 150], {'scale': 2}),
         fixedObject('woodenShrine', [500, 0, 150], {'scale': 2}),
         fixedObject('crackedOrb', [545, 0, 150], {'scale': 2}),
+        fixedObject('bed', [700, 0, 90], {'scale': 2, 'xScale': -1}),
         fixedObject('door', [0, 0, 0], {'scale': 2, 'xScale': -1, 'exit': {'areaKey': 'guildYard', 'x': 900, 'z': 0}}, {'scale': 2}),
         fixedObject('door', [1000, 0, 0], {'scale': 2, 'exit': {'areaKey': 'guildFrontHall', 'x': 120, 'z': 0}}, {'scale': 2})
     ]
