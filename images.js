@@ -1,5 +1,5 @@
 
-var assetVersion = '0.3';
+var assetVersion = ifdefor(assetVersion, '0.3');
 var images = {};
 function loadImage(source, callback) {
     images[source] = new Image();
@@ -27,6 +27,12 @@ var initialImagesToLoad = [
     'gfx/treasureChest.png', 'gfx/moneyIcon.png', 'gfx/projectiles.png',
     'gfx/iconSet.png',
     'gfx/monsterPeople.png',
+    /**
+     * Job Icons by Abhimanyu Sandal created specifically for this project. He does not
+     * wish for his to work to be in the public domain so do not reuse these images without
+     * his consent.
+     */
+    'gfx/jobIcons.png',
     /* 'game-icons.png' from http://game-icons.net/about.html */
     'gfx/game-icons.png',
     /* nielsenIcons.png from Søren Nielsen at http://opengameart.org/content/grayscale-icons */
@@ -66,7 +72,6 @@ var initialImagesToLoad = [
     'gfx/496RpgIcons/target.png',
     // http://topps.diku.dk/torbenm/maps.msp
     'gfx/squareMap.bmp',
-    // Public domain images:
     'gfx/chest-closed.png', 'gfx/chest-open.png', // http://opengameart.org/content/treasure-chests
     'gfx/bat.png', // http://opengameart.org/content/bat-32x32
     'gfx/militaryIcons.png', // http://opengameart.org/content/140-military-icons-set-fixed
@@ -143,7 +148,26 @@ function initializeProjectileAnimations() {
 }
 
 function drawImage(context, image, source, target) {
-    context.drawImage(image, source.left, source.top, source.width, source.height, target.left, target.top, target.width, target.height);
+    context.save();
+    context.translate(target.left + target.width / 2, target.top + target.height / 2);
+    if (target.xScale || target.yScale) {
+        context.scale(ifdefor(target.xScale, 1), ifdefor(target.yScale, 1));
+    }
+    context.drawImage(image, source.left, source.top, source.width, source.height, -target.width / 2, -target.height / 2, target.width, target.height);
+    context.restore();
+}
+
+function drawSolidTintedImage(context, image, tint, source, target) {
+    // First make a solid color in the shape of the image to tint.
+    globalTintContext.save();
+    globalTintContext.fillStyle = tint;
+    globalTintContext.clearRect(0, 0, source.width, source.height);
+    var tintRectangle = {'left': 0, 'top': 0, 'width': source.width, 'height': source.height};
+    drawImage(globalTintContext, image, source, tintRectangle)
+    globalTintContext.globalCompositeOperation = "source-in";
+    globalTintContext.fillRect(0, 0, source.width, source.height);
+    drawImage(context, globalTintCanvas, tintRectangle, target);
+    globalTintContext.restore();
 }
 
 function makeTintedImage(image, tint) {
@@ -162,7 +186,7 @@ function makeTintedImage(image, tint) {
     resultContext.globalAlpha = 1;
     return resultCanvas;
 }
-var globalTintCanvas = createCanvas(150, 150);
+var globalTintCanvas = createCanvas(150, 300);
 var globalTintContext = globalTintCanvas.getContext('2d');
 globalTintContext.imageSmoothingEnabled = false;
 function drawTintedImage(context, image, tint, amount, source, target) {
@@ -190,6 +214,20 @@ function prepareTintedImage() {
 function getTintedImage(image, tint, amount, sourceRectangle) {
     drawTintedImage(globalCompositeContext, image, tint, amount, sourceRectangle, {'left': 0, 'top': 0, 'width': sourceRectangle.width, 'height': sourceRectangle.height});
     return globalCompositeCanvas;
+}
+
+function drawOutlinedImage(context, image, color, thickness, source, target) {
+    context.save();
+    var smallTarget = $.extend({}, target);
+    for (var dy = -1; dy < 2; dy++) {
+        for (var dx = -1; dx < 2; dx++) {
+            if (dy == 0 && dx == 0) continue;
+            smallTarget.left = target.left + dx * thickness;
+            smallTarget.top = target.top + dy * thickness;
+            drawSolidTintedImage(context, image, color, source, smallTarget);
+        }
+    }
+    drawImage(context, image, source, target);
 }
 function logPixel(context, x, y) {
     var imgd = context.getImageData(x, y, 1, 1);

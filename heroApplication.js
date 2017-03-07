@@ -9,7 +9,7 @@ var jobRanks = [
     //['master', 'fool']
 ];
 
-function createNewHeroApplicant($applicationPanel, jobKey) {
+function createNewHeroApplicant(jobKey) {
     var fameRoll = Math.round(state.fame / 3 + Math.random() * state.fame * 5 / 6);
     if (!jobKey) {
         // Log is base e, so we need to divide by log(10) to get log10 value.
@@ -21,11 +21,12 @@ function createNewHeroApplicant($applicationPanel, jobKey) {
     character.fame = fameRoll;
     character.applicationAge = 0;
     updateAdventurer(character.adventurer);
-    setHeroApplication($applicationPanel, character);
+    return character;
 }
 
-function setHeroApplication($applicationPanel, character) {
-    $applicationPanel.data('character', character);
+function setHeroApplication($applicationPanel, application) {
+    var character = application.character;
+    $applicationPanel.data('application', application);
     $applicationPanel.find('.js-skillCanvas').data('character', character);
     var $statsPanel = $applicationPanel.find('.js-stats');
     refreshStatsPanel(character, $statsPanel);
@@ -57,8 +58,9 @@ function setHeroApplication($applicationPanel, character) {
 function increaseAgeOfApplications() {
     $('.js-heroApplication').each(function () {
         var $applicationPanel = $(this);
-        var character = $applicationPanel.data('character');
-        character.applicationAge++;
+        var application = $applicationPanel.data('application');
+        if (!application || !application.character) return;
+        application.character.applicationAge++;
         updateHireButtonsForApplication($(this));
     });
 }
@@ -69,10 +71,10 @@ function updateHireButtons() {
     });
 }
 function updateHireButtonsForApplication($applicationPanel) {
-    var character = $applicationPanel.data('character');
-    if (!character) return;
-    $applicationPanel.find('.js-hirePrice').html(points('coins', getApplicationCost(character)));
-    var newApplicationCost = getNewApplicationCost(character);
+    var application = $applicationPanel.data('application');
+    if (!application || !application.character) return;
+    $applicationPanel.find('.js-hirePrice').html(points('coins', getApplicationCost(application.character)));
+    var newApplicationCost = getNewApplicationCost(application.character);
     $applicationPanel.find('.js-seekPrice').html(newApplicationCost ? points('coins', newApplicationCost) : ' Free!');
 }
 
@@ -87,36 +89,38 @@ function getNewApplicationCost(character) {
 $('body').on('click', '.js-hireApplicant', function () {
     if (state.characters.length >= 8) return;
     var $applicationPanel = $(this).closest('.js-heroApplication');
-    var character = $applicationPanel.data('character');
+    var application = $applicationPanel.data('application');
+    var character = application.character;
     if (!spend('coins', getApplicationCost(character))) {
         return;
     }
     hireCharacter(character);
-    createNewHeroApplicant($applicationPanel);
+    application.character = createNewHeroApplicant();
     updateRetireButtons();
     saveGame();
 });
 $('body').on('mouseover', '.js-hireApplicant', function () {
     var $applicationPanel = $(this).closest('.js-heroApplication');
-    var character = $applicationPanel.data('character');
-    previewPointsChange('coins', -getApplicationCost(character));
+    var application = $applicationPanel.data('application');
+    previewPointsChange('coins', -getApplicationCost(application.character));
 });
 $('body').on('mouseout', '.js-hireApplicant', function () {
     hidePointsPreview();
 });
 $('body').on('click', '.js-seekNewApplicant', function () {
     var $applicationPanel = $(this).closest('.js-heroApplication');
-    var character = $applicationPanel.data('character');
-    if (!spend('coins', getNewApplicationCost(character))) {
+    var application = $applicationPanel.data('application');
+    if (!spend('coins', getNewApplicationCost(application.character))) {
         return;
     }
-    createNewHeroApplicant($applicationPanel);
+    application.character = createNewHeroApplicant();
+    setHeroApplication($applicationPanel, application);
     saveGame();
 });
 $('body').on('mouseover', '.js-seekNewApplicant', function () {
     var $applicationPanel = $(this).closest('.js-heroApplication');
-    var character = $applicationPanel.data('character');
-    previewPointsChange('coins', -getNewApplicationCost(character));
+    var application = $applicationPanel.data('application');
+    previewPointsChange('coins', -getNewApplicationCost(application.character));
 });
 $('body').on('mouseout', '.js-seekNewApplicant', function () {
     hidePointsPreview();
@@ -127,6 +131,7 @@ function hireCharacter(character) {
     unlockMapLevel(character.currentLevelKey);
     gain('fame', character.fame);
     state.characters.push(character);
+    enterGuildArea(character, guildFoyerFrontDoor);
+    $('.js-charactersBox').append(character.$characterCanvas);
     setSelectedCharacter(character);
-    $('.js-charactersBox').append(character.$characterCanvas)
 }

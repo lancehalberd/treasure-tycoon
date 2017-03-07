@@ -51,10 +51,18 @@
     border-top: none;
     pointer-events: auto;
 }
-.divinityPoints {
+.charactersBox {
     position: absolute;
+    width: auto;
     left: 20px;
     top: 0px;
+}
+.charactersBox .character {
+    cursor: pointer;
+    vertical-align: top;
+}
+.divinityPoints {
+    display: inline-block;
 }
 .fame {
     color: #D80;
@@ -86,13 +94,6 @@
     padding: 5px;
     overflow-x: hidden;
     overflow-y: scroll;
-}
-.controlBar {
-    position: absolute;
-    padding: 5px;
-    pointer-events: auto;
-    bottom: 0;
-    left: 0;
 }
 .playerControlBar {
     height: 30px;
@@ -670,10 +671,6 @@ select {
     right: 2px;
 }
 
-.controlBar .item {
-    vertical-align: top;
-    background-color: #CCC;
-}
 .characterColumn {
     width: 240px;
     background: transparent;
@@ -739,6 +736,12 @@ select {
     pointer-events: auto;
     box-shadow: -2px -1px 3px black;
 }
+.singleHeroApplication {
+    position: absolute;
+    margin: 0;
+    left: 280px;
+    top: 100px;
+}
 .heroApplicationBody {
     /* I can't figure out where this 2px gap comes from.*/
     margin-top: -2px;
@@ -793,6 +796,14 @@ select {
     width: 32px;
     height: 32px;
     background-position: -32px -128px;
+}
+
+.icon.autoplayButton {
+    background-image: url('gfx/nielsenIcons.png');
+    background-size: initial;
+    width: 32px;
+    height: 32px;
+    background-position: -32px -96px;
 }
 .icon.repeatButton {
     background-image: url('gfx/nielsenIcons.png');

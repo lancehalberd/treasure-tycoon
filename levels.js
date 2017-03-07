@@ -117,9 +117,9 @@ function instantiateLevel(levelData, difficulty, difficultyCompleted, level) {
         // console.log(shapeTypes.join(','));
         // console.log(components.join(','));
         loot.push(jewelLoot(shapeTypes, [tier, tier], components, false));
-        waves.push(chestWave(firstChest(loot)));
+        waves.push(chestWave(fixedObject('closedChest', [0, 0, 0], {'scale': 1, 'loot': loot}), levelData, closedChestSource, openChestSource));
     } else {
-        waves.push(chestWave(backupChest(loot)));
+        waves.push(chestWave(fixedObject('closedChest', [0, 0, 0], {'scale': .8, 'loot': loot}), levelData, openChestSource, openChestSource));
     }
 
     return {
@@ -212,10 +212,20 @@ function bossWave(monsters) {
     }
     return self;
 }
-function chestWave(chest) {
-    var self =  basicWave([], [chest, abilityShrine()], 'T');
+
+var closedChestSource = {'image': requireImage('gfx/chest-closed.png'), 'left': 0, 'top': 0, 'width': 32, 'height': 32};
+var openChestSource = {'image': requireImage('gfx/chest-open.png'), 'left': 0, 'top': 0, 'width': 32, 'height': 32};
+function chestWave(chest, levelData, closedImage, openImage) {
+    var objects = [chest]
+    if (levelData.skill && abilities[levelData.skill]) {
+        objects.push(fixedObject('skillShrine', [545, 0, 0], {'scale': 10, 'helpMethod': function (actor) {
+            return "<b>Divine Shrine</b><hr><p>You can use divinity as an offering at these shrines to receive a blessing from the Gods and grow more powerful.</p>";
+        }}));
+    }
+    var self =  basicWave([], objects, 'T');
+    chest.wave = self;
     self.draw = function (context, completed, x, y) {
-        var source = (completed || chest.open) ? chest.openImage : chest.closedImage;
+        var source = self.chestOpened ? openImage : closedImage;
         context.drawImage(source.image, source.left, source.top, source.width, source.height,
                           x - 16, y - 18, 32, 32);
     }
@@ -226,4 +236,111 @@ function drawLetter(context, letter, x, y) {
     context.font = "20px sans-serif";
     context.textAlign = 'center'
     context.fillText(letter, x, y + 7);
+}
+
+function activateShrine(actor) {
+    var character = actor.character;
+    var level = map[character.currentLevelKey];
+    if (character.adventurer.level >= maxLevel) {
+        messageCharacter(character, character.adventurer.name + ' is already max level');
+        return;
+    }
+    if (character.adventurer.unlockedAbilities[level.skill]) {
+        messageCharacter(character, 'Ability already learned');
+        return;
+    }
+    var divinityNeeded = totalCostForNextLevel(character, level) - character.divinity;
+    if (divinityNeeded > 0) {
+        messageCharacter(character, 'Still need ' + divinityNeeded.abbreviate() + ' Divinity');
+        return;
+    }
+    // TBD: Make this number depend on the game state so it can be improved over time.
+    var boardOptions = 2;
+    for (var i = 0; i < boardOptions; i++) {
+        var boardData = getBoardDataForLevel(level);
+        var boardPreview = readBoardFromData(boardData, character, abilities[level.skill]);
+        var boardPreviewSprite = adventureBoardPreview(boardPreview, character);
+        boardPreviewSprite.x = this.x - (boardOptions * 150 - 150) / 2 + 150 * i;
+        boardPreviewSprite.y = 200;
+        character.objects.push(boardPreviewSprite);
+    }
+    var blessingText = objectText('Choose Your Blessing');
+    blessingText.x = this.x;
+    blessingText.y = 300;
+    character.objects.push(blessingText);
+    var skipButton = iconButton({'image': images['gfx/nielsenIcons.png'], 'left': 160, 'top': 160, 'width': 32, 'height': 32}, 64, 64, finishShrine, 'Continue without leveling');
+    skipButton.x = this.x + 128;
+    skipButton.y = 112;
+    character.objects.push(skipButton);
+    character.isStuckAtShrine = true;
+}
+function finishShrine(character) {
+    for (var i = 0; i < character.objects.length; i++) {
+        var object = character.objects[i];
+        if (object.type === 'button' || object.type === 'text') {
+            character.objects.splice(i--, 1);
+        } else if (object.type === 'shrine') {
+            object.done = true;
+        }
+    }
+    character.isStuckAtShrine = false;
+}
+function openChest(actor) {
+    // The loot array is an array of objects that can generate specific loot drops. Iterate over each one, generate a
+    // drop and then give the loot to the player and display it on the screen.
+    var thetaRange = Math.min(2 * Math.PI / 3, (this.loot.length - 1) * Math.PI / 6);
+    var theta = (Math.PI - thetaRange) / 2;
+    var delay = 0;
+    for (var loot of this.loot) {
+        var drop = loot.generateLootDrop();
+        drop.gainLoot(actor);
+        var vx =  Math.cos(theta) * 2;
+        var vy = Math.sin(theta) * 2;
+        drop.addTreasurePopup(actor, this.x + vx * 20, this.y + 64, vx, vy, delay += 5);
+        theta += thetaRange / Math.max(1, this.loot.length - 1);
+    }
+    // Replace this chest with an opened chest in the same location.
+    var openedChest = fixedObject('openChest', [this.x, this.y, this.z], {'scale': ifdefor(this.scale, 1)});
+    this.area.objects[this.area.objects.indexOf(this)] = openedChest;
+    this.wave.chestOpened = true;
+}
+
+function iconButton(iconSource, width, height, onClick, helpText) {
+    var self = {
+        'x': 0,
+        'y': 0,
+        'type': 'button',
+        'width': width,
+        'height': height,
+        'update': function (area) {
+            self.left = self.x - area.cameraX - self.width / 2;
+            self.top = groundY - self.y - self.height / 2;
+        },
+        'onClick': onClick,
+        'draw': function (area) {
+            drawImage(mainContext, iconSource.image, iconSource, self);
+        },
+        'helpMethod': function () {
+            return ifdefor(helpText, '');
+        }
+    };
+    return self;
+}
+
+function objectText(text) {
+    var self = {
+        'x': 0,
+        'y': 0,
+        'type': 'text',
+        'isOver': function (x, y) {return false;},
+        'update': function (area) {},
+        'draw': function (area) {
+            mainContext.fillStyle = 'white';
+            mainContext.textBaseline = "middle";
+            mainContext.textAlign = 'center'
+            mainContext.font = "30px sans-serif";
+            mainContext.fillText(text, self.x - area.cameraX, groundY - self.y);
+        }
+    };
+    return self;
 }

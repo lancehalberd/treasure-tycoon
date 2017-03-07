@@ -230,7 +230,9 @@ function setupActorSource(source) {
         source.walkFrames = [];
         for (var i = 0; i < source.frames; i++) source.walkFrames[i] = i;
     }
-    source.attackFrames = ifdefor(source.attackFrames, source.walkFrames);
+    source.attackPreparationFrames = ifdefor(source.attackPreparationFrames, source.walkFrames);
+    // If attack recovery frames aren't specified, just play the prep frames backwards.
+    source.attackRecoveryFrames = ifdefor(source.attackRecoveryFrames, source.attackPreparationFrames.slice().reverse());
     source.width = ifdefor(source.width, 48);
     source.height = ifdefor(source.height, 64);
     source.actualHeight = ifdefor(source.actualHeight, source.height);
@@ -299,19 +301,19 @@ function initalizeMonsters() {
     var gnomeSource = setupActorSource({'image': requireImage('gfx/gnome.png'), 'width': 32, 'height': 64, 'actualHeight': 38, 'yOffset': 26, 'flipped': true, frames: 4});
     var skeletonSource = setupActorSource({'image': requireImage('gfx/skeletonSmall.png'), 'width': 48, 'height': 64, 'actualHeight': 38, 'yOffset': 26, frames: 7});
     var butterflySource = setupActorSource({'image': requireImage('gfx/yellowButterfly.png'), 'width': 64, 'actualWidth': 48, 'height': 64,
-            framesPerRow: 7, walkFrames: [1, 2, 3, 4, 5, 6, 4, 2, 0], attackFrames: [7, 10, 11, 10], deathFrames: [7, 8, 9, 9]});
+            framesPerRow: 7, walkFrames: [1, 2, 3, 4, 5, 6, 4, 2, 0], 'attackPreparationFrames': [7, 10, 11], deathFrames: [7, 8, 9, 9]});
     var skeletonGiantSource = setupActorSource({'image': requireImage('gfx/skeletonGiant.png'), 'width': 48, frames: 7});
     var dragonSource = setupActorSource({'image': requireImage('gfx/dragonEastern.png'),
         'width': 48, 'xCenter': 25, 'yCenter': 48, 'actualHeight': 40, 'height': 64, 'yOffset': 24, 'flipped': true, frames: 5});
     var batSource = setupActorSource({'image': requireImage('gfx/bat.png'), 'width': 32, 'height': 32, 'flipped': true, frames: 5, 'y': 30});
     var spiderSource = setupActorSource({'image': requireImage('gfx/spider.png'), 'width': 48, 'height': 48, 'y': -10,
-            framesPerRow: 10, walkFrames: [4, 5, 6, 7, 8, 9], attackFrames: [2, 3, 0, 1], deathFrames: [10, 11, 12, 13]});
+            framesPerRow: 10, walkFrames: [4, 5, 6, 7, 8, 9], 'attackPreparationFrames': [0, 1, 2, 3], deathFrames: [10, 11, 12, 13]});
     var wolfSource = setupActorSource({'image': requireImage('gfx/wolf.png'), 'width': 64, 'height': 32,
-            framesPerRow: 7, walkFrames: [0, 1, 2, 3], attackFrames: [6, 4, 5, 0], deathFrames: [0, 7, 8, 9]});
+            framesPerRow: 7, walkFrames: [0, 1, 2, 3], 'attackPreparationFrames': [6, 4, 5, 0], deathFrames: [0, 7, 8, 9]});
     var turtleSource = {'image': requireImage('gfx/turtle.png'), 'xOffset': 0, 'width': 64, 'height': 64,
-            framesPerRow: 5, walkFrames: [0, 1, 2, 3], attackFrames: [5, 6], deathFrames: [5, 7, 8, 9]};
+            framesPerRow: 5, walkFrames: [0, 1, 2, 3], 'attackPreparationFrames': [5, 6], deathFrames: [5, 7, 8, 9]};
     var monarchSource = setupActorSource({'image': requireImage('gfx/monarchButterfly.png'), 'width': 64, 'actualWidth': 48, 'height': 64,
-            framesPerRow: 7, walkFrames: [1, 2, 3, 4, 5, 6, 4, 2, 0], attackFrames: [7, 10, 11, 10], deathFrames: [7, 8, 9, 9]});
+            framesPerRow: 7, walkFrames: [1, 2, 3, 4, 5, 6, 4, 2, 0], 'attackPreparationFrames': [7, 10, 11], deathFrames: [7, 8, 9, 9]});
     var skeletonRow = 0;
     var goblinRow = 1;
     var vampireRow = 2;
@@ -321,89 +323,26 @@ function initalizeMonsters() {
     var skeletonWarriorCanvas = createEquippedActorSource(requireImage('gfx/monsterPeople.png'), skeletonRow, {'weapon': makeItem(itemsByKey.hatchet, 1), 'head': makeItem(itemsByKey.irongreathelm, 1)});
     var goblinWithHeavyArmorCanvas = createEquippedActorSource(requireImage('gfx/monsterPeople.png'), goblinRow, {'body': makeItem(itemsByKey.platedcoat, 1), 'legs': makeItem(itemsByKey.copperskirt, 1), 'head': makeItem(itemsByKey.copperhelmet, 1), 'feet': makeItem(itemsByKey.coppersabatons, 1)});
     var goblinTatteredShortsCanvas = createEquippedActorSource(requireImage('gfx/monsterPeople.png'), goblinRow, {'legs': makeItem(itemsByKey.leatherkilt, 1)});
-    var skeletonWithHatSource = setupActorSource({
-            'image': skeletonWithHatCanvas,
-            'width': 96,
-            'height': 64,
-            'yCenter': 44, // Measured from the top of the source
-            'yOffset': 14, // Measured from the top of the source
-            'actualHeight': 50,
-            'xOffset': 39,
-            'actualWidth': 18,
-            'attackY': 19, // Measured from the bottom of the source
-            'walkFrames': [0, 1, 0, 2],
-            'attackFrames': [4, 3, 0, 3]
-        });
-    var skeletonWithHelmetSource = setupActorSource({
-            'image': skeletonWithHelmetCanvas,
-            'width': 96,
-            'height': 64,
-            'yCenter': 44, // Measured from the top of the source
-            'yOffset': 14, // Measured from the top of the source
-            'actualHeight': 50,
-            'xOffset': 39,
-            'actualWidth': 18,
-            'attackY': 19, // Measured from the bottom of the source
-            'walkFrames': [0, 1, 0, 2],
-            'attackFrames': [4, 3, 0, 3]
-        });
-    var skeletonWarriorSource = setupActorSource({
-            'image': skeletonWarriorCanvas,
-            'width': 96,
-            'height': 64,
-            'yCenter': 44, // Measured from the top of the source
-            'yOffset': 14, // Measured from the top of the source
-            'actualHeight': 50,
-            'xOffset': 39,
-            'actualWidth': 18,
-            'attackY': 19, // Measured from the bottom of the source
-            'walkFrames': [0, 1, 0, 2],
-            'attackFrames': [4, 3, 0, 3]
-        });
-    var skeletonNakedSource = setupActorSource({
-            'image': skeletonNakedCanvas,
-            'width': 96,
-            'height': 64,
-            'yCenter': 44, // Measured from the top of the source
-            'yOffset': 14, // Measured from the top of the source
-            'actualHeight': 50,
-            'xOffset': 39,
-            'actualWidth': 18,
-            'attackY': 19, // Measured from the bottom of the source
-            'walkFrames': [0, 1, 0, 2],
-            'attackFrames': [4, 3, 0, 3]
-        });
-    //skeletonNakedSource.image = {'normal': skeletonNakedSource.image};
-    var goblinWithHeavyArmorSource = setupActorSource({
-            'image': goblinWithHeavyArmorCanvas,
-            'width': 96,
-            'height': 64,
-            'yCenter': 44, // Measured from the top of the source
-            'yOffset': 14, // Measured from the top of the source
-            'actualHeight': 50,
-            'xOffset': 39,
-            'actualWidth': 18,
-            'attackY': 19, // Measured from the bottom of the source
-            'walkFrames': [0, 1, 0, 2],
-            'attackFrames': [4, 3, 0, 3]
-        });
-    var goblinTatteredShortsSource = setupActorSource({
-            'image': goblinTatteredShortsCanvas,
-            'width': 96,
-            'height': 64,
-            'yCenter': 44, // Measured from the top of the source
-            'yOffset': 14, // Measured from the top of the source
-            'actualHeight': 50,
-            'xOffset': 39,
-            'actualWidth': 18,
-            'attackY': 19, // Measured from the bottom of the source
-            'walkFrames': [0, 1, 0, 2],
-            'attackFrames': [4, 3, 0, 3]
-        });
-    //$('body').append(skeletonNakedCanvas);
-    //$('body').append(skeletonWithHatCanvas);
-    //$('body').append(goblinWithHeavyArmorCanvas);
-    //$('body').append(goblinTatteredShortsCanvas);
+    var humanoidMonsterBaseSource ={
+        'width': 96,
+        'height': 64,
+        'yCenter': 44, // Measured from the top of the source
+        'yOffset': 14, // Measured from the top of the source
+        'actualHeight': 50,
+        'xOffset': 39,
+        'actualWidth': 18,
+        'attackY': 19, // Measured from the bottom of the source
+        'walkFrames': [0, 1, 0, 2],
+        'attackPreparationFrames': [0, 3, 4],
+        'attackRecoveryFrames': [4, 3]
+    };
+
+    var skeletonWithHatSource = setupActorSource($.extend(humanoidMonsterBaseSource, {'image': skeletonWithHatCanvas}));
+    var skeletonWithHelmetSource = setupActorSource($.extend(humanoidMonsterBaseSource, {'image': skeletonWithHelmetCanvas}));
+    var skeletonWarriorSource = setupActorSource($.extend(humanoidMonsterBaseSource, {'image': skeletonWarriorCanvas}));
+    var skeletonNakedSource = setupActorSource($.extend(humanoidMonsterBaseSource, {'image': skeletonNakedSource}));
+    var goblinWithHeavyArmorSource = setupActorSource($.extend(humanoidMonsterBaseSource, {'image': goblinWithHeavyArmorSource}));
+    var goblinTatteredShortsSource = setupActorSource($.extend(humanoidMonsterBaseSource, {'image': goblinTatteredShortsSource}));
 
     addMonster('dummy', {
         'name': 'Dummy', 'source': caterpillarSource,

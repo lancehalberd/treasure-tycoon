@@ -1,3 +1,13 @@
+<?php
+    $version = '0.6';
+    function addScripts($scriptNames) {
+        foreach ($scriptNames as $scriptName) {
+            $version = hash_file('md5', $scriptName);
+            ?>
+<script src="<?=  $scriptName . '?v=' . $version ?>"></script><?php
+        }
+    }
+?>
 <html>
 <head>
     <style type="text/css" >
@@ -33,13 +43,13 @@
             margin-right: 20px;
         }
     </style>
-
-    <link rel="stylesheet" type="text/css" href="styles.css"/>
+    <script>
+        var assetVersion = '<?= $version ?>';
+    </script>
+    <link rel="stylesheet" type="text/css" href="styles.css?v=<?= hash_file('md5', 'styles.css') ?>"/>
     <script src="lib/jquery.min.js"></script>
     <script src="lib/jstorage.min.js"></script>
     <script src="lib/async.js"></script>
-    <script src="utils.js"></script>
-
     <title>Treasure Tycoon</title>
 </head>
 <body class="pagebody">
@@ -58,7 +68,7 @@
     </script>
     <div class="js-gameContent gameContent" style="display: none">
         <div class="js-jewelContext js-itemContext pointsBarPadding"> </div>
-        <div class="js-mainCanvasContainer mainCanvasContainer">
+        <div class="js-mainCanvasContainer mainCanvasContainer js-adventureContext js-guildContext js-mapContext">
             <canvas class="js-mainCanvas mainCanvas" width="800" height="600" style="background-color: blue;"></canvas>
             <div class="js-editingControls editingControlsTop" style="display: none">
                 <select class="js-levelSelect"></select>
@@ -67,7 +77,8 @@
                 <select class="js-levelSkillSelect levelSkillSelect"></select>
                 <textarea class="js-levelDescriptionInput levelDescriptionInput" rows="8" cols="40" placeholder="Level Description"></textarea>
             </div>
-            <div class="js-adventureControls adventureControls" style="display: none;">
+            <div class="js-adventureControls js-adventureContext adventureControls" style="display: none;">
+                <span class="js-autoplayButton icon autoplayButton adventureButton" helptext="Auto Explore"></span>
                 <span class="js-repeatButton icon repeatButton adventureButton" helptext="Repeat this adventure"></span>
                 <span class="js-fastforwardButton icon fastforwardButton adventureButton" helptext="Fast Forward"></span>
                 <span class="js-pauseButton icon pauseButton adventureButton" helptext="Pause this adventure"></span>
@@ -168,7 +179,7 @@
             </div>
         </div><div class="js-itemPanel itemPanel js-itemContext">
             <div class="js-itemCrafting itemCrafting">
-                <div class="panelTitle">Temple of Fortune</div>
+                <div class="panelTitle">Shrine of Fortune</div>
                 <div class="craftingHelp">Offer coins for blessings from The Goddess</div>
                 <div class="craftingCanvasContainer">
                     <canvas class="js-craftingCanvas craftingCanvas" height="210" width="1100" style="background-color: white;"></canvas>
@@ -194,14 +205,16 @@
                 <button class="js-sellItem sellItem" disabled helptext="Drag items here to sell them. <br/> You can also hover over an item and type 'S' to sell quickly."><div class="icon money"></div></button>
             </div>
         </div>
-        <div class="js-divinityPoints points divinityPoints" helptext="Divinity can be used at shrines to level up and gain new bonuses and abilities. <br/><br/> Completing new adventures grants divinity and access to the shrine for that area. <br/><br/> Leveling allows you to equip more powerful gear and increases health and basic stats slightly.">
-            <div class="pointsIcon"><span class="icon divinity"></span></div>
-            <div class="pointsColumn">
-                <span class="js-global-divinity divinity">1000</span>
-                <br/>
-                <span class="js-amount" style="display: none;">-200</span>
-                <hr class="js-bottomLine bottomLine" style="display: none;">
-                <span class="js-balance divinity" style="display: none;">800</span>
+        <div class="js-charactersBox points charactersBox" helptext="Divinity can be used at shrines to level up and gain new bonuses and abilities. <br/><br/> Completing new adventures grants divinity and access to the shrine for that area. <br/><br/> Leveling allows you to equip more powerful gear and increases health and basic stats slightly.">
+            <div class="js-divinityPoints divinityPoints">
+                <div class="pointsIcon"><span class="icon divinity"></span></div>
+                <div class="pointsColumn">
+                    <span class="js-global-divinity divinity">1000</span>
+                    <br/>
+                    <span class="js-amount" style="display: none;">-200</span>
+                    <hr class="js-bottomLine bottomLine" style="display: none;">
+                    <span class="js-balance divinity" style="display: none;">800</span>
+                </div>
             </div>
         </div>
         <div class="js-pointsBar pointsBar">
@@ -252,76 +265,39 @@
                 Beware! The venom from the spiders in these woods will suppress your health regeneration.
             </div>
         </div>
-        <div class="js-controlBar controlBar">
-            <button class="js-showAdventurePanel item"><div class="icon world"></div></button>
-            <button class="js-showCraftingPanel item"><div class="icon crafting"></div></button>
-            <button class="js-showJewelsPanel item"><canvas class="js-jewelButtonCanvas" width="40" height="40"></canvas></button>
-        </div><div class="js-charactersBox characterBox"></div><div class="js-recruitmentColumn js-adventureContext displayColumn recruitmentColumn">
-            <div class="js-heroApplication heroApplication hideOnBottom">
-                <div class="heroApplicationBody"><div class="js-stats stats playerBox">
-                        <div style="position: absolute; left: 35px; top: 0px;">Hire <span class="js-playerName controlBarEntry">X</span></div>
-                        <canvas class="js-canvas js-previewCanvas" width="64" height="128" style="position: absolute; left: -2px; top: 0px;"></canvas>
-                        <span helptext="How famous this adventurer is. Famous adventurers are more powerful but also more expensive.<br/> Hiring famous adventurers increases the fame of your guild.">
-                            <span class="icon fame"></span> <span class="js-fame">X</span>
-                        </span>
-                        <span helptext="Starting health for each adventure."><span class="icon health"></span> <span class="js-maxHealth">X</span></span>
-                        <div style="position: relative; overflow: hidden; height: 160px; width: 160px;">
-                            <canvas class="js-canvas js-skillCanvas" width="360" height="360" style="width: 360px; height: 360px; position: relative; left: -80px; top: -80px; opacity: .6"></canvas>
-                        </div>
-                        <div class="statGrowth">
-                            <div class="js-dexterityGrowth statGrowthBar dexterity" helptext="Dexterity increases attack speed, evasion and damage with ranged weapons."></div>
-                            <div class="js-strengthGrowth statGrowthBar strength" helptext="Strength increases physical damage, health and damage with melee weapons."></div>
-                            <div class="js-intelligenceGrowth statGrowthBar intelligence" helptext="Intelligence increases accuracy, block and magic block and damage with magic weapons."></div>
-                        </div>
+        <div class="js-heroApplication heroApplication singleHeroApplication" style="display: none;">
+            <div class="heroApplicationBody"><div class="js-stats stats playerBox">
+                    <div style="position: absolute; left: 35px; top: 0px;"><span class="js-playerName controlBarEntry">X</span></div>
+                    <canvas class="js-canvas js-previewCanvas" width="64" height="128" style="position: absolute; left: -2px; top: 0px;"></canvas>
+                    <span helptext="How famous this adventurer is. Famous adventurers are more powerful but also more expensive.<br/> Hiring famous adventurers increases the fame of your guild.">
+                        <span class="icon fame"></span> <span class="js-fame">X</span>
+                    </span>
+                    <span helptext="Starting health for each adventure."><span class="icon health"></span> <span class="js-maxHealth">X</span></span>
+                    <div style="position: relative; overflow: hidden; height: 160px; width: 160px;">
+                        <canvas class="js-canvas js-skillCanvas" width="360" height="360" style="width: 360px; height: 360px; position: relative; left: -80px; top: -80px; opacity: .6"></canvas>
                     </div>
-                    <p><button class="js-hireApplicant heroApplicationButton" helptext="Hire this adventurer. The more famous your guild is, the cheaper it is to hire adventurers.">Hire <span class="js-hirePrice"></span></button></p>
-                    <p><button class="js-seekNewApplicant heroApplicationButton" helptext="Seek another guild applicant. Completing adventures will reduce this price.">Seek Another <span class="js-seekPrice"></span></button></p>
+                    <div class="statGrowth">
+                        <div class="js-dexterityGrowth statGrowthBar dexterity" helptext="Dexterity increases attack speed, evasion and damage with ranged weapons."></div>
+                        <div class="js-strengthGrowth statGrowthBar strength" helptext="Strength increases physical damage, health and damage with melee weapons."></div>
+                        <div class="js-intelligenceGrowth statGrowthBar intelligence" helptext="Intelligence increases accuracy, block and magic block and damage with magic weapons."></div>
+                    </div>
                 </div>
+                <p><button class="js-hireApplicant heroApplicationButton" helptext="Hire this adventurer. The more famous your guild is, the cheaper it is to hire adventurers.">Hire <span class="js-hirePrice"></span></button></p>
+                <p><button class="js-seekNewApplicant heroApplicationButton" helptext="Seek another guild applicant. Completing adventures will reduce this price.">Seek Another <span class="js-seekPrice"></span></button></p>
             </div>
         </div>
     </div>
 </div>
 </body>
-<script src="mouse.js"></script>
-<script src="drawDashedRectangle.js"></script>
-<script src="images.js"></script>
-<script src="bonuses.js"></script>
-<script src="drawJewel.js"></script>
-<script src="drawBoard.js"></script>
-<script src="inventory.js"></script>
-<script src="armor.js"></script>
-<script src="weapons.js"></script>
-<script src="accessories.js"></script>
-<script src="evaluate.js"></script>
-<script src="helpText.js"></script>
-<script src="jewels.js"></script>
-<script src="jewel-inventory.js"></script>
-<script src="skills.js"></script>
-<script src="abilities.js"></script>
-<script src="loot.js"></script>
-<script src="boards.js"></script>
-<script src="character.js"></script>
-<script src="crafting.js"></script>
-<script src="enchanting.js"></script>
-<script src="uniques.js"></script>
-<script src="heroApplication.js"></script>
-<script src="effects.js"></script>
-<script src="performAttack.js"></script>
-<script src="useSkill.js"></script>
-<script src="adventure.js"></script>
-<script src="drawAdventure.js"></script>
-<script src="monsters.js"></script>
-<script src="levels.js"></script>
-<script src="vector.js"></script>
-<script src="sphereVector.js"></script>
-<script src="camera.js"></script>
-<script src="mapData.js"></script>
-<script src="map.js"></script>
-<script src="drawMap.js"></script>
-<script src="editLevel.js"></script>
-<script src="polygon.js"></script>
-<script src="backgrounds.js"></script>
-<script src="testCharacters.js"></script>
-<script src="saveGame.js"></script>
-<script src="main.js"></script>
+<?php
+addScripts(['utils.js', 'mouse.js', 'drawDashedRectangle.js', 'images.js', 'bonuses.js',
+    'drawJewel.js', 'drawBoard.js', 'inventory.js', 'armor.js', 'weapons.js', 'accessories.js',
+    'evaluate.js','helpText.js','jewels.js','jewel-inventory.js','skills.js','abilities.js',
+    'loot.js','boards.js','character.js','crafting.js','enchanting.js','uniques.js',
+    'heroApplication.js', 'effects.js','performAttack.js','useSkill.js',
+    'adventure.js', 'drawAdventure.js', 'monsters.js','levels.js','vector.js',
+    'sphereVector.js','camera.js','mapData.js', 'map.js', 'guild.js', 'drawMap.js','editLevel.js',
+    'polygon.js','backgrounds.js', 'testCharacters.js','saveGame.js','main.js']);
+?>
 </html>
+<?php

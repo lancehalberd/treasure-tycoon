@@ -59,7 +59,9 @@ function updateDamageInfo(character, $statsPanel, monsterLevel) {
     var level = map[character.currentLevelKey];
     if (!monsterLevel) {
         if (level) {
-            if (character.levelDifficulty === 'endless') {
+            if (character.currentLevelKey === 'guild') {
+                monsterLevel = 1;
+            } else if (character.levelDifficulty === 'endless') {
                 monsterLevel = getEndlessLevel(character, level);
             } else {
                 monsterLevel = level ? level.level : adventurer.level;
@@ -161,7 +163,7 @@ function updateDamageInfo(character, $statsPanel, monsterLevel) {
 
 function createAttackStats(attacker, attack, target) {
     var isCritical = Math.random() <= attack.critChance;
-    if (ifdefor(attack.firstStrike)) {
+    if (ifdefor(attack.firstStrike) && target) {
         isCritical = isCritical || target.health >= target.maxHealth;
     }
     var damage = Random.range(attack.minPhysicalDamage, attack.maxPhysicalDamage);
@@ -212,7 +214,7 @@ function createAttackStats(attacker, attack, target) {
 
 function createSpellStats(attacker, spell, target) {
     var isCritical = Math.random() <= spell.critChance;
-    if (ifdefor(spell.firstStrike)) {
+    if (ifdefor(spell.firstStrike) && target) {
         isCritical = isCritical || target.health >= target.maxHealth;
     }
     var magicDamage = spell.power;
@@ -248,7 +250,7 @@ function createSpellStats(attacker, spell, target) {
 
 function createSpellImprintedAttackStats(attacker, attack, spell, target) {
     var isCritical = Math.random() <= spell.critChance;
-    if (ifdefor(spell.firstStrike)) {
+    if (ifdefor(spell.firstStrike) && target) {
         isCritical = isCritical || target.health >= target.maxHealth;
     }
     var magicDamage = spell.power;
@@ -303,20 +305,13 @@ function performAttack(attacker, attack, target) {
         attackStats = createAttackStats(attacker, attack, target);
     }
     attacker.health -= attackStats.healthSacrificed;
-    attacker.attackCooldown = attacker.time + 1 / (attackStats.attack.attackSpeed * Math.max(.1, (1 - attacker.slow)));
-    attacker.moveCooldown = attacker.time + .2;
-    attacker.attackFrame = 0;
     performAttackProper(attackStats, target);
     return attackStats;
 }
 function castAttackSpell(attacker, spell, target) {
     var attackStats = createSpellStats(attacker, spell, target);
     attacker.health -= attackStats.healthSacrificed;
-    attacker.attackCooldown = attacker.time + .2;
-    attacker.moveCooldown = attacker.time + .2;
-    attacker.attackFrame = 0;
     performAttackProper(attackStats, target);
-    attacker.stunned = attacker.time + .3;
     if (attacker.imprintSpell) attacker.imprintedSpell = spell;
     return attackStats;
 }
@@ -464,11 +459,12 @@ function applyAttackToTarget(attackStats, target) {
     }
     var distance = attackStats.distance;
     var character = target.character;
+    var area = character.area;
     var hitText = {x: target.x, y: target.height + 10, z: target.z, color: 'grey', 'vx': -(Math.random() * 3 + 2) * target.heading[0], 'vy': 5};
     if (target.invulnerable) {
         hitText.value = 'invulnerable';
         hitText.fontSize = 15;
-        appendTextPopup(character, hitText);
+        appendTextPopup(area, hitText);
         return false;
     }
     var multiplier = ifdefor(attack.rangeDamage) ? (1 + attack.rangeDamage * distance / 32) : 1;
@@ -489,7 +485,7 @@ function applyAttackToTarget(attackStats, target) {
         var speed = 1 + Math.log(damage+magicDamage) / 10;
         hitText.vy *= speed;
         hitText.vx *= speed;
-        appendTextPopup(character, hitText);
+        appendTextPopup(area, hitText);
         return true;
     }
     attackStats.evaded = false;
@@ -506,7 +502,7 @@ function applyAttackToTarget(attackStats, target) {
             }
             // Target has evaded the attack.
             hitText.font = 15;
-            appendTextPopup(character, hitText);
+            appendTextPopup(area, hitText);
             attackStats.evaded = true;
         }
         // Chaining attack accuracy is reduced by the evasion roll of each target hit.
@@ -609,8 +605,6 @@ function applyAttackToTarget(attackStats, target) {
         var direction = (target.x < attacker.x) ? -1 : 1;
         if (Math.random() < ifdefor(attack.knockbackChance, 0)) {
             var targetX = target.x + direction * 32 * ifdefor(attack.knockbackDistance, 1);
-            // unset the current target since they are being pushed away.
-            attacker.target = null;
             target.pull = {'x': targetX, 'time': target.time + .3, 'damage': 0};
             target.rotation = direction * ifdefor(attack.knockbackRotation, 45);
         }
@@ -632,12 +626,12 @@ function applyAttackToTarget(attackStats, target) {
         hitText.value = 'blocked';
         hitText.font = 15;
     }
-    appendTextPopup(character, hitText);
+    appendTextPopup(area, hitText);
     return true;
 }
 
-function appendTextPopup(character, hitText, important) {
-    if (important || character.textPopups.length < 100) character.textPopups.push(hitText);
+function appendTextPopup(area, hitText, important) {
+    if (important || area.textPopups.length < 100) area.textPopups.push(hitText);
 }
 
 function applyArmorToDamage(damage, armor) {

@@ -28,10 +28,9 @@ function exportState(state) {
     data.craftingLevel = state.craftingLevel;
     data.applications = [];
     data.skipShrinesEnabled = state.skipShrinesEnabled;
-    $('.js-heroApplication').each(function () {
-        var application = $(this).data('character');
-        data.applications.push(exportCharacter(application));
-    });
+    for (var i = 0; i < allApplications.length; i++) {
+        if (allApplications[i].character) data.applications.push(exportCharacter(allApplications[i].character));
+    }
     data.jewels = [];
     $('.js-jewelInventory .js-jewel').each(function () {
         data.jewels.push(exportJewel($(this).data('jewel')));
@@ -67,31 +66,17 @@ function importState(stateData) {
     state.fame = fixNumber(stateData.fame);
     state.coins = fixNumber(stateData.coins);
     state.anima = fixNumber(stateData.anima);
-    // Grab one slot to serve as the template for the applications we will add.
-    var $slot = $('.js-heroApplication').first().detach();
-    // Clean up all the slots on the page.
-    $('.js-heroApplication').data('character', null).remove();
     var applications = ifdefor(stateData.applications, []).map(importCharacter);
-    while ($('.js-heroApplication').length + applications.length < 2) {
-        var $applicationPanel = $slot.clone();
-        $('.js-recruitmentColumn').append($applicationPanel);
-        createNewHeroApplicant($applicationPanel);
+    for (var i = 0; i < applications.length; i++) {
+        allApplications[i].character = applications[i];
     }
-    applications.forEach(function (application) {
-        var $applicationPanel = $slot.clone();
-        $('.js-recruitmentColumn').append($applicationPanel);
-        setHeroApplication($applicationPanel, application);
-    });
     state.skipShrinesEnabled = ifdefor(stateData.skipShrinesEnabled, true);
-    // Clean up the last slot.
-    $slot.data('character', null).remove();
     state.characters = [];
     state.completedLevels = copy(ifdefor(stateData.completedLevels, {}));
     state.visibleLevels = {};
     state.maxCraftingLevel = stateData.maxCraftingLevel;
     state.craftingXOffset = ifdefor(stateData.craftingXOffset, 0)
     state.craftedItems = ifdefor(stateData.craftedItems, {});
-    $('.js-charactersBox').empty();
     var characters = stateData.characters.map(importCharacter);
     characters.forEach(function (character) {
         if (isNaN(character.divinity) || typeof(character.divinity) !== "number") {
@@ -108,6 +93,9 @@ function importState(stateData) {
                 delete character.divinityScores[levelKey];
             }
             state.completedLevels[levelKey] = true;
+        }
+        if (!character.context) {
+            enterGuildArea(character, {'areaKey': 'guildFoyer', 'x': 120, 'z': 0});
         }
         $('.js-charactersBox').append(character.$characterCanvas);
     });
@@ -164,13 +152,13 @@ function exportCharacter(character) {
     var data = {};
     data.adventurer = exportAdventurer(character.adventurer);
     data.board = exportJewelBoard(character.board);
+    data.autoplay = character.autoplay;
     data.gameSpeed = character.gameSpeed;
     data.divinityScores = character.divinityScores;
     data.levelTimes = character.levelTimes;
     data.fame = character.fame;
     data.divinity = character.divinity;
     data.currentLevelKey = character.currentLevelKey;
-    data.levelCompleted = character.levelCompleted;
     data.applicationAge = ifdefor(character.applicationAge, 0);
     return data;
 }
@@ -183,7 +171,7 @@ function importCharacter(characterData) {
     character.adventurer.bonusMaxHealth = 0;
     character.adventurer.percentHealth = 1;
     character.adventurer.health = character.adventurer.maxHealth;
-    var characterCanvas = createCanvas(36, 64);
+    var characterCanvas = createCanvas(40, 20);
     character.$characterCanvas = $(characterCanvas);
     character.$characterCanvas.addClass('js-character character')
         .attr('helptext', character.adventurer.job.name + ' ' + character.adventurer.name)
@@ -192,17 +180,14 @@ function importCharacter(characterData) {
     character.boardCanvas = createCanvas(jewelsCanvas.width, jewelsCanvas.height);
     character.boardContext = character.boardCanvas.getContext("2d");
     character.time = now();
+    character.autoplay = characterData.autoplay;
     character.gameSpeed = characterData.gameSpeed;
     character.replay = false;
     character.divinityScores = ifdefor(characterData.divinityScores, {});
     character.levelTimes = ifdefor(characterData.levelTimes, {});
     character.divinity = ifdefor(characterData.divinity, 0);
-    character.currentLevelKey = ifdefor(characterData.currentLevelKey, ifdefor(character.adventurer.job.levelKey, 'meadow'));
-    character.levelCompleted = ifdefor(characterData.levelCompleted, false);
-    if (!map[character.currentLevelKey]) {
-        character.currentLevelKey = ifdefor(character.adventurer.job.levelKey, 'meadow');
-        character.levelCompleted = false;
-    }
+    character.currentLevelKey = ifdefor(characterData.currentLevelKey, 'guild');
+    if (!map[character.currentLevelKey]) character.currentLevelKey = 'guild';
     character.board = importJewelBoard(characterData.board, character);
     character.fame = ifdefor(characterData.fame, Math.ceil(character.divinity / 10));
     character.applicationAge = ifdefor(characterData.applicationAge, 0);

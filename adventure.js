@@ -4,38 +4,41 @@ function startArea(character, index) {
     }
 
     if (character.currentLevelKey !== index) {
-        character.levelCompleted = false;
         character.board.boardPreview = null;
         drawBoardBackground(character.boardContext, character.board);
     }
     character.currentLevelKey = index;
     var levelCompleted = ifdefor(character.divinityScores[index], 0) !== 0;
     var difficultyCompleted = !!ifdefor(character.levelTimes[index], {})[character.levelDifficulty];
+    leaveCurrentArea(character);
+    var area;
     if (character.levelDifficulty === 'endless') {
-        character.area = instantiateLevel(map[index], character.levelDifficulty, difficultyCompleted, getEndlessLevel(character, map[index]));
+        area = instantiateLevel(map[index], character.levelDifficulty, difficultyCompleted, getEndlessLevel(character, map[index]));
     } else {
-        character.area = instantiateLevel(map[index], character.levelDifficulty, difficultyCompleted);
+        area = instantiateLevel(map[index], character.levelDifficulty, difficultyCompleted);
     }
-    character.cameraX = -60;
-    initializeActorForAdventure(character.adventurer);
+    var hero = character.adventurer;
+    hero.area = character.area = area;
+    initializeActorForAdventure(hero);
     character.waveIndex = 0;
-    character.adventurer.x = 0;
-    character.adventurer.y = 0;
-    character.adventurer.z = 0;
     character.finishTime = false;
     character.startTime = character.time;
     character.enemies = [];
-    character.objects = [];
-    character.projectiles = [];
-    character.effects = [];
-    character.allies = [character.adventurer];
-    character.adventurer.allies = character.allies;
-    character.adventurer.enemies = character.enemies;
-    character.treasurePopups = [];
-    character.textPopups = [];
-    character.timeStopEffect = null;
-    character.adventurer.activity = null;
-    character.adventurer.actions.concat(character.adventurer.reactions).forEach(function (action) {
+    area.objects = character.objects = [];
+    area.projectiles = character.projectiles = [];
+    area.effects = character.effects = [];
+    character.allies = [hero];
+    area.cameraX = 0;
+    area.allies = hero.allies = character.allies;
+    area.enemies = hero.enemies = character.enemies;
+    area.treasurePopups = [];
+    area.textPopups = [];
+    area.timeStopEffect = character.timeStopEffect = null;
+    hero.x = 120;
+    hero.y = 0;
+    hero.z = 0;
+    hero.activity = null;
+    hero.actions.concat(hero.reactions).forEach(function (action) {
         action.readyAt = 0;
     });
     if (state.selectedCharacter === character) {
@@ -55,7 +58,7 @@ function checkIfActorDied(actor) {
     actor.isDead = true;
     actor.timeOfDeath = actor.time;
     if (actor.character.enemies.indexOf(actor) >= 0 ) {
-        defeatedEnemy(actor.character, actor);
+        defeatedEnemy(actor.character.adventurer, actor);
     }
 }
 
@@ -77,9 +80,9 @@ function timeStopLoop(character, delta) {
     }
     checkToStartNextWave(character);
     if (!character.area) return false;
-    expireTimedEffects(character, actor);
+    expireTimedEffects(actor);
     runActorLoop(character, actor);
-    moveActor(actor, delta);
+    moveActor(actor);
     capHealth(actor);
     updateActorHelpText(actor);
     // Update position info.
@@ -123,26 +126,22 @@ function removeActor(actor) {
             character.levelTimes[character.currentLevelKey][character.levelDifficulty] = currentEndlessLevel - 1;
         }
         returnToMap(actor.character);
-        if (actor.character === state.selectedCharacter && !actor.character.replay && !testingLevel && currentContext === 'adventure') {
+        if (actor.character === state.selectedCharacter && !actor.character.replay && !testingLevel) {
             displayAreaMenu();
         }
     }
 }
 function checkToStartNextWave(character) {
-    // Check to start next wave/complete level.
-    if (character.enemies.length + character.objects.length == 0) {
-        if (character.waveIndex >= character.area.waves.length) {
-            returnToMap(character);
-        } else {
-            if (character.waveIndex >= character.area.waves.length - 1) {
-                character.completionTime = character.time - character.startTime;
-            }
-            startNextWave(character);
-            updateAdventureButtons();
-        }
+    if (character.waveIndex >= character.area.waves.length) return;
+    for (var enemy of character.enemies) if (!enemy.isDead) return;
+    if (character.waveIndex >= character.area.waves.length - 1) {
+        completeLevel(character, character.time - character.startTime);
     }
+    startNextWave(character);
+    updateAdventureButtons();
 }
 function adventureLoop(character, delta) {
+    var area = character.area;
     if (timeStopLoop(character, delta)) {
         return;
     }
@@ -156,21 +155,19 @@ function adventureLoop(character, delta) {
     for (var i = 0; i < character.enemies.length; i++) {
         var enemy = character.enemies[i];
         checkIfActorDied(enemy);
-        expireTimedEffects(character, enemy);
+        expireTimedEffects(enemy);
     }
     for (var i = 0; i < character.allies.length; i++) {
         var ally = character.allies[i];
         checkIfActorDied(ally);
-        expireTimedEffects(character, ally);
+        expireTimedEffects(ally);
     }
     for (var i = 0; i < character.objects.length; i++) {
         var object = character.objects[i];
-        if (object.x < character.adventurer.x && object.x + object.width - character.cameraX < 0 ) {
+        if (object.x < character.adventurer.x && object.x + object.width - area.cameraX < 0 ) {
             character.objects.splice(i--, 1);
             continue;
-        } else {
-            object.update(character);
-        }
+        } else if (object.update) object.update(area);
     }
     checkToStartNextWave(character);
     if (!character.area) return;
@@ -183,35 +180,27 @@ function adventureLoop(character, delta) {
     // A skill may have removed an actor from one of the allies/enemies array, so remake everybody.
     everybody = character.allies.concat(character.enemies);
     everybody.forEach(function (actor) {
-        moveActor(actor, delta);
+        moveActor(actor);
     });
-    for (var i = 0; i < character.projectiles.length; i++) {
-        character.projectiles[i].update(character);
-        if (character.projectiles[i].done) {
-            character.projectiles.splice(i--, 1);
-        }
+    for (var i = 0; i < area.projectiles.length; i++) {
+        area.projectiles[i].update(area);
+        if (area.projectiles[i].done) area.projectiles.splice(i--, 1);
     }
-    for (var i = 0; i < character.effects.length; i++) {
-        character.effects[i].update(character);
-        if (character.effects[i].done) {
-            character.effects.splice(i--, 1);
-        }
+    for (var i = 0; i < area.effects.length; i++) {
+        area.effects[i].update(area);
+        if (area.effects[i].done) area.effects.splice(i--, 1);
     }
-    for (var i = 0; i < character.treasurePopups.length; i++) {
-        character.treasurePopups[i].update(character);
-        if (character.treasurePopups[i].done) {
-            character.treasurePopups.splice(i--, 1);
-        }
+    for (var i = 0; i < area.treasurePopups.length; i++) {
+        area.treasurePopups[i].update(area);
+        if (area.treasurePopups[i].done) area.treasurePopups.splice(i--, 1);
     }
-    for (var i = 0; i < character.textPopups.length; i++) {
-        var textPopup = character.textPopups[i];
+    for (var i = 0; i < area.textPopups.length; i++) {
+        var textPopup = area.textPopups[i];
         textPopup.y += ifdefor(textPopup.vy, -1);
         textPopup.x += ifdefor(textPopup.vx, 0);
         textPopup.duration = ifdefor(textPopup.duration, 35);
         textPopup.vy += ifdefor(textPopup.gravity, -.5);
-        if (textPopup.duration-- < 0) {
-            character.textPopups.splice(i--, 1);
-        }
+        if (textPopup.duration-- < 0) area.textPopups.splice(i--, 1);
     }
     everybody.forEach(function (actor) {
         if (actor.timeOfDeath < actor.time - 1) {
@@ -244,7 +233,7 @@ function updateActorDimensions(actor) {
     actor.height = source.actualHeight * scale;
     if (isNaN(actor.width) || isNaN(actor.height)) {
         console.log(actor.scale);
-        console.log([actor.x, actor.character.cameraX]);
+        console.log(actor.x);
         console.log(source);
         console.log([actor.width,actor.height]);
         pause();
@@ -254,32 +243,57 @@ function updateActorDimensions(actor) {
 }
 var rotationA = Math.cos(Math.PI / 20);
 var rotationB = Math.sin(Math.PI / 20);
-function moveActor(actor, delta) {
+function moveActor(actor) {
+    var delta = frameMilliseconds / 1000;
     if (ifdefor(actor.character.isStuckAtShrine)) {
         actor.walkFrame = 0;
         return;
     }
-    if (actor.target && actor.target.pull) {
-        actor.target = null;
-    }
-    if (actor.isDead || actor.stunned || actor.pull || ifdefor(actor.stationary) || actor.moveCooldown > actor.time) {
+    if (actor.isDead || actor.stunned || actor.pull || ifdefor(actor.stationary) || (actor.skillInUse && actor.skillInUse.preparationTime < actor.skillInUse.totalPreparationTime)) {
         return;
     }
-    var goalTarget = actor.target !== actor ? actor.target : null;
-    var moving = false;
+    var goalTarget = (actor.skillInUse && actor.skillTarget !== actor) ? actor.skillTarget : null;
+    actor.isMoving = false;
+    var speedBonus = 1;
     if (actor.activity) {
         switch (actor.activity.type) {
             case 'move':
+                if (getDistanceBetweenPointsSquared(actor, actor.activity) < 10) {
+                    actor.activity = null;
+                    break;
+                }
                 goalTarget = null;
-                actor.heading = [actor.activity.x - actor.x, 0, actor.activity.z - actor.z];
-                moving = true;
+                // If the actor is currently using a skill, they cannot adjust their heading,
+                // but we do allow them to move forward/backward in their current direction at 25% speed
+                // if they are in recovery.
+                if (actor.skillInUse) {
+                    if (actor.heading[0] * (actor.activity.x - actor.x) < 0) {
+                        speedBonus = -.25;
+                    } else {
+                        speedBonus = .25;
+                    }
+                } else {
+                    actor.heading = [actor.activity.x - actor.x, 0, actor.activity.z - actor.z];
+                }
+                actor.isMoving = true;
+                break;
+            case 'interact':
+                if (getDistanceOverlap(actor, actor.activity.target) <= 5) {
+                    if (actor.activity.target.action) {
+                        actor.activity.target.action(actor);
+                    }
+                    actor.activity = null;
+                    break;
+                }
+                actor.heading = [actor.activity.target.x - actor.x, 0, actor.activity.target.z - actor.z];
+                actor.isMoving = true;
                 break;
             case 'attack':
                 goalTarget = actor.activity.target;
                 break;
         }
     }
-    if (!actor.isMainCharacter && (!goalTarget || goalTarget.isDead)) {
+    if (!(actor.isMainCharacter && !actor.character.autoplay) && (!goalTarget || goalTarget.isDead)) {
         var bestDistance = 10000;
         actor.enemies.forEach(function (target) {
             if (target.isDead) return;
@@ -293,16 +307,15 @@ function moveActor(actor, delta) {
     if (goalTarget) {
         actor.heading = [goalTarget.x - actor.x, 0, goalTarget.z - actor.z];
         actor.heading[2] -= actor.z / 180;
-        moving = true;
+        actor.isMoving = true;
     }
     actor.heading = new Vector(actor.heading).normalize().getArrayValue();
-    if (!moving) {
+    if (!actor.isMoving) {
         return;
     }
     //console.log(JSON.stringify(actor.heading));
     // Make sure the main character doesn't run in front of their allies.
     // If the allies are fast enough, this shouldn't be an isse.
-    var speedBonus = 1;
     var xOffset = 0;
     for (var i = 0; i < actor.allies.length; i++) {
         xOffset += actor.x - actor.allies[i].x;
@@ -310,6 +323,10 @@ function moveActor(actor, delta) {
     if (actor.chargeEffect) {
         speedBonus *= actor.chargeEffect.chargeSkill.speedBonus;
         actor.chargeEffect.distance += speedBonus * actor.speed * Math.max(.1, 1 - actor.slow) * delta;
+        // Cancel charge if they run for too long.
+        if (actor.chargeEffect.distance > 2000) {
+            actor.chargeEffect = null;
+        }
     } else if (goalTarget && !goalTarget.cloaked) {
         // If the character is closer than they need to be to auto attack then they can back away from
         // them slowly to try and stay at range.
@@ -326,39 +343,103 @@ function moveActor(actor, delta) {
     var currentX = actor.x;
     var currentZ = actor.z;
     var collision = false;
-    for (var i = 0; i < 10; i++) {
+    var originalHeading = actor.heading.slice();
+    var tryingVertical = false;
+    var clockwiseFailed = false;
+    var blockedByEnemy = null;
+    var blockedByAlly = null;
+    while (true) {
         actor.x = currentX + speedBonus * actor.speed * actor.heading[0] * Math.max(.1, 1 - actor.slow) * delta;
         actor.z = currentZ + speedBonus * actor.speed * actor.heading[2] * Math.max(.1, 1 - actor.slow) * delta;
+        // Actor is not allowed to leave the path.
+        actor.z = Math.max(-180 + actor.width / 2, Math.min(180 - actor.width / 2, actor.z));
+        if (actor.area.leftWall) actor.x = Math.max(ifdefor(actor.area.left, 0) + 55 + actor.width / 2 + actor.z / 7, actor.x);
+        else actor.x = Math.max(ifdefor(actor.area.left, 0) + actor.width / 2, actor.x);
+        if (actor.area.rightWall) actor.x = Math.min(actor.area.width - 55 - actor.width / 2 - actor.z / 7, actor.x);
+        else actor.x = Math.min(actor.area.width - actor.width / 2, actor.x);
         var collision = false;
-        for (var ally of actor.allies) {
-            if (!ally.isDead && actor !== ally && getDistanceOverlap(actor, ally) <= -16 && new Vector([speedBonus * actor.heading[0], speedBonus * actor.heading[2]]).dotProduct(new Vector([ally.x - actor.x, ally.z - actor.z])) > 0) {
-                collision = true;
-                break;
+        // Ignore ally collision during charge effects.
+        if (!actor.chargeEffect) {
+            for (var ally of actor.allies) {
+                if (!ally.isDead && actor !== ally && getDistanceOverlap(actor, ally) <= -16 && new Vector([speedBonus * actor.heading[0], speedBonus * actor.heading[2]]).dotProduct(new Vector([ally.x - actor.x, ally.z - actor.z])) > 0) {
+                    collision = true;
+                    blockedByAlly = ally;
+                    break;
+                }
             }
         }
-        for (var enemy of actor.enemies) {
-            if (!enemy.isDead && actor !== enemy && getDistanceOverlap(actor, enemy) <= -16 && new Vector([speedBonus * actor.heading[0], speedBonus * actor.heading[2]]).dotProduct(new Vector([enemy.x - actor.x, enemy.z - actor.z])) > 0) {
-                collision = true;
-                break;
+        if (!collision) {
+            for (var object of actor.character.objects) {
+                var distance = getDistanceOverlap(actor, object);
+                if (distance <= -8 && new Vector([speedBonus * (actor.x - currentX), speedBonus * (actor.z - currentZ)]).dotProduct(new Vector([object.x - currentX, object.z - currentZ])) > 0) {
+                    collision = true;
+                    break;
+                }
             }
         }
-        if (!collision) break;
+        if (!collision) {
+            for (var enemy of actor.enemies) {
+                if (enemy.isDead || actor === enemy) continue;
+                var distance = getDistanceOverlap(actor, enemy);
+                if (distance <= 0 && actor.chargeEffect) {
+                    finishChargeEffect(actor, enemy);
+                    // Although this is a collision, don't mark it as one so that the move will complete.
+                    collision = false;
+                    break;
+                }
+                if (distance <= -16 && new Vector([speedBonus * actor.heading[0], speedBonus * actor.heading[2]]).dotProduct(new Vector([enemy.x - actor.x, enemy.z - actor.z])) > 0) {
+                    collision = true;
+                    blockedByEnemy = enemy;
+                    break;
+                }
+            }
+        }
+        if (!collision) {
+            break;
+        }
         //console.log(JSON.stringify(['old', actor.heading]));
         var oldXHeading = actor.heading[0];
-        actor.heading[0] = oldXHeading * rotationA + actor.heading[2] * rotationB;
-        actor.heading[2] = actor.heading[2] * rotationA - oldXHeading * rotationB;
-        // Don't allow the actor to actually change x orientation.
-        if (oldXHeading * actor.heading[0] < 0) {
-            // This basically points the actor straight up or straight down without actually setting heading[0] to 0.
-            actor.heading[0] = oldXHeading / 1000;
-            actor.heading[2] = (actor.heading[2] > 0) ? 1 : -1;
+        if (clockwiseFailed) {
+            actor.heading[0] = oldXHeading * rotationA + actor.heading[2] * rotationB;
+            actor.heading[2] = actor.heading[2] * rotationA - oldXHeading * rotationB;
+        } else {
+            // rotationB is Math.sin(Math.PI / 20), so Math.sin(-Math.PI / 20) is -rotationB.
+            actor.heading[0] = oldXHeading * rotationA - actor.heading[2] * rotationB;
+            actor.heading[2] = actor.heading[2] * rotationA + oldXHeading * rotationB;
         }
-        //console.log(JSON.stringify(['new', actor.heading]));
+        if (originalHeading[0] * actor.heading[0] + originalHeading[2] * actor.heading[2] < .01) {
+            if (clockwiseFailed) {
+                actor.x = currentX;
+                actor.z = currentZ;
+                actor.heading = originalHeading.slice();
+                if (actor.activity) {
+                    // If there is at least 1 enemy blocking the way, attack it
+                    if (blockedByEnemy)setActorAttackTarget(actor, blockedByEnemy);
+                    // If the way is only blocked by objects (non-enemies/non-allies), give up on the current action as those obstacles won't disappear or move.
+                    else if (!blockedByAlly) actor.activity = null;
+                }
+                break;
+            }
+            clockwiseFailed = true;
+            actor.heading = originalHeading.slice();
+        }
         actor.x = currentX;
         actor.z = currentZ;
     }
-    // Actor is not allowed to leave the path.
-    actor.z = Math.max(-180 + actor.width / 2, Math.min(180 - actor.width / 2, actor.z));
+    // If the actor hit something, complete the charge effect. The splash may still hit enemies,
+    // and if it had an animation, it should play.
+    if (collision && actor.chargeEffect) {
+        finishChargeEffect(actor, null);
+    }
+}
+function finishChargeEffect(actor, target) {
+    var attackStats = createAttackStats(actor, actor.chargeEffect.chargeSkill, target);
+    attackStats.distance = actor.chargeEffect.distance;
+    var hitTargets = getAllInRange(target ? target.x : actor.x, actor.chargeEffect.chargeSkill.area, actor.enemies);
+    for (var hitTarget of hitTargets) {
+        applyAttackToTarget(attackStats, hitTarget);
+    }
+    actor.chargeEffect = null;
 }
 function startNextWave(character) {
     var wave = character.area.waves[character.waveIndex];
@@ -383,30 +464,23 @@ function startNextWave(character) {
         newMonster.allies = character.enemies;
         newMonster.enemies = character.allies;
         character.enemies.push(newMonster);
-        x += 120 + Math.floor(Math.random() * 50);
+        x += 40 + Math.floor(Math.random() * 40);
     });
-    wave.objects.forEach(function (entityData) {
-        if (entityData.type === 'chest') {
-            entityData.x = x;
-            entityData.y = 0;
-            entityData.z = 20;
-            character.objects.push(entityData);
-            return;
+    for (var object of wave.objects) {
+        if (object.fixed) {
+            object.z = (150 - object.width / 2) * (Math.random() * 2 - 1);
+            object.x = x + object.width / 2;
+            x += object.width + 60;
+        } else if (entityData.type === 'button') {
+        } else {
+            throw Error("Unrecognized object: " + JSON.stringify(entityData));
         }
-        if (entityData.type === 'shrine') {
-            entityData.x = x + 128;
-            entityData.y = 0;
-            entityData.z = 50;
-            character.objects.push(entityData);
-            return;
-        }
-        if (entityData.type === 'button') {
-            character.objects.push(entityData);
-            return;
-        }
-        throw Error("Unrecognized object: " + JSON.stringify(entityData));
-    });
+        object.area = character.area;
+        character.objects.push(object);
+    }
     character.waveIndex++;
+    character.area.left = character.adventurer.x - 800;
+    character.area.width = x + 400;
 }
 function processStatusEffects(character, target, delta) {
     if (target.isDead ) return;
@@ -466,63 +540,72 @@ function getAllInRange(x, range, targets) {
     return targetsInRange
 }
 function runActorLoop(character, actor) {
-    if (actor.isDead || actor.stunned) return;
-    // An actor that is being pulled cannot perform any actions.
-    if (actor.pull || actor.chargeEffect) {
-        actor.target = null;
+    if (actor.isDead || actor.stunned || actor.pull || actor.chargeEffect) {
+        actor.skillInUse = null;
         return;
     }
-    var attackIsOnCooldown = ifdefor(actor.attackCooldown, 0) > actor.time;
+    if (actor.skillInUse) {
+        var actionDelta = frameMilliseconds / 1000 * Math.max(.1, 1 - actor.slow);
+        if (actor.skillInUse.preparationTime < actor.skillInUse.totalPreparationTime) {
+            actor.skillInUse.preparationTime += actionDelta;
+            if (actor.skillInUse.preparationTime >= actor.skillInUse.totalPreparationTime) {
+                useSkill(actor);
+            }
+            return;
+        } else if (actor.recoveryTime < actor.totalRecoveryTime) {
+            actor.recoveryTime += actionDelta;
+            return;
+        } else {
+            actor.skillInUse = null;
+        }
+    }
     if (actor.activity) {
         switch (actor.activity.type) {
-            case 'move':
-                if (getDistanceBetweenPointsSquared(actor, actor.activity) < 10) {
-                    actor.activity = null;
-                }
-                break;
             case 'attack':
                 if (actor.activity.target.isDead) {
                     actor.activity = null;
                 } else {
-                    actor.target = actor.activity.target;
-                    if (!attackIsOnCooldown) {
-                        checkToUseSkillOnTarget(character, actor, actor.target);
-                    }
+                    checkToUseSkillOnTarget(actor, actor.activity.target);
                 }
                 break;
         }
         return;
-    }
-    // Don't choose a new target until they are dead or basic attack cooldown is up.
-    if (!(!actor.target || actor.target.isDead) && attackIsOnCooldown) {
-        return;
-    }
-    var targets = [];
-    for (var i = 0; i < actor.allies.length; i++) {
-        var target = actor.allies[i];
-        target.priority = getDistance(actor, target) - 1000;
-        targets.push(target);
-    }
-    for (var i = 0; i < actor.enemies.length; i++) {
-        var target = actor.enemies[i];
-        target.priority = getDistance(actor, target);
-        if (target.priority <= 0) {
-            if (actor.chargeEffect) {
-                var attackStats = createAttackStats(actor, actor.chargeEffect.chargeSkill, target);
-                attackStats.distance = actor.chargeEffect.distance;
-                var hitTargets = getAllInRange(target.x, actor.chargeEffect.chargeSkill.area, actor.enemies);
-                for (var j = 0; j < hitTargets.length; j++) {
-                    applyAttackToTarget(attackStats, hitTargets[j]);
-                }
-                actor.chargeEffect = null;
-                actor.target = target;
-                return;
+    } else if (actor.isMainCharacter && actor.character.autoplay && actor.character.waveIndex >= actor.character.area.waves.length) {
+        // Code for intracting with chest/shrine at the end of level and leaving the area.
+        for (var object of actor.area.objects) {
+            if (object.considered) continue;
+            // The AI only considers each object once.
+            object.considered = true;
+            if (object.key === 'closedChest') {
+                setActorInteractionTarget(actor, object);
+                break;
+            }
+            if (object.key === 'skillShrine' && !actor.character.skipShrines) {
+                setActorInteractionTarget(actor, object);
+                break;
             }
         }
-        if (target === actor.target) {
-            target.priority -= 100;
+        if (!actor.activity && !actor.character.isStuckAtShrine) {
+            if (!actor.character.finishTime) {
+                actor.character.finishTime = actor.character.time + 1;
+            }
+            if (actor.character.time >= actor.character.finishTime) {
+                returnToMap(actor.character);
+            }
         }
-        targets.push(target);
+    }
+    var targets = [];
+    for (var ally of actor.allies) {
+        ally.priority = getDistance(actor, ally) - 1000;
+        targets.push(ally);
+    }
+    for (var enemy of actor.enemies) {
+        enemy.priority = getDistance(actor, enemy);
+        // actor.skillTarget will hold the last target the actor tried to use a skill on.
+        // This lines causes the actor to prefer to continue attacking the same enemy continuously
+        // even if they aren't the closest target any longer.
+        if (enemy === actor.skillTarget) enemy.priority -= 100;
+        targets.push(enemy);
     }
     // The main purpose of this is to prevent pulled actors from passing through their enemies.
      // Character is assumed to not be blocked each frame
@@ -530,27 +613,27 @@ function runActorLoop(character, actor) {
     targets.sort(function (A, B) {
         return A.priority - B.priority;
     });
-    actor.target = null;
-    if (attackIsOnCooldown){
-        return;
-    }
-    for (var i = 0; i < targets.length; i++) {
-        var target = targets[i];
-        // Returns true if the actor chose an action. May actually take an action
-        // that doesn't target an enemy, but that's okay, we set target anyway
-        // to indicate that he has acted this frame.
-        if (checkToUseSkillOnTarget(character, actor, target)) {
-            actor.target = target;
+    for (var target of targets) {
+        if (checkToUseSkillOnTarget(actor, target)) {
             break;
         }
     }
-    actor.cloaked = (actor.cloaking && !actor.target);
+    actor.cloaked = (actor.cloaking && !actor.skillInUse);
 }
-function checkToUseSkillOnTarget(character, actor, target) {
-    for(var i = 0; i < ifdefor(actor.actions, []).length; i++) {
-        if (useSkill(actor, actor.actions[i], target, null)) {
-            return true;
+function checkToUseSkillOnTarget(actor, target) {
+    for(var action of ifdefor(actor.actions, [])) {
+        if (!canUseSkillOnTarget(actor, action, target)) {
+            //console.log("cannot use skill");
+            continue;
         }
+        if (!isTargetInRangeOfSkill(actor, action, target)) {
+            continue;
+        }
+        if (!shouldUseSkillOnTarget(actor, action, target)) {
+            continue;
+        }
+        prepareToUseSkillOnTarget(actor, action, target);
+        return true;
     }
     return false;
 }
@@ -559,16 +642,17 @@ function checkToUseSkillOnTarget(character, actor, target) {
 // only distance within that plane, ignoring the height of objects and their y positions.
 function getDistance(spriteA, spriteB) {
     var distance = getDistanceOverlap(spriteA, spriteB);
-    if (isNaN(distance)) {
-        console.log(JSON.stringify(['A:', spriteA.x, spriteA.y, spriteA.z, spriteA.width]));
-        console.log(JSON.stringify(['B:', spriteB.x, spriteB.y, spriteB.z, spriteB.width]));
-    }
     return Math.max(0, distance);
 }
 function getDistanceOverlap(spriteA, spriteB) {
     var dx = spriteA.x - spriteB.x;
     var dz = spriteA.z - spriteB.z;
-    return Math.sqrt(dx*dx + dz*dz) - (spriteA.width + spriteB.width) / 2;
+    var distance = Math.sqrt(dx*dx + dz*dz) - (ifdefor(spriteA.width, 0) + ifdefor(spriteB.width, 0)) / 2;
+    if (isNaN(distance)) {
+        console.log(JSON.stringify(['A:', spriteA.x, spriteA.y, spriteA.z, spriteA.width]));
+        console.log(JSON.stringify(['B:', spriteB.x, spriteB.y, spriteB.z, spriteB.width]));
+    }
+    return distance;
 }
 function getDistanceBetweenPointsSquared(pointA, pointB) {
     var dx = pointA.x - pointB.x;
@@ -577,15 +661,63 @@ function getDistanceBetweenPointsSquared(pointA, pointB) {
     return dx*dx + dy*dy + dz*dz;
 }
 
-function defeatedEnemy(character, enemy) {
-    if (character.adventurer.health <= 0) {
+function defeatedEnemy(hero, enemy) {
+    if (hero.health <= 0) {
         return;
     }
     var loot = [];
     if (enemy.coins) loot.push(coinsLootDrop(enemy.coins));
     if (enemy.anima) loot.push(animaLootDrop(enemy.anima));
     loot.forEach(function (loot, index) {
-        loot.gainLoot(character);
-        loot.addTreasurePopup(character, enemy.x + index * 20, enemy.height, 0, 1, index * 10);
+        loot.gainLoot(hero);
+        loot.addTreasurePopup(hero, enemy.x + index * 20, enemy.height, 0, 1, index * 10);
     });
+}
+
+function completeLevel(character, completionTime) {
+    character.area.completed = true;
+    // If the character beat the last adventure open to them, unlock the next one
+    var level = map[character.currentLevelKey];
+    increaseAgeOfApplications();
+    var oldDivinityScore = ifdefor(character.divinityScores[character.currentLevelKey], 0);
+    if (oldDivinityScore === 0) {
+        character.fame += level.level;
+        gain('fame', level.level);
+        // Unlock the next areas.
+        var levelData = map[character.currentLevelKey];
+        state.completedLevels[character.currentLevelKey] = true;
+        levelData.unlocks.forEach(function (levelKey) {
+            unlockMapLevel(levelKey);
+        });
+    }
+    var newDivinityScore;
+    var currentEndlessLevel = getEndlessLevel(character, level);
+    if (character.levelDifficulty === 'endless') {
+        newDivinityScore = Math.max(10, Math.round(baseDivinity(currentEndlessLevel)));
+    } else {
+        var difficultyBonus = difficultyBonusMap[character.levelDifficulty];
+        var timeBonus = .8;
+        if (completionTime <= getGoldTimeLimit(level, difficultyBonus)) timeBonus = 1.2;
+        else if (completionTime <= getSilverTimeLimit(level, difficultyBonus)) timeBonus = 1;
+        newDivinityScore = Math.max(10, Math.round(difficultyBonus * timeBonus * baseDivinity(level.level)));
+    }
+    var gainedDivinity = newDivinityScore - oldDivinityScore;
+    if (gainedDivinity > 0) {
+        character.divinity += gainedDivinity;
+        var hero = character.adventurer;
+        var textPopup = {value:'+' + gainedDivinity.abbreviate() + ' Divinity', x: hero.x, y: hero.height, z: hero.z, color: 'gold', fontSize: 15, 'vx': 0, 'vy': 1, 'gravity': .1};
+        appendTextPopup(character.area, textPopup, true);
+    }
+    character.divinityScores[character.currentLevelKey] = Math.max(oldDivinityScore, newDivinityScore);
+    // Initialize level times for this level if not yet set.
+    character.levelTimes[character.currentLevelKey] = ifdefor(character.levelTimes[character.currentLevelKey], {});
+    if (character.levelDifficulty === 'endless') {
+        unlockItemLevel(currentEndlessLevel + 1);
+        character.levelTimes[character.currentLevelKey][character.levelDifficulty] = currentEndlessLevel + 5;
+    } else {
+        unlockItemLevel(level.level + 1);
+        var oldTime = ifdefor(character.levelTimes[character.currentLevelKey][character.levelDifficulty], 99999);
+        character.levelTimes[character.currentLevelKey][character.levelDifficulty] = Math.min(completionTime, oldTime);
+    }
+    saveGame();
 }
