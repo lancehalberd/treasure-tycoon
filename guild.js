@@ -19,12 +19,24 @@ function showApplication(actor) {
 $('.js-mouseContainer').on('mousedown', function (event) {
     if (!$(event.target).closest('.js-heroApplication').length) $('.js-heroApplication').hide();
 });
+
+/*
+//wallCandles: (260, 98, 24, 40)
+//manaOrb: (260, 160, 18, 27)
+//coinPot: (320, 160, 22, 28)
+//mapTable: (360, 160, 60, 27)
+//woodAltar: (500, 161, 20, 30)
+stoneAltar: (440, 161, 20, 30)
+//bedSimple: (541, 160, 58, 24)
+woodDoor: (675, 150, 26, 51)
+*/
 var areaObjects = {
-    'mapTable': {'name': 'World Map', 'source': objectSource(guildImage, [360, 120], [120, 50, 60]), 'action': openWorldMap},
-    'crackedOrb': {'name': 'Cracked Anima Orb', 'source': objectSource(guildImage, [240, 100], [60, 60, 30])},
-    'crackedPot': {'name': 'Cracked Pot', 'source': objectSource(guildImage, [300, 100], [60, 60, 30])},
-    'woodenShrine': {'name': 'Shrine of Fortune', 'source': objectSource(guildImage, [540, 100], [60, 70, 40]), 'action': openCrafting},
-    'candles': {'source': objectSource(guildImage, [240, 30], [60, 70, 0])},
+    'mapTable': {'name': 'World Map', 'source': objectSource(guildImage, [360, 130], [60, 27, 30]), 'action': openWorldMap},
+    'crackedOrb': {'name': 'Cracked Anima Orb', 'source': objectSource(guildImage, [260, 130], [18, 27, 15])},
+    'crackedPot': {'name': 'Cracked Pot', 'source': objectSource(guildImage, [320, 130], [22, 28, 15])},
+    'woodenShrine': {'name': 'Shrine of Fortune', 'source': objectSource(guildImage, [500, 161-30], [20, 30, 20]), 'action': openCrafting},
+    'candles': {'source': objectSource(guildImage, [260, 98-40], [25, 40, 0])},
+    'bed': {'name': 'Worn Cot', 'source': objectSource(guildImage, [541, 160-24], [58, 24, 30])},
 
     'heroApplication': {'name': 'Application', 'source': {'width': 40, 'height': 60, 'depth': 0}, 'action': showApplication, 'draw': function (area) {
         this.left = this.x - this.width / 2 - area.cameraX;
@@ -46,7 +58,7 @@ var areaObjects = {
     }},
 
     'wall': {'source': objectSource(guildImage, [600, 0], [60, 240, 180])},
-    'door': {'source': objectSource(guildImage, [660, 90], [60, 120, 90]), 'action': useDoor},
+    'door': {'source': objectSource(guildImage, [675, 150], [26, 51, 2]), 'action': useDoor},
 
     'skillShrine': {'name': 'Shrine of Divinity', 'source': objectSource(requireImage('gfx/militaryIcons.png'), [102, 125], [16, 16, 4]), 'action': activateShrine},
     'closedChest': {'name': 'Treasure Chest', 'source': objectSource(requireImage('gfx/treasureChest.png'), [0, 0], [64, 64, 64]), 'action': openChest},
@@ -129,18 +141,19 @@ guildAreas.guildFoyer = initializeGuldArea({
     'wallDecorations': [
         allApplications[0],
         allApplications[1],
-        fixedObject('candles', [140, 50, wallZ], {'xScale': -1}),
-        fixedObject('candles', [440, 70, wallZ], {'xScale': -1}),
-        fixedObject('candles', [560, 70, wallZ]),
-        fixedObject('candles', [860, 50, wallZ]),
+        fixedObject('candles', [135, 50, wallZ], {'scale': 1.5}),
+        fixedObject('candles', [440, 70, wallZ], {'scale': 1.5}),
+        fixedObject('candles', [560, 70, wallZ], {'scale': 1.5}),
+        fixedObject('candles', [835, 50, wallZ], {'scale': 1.5}),
     ],
     'objects': [
-        fixedObject('mapTable', [250, 0, 90]),
-        fixedObject('crackedPot', [455, 0, 150]),
-        fixedObject('woodenShrine', [500, 0, 150]),
-        fixedObject('crackedOrb', [545, 0, 150]),
-        //fixedObject('door', [0, 0, 0], {'scale': 2, 'xScale': -1, 'exit': {'areaKey': 'guildYard', 'x': 900, 'z': 0}}),
-        //fixedObject('door', [1010, 0, 0], {'scale': 2, 'exit': {'areaKey': 'guildFrontHall', 'x': 120, 'z': 0}})
+        fixedObject('mapTable', [250, 0, 90], {'scale': 2}),
+        fixedObject('crackedPot', [455, 0, 150], {'scale': 2}),
+        fixedObject('woodenShrine', [500, 0, 150], {'scale': 2}),
+        fixedObject('crackedOrb', [545, 0, 150], {'scale': 2}),
+        fixedObject('bed', [700, 0, 90], {'scale': 2, 'xScale': -1}),
+        //fixedObject('door', [0, 0, 0], {'scale': 2, 'xScale': -1, 'exit': {'areaKey': 'guildYard', 'x': 900, 'z': 0}}, {'scale': 2}),
+        //fixedObject('door', [1000, 0, 0], {'scale': 2, 'exit': {'areaKey': 'guildFrontHall', 'x': 120, 'z': 0}}, {'scale': 2})
     ]
 });
 guildAreas.guildFrontHall = initializeGuldArea({
@@ -149,9 +162,9 @@ guildAreas.guildFrontHall = initializeGuldArea({
     'backgroundPatterns': {'0': 'oldGuild'},
     'wallDecorations': [
         fixedObject('candles', [165, 50, wallZ], {'xScale': -1}),
-        fixedObject('candles', [440, 70, wallZ], {'xScale': -1}),
-        fixedObject('candles', [560, 70, wallZ]),
-        fixedObject('candles', [835, 50, wallZ]),
+        fixedObject('candles', [440, 70, wallZ], {'xScale': 2}),
+        fixedObject('candles', [560, 70, wallZ], {'scale': 2}),
+        fixedObject('candles', [835, 50, wallZ], {'scale': 2}),
     ],
     'objects': [
         fixedObject('door', [0, 0, 0], {'scale': 2, 'xScale': -1, 'exit': {'areaKey': 'guildFoyer', 'x': 900, 'z': 0}}),
