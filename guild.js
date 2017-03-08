@@ -21,14 +21,8 @@ $('.js-mouseContainer').on('mousedown', function (event) {
 });
 
 /*
-//wallCandles: (260, 98, 24, 40)
-//manaOrb: (260, 160, 18, 27)
-//coinPot: (320, 160, 22, 28)
-//mapTable: (360, 160, 60, 27)
-//woodAltar: (500, 161, 20, 30)
 stoneAltar: (440, 161, 20, 30)
-//bedSimple: (541, 160, 58, 24)
-woodDoor: (675, 150, 26, 51)
+woodDoor: (675, 100, 26, 51)
 */
 var areaObjects = {
     'mapTable': {'name': 'World Map', 'source': objectSource(guildImage, [360, 130], [60, 27, 30]), 'action': openWorldMap},
@@ -58,7 +52,7 @@ var areaObjects = {
     }},
 
     'wall': {'source': objectSource(guildImage, [600, 0], [60, 240, 180])},
-    'door': {'source': objectSource(guildImage, [675, 150], [26, 51, 2]), 'action': useDoor},
+    'door': {'source': objectSource(guildImage, [675, 100], [27, 51, 27]), 'action': useDoor},
 
     'skillShrine': {'name': 'Shrine of Divinity', 'source': objectSource(requireImage('gfx/militaryIcons.png'), [102, 125], [16, 16, 4]), 'action': activateShrine},
     'closedChest': {'name': 'Treasure Chest', 'source': objectSource(requireImage('gfx/treasureChest.png'), [0, 0], [64, 64, 64]), 'action': openChest},
@@ -84,6 +78,8 @@ function initializeGuldArea(guildArea) {
     for (var wallDecoration of guildArea.wallDecorations) {
         wallDecoration.area = guildArea;
     }
+    guildArea.leftWallDecorations = guildArea.leftWallDecorations || [];
+    guildArea.rightWallDecorations = guildArea.rightWallDecorations || [];
     guildArea.leftWall = ifdefor(guildArea.leftWall, fixedObject('wall', [10, 0, 15], {'scale': 2.2, 'xScale': -1}));
     guildArea.rightWall = ifdefor(guildArea.rightWall, fixedObject('wall', [guildArea.width - 10, 0, 15], {'scale': 2.2}));
     return guildArea;
@@ -115,7 +111,7 @@ function drawFixedObject(area) {
         mainContext.fillStyle = '#00f';
         mainContext.fillRect(this.left, groundY - this.y - objectHeight - (this.z + this.depth / 2) / 2, this.width, this.depth / 2);
     }*/
-    if (canvasPopupTarget === this) drawOutlinedImage(mainContext, imageSource.image, '#fff', 2, imageSource, this)
+    if (canvasPopupTarget === this) drawOutlinedImage(mainContext, imageSource.image, '#fff', 2, imageSource, this);
     else drawImage(mainContext, imageSource.image, imageSource, this);
 }
 var guildAreas = {};
@@ -129,9 +125,10 @@ guildAreas.guildYard = initializeGuldArea({
     'width': 1000,
     'backgroundPatterns': {'0': 'forest'},
     'wallDecorations': [],
-    'objects': [
-        fixedObject('door', [1000, 0, 0], {'scale': 2, 'exit': guildFoyerFrontDoor})
+    'rightWallDecorations': [
+        fixedObject('door', [970, 0, 0], {'exit': guildFoyerFrontDoor, 'scale': 2})
     ],
+    'objects': [],
     'leftWall': null
 });
 guildAreas.guildFoyer = initializeGuldArea({
@@ -146,14 +143,18 @@ guildAreas.guildFoyer = initializeGuldArea({
         fixedObject('candles', [560, 70, wallZ], {'scale': 1.5}),
         fixedObject('candles', [835, 50, wallZ], {'scale': 1.5}),
     ],
+    'leftWallDecorations': [
+        fixedObject('door', [30, 0, 0], {'exit': {'areaKey': 'guildYard', 'x': 880, 'z': 0}, 'scale': 2}),
+    ],
+    'rightWallDecorations': [
+        fixedObject('door', [970, 0, 0], {'exit': {'areaKey': 'guildFrontHall', 'x': 120, 'z': 0}, 'scale': 2})
+    ],
     'objects': [
         fixedObject('mapTable', [250, 0, 90], {'scale': 2}),
         fixedObject('crackedPot', [455, 0, 150], {'scale': 2}),
         fixedObject('woodenShrine', [500, 0, 150], {'scale': 2}),
         fixedObject('crackedOrb', [545, 0, 150], {'scale': 2}),
         fixedObject('bed', [700, 0, 90], {'scale': 2, 'xScale': -1}),
-        //fixedObject('door', [0, 0, 0], {'scale': 2, 'xScale': -1, 'exit': {'areaKey': 'guildYard', 'x': 900, 'z': 0}}, {'scale': 2}),
-        //fixedObject('door', [1000, 0, 0], {'scale': 2, 'exit': {'areaKey': 'guildFrontHall', 'x': 120, 'z': 0}}, {'scale': 2})
     ]
 });
 guildAreas.guildFrontHall = initializeGuldArea({
@@ -166,67 +167,90 @@ guildAreas.guildFrontHall = initializeGuldArea({
         fixedObject('candles', [560, 70, wallZ], {'scale': 2}),
         fixedObject('candles', [835, 50, wallZ], {'scale': 2}),
     ],
-    'objects': [
-        fixedObject('door', [0, 0, 0], {'scale': 2, 'xScale': -1, 'exit': {'areaKey': 'guildFoyer', 'x': 900, 'z': 0}}),
-    ]
+    'leftWallDecorations': [
+        fixedObject('door', [30, 0, 0], {'exit': {'areaKey': 'guildFoyer', 'x': 880, 'z': 0}, 'scale': 2}),
+    ],
+    'objects': []
 });
 var wallOriginCoords = [-71, 213];
-var wallCanvas = createCanvas(120, 130);
+var wallDepth = 120;
+var wallHeight = 130;
+var wallCanvas = createCanvas(wallDepth, wallHeight);
 var wallContext = wallCanvas.getContext('2d');
 //$('body').append(wallCanvas);
 function drawRightWall(guildArea) {
     if (guildArea.cameraX + 800 < guildArea.width - 60) return;
-    //drawRightWallRectangle(guildArea, 'red', 0, 0, 260, 360);
     var source = {'left': 60, 'top': 20, 'width': 60, 'height': 130};
     var target = {'left': 0, 'top': 0, 'width': 60, 'height': 130};
     drawImage(wallContext, requireImage('gfx/guildhall.png'), source, target);
     drawImage(wallContext, requireImage('gfx/guildhall.png'), source, $.extend(target, {'left': 60}));
-    //drawImage(wallContext, requireImage('gfx/guildhall.png'), source, $.extend(target, {'left': 120}));
+    for (var decoration of guildArea.rightWallDecorations) {
+        source = decoration.base.source;
+        decoration.target = {'left': (wallDepth - (decoration.z + decoration.depth) * wallDepth / 180) / 2, 'top': wallHeight - decoration.y / 2 - decoration.height / 2, 'width': decoration.depth * wallDepth / 180, 'height': decoration.height / 2}
+        if (decoration === canvasPopupTarget) drawOutlinedImage(wallContext, source.image, '#fff', 2, source, decoration.target);
+        else drawImage(wallContext, source.image, source, decoration.target);
+    }
+    if (wallMouseCoords) {
+        wallContext.fillStyle = 'red';
+        wallContext.fillRect(wallMouseCoords[0] - 1, wallMouseCoords[1] - 1, 2, 2);
+    }
     wallContext.save();
     wallContext.fillStyle = 'black';
     wallContext.globalAlpha = .5;
     wallContext.fillRect(0, 0, 5, 130);
     wallContext.fillRect(175, 0, 5, 130);
     wallContext.restore();
-    wallContext.fillStyle = 'brown';
-    wallContext.fillRect(45, 70, 30, 60);
     var xOffset = guildArea.width - guildArea.cameraX;
-    var TL = projectRightWallCoords(xOffset, 260, 180);
-    var TR = projectRightWallCoords(xOffset, 260, -180);
-    var BR = projectRightWallCoords(xOffset, 0, -180);
-    var BL = projectRightWallCoords(xOffset, 0, 180);
-    var C = projectRightWallCoords(xOffset, 130, 0);
-    textureMap(mainContext, wallCanvas, [TL,TR,C]);
-    textureMap(mainContext, wallCanvas, [TR,BR,C]);
-    textureMap(mainContext, wallCanvas, [BR,BL,C]);
-    textureMap(mainContext, wallCanvas, [BL,TL,C]);
-    //drawRightWallRectangle(guildArea, 'black', 0, 0, 120, 120);
+    var rows = 5; cols = 3;
+    for (var row = 0; row < rows; row++) {
+        for (var col = 0; col < cols; col++) {
+            var TL = projectRightWallCoords(xOffset, 260 * row / rows, 180 - 360 * col / cols);
+            var TR = projectRightWallCoords(xOffset, 260 * row / rows, 180 - 360 * (col + 1) / cols);
+            var BR = projectRightWallCoords(xOffset, 260 * (row + 1) / rows, 180 - 360 * (col + 1) / cols);
+            var BL = projectRightWallCoords(xOffset, 260 * (row + 1) / rows, 180 - 360 * col / cols);
+            textureMap(mainContext, wallCanvas, [TL,TR,BL], 0);
+            textureMap(mainContext, wallCanvas, [BL,TR,BR], 0);
+            textureMap(mainContext, wallCanvas, [TL,TR,BR], 0);
+            textureMap(mainContext, wallCanvas, [BL,TL,BR], 0);
+        }
+    }
 }
 function drawLeftWall(guildArea) {
     if (guildArea.cameraX > 60) return;
-    //drawRightWallRectangle(guildArea, 'red', 0, 0, 260, 360);
     var source = {'left': 60, 'top': 20, 'width': 60, 'height': 130};
     var target = {'left': 0, 'top': 0, 'width': 60, 'height': 130};
     drawImage(wallContext, requireImage('gfx/guildhall.png'), source, target);
     drawImage(wallContext, requireImage('gfx/guildhall.png'), source, $.extend(target, {'left': 60}));
     wallContext.save();
     wallContext.fillStyle = 'black';
+    //wallContext.fillRect(0, 0, wallDepth, wallHeight);
     wallContext.globalAlpha = .5;
-    wallContext.fillRect(0, 0, 5, 130);
-    wallContext.fillRect(175, 0, 5, 130);
+    wallContext.fillRect(0, 0, 5, wallHeight);
+    wallContext.fillRect(175, 0, 5, wallHeight);
     wallContext.restore();
-    wallContext.fillStyle = 'brown';
-    wallContext.fillRect(45, 70, 30, 60);
-    var TL = projectLeftWallCoords(-guildArea.cameraX, 260, 180);
-    var TR = projectLeftWallCoords(-guildArea.cameraX, 260, -180);
-    var BR = projectLeftWallCoords(-guildArea.cameraX, 0, -180);
-    var BL = projectLeftWallCoords(-guildArea.cameraX, 0, 180);
-    var C = projectLeftWallCoords(-guildArea.cameraX, 130, 0);
-    textureMap(mainContext, wallCanvas, [TL,TR,C]);
-    textureMap(mainContext, wallCanvas, [TR,BR,C]);
-    textureMap(mainContext, wallCanvas, [BR,BL,C]);
-    textureMap(mainContext, wallCanvas, [BL,TL,C]);
-    //drawRightWallRectangle(guildArea, 'black', 0, 0, 120, 120);
+    for (var decoration of guildArea.leftWallDecorations) {
+        source = decoration.base.source;
+        decoration.target = {'left': (wallDepth - (decoration.z + decoration.depth) * wallDepth / 180) / 2, 'top': wallHeight - decoration.y / 2 - decoration.height / 2, 'width': decoration.depth * wallDepth / 180, 'height': decoration.height / 2}
+        if (decoration === canvasPopupTarget) drawOutlinedImage(wallContext, source.image, '#fff', 2, source, decoration.target);
+        else drawImage(wallContext, source.image, source, decoration.target);
+    }
+    if (wallMouseCoords) {
+        wallContext.fillStyle = 'red';
+        wallContext.fillRect(wallMouseCoords[0] - 1, wallMouseCoords[1] - 1, 2, 2);
+    }
+    var rows = 5; cols = 3;
+    for (var row = 0; row < rows; row++) {
+        for (var col = 0; col < cols; col++) {
+            var TL = projectLeftWallCoords(-guildArea.cameraX, 260 * row / rows, 180 - 360 * col / cols);
+            var TR = projectLeftWallCoords(-guildArea.cameraX, 260 * row / rows, 180 - 360 * (col + 1) / cols);
+            var BR = projectLeftWallCoords(-guildArea.cameraX, 260 * (row + 1) / rows, 180 - 360 * (col + 1) / cols);
+            var BL = projectLeftWallCoords(-guildArea.cameraX, 260 * (row + 1) / rows, 180 - 360 * col / cols);
+            textureMap(mainContext, wallCanvas, [TL,TR,BL], 0);
+            textureMap(mainContext, wallCanvas, [BL,TR,BR], 0);
+            textureMap(mainContext, wallCanvas, [TL,TR,BR], 0);
+            textureMap(mainContext, wallCanvas, [BL,TL,BR], 0);
+        }
+    }
 }
 /*function drawRightWallRectangle(guildArea, color, y, z, height, depth) {
     var offset = guildArea.width - guildArea.cameraX;
@@ -247,13 +271,31 @@ function projectLeftWallCoords(xOffset, y, z) {
     var slope = (y - wallOriginCoords[1]) / (0 - wallOriginCoords[0]);
     var u = 30 + z * 30 / 180;
     var v = 300 - wallOriginCoords[1] - slope * (60 - u - wallOriginCoords[0]);
-    return {'x': u + xOffset - 4, 'y': v, 'u': 60 - z / 3, 'v': 130 - y / 2};
+    return {'x': u + xOffset, 'y': v, 'u': 60 - z / 3, 'v': 130 - y / 2};
+}
+function unprojectLeftWallCoords(area, left, top) {
+    var vanishingPoint = [60 - wallOriginCoords[0], 300 - wallOriginCoords[1]];
+    var mousePoint = [left + area.cameraX, top];
+    var slope = (mousePoint[1] - vanishingPoint[1]) / (mousePoint[0] - vanishingPoint[0]);
+    var x = (60 - mousePoint[0]) * wallDepth / 60;
+    var y = wallHeight - (wallOriginCoords[1] - slope * wallOriginCoords[0]) * wallHeight / 260;
+    //console.log([vanishingPoint.join(','), mousePoint.join(','), slope, x, y]);
+    return [x, y];
 }
 function projectRightWallCoords(xOffset, y, z) {
     var slope = (y - wallOriginCoords[1]) / (0 - wallOriginCoords[0]);
     var u = -30 - z * 30 / 180;
     var v = 300 - wallOriginCoords[1] - slope * (60 + u - wallOriginCoords[0]);
-    return {'x': u + xOffset + 4, 'y': v, 'u': 60 - z / 3, 'v': 130 - y / 2};
+    return {'x': u + xOffset, 'y': v, 'u': 60 - z / 3, 'v': 130 - y / 2};
+}
+function unprojectRightWallCoords(area, left, top) {
+    var vanishingPoint = [area.width - 60 + wallOriginCoords[0], 300 - wallOriginCoords[1]];
+    var mousePoint = [left + area.cameraX, top];
+    var slope = (mousePoint[1] - vanishingPoint[1]) / (mousePoint[0] - vanishingPoint[0]);
+    var x = (mousePoint[0] - (area.width - 60))  * wallDepth / 60;
+    var y = wallHeight - (wallOriginCoords[1] + slope * wallOriginCoords[0]) * wallHeight / 260;
+    //console.log([vanishingPoint.join(','), mousePoint.join(','), slope, x, y]);
+    return [x, y];
 }
 function leaveCurrentArea(character) {
     if (!character.area) return;

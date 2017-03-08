@@ -302,7 +302,8 @@ function drawMapPath(context, targetA, targetB) {
     context.stroke();
 }
 
-function textureMap(ctx, texture, pts) {
+function textureMap(ctx, texture, pts, fudgeFactor) {
+    fudgeFactor = ifdefor(fudgeFactor, .01);
     var x0 = pts[0].x, x1 = pts[1].x, x2 = pts[2].x;
     var y0 = pts[0].y, y1 = pts[1].y, y2 = pts[2].y;
     var u0 = pts[0].u, u1 = pts[1].u, u2 = pts[2].u;
@@ -322,7 +323,7 @@ function textureMap(ctx, texture, pts) {
     y1 -= center[1];
     y2 -= center[1];
     ctx.translate(center[0], center[1]);
-    ctx.scale(1.01, 1.01);
+    ctx.scale(1 + fudgeFactor, 1 + fudgeFactor);
     ctx.beginPath();
     ctx.moveTo(x0, y0);
     ctx.lineTo(x1, y1);

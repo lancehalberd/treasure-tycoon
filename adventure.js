@@ -353,9 +353,9 @@ function moveActor(actor) {
         actor.z = currentZ + speedBonus * actor.speed * actor.heading[2] * Math.max(.1, 1 - actor.slow) * delta;
         // Actor is not allowed to leave the path.
         actor.z = Math.max(-180 + actor.width / 2, Math.min(180 - actor.width / 2, actor.z));
-        if (actor.area.leftWall) actor.x = Math.max(ifdefor(actor.area.left, 0) + 55 + actor.width / 2 + actor.z / 7, actor.x);
+        if (actor.area.leftWall) actor.x = Math.max(ifdefor(actor.area.left, 0) + 25 + actor.width / 2 + actor.z / 6, actor.x);
         else actor.x = Math.max(ifdefor(actor.area.left, 0) + actor.width / 2, actor.x);
-        if (actor.area.rightWall) actor.x = Math.min(actor.area.width - 55 - actor.width / 2 - actor.z / 7, actor.x);
+        if (actor.area.rightWall) actor.x = Math.min(actor.area.width - 25 - actor.width / 2 - actor.z / 6, actor.x);
         else actor.x = Math.min(actor.area.width - actor.width / 2, actor.x);
         var collision = false;
         // Ignore ally collision during charge effects.

@@ -348,7 +348,7 @@ var returnToMapButton = {'source': {'image': requireImage('gfx/worldIcon.png'), 
 var globalHud = [
     returnToMapButton
 ];
-
+var wallMouseCoords = null;
 function checkToShowMainCanvasToolTip(x, y) {
     if (ifdefor(x) === null) return;
     if ($popup || !$('.js-mainCanvas').is(':visible')) return;
@@ -377,6 +377,36 @@ function checkToShowMainCanvasToolTip(x, y) {
                 } else if (isPointInRect(x, y, left, top, object.width, object.height)) {
                     canvasPopupTarget = object;
                     break;
+                }
+            }
+        }
+        if (!canvasPopupTarget) {
+            if (area.cameraX + x < 60) {
+                var coords = unprojectLeftWallCoords(area, x, y);
+                // wallMouseCoords = coords;
+                for (var leftWallDecoration of ifdefor(area.leftWallDecorations, [])) {
+                    // decoration.target stores the rectangle that the decoration was drawn to on the wallCanvas before
+                    // it is projected to the wall trapezoid and uses the same coordinates the unprojectRightWallCoords returns in.
+                    var target = leftWallDecoration.target;
+                    // console.log([coords[0], coords[1], target.left, target.top, target.width, target.height]);
+                    if (isPointInRect(coords[0], coords[1], target.left, target.top, target.width, target.height)) {
+                        canvasPopupTarget = leftWallDecoration;
+                        break;
+                    }
+                }
+            }
+            if (area.cameraX + x > area.width - 60) {
+                var coords = unprojectRightWallCoords(area, x, y);
+                // wallMouseCoords = coords;
+                for (var rightWallDecoration of ifdefor(area.rightWallDecorations, [])) {
+                    // decoration.target stores the rectangle that the decoration was drawn to on the wallCanvas before
+                    // it is projected to the wall trapezoid and uses the same coordinates the unprojectRightWallCoords returns in.
+                    var target = rightWallDecoration.target;
+                    // console.log([coords[0], coords[1], target.left, target.top, target.width, target.height]);
+                    if (isPointInRect(coords[0], coords[1], target.left, target.top, target.width, target.height)) {
+                        canvasPopupTarget = rightWallDecoration;
+                        break;
+                    }
                 }
             }
         }
