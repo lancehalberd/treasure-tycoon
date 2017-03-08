@@ -52,7 +52,7 @@ var areaObjects = {
     }},
 
     'wall': {'source': objectSource(guildImage, [600, 0], [60, 240, 180])},
-    'door': {'source': objectSource(guildImage, [675, 100], [27, 51, 27]), 'action': useDoor},
+    'door': {'source': objectSource(guildImage, [675, 99], [27, 51, 0]), 'action': useDoor},
 
     'skillShrine': {'name': 'Shrine of Divinity', 'source': objectSource(requireImage('gfx/militaryIcons.png'), [102, 125], [16, 16, 4]), 'action': activateShrine},
     'closedChest': {'name': 'Treasure Chest', 'source': objectSource(requireImage('gfx/treasureChest.png'), [0, 0], [64, 64, 64]), 'action': openChest},
@@ -138,8 +138,8 @@ guildAreas.guildFoyer = initializeGuldArea({
     'wallDecorations': [
         allApplications[0],
         allApplications[1],
-        fixedObject('candles', [135, 50, wallZ], {'scale': 1.5}),
-        fixedObject('candles', [440, 70, wallZ], {'scale': 1.5}),
+        fixedObject('candles', [135, 50, wallZ], {'xScale': -1, 'scale': 1.5}),
+        fixedObject('candles', [440, 70, wallZ], {'xScale': -1, 'scale': 1.5}),
         fixedObject('candles', [560, 70, wallZ], {'scale': 1.5}),
         fixedObject('candles', [835, 50, wallZ], {'scale': 1.5}),
     ],
@@ -162,10 +162,11 @@ guildAreas.guildFrontHall = initializeGuldArea({
     'width': 1000,
     'backgroundPatterns': {'0': 'oldGuild'},
     'wallDecorations': [
-        fixedObject('candles', [165, 50, wallZ], {'xScale': -1}),
-        fixedObject('candles', [440, 70, wallZ], {'xScale': 2}),
-        fixedObject('candles', [560, 70, wallZ], {'scale': 2}),
-        fixedObject('candles', [835, 50, wallZ], {'scale': 2}),
+        fixedObject('candles', [165, 50, wallZ], {'xScale': -1, 'scale': 1.5}),
+        fixedObject('candles', [440, 70, wallZ], {'xScale': -1, 'scale': 1.5}),
+        fixedObject('candles', [560, 70, wallZ], {'scale': 1.5}),
+        fixedObject('candles', [835, 50, wallZ], {'scale': 1.5}),
+        // fixedObject('door', [700, 0, wallZ], {'exit': {'areaKey': 'guildYard', 'x': 880, 'z': 0}, 'scale': 2}),
     ],
     'leftWallDecorations': [
         fixedObject('door', [30, 0, 0], {'exit': {'areaKey': 'guildFoyer', 'x': 880, 'z': 0}, 'scale': 2}),
@@ -186,7 +187,7 @@ function drawRightWall(guildArea) {
     drawImage(wallContext, requireImage('gfx/guildhall.png'), source, $.extend(target, {'left': 60}));
     for (var decoration of guildArea.rightWallDecorations) {
         source = decoration.base.source;
-        decoration.target = {'left': (wallDepth - (decoration.z + decoration.depth) * wallDepth / 180) / 2, 'top': wallHeight - decoration.y / 2 - decoration.height / 2, 'width': decoration.depth * wallDepth / 180, 'height': decoration.height / 2}
+        decoration.target = {'left': (wallDepth - (decoration.z + decoration.width) * wallDepth / 180) / 2, 'top': wallHeight - decoration.y / 2 - decoration.height / 2, 'width': decoration.width * wallDepth / 180, 'height': decoration.height / 2}
         if (decoration === canvasPopupTarget) drawOutlinedImage(wallContext, source.image, '#fff', 2, source, decoration.target);
         else drawImage(wallContext, source.image, source, decoration.target);
     }
@@ -230,7 +231,7 @@ function drawLeftWall(guildArea) {
     wallContext.restore();
     for (var decoration of guildArea.leftWallDecorations) {
         source = decoration.base.source;
-        decoration.target = {'left': (wallDepth - (decoration.z + decoration.depth) * wallDepth / 180) / 2, 'top': wallHeight - decoration.y / 2 - decoration.height / 2, 'width': decoration.depth * wallDepth / 180, 'height': decoration.height / 2}
+        decoration.target = {'left': (wallDepth - (decoration.z + decoration.width) * wallDepth / 180) / 2, 'top': wallHeight - decoration.y / 2 - decoration.height / 2, 'width': decoration.width * wallDepth / 180, 'height': decoration.height / 2}
         if (decoration === canvasPopupTarget) drawOutlinedImage(wallContext, source.image, '#fff', 2, source, decoration.target);
         else drawImage(wallContext, source.image, source, decoration.target);
     }
