@@ -611,6 +611,17 @@ $(document).on('keydown', function(event) {
             completeLevel(state.selectedCharacter, state.selectedCharacter.completionTime);
         }
     }
+    if (event.which === 77) { // 'm'
+        if (state.selectedCharacter.context === 'guild') {
+            openWorldMap(state.selectedCharacter.adventurer);
+        } else if (state.selectedCharacter.context === 'map') {
+            if (!state.selectedCharacter.area) {
+                enterGuildArea(state.selectedCharacter, guildFoyerFrontDoor);
+            } else {
+                setContext('guild');
+            }
+        }
+    }
 });
 
 // Return the minimum angle between two angles, specified in degrees.
