@@ -120,6 +120,11 @@ var allApplications = [
     fixedObject('heroApplication', [190, 50, wallZ]),
     fixedObject('heroApplication', [240, 50, wallZ])
 ];
+var allBeds = [
+    fixedObject('bed', [890, 0, 140], {'scale': 2, 'xScale': -1}),
+    fixedObject('bed', [890, 0, 140], {'scale': 2, 'xScale': -1}),
+    fixedObject('bed', [940, 0, -140], {'scale': 2, 'xScale': -1})
+];
 guildAreas.guildYard = initializeGuldArea({
     'key': 'guildYard',
     'width': 1000,
@@ -154,7 +159,7 @@ guildAreas.guildFoyer = initializeGuldArea({
         fixedObject('crackedPot', [455, 0, 150], {'scale': 2}),
         fixedObject('woodenShrine', [500, 0, 150], {'scale': 2}),
         fixedObject('crackedOrb', [545, 0, 150], {'scale': 2}),
-        fixedObject('bed', [700, 0, 90], {'scale': 2, 'xScale': -1}),
+        allBeds[0]
     ]
 });
 guildAreas.guildFrontHall = initializeGuldArea({
@@ -171,7 +176,10 @@ guildAreas.guildFrontHall = initializeGuldArea({
     'leftWallDecorations': [
         fixedObject('door', [30, 0, 0], {'exit': {'areaKey': 'guildFoyer', 'x': 880, 'z': 0}, 'scale': 2}),
     ],
-    'objects': []
+    'objects': [
+        allBeds[1],
+        allBeds[2]
+    ]
 });
 var wallOriginCoords = [-71, 213];
 var wallDepth = 120;

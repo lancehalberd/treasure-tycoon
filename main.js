@@ -133,23 +133,9 @@ function mainLoop() {
                 // Only update the camera for the guild for the selected character, but
                 // always update the camera for characters in adventure areas.
                 if (character === state.selectedCharacter || !area.isGuildArea) {
-                    // By default center the camera slightly ahead of the character.
-                    var centerX = character.adventurer.x;
-                    var cameraX = area.cameraX;
-                    var mouseX = cameraX + Math.max(0, Math.min(800, mousePosition[0]));
-                    if (character.adventurer.activity && character.adventurer.activity.type === 'move') {
-                        centerX = (centerX + character.adventurer.activity.x) / 2;
-                    } else if (mouseX > centerX + 300) {
-                        centerX = (centerX + mouseX - 300) / 2;
-                    } else if (mouseX < centerX - 300) {
-                        centerX = (centerX + mouseX + 300) / 2;
-                    }
-                    if (Math.abs(cameraX - (centerX - 400)) < 200) cameraX = (cameraX * 20 + centerX - 400) / 21;
-                    else cameraX = (cameraX * 10 + centerX - 400) / 11;
-                    character.area.cameraX = Math.max(ifdefor(character.area.left, 0), cameraX);
-                    if (character.area.width) {
-                        character.area.cameraX = Math.min(character.area.width - 800, character.area.cameraX);
-                    }
+                    var targetCameraX = getTargetCameraX(character);
+                    if (Math.abs(area.cameraX - targetCameraX) < 200) area.cameraX = (area.cameraX * 20 + targetCameraX) / 21;
+                    else area.cameraX = (area.cameraX * 10 + targetCameraX) / 11;
                 }
             }
         }
@@ -223,6 +209,20 @@ function mainLoop() {
         console.log(e);
         killMainLoop();
     }
+}
+function getTargetCameraX(character) {
+    var mousePosition = relativeMousePosition($(mainCanvas));
+    var area = character.area;
+    var centerX = character.adventurer.x;
+    var mouseX = Math.max(0, Math.min(800, mousePosition[0]));
+    if (character.adventurer.activity && character.adventurer.activity.type === 'move') {
+        centerX = (centerX + character.adventurer.activity.x) / 2;
+    } else if (mouseX > 700) centerX = centerX + (mouseX - 700) / 2;
+    else if (mouseX < 100) centerX = centerX + (mouseX - 100) / 2;
+    var target = centerX - 400;
+    target = Math.max(ifdefor(area.left, 0), target);
+    if (area.width) target = Math.min(area.width - 800, target);
+    return target;
 }
 function killMainLoop() {
     clearInterval(mainLoopId);

@@ -94,9 +94,8 @@ function importState(stateData) {
             }
             state.completedLevels[levelKey] = true;
         }
-        if (!character.context) {
-            enterGuildArea(character, {'areaKey': 'guildFoyer', 'x': 120, 'z': 0});
-        }
+        var bed = allBeds[state.characters.length - 1];
+        enterGuildArea(character, {'areaKey': bed.area.key, 'x': bed.x - 80, 'z': bed.z});
         $('.js-charactersBox').append(character.$characterCanvas);
     });
     for (var completedLevelKey in state.completedLevels) {

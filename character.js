@@ -723,6 +723,9 @@ function setSelectedCharacter(character) {
     updateEquipableItems();
     character.$characterCanvas.after($('.js-divinityPoints'));
     showContext(character.context);
+    // Immediately show the desired camera position so the camera doesn't have to
+    // catch up on showing the area (the camera isn't updated when the character isn't selected).
+    if (character.area) character.area.cameraX = getTargetCameraX(character);
 }
 
 $('.js-jewelBoard').on('mouseover', function () {
