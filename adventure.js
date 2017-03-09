@@ -293,7 +293,7 @@ function moveActor(actor) {
                 break;
         }
     }
-    if (!(actor.isMainCharacter && !actor.character.autoplay) && (!goalTarget || goalTarget.isDead)) {
+    if ((!actor.isMainCharacter || (actor.character.autoplay && !actor.activity)) && (!goalTarget || goalTarget.isDead)) {
         var bestDistance = 10000;
         actor.enemies.forEach(function (target) {
             if (target.isDead) return;
