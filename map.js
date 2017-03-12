@@ -617,7 +617,7 @@ $(document).on('keydown', function(event) {
             }
         }
     }
-    if (!editingMap && !editingLevel && event.which === 67) { // 'c'
+    if (!editingMap && !editingLevel && (event.which === 67 || event.which === 73)) { // 'c'|'i'
         if (state.selectedCharacter.context === 'item') setContext('guild');
         else if (state.selectedCharacter.context !== 'adventure') setContext('item');
     }

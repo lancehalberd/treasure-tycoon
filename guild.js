@@ -120,6 +120,7 @@ function drawFixedObject(area) {
 }
 var guildAreas = {};
 var guildFoyerFrontDoor = {'areaKey': 'guildFoyer', 'x': 120, 'z': 0};
+var guildYardEntrance = {'areaKey': 'guildYard', 'x': 120, 'z': 0};
 var allApplications = [
     fixedObject('heroApplication', [190, 50, wallZ]),
     fixedObject('heroApplication', [240, 50, wallZ])

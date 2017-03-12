@@ -131,7 +131,8 @@ function hireCharacter(character) {
     unlockMapLevel(character.currentLevelKey);
     gain('fame', character.fame);
     state.characters.push(character);
-    enterGuildArea(character, guildFoyerFrontDoor);
+    enterGuildArea(character, guildYardEntrance);
     $('.js-charactersBox').append(character.$characterCanvas);
+    $('.js-heroApplication').hide();
     setSelectedCharacter(character);
 }
