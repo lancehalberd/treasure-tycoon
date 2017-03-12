@@ -268,3 +268,30 @@ function jobIcon(column, row) {
 function drawJobIcon(context, target) {
     drawImage(context, this.image, this, target);
 }
+var foolIcon = jobIcon(0, 2);
+
+var blackBeltIcon = jobIcon(0, 1);
+var warriorIcon = jobIcon(1, 1);
+var samuraiIcon = jobIcon(2, 1);
+
+var jugglerIcon = jobIcon(4, 0);
+var rangerIcon = jobIcon(4, 2);
+var sniperIcon = jobIcon(0, 0);
+
+var priestIcon = jobIcon(0, 3);
+var wizardIcon = jobIcon(4, 3);
+var sorcererIcon = jobIcon(1, 3);
+
+var corsairIcon = jobIcon(2, 3);
+var assassinIcon = jobIcon(3, 1);
+var ninjaIcon = jobIcon(4, 1);
+
+var dancerIcon = jobIcon(3, 0);
+var bardIcon = jobIcon(2, 0);
+var sageIcon = jobIcon(1, 0);
+
+var paladinIcon = jobIcon(2, 2);
+var darkKnightIcon = jobIcon(3, 2);
+var enhancerIcon = jobIcon(3, 3);
+
+var masterIcon = jobIcon(1, 2);

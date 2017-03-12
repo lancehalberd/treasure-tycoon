@@ -630,58 +630,6 @@ function gainLevel(adventurer) {
     state.skipShrinesEnabled = true;
     $('.js-shrineButton').show();
 }
-function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonus, startingEquipment, jewelLoot, iconSource) {
-    var key = name.replace(/\s*/g, '').toLowerCase();
-    startingEquipment = ifdefor(startingEquipment, {});
-    startingEquipment.body = ifdefor(startingEquipment.body, itemsByKey.woolshirt);
-    characterClasses[key] = {
-        'key': key,
-        'name': name,
-        'dexterityBonus': dexterityBonus,
-        'strengthBonus': strengthBonus,
-        'intelligenceBonus': intelligenceBonus,
-        'startingEquipment': startingEquipment,
-        'startingBoard': ifdefor(classBoards[key], squareBoard),
-        'jewelLoot': jewelLoot,
-        'iconSource': iconSource
-    };
-}
-function jobJewels(r,g,b) {
-    var base = (r + g + b) * 5;
-    return [jewelLoot(['triangle'], [1, 1],
-                      [r ? [90, 100] : [base, base + 5],
-                       g ? [90, 100] : [base, base + 5],
-                       b ? [90, 100] : [base, base + 5]], false), smallJewelLoot, smallJewelLoot];
-}
-
-var characterClasses = {};
-addCharacterClass('Fool', 0, 0, 0, {}, [], jobIcon(0, 2));
-
-addCharacterClass('Black Belt', 0, 2, 1, {}, jobJewels(1,0,0), jobIcon(0, 1));
-addCharacterClass('Warrior', 1, 3, 1, {'weapon': itemsByKey.stick}, jobJewels(1,0,0), jobIcon(1, 1));
-addCharacterClass('Samurai', 2, 4, 1, {'weapon': itemsByKey.stick}, jobJewels(1,0,0), jobIcon(2, 1));
-
-addCharacterClass('Juggler', 2, 1, 0, {'weapon': itemsByKey.ball}, jobJewels(0,1,0),  jobIcon(4, 0));
-addCharacterClass('Ranger', 3, 1, 1, {'weapon': itemsByKey.ball}, jobJewels(0,1,0), jobIcon(4, 2));
-addCharacterClass('Sniper', 4, 1, 2, {'weapon': itemsByKey.ball}, jobJewels(0,1,0), jobIcon(0, 0));
-
-addCharacterClass('Priest', 1, 0, 2, {'weapon': itemsByKey.stick}, jobJewels(0,0,1), jobIcon(0, 3));
-addCharacterClass('Wizard', 1, 1, 3, {'weapon': itemsByKey.stick}, jobJewels(0,0,1), jobIcon(4, 3));
-addCharacterClass('Sorcerer', 1, 2, 4, {'weapon': itemsByKey.stick}, jobJewels(0,0,1), jobIcon(1, 3));
-
-addCharacterClass('Corsair', 2, 2, 1, {'weapon': itemsByKey.rock}, jobJewels(1,1,0), jobIcon(2, 3));
-addCharacterClass('Assassin', 3, 2, 1, {'weapon': itemsByKey.rock}, jobJewels(1,1,0), jobIcon(3, 1));
-addCharacterClass('Ninja', 4, 4, 2, {'weapon': itemsByKey.rock}, jobJewels(1,1,0), jobIcon(4, 1));
-
-addCharacterClass('Dancer', 2, 1, 2, {'weapon': itemsByKey.ball}, jobJewels(0,1,1), jobIcon(3, 0));
-addCharacterClass('Bard', 2, 1, 3, {'weapon': itemsByKey.stick}, jobJewels(1,0,1), jobIcon(2, 0));
-addCharacterClass('Sage', 4, 2, 4, {'weapon': itemsByKey.stick}, jobJewels(1,0,1), jobIcon(1, 0));
-
-addCharacterClass('Paladin', 1, 2, 2, {'weapon': itemsByKey.stick}, jobJewels(1,0,1), jobIcon(2, 2));
-addCharacterClass('Dark Knight', 1, 3, 2, {'weapon': itemsByKey.ball}, jobJewels(0,1,1),  jobIcon(3, 2));
-addCharacterClass('Enhancer', 2, 4, 4, {'weapon': itemsByKey.ball}, jobJewels(0,1,1), jobIcon(3, 3));
-
-addCharacterClass('Master', 4, 4, 4, {'weapon': itemsByKey.rock}, jobJewels(0,1,1), jobIcon(1, 2));
 
 function divinityToLevelUp(currentLevel) {
     return Math.ceil(baseDivinity(currentLevel)*(1 + (currentLevel - 1) / 10));
