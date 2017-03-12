@@ -308,6 +308,7 @@ function moveActor(actor) {
         actor.heading = [goalTarget.x - actor.x, 0, goalTarget.z - actor.z];
         actor.heading[2] -= actor.z / 180;
         actor.isMoving = true;
+        actor.goalTarget = goalTarget;
     }
     actor.heading = new Vector(actor.heading).normalize().getArrayValue();
     if (!actor.isMoving) {

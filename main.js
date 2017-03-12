@@ -134,8 +134,7 @@ function mainLoop() {
                 // always update the camera for characters in adventure areas.
                 if (character === state.selectedCharacter || !area.isGuildArea) {
                     var targetCameraX = getTargetCameraX(character);
-                    if (Math.abs(area.cameraX - targetCameraX) < 200) area.cameraX = (area.cameraX * 20 + targetCameraX) / 21;
-                    else area.cameraX = (area.cameraX * 10 + targetCameraX) / 11;
+                    area.cameraX = (area.cameraX * 20 + targetCameraX) / 21;
                 }
             }
         }
@@ -217,7 +216,10 @@ function getTargetCameraX(character) {
     var mouseX = Math.max(0, Math.min(800, mousePosition[0]));
     if (character.adventurer.activity && character.adventurer.activity.type === 'move') {
         centerX = (centerX + character.adventurer.activity.x) / 2;
-    } else if (mouseX > 700) centerX = centerX + (mouseX - 700) / 2;
+    } else if (character.adventurer.goalTarget && !character.adventurer.goalTarget.isDead) {
+        centerX = (centerX + character.adventurer.goalTarget.x) / 2;
+    }
+    if (mouseX > 700) centerX = centerX + (mouseX - 700) / 2;
     else if (mouseX < 100) centerX = centerX + (mouseX - 100) / 2;
     var target = centerX - 400;
     target = Math.max(ifdefor(area.left, 0), target);
