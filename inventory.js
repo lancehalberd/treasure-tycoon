@@ -510,7 +510,7 @@ $(document).on('keydown', function(event) {
             });
         }
     }
-    if (window.location.search.substr(1) === 'edit' && !editingLevel && event.which == 68 && event.shiftKey) { // 'd'
+    if (isEditingAllowed() && !editingLevel && event.which == 68 && event.shiftKey) { // 'd'
         gain('coins', 1000);
         gain('anima', 1000);
         $.each(itemsByKey, function (key, item) {
@@ -535,7 +535,7 @@ $(document).on('keydown', function(event) {
         if (item) equipItem(actor, item);
         return;
     }
-    if (window.location.search.substr(1) === 'edit' && event.which == 76) { // 'l'
+    if (isEditingAllowed() && event.which == 76) { // 'l'
         if (overCraftingItem) {
             state.craftedItems[overCraftingItem.key] |= CRAFTED_NORMAL;
             var item = makeItem(overCraftingItem, overCraftingItem.level);

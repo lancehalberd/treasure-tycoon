@@ -544,6 +544,10 @@ function updateEditingState() {
     $('.js-mainCanvasContainer').css('top', inAdventureMode ? 'auto' : '-330px');
 }
 
+function isEditingAllowed() {
+    return window.location.search.substr(1) === 'edit';
+}
+
 $(document).on('keydown', function(event) {
     if (event.which === 8) { // delete key
         if (editingMap) {
@@ -582,45 +586,53 @@ $(document).on('keydown', function(event) {
             }*/
         }
     }
-    if (editingMap && event.which === 67) { // 'c'
-        event.preventDefault();
-        exportMapToClipboard();
+    if (isEditingAllowed()) {
+        if (editingMap && event.which === 67) { // 'c'
+            event.preventDefault();
+            exportMapToClipboard();
+        }
+        if (!editingMap && !editingLevel && event.which === 67) { // 'c'
+            ipasteCharacterToClipBoard(state.selectedCharacter);
+        }
+        if (event.which === 69) { // 'e'
+            if (state.selectedCharacter.context !== 'map') return;
+            if (currentMapTarget) {
+                startEditingLevel(currentMapTarget);
+                return;
+            }
+            if (!editingLevel) {
+                if (!editingMap) startMapEditing();
+                else stopMapEditing();
+            }
+        }
+        if (event.which === 76) { // 'l'
+            if (currentMapTarget && currentMapTarget.levelKey) {
+                state.selectedCharacter.currentLevelKey = currentMapTarget.levelKey;
+                if (!state.selectedCharacter.completionTime) {
+                    state.selectedCharacter.completionTime = 100;
+                } else {
+                    state.selectedCharacter.completionTime -= 10;
+                }
+                completeLevel(state.selectedCharacter, state.selectedCharacter.completionTime);
+            }
+        }
     }
     if (!editingMap && !editingLevel && event.which === 67) { // 'c'
-        pasteCharacterToClipBoard(state.selectedCharacter);
+        if (state.selectedCharacter.context === 'item') setContext('guild');
+        else if (state.selectedCharacter.context !== 'adventure') setContext('item');
     }
-    if (window.location.search.substr(1) === 'edit' && event.which === 69) { // 'e'
-        if (state.selectedCharacter.context !== 'map') return;
-        if (currentMapTarget) {
-            startEditingLevel(currentMapTarget);
-            return;
-        }
-        if (!editingLevel) {
-            if (!editingMap) startMapEditing();
-            else stopMapEditing();
-        }
-    }
-    if (window.location.search.substr(1) === 'edit' && event.which === 76) { // 'l'
-        if (currentMapTarget && currentMapTarget.levelKey) {
-            state.selectedCharacter.currentLevelKey = currentMapTarget.levelKey;
-            if (!state.selectedCharacter.completionTime) {
-                state.selectedCharacter.completionTime = 100;
-            } else {
-                state.selectedCharacter.completionTime -= 10;
-            }
-            completeLevel(state.selectedCharacter, state.selectedCharacter.completionTime);
-        }
+    if (!editingMap && !editingLevel && event.which === 74) { // 'j'
+        if (state.selectedCharacter.context === 'jewel') setContext('guild');
+        else if (state.selectedCharacter.context !== 'adventure') setContext('jewel');
     }
     if (event.which === 77) { // 'm'
-        if (state.selectedCharacter.context === 'guild') {
-            openWorldMap(state.selectedCharacter.adventurer);
-        } else if (state.selectedCharacter.context === 'map') {
+        if (state.selectedCharacter.context === 'map') {
             if (!state.selectedCharacter.area) {
                 enterGuildArea(state.selectedCharacter, guildFoyerFrontDoor);
             } else {
                 setContext('guild');
             }
-        }
+        } else if (state.selectedCharacter.context !== 'adventure') openWorldMap(state.selectedCharacter.adventurer);
     }
 });
 
