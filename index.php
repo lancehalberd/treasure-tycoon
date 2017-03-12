@@ -293,7 +293,7 @@
 addScripts(['utils.js', 'mouse.js', 'drawDashedRectangle.js', 'images.js', 'bonuses.js',
     'drawJewel.js', 'drawBoard.js', 'inventory.js', 'armor.js', 'weapons.js', 'accessories.js',
     'evaluate.js','helpText.js','jewels.js','jewel-inventory.js','skills.js','abilities.js',
-    'loot.js','boards.js','character.js', 'jobs.js', 'crafting.js','enchanting.js','uniques.js',
+    'loot.js','boards.js', 'achievements.js', 'character.js', 'jobs.js', 'crafting.js','enchanting.js','uniques.js',
     'heroApplication.js', 'effects.js','performAttack.js','useSkill.js',
     'adventure.js', 'drawAdventure.js', 'monsters.js','levels.js','vector.js',
     'sphereVector.js','camera.js','mapData.js', 'map.js', 'guild.js', 'drawMap.js','editLevel.js',
