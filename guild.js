@@ -9,6 +9,9 @@ function openWorldMap(actor) {
 function openCrafting(actor) {
     setContext('item');
 }
+function openJewels(actor) {
+    setContext('jewel');
+}
 function useDoor(actor) {
     enterGuildArea(actor.character, this.exit);
 }
@@ -31,6 +34,7 @@ var areaObjects = {
     'woodenShrine': {'name': 'Shrine of Fortune', 'source': objectSource(guildImage, [500, 161-30], [20, 30, 20]), 'action': openCrafting},
     'candles': {'source': objectSource(guildImage, [260, 98-40], [25, 40, 0])},
     'bed': {'name': 'Worn Cot', 'source': objectSource(guildImage, [541, 160-24], [58, 24, 30])},
+    'jewelShrine': {'name': 'Shrine of Creation', 'source': objectSource(requireImage('gfx/militaryIcons.png'), [102, 125], [16, 16, 4]), 'action': openJewels},
 
     'heroApplication': {'name': 'Application', 'source': {'width': 40, 'height': 60, 'depth': 0}, 'action': showApplication, 'draw': function (area) {
         this.left = this.x - this.width / 2 - area.cameraX;
@@ -122,8 +126,8 @@ var allApplications = [
 ];
 var allBeds = [
     fixedObject('bed', [890, 0, 140], {'scale': 2, 'xScale': -1}),
-    fixedObject('bed', [890, 0, 140], {'scale': 2, 'xScale': -1}),
-    fixedObject('bed', [940, 0, -140], {'scale': 2, 'xScale': -1})
+    fixedObject('bed', [1090, 0, 140], {'scale': 2, 'xScale': -1}),
+    fixedObject('bed', [1140, 0, -140], {'scale': 2, 'xScale': -1})
 ];
 guildAreas.guildYard = initializeGuldArea({
     'key': 'guildYard',
@@ -160,25 +164,48 @@ guildAreas.guildFoyer = initializeGuldArea({
         fixedObject('woodenShrine', [500, 0, 150], {'scale': 2}),
         fixedObject('crackedOrb', [545, 0, 150], {'scale': 2}),
         allBeds[0]
+    ],
+    'level': 1,
+    'waves': [
+        ['goblin', 'goblin', 'goblin'],
+        ['skeleton', 'skeleton']
     ]
 });
 guildAreas.guildFrontHall = initializeGuldArea({
     'key': 'guildFrontHall',
-    'width': 1000,
+    'width': 1200,
     'backgroundPatterns': {'0': 'oldGuild'},
     'wallDecorations': [
         fixedObject('candles', [165, 50, wallZ], {'xScale': -1, 'scale': 1.5}),
-        fixedObject('candles', [440, 70, wallZ], {'xScale': -1, 'scale': 1.5}),
-        fixedObject('candles', [560, 70, wallZ], {'scale': 1.5}),
-        fixedObject('candles', [835, 50, wallZ], {'scale': 1.5}),
-        // fixedObject('door', [700, 0, wallZ], {'exit': {'areaKey': 'guildYard', 'x': 880, 'z': 0}, 'scale': 2}),
+        fixedObject('candles', [540, 70, wallZ], {'xScale': -1, 'scale': 1.5}),
+        fixedObject('candles', [660, 70, wallZ], {'scale': 1.5}),
+        fixedObject('candles', [1035, 50, wallZ], {'scale': 1.5}),
+        fixedObject('door', [600, 0, wallZ], {'exit': {'areaKey': 'guildKitchen', 'x': 150, 'z': 150}, 'scale': 2}),
     ],
     'leftWallDecorations': [
         fixedObject('door', [30, 0, 0], {'exit': {'areaKey': 'guildFoyer', 'x': 880, 'z': 0}, 'scale': 2}),
     ],
     'objects': [
+        fixedObject('jewelShrine', [120, 0, 150], {'scale': 6}),
+        fixedObject('crackedPot', [350, 0, 150], {'scale': 2}),
+        fixedObject('crackedPot', [400, 0, 150], {'scale': 2}),
         allBeds[1],
         allBeds[2]
+    ]
+});
+
+guildAreas.guildKitchen = initializeGuldArea({
+    'key': 'guildKitchen',
+    'width': 1200,
+    'backgroundPatterns': {'0': 'oldGuild'},
+    'wallDecorations': [
+        fixedObject('candles', [215, 50, wallZ], {'xScale': -1, 'scale': 1.5}),
+        fixedObject('candles', [835, 50, wallZ], {'scale': 1.5}),
+        fixedObject('door', [150, 0, wallZ], {'exit': {'areaKey': 'guildFrontHall', 'x': 600, 'z': 150}, 'scale': 2}),
+    ],
+    'leftWallDecorations': [
+    ],
+    'objects': [
     ]
 });
 var wallOriginCoords = [-71, 213];
@@ -186,7 +213,7 @@ var wallDepth = 120;
 var wallHeight = 130;
 var wallCanvas = createCanvas(wallDepth, wallHeight);
 var wallContext = wallCanvas.getContext('2d');
-//$('body').append(wallCanvas);
+// $('body').append(wallCanvas);
 function drawRightWall(guildArea) {
     if (guildArea.cameraX + 800 < guildArea.width - 60) return;
     var source = {'left': 60, 'top': 20, 'width': 60, 'height': 130};
