@@ -39,7 +39,7 @@ function canUseSkillOnTarget(actor, skill, target) {
 function canUseReaction(actor, reaction, attackStats) {
     if (!actor) throw new Error('No actor was passed to canUseReaction');
     if (!reaction) throw new Error('No reaction was passed to canUseReaction');
-    if (!target) throw new Error('No target was passed to canUseReaction');
+    if (!attackStats) throw new Error('No attackStats was passed to canUseReaction');
     if (reaction.readyAt > actor.time) return false;
     var reactionDefinition = skillDefinitions[reaction.base.type];
     if (!reactionDefinition) return false;
@@ -206,7 +206,7 @@ function useReaction(actor, reaction, attackStats) {
     var skillPopupText = {x: actor.x, y: actor.height, z: actor.z, color: 'white', fontSize: 15, 'vx': 0, 'vy': 1, 'gravity': .1};
     skillPopupText.value = reaction.base.name;
     appendTextPopup(actor.character.area, skillPopupText, true);
-    skillDefinition.use(actor, reaction, attackStats);
+    skillDefinitions[reaction.base.type].use(actor, reaction, attackStats);
     triggerSkillEffects(actor, reaction);
 }
 
