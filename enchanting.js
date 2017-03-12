@@ -74,12 +74,12 @@ addPrefix(32, 'Resilient', 'body', {'%maxHealth': [21, 30, 100]});
 addPrefix(52, 'Enduring', 'body', {'%maxHealth': [30, 37, 100]});
 addPrefix(72, 'Perpetual', 'body', {'%maxHealth': [37, 45, 100]});
 
-addPrefix(20, 'Regrowing', 'body', {'%healthRegen': [5, 10, 1000]});
-addPrefix(50, 'Reconstructing', 'body', {'%healthRegen': [11, 15, 1000]});
-addPrefix(70, 'Regenerating', 'body', {'%healthRegen': [16, 20, 1000]});
+addPrefix(20, 'Regrowing', 'body', {'%healthRegen': [5, 14, 100]});
+addPrefix(50, 'Reconstructing', 'body', {'%healthRegen': [15, 29, 100]});
+addPrefix(70, 'Regenerating', 'body', {'%healthRegen': [30, 50, 100]});
 
-addPrefix(20, 'Flowing', 'jadeband', {'%healthRegen': [1, 5, 1000]});
-addPrefix(40, 'Surging', 'jadeband', {'%healthRegen': [6, 10, 1000]});
+addPrefix(20, 'Flowing', 'jadeband', {'%healthRegen': [5, 19, 100]});
+addPrefix(40, 'Surging', 'jadeband', {'%healthRegen': [20, 30, 100]});
 
 addPrefix(1, 'Sound', smallArmorSlots.concat(accessorySlots), {'%maxHealth': [2, 6, 100]});
 addPrefix(11, 'Hale', smallArmorSlots.concat(accessorySlots), {'%maxHealth': [5, 10, 100]});
