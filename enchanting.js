@@ -74,8 +74,8 @@ addPrefix(32, 'Resilient', 'body', {'%maxHealth': [21, 30, 100]});
 addPrefix(52, 'Enduring', 'body', {'%maxHealth': [30, 37, 100]});
 addPrefix(72, 'Perpetual', 'body', {'%maxHealth': [37, 45, 100]});
 
-addPrefix(20, 'Regrowing', 'body', {'%healthRegen': [5, 14, 100]});
-addPrefix(50, 'Reconstructing', 'body', {'%healthRegen': [15, 29, 100]});
+addPrefix(10, 'Regrowing', 'body', {'%healthRegen': [5, 14, 100]});
+addPrefix(40, 'Reconstructing', 'body', {'%healthRegen': [15, 29, 100]});
 addPrefix(70, 'Regenerating', 'body', {'%healthRegen': [30, 50, 100]});
 
 addPrefix(20, 'Flowing', 'jadeband', {'%healthRegen': [5, 19, 100]});
