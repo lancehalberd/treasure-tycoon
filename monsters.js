@@ -348,6 +348,9 @@ function initalizeMonsters() {
         'name': 'Dummy', 'source': caterpillarSource,
         'implicitBonuses': {}
     });
+    addMonster('goblin', {
+        'name': 'Goblin', 'source': goblinTatteredShortsSource, 'implicitBonuses': {}
+    });
     addMonster('turtle', {
         'name': 'Turtle', 'source': turtleSource, 'fpsMultiplier': 2,
         'implicitBonuses': {}
