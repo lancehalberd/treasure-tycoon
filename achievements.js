@@ -34,15 +34,32 @@ var altarTrophies = {
     'level-master': jobAchievement('master', [{'+healthRegen': 2}, {'+healthRegen': ['{maxHealth}', '/', 100]}, {'%healthRegen': 0.1}, {'*healthRegen': 1.1}]),
 };
 function jobAchievement(jobKey, bonusesArray) {
-    return {'jobKey': jobKey, 'level': 0, 'value': 0, 'bonusesArray': [
+    return {'jobKey': jobKey, 'level': Random.range(0,5), 'value': 0, 'bonusesArray': [
                 {'target': 2, 'bonuses': bonusesArray[0]},
                 {'target': 10, 'bonuses': bonusesArray[0]},
                 {'target': 30, 'bonuses': bonusesArray[0]},
                 {'target': 60, 'bonuses': bonusesArray[0]},
-            ], 'draw': drawJobAchievement, 'helpMethod': getJobAchievementHelpText, 'onClick': selectTrophy};
+            ], 'draw': drawJobAchievement, 'drawWithOutline': drawJobAchievementWithOutline,
+                'helpMethod': getJobAchievementHelpText, 'onClick': selectTrophy};
 }
 function drawJobAchievement(context, target) {
-    jobIcons[this.jobKey].drawImage(context, target);
+    if (this.level === 0 ) {
+        context.save();
+        context.globalAlpha = .5;
+        drawSourceAsSolidTint(context, jobIcons[this.jobKey], 'black', target);
+        context.restore();
+        return;
+    }
+    var color = ['#F84', '#EA4', '#CCD', '#FF8', '#EEE'][this.level - 1];
+    drawSourceAsSolidTint(context, jobIcons[this.jobKey], color, target);
+    context.save();
+    context.globalAlpha = .1;
+    jobIcons[this.jobKey].draw(context, target);
+    context.restore();
+}
+function drawJobAchievementWithOutline(context, color, thickness, target) {
+    drawSourceWithOutline(context, jobIcons[this.jobKey], color, thickness, target);
+    this.draw(context, target);
 }
 function getJobAchievementHelpText() {
     var job = characterClasses[this.jobKey];

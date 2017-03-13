@@ -53,7 +53,7 @@ function tintIcon(imageFile, color) {
         'width': 32,
         'height': 32,
         'color': color,
-        'drawImage': drawTintIcon
+        'draw': drawTintIcon
     };
 }
 
@@ -63,7 +63,7 @@ function getAbilityIconSource(ability) {
     if (ability.action) icon = icon || ability.action.icon;
     if (ability.reaction) icon = icon || ability.reaction.icon;
     if (!icon) icon = 'gfx/496RpgIcons/openScroll.png';
-    if (icon.drawImage) return icon;
+    if (icon.draw) return icon;
     return {'image': images[icon], 'left': 0, 'top': 0, 'width': 34, 'height': 34};
 }
 var abilities = {

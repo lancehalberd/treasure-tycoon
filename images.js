@@ -217,6 +217,10 @@ function getTintedImage(image, tint, amount, sourceRectangle) {
 }
 
 function drawSourceWithOutline(context, source, color, thickness, target) {
+    if (source.drawWithOutline) {
+        source.drawWithOutline(context, color, thickness, target);
+        return;
+    }
     context.save();
     var smallTarget = $.extend({}, target);
     for (var dy = -1; dy < 2; dy++) {
@@ -277,8 +281,8 @@ function drawAbilityIcon(context, icon, target) {
     var height = Math.min(icon.height, target.height);
     var vPadding = (target.height - height) / 2;
     var drawTarget = {'left': target.left + Math.ceil(hPadding), 'top': target.top + Math.ceil(vPadding), 'width': width, 'height': height};
-    if (icon.drawImage) {
-        icon.drawImage(context, drawTarget);
+    if (icon.draw) {
+        icon.draw(context, drawTarget);
         return;
     }
     // Default icon style is: {'image': images[icon], 'left': 0, 'top': 0, 'width': 34, 'height': 34};
@@ -288,7 +292,7 @@ function drawAbilityIcon(context, icon, target) {
 function jobIcon(column, row) {
     return {'image': requireImage('gfx/jobIcons.png'), 'width': 40, 'height': 40,
         'left': column * 41, 'top': row * 41,
-        'drawImage': drawJobIcon};
+        'draw': drawJobIcon};
 }
 function drawJobIcon(context, target) {
     drawImage(context, this.image, this, target);
