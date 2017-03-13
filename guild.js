@@ -20,6 +20,7 @@ function showApplication(actor) {
     $('.js-heroApplication').show();
 }
 function openTrophySelection(actor) {
+    removeToolTip();
     choosingTrophyAltar = this;
 }
 $('.js-mouseContainer').on('mousedown', function (event) {
@@ -50,6 +51,10 @@ var areaObjects = {
             }
         }, 'isOver': function (x, y) {
             return isPointInRectObject(x, y, this) || (this.trophy && isPointInRectObject(x,y, this.getTrophyRectangle()));
+        },
+        'helpMethod': function (object) {
+            if (this.trophy) return this.trophy.helpMethod();
+            return this.name;
         }
     },
     'candles': {'source': objectSource(guildImage, [260, 98-40], [25, 40, 0])},

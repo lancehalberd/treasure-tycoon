@@ -34,11 +34,11 @@ var altarTrophies = {
     'level-master': jobAchievement('master', [{'+healthRegen': 2}, {'+healthRegen': ['{maxHealth}', '/', 100]}, {'%healthRegen': 0.1}, {'*healthRegen': 1.1}]),
 };
 function jobAchievement(jobKey, bonusesArray) {
-    return {'jobKey': jobKey, 'level': Random.range(0,5), 'value': 0, 'bonusesArray': [
+    return {'jobKey': jobKey, 'level': 0, 'value': 0, 'bonusesArray': [
                 {'target': 2, 'bonuses': bonusesArray[0]},
-                {'target': 10, 'bonuses': bonusesArray[0]},
-                {'target': 30, 'bonuses': bonusesArray[0]},
-                {'target': 60, 'bonuses': bonusesArray[0]},
+                {'target': 10, 'bonuses': bonusesArray[1]},
+                {'target': 30, 'bonuses': bonusesArray[2]},
+                {'target': 60, 'bonuses': bonusesArray[3]},
             ], 'draw': drawJobAchievement, 'drawWithOutline': drawJobAchievementWithOutline,
                 'helpMethod': getJobAchievementHelpText, 'onClick': selectTrophy};
 }
@@ -62,8 +62,18 @@ function drawJobAchievementWithOutline(context, color, thickness, target) {
     this.draw(context, target);
 }
 function getJobAchievementHelpText() {
+    if (this.value === 0) return '??? Trophy';
     var job = characterClasses[this.jobKey];
-    return 'Level ' + job.name;
+    var parts = [job.name + ' Trophy', 'Highest Level: ' + this.value];
+    for (var i = 0; i < this.bonusesArray.length; i++) {
+        var textColor = (this.level > i) ? 'white' : '#888';
+        var levelData = this.bonusesArray[i];
+        var levelText = '<div style="color: ' + textColor + ';">Level ' + levelData.target + ':<div style="margin-left: 20px;">'
+            + bonusSourceHelpText(levelData, state.selectedCharacter.adventurer)
+            + '</div></div>';
+        parts.push(levelText);
+    }
+    return parts.join('<br/>');
 }
 function selectTrophy(character) {
     // A trophy must be at least level 1 to be used.

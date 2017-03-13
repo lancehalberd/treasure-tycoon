@@ -132,6 +132,7 @@ function hireCharacter(character) {
     gain('fame', character.fame);
     state.characters.push(character);
     enterGuildArea(character, guildYardEntrance);
+    updateTrophy('level-' + character.adventurer.job.key, character.adventurer.level);
     $('.js-charactersBox').append(character.$characterCanvas);
     $('.js-heroApplication').hide();
     setSelectedCharacter(character);
