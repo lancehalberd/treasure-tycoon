@@ -66,6 +66,8 @@ function getJobAchievementHelpText() {
     return 'Level ' + job.name;
 }
 function selectTrophy(character) {
+    // A trophy must be at least level 1 to be used.
+    if (!(this.level > 0)) return;
     if (choosingTrophyAltar.trophy === this) choosingTrophyAltar.trophy = null;
     else choosingTrophyAltar.trophy = this;
     choosingTrophyAltar = null;
