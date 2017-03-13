@@ -83,6 +83,7 @@ function importState(stateData) {
             character.divinity = 0;
         }
         state.characters.push(character);
+        updateTrophy('level-' + character.adventurer.job.key, character.adventurer.level);
         for (var levelKey of Object.keys(character.divinityScores)) {
             var level = map[levelKey];
             if (!level) {

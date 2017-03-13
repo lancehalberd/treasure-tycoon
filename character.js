@@ -616,6 +616,7 @@ function actorHelpText(actor) {
 }
 function gainLevel(adventurer) {
     adventurer.level++;
+    updateTrophy('level-' + adventurer.job.key, adventurer.level);
     adventurer.fame += adventurer.level;
     gain('fame', adventurer.level);
     // We need to update the adventurer from scratch here because we cannot

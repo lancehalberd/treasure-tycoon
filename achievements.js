@@ -34,11 +34,11 @@ var altarTrophies = {
     'level-master': jobAchievement('master', [{'+healthRegen': 2}, {'+healthRegen': ['{maxHealth}', '/', 100]}, {'%healthRegen': 0.1}, {'*healthRegen': 1.1}]),
 };
 function jobAchievement(jobKey, bonusesArray) {
-    return {'jobKey': jobKey, 'bonusesArray': [
-                {'targetLevel': 2, 'bonuses': bonusesArray[0]},
-                {'targetLevel': 10, 'bonuses': bonusesArray[0]},
-                {'targetLevel': 30, 'bonuses': bonusesArray[0]},
-                {'targetLevel': 60, 'bonuses': bonusesArray[0]},
+    return {'jobKey': jobKey, 'level': 0, 'value': 0, 'bonusesArray': [
+                {'target': 2, 'bonuses': bonusesArray[0]},
+                {'target': 10, 'bonuses': bonusesArray[0]},
+                {'target': 30, 'bonuses': bonusesArray[0]},
+                {'target': 60, 'bonuses': bonusesArray[0]},
             ], 'draw': drawJobAchievement, 'helpMethod': getJobAchievementHelpText, 'onClick': selectTrophy};
 }
 function drawJobAchievement(context, target) {
@@ -94,4 +94,15 @@ function getTrophyPopupTarget(x, y) {
         if (isPointInRectObject(x, y, trophy)) return trophy;
     }
     return null;
+}
+
+function updateTrophy(trophyKey, value) {
+    var trophyData = altarTrophies[trophyKey];
+    trophyData.value = Math.max(trophyData.value, value);
+    for (var i = 0; i < trophyData.bonusesArray.length; i++) {
+        if (trophyData.bonusesArray[i].target > trophyData.value) {
+            break;
+        }
+    }
+    trophyData.level = i;
 }
