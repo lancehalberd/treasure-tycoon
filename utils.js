@@ -148,6 +148,11 @@ function isPointInRect(x, y, l, t, w, h) {
     return !(y < t || y > (t + h) || x < l || x > (l + w));
 }
 
+function isPointInRectObject(x, y, rectangle) {
+    return !(y < rectangle.top || y > (rectangle.top + rectangle.height)
+        || x < rectangle.left || x > (rectangle.left + rectangle.width));
+}
+
 
 function rectanglesOverlap(A, B) {
     return !(A.bottom < B.top || A.top > B.bottom || A.right < B.left || A.left > B.right);

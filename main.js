@@ -204,6 +204,7 @@ function mainLoop() {
     }
     $('.js-inventorySlot').toggle($('.js-inventory .js-item').length === 0);
     checkRemoveToolTip();
+    if (choosingTrophyAltar) drawTrophySelection();
     } catch (e) {
         console.log(e);
         killMainLoop();
@@ -354,65 +355,7 @@ var wallMouseCoords = null;
 function checkToShowMainCanvasToolTip(x, y) {
     if (ifdefor(x) === null) return;
     if ($popup || !$('.js-mainCanvas').is(':visible')) return;
-    canvasPopupTarget = null;
-    var area = state.selectedCharacter.area;
-    if (state.selectedCharacter.context === 'map') canvasPopupTarget = getMapPopupTarget(x, y);
-    else if (area) {
-        for (var actor of area.allies.concat(area.enemies)) {
-            if (!actor.isDead && isPointInRect(x, y, actor.left, actor.top, actor.width, actor.height)) {
-                canvasPopupTarget = actor;
-                break;
-            }
-        }
-        if (!canvasPopupTarget) {
-            for (var object of area.objects.concat(ifdefor(area.wallDecorations, [])).concat(globalHud)) {
-                if (!object.action && !object.onClick) continue;
-                if (object.isVisible && !object.isVisible()) continue;
-                // (x,y) of objects is the bottom middle of their graphic.
-                var left = ifdefor(object.left, object.x - area.cameraX - object.width / 2);
-                var top = ifdefor(object.top, groundY - object.y - object.height);
-                if (object.isOver) {
-                    if (object.isOver(x, y)) {
-                        canvasPopupTarget = object;
-                        break;
-                    }
-                } else if (isPointInRect(x, y, left, top, object.width, object.height)) {
-                    canvasPopupTarget = object;
-                    break;
-                }
-            }
-        }
-        if (!canvasPopupTarget) {
-            if (area.cameraX + x < 60) {
-                var coords = unprojectLeftWallCoords(area, x, y);
-                // wallMouseCoords = coords;
-                for (var leftWallDecoration of ifdefor(area.leftWallDecorations, [])) {
-                    // decoration.target stores the rectangle that the decoration was drawn to on the wallCanvas before
-                    // it is projected to the wall trapezoid and uses the same coordinates the unprojectRightWallCoords returns in.
-                    var target = leftWallDecoration.target;
-                    // console.log([coords[0], coords[1], target.left, target.top, target.width, target.height]);
-                    if (isPointInRect(coords[0], coords[1], target.left, target.top, target.width, target.height)) {
-                        canvasPopupTarget = leftWallDecoration;
-                        break;
-                    }
-                }
-            }
-            if (area.cameraX + x > area.width - 60) {
-                var coords = unprojectRightWallCoords(area, x, y);
-                // wallMouseCoords = coords;
-                for (var rightWallDecoration of ifdefor(area.rightWallDecorations, [])) {
-                    // decoration.target stores the rectangle that the decoration was drawn to on the wallCanvas before
-                    // it is projected to the wall trapezoid and uses the same coordinates the unprojectRightWallCoords returns in.
-                    var target = rightWallDecoration.target;
-                    // console.log([coords[0], coords[1], target.left, target.top, target.width, target.height]);
-                    if (isPointInRect(coords[0], coords[1], target.left, target.top, target.width, target.height)) {
-                        canvasPopupTarget = rightWallDecoration;
-                        break;
-                    }
-                }
-            }
-        }
-    }
+    canvasPopupTarget = getMainCanvasMouseTarget(x, y);
     $('.js-mainCanvas').toggleClass('clickable', !!canvasPopupTarget);
     if (!canvasPopupTarget) {
         return;
@@ -423,6 +366,56 @@ function checkToShowMainCanvasToolTip(x, y) {
     $popup.data('canvasTarget', canvasPopupTarget);
     $('.js-mouseContainer').append($popup);
     updateToolTip(mousePosition[0], mousePosition[1], $popup);
+}
+// Return the canvas object under the mouse with highest priority, if any.
+function getMainCanvasMouseTarget(x, y) {
+    if (state.selectedCharacter.context === 'map') return getMapPopupTarget(x, y);
+    var area = state.selectedCharacter.area;
+    if (!area) return null;
+    if (choosingTrophyAltar) return getTrophyPopupTarget(x, y);
+    // Actors (heroes and enemies) have highest priority in the main game context.
+    for (var actor of area.allies.concat(area.enemies)) {
+        if (!actor.isDead && isPointInRect(x, y, actor.left, actor.top, actor.width, actor.height)) {
+            return actor;
+        }
+    }
+    for (var object of area.objects.concat(ifdefor(area.wallDecorations, [])).concat(globalHud)) {
+        if (!object.action && !object.onClick) continue;
+        if (object.isVisible && !object.isVisible()) continue;
+        // (x,y) of objects is the bottom middle of their graphic.
+        var left = ifdefor(object.left, object.x - area.cameraX - object.width / 2);
+        var top = ifdefor(object.top, groundY - object.y - object.height);
+        if (object.isOver) {
+            if (object.isOver(x, y)) return object;
+        } else if (isPointInRect(x, y, left, top, object.width, object.height)) return object;
+    }
+    if (area.cameraX + x < 60) {
+        var coords = unprojectLeftWallCoords(area, x, y);
+        // wallMouseCoords = coords;
+        for (var leftWallDecoration of ifdefor(area.leftWallDecorations, [])) {
+            // decoration.target stores the rectangle that the decoration was drawn to on the wallCanvas before
+            // it is projected to the wall trapezoid and uses the same coordinates the unprojectRightWallCoords returns in.
+            var target = leftWallDecoration.target;
+            // console.log([coords[0], coords[1], target.left, target.top, target.width, target.height]);
+            if (isPointInRect(coords[0], coords[1], target.left, target.top, target.width, target.height)) {
+                return leftWallDecoration;
+            }
+        }
+    }
+    if (area.cameraX + x > area.width - 60) {
+        var coords = unprojectRightWallCoords(area, x, y);
+        // wallMouseCoords = coords;
+        for (var rightWallDecoration of ifdefor(area.rightWallDecorations, [])) {
+            // decoration.target stores the rectangle that the decoration was drawn to on the wallCanvas before
+            // it is projected to the wall trapezoid and uses the same coordinates the unprojectRightWallCoords returns in.
+            var target = rightWallDecoration.target;
+            // console.log([coords[0], coords[1], target.left, target.top, target.width, target.height]);
+            if (isPointInRect(coords[0], coords[1], target.left, target.top, target.width, target.height)) {
+                return rightWallDecoration;
+            }
+        }
+    }
+    return null;
 }
 function checkToShowJewelToolTip() {
     var jewel = draggedJewel || overJewel;

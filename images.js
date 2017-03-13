@@ -216,6 +216,31 @@ function getTintedImage(image, tint, amount, sourceRectangle) {
     return globalCompositeCanvas;
 }
 
+function drawSourceWithOutline(context, source, color, thickness, target) {
+    context.save();
+    var smallTarget = $.extend({}, target);
+    for (var dy = -1; dy < 2; dy++) {
+        for (var dx = -1; dx < 2; dx++) {
+            if (dy == 0 && dx == 0) continue;
+            smallTarget.left = target.left + dx * thickness;
+            smallTarget.top = target.top + dy * thickness;
+            drawSourceAsSolidTint(context, source, color, smallTarget);
+        }
+    }
+    source.draw(context, target);
+}
+function drawSourceAsSolidTint(context, source, tint, target) {
+    // First make a solid color in the shape of the image to tint.
+    globalTintContext.save();
+    globalTintContext.fillStyle = tint;
+    globalTintContext.clearRect(0, 0, source.width, source.height);
+    var tintRectangle = {'left': 0, 'top': 0, 'width': source.width, 'height': source.height};
+    source.draw(globalTintContext, tintRectangle);
+    globalTintContext.globalCompositeOperation = "source-in";
+    globalTintContext.fillRect(0, 0, source.width, source.height);
+    drawImage(context, globalTintCanvas, tintRectangle, target);
+    globalTintContext.restore();
+}
 function drawOutlinedImage(context, image, color, thickness, source, target) {
     context.save();
     var smallTarget = $.extend({}, target);
@@ -268,30 +293,31 @@ function jobIcon(column, row) {
 function drawJobIcon(context, target) {
     drawImage(context, this.image, this, target);
 }
-var foolIcon = jobIcon(0, 2);
+var jobIcons = {};
+var foolIcon = jobIcons.fool = jobIcon(0, 2);
 
-var blackBeltIcon = jobIcon(0, 1);
-var warriorIcon = jobIcon(1, 1);
-var samuraiIcon = jobIcon(2, 1);
+var blackbeltIcon = jobIcons.blackbelt = jobIcon(0, 1);
+var warriorIcon = jobIcons.warrior = jobIcon(1, 1);
+var samuraiIcon = jobIcons.samurai = jobIcon(2, 1);
 
-var jugglerIcon = jobIcon(4, 0);
-var rangerIcon = jobIcon(4, 2);
-var sniperIcon = jobIcon(0, 0);
+var jugglerIcon = jobIcons.juggler = jobIcon(4, 0);
+var rangerIcon = jobIcons.ranger = jobIcon(4, 2);
+var sniperIcon = jobIcons.sniper = jobIcon(0, 0);
 
-var priestIcon = jobIcon(0, 3);
-var wizardIcon = jobIcon(4, 3);
-var sorcererIcon = jobIcon(1, 3);
+var priestIcon = jobIcons.priest = jobIcon(0, 3);
+var wizardIcon = jobIcons.wizard = jobIcon(4, 3);
+var sorcererIcon = jobIcons.sorcerer = jobIcon(1, 3);
 
-var corsairIcon = jobIcon(2, 3);
-var assassinIcon = jobIcon(3, 1);
-var ninjaIcon = jobIcon(4, 1);
+var corsairIcon = jobIcons.corsair = jobIcon(2, 3);
+var assassinIcon = jobIcons.assassin = jobIcon(3, 1);
+var ninjaIcon = jobIcons.ninja = jobIcon(4, 1);
 
-var dancerIcon = jobIcon(3, 0);
-var bardIcon = jobIcon(2, 0);
-var sageIcon = jobIcon(1, 0);
+var dancerIcon = jobIcons.dancer = jobIcon(3, 0);
+var bardIcon = jobIcons.bard = jobIcon(2, 0);
+var sageIcon = jobIcons.sage = jobIcon(1, 0);
 
-var paladinIcon = jobIcon(2, 2);
-var darkKnightIcon = jobIcon(3, 2);
-var enhancerIcon = jobIcon(3, 3);
+var paladinIcon = jobIcons.paladin = jobIcon(2, 2);
+var darkknightIcon = jobIcons.darkknight = jobIcon(3, 2);
+var enhancerIcon = jobIcons.enhancer = jobIcon(3, 3);
 
-var masterIcon = jobIcon(1, 2);
+var masterIcon = jobIcons.master = jobIcon(1, 2);

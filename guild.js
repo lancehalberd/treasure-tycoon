@@ -19,8 +19,14 @@ function showApplication(actor) {
     setHeroApplication($('.js-heroApplication'), this);
     $('.js-heroApplication').show();
 }
+function openTrophySelection(actor) {
+    choosingTrophyAltar = this;
+}
 $('.js-mouseContainer').on('mousedown', function (event) {
+    var x = event.pageX - $('.js-mainCanvas').offset().left;
+    var y = event.pageY - $('.js-mainCanvas').offset().top;
     if (!$(event.target).closest('.js-heroApplication').length) $('.js-heroApplication').hide();
+    if (!isPointInRectObject(x, y, trophyRectangle)) choosingTrophyAltar = null;
 });
 
 /*
@@ -31,7 +37,21 @@ var areaObjects = {
     'mapTable': {'name': 'World Map', 'source': objectSource(guildImage, [360, 130], [60, 27, 30]), 'action': openWorldMap},
     'crackedOrb': {'name': 'Cracked Anima Orb', 'source': objectSource(guildImage, [260, 130], [18, 27, 15])},
     'crackedPot': {'name': 'Cracked Pot', 'source': objectSource(guildImage, [320, 130], [22, 28, 15])},
-    'woodenShrine': {'name': 'Shrine of Fortune', 'source': objectSource(guildImage, [500, 161-30], [20, 30, 20]), 'action': openCrafting},
+    'woodenAltar': {'name': 'Shrine of Fortune', 'source': objectSource(guildImage, [500, 131], [20, 30, 20]), 'action': openCrafting},
+    'trophyAltar': {'name': 'Trophy Altar', 'source': objectSource(guildImage, [440, 131], [20, 30, 20]), 'action': openTrophySelection,
+        'getTrophyRectangle': function () {
+            return {'left': this.left + (this.width - this.trophy.width) / 2, 'top': this.top - this.trophy.height + 20, 'width': this.trophy.width, 'height': this.trophy.height};
+        },
+        'draw': function (area) {
+            drawFixedObject.call(this, area);
+            if (this.trophy) {
+                if (canvasPopupTarget === this) drawSourceWithOutline(mainContext, this.trophy, '#fff', 2, this.getTrophyRectangle());
+                else this.trophy.draw(mainContext, this.getTrophyRectangle());
+            }
+        }, 'isOver': function (x, y) {
+            return isPointInRectObject(x, y, this) || (this.trophy && isPointInRectObject(x,y, this.getTrophyRectangle()));
+        }
+    },
     'candles': {'source': objectSource(guildImage, [260, 98-40], [25, 40, 0])},
     'bed': {'name': 'Worn Cot', 'source': objectSource(guildImage, [541, 160-24], [58, 24, 30])},
     'jewelShrine': {'name': 'Shrine of Creation', 'source': objectSource(requireImage('gfx/militaryIcons.png'), [102, 125], [16, 16, 4]), 'action': openJewels},
@@ -97,7 +117,7 @@ function fixedObject(objectKey, coords, properties) {
                     'width': imageSource.width * scale, 'height': imageSource.height * scale, 'depth': imageSource.depth * scale,
                     'action': properties.action || base.action,
                     'draw': properties.draw || base.draw || drawFixedObject,
-                    'helpMethod': properties.helpMethod || fixedObjectHelpText}, properties || {});
+                    'helpMethod': properties.helpMethod || fixedObjectHelpText}, base, properties || {});
 }
 function fixedObjectHelpText(object) {
     return object.base.name;
@@ -162,8 +182,9 @@ guildAreas.guildFoyer = initializeGuldArea({
     'objects': [
         fixedObject('mapTable', [250, 0, 90], {'scale': 2}),
         fixedObject('crackedPot', [455, 0, 150], {'scale': 2}),
-        fixedObject('woodenShrine', [500, 0, 150], {'scale': 2}),
+        fixedObject('woodenAltar', [500, 0, 150], {'scale': 2}),
         fixedObject('crackedOrb', [545, 0, 150], {'scale': 2}),
+        fixedObject('trophyAltar', [600, 0, 0], {'scale': 2}),
         allBeds[0]
     ],
     'level': 1,
@@ -190,6 +211,8 @@ guildAreas.guildFrontHall = initializeGuldArea({
         fixedObject('jewelShrine', [120, 0, 150], {'scale': 6}),
         fixedObject('crackedPot', [350, 0, 150], {'scale': 2}),
         fixedObject('crackedPot', [400, 0, 150], {'scale': 2}),
+        fixedObject('trophyAltar', [300, 0, 0], {'scale': 2}),
+        fixedObject('trophyAltar', [700, 0, 0], {'scale': 2}),
         allBeds[1],
         allBeds[2]
     ]
@@ -207,6 +230,7 @@ guildAreas.guildKitchen = initializeGuldArea({
     'leftWallDecorations': [
     ],
     'objects': [
+        fixedObject('trophyAltar', [600, 0, 0], {'scale': 2}),
     ]
 });
 var wallOriginCoords = [-71, 213];

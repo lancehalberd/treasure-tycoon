@@ -2,7 +2,7 @@ var characterClasses = {};
 
 addCharacterClass('Fool', 0, 0, 0, {}, [], foolIcon);
 
-addCharacterClass('Black Belt', 0, 2, 1, {}, jobJewels(1,0,0), blackBeltIcon);
+addCharacterClass('Black Belt', 0, 2, 1, {}, jobJewels(1,0,0), blackbeltIcon);
 addCharacterClass('Warrior', 1, 3, 1, {'weapon': itemsByKey.stick}, jobJewels(1,0,0), warriorIcon);
 addCharacterClass('Samurai', 2, 4, 1, {'weapon': itemsByKey.stick}, jobJewels(1,0,0), samuraiIcon);
 
@@ -23,7 +23,7 @@ addCharacterClass('Bard', 2, 1, 3, {'weapon': itemsByKey.stick}, jobJewels(1,0,1
 addCharacterClass('Sage', 4, 2, 4, {'weapon': itemsByKey.stick}, jobJewels(1,0,1), sageIcon);
 
 addCharacterClass('Paladin', 1, 2, 2, {'weapon': itemsByKey.stick}, jobJewels(1,0,1), paladinIcon);
-addCharacterClass('Dark Knight', 1, 3, 2, {'weapon': itemsByKey.ball}, jobJewels(0,1,1),  darkKnightIcon);
+addCharacterClass('Dark Knight', 1, 3, 2, {'weapon': itemsByKey.ball}, jobJewels(0,1,1),  darkknightIcon);
 addCharacterClass('Enhancer', 2, 4, 4, {'weapon': itemsByKey.ball}, jobJewels(0,1,1), enhancerIcon);
 
 addCharacterClass('Master', 4, 4, 4, {'weapon': itemsByKey.rock}, jobJewels(0,1,1), masterIcon);
