@@ -44,6 +44,8 @@ var areaObjects = {
             return {'left': this.left + (this.width - this.trophy.width) / 2, 'top': this.top - this.trophy.height + 20, 'width': this.trophy.width, 'height': this.trophy.height};
         },
         'draw': function (area) {
+            // Make this altar flash if it is open and there is an unused trophy available to place on it.
+            this.flashColor = (!this.trophy && isAltarTrophyAvailable) ? 'white' : null;
             drawFixedObject.call(this, area);
             if (this.trophy) {
                 if (canvasPopupTarget === this) drawSourceWithOutline(mainContext, this.trophy, '#fff', 2, this.getTrophyRectangle());
@@ -150,6 +152,7 @@ function drawFixedObject(area) {
         mainContext.fillRect(this.left, groundY - this.y - objectHeight - (this.z + this.depth / 2) / 2, this.width, this.depth / 2);
     }*/
     if (canvasPopupTarget === this) drawOutlinedImage(mainContext, imageSource.image, '#fff', 2, imageSource, this);
+    else if (this.flashColor) drawTintedImage(mainContext, imageSource.image, this.flashColor, .5 + .2 * Math.sin(now() / 150), imageSource, this);
     else drawImage(mainContext, imageSource.image, imageSource, this);
 }
 var guildAreas = {};

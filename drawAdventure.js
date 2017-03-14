@@ -151,6 +151,7 @@ function drawActor(actor) {
 
     // life bar
     if (actor.isDead) return;
+    if (!actor.area.enemies.length) return;
     var x = left + actor.width / 2 - 32;
     var y = top - 5;
     drawBar(context, x, y, 64, 4, 'white', ifdefor(actor.lifeBarColor, 'red'), actor.health / actor.maxHealth);

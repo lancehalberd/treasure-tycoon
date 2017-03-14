@@ -329,7 +329,7 @@ $('.js-mouseContainer').on('mouseout', '.js-mainCanvas', function (event) {
 
 function drawHudElement() {
     if (canvasPopupTarget === this) drawOutlinedImage(mainContext, this.source.image, '#fff', 2, this.source, this);
-    else if (this.flashColor) drawTintedImage(mainContext, this.source.image, this.flashColor, .5 + .2 * Math.sin(now() / 150), this.source, this)
+    else if (this.flashColor) drawTintedImage(mainContext, this.source.image, this.flashColor, .5 + .2 * Math.sin(now() / 150), this.source, this);
     else drawImage(mainContext, this.source.image, this.source, this);
 }
 

@@ -52,6 +52,16 @@ function exportState(state) {
     }
     data.craftingTypeFilter = state.craftingTypeFilter;
     data.selectedCharacterIndex = state.characters.indexOf(state.selectedCharacter);
+    data.trophies = {};
+    for (var trophyKey in altarTrophies) {
+        var trophy = altarTrophies[trophyKey];
+        data.trophies[trophyKey] = {
+            'level': trophy.level,
+            'value': trophy.value,
+            'areaKey': trophy.areaKey,
+            'objectKey': trophy.objectKey
+        };
+    }
     return data;
 }
 function fixNumber(number) {
@@ -77,6 +87,21 @@ function importState(stateData) {
     state.maxCraftingLevel = stateData.maxCraftingLevel;
     state.craftingXOffset = ifdefor(stateData.craftingXOffset, 0)
     state.craftedItems = ifdefor(stateData.craftedItems, {});
+    // Read trophy data before characters so that their bonuses will be applied when
+    // we first initialize the characters.
+    stateData.trophies = stateData.trophies || {};
+    for (var trophyKey in altarTrophies) {
+        if (!stateData.trophies[trophyKey]) continue;
+        var trophy = altarTrophies[trophyKey];
+        var trophyData = stateData.trophies[trophyKey];
+        trophy.level = trophyData.level;
+        trophy.value = trophyData.value;
+        var area = guildAreas[trophyData.areaKey];
+        if (!area) continue;
+        var altar = area.objectsByKey[trophyData.objectKey];
+        if (!altar) continue;
+        addTrophyToAltar(altar, trophy);
+    }
     var characters = stateData.characters.map(importCharacter);
     characters.forEach(function (character) {
         if (isNaN(character.divinity) || typeof(character.divinity) !== "number") {
@@ -146,6 +171,7 @@ function importState(stateData) {
     updateRetireButtons();
     var selectedCharacterIndex = Math.max(0, Math.min(ifdefor(stateData.selectedCharacterIndex, 0), state.characters.length - 1));
     setSelectedCharacter(state.characters[selectedCharacterIndex]);
+    checkIfAltarTrophyIsAvailable();
     return state;
 }
 function exportCharacter(character) {

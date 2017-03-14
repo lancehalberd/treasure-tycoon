@@ -5,6 +5,9 @@
  * The decorations are either wall decorations that can be hung in specified locations on walls,
  * or trophies that can be placed on specific pedestals.
  */
+var choosingTrophyAltar = false;
+var trophySize = 50;
+var trophyRectangle = rectangle(200, 100, 400, 300);
 var altarTrophies = {
     'level-juggler': jobAchievement('juggler', [{'+accuracy': 1}, {'%attackSpeed': 0.1}, {'+attackSpeed': 0.1}, {'*attackSpeed': 1.1}]),
     'level-ranger': jobAchievement('ranger', [{'+accuracy': 2}, {'+ranged:range': 0.5}, {'+ranged:range': 0.5, '+ranged:physicalDamage': 5}, {'*ranged:damage': 1.1}]),
@@ -34,7 +37,7 @@ var altarTrophies = {
     'level-master': jobAchievement('master', [{'+healthRegen': 2}, {'+healthRegen': ['{maxHealth}', '/', 100]}, {'%healthRegen': 0.1}, {'*healthRegen': 1.1}]),
 };
 function jobAchievement(jobKey, bonusesArray) {
-    return {'jobKey': jobKey, 'level': 0, 'value': 0, 'bonusesArray': [
+    return {'jobKey': jobKey, 'level': 0, 'value': 0, 'width': trophySize, 'height': trophySize, 'bonusesArray': [
                 {'target': 2, 'bonuses': bonusesArray[0]},
                 {'target': 10, 'bonuses': bonusesArray[1]},
                 {'target': 30, 'bonuses': bonusesArray[2]},
@@ -105,21 +108,23 @@ function selectTrophy(character) {
     }
     // If this is not the removed trophy, add this trophy to the altar.
     if (currentTrophy !== this) {
-        this.areaKey = choosingTrophyAltar.area.key;
-        this.objectKey = choosingTrophyAltar.key;
-        choosingTrophyAltar.trophy = this;
-        addTrophyBonuses(this);
+        addTrophyToAltar(choosingTrophyAltar, this);
     }
     choosingTrophyAltar = null;
     recomputeAllCharacterDirtyStats();
+    checkIfAltarTrophyIsAvailable();
+    saveGame();
 }
-var choosingTrophyAltar = false;
-var trophyRectangle = rectangle(200, 100, 400, 300);
+function addTrophyToAltar(altar, trophy) {
+    trophy.areaKey = altar.area.key;
+    trophy.objectKey = altar.key;
+    altar.trophy = trophy;
+    addTrophyBonuses(trophy);
+}
 
 function drawTrophySelection() {
     mainContext.fillStyle = '#888';
     mainContext.fillRect(trophyRectangle.left, trophyRectangle.top, trophyRectangle.width, trophyRectangle.height);
-    var trophySize = 50;
     var trophySpacing = 5;
     var checkSource = {'left': 68, 'top': 90, 'width': 16, 'height': 16};
     var left = 5;
@@ -128,9 +133,8 @@ function drawTrophySelection() {
         var trophy = altarTrophies[trophyKey];
         trophy.left = trophyRectangle.left + left;
         trophy.top = trophyRectangle.top + top;
-        trophy.width = trophy.height = trophySize;
         trophy.draw(mainContext, trophy);
-        if (choosingTrophyAltar.trophy && choosingTrophyAltar.trophy === trophy) {
+        if (trophy.areaKey) {
             var target = {'left': trophy.left + trophy.width - 20, 'top': trophy.top + trophy.height - 20, 'width': 16, 'height': 16};
             mainContext.fillStyle = 'white';
             mainContext.strokeStyle = 'black';
@@ -157,14 +161,21 @@ function getTrophyPopupTarget(x, y) {
 }
 
 function updateTrophy(trophyKey, value) {
-    var trophyData = altarTrophies[trophyKey];
-    trophyData.value = Math.max(trophyData.value, value);
-    for (var i = 0; i < trophyData.bonusesArray.length; i++) {
-        if (trophyData.bonusesArray[i].target > trophyData.value) {
+    var trophy = altarTrophies[trophyKey];
+    trophy.value = Math.max(trophy.value, value);
+    for (var i = 0; i < trophy.bonusesArray.length; i++) {
+        if (trophy.bonusesArray[i].target > trophy.value) {
             break;
         }
     }
-    trophyData.level = i;
+    if (i === trophy.level) return;
+    // If we are changing the level of the trophy, and the trophy is on display, we need to
+    // remove its bonuses, then add them again after changing the level.
+    if (trophy.area) removeTrophyBonuses(trophy);
+    trophy.level = i;
+    if (trophy.area) addTrophyBonuses(trophy);
+    // This may be a newly available trophy, so update trophy availability.
+    checkIfAltarTrophyIsAvailable();
 }
 
 function addTrophyBonuses(trophy, recompute) {
@@ -202,4 +213,16 @@ function removeTrophyBonuses(trophy, recompute) {
 
 function recomputeAllCharacterDirtyStats() {
     for (var character of state.characters) recomputeDirtyStats(character.adventurer);
+}
+
+var isAltarTrophyAvailable = false;
+function checkIfAltarTrophyIsAvailable() {
+    isAltarTrophyAvailable = false;
+    for (var trophyKey in altarTrophies) {
+        var trophy = altarTrophies[trophyKey];
+        if (trophy.level >0 && !trophy.areaKey) {
+            isAltarTrophyAvailable = true;
+            break;
+        }
+    }
 }
