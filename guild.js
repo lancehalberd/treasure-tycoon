@@ -56,7 +56,7 @@ var areaObjects = {
         },
         'helpMethod': function (object) {
             if (this.trophy) return this.trophy.helpMethod();
-            return this.name;
+            return null;
         }
     },
     'candles': {'source': objectSource(guildImage, [260, 98-40], [25, 40, 0])},
