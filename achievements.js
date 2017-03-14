@@ -78,9 +78,40 @@ function getJobAchievementHelpText() {
 function selectTrophy(character) {
     // A trophy must be at least level 1 to be used.
     if (!(this.level > 0)) return;
-    if (choosingTrophyAltar.trophy === this) choosingTrophyAltar.trophy = null;
-    else choosingTrophyAltar.trophy = this;
+    // If this trophy is already placed somewhere, remove it.
+    var oldAltar = null;
+    var currentTrophy = choosingTrophyAltar.trophy;
+    if (this.areaKey) {
+        oldAltar = guildAreas[this.areaKey].objectsByKey[this.objectKey];
+        oldAltar.trophy = null;
+        this.areaKey = null;
+        this.objectKey = null;
+        removeTrophyBonuses(this);
+    }
+    // remove whatever trophy is currently there, if any.
+    if (currentTrophy && currentTrophy !== this) {
+        // If we moved another trophy to replace this trophy, move this trophy
+        // back to the old trophies altar.
+        if (oldAltar) {
+            currentTrophy.areaKey = oldAltar.area.key;
+            currentTrophy.objectKey = oldAltar.key;
+            oldAltar.trophy = currentTrophy;
+        } else {
+            currentTrophy.areaKey = null;
+            currentTrophy.objectKey = null;
+            choosingTrophyAltar.trophy = null;
+            removeTrophyBonuses(currentTrophy);
+        }
+    }
+    // If this is not the removed trophy, add this trophy to the altar.
+    if (currentTrophy !== this) {
+        this.areaKey = choosingTrophyAltar.area.key;
+        this.objectKey = choosingTrophyAltar.key;
+        choosingTrophyAltar.trophy = this;
+        addTrophyBonuses(this);
+    }
     choosingTrophyAltar = null;
+    recomputeAllCharacterDirtyStats();
 }
 var choosingTrophyAltar = false;
 var trophyRectangle = rectangle(200, 100, 400, 300);
@@ -134,4 +165,41 @@ function updateTrophy(trophyKey, value) {
         }
     }
     trophyData.level = i;
+}
+
+function addTrophyBonuses(trophy, recompute) {
+    for (var i = 0; i < trophy.bonusesArray.length && i < trophy.level; i++) {
+        var bonusSource = trophy.bonusesArray[i];
+        if (guildBonusSources.indexOf(bonusSource) >= 0) {
+            console.log(bonusSource);
+            console.log(guildBonusSources);
+            throw new Error('bonus source was already present in guildBonusSources!');
+        }
+        guildBonusSources.push(bonusSource);
+        for (var character of state.characters) {
+            addBonusSourceToObject(character.adventurer, bonusSource);
+            //console.log(bonusSource.bonuses);
+        }
+    }
+    if (recompute) recomputeAllCharacterDirtyStats();
+}
+function removeTrophyBonuses(trophy, recompute) {
+    for (var i = 0; i < trophy.bonusesArray.length && i < trophy.level; i++) {
+        var bonusSource = trophy.bonusesArray[i];
+        if (guildBonusSources.indexOf(bonusSource) < 0) {
+            console.log(bonusSource);
+            console.log(guildBonusSources);
+            throw new Error('bonus source was not found in guildBonusSources!');
+        }
+        guildBonusSources.splice(guildBonusSources.indexOf(bonusSource), 1);
+        for (var character of state.characters) {
+            removeBonusSourceFromObject(character.adventurer, bonusSource);
+            //console.log(bonusSource.bonuses);
+        }
+    }
+    if (recompute) recomputeAllCharacterDirtyStats();
+}
+
+function recomputeAllCharacterDirtyStats() {
+    for (var character of state.characters) recomputeDirtyStats(character.adventurer);
 }

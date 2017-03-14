@@ -480,6 +480,9 @@ function updateAdventurer(adventurer) {
     });
     addBonusSourceToObject(adventurer, {'bonuses': adventurerBonuses});
     addBonusSourceToObject(adventurer, coreStatBonusSource);
+    for (var bonusSource of guildBonusSources) {
+        addBonusSourceToObject(adventurer, bonusSource);
+    }
     recomputeDirtyStats(adventurer);
     //console.log(adventurer);
 }

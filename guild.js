@@ -100,8 +100,10 @@ function initializeGuldArea(guildArea) {
     guildArea.textPopups = [];
     guildArea.treasurePopups = [];
     guildArea.objects = guildArea.objects || [];
+    guildArea.objectsByKey = {};
     for (var object of guildArea.objects) {
         object.area = guildArea;
+        guildArea.objectsByKey[object.key] = object;
     }
     guildArea.wallDecorations = guildArea.wallDecorations || [];
     for (var wallDecoration of guildArea.wallDecorations) {
@@ -113,22 +115,29 @@ function initializeGuldArea(guildArea) {
     guildArea.rightWall = ifdefor(guildArea.rightWall, fixedObject('wall', [guildArea.width - 10, 0, 15], {'scale': 2.2}));
     return guildArea;
 }
-function fixedObject(objectKey, coords, properties) {
+function fixedObject(baseObjectKey, coords, properties) {
     properties = ifdefor(properties, {});
     var scale = ifdefor(properties.scale, 1);
-    var base = areaObjects[objectKey];
+    var base = areaObjects[baseObjectKey];
     var imageSource = base.source;
-    return $.extend({'key': objectKey, 'fixed': true, 'base': areaObjects[objectKey], 'x': coords[0], 'y': coords[1], 'z': coords[2],
+    var newFixedObject = $.extend({'key': properties.key || baseObjectKey, 'fixed': true, 'base': base, 'x': coords[0], 'y': coords[1], 'z': coords[2],
                     'width': imageSource.width * scale, 'height': imageSource.height * scale, 'depth': imageSource.depth * scale,
                     'action': properties.action || base.action,
                     'draw': properties.draw || base.draw || drawFixedObject,
                     'helpMethod': properties.helpMethod || fixedObjectHelpText}, base, properties || {});
+    if (baseObjectKey === 'heroApplication') {
+        allApplications.push(newFixedObject);
+    }
+    if (baseObjectKey === 'bed') {
+        allBeds.push(newFixedObject);
+    }
+    return newFixedObject;
 }
 function fixedObjectHelpText(object) {
     return object.base.name;
 }
 function drawFixedObject(area) {
-    var imageSource = areaObjects[this.key].source;
+    var imageSource = this.base.source;
     // Calculate the left/top values from x/y/z coords, which drawImage will use.
     this.left = this.x - this.width / 2 - area.cameraX;
     // The object height is shorter than the image height because the image height includes height from depicting the depth of the object.
@@ -146,15 +155,8 @@ function drawFixedObject(area) {
 var guildAreas = {};
 var guildFoyerFrontDoor = {'areaKey': 'guildFoyer', 'x': 120, 'z': 0};
 var guildYardEntrance = {'areaKey': 'guildYard', 'x': 120, 'z': 0};
-var allApplications = [
-    fixedObject('heroApplication', [190, 50, wallZ]),
-    fixedObject('heroApplication', [240, 50, wallZ])
-];
-var allBeds = [
-    fixedObject('bed', [890, 0, 140], {'scale': 2, 'xScale': -1}),
-    fixedObject('bed', [1090, 0, 140], {'scale': 2, 'xScale': -1}),
-    fixedObject('bed', [1140, 0, -140], {'scale': 2, 'xScale': -1})
-];
+var allApplications = [];
+var allBeds = [];
 guildAreas.guildYard = initializeGuldArea({
     'key': 'guildYard',
     'width': 1000,
@@ -171,8 +173,8 @@ guildAreas.guildFoyer = initializeGuldArea({
     'width': 1000,
     'backgroundPatterns': {'0': 'oldGuild'},
     'wallDecorations': [
-        allApplications[0],
-        allApplications[1],
+        fixedObject('heroApplication', [190, 50, wallZ]),
+        fixedObject('heroApplication', [240, 50, wallZ]),
         fixedObject('candles', [135, 50, wallZ], {'xScale': -1, 'scale': 1.5}),
         fixedObject('candles', [440, 70, wallZ], {'xScale': -1, 'scale': 1.5}),
         fixedObject('candles', [560, 70, wallZ], {'scale': 1.5}),
@@ -190,7 +192,7 @@ guildAreas.guildFoyer = initializeGuldArea({
         fixedObject('woodenAltar', [500, 0, 150], {'scale': 2}),
         fixedObject('crackedOrb', [545, 0, 150], {'scale': 2}),
         fixedObject('trophyAltar', [600, 0, 0], {'scale': 2}),
-        allBeds[0]
+        fixedObject('bed', [890, 0, 140], {'scale': 2, 'xScale': -1})
     ],
     'level': 1,
     'waves': [
@@ -216,10 +218,10 @@ guildAreas.guildFrontHall = initializeGuldArea({
         fixedObject('jewelShrine', [120, 0, 150], {'scale': 6}),
         fixedObject('crackedPot', [350, 0, 150], {'scale': 2}),
         fixedObject('crackedPot', [400, 0, 150], {'scale': 2}),
-        fixedObject('trophyAltar', [300, 0, 0], {'scale': 2}),
-        fixedObject('trophyAltar', [700, 0, 0], {'scale': 2}),
-        allBeds[1],
-        allBeds[2]
+        fixedObject('trophyAltar', [300, 0, 0], {'scale': 2, 'key': 'trophyAltarA'}),
+        fixedObject('trophyAltar', [700, 0, 0], {'scale': 2, 'key': 'trophyAltarB'}),
+        fixedObject('bed', [1090, 0, 140], {'scale': 2, 'xScale': -1}),
+        fixedObject('bed', [1140, 0, -140], {'scale': 2, 'xScale': -1})
     ]
 });
 
@@ -503,3 +505,5 @@ function drawGuildArea(guildArea) {
         mainContext.fillText(textPopup.value, textPopup.x - guildArea.cameraX, groundY - textPopup.y - textPopup.z / 2);
     }
 }
+
+var guildBonusSources = [];
