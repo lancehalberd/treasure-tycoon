@@ -493,6 +493,9 @@ function checkRemoveToolTip() {
 function removeToolTip() {
     $('.js-toolTip').remove();
     $popup = null;
+    if (canvasPopupTarget && canvasPopupTarget.onMouseOut) {
+        canvasPopupTarget.onMouseOut();
+    }
     canvasPopupTarget = null;
     $popupTarget = null;
 }

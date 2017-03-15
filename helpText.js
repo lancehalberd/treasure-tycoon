@@ -338,5 +338,6 @@ var bonusMap = {
     '+count': '+$1 enchantment(s) stolen',
     '+weaponRange': '+$1 increased range',
     '+damageOverTime': 'Taking $1 damage per second',
-    '+reducedDivinityCost': '%1 reduced divinity cost at shrines'
+    '+reducedDivinityCost': '%1 reduced divinity cost at shrines',
+    '+maxCoins': '+$1 max coins'
 };

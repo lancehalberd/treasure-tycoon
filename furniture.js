@@ -34,14 +34,14 @@ $('.js-mouseContainer').on('mousedown', function (event) {
 });
 
 var coinStashTiers = [
-    {'name': 'Cracked Pot', 'guildBonuses': {'+maxCoins': 500}, 'upgradeCost': 500, 'source': objectSource(guildImage, [316, 130], [30, 30])},
-    {'name': 'Large Jar', 'guildBonuses': {'+maxCoins': 4000}, 'upgradeCost': 10000, 'source': objectSource(guildImage, [316, 130], [30, 30])},
-    {'name': 'Piggy Bank', 'guildBonuses': {'+maxCoins': 30000}, 'upgradeCost': 10000, 'requires': 'workshop', 'source': objectSource(guildImage, [316, 130], [30, 30])},
-    {'name': 'Chest', 'guildBonuses': {'+maxCoins': 200000}, 'upgradeCost': 150000, 'requires': 'workshop', 'source': objectSource(requireImage('gfx/chest-closed.png'), [0, 0], [32, 32])},
-    {'name': 'Safe', 'guildBonuses': {'+maxCoins': 1e6}, 'upgradeCost': 1.5e6, 'requires': 'magicWorkshop', 'source': objectSource(requireImage('gfx/chest-open.png'), [0, 0], [32, 32])},
-    {'name': 'Bag of Holding', 'guildBonuses': {'+maxCoins': 30e6}, 'upgradeCost': 10e6, 'requires': 'magicWorkshop', 'source': objectSource(guildImage, [316, 130], [30, 30])},
-    {'name': 'Safe of Holding', 'guildBonuses': {'+maxCoins': 500e6}, 'upgradeCost': 500e6, 'requires': 'magicWorkshop', 'source': objectSource(requireImage('gfx/chest-closed.png'), [0, 0], [32, 32])},
-    {'name': 'Safe of Hoarding', 'guildBonuses': {'+maxCoins': 10e9}, 'source': objectSource(requireImage('gfx/chest-open.png'), [0, 0], [32, 32])},
+    {'name': 'Cracked Pot', 'bonuses': {'+maxCoins': 500}, 'upgradeCost': 500, 'source': objectSource(guildImage, [316, 130], [30, 30])},
+    {'name': 'Large Jar', 'bonuses': {'+maxCoins': 4000}, 'upgradeCost': 10000, 'source': objectSource(guildImage, [316, 130], [30, 30])},
+    {'name': 'Piggy Bank', 'bonuses': {'+maxCoins': 30000}, 'upgradeCost': 10000, 'requires': 'workshop', 'source': objectSource(guildImage, [316, 130], [30, 30])},
+    {'name': 'Chest', 'bonuses': {'+maxCoins': 200000}, 'upgradeCost': 150000, 'requires': 'workshop', 'source': objectSource(requireImage('gfx/chest-closed.png'), [0, 0], [32, 32])},
+    {'name': 'Safe', 'bonuses': {'+maxCoins': 1e6}, 'upgradeCost': 1.5e6, 'requires': 'magicWorkshop', 'source': objectSource(requireImage('gfx/chest-open.png'), [0, 0], [32, 32])},
+    {'name': 'Bag of Holding', 'bonuses': {'+maxCoins': 30e6}, 'upgradeCost': 10e6, 'requires': 'magicWorkshop', 'source': objectSource(guildImage, [316, 130], [30, 30])},
+    {'name': 'Safe of Holding', 'bonuses': {'+maxCoins': 500e6}, 'upgradeCost': 500e6, 'requires': 'magicWorkshop', 'source': objectSource(requireImage('gfx/chest-closed.png'), [0, 0], [32, 32])},
+    {'name': 'Safe of Hoarding', 'bonuses': {'+maxCoins': 10e9}, 'source': objectSource(requireImage('gfx/chest-open.png'), [0, 0], [32, 32])},
 ];
 
 var areaObjects = {
@@ -59,8 +59,18 @@ var areaObjects = {
         },
         'helpMethod': function (object) {
             var coinStashTier = coinStashTiers[this.level - 1];
-            return coinStashTier.name;
-    }},
+            var parts = [coinStashTier.name];
+            parts.push(bonusSourceHelpText(coinStashTier, state.selectedCharacter.adventurer));
+            if (coinStashTier.upgradeCost) {
+                previewPointsChange('coins', -coinStashTier.upgradeCost);
+                parts.push('Upgrade for ' + points('coins', coinStashTier.upgradeCost));
+            }
+            return parts.join('<br/><br/>');
+        },
+        'onMouseOut': function () {
+            hidePointsPreview();
+        }
+    },
     'woodenAltar': {'name': 'Shrine of Fortune', 'source': objectSource(guildImage, [500, 131], [20, 30, 20]), 'action': openCrafting},
     'trophyAltar': {'name': 'Trophy Altar', 'source': objectSource(guildImage, [440, 131], [20, 30, 20]), 'action': openTrophySelection,
         'getTrophyRectangle': function () {

@@ -55,7 +55,7 @@ function evaluateForDisplay(value, actor, localObject) {
         throw new Error('Forgot to pass actor to evaluateForDisplay.');
     }
     if (typeof value === 'number') {
-        return value;
+        return value.abbreviate();
     }
     if (typeof value === 'string' && value.charAt(0) === '{') {
         return tag('span', 'formulaStat', value.substring(1, value.length - 1));
