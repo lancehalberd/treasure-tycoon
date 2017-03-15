@@ -37,7 +37,8 @@ var altarTrophies = {
     'level-master': jobAchievement('master', [{'+healthRegen': 2}, {'+healthRegen': ['{maxHealth}', '/', 100]}, {'%healthRegen': 0.1}, {'*healthRegen': 1.1}]),
 };
 function jobAchievement(jobKey, bonusesArray) {
-    return {'jobKey': jobKey, 'level': 0, 'value': 0, 'width': trophySize, 'height': trophySize, 'bonusesArray': [
+    var job = characterClasses[jobKey];
+    return {'jobKey': jobKey, 'title': job.name + ' Trophy', 'level': 0, 'value': 0, 'width': trophySize, 'height': trophySize, 'bonusesArray': [
                 {'target': 2, 'bonuses': bonusesArray[0]},
                 {'target': 10, 'bonuses': bonusesArray[1]},
                 {'target': 30, 'bonuses': bonusesArray[2]},
@@ -66,8 +67,7 @@ function drawJobAchievementWithOutline(context, color, thickness, target) {
 }
 function getJobAchievementHelpText() {
     if (this.value === 0) return '??? Trophy';
-    var job = characterClasses[this.jobKey];
-    var parts = [job.name + ' Trophy', 'Highest Level: ' + this.value];
+    var parts = [this.title, 'Highest Level: ' + this.value];
     for (var i = 0; i < this.bonusesArray.length; i++) {
         var textColor = (this.level > i) ? 'white' : '#888';
         var levelData = this.bonusesArray[i];
@@ -176,6 +176,7 @@ function updateTrophy(trophyKey, value) {
     if (trophy.area) addTrophyBonuses(trophy);
     // This may be a newly available trophy, so update trophy availability.
     checkIfAltarTrophyIsAvailable();
+    showTophyPopup(trophy);
 }
 
 function addTrophyBonuses(trophy, recompute) {
@@ -224,5 +225,88 @@ function checkIfAltarTrophyIsAvailable() {
             isAltarTrophyAvailable = true;
             break;
         }
+    }
+}
+
+var trophyPopups = [];
+var trophyPopupWidth = 160;
+var trophyPopupHeight = 80;
+
+function showTophyPopup(trophy) {
+    var lastPopup;
+    if (trophyPopups.length) {
+        lastPopup = trophyPopups[trophyPopups.length - 1];
+    }
+    trophyPopups.push({
+        'left': Math.min(800, (lastPopup ? lastPopup.left : 800)) - 5 - trophyPopupWidth,
+        'top': 600,
+        'width': trophyPopupWidth, 'height': trophyPopupHeight,
+        'trophy': trophy,
+        'time': 0,
+        'onClick': function () {
+            this.dismissed = true;
+        }
+    });
+}
+function updateTrophyPopups() {
+    var previousPopup;
+    for (var trophyPopup of trophyPopups) {
+        if (!trophyPopup.dismissed && previousPopup && trophyPopup.left < previousPopup.left - 5 - trophyPopupWidth) {
+            trophyPopup.left = Math.min(trophyPopup.left + 10, 800 - 5 - trophyPopupWidth);
+        }
+        previousPopup = trophyPopup;
+        if (trophyPopup.dismissed) {
+            if (trophyPopup.left < 800) {
+                trophyPopup.left += 10;
+            } else {
+                trophyPopups.splice(trophyPopups.indexOf(trophyPopup), 1);
+            }
+            continue;
+        } else {
+
+        }
+        if (trophyPopup.top > 600 - 5 - trophyPopupHeight) {
+            trophyPopup.top -= 10;
+        } else if (trophyPopup.time < 3) {
+            trophyPopup.time += .02;
+        } else {
+            trophyPopup.dismissed = true;
+        }
+    }
+}
+
+function drawTrophyPopups() {
+    for (var trophyPopup of trophyPopups) {
+        mainContext.save();
+        mainContext.globalAlpha = .4;
+        mainContext.fillStyle = 'black';
+        mainContext.fillRect(trophyPopup.left, trophyPopup.top, trophyPopup.width, trophyPopup.height);
+        mainContext.restore();
+        mainContext.strokeStyle = 'white';
+        mainContext.strokeRect(trophyPopup.left, trophyPopup.top, trophyPopup.width, trophyPopup.height);
+        trophyPopup.trophy.draw(mainContext, {'left': trophyPopup.left + 5, 'top': trophyPopup.top + (trophyPopupHeight - trophySize) / 2, 'width': trophySize, 'height': trophySize});
+        mainContext.fillStyle = '#999';
+        mainContext.font = '16px sans-serif';
+        mainContext.textAlign = 'left'
+        mainContext.textBaseline = 'middle';
+        //context.fillText(levelData.coords.map(function (number) { return number.toFixed(0);}).join(', '), levelData.left + 20, levelData.top + 45);
+        mainContext.fillText('Unlocked', trophyPopup.left + 5 + trophySize + 5, trophyPopup.top + 20);
+        mainContext.fillStyle = 'white';
+        mainContext.font = '18px sans-serif';
+        var titleParts = trophyPopup.trophy.title.split(' ');
+        var line = titleParts.shift();
+        var textLeft = trophyPopup.left + 5 + trophySize + 5;
+        var textBaseLine = trophyPopup.top + 40;
+        while (titleParts.length) {
+            var metrics = mainContext.measureText(line + ' ' + titleParts[0]);
+            if (textLeft + metrics.width + 5 > trophyPopup.left + trophyPopup.width) {
+                mainContext.fillText(line, textLeft, textBaseLine);
+                textBaseLine += 20;
+                line = titleParts.shift();
+            } else {
+                line += ' ' + titleParts.shift();
+            }
+        }
+        if (line) mainContext.fillText(line, textLeft, textBaseLine);
     }
 }

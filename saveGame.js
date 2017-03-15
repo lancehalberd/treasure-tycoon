@@ -121,7 +121,8 @@ function importState(stateData) {
             state.completedLevels[levelKey] = true;
         }
         var bed = allBeds[state.characters.length - 1];
-        enterGuildArea(character, {'areaKey': bed.area.key, 'x': bed.x - 80, 'z': bed.z});
+        if (bed) enterGuildArea(character, {'areaKey': bed.area.key, 'x': bed.x - 80, 'z': bed.z});
+        else enterGuildArea(character, guildYardEntrance);
         $('.js-charactersBox').append(character.$characterCanvas);
     });
     for (var completedLevelKey in state.completedLevels) {

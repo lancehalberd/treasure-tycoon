@@ -132,7 +132,7 @@ function mainLoop() {
                 var area = character.area;
                 // Only update the camera for the guild for the selected character, but
                 // always update the camera for characters in adventure areas.
-                if (character === state.selectedCharacter || !area.isGuildArea) {
+                if (character === state.selectedCharacter || (area && !area.isGuildArea)) {
                     var targetCameraX = getTargetCameraX(character);
                     area.cameraX = (area.cameraX * 20 + targetCameraX) / 21;
                 }
@@ -205,6 +205,8 @@ function mainLoop() {
     $('.js-inventorySlot').toggle($('.js-inventory .js-item').length === 0);
     checkRemoveToolTip();
     if (choosingTrophyAltar) drawTrophySelection();
+    updateTrophyPopups();
+    drawTrophyPopups();
     } catch (e) {
         console.log(e);
         killMainLoop();
@@ -373,6 +375,11 @@ function getMainCanvasMouseTarget(x, y) {
     var area = state.selectedCharacter.area;
     if (!area) return null;
     if (choosingTrophyAltar) return getTrophyPopupTarget(x, y);
+    for (var trophyPopup of trophyPopups) {
+        if (isPointInRect(x, y, trophyPopup.left, trophyPopup.top, trophyPopup.width, trophyPopup.height)) {
+            return trophyPopup;
+        }
+    }
     // Actors (heroes and enemies) have highest priority in the main game context.
     for (var actor of area.allies.concat(area.enemies)) {
         if (!actor.isDead && isPointInRect(x, y, actor.left, actor.top, actor.width, actor.height)) {

@@ -175,6 +175,8 @@ function returnToMap(character) {
     } else if (state.selectedCharacter === character) {
         setContext('map');
         refreshStatsPanel(character, $('.js-characterColumn .js-stats'));
+    } else {
+        character.context = 'map';
     }
 }
 function refreshStatsPanel(character, $statsPanel) {
