@@ -380,10 +380,12 @@ function getMainCanvasMouseTarget(x, y) {
             return trophyPopup;
         }
     }
-    // Actors (heroes and enemies) have highest priority in the main game context.
-    for (var actor of area.allies.concat(area.enemies)) {
-        if (!actor.isDead && isPointInRect(x, y, actor.left, actor.top, actor.width, actor.height)) {
-            return actor;
+    // Actors (heroes and enemies) have highest priority in the main game context during fights.
+    if (area.enemies.length) {
+        for (var actor of area.allies.concat(area.enemies)) {
+            if (!actor.isDead && isPointInRect(x, y, actor.left, actor.top, actor.width, actor.height)) {
+                return actor;
+            }
         }
     }
     for (var object of area.objects.concat(ifdefor(area.wallDecorations, [])).concat(globalHud)) {

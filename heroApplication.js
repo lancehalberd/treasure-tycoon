@@ -131,6 +131,8 @@ function hireCharacter(character) {
     unlockMapLevel(character.currentLevelKey);
     gain('fame', character.fame);
     state.characters.push(character);
+    // Update the adventurer because it may not have guild bonuses applied to it yet.
+    updateAdventurer(character.adventurer);
     enterGuildArea(character, guildYardEntrance);
     updateTrophy('level-' + character.adventurer.job.key, character.adventurer.level);
     $('.js-charactersBox').append(character.$characterCanvas);

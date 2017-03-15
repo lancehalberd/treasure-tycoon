@@ -18,7 +18,7 @@ addCharacterClass('Corsair', 2, 2, 1, {'weapon': itemsByKey.rock}, jobJewels(1,1
 addCharacterClass('Assassin', 3, 2, 1, {'weapon': itemsByKey.rock}, jobJewels(1,1,0), assassinIcon);
 addCharacterClass('Ninja', 4, 4, 2, {'weapon': itemsByKey.rock}, jobJewels(1,1,0), ninjaIcon);
 
-addCharacterClass('Dancer', 2, 1, 2, {'weapon': itemsByKey.ball}, jobJewels(0,1,1), dancerIcon);
+addCharacterClass('Dancer', 2, 1, 2, {'weapon': itemsByKey.rock}, jobJewels(0,1,1), dancerIcon);
 addCharacterClass('Bard', 2, 1, 3, {'weapon': itemsByKey.stick}, jobJewels(1,0,1), bardIcon);
 addCharacterClass('Sage', 4, 2, 4, {'weapon': itemsByKey.stick}, jobJewels(1,0,1), sageIcon);
 
