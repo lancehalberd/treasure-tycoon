@@ -196,15 +196,16 @@ function mainLoop() {
     if (state.selectedCharacter.context === 'jewel') {
         drawBoardJewels(state.selectedCharacter, jewelsCanvas);
     }
-    if ($('.js-mainCanvas').is(':visible')) {
-        drawHud();
-    }
     if (state.selectedCharacter.area) {
         refreshStatsPanel(state.selectedCharacter, $('.js-characterColumn .js-stats'))
     }
     $('.js-inventorySlot').toggle($('.js-inventory .js-item').length === 0);
     checkRemoveToolTip();
     if (choosingTrophyAltar) drawTrophySelection();
+    if (upgradingObject) drawUpgradeBox();
+    if ($('.js-mainCanvas').is(':visible')) {
+        drawHud();
+    }
     updateTrophyPopups();
     drawTrophyPopups();
     } catch (e) {
@@ -288,7 +289,7 @@ function handleAdventureClick(x, y, event) {
         } else {
             setActorInteractionTarget(hero, canvasPopupTarget);
         }
-    } else {
+    } else if (!upgradingObject && !choosingTrophyAltar) {
         var targetZ = -(y - groundY) * 2;
         if (targetZ >= -200 || targetZ <= 200) {
             setActorDestination(hero, {'x': hero.area.cameraX + x, 'z': targetZ});
@@ -351,12 +352,13 @@ var returnToMapButton = {'source': {'image': requireImage('gfx/worldIcon.png'), 
 }};
 
 var globalHud = [
-    returnToMapButton
+    returnToMapButton,
+    upgradeButton
 ];
 var wallMouseCoords = null;
 function checkToShowMainCanvasToolTip(x, y) {
     if (ifdefor(x) === null) return;
-    if ($popup || !$('.js-mainCanvas').is(':visible')) return;
+    if ($popup || !$('.js-mainCanvas').is(':visible') || canvasPopupTarget) return;
     canvasPopupTarget = getMainCanvasMouseTarget(x, y);
     $('.js-mainCanvas').toggleClass('clickable', !!canvasPopupTarget);
     if (!canvasPopupTarget) {
@@ -375,6 +377,12 @@ function getMainCanvasMouseTarget(x, y) {
     var area = state.selectedCharacter.area;
     if (!area) return null;
     if (choosingTrophyAltar) return getTrophyPopupTarget(x, y);
+    if (upgradingObject) {
+        if (isPointInRectObject(x, y, upgradeButton)) {
+            return upgradeButton;
+        }
+        return null;
+    }
     for (var trophyPopup of trophyPopups) {
         if (isPointInRect(x, y, trophyPopup.left, trophyPopup.top, trophyPopup.width, trophyPopup.height)) {
             return trophyPopup;
@@ -388,7 +396,10 @@ function getMainCanvasMouseTarget(x, y) {
             }
         }
     }
-    for (var object of area.objects.concat(ifdefor(area.wallDecorations, [])).concat(globalHud)) {
+    var sortedObjects = area.objects.slice().sort(function (spriteA, spriteB) {
+        return spriteA.z - spriteB.z;
+    });
+    for (var object of sortedObjects.concat(ifdefor(area.wallDecorations, [])).concat(globalHud)) {
         if (!object.action && !object.onClick) continue;
         if (object.isVisible && !object.isVisible()) continue;
         // (x,y) of objects is the bottom middle of their graphic.
@@ -469,6 +480,9 @@ function checkRemoveToolTip() {
         return;
     }
     if ($('.js-mainCanvas').is(':visible')) {
+        if (canvasPopupTarget && canvasPopupTarget.isVisible && canvasPopupTarget.isVisible() && isPointInRectObject(canvasCoords[0], canvasCoords[1], canvasPopupTarget)) {
+            return;
+        }
         if (canvasPopupTarget && !ifdefor(canvasPopupTarget.isDead)
             && (canvasPopupTarget.area === state.selectedCharacter.area
              || (canvasPopupTarget.character && canvasPopupTarget.character.area))) {

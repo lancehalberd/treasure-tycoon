@@ -285,11 +285,8 @@ function drawTrophyPopups() {
         mainContext.strokeStyle = 'white';
         mainContext.strokeRect(trophyPopup.left, trophyPopup.top, trophyPopup.width, trophyPopup.height);
         trophyPopup.trophy.draw(mainContext, {'left': trophyPopup.left + 5, 'top': trophyPopup.top + (trophyPopupHeight - trophySize) / 2, 'width': trophySize, 'height': trophySize});
-        mainContext.fillStyle = '#999';
-        mainContext.font = '16px sans-serif';
         mainContext.textAlign = 'left'
         mainContext.textBaseline = 'middle';
-        //context.fillText(levelData.coords.map(function (number) { return number.toFixed(0);}).join(', '), levelData.left + 20, levelData.top + 45);
         mainContext.fillText('Unlocked', trophyPopup.left + 5 + trophySize + 5, trophyPopup.top + 20);
         mainContext.fillStyle = 'white';
         mainContext.font = '18px sans-serif';

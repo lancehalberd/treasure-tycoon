@@ -24,13 +24,15 @@ function openTrophySelection(actor) {
     choosingTrophyAltar = this;
 }
 function openCoinStashUpgrade(actor) {
-
+    removeToolTip();
+    upgradingObject = this;
 }
 $('.js-mouseContainer').on('mousedown', function (event) {
     var x = event.pageX - $('.js-mainCanvas').offset().left;
     var y = event.pageY - $('.js-mainCanvas').offset().top;
     if (!$(event.target).closest('.js-heroApplication').length) $('.js-heroApplication').hide();
     if (!isPointInRectObject(x, y, trophyRectangle)) choosingTrophyAltar = null;
+    if (!isPointInRectObject(x, y, upgradeRectangle)) upgradingObject = null;
 });
 
 var coinStashTiers = [
@@ -44,11 +46,83 @@ var coinStashTiers = [
     {'name': 'Safe of Hoarding', 'bonuses': {'+maxCoins': 10e9}, 'source': objectSource(requireImage('gfx/chest-open.png'), [0, 0], [32, 32])},
 ];
 
+function drawMapButton() {
+    this.flashColor = state.selectedCharacter.area.completed ? 'white' : null;
+    drawHudElement.call(this);
+}
+
+var upgradeButton = {
+    'isVisible': function () {
+        return !!upgradingObject;
+    },
+    'draw': function () {
+        var currentTier = upgradingObject.getCurrentTier();
+        var canUpgrade = currentTier.upgradeCost <= state.coins;
+        mainContext.textAlign = 'center'
+        mainContext.textBaseline = 'middle';
+        mainContext.font = '18px sans-serif';
+        mainContext.strokeStyle = canUpgrade ? 'white' : '#AAA';
+        mainContext.lineWidth = 2;
+        mainContext.fillStyle = canUpgrade ? '#6C6' : '#CCC';
+        var padding = 5;
+        var metrics = mainContext.measureText('Upgrade to...');
+        this.width = metrics.width + 2 * padding;
+        this.height = 20 + 2 * padding;
+        this.left = upgradeRectangle.left + (upgradeRectangle.width - this.width) / 2;
+        this.top = upgradeRectangle.top + (upgradeRectangle.height - this.height) / 2;
+        //console.log([this.left, this.top, this.width, this.height]);
+        mainContext.fillRect(this.left, this.top, this.width, this.height);
+        mainContext.strokeRect(this.left, this.top, this.width, this.height);
+        mainContext.fillStyle = canUpgrade ? 'white' : '#AAA';
+        mainContext.fillText('Upgrade to...', this.left + this.width / 2, this.top + this.height / 2);
+    },
+    'helpMethod': function () {
+        var currentTier = upgradingObject.getCurrentTier();
+        previewPointsChange('coins', -currentTier.upgradeCost);
+        return null;
+    },
+    'onMouseOut': function () {
+        hidePointsPreview();
+    },
+    'onClick': function () {
+        var currentTier = upgradingObject.getCurrentTier();
+        if (!spend('coins', currentTier.upgradeCost)) return;
+        upgradingObject.level++;
+        upgradingObject = null;
+    }
+};
+
+var upgradingObject = null;
+var upgradeRectangle = rectangle(250, 150, 300, 180);
+function drawUpgradeBox() {
+    mainContext.fillStyle = '#888';
+    mainContext.fillRect(upgradeRectangle.left, upgradeRectangle.top, upgradeRectangle.width, upgradeRectangle.height);
+    var currentTier = upgradingObject.getCurrentTier();
+    var nextTier = upgradingObject.getNextTier();
+    drawImage(mainContext, currentTier.source.image, currentTier.source, {'left': upgradeRectangle.left + 10, 'top': upgradeRectangle.top + 5, 'width': 60, 'height': 60});
+    drawImage(mainContext, nextTier.source.image, nextTier.source, {'left': upgradeRectangle.left + 10, 'top': upgradeRectangle.top + 105, 'width': 60, 'height': 60});
+    mainContext.textAlign = 'left'
+    mainContext.textBaseline = 'middle';
+    mainContext.fillStyle = 'black';
+    mainContext.font = '18px sans-serif';
+    mainContext.fillText(currentTier.name, upgradeRectangle.left + 80, upgradeRectangle.top + 25);
+    mainContext.fillText(nextTier.name, upgradeRectangle.left + 80, upgradeRectangle.top + 125);
+    mainContext.fillStyle = 'white';
+    mainContext.fillText(bonusSourceHelpText(currentTier, state.selectedCharacter.adventurer).replace(/<br ?\/?>/g, "\n"), upgradeRectangle.left + 80, upgradeRectangle.top + 45);
+    mainContext.fillText(bonusSourceHelpText(nextTier, state.selectedCharacter.adventurer).replace(/<br ?\/?>/g, "\n"), upgradeRectangle.left + 80, upgradeRectangle.top + 145);
+}
+
 var areaObjects = {
     'mapTable': {'name': 'World Map', 'source': objectSource(guildImage, [360, 130], [60, 27, 30]), 'action': openWorldMap},
     'crackedOrb': {'name': 'Cracked Anima Orb', 'source': objectSource(guildImage, [260, 130], [18, 27, 15])},
     'crackedPot': {'name': 'Cracked Pot', 'source': objectSource(guildImage, [320, 130], [22, 28, 15])},
     'coinStash': {'action': openCoinStashUpgrade, 'level': 1, 'source': coinStashTiers[0].source,
+        'getCurrentTier': function () {
+            return coinStashTiers[this.level - 1];
+        },
+        'getNextTier': function () {
+            return ifdefor(coinStashTiers[this.level]);
+        },
         'width': 60, 'height': 60, 'depth': 60,
         'draw': function (area) {
             var coinStashTier = coinStashTiers[this.level - 1];
