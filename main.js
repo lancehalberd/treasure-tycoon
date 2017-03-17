@@ -27,7 +27,9 @@ var state = {
     craftingLevel: null,
     craftingTypeFilter: null,
     applicationSlots: 2,
-    skipShrinesEnabled: false
+    skipShrinesEnabled: false,
+    guildStats: {},
+    'guildAreas': {}
 };
 var craftingCanvas = $('.js-craftingCanvas')[0];
 var craftingContext = craftingCanvas.getContext('2d');
@@ -57,9 +59,11 @@ function initializeGame() {
             eraseSave();
         }
     }
+    initializeVariableObject(state.guildStats, {'variableObjectType': 'guild'}, state.guildStats);
     if (loadSavedData()) {
         showContext(state.selectedCharacter.context);
     } else {
+        addAllUnlockedFurnitureBonuses();
         gainJewel(makeJewel(1, 'triangle', [90, 5, 5], 1.1));
         gainJewel(makeJewel(1, 'triangle', [5, 90, 5], 1.1));
         gainJewel(makeJewel(1, 'triangle', [5, 5, 90], 1.1));
@@ -638,4 +642,11 @@ function updateConfirmSkillConfirmationButtons() {
 }
 $('.js-charactersBox').on('click', '.js-character', function () {
     setSelectedCharacter($(this).data('character'));
+})
+
+$('.js-coinsContainer').data('helpMethod', function ($container) {
+    var parts = ['Coins are used to create brand new items.',
+                 'Coins are found in chests and dropped from defeated enemies.',
+                 'Your guild can store ' + state.guildStats.maxCoins.abbreviate() + ' coins.'];
+    return parts.join('<br/>');
 })

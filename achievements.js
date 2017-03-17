@@ -213,6 +213,7 @@ function removeTrophyBonuses(trophy, recompute) {
 }
 
 function recomputeAllCharacterDirtyStats() {
+    recomputeDirtyStats(state.guildStats);
     for (var character of state.characters) recomputeDirtyStats(character.adventurer);
 }
 

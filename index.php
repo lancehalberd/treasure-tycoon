@@ -228,7 +228,7 @@
                     <span class="js-balance fame" style="display: none;">800</span>
                 </div>
             </div>
-            <div class="points" helptext="Coins are used to create brand new items.<br/>Coins are found in chests and dropped from defeated enemies.">
+            <div class="points js-coinsContainer" helpText>
                 <div class="pointsIcon"><span class="icon coin"></span></div>
                 <div class="pointsColumn">
                     <span class="js-global-coins coin">1000</span>

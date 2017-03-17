@@ -89,8 +89,8 @@ guildAreas.guildFrontHall = initializeGuldArea({
     ],
     'objects': [
         fixedObject('jewelShrine', [120, 0, 150], {'scale': 6}),
-        fixedObject('coinStash', [340, 0, 150], {'level': 4}),
-        fixedObject('coinStash', [400, 0, 150], {'level': 5}),
+        fixedObject('coinStash', [340, 0, 150], {'level': 1, 'key': 'coinStashA'}),
+        fixedObject('coinStash', [400, 0, 150], {'level': 2, 'key': 'coinStashB'}),
         fixedObject('trophyAltar', [300, 0, 0], {'scale': 2, 'key': 'trophyAltarA'}),
         fixedObject('trophyAltar', [700, 0, 0], {'scale': 2, 'key': 'trophyAltarB'}),
         fixedObject('bed', [1090, 0, 140], {'scale': 2, 'xScale': -1}),

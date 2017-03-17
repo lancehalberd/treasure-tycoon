@@ -4,6 +4,11 @@ var clothes = [1, 3];
 var hair = [clothes[1] + 1, clothes[1] + 4];
 var names = ['Chris', 'Leon', 'Hillary', 'Michelle', 'Rob', 'Reuben', 'Kingston', 'Silver', 'Blaise'];
 var pointsTypes = ['coins', 'anima', 'fame'];
+
+var allGuildVariables = {
+    'maxCoins': 'Maximum coins the player can hold, increased by acquiring and upgrading coin stashes',
+    'maxAnima': 'Maximum anima the player can hold, increased by acquiring and upgrading anima stashes'
+};
 // These are the only variables on actors that can be targeted by effects.
 var allActorVariables = {
     'levelCoefficient': 'This coefficient is used in several stats as a base for exponential scaling such as maxHealth, magicPower, armor, block and magic block',
@@ -166,6 +171,8 @@ function initializeActorForAdventure(actor) {
 function returnToMap(character) {
     removeAdventureEffects(character.adventurer);
     character.paused = false;
+    character.adventurer.goalTarget = null;
+    character.isStuckAtShrine = false;
     leaveCurrentArea(character);
     updateAdventureButtons();
     if (character.autoplay && character.replay) {
@@ -354,6 +361,7 @@ function spend(pointsType, amount) {
 }
 function changedPoints(pointsType) {
     if (pointsType == 'fame') updateHireButtons();
+    if (pointsType == 'coins') state.coins = Math.min(state.coins, state.guildStats.maxCoins);
     else updateReforgeButton();
     $('.js-global-' + pointsType).text(state[pointsType].abbreviate());
 }

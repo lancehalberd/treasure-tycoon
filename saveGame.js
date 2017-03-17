@@ -62,6 +62,16 @@ function exportState(state) {
             'objectKey': trophy.objectKey
         };
     }
+    data.guildAreas = {};
+    for (var areaKey in state.guildAreas) {
+        var area = state.guildAreas[areaKey];
+        data.guildAreas[areaKey] = {'objects': {}};
+        for (var object of area.objects) {
+            if (object.key && object.level) {
+                data.guildAreas[areaKey].objects[object.key] = {'level': object.level};
+            }
+        }
+    }
     return data;
 }
 function fixNumber(number) {
@@ -73,6 +83,17 @@ function importState(stateData) {
     $('.js-inventory').empty().append($helperSlot);
     $('.js-jewelInventory').empty();
     state = {};
+    state.guildStats = {};
+    initializeVariableObject(state.guildStats, {'variableObjectType': 'guild'}, state.guildStats);
+    state.guildAreas = {};
+    for (var areaKey in ifdefor(stateData.guildAreas, {})) {
+        state.guildAreas[areaKey] = guildAreas[areaKey];
+        var savedAreaData = stateData.guildAreas[areaKey];
+        for (var objectKey in savedAreaData.objects) {
+            var savedObjectData = savedAreaData.objects[objectKey];
+            guildAreas[areaKey].objectsByKey[objectKey].level = savedObjectData.level;
+        }
+    }
     state.fame = fixNumber(stateData.fame);
     state.coins = fixNumber(stateData.coins);
     state.anima = fixNumber(stateData.anima);
@@ -102,6 +123,8 @@ function importState(stateData) {
         if (!altar) continue;
         addTrophyToAltar(altar, trophy);
     }
+    addAllUnlockedFurnitureBonuses();
+    // This might happen if we changed how much each holder contains during an update.
     var characters = stateData.characters.map(importCharacter);
     characters.forEach(function (character) {
         if (isNaN(character.divinity) || typeof(character.divinity) !== "number") {

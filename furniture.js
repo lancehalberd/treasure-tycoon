@@ -38,11 +38,11 @@ $('.js-mouseContainer').on('mousedown', function (event) {
 var coinStashTiers = [
     {'name': 'Cracked Pot', 'bonuses': {'+maxCoins': 500}, 'upgradeCost': 500, 'source': objectSource(guildImage, [316, 130], [30, 30])},
     {'name': 'Large Jar', 'bonuses': {'+maxCoins': 4000}, 'upgradeCost': 10000, 'source': objectSource(guildImage, [316, 130], [30, 30])},
-    {'name': 'Piggy Bank', 'bonuses': {'+maxCoins': 30000}, 'upgradeCost': 10000, 'requires': 'workshop', 'source': objectSource(guildImage, [316, 130], [30, 30])},
-    {'name': 'Chest', 'bonuses': {'+maxCoins': 200000}, 'upgradeCost': 150000, 'requires': 'workshop', 'source': objectSource(requireImage('gfx/chest-closed.png'), [0, 0], [32, 32])},
-    {'name': 'Safe', 'bonuses': {'+maxCoins': 1e6}, 'upgradeCost': 1.5e6, 'requires': 'magicWorkshop', 'source': objectSource(requireImage('gfx/chest-open.png'), [0, 0], [32, 32])},
-    {'name': 'Bag of Holding', 'bonuses': {'+maxCoins': 30e6}, 'upgradeCost': 10e6, 'requires': 'magicWorkshop', 'source': objectSource(guildImage, [316, 130], [30, 30])},
-    {'name': 'Safe of Holding', 'bonuses': {'+maxCoins': 500e6}, 'upgradeCost': 500e6, 'requires': 'magicWorkshop', 'source': objectSource(requireImage('gfx/chest-closed.png'), [0, 0], [32, 32])},
+    {'name': 'Piggy Bank', 'bonuses': {'+maxCoins': 30000}, 'upgradeCost': 150000, 'requires': 'workshop', 'source': objectSource(guildImage, [316, 130], [30, 30])},
+    {'name': 'Chest', 'bonuses': {'+maxCoins': 200000}, 'upgradeCost': 1.5e6, 'requires': 'workshop', 'source': objectSource(requireImage('gfx/chest-closed.png'), [0, 0], [32, 32])},
+    {'name': 'Safe', 'bonuses': {'+maxCoins': 1e6}, 'upgradeCost': 10e6, 'requires': 'magicWorkshop', 'source': objectSource(requireImage('gfx/chest-open.png'), [0, 0], [32, 32])},
+    {'name': 'Bag of Holding', 'bonuses': {'+maxCoins': 30e6}, 'upgradeCost': 500e6, 'requires': 'magicWorkshop', 'source': objectSource(guildImage, [316, 130], [30, 30])},
+    {'name': 'Safe of Holding', 'bonuses': {'+maxCoins': 500e6}, 'upgradeCost': 15e9, 'requires': 'magicWorkshop', 'source': objectSource(requireImage('gfx/chest-closed.png'), [0, 0], [32, 32])},
     {'name': 'Safe of Hoarding', 'bonuses': {'+maxCoins': 10e9}, 'source': objectSource(requireImage('gfx/chest-open.png'), [0, 0], [32, 32])},
 ];
 
@@ -87,7 +87,13 @@ var upgradeButton = {
     'onClick': function () {
         var currentTier = upgradingObject.getCurrentTier();
         if (!spend('coins', currentTier.upgradeCost)) return;
+        removeFurnitureBonuses(upgradingObject, false);
         upgradingObject.level++;
+        addFurnitureBonuses(upgradingObject, true);
+        if (!state.guildAreas[upgradingObject.area.key]) {
+            state.guildAreas[upgradingObject.area.key] = upgradingObject.area;
+        }
+        saveGame();
         upgradingObject = null;
     }
 };
@@ -117,6 +123,9 @@ var areaObjects = {
     'crackedOrb': {'name': 'Cracked Anima Orb', 'source': objectSource(guildImage, [260, 130], [18, 27, 15])},
     'crackedPot': {'name': 'Cracked Pot', 'source': objectSource(guildImage, [320, 130], [22, 28, 15])},
     'coinStash': {'action': openCoinStashUpgrade, 'level': 1, 'source': coinStashTiers[0].source,
+        'getActiveBonusSources': function () {
+            return [this.getCurrentTier()];
+        },
         'getCurrentTier': function () {
             return coinStashTiers[this.level - 1];
         },
@@ -233,4 +242,50 @@ function fixedObject(baseObjectKey, coords, properties) {
 }
 function fixedObjectHelpText(object) {
     return object.base.name;
+}
+
+function addFurnitureBonuses(furniture, recompute) {
+    if (!furniture.getActiveBonusSources) return;
+    var bonusSources = furniture.getActiveBonusSources();
+    for (var bonusSource of bonusSources) {
+        // Multiple copies of the same furniture will have the same bonus source, so this check is not valid.
+        /*if (guildBonusSources.indexOf(bonusSource) >= 0) {
+            console.log(bonusSource);
+            console.log(guildBonusSources);
+            throw new Error('bonus source was already present in guildBonusSources!');
+        }*/
+        guildBonusSources.push(bonusSource);
+        addBonusSourceToObject(state.guildStats, bonusSource);
+        for (var character of state.characters) {
+            addBonusSourceToObject(character.adventurer, bonusSource);
+        }
+    }
+    if (recompute) recomputeAllCharacterDirtyStats();
+}
+function removeFurnitureBonuses(furniture, recompute) {
+    if (!furniture.getActiveBonusSources) return;
+    var bonusSources = furniture.getActiveBonusSources();
+    for (var bonusSource of bonusSources) {
+        if (guildBonusSources.indexOf(bonusSource) < 0) {
+            console.log(bonusSource);
+            console.log(guildBonusSources);
+            throw new Error('bonus source was not found in guildBonusSources!');
+        }
+        guildBonusSources.splice(guildBonusSources.indexOf(bonusSource), 1);
+        removeBonusSourceFromObject(state.guildStats, bonusSource);
+        for (var character of state.characters) {
+            removeBonusSourceFromObject(character.adventurer, bonusSource);
+        }
+    }
+    if (recompute) recomputeAllCharacterDirtyStats();
+}
+
+function addAllUnlockedFurnitureBonuses() {
+    for (var areaKey in guildAreas) {
+        var guildArea = guildAreas[areaKey];
+        for (var object of guildArea.objects) {
+            addFurnitureBonuses(object, false);
+        }
+    }
+    recomputeAllCharacterDirtyStats();
 }

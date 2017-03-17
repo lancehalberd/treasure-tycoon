@@ -65,6 +65,7 @@ function parseBonuses(bonusSource) {
 function initializeVariableObject(object, baseObject, actor) {
     if (!baseObject) throw new Error('No base object provided for new variable object');
     if (!baseObject.variableObjectType) throw new Error('variableObjectType was not set on a variable object base object');
+    // this doesn't really make sense for the guild stats object, but I don't think this is causing any issues at the moment.
     if (!actor) throw new Error('No actor was provided for a new variable object. This must be provided for some implicit bonuses to work correctly, like range: {weaponRange} on attacks.');
     object.actor = actor;
     object.base = baseObject;
@@ -92,6 +93,11 @@ function initializeVariableObject(object, baseObject, actor) {
             object.bonuses = {};
             for (var effectStat of ['duration', 'area', 'maxStacks']) {
                 object.dirtyStats[effectStat] = true;
+            }
+            break;
+        case 'guild':
+            for (var guildStat of Object.keys(allGuildVariables)) {
+                object.dirtyStats[guildStat] = true;
             }
             break;
     }
@@ -293,6 +299,8 @@ function doesStatApplyToObject(stat, object) {
             return ifdefor(object[stat]) !== null || commonActionVariables[stat];
         case 'effect':
             return stat === 'duration' || stat === 'area' || state === 'maxStacks' || operations[stat.charAt(0)];
+        case 'guild':
+            return allGuildVariables[stat];
         case 'trigger':
             return false;
         default:
@@ -475,6 +483,7 @@ function recomputeChildTags(parentObject, child) {
     delete tags['actor'];
     delete tags['action'];
     delete tags['effect'];
+    delete tags['guild'];
     delete tags['trigger'];
     tags[child.base.variableObjectType] = true;
     return tags;
