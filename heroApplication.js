@@ -125,9 +125,14 @@ $('body').on('mouseover', '.js-seekNewApplicant', function () {
 $('body').on('mouseout', '.js-seekNewApplicant', function () {
     hidePointsPreview();
 });
+function hireHeroHelpMethod($button) {
+    if (state.characters.length >= state.guildStats.maxHeroes) return 'You do not have enough beds to hire another hero. Dismiss a hero or explore the guild for more beds.';
+    return 'Hire this hero. The more famous your guild is, the cheaper it is to hire heroes.';
+}
+$('.js-hireApplicant').data('helpMethod', hireHeroHelpMethod);
 
 function hireCharacter(character) {
-    if (state.characters.length >= 8) return;
+    if (state.characters.length >= state.guildStats.maxHeroes) return;
     unlockMapLevel(character.currentLevelKey);
     gain('fame', character.fame);
     state.characters.push(character);

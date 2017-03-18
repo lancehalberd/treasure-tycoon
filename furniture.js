@@ -176,7 +176,11 @@ var areaObjects = {
         }
     },
     'candles': {'source': objectSource(guildImage, [260, 98-40], [25, 40, 0])},
-    'bed': {'name': 'Worn Cot', 'source': objectSource(guildImage, [541, 160-24], [58, 24, 30])},
+    'bed': {'name': 'Worn Cot', 'source': objectSource(guildImage, [541, 160-24], [58, 24, 30]),
+        'getActiveBonusSources': function () {
+            return [{'bonuses': {'+maxHeroes': 1}}];
+        }
+    },
     'jewelShrine': {'name': 'Shrine of Creation', 'source': objectSource(requireImage('gfx/militaryIcons.png'), [102, 125], [16, 16, 4]), 'action': openJewels},
 
     'heroApplication': {'name': 'Application', 'source': {'width': 40, 'height': 60, 'depth': 0}, 'action': showApplication, 'draw': function (area) {

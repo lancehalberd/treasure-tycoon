@@ -6,8 +6,9 @@ var names = ['Chris', 'Leon', 'Hillary', 'Michelle', 'Rob', 'Reuben', 'Kingston'
 var pointsTypes = ['coins', 'anima', 'fame'];
 
 var allGuildVariables = {
+    'maxAnima': 'Maximum anima the player can hold, increased by acquiring and upgrading anima stashes',
     'maxCoins': 'Maximum coins the player can hold, increased by acquiring and upgrading coin stashes',
-    'maxAnima': 'Maximum anima the player can hold, increased by acquiring and upgrading anima stashes'
+    'maxHeroes': 'Maximum number of heroes the guild can hold, increased by acquiring more beds'
 };
 // These are the only variables on actors that can be targeted by effects.
 var allActorVariables = {

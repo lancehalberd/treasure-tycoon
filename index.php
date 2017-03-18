@@ -282,7 +282,7 @@
                         <div class="js-intelligenceGrowth statGrowthBar intelligence" helptext="Intelligence increases accuracy, block and magic block and damage with magic weapons."></div>
                     </div>
                 </div>
-                <p><button class="js-hireApplicant heroApplicationButton" helptext="Hire this adventurer. The more famous your guild is, the cheaper it is to hire adventurers.">Hire <span class="js-hirePrice"></span></button></p>
+                <p><button class="js-hireApplicant heroApplicationButton" helptext>Hire <span class="js-hirePrice"></span></button></p>
                 <p><button class="js-seekNewApplicant heroApplicationButton" helptext="Seek another guild applicant. Completing adventures will reduce this price.">Seek Another <span class="js-seekPrice"></span></button></p>
             </div>
         </div>
