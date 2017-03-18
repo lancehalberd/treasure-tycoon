@@ -615,6 +615,7 @@ function setContext(context) {
 }
 function showContext(context) {
     hidePointsPreview();
+    $('.js-areaMenu').hide();
     canvasPopupTarget = null;
     if (context === 'jewel') drawBoardJewels(state.selectedCharacter, jewelsCanvas);
     $('.js-adventureContext, .js-jewelContext, .js-itemContext, .js-guildContext, .js-mapContext').hide();
