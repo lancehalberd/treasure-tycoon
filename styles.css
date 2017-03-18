@@ -186,6 +186,9 @@
 .jewelCraftingSlot.active {
     background-color: #88ff88;
 }
+.hiddenJewel {
+    display: none;
+}
 
 
 .map {

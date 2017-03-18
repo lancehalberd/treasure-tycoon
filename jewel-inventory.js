@@ -383,7 +383,7 @@ function addJewelToInventory($jewel) {
 function filterJewel($jewel) {
     // Hide/show this jewel depending on whether it is filtered out.
     var tier = $jewel.data('jewel').tier;
-    $jewel.toggle($('.js-jewelTier' + tier + ' input').prop('checked'));
+    $jewel.toggleClass('hiddenJewel', !$('.js-jewelTier' + tier + ' input').prop('checked'));
 }
 
 function stopJewelDrag() {
@@ -843,7 +843,7 @@ $('.js-jewelTierLabel input').on('change', function () {
     $('.js-jewelInventory .js-jewel').each(function () {
         var jewel = $(this).data('jewel');
         if (jewel.tier == tier) {
-            $(this).toggle(display);
+            $(this).toggleClass('hiddenJewel', !display);
         }
     });
 });
