@@ -36,12 +36,12 @@ $('.js-mouseContainer').on('mousedown', function (event) {
 });
 
 var coinStashTiers = [
-    {'name': 'Cracked Pot', 'bonuses': {'+maxCoins': 500}, 'upgradeCost': 500, 'source': objectSource(guildImage, [316, 130], [30, 30])},
-    {'name': 'Large Jar', 'bonuses': {'+maxCoins': 4000}, 'upgradeCost': 10000, 'source': objectSource(guildImage, [316, 130], [30, 30])},
-    {'name': 'Piggy Bank', 'bonuses': {'+maxCoins': 30000}, 'upgradeCost': 150000, 'requires': 'workshop', 'source': objectSource(guildImage, [316, 130], [30, 30])},
+    {'name': 'Cracked Pot', 'bonuses': {'+maxCoins': 500}, 'upgradeCost': 500, 'source': objectSource(guildImage, [300, 150], [30, 30])},
+    {'name': 'Large Jar', 'bonuses': {'+maxCoins': 4000}, 'upgradeCost': 10000, 'source': objectSource(guildImage, [330, 150], [30, 30])},
+    {'name': 'Piggy Bank', 'bonuses': {'+maxCoins': 30000}, 'upgradeCost': 150000, 'requires': 'workshop', 'source': objectSource(guildImage, [330, 150], [30, 30])},
     {'name': 'Chest', 'bonuses': {'+maxCoins': 200000}, 'upgradeCost': 1.5e6, 'requires': 'workshop', 'source': objectSource(requireImage('gfx/chest-closed.png'), [0, 0], [32, 32])},
     {'name': 'Safe', 'bonuses': {'+maxCoins': 1e6}, 'upgradeCost': 10e6, 'requires': 'magicWorkshop', 'source': objectSource(requireImage('gfx/chest-open.png'), [0, 0], [32, 32])},
-    {'name': 'Bag of Holding', 'bonuses': {'+maxCoins': 30e6}, 'upgradeCost': 500e6, 'requires': 'magicWorkshop', 'source': objectSource(guildImage, [316, 130], [30, 30])},
+    {'name': 'Bag of Holding', 'bonuses': {'+maxCoins': 30e6}, 'upgradeCost': 500e6, 'requires': 'magicWorkshop', 'source': objectSource(guildImage, [330, 150], [30, 30])},
     {'name': 'Safe of Holding', 'bonuses': {'+maxCoins': 500e6}, 'upgradeCost': 15e9, 'requires': 'magicWorkshop', 'source': objectSource(requireImage('gfx/chest-closed.png'), [0, 0], [32, 32])},
     {'name': 'Safe of Hoarding', 'bonuses': {'+maxCoins': 10e9}, 'source': objectSource(requireImage('gfx/chest-open.png'), [0, 0], [32, 32])},
 ];
@@ -119,8 +119,8 @@ function drawUpgradeBox() {
 }
 
 var areaObjects = {
-    'mapTable': {'name': 'World Map', 'source': objectSource(guildImage, [360, 130], [60, 27, 30]), 'action': openWorldMap},
-    'crackedOrb': {'name': 'Cracked Anima Orb', 'source': objectSource(guildImage, [260, 130], [18, 27, 15])},
+    'mapTable': {'name': 'World Map', 'source': objectSource(guildImage, [360, 150], [60, 27, 30]), 'action': openWorldMap},
+    'crackedOrb': {'name': 'Cracked Anima Orb', 'source': objectSource(guildImage, [240, 150], [30, 29, 15])},
     'crackedPot': {'name': 'Cracked Pot', 'source': objectSource(guildImage, [320, 130], [22, 28, 15])},
     'coinStash': {'action': openCoinStashUpgrade, 'level': 1, 'source': coinStashTiers[0].source,
         'getActiveBonusSources': function () {
@@ -154,8 +154,8 @@ var areaObjects = {
             hidePointsPreview();
         }
     },
-    'woodenAltar': {'name': 'Shrine of Fortune', 'source': objectSource(guildImage, [500, 131], [20, 30, 20]), 'action': openCrafting},
-    'trophyAltar': {'name': 'Trophy Altar', 'source': objectSource(guildImage, [440, 131], [20, 30, 20]), 'action': openTrophySelection,
+    'woodenAltar': {'name': 'Shrine of Fortune', 'source': objectSource(guildImage, [450, 150], [30, 30, 20]), 'action': openCrafting},
+    'trophyAltar': {'name': 'Trophy Altar', 'source': objectSource(guildImage, [420, 180], [30, 30, 20]), 'action': openTrophySelection,
         'getTrophyRectangle': function () {
             return {'left': this.left + (this.width - this.trophy.width) / 2, 'top': this.top - this.trophy.height + 20, 'width': this.trophy.width, 'height': this.trophy.height};
         },
@@ -175,13 +175,13 @@ var areaObjects = {
             return null;
         }
     },
-    'candles': {'source': objectSource(guildImage, [260, 98-40], [25, 40, 0])},
-    'bed': {'name': 'Worn Cot', 'source': objectSource(guildImage, [541, 160-24], [58, 24, 30]),
+    'candles': {'source': objectSource(guildImage, [540, 150], [25, 40, 0])},
+    'bed': {'name': 'Worn Cot', 'source': objectSource(guildImage, [480, 150], [60, 24, 30]),
         'getActiveBonusSources': function () {
             return [{'bonuses': {'+maxHeroes': 1}}];
         }
     },
-    'jewelShrine': {'name': 'Shrine of Creation', 'source': objectSource(requireImage('gfx/militaryIcons.png'), [102, 125], [16, 16, 4]), 'action': openJewels},
+    'jewelShrine': {'name': 'Shrine of Creation', 'source': objectSource(guildImage, [360, 180], [60, 60, 4]), 'action': openJewels},
 
     'heroApplication': {'name': 'Application', 'source': {'width': 40, 'height': 60, 'depth': 0}, 'action': showApplication, 'draw': function (area) {
         this.left = this.x - this.width / 2 - area.cameraX;
@@ -203,9 +203,9 @@ var areaObjects = {
     }},
 
     'wall': {'source': objectSource(guildImage, [600, 0], [60, 240, 180])},
-    'door': {'source': objectSource(guildImage, [675, 99], [27, 51, 0]), 'action': useDoor},
+    'door': {'source': objectSource(guildImage, [240, 94], [30, 51, 0]), 'action': useDoor},
 
-    'skillShrine': {'name': 'Shrine of Divinity', 'source': objectSource(requireImage('gfx/militaryIcons.png'), [102, 125], [16, 16, 4]), 'action': activateShrine},
+    'skillShrine': {'name': 'Shrine of Divinity', 'source': objectSource(guildImage, [360, 180], [60, 60, 4]), 'action': activateShrine},
     'closedChest': {'name': 'Treasure Chest', 'source': objectSource(requireImage('gfx/treasureChest.png'), [0, 0], [64, 64, 64]), 'action': openChest},
     'openChest': {'name': 'Opened Treasure Chest', 'source': objectSource(requireImage('gfx/treasureChest.png'), [64, 0], [64, 64, 64]), 'action': function (actor) {
         messageCharacter(actor.character, 'Empty');
