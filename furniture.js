@@ -157,7 +157,7 @@ var areaObjects = {
     'woodenAltar': {'name': 'Shrine of Fortune', 'source': objectSource(guildImage, [450, 150], [30, 30, 20]), 'action': openCrafting},
     'trophyAltar': {'name': 'Trophy Altar', 'source': objectSource(guildImage, [420, 180], [30, 30, 20]), 'action': openTrophySelection,
         'getTrophyRectangle': function () {
-            return {'left': this.left + (this.width - this.trophy.width) / 2, 'top': this.top - this.trophy.height + 20, 'width': this.trophy.width, 'height': this.trophy.height};
+            return {'left': this.left + (this.width - this.trophy.width) / 2, 'top': this.top - this.trophy.height + 10, 'width': this.trophy.width, 'height': this.trophy.height};
         },
         'draw': function (area) {
             // Make this altar flash if it is open and there is an unused trophy available to place on it.
