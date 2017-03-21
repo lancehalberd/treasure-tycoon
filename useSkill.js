@@ -59,11 +59,12 @@ function canUseReaction(actor, reaction, attackStats) {
  * @param object target      The target to attack for active abilities.
  */
 function isTargetInRangeOfSkill(actor, skill, pointOrTarget) {
+    if (skill.base.target === 'none') return true;
     var isAOE = skill.cleave || skill.tags['nova'] || skill.tags['field'] || skill.tags['blast'] || skill.tags['rain'];
     // Nova skills use area instead of range for checking for valid targets.
     if (skill.tags['nova']) return getDistance(actor, pointOrTarget) < skill.area * 32 / 2;
     if (skill.tags['field']) return getDistance(actor, pointOrTarget) < skill.area * 32 / 2;
-    return getDistance(actor, pointOrTarget) < (skill.range + ifdefor(skill.teleport, 0)) * 32;
+    return getDistance(actor, pointOrTarget) <= (skill.range + ifdefor(skill.teleport, 0)) * 32;
 }
 
 /**
@@ -83,7 +84,6 @@ function isTargetInRangeOfSkill(actor, skill, pointOrTarget) {
  */
 function shouldUseSkillOnTarget(actor, skill, target) {
     if (target.isMainCharacter) return true; // Enemies always use skills on the hero, since they win if the hero dies.
-    if (ifdefor(skill.cooldown, 0) < 10) return true; // Don't worry about wasting skills with short cool downs.
     if (ifdefor(skill.cooldown, 0) < 10) return true; // Don't worry about wasting skills with short cool downs.
     // Make sure combined health of enemies in range is less than the raw damage of the attack, or that the ability
     // will result in life gain that makes it worth using
