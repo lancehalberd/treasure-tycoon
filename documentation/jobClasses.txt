@@ -1,0 +1,100 @@
+---Pure Dexterity Classes---
+1-Juggler: Specializes in throwing weapons. This icon might be hard because the class is somewhat uncommon and doesn't have a obvious associations. I think a lot of people associate juggling with clowns/jesters, but I'd like to use something like a Jester cap for the Fool.
+Core Ability: Ricochet (projectiles bounce between targets)
+Abilities: Sap, Dodge, Bullseye
+
+2-Ranger: Specializes in all ranged attacks and allies. Kind of like a hybrid of beastmaster/trapper/archer. The idea is he summons allies to tank for him while he acts like a ranged glass cannon. Maybe the icon could be a cap shaped like a wolf?
+Core Ability: Taming (large buff to ally toughness+damage)
+Abilities: Pet, Throw Net, Sic 'Em
+
+3-Sniper: Specializes in bows and critical attacks. Basically emphasizes burst ranged damage. Icon could involve a target with an arrow in it or crosshairs.
+Core Ability: Sharp Shooter (Increased Crit chance+damage, crits hit multiple targets)
+Abilities: Power Shot, Aiming, Snipe
+
+---Pure Strength Classes---
+1-Monk/Black Belt: Specializes in fighting with barehands and fist weapons, martial arts. Icon could have a Gi or cloth belt etc.
+Core Ability: Martial Arts (Increased damage while unarmed)
+Abilities: Vitality, Counter Attack, Dragon Punch
+
+2-Warrior: Specializes in 1 handed swords, kind of a balance between offense and defense. Some kind of heavery helmet or armor might be a good symbol.
+Core Ability: Cleave (melee attacks have splash damage)
+Abilities: Charge, Overpower (knockback), Armor Break
+
+3-Samurai: Specializes in 2 handed swords, very high melee DPS, sort of like melee equivalent of sniper. Some sort of samurai gear would make a good symbol
+Core Ability: Great Warrior
+Abilities: Side Step, Dragon Slayer, Penatrating Strikes
+
+---Pure Intelligence Classes---
+1-Priest: Specializes in healing/defensive magic and wands. Some sort of white robe or holy symbols might look good?
+Core Ability: Divine Blessing (priest heals and gains protection when casting spells)
+Abilities: Heal, Reflect, Revive
+
+2-Wizard: Specializes in offensive magic and staves. Some sort of staff or wizard hat or dark robes might be good. Or a fireball or spellbook.
+Core Ability: Arcane Prodigy (spells have double damage+AoE)
+Abilities: Fireball, Freeze, Storm
+
+3-Sorcerer: Specializes in all magic. It might be tricky to come up with an icon to distinguish this from the other mage classes.
+Core Ability: Double Cast (cast random spell when casting spells)
+Abilities: Raise Dead, Drain Life, Plague
+
+---Dex/Str Classes---
+1-Corsair: Specializes Tactical fighting and 1 handed axes. Basically a pirate. Pirate cap or jolly roger would be good icons.
+Core Ability: Venom (poison and weaken enemies on hit)
+Abilities: Hook, Deflect, Plunder (steal enemy abilities)
+
+2-Assassin: Specializes in burst critical damage. Something with daggers or skulls or poison might be good.
+Core Ability: First Strike (Always crit against targets with full health)
+Abilities: Blink Strike, Cull, Cripple
+
+3-Ninja: Specializes in evasion and 1 handed weapons. A cowl or headband might be good icons.
+Core Ability: Ninjutsu (Cloaked while moving, attacks hit twice)
+Abilities: Smoke Bomb, Throw Weapon, Shadow Clone
+
+---Str/Int Classes---
+1-Paladin: Specializes in enhancement magic and shields. A shield or holy symbol might be good, as long as distinct from Priest.
+Core Ability: Faith (Buffs last twice as long)
+Abilities: Protect, Banishing Strike, Aegis
+
+2-Dark Knight: Specializes in spiritual energy, consuming energy of defeated enemies as well as 2 handed axes. Black armor or helmet or a scythe might be good symbols.
+Core Ability: Blood Lust (Passive lifesteal and the ability to heal beyond max health)
+Abilities: Consume, Soul Strike, Reaper
+
+3-Enhancer: Specializes empowerment and melee weapons. Probably was inspired by the enhancers in Hunter x Hunter who use their spiritual energy to empower their weapons and bodies. Not sure about the icon. Maybe a body with an aura?
+Core Ability: -Not Named- (Double core stats)
+Abilities: Enhance Weapon, Enhance Armor, Enhance Ability
+
+---Int/Dex Classes---
+1-Dancer: Specializes in mobility and evasion. Not sure what to signify this with. Maybe a heart because they are supposed to be charming?
+Core Ability: Dancing (Counter on evasion)
+Abilities: Distract, Charm, Whirling Dervish
+
+2-Bard: Specializes in songs(AOE buffs) and allies. A music note or lute or harp would be good icons
+Core Ability: Charisma (Can summon more allies, songs last longer and buffs have large area of effect)
+Abilities: Furious Tocatta, Rondo of Hope, Hero's Ballade
+
+3-Sage: Specializes in knowledge, powerful magic, and magic weapons. Maybe a book or a scroll would be good icons? Not sure
+Core Ability: Profound Insight (50% CDR for all abilities)
+Abilities: Stop Time, Dispell, Meteor
+
+---Str/Dex/Int Class---
+Master: Jack of all trades potentially good at anything. Not sure what an icon for this would be either :/
+Core Ability: masters get a random mix of 6 abilities that are weaker versions of other core abilities. e.g. 20% CDR to all abilities + passive life steal + cloaking,etc
+Abilities: Equipment Mastery, Ability Mastery, Battle Mastery
+
+---Void Class---
+Fool: A blank canvas with no core stat growth and annoying abilities. Core abilities may be quite powerful but always come with a downside. A jester cap or the happy/sad theater maskes might be good.
+Core Ability: gets a mix of any 2 core abilities but each comes with a special handicap.
+Abilities: Tom Foolery, Decoy, Mimic
+
+
+
+
+
+
+
+
+
+
+
+
+.

@@ -1,0 +1,89 @@
+Origin -> Provenance -> Prove Once -> Shoomei Ichido -> Smeichido -> Semichido
+Sekai
+Lafter Falter -> Grand Falter
+
+Welcome Traveler, to Granfalter, a world of adventure and opportunity.
+I am Luna an Emissary of Fortuna, Goddess of this world.
+The Goddess has decreed that all visitors are entitled to a small land plot to build on and a modest sum of coin with which to start your fortune.
+It is Fortuna's sincere desire that you will use these gifts to create a prosperous new guild to explore the world and serve the people of Granfalter.
+
+First, here are your coins:
++100 coins
+You can use them to hire help and build your guild.
+You may also offer your coins to Fortuna to receive Her blessing in the form of new gear for your guild members.
+There are many Gods besides Fortuna in Granfalter that you can contract with, but more on Them later.
+
+Now about your guild plot...
+Strangely, there have been a surprising number of visitors recently, more than we've seen in many years.
+Unfortunately, because of this, we've been struggling to keep up with preparing new plots for visitors.
+I do have something used available, but its been abandoned for so long that its been picked over by looters
+and become a den of monsters...
+Since this doesn't live up to our normal contract however, I have made the following arrangement for you:
+You can keep anything you recover while renovating the guild hall, and we will hire an adventurer for you
+to help with clearing it out and get your guild off to a promising start.
+That's not so bad right? And who knows, if Fortune is on your side, maybe there will be some valuable treasures that the looters left behind.
+
+Ah, here is your new guild hero, Primadona, now.
+[Primadona walks onto screen (I guess outside of guild entrance)]
+Let's send them in to clear out the foyer so your guild heroes will have a place to stay.
+You can observe your guild heroes as they take on tasks, but they will act on their own so you don't need to give them any additional instructions.
+Let's see how Primadona does with clearing out the guild foyer.
+[Primadona advances on the first enemy]
+Guild heroes will engage any enemies they come across, only advancing once all enemies have been defeated.
+[Primadona defeats the enemy]
+Nice work, let's keep going.
+[Primadona defeats two more enemies]
+Well, they put up a bit of a fight, but overall, that didn't look too tough. Nice work Primadona!
+
+Let's see what we've got here:
+* A table with a small map of the world [Add table + map to foyer] [create world map icon] (or just use table?)
+* An old pot with 50 coins. Nice! You can keep your savings in here for now [Add pot to foyer] [display coins indicator at top of screen]
+* A Shrine to the Goddess Fortuna. You can use this to make offerings to Fortuna for new gear.
+* A Bed. Primdona can use this to rest here
+
+Next let's try to clear out the front hall.
+[Primadona engages the first enemy, but deals little damage initially]
+Uh oh...
+[Primadona continues to fight and is losing]
+These monsters just a little further in seem much tougher!
+
+It appears that Primadona was defeated, but don't worry! The Goddess has made Granfalter a world of gentle consequences.
+A hero that is defeated in battle will always be regenerated in the last safe place they were, so Primadona is waiting for us back in the foyer.
+[Back in the foyer]
+Even though Primadona is okay, it doesn't look like they will be able to clear out the front hall with their current power.
+What you need is the Power of the Gods.
+Here, I've marked the locations of several nearby shrines on the map we found in the foyer.
+[Open World Map and display and rotate to the first area]
+Each shrine was built as a contract with one of the many Gods of Granfalter.
+[Display and rotate to the second area]
+If a guild hero is able to reach one of these shrines, they will be blessed with Divinity, the divine favor of the Gods.
+[Display and rotate to the final area (matched to Primadona's job class)] [Display Divinity indicator next to Primadona icon at top of screen]
+When a hero has enough Divinity, they may use it to worship at a shrine and contract with the God of that shrine to become more powerful and learn a new skill.
+[Add Primadona's icon to the final area]
+Send Primadona out to one of the shrines I have marked so that they can grow powerful enough to clear out the front hall.
+[Player is now free to choose an area or close the map and do whatever]
+
+[Once Primadona is level 2]
+Primadona is looking a lot stronger now, maybe they can clear out the front hall!
+[Highlight the Shrine to Fortuna]
+If they are still struggling, try praying at the shrine for new gear to equip them with.
+[Highlight the World Map]
+If you need more coins, you can send Primadona out on adventures. You can even instruct them to automatically repeat the same area if you like.
+
+[On defeating the first enemy in the Front Hall]
+Nice, looking good! (could change dialog based on % health)
+Oh, here comes some more.
+[On defeating second group]
+Excellent!
+[Boss appears]
+This one looks tough...
+[On defeating the boss]
+
+They did it, the front hall is clear, let's see what we've got:
+* A cracked Anima Orb. There isn't much Anima left and it doesn't look like it can hold much but you can collect some Anima here to enchant your gear [Display anima drop down +10 Anima]
+* Another Bed. With an extra bed, you can hire another hero to join your guild. Speaking of which there is also...
+* An application board. Itenerate heroes can post applications here for you to consider.
+
+
+The world of consequence where defeat can no longer be ignored.
+The world of extreme consequence, where defeat is final.

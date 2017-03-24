@@ -1,0 +1,49 @@
+Some notes on plans for jewels and jewel crafting:
+
+The guild will have a jewel crafting level, starting at 1:
+Level 1 - expand/compress triangle/rhombus jewels
+Level 2 - expand/compress diamond/square jewels
+Level 3 - salvage jewel (sell and gain *maxAnima multiplier that is placed on the jewel shrine)
+Level 4 - fuse/split diamonds
+Level 5 - fuse/split squares
+Level 6 - fuse/split trapezoids (into random combination of triangles/diamonds)
+Level 7 - fuse/split hexagons (into random combination of triangles/trapezoids/diamonds)
+
+To gain each level the player must gain points from crafting.
+Each action has a coefficient based on its level, so 1 for compress, 2 for expand... 5 for fusing jewels.
+The action looks at the highest quality jewel involved and gives (quality - craftingLefel / 2) ^ 2 * actionCoefficient points.
+To level the player needs [5, 10, 20, 40, 60, 100] points.
+The action coefficient is basically just there to encourage players to experiment with recently unlocked actions in order to further level up.
+
+The multiplier from salvaging jewels is currently planned to cap out at 1000x, but we'll see if that is too low in practice.
+After that cap is reached I think I just give them double anima rewards for salvaging jewels. Or maybe 10x depending on what seems meaningful at the time.
+
+Jewel crafting UI updates:
+
+Instead of the crappy white squares and form buttons, I want to make a more artistic UI with a bunch of distinct elements for each crafting action, which
+are uncovered as one levels up.
+
+The first 2 are the expansion/compression slots. They will be overlapped triangle/rhombus and overlapped square/diamond slots.
+You simply drop a corresponding shape in and it is transformed into its deformed version.
+
+There will be a spot for salvaging, but you can press 's' still to shortcut this.
+
+Then there are the fuse/split, which will be shaped like the fused shape. Place in a full shape and it will be split, place in smaller shapes that fill the template and they will be fused.
+The above won't work for rhombus and squares though... I guess I could have that be overlapped rhombus and square area like []> and then placing a square converts and placing two rhombuses converts.
+
+
+Finally, in the basement lounge/rec room/etc there will be a wall hanging that functions as a global guild jewel board.
+All bonuses from this jewel board apply to all heroes, but it starts with a single triangle slot, and further slots are only unlocked by meeting certain
+requirements that are based on the jewel board itself, particularly meeting some bonus amount/combination.
+These tasks are intended to both teach and reward understanding of the jewel bonuses and adjacency bonuses.
+Some of them will be such that with clever arrangement and the right jewels, they can be unlocked fairly early, but
+a player could still unlock them either way with sufficiently strong jewels.
+For instance, if the board were a single hexagon and the task was to get +5 to all core stats, a clever player might achieve this relatively early using tier 1 jewels
+by constructing perfect diamonds which give 3x to core stat bonuses on them. Otherwise the player might have to resort to using tier 2-3 jewels to meet this requirement.
+
+This board will be relatively small compaired to individual player boards, but presents a lot of interesting trade offs. Do you constantly change it to maximize the effect
+of one particular hero, or do you try to make it generically useful so that you don't need to change it often. Do you place your most power jewels here to benefit everyone,
+or do you place them on particular heroes that can maximize the benefit derived from them?
+
+Another interesting idea for this global jewel board is I can include onyx ability jewels here that are also part of the puzzle, and grant more unusual global buffs or even abilities
+to heroes.
