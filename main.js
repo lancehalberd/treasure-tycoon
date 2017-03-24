@@ -387,11 +387,6 @@ function getMainCanvasMouseTarget(x, y) {
         }
         return null;
     }
-    for (var trophyPopup of trophyPopups) {
-        if (isPointInRect(x, y, trophyPopup.left, trophyPopup.top, trophyPopup.width, trophyPopup.height)) {
-            return trophyPopup;
-        }
-    }
     // Actors (heroes and enemies) have highest priority in the main game context during fights.
     if (area.enemies.length) {
         for (var actor of area.allies.concat(area.enemies)) {
@@ -407,11 +402,12 @@ function getMainCanvasMouseTarget(x, y) {
         if (!object.action && !object.onClick) continue;
         if (object.isVisible && !object.isVisible()) continue;
         // (x,y) of objects is the bottom middle of their graphic.
-        var left = ifdefor(object.left, object.x - area.cameraX - object.width / 2);
-        var top = ifdefor(object.top, groundY - object.y - object.height);
+        var targetRectangle = ifdefor(object.target, object);
+        var left = ifdefor(targetRectangle.left, object.x - area.cameraX - object.width / 2);
+        var top = ifdefor(targetRectangle.top, groundY - object.y - object.height);
         if (object.isOver) {
             if (object.isOver(x, y)) return object;
-        } else if (isPointInRect(x, y, left, top, object.width, object.height)) return object;
+        } else if (isPointInRect(x, y, left, top, targetRectangle.width, targetRectangle.height)) return object;
     }
     if (area.cameraX + x < 60) {
         var coords = unprojectLeftWallCoords(area, x, y);
@@ -484,15 +480,9 @@ function checkRemoveToolTip() {
         return;
     }
     if ($('.js-mainCanvas').is(':visible')) {
-        if (canvasPopupTarget && canvasPopupTarget.isVisible && canvasPopupTarget.isVisible() && isPointInRectObject(canvasCoords[0], canvasCoords[1], canvasPopupTarget)) {
+        if (canvasPopupTarget && !ifdefor(canvasPopupTarget.isDead) && canvasPopupTarget.area === state.selectedCharacter.area &&
+            isMouseOverCanvasElement(canvasCoords[0], canvasCoords[1], canvasPopupTarget)) {
             return;
-        }
-        if (canvasPopupTarget && !ifdefor(canvasPopupTarget.isDead)
-            && (canvasPopupTarget.area === state.selectedCharacter.area
-             || (canvasPopupTarget.character && canvasPopupTarget.character.area))) {
-            if (isPointInRect(canvasCoords[0], canvasCoords[1], canvasPopupTarget.left, canvasPopupTarget.top, canvasPopupTarget.width, canvasPopupTarget.height)) {
-                return;
-            }
         }
         if (currentMapTarget && !state.selectedCharacter.area) {
             if (ifdefor(currentMapTarget.top) !== null) {
@@ -507,6 +497,13 @@ function checkRemoveToolTip() {
     }
     removeToolTip();
     checkToShowMainCanvasToolTip(canvasCoords[0], canvasCoords[1]);
+}
+function isMouseOverCanvasElement(x, y, element) {
+    if (element.isVisible && !element.isVisible()) return false;
+    if (element.isOver) return element.isOver(x, y);
+    if (element.target) return isPointInRectObject(x, y, element.target);
+    if (ifdefor(currentMapTarget.top) !== null) return isPointInRectObject(x, y, element);
+    return false;
 }
 function removeToolTip() {
     $('.js-toolTip').remove();

@@ -233,15 +233,7 @@ function setupActorSource(source) {
     source.attackPreparationFrames = ifdefor(source.attackPreparationFrames, source.walkFrames);
     // If attack recovery frames aren't specified, just play the prep frames backwards.
     source.attackRecoveryFrames = ifdefor(source.attackRecoveryFrames, source.attackPreparationFrames.slice().reverse());
-    source.width = ifdefor(source.width, 48);
-    source.height = ifdefor(source.height, 64);
-    source.actualHeight = ifdefor(source.actualHeight, source.height);
-    source.actualWidth = ifdefor(source.actualWidth, source.width);
-    source.xOffset = ifdefor(source.xOffset, 0);
-    source.yOffset = ifdefor(source.yOffset, 0);
-    source.xCenter = ifdefor(source.xCenter, source.actualWidth / 2 + source.xOffset);
-    source.yCenter = ifdefor(source.yCenter, source.actualHeight / 2 + source.yOffset);
-    return source;
+    return setupSource(source);
 }
 function createEquippedActorSource(baseImage, row, equipment) {
     var actorCanvas = createCanvas(personFrames * 96, 64);

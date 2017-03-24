@@ -147,6 +147,9 @@ function drawActor(actor) {
     } else {
         drawImage(context, actor.image, frameSource, target);
     }
+    /*context.globalAlpha = .5;
+    context.fillStyle = 'red';
+    context.fillRect(target.left, target.top, target.width, target.height);*/
     context.restore();
 
     // life bar

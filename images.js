@@ -262,6 +262,17 @@ function logPixel(context, x, y) {
     var imgd = context.getImageData(x, y, 1, 1);
     console.log(imgd.data)
 }
+function setupSource(source) {
+    source.width = ifdefor(source.width, 48);
+    source.height = ifdefor(source.height, 64);
+    source.actualHeight = ifdefor(source.actualHeight, source.height);
+    source.actualWidth = ifdefor(source.actualWidth, source.width);
+    source.xOffset = ifdefor(source.xOffset, 0);
+    source.yOffset = ifdefor(source.yOffset, 0);
+    source.xCenter = ifdefor(source.xCenter, source.actualWidth / 2 + source.xOffset);
+    source.yCenter = ifdefor(source.yCenter, source.actualHeight / 2 + source.yOffset);
+    return source;
+}
 
 function drawBar(context, x, y, width, height, background, color, percent) {
     percent = Math.max(0, Math.min(1, percent));

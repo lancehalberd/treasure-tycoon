@@ -1,7 +1,29 @@
 var guildImage = requireImage('gfx/guildhall.png');
-function objectSource(image, coords, size) {
-    return {'image': image, 'left': coords[0], 'top': coords[1],
-            'width': size[0], 'height': size[1], 'depth': ifdefor(size[2], size[0])};
+/*
+ Fixed object properties are a little different than the properties used for actors at the moment.
+ I'm not sure which is better. Actors support defining a center point to rotate around, which is not
+ supported here yet (not sure  if I'll use this). On the other hand, actors use xOffset/yOffset in
+ a way that I'm not quite comfortable with at the moment.
+ Here we have:
+ source = {'image', 'width', 'height', 'top', 'left', 'actualWidth', 'actualHeight', 'xOffset', 'yOffset'}
+ Then on the object itself we have defined 'scale'
+ width/height/top/left define the rectangle to read from the source image, and the default dimensions to draw the target
+ to. Scale set on the object can scale up/down the target rectangle. actualWidth/actualHeight are an optional sub rectangle
+ which define the dimensions the object should have in terms of actual collision in the game, which is sometimes smaller than
+ the image. For example, the goddess statue has a wing span of 60px, but only the base registers for hit detection, so we set
+ actualWidth to 30px.
+ xOffset/yOffset are a number of pixels to move the image to the right or up if the default positioning doesn't match the
+ actual position. For example, by default the bottom of an image will be drawn at the center of the floor, but objects with depths
+ should have their perceived center at this position, which means offsetting the images by half of their depth pixels.
+ */
+function objectSource(image, coords, size, additionalProperties) {
+    var source = $.extend({'image': image, 'left': coords[0], 'top': coords[1],
+            'width': size[0], 'height': size[1], 'depth': ifdefor(size[2], size[0])}, ifdefor(additionalProperties, {}));
+    if (!source.actualWidth) source.actualWidth = source.width;
+    if (!source.actualHeight) source.actualHeight = source.height;
+    if (!source.xOffset) source.xOffset = 0;
+    if (!source.yOffset) source.yOffset = 0;
+    return source;
 }
 function openWorldMap(actor) {
     setContext('map');
@@ -36,14 +58,14 @@ $('.js-mouseContainer').on('mousedown', function (event) {
 });
 
 var coinStashTiers = [
-    {'name': 'Cracked Pot', 'bonuses': {'+maxCoins': 500}, 'upgradeCost': 500, 'source': objectSource(guildImage, [300, 150], [30, 30])},
-    {'name': 'Large Jar', 'bonuses': {'+maxCoins': 4000}, 'upgradeCost': 10000, 'source': objectSource(guildImage, [330, 150], [30, 30])},
-    {'name': 'Piggy Bank', 'bonuses': {'+maxCoins': 30000}, 'upgradeCost': 150000, 'requires': 'workshop', 'source': objectSource(guildImage, [330, 150], [30, 30])},
-    {'name': 'Chest', 'bonuses': {'+maxCoins': 200000}, 'upgradeCost': 1.5e6, 'requires': 'workshop', 'source': objectSource(requireImage('gfx/chest-closed.png'), [0, 0], [32, 32])},
-    {'name': 'Safe', 'bonuses': {'+maxCoins': 1e6}, 'upgradeCost': 10e6, 'requires': 'magicWorkshop', 'source': objectSource(requireImage('gfx/chest-open.png'), [0, 0], [32, 32])},
-    {'name': 'Bag of Holding', 'bonuses': {'+maxCoins': 30e6}, 'upgradeCost': 500e6, 'requires': 'magicWorkshop', 'source': objectSource(guildImage, [330, 150], [30, 30])},
-    {'name': 'Safe of Holding', 'bonuses': {'+maxCoins': 500e6}, 'upgradeCost': 15e9, 'requires': 'magicWorkshop', 'source': objectSource(requireImage('gfx/chest-closed.png'), [0, 0], [32, 32])},
-    {'name': 'Safe of Hoarding', 'bonuses': {'+maxCoins': 10e9}, 'source': objectSource(requireImage('gfx/chest-open.png'), [0, 0], [32, 32])},
+    {'name': 'Cracked Pot', 'bonuses': {'+maxCoins': 500}, 'upgradeCost': 500, 'source': objectSource(guildImage, [300, 150], [30, 30], {'yOffset': -6}), 'scale': 2},
+    {'name': 'Large Jar', 'bonuses': {'+maxCoins': 4000}, 'upgradeCost': 10000, 'source': objectSource(guildImage, [330, 150], [30, 30], {'yOffset': -6}), 'scale': 2},
+    {'name': 'Piggy Bank', 'bonuses': {'+maxCoins': 30000}, 'upgradeCost': 150000, 'requires': 'workshop', 'source': objectSource(guildImage, [300, 180], [30, 30], {'yOffset': -6}), 'scale': 2},
+    {'name': 'Chest', 'bonuses': {'+maxCoins': 200000}, 'upgradeCost': 1.5e6, 'requires': 'workshop', 'source': objectSource(requireImage('gfx/chest-closed.png'), [0, 0], [32, 32], {'yOffset': -6}), 'scale': 2},
+    {'name': 'Safe', 'bonuses': {'+maxCoins': 1e6}, 'upgradeCost': 10e6, 'requires': 'magicWorkshop', 'source': objectSource(guildImage, [330, 180], [30, 30], {'yOffset': -6}), 'scale': 2},
+    {'name': 'Bag of Holding', 'bonuses': {'+maxCoins': 30e6}, 'upgradeCost': 500e6, 'requires': 'magicWorkshop', 'source': objectSource(guildImage, [300, 210], [30, 30], {'yOffset': -6}), 'scale': 2},
+    {'name': 'Chest of Holding', 'bonuses': {'+maxCoins': 500e6}, 'upgradeCost': 15e9, 'requires': 'magicWorkshop', 'source': objectSource(requireImage('gfx/chest-closed.png'), [0, 0], [32, 32], {'yOffset': -6}), 'scale': 2},
+    {'name': 'Safe of Hoarding', 'bonuses': {'+maxCoins': 10e9}, 'source': objectSource(guildImage, [330, 180], [30, 30], {'yOffset': -6}), 'scale': 2},
 ];
 
 function drawMapButton() {
@@ -119,9 +141,8 @@ function drawUpgradeBox() {
 }
 
 var areaObjects = {
-    'mapTable': {'name': 'World Map', 'source': objectSource(guildImage, [360, 150], [60, 27, 30]), 'action': openWorldMap},
+    'mapTable': {'name': 'World Map', 'source': objectSource(guildImage, [360, 150], [60, 27, 30], {'yOffset': -6}), 'action': openWorldMap},
     'crackedOrb': {'name': 'Cracked Anima Orb', 'source': objectSource(guildImage, [240, 150], [30, 29, 15])},
-    'crackedPot': {'name': 'Cracked Pot', 'source': objectSource(guildImage, [320, 130], [22, 28, 15])},
     'coinStash': {'action': openCoinStashUpgrade, 'level': 1, 'source': coinStashTiers[0].source,
         'getActiveBonusSources': function () {
             return [this.getCurrentTier()];
@@ -135,6 +156,7 @@ var areaObjects = {
         'width': 60, 'height': 60, 'depth': 60,
         'draw': function (area) {
             var coinStashTier = coinStashTiers[this.level - 1];
+            this.scale = ifdefor(coinStashTier.scale, 1);
             this.source = coinStashTier.source;
             // Make this coin stash flash if it can be upgraded.
             this.flashColor = (coinStashTier.upgradeCost && state.coins >= coinStashTier.upgradeCost) ? 'white' : null;
@@ -154,10 +176,11 @@ var areaObjects = {
             hidePointsPreview();
         }
     },
-    'woodenAltar': {'name': 'Shrine of Fortune', 'source': objectSource(guildImage, [450, 150], [30, 30, 20]), 'action': openCrafting},
-    'trophyAltar': {'name': 'Trophy Altar', 'source': objectSource(guildImage, [420, 180], [30, 30, 20]), 'action': openTrophySelection,
+    'woodenAltar': {'name': 'Shrine of Fortune', 'source': objectSource(guildImage, [450, 150], [30, 30, 20], {'yOffset': -6}), 'action': openCrafting},
+    'trophyAltar': {'name': 'Trophy Altar', 'source': objectSource(guildImage, [420, 180], [30, 30, 20], {'yOffset': -6}), 'action': openTrophySelection,
         'getTrophyRectangle': function () {
-            return {'left': this.left + (this.width - this.trophy.width) / 2, 'top': this.top - this.trophy.height + 10, 'width': this.trophy.width, 'height': this.trophy.height};
+            return {'left': this.target.left + (this.target.width - this.trophy.width) / 2,
+                    'top': this.target.top - this.trophy.height + 10, 'width': this.trophy.width, 'height': this.trophy.height};
         },
         'draw': function (area) {
             // Make this altar flash if it is open and there is an unused trophy available to place on it.
@@ -168,20 +191,20 @@ var areaObjects = {
                 else this.trophy.draw(mainContext, this.getTrophyRectangle());
             }
         }, 'isOver': function (x, y) {
-            return isPointInRectObject(x, y, this) || (this.trophy && isPointInRectObject(x,y, this.getTrophyRectangle()));
+            return isPointInRectObject(x, y, this.target) || (this.trophy && isPointInRectObject(x,y, this.getTrophyRectangle()));
         },
         'helpMethod': function (object) {
             if (this.trophy) return this.trophy.helpMethod();
             return null;
         }
     },
-    'candles': {'source': objectSource(guildImage, [540, 150], [25, 40, 0])},
-    'bed': {'name': 'Worn Cot', 'source': objectSource(guildImage, [480, 150], [60, 24, 30]),
+    'candles': {'source': objectSource(guildImage, [540, 145], [25, 40, 0])},
+    'bed': {'name': 'Worn Cot', 'source': objectSource(guildImage, [480, 210], [60, 24, 30], {'yOffset': -6}),
         'getActiveBonusSources': function () {
             return [{'bonuses': {'+maxHeroes': 1}}];
         }
     },
-    'jewelShrine': {'name': 'Shrine of Creation', 'source': objectSource(guildImage, [360, 180], [60, 60, 4]), 'action': openJewels},
+    'jewelShrine': {'name': 'Shrine of Creation', 'source': objectSource(guildImage, [360, 180], [60, 60, 4], {'actualWidth': 30, 'yOffset': -6}), 'action': openJewels},
 
     'heroApplication': {'name': 'Application', 'source': {'width': 40, 'height': 60, 'depth': 0}, 'action': showApplication, 'draw': function (area) {
         this.left = this.x - this.width / 2 - area.cameraX;
@@ -205,37 +228,50 @@ var areaObjects = {
     'wall': {'source': objectSource(guildImage, [600, 0], [60, 240, 180])},
     'door': {'source': objectSource(guildImage, [240, 94], [30, 51, 0]), 'action': useDoor},
 
-    'skillShrine': {'name': 'Shrine of Divinity', 'source': objectSource(guildImage, [360, 180], [60, 60, 4]), 'action': activateShrine},
-    'closedChest': {'name': 'Treasure Chest', 'source': objectSource(requireImage('gfx/treasureChest.png'), [0, 0], [64, 64, 64]), 'action': openChest},
-    'openChest': {'name': 'Opened Treasure Chest', 'source': objectSource(requireImage('gfx/treasureChest.png'), [64, 0], [64, 64, 64]), 'action': function (actor) {
+    'skillShrine': {'name': 'Shrine of Divinity', 'source': objectSource(guildImage, [360, 180], [60, 60, 4], {'actualWidth': 30, 'yOffset': -6}), 'action': activateShrine},
+    'closedChest': {'name': 'Treasure Chest', 'source': objectSource(requireImage('gfx/treasureChest.png'), [0, 0], [64, 64, 64], {'yOffset': -6}), 'action': openChest},
+    'openChest': {'name': 'Opened Treasure Chest', 'source': objectSource(requireImage('gfx/treasureChest.png'), [64, 0], [64, 64, 64], {'yOffset': -6}), 'action': function (actor) {
         messageCharacter(actor.character, 'Empty');
     }},
 }
 
 function drawFixedObject(area) {
     var imageSource = this.source;
+    if (this.lastScale !== this.scale) {
+        this.width = ifdefor(imageSource.actualWidth, imageSource.width) * this.scale;
+        this.height = ifdefor(imageSource.actualHeight, imageSource.height) * this.scale;
+        this.target.width = imageSource.width * this.scale;
+        this.target.height = imageSource.height * this.scale;
+        this.lastScale = this.scale;
+    }
     // Calculate the left/top values from x/y/z coords, which drawImage will use.
-    this.left = this.x - this.width / 2 - area.cameraX;
-    // The object height is shorter than the image height because the image height includes height from depicting the depth of the object.
-    var objectHeight = this.height - this.depth / 2;
-    this.top = groundY - this.y - objectHeight - (this.z + this.depth / 2) / 2;
-    if (canvasPopupTarget === this) drawOutlinedImage(mainContext, imageSource.image, '#fff', 2, imageSource, this);
-    else if (this.flashColor) drawTintedImage(mainContext, imageSource.image, this.flashColor, .5 + .2 * Math.sin(now() / 150), imageSource, this);
-    else drawImage(mainContext, imageSource.image, imageSource, this);
+    this.target.left = this.x - this.target.width / 2 - area.cameraX + imageSource.xOffset * this.scale;
+    this.target.top = groundY - this.y - this.target.height - this.z / 2 - imageSource.yOffset * this.scale;
+    if (canvasPopupTarget === this) drawOutlinedImage(mainContext, imageSource.image, '#fff', 2, imageSource, this.target);
+    else if (this.flashColor) drawTintedImage(mainContext, imageSource.image, this.flashColor, .5 + .2 * Math.sin(now() / 150), imageSource, this.target);
+    else drawImage(mainContext, imageSource.image, imageSource, this.target);
 }
 
 function fixedObject(baseObjectKey, coords, properties) {
     properties = ifdefor(properties, {});
-    var scale = ifdefor(properties.scale, 1);
     var base = areaObjects[baseObjectKey];
+    var scale = ifdefor(properties.scale, ifdefor(base.scale, 1));
     var imageSource = base.source;
-    var newFixedObject = $.extend({'key': properties.key || baseObjectKey, 'fixed': true, 'base': base, 'x': coords[0], 'y': coords[1], 'z': coords[2],
-                    'width': ifdefor(properties.width, ifdefor(base.width, imageSource.width * scale)),
-                    'height': ifdefor(properties.height, ifdefor(base.height, imageSource.height * scale)),
-                    'depth': ifdefor(properties.depth, ifdefor(base.depth, imageSource.depth * scale)),
+    var newFixedObject = $.extend({
+                    'key': properties.key || baseObjectKey,
+                    'scale': scale,
+                    'fixed': true, 'base': base, 'x': coords[0], 'y': coords[1], 'z': coords[2],
+                    'width': ifdefor(properties.width, ifdefor(base.width, ifdefor(imageSource.actualWidth, imageSource.width))) * scale,
+                    'height': ifdefor(properties.height, ifdefor(base.height, ifdefor(imageSource.actualHeight, imageSource.height))) * scale,
+                    'target': {
+                        'width': imageSource.width * scale,
+                        'height': imageSource.height * scale
+                    },
+                    'depth': ifdefor(properties.depth, ifdefor(base.depth, imageSource.depth)),
                     'action': properties.action || base.action,
                     'draw': properties.draw || base.draw || drawFixedObject,
-                    'helpMethod': properties.helpMethod || fixedObjectHelpText}, base, properties || {});
+                    'helpMethod': properties.helpMethod || fixedObjectHelpText
+    }, base, properties || {});
     if (baseObjectKey === 'heroApplication') {
         allApplications.push(newFixedObject);
     }

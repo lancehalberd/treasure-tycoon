@@ -218,7 +218,7 @@ var openChestSource = {'image': requireImage('gfx/chest-open.png'), 'left': 0, '
 function chestWave(chest, levelData, closedImage, openImage) {
     var objects = [chest]
     if (levelData.skill && abilities[levelData.skill]) {
-        objects.push(fixedObject('skillShrine', [545, 0, 0], {'scale': 10, 'helpMethod': function (actor) {
+        objects.push(fixedObject('skillShrine', [545, 0, 0], {'scale': 3, 'helpMethod': function (actor) {
             return "<b>Divine Shrine</b><hr><p>You can use divinity as an offering at these shrines to receive a blessing from the Gods and grow more powerful.</p>";
         }}));
     }

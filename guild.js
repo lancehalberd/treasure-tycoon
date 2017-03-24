@@ -61,8 +61,8 @@ guildAreas.guildFoyer = initializeGuldArea({
     ],
     'objects': [
         fixedObject('mapTable', [250, 0, 90], {'scale': 2}),
-        fixedObject('coinStash', [450, 0, 150]),
-        fixedObject('woodenAltar', [500, 0, 150], {'scale': 2}),
+        fixedObject('coinStash', [450, 0, 165]),
+        fixedObject('woodenAltar', [500, 0, 165], {'scale': 2}),
         fixedObject('crackedOrb', [550, 0, 150], {'scale': 2}),
         fixedObject('trophyAltar', [600, 0, 0], {'scale': 2}),
         fixedObject('bed', [890, 0, 140], {'scale': 2, 'xScale': -1})
@@ -89,8 +89,8 @@ guildAreas.guildFrontHall = initializeGuldArea({
     ],
     'objects': [
         fixedObject('jewelShrine', [120, 0, 150], {'scale': 2}),
-        fixedObject('coinStash', [340, 0, 150], {'level': 1, 'key': 'coinStashA'}),
-        fixedObject('coinStash', [400, 0, 150], {'level': 2, 'key': 'coinStashB'}),
+        fixedObject('coinStash', [340, 0, 165], {'level': 1, 'key': 'coinStashA'}),
+        fixedObject('coinStash', [400, 0, 165], {'level': 2, 'key': 'coinStashB'}),
         fixedObject('trophyAltar', [300, 0, 0], {'scale': 2, 'key': 'trophyAltarA'}),
         fixedObject('trophyAltar', [700, 0, 0], {'scale': 2, 'key': 'trophyAltarB'}),
         fixedObject('bed', [1090, 0, 140], {'scale': 2, 'xScale': -1}),
@@ -127,7 +127,10 @@ function drawRightWall(guildArea) {
     drawImage(wallContext, requireImage('gfx/guildhall.png'), source, $.extend(target, {'left': 60}));
     for (var decoration of guildArea.rightWallDecorations) {
         source = decoration.base.source;
-        decoration.target = {'left': (wallDepth - (decoration.z + decoration.width) * wallDepth / 180) / 2, 'top': wallHeight - decoration.y / 2 - decoration.height / 2, 'width': decoration.width * wallDepth / 180, 'height': decoration.height / 2}
+        decoration.target = {
+            'left': (wallDepth - (decoration.z + decoration.width) * wallDepth / 180) / 2,
+            'top': wallHeight - decoration.y / 2 - decoration.height / 2,
+            'width': decoration.width * wallDepth / 180, 'height': decoration.height / 2}
         if (decoration === canvasPopupTarget) drawOutlinedImage(wallContext, source.image, '#fff', 2, source, decoration.target);
         else drawImage(wallContext, source.image, source, decoration.target);
     }
