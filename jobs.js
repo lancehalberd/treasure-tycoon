@@ -51,3 +51,6 @@ function jobJewels(r,g,b) {
              g ? [90, 100] : [base, base + 5],
              b ? [90, 100] : [base, base + 5]], false), smallJewelLoot, smallJewelLoot];
 }
+for (var classKey in characterClasses) {
+    characterClasses[classKey].achievementImage = requireImage('gfx/achievements/' + classKey + '.png');
+}

@@ -47,22 +47,38 @@ function jobAchievement(jobKey, bonusesArray) {
                 'helpMethod': getJobAchievementHelpText, 'onClick': selectTrophy};
 }
 function drawJobAchievement(context, target) {
-    if (this.level === 0 ) {
+    var jobTrophyImage = characterClasses[this.jobKey].achievementImage;
+    var level = 5;//this.level;
+    if (level === 0 ) {
         context.save();
         context.globalAlpha = .5;
-        drawSourceAsSolidTint(context, jobIcons[this.jobKey], 'black', target);
+        drawSolidTintedImage(context, jobTrophyImage, 'black', {'left': 0, 'top': 0, 'width': 40, 'height': 40}, target);
         context.restore();
         return;
     }
-    var color = ['#F84', '#EA4', '#CCD', '#FF8', '#EEE'][this.level - 1];
-    drawSourceAsSolidTint(context, jobIcons[this.jobKey], color, target);
-    context.save();
-    context.globalAlpha = .1;
-    jobIcons[this.jobKey].draw(context, target);
-    context.restore();
+    var color;
+    if (level === 5) {
+        // glow based on cursor distance
+        var g = '30';
+        if (canvasCoords && canvasCoords.length) {
+            var dx = canvasCoords[0] - (target.left + target.width / 2);
+            var dy = canvasCoords[1] - (target.top + target.height / 2);
+            g = Math.max(48, Math.round(112 - Math.max(0, (dx * dx + dy * dy) / 100 - 20))).toString(16);
+        }
+        // glow in time
+        //var g = Math.round(64 + 32 * (1 + Math.sin(now() / 400)) / 2).toString(16);
+        if (g.length < 2) g = '0' + g;
+        color ='#FF' + g + 'FF';
+    } else {
+        color = ['#C22', '#F84', '#CCD', '#FC0', '#F4F'][level - 1];
+    }
+    drawSolidTintedImage(context, jobTrophyImage, color, {'left': 0, 'top': 0, 'width': 40, 'height': 40}, target);
+    drawImage(context, jobTrophyImage, {'left': 41, 'top': 0, 'width': 40, 'height': 40}, target);
 }
 function drawJobAchievementWithOutline(context, color, thickness, target) {
-    drawSourceWithOutline(context, jobIcons[this.jobKey], color, thickness, target);
+    var jobTrophyImage = characterClasses[this.jobKey].achievementImage;
+    drawOutlinedImage(context, jobTrophyImage, 'white', 2, {'left': 0, 'top': 0, 'width': 40, 'height': 40}, target);
+    //drawSourceWithOutline(context, jobIcons[this.jobKey], color, thickness, target);
     this.draw(context, target);
 }
 function getJobAchievementHelpText() {
