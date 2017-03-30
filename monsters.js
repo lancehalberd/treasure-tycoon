@@ -295,8 +295,8 @@ function initalizeMonsters() {
     var butterflySource = setupActorSource({'image': requireImage('gfx/yellowButterfly.png'), 'width': 64, 'actualWidth': 48, 'height': 64,
             framesPerRow: 7, walkFrames: [1, 2, 3, 4, 5, 6, 4, 2, 0], 'attackPreparationFrames': [7, 10, 11], deathFrames: [7, 8, 9, 9]});
     var skeletonGiantSource = setupActorSource({'image': requireImage('gfx/skeletonGiant.png'), 'width': 48, frames: 7});
-    var dragonSource = setupActorSource({'image': requireImage('gfx/dragonEastern.png'),
-        'width': 48, 'xCenter': 25, 'yCenter': 48, 'actualHeight': 40, 'height': 64, 'yOffset': 24, 'flipped': true, frames: 5});
+    var dragonSource = setupActorSource({'image': requireImage('gfx/dragon.png'), 'width': 64, 'actualWidth': 48, 'height': 64,
+            framesPerRow: 7, walkFrames: [1, 2, 3, 4], 'attackPreparationFrames': [5, 6, 7], deathFrames: [8, 9, 10]});
     var batSource = setupActorSource({'image': requireImage('gfx/bat.png'), 'width': 32, 'height': 32, 'flipped': true, frames: 5, 'y': 30});
     var spiderSource = setupActorSource({'image': requireImage('gfx/spider.png'), 'width': 48, 'height': 48, 'y': -10,
             framesPerRow: 10, walkFrames: [4, 5, 6, 7, 8, 9], 'attackPreparationFrames': [0, 1, 2, 3], deathFrames: [10, 11, 12, 13]});
