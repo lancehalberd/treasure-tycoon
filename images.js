@@ -1,5 +1,5 @@
 
-var assetVersion = ifdefor(assetVersion, '0.3');
+var assetVersion = ifdefor(assetVersion, '0.4');
 var images = {};
 function loadImage(source, callback) {
     images[source] = new Image();

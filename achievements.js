@@ -48,7 +48,7 @@ function jobAchievement(jobKey, bonusesArray) {
 }
 function drawJobAchievement(context, target) {
     var jobTrophyImage = characterClasses[this.jobKey].achievementImage;
-    var level = 5;//this.level;
+    var level = this.level;
     if (level === 0 ) {
         context.save();
         context.globalAlpha = .5;
