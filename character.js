@@ -163,7 +163,9 @@ function initializeActorForAdventure(actor) {
     actor.rotation = 0;
     actor.activity = null;
     actor.imprintedSpell = null;
-    actor.area = actor.character.area;
+    actor.minions = [];
+    actor.owner = null;
+    actor.area = actor.character.hero.area;
     // actor.heading = [1, 0, 0];
     var stopTimeAction = findActionByTag(actor.reactions, 'stopTime');
     actor.temporalShield = actor.maxTemporalShield = (stopTimeAction ? stopTimeAction.duration : 0);
@@ -174,7 +176,7 @@ function returnToMap(character) {
     character.paused = false;
     character.adventurer.goalTarget = null;
     character.isStuckAtShrine = false;
-    leaveCurrentArea(character);
+    leaveCurrentArea(character.hero);
     updateAdventureButtons();
     if (character.autoplay && character.replay) {
         startArea(character, character.currentLevelKey);
@@ -210,6 +212,7 @@ function newCharacter(job) {
     var character = {};
     var hero = makeAdventurerFromJob(job, 1, ifdefor(job.startingEquipment, {}));
     character.adventurer = hero;
+    character.hero = hero;
     hero.character = character;
     hero.heading = [1, 0, 0]; // Character moves left to right by default.
     hero.isMainCharacter = true;
@@ -371,21 +374,25 @@ function addActions(actor, source) {
     var effect, action;
     if (ifdefor(source.onHitEffect)) {
         effect = initializeVariableObject({}, source.onHitEffect, actor);
+        effect.ability = source;
         actor.onHitEffects.push(effect);
         addVariableChildToObject(actor, effect);
     }
     if (ifdefor(source.onCritEffect)) {
         effect = initializeVariableObject({}, source.onCritEffect, actor);
+        effect.ability = source;
         actor.onCritEffects.push(effect);
         addVariableChildToObject(actor, effect);
     }
     if (ifdefor(source.action)) {
         action = initializeVariableObject({}, source.action, actor);
+        action.ability = source;
         actor.actions.push(action);
         addVariableChildToObject(actor, action);
     }
     if (ifdefor(source.reaction)) {
         action = initializeVariableObject({}, source.reaction, actor);
+        action.ability = source;
         actor.reactions.push(action);
         addVariableChildToObject(actor, action);
     }
@@ -689,7 +696,8 @@ function setSelectedCharacter(character) {
     showContext(character.context);
     // Immediately show the desired camera position so the camera doesn't have to
     // catch up on showing the area (the camera isn't updated when the character isn't selected).
-    if (character.area) character.area.cameraX = getTargetCameraX(character);
+    var actor = character.adventurer;
+    if (actor.area) actor.area.cameraX = getTargetCameraX(actor);
 }
 
 $('.js-jewelBoard').on('mouseover', function () {

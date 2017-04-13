@@ -565,13 +565,13 @@ $(document).on('keydown', function(event) {
         } else if (!testingLevel) {
             if (state.selectedCharacter.context === 'map') {
                 if ($('.js-areaMenu').is(':visible')) $('.js-areaMenu').hide();
-                else if (!state.selectedCharacter.area) {
+                else if (!state.selectedCharacter.hero.area) {
                     enterGuildArea(state.selectedCharacter, guildFoyerFrontDoor);
                 } else {
                     setContext('guild');
                 }
             } else if (state.selectedCharacter.context === 'jewel' || state.selectedCharacter.context === 'item') {
-                if (state.selectedCharacter.area && !state.selectedCharacter.area.isGuildArea) {
+                if (state.selectedCharacter.hero.area && !state.selectedCharacter.hero.area.isGuildArea) {
                     setContext('adventure');
                 } else {
                     setContext('guild');
@@ -579,7 +579,7 @@ $(document).on('keydown', function(event) {
             }
             /*if (state.selectedCharacter.context !== 'adventure') {
                 setContext('adventure');
-            } else if (state.selectedCharacter.area) {
+            } else if (state.selectedCharacter.hero.area) {
                 recallSelectedCharacter();
             } else {
                 $('.js-areaMenu').hide();
@@ -627,7 +627,7 @@ $(document).on('keydown', function(event) {
     }
     if (event.which === 77) { // 'm'
         if (state.selectedCharacter.context === 'map') {
-            if (!state.selectedCharacter.area) {
+            if (!state.selectedCharacter.hero.area) {
                 enterGuildArea(state.selectedCharacter, guildFoyerFrontDoor);
             } else {
                 setContext('guild');

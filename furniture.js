@@ -68,8 +68,16 @@ var coinStashTiers = [
     {'name': 'Safe of Hoarding', 'bonuses': {'+maxCoins': 10e9}, 'source': objectSource(guildImage, [330, 180], [30, 30], {'yOffset': -6}), 'scale': 2},
 ];
 
+var animaOrbTiers = [
+    {'name': 'Cracked Anima Orb', 'bonuses': {'+maxAnima': 100}, 'upgradeCost': {'coins': 1000}, 'source': objectSource(guildImage, [240, 150], [30, 30], {'yOffset': -6}), 'scale': 2},
+    {'name': '"Fixed" Anima Orb', 'bonuses': {'+maxAnima': 2500}, 'upgradeCost': {'coins': 10000, 'anima': 5000}, 'source': objectSource(guildImage, [240, 150], [30, 30], {'yOffset': -6}), 'scale': 2},
+    {'name': 'Restored Anima Orb', 'bonuses': {'+maxAnima': 50000}, 'upgradeCost': {'coins': 10e6, 'anima': 250000}, 'requires': 'workshop', 'source': objectSource(guildImage, [270, 150], [30, 30], {'yOffset': -6}), 'scale': 2},
+    {'name': 'Enchanted Anima Orb', 'bonuses': {'+maxAnima': 5e6}, 'upgradeCost': {'coins': 10e9, 'anima': 50e6}, 'requires': 'magicWorkshop', 'source': objectSource(guildImage, [270, 150], [30, 30], {'yOffset': -6}), 'scale': 2},
+    {'name': 'Perfected Anima Orb', 'bonuses': {'+maxAnima': 500e6}, 'requires': 'magicWorkshop', 'source': objectSource(guildImage, [270, 150], [30, 30], {'yOffset': -6}), 'scale': 2},
+];
+
 function drawMapButton() {
-    this.flashColor = state.selectedCharacter.area.completed ? 'white' : null;
+    this.flashColor = state.selectedCharacter.hero.area.completed ? 'white' : null;
     drawHudElement.call(this);
 }
 

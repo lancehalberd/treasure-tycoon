@@ -4,7 +4,7 @@ var groundY = 390;
 // Indicates how much to shift drawing the map/level based on the needs of other UI elements.
 var screenYOffset = 0;
 function drawAdventure(character) {
-    var area = editingLevelInstance ? editingLevelInstance : character.area;
+    var area = editingLevelInstance ? editingLevelInstance : character.hero.area;
     var context = mainContext;
     var cameraX = area.cameraX;
     context.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
@@ -50,6 +50,7 @@ function drawAdventure(character) {
         context.textAlign = 'center'
         context.fillText(textPopup.value, textPopup.x - cameraX, groundY - textPopup.y - textPopup.z / 2);
     }
+    drawSkills(character.adventurer);
     drawMinimap(character);
 }
 function updateActorAnimationFrame(actor) {
@@ -70,7 +71,7 @@ function updateActorAnimationFrame(actor) {
     }
 }
 function drawActor(actor) {
-    var cameraX = actor.character.area.cameraX;
+    var cameraX = actor.area.cameraX;
     var context = mainContext;
     var source = actor.source;
     var scale = ifdefor(actor.scale, 1);
@@ -227,7 +228,7 @@ function drawMinimap(character) {
     var x = 10;
     var width = 750;
     var context = mainContext;
-    var area = editingLevelInstance ? editingLevelInstance : character.area;
+    var area = editingLevelInstance ? editingLevelInstance : character.hero.area;
     drawBar(context, x, y, width, height, 'white', 'white', character.waveIndex / area.waves.length);
     for (var i = 0; i < area.waves.length; i++) {
         var centerX = x + (i + 1) * width / area.waves.length;

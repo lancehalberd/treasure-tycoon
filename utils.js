@@ -237,9 +237,15 @@ function resize(element, width, height, left, top) {
 function constrain(value, min, max) {
     return Math.min(max, Math.max(min, value));
 }
-
+function fillRectangle(context, rectangle) {
+    context.fillRect(rectangle.left, rectangle.top, rectangle.width, rectangle.height);
+}
 function rectangle(left, top, width, height) {
     return {left: left, top: top, width: width, height: height, right: left + width, bottom: top + height};
+}
+function shrinkRectangle(rectangle, margin) {
+    return {'left': rectangle.left + margin, 'width': rectangle.width - 2 * margin,
+            'top': rectangle.top + margin, 'height': rectangle.height - 2 * margin};
 }
 function rectangleCenter(rectangle) {
     return [rectangle.left + rectangle.width / 2, rectangle.top + rectangle.height / 2];

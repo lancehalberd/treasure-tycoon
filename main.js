@@ -123,43 +123,44 @@ function mainLoop() {
     var mousePosition = relativeMousePosition($(mainCanvas));
     var activeGuildAreaHash = {};
     for (var character of characters) {
+        var hero = character.hero;
         if ((character.context === 'adventure' && !(character.autoplay && character.paused)) || character.context === 'guild') {
             character.loopCount = ifdefor(character.loopCount) + 1;
             var loopSkip = (character.autoplay) ? ifdefor(character.loopSkip, 1) : 1;
             if (character.loopCount % loopSkip) break;
             var gameSpeed = (character.autoplay) ? character.gameSpeed : 1;
-            for (var i = 0; i < gameSpeed  && character.area; i++) {
+            for (var i = 0; i < gameSpeed  && character.adventurer.area; i++) {
                 character.time += frameMilliseconds / 1000;
                 if (character.context === 'adventure') adventureLoop(character, frameMilliseconds / 1000);
                 else if (character.context === 'guild') activeGuildAreaHash[character.guildAreaKey] = true;
                 if (character.context !== 'adventure' && character.context !== 'guild') break;
-                var area = character.area;
+                var area = character.adventurer.area;
                 // Only update the camera for the guild for the selected character, but
                 // always update the camera for characters in adventure areas.
                 if (character === state.selectedCharacter || (area && !area.isGuildArea)) {
-                    var targetCameraX = getTargetCameraX(character);
+                    var targetCameraX = getTargetCameraX(hero);
                     area.cameraX = (area.cameraX * 20 + targetCameraX) / 21;
                 }
             }
         }
-        var frame = arrMod(character.adventurer.source.walkFrames, Math.floor(now() * fps / 1000));
+        var frame = arrMod(hero.source.walkFrames, Math.floor(now() * fps / 1000));
         character.characterContext.clearRect(0, 0, 40, 20);
         if (state.selectedCharacter === character) {
             previewContext.clearRect(0, 0, 64, 128);
-            previewContext.drawImage(character.adventurer.personCanvas, frame * 96, 0 , 96, 64, -64, -20, 192, 128);
+            previewContext.drawImage(hero.personCanvas, frame * 96, 0 , 96, 64, -64, -20, 192, 128);
             character.characterContext.globalAlpha = 1;
         } else {
             character.characterContext.globalAlpha = .5;
         }
-        var jobSource = character.adventurer.job.iconSource;
+        var jobSource = hero.job.iconSource;
         drawImage(character.characterContext, jobSource.image, jobSource, {'left': 0, 'top': 0, 'width': 20, 'height': 20});
         //character.characterContext.fillStyle = 'white';
-        character.characterContext.drawImage(character.adventurer.personCanvas, frame * 96, 0 , 96, 64, -20, -18, 96, 64);
+        character.characterContext.drawImage(hero.personCanvas, frame * 96, 0 , 96, 64, -20, -18, 96, 64);
         character.characterContext.globalAlpha = 1;
         if (state.selectedCharacter !== character) {
             if (ifdefor(character.isStuckAtShrine)) {
                 drawImage(character.characterContext, shrineSource.image, shrineSource, rectangle(0, 0, 16, 16));
-            } else if (!character.area) {
+            } else if (!character.adventurer.area) {
                 drawImage(character.characterContext, homeSource.image, homeSource, rectangle(0, 0, 16, 16));
             }
         }
@@ -178,11 +179,11 @@ function mainLoop() {
                 drawBoardJewelsProper(mainContext, [0, 0], board);
             }
         } else {
-            if (state.selectedCharacter.context === 'guild') drawGuildArea(state.selectedCharacter.area);
+            if (state.selectedCharacter.context === 'guild') drawGuildArea(state.selectedCharacter.hero.area);
             else drawAdventure(state.selectedCharacter);
         }
         var hero = state.selectedCharacter.adventurer;
-        if (mouseDown && state.selectedCharacter.area && clickedToMove) {
+        if (mouseDown && state.selectedCharacter.hero.area && clickedToMove) {
             var targetZ = -(mousePosition[1] - groundY) * 2;
             if (targetZ >= -200 || targetZ <= 200) {
                 setActorDestination(hero, {'x': hero.area.cameraX + mousePosition[0], 'z': targetZ});
@@ -200,7 +201,7 @@ function mainLoop() {
     if (state.selectedCharacter.context === 'jewel') {
         drawBoardJewels(state.selectedCharacter, jewelsCanvas);
     }
-    if (state.selectedCharacter.area) {
+    if (state.selectedCharacter.hero.area) {
         refreshStatsPanel(state.selectedCharacter, $('.js-characterColumn .js-stats'))
     }
     $('.js-inventorySlot').toggle($('.js-inventory .js-item').length === 0);
@@ -217,15 +218,15 @@ function mainLoop() {
         killMainLoop();
     }
 }
-function getTargetCameraX(character) {
+function getTargetCameraX(actor) {
     var mousePosition = relativeMousePosition($(mainCanvas));
-    var area = character.area;
-    var centerX = character.adventurer.x;
+    var area = actor.area;
+    var centerX = actor.x;
     var mouseX = Math.max(0, Math.min(800, mousePosition[0]));
-    if (character.adventurer.activity && character.adventurer.activity.type === 'move') {
-        centerX = (centerX + character.adventurer.activity.x) / 2;
-    } else if (character.adventurer.goalTarget && !character.adventurer.goalTarget.isDead) {
-        centerX = (centerX + character.adventurer.goalTarget.x) / 2;
+    if (actor.activity && actor.activity.type === 'move') {
+        centerX = (centerX + actor.activity.x) / 2;
+    } else if (actor.goalTarget && !actor.goalTarget.isDead) {
+        centerX = (centerX + actor.goalTarget.x) / 2;
     }
     if (mouseX > 700) centerX = centerX + (mouseX - 700) / 2;
     else if (mouseX < 100) centerX = centerX + (mouseX - 100) / 2;
@@ -287,10 +288,10 @@ function handleAdventureClick(x, y, event) {
     var hero = state.selectedCharacter.adventurer;
     if (canvasPopupTarget) {
         if (canvasPopupTarget.onClick) {
-            canvasPopupTarget.onClick(state.selectedCharacter);
+            canvasPopupTarget.onClick(state.selectedCharacter, canvasPopupTarget);
         } else if (hero.enemies.indexOf(canvasPopupTarget) >= 0) {
             setActorAttackTarget(hero, canvasPopupTarget);
-        } else {
+        } else if (canvasPopupTarget.area) {
             setActorInteractionTarget(hero, canvasPopupTarget);
         }
     } else if (!upgradingObject && !choosingTrophyAltar) {
@@ -341,7 +342,7 @@ function drawHudElement() {
 }
 
 function drawMapButton() {
-    this.flashColor = state.selectedCharacter.area.completed ? 'white' : null;
+    this.flashColor = state.selectedCharacter.hero.area.completed ? 'white' : null;
     drawHudElement.call(this);
 }
 
@@ -378,7 +379,7 @@ function checkToShowMainCanvasToolTip(x, y) {
 // Return the canvas object under the mouse with highest priority, if any.
 function getMainCanvasMouseTarget(x, y) {
     if (state.selectedCharacter.context === 'map') return getMapPopupTarget(x, y);
-    var area = state.selectedCharacter.area;
+    var area = state.selectedCharacter.hero.area;
     if (!area) return null;
     if (choosingTrophyAltar) return getTrophyPopupTarget(x, y);
     if (upgradingObject) {
@@ -387,6 +388,8 @@ function getMainCanvasMouseTarget(x, y) {
         }
         return null;
     }
+    var abilityTarget = getAbilityPopupTarget(x, y);
+    if (abilityTarget) return abilityTarget;
     // Actors (heroes and enemies) have highest priority in the main game context during fights.
     if (area.enemies.length) {
         for (var actor of area.allies.concat(area.enemies)) {
@@ -480,11 +483,11 @@ function checkRemoveToolTip() {
         return;
     }
     if ($('.js-mainCanvas').is(':visible')) {
-        if (canvasPopupTarget && !ifdefor(canvasPopupTarget.isDead) && canvasPopupTarget.area === state.selectedCharacter.area &&
+        if (canvasPopupTarget && !ifdefor(canvasPopupTarget.isDead) && canvasPopupTarget.area === state.selectedCharacter.hero.area &&
             isMouseOverCanvasElement(canvasCoords[0], canvasCoords[1], canvasPopupTarget)) {
             return;
         }
-        if (currentMapTarget && !state.selectedCharacter.area) {
+        if (currentMapTarget && !state.selectedCharacter.hero.area) {
             if (ifdefor(currentMapTarget.top) !== null) {
                 if (isPointInRect(canvasCoords[0], canvasCoords[1], currentMapTarget.left, currentMapTarget.top, currentMapTarget.width, currentMapTarget.height)) {
                     return;
@@ -549,7 +552,7 @@ $('body').on('click', '.js-retire', function (event) {
     }
     var $panel = $(this).closest('.js-playerPanel');
     $panel.remove();
-    leaveCurrentArea(state.selectedCharacter);
+    leaveCurrentArea(state.selectedCharacter.hero);
     var removedCharacter = state.selectedCharacter;
     var index = state.characters.indexOf(removedCharacter);
     state.characters.splice(index, 1);
@@ -605,7 +608,7 @@ $('body').on('click', '.js-shrineButton', function (event) {
 function setContext(context) {
     state.selectedCharacter.context = context;
     // If the player is not already in the guild when we return to the guild context, move them to the foyer.
-    if (context === 'guild' && (!state.selectedCharacter.area || !state.selectedCharacter.area.isGuildArea)) {
+    if (context === 'guild' && (!state.selectedCharacter.hero.area || !state.selectedCharacter.hero.area.isGuildArea)) {
         enterGuildArea(state.selectedCharacter, guildFoyerFrontDoor);
     }
     showContext(context);
@@ -633,7 +636,8 @@ function updateAdventureButtons() {
     }
 }
 function canRecall(character) {
-    return character.area && !character.area.isGuildArea && character.waveIndex < character.area.waves.length;
+    var actor = character.adventurer;
+    return actor.area && !actor.area.isGuildArea && character.waveIndex < actor.area.waves.length;
 }
 function updateConfirmSkillConfirmationButtons() {
     $('.js-augmentConfirmationButtons').toggle(!!state.selectedCharacter.board.boardPreview);

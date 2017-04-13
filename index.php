@@ -16,12 +16,13 @@
             background-repeat: repeat;
             font-size: 16px;
             font-family: 'kingthings_calligraphica_2Rg', Georgia, serif;
+            margin: 0;
         }
         .mainGame {
             position: relative;
             margin-left: auto;
             margin-right: auto;
-            padding-top: 10px;
+            padding-top: 2px;
             width: 800px;
             min-height: 600px;
             background-color: black;
@@ -295,7 +296,7 @@ addScripts(['utils.js', 'mouse.js', 'drawDashedRectangle.js', 'images.js', 'bonu
     'evaluate.js','helpText.js','jewels.js','jewel-inventory.js','skills.js','abilities.js',
     'loot.js','boards.js', 'character.js', 'jobs.js', 'achievements.js', 'crafting.js','enchanting.js','uniques.js',
     'heroApplication.js', 'effects.js','performAttack.js','useSkill.js',
-    'adventure.js', 'drawAdventure.js', 'monsters.js','levels.js','vector.js',
+    'adventure.js', 'drawAdventure.js', 'drawSkills.js', 'monsters.js','levels.js','vector.js',
     'sphereVector.js','camera.js','mapData.js', 'map.js', 'furniture.js', 'guild.js', 'drawMap.js','editLevel.js',
     'polygon.js','backgrounds.js', 'testCharacters.js','saveGame.js','main.js']);
 ?>

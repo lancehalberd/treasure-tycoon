@@ -19,7 +19,13 @@ function initializeGuldArea(guildArea) {
         wallDecoration.area = guildArea;
     }
     guildArea.leftWallDecorations = guildArea.leftWallDecorations || [];
+    for (var wallDecoration of guildArea.leftWallDecorations) {
+        wallDecoration.area = guildArea;
+    }
     guildArea.rightWallDecorations = guildArea.rightWallDecorations || [];
+    for (var wallDecoration of guildArea.rightWallDecorations) {
+        wallDecoration.area = guildArea;
+    }
     guildArea.leftWall = ifdefor(guildArea.leftWall, fixedObject('wall', [10, 0, 15], {'scale': 2.2, 'xScale': -1}));
     guildArea.rightWall = ifdefor(guildArea.rightWall, fixedObject('wall', [guildArea.width - 10, 0, 15], {'scale': 2.2}));
     return guildArea;
@@ -241,21 +247,21 @@ function unprojectRightWallCoords(area, left, top) {
     //console.log([vanishingPoint.join(','), mousePoint.join(','), slope, x, y]);
     return [x, y];
 }
-function leaveCurrentArea(character) {
-    if (!character.area) return;
-    var allyIndex = character.area.allies.indexOf(character.adventurer);
-    if (allyIndex >= 0) character.area.allies.splice(allyIndex, 1);
-    character.area = null;
+function leaveCurrentArea(actor) {
+    if (!actor.area) return;
+    var allyIndex = actor.area.allies.indexOf(actor);
+    if (allyIndex >= 0) actor.area.allies.splice(allyIndex, 1);
+    actor.area = null;
 }
 function enterGuildArea(character, door) {
-    leaveCurrentArea(character);
+    var hero = character.hero;
+    leaveCurrentArea(hero);
     character.context = 'guild'
     character.currentLevelKey = 'guild';
     character.guildAreaKey = door.areaKey;
     var guildArea = guildAreas[door.areaKey];
-    initializeActorForAdventure(character.adventurer);
-    var hero = character.adventurer;
-    hero.area = character.area = guildArea;
+    initializeActorForAdventure(hero);
+    hero.area = guildArea;
     hero.x = door.x;
     hero.y = 0;
     hero.z = door.z;
@@ -275,8 +281,12 @@ function enterGuildArea(character, door) {
 }
 
 function guildAreaLoop(guildArea) {
+    var delta = frameMilliseconds / 1000;
     var everybody = guildArea.allies.concat(guildArea.enemies);
     for (var object of guildArea.objects) if (object.updated) object.update(guildArea);
+    for (var actor of everybody) actor.time += delta;
+    everybody.forEach(processStatusEffects);
+    everybody.forEach(runActorLoop);
     everybody.forEach(moveActor);
     for (var i = 0; i < guildArea.treasurePopups.length; i++) {
         guildArea.treasurePopups[i].update(guildArea);
@@ -380,6 +390,7 @@ function drawGuildArea(guildArea) {
         mainContext.textAlign = 'center'
         mainContext.fillText(textPopup.value, textPopup.x - guildArea.cameraX, groundY - textPopup.y - textPopup.z / 2);
     }
+    drawSkills(state.selectedCharacter.adventurer);
 }
 
 var guildBonusSources = [];

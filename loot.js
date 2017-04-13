@@ -173,8 +173,8 @@ var loots = {
 };
 
 function messageCharacter(character, text) {
-    var actor = character.adventurer;
-    appendTextPopup(character.area, {'value': text, 'duration': 70, 'x': actor.x + 32, y: actor.height, z: actor.z, color: 'white', fontSize: 15, 'vx': 0, 'vy': .5, 'gravity': .05}, true);
+    var hero = character.hero;
+    appendTextPopup(hero.area, {'value': text, 'duration': 70, 'x': hero.x + 32, y: hero.height, z: hero.z, color: 'white', fontSize: 15, 'vx': 0, 'vy': .5, 'gravity': .05}, true);
 }
 
 function adventureBoardPreview(boardPreview, character) {

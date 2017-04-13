@@ -185,7 +185,7 @@ function useSkill(actor) {
     if (!skill.tags['basic']) {
         var hitText = {x: actor.x, y: actor.height, z: actor.z, color: 'white', fontSize: 15, 'vx': 0, 'vy': 1, 'gravity': .1};
         hitText.value = skill.base.name;
-        appendTextPopup(actor.character.area, hitText, true);
+        appendTextPopup(actor.area, hitText, true);
     }
     skillDefinitions[skill.base.type].use(actor, skill, target);
     triggerSkillEffects(actor, skill);
@@ -205,7 +205,7 @@ function useReaction(actor, reaction, attackStats) {
     // Show the name of the skill. When skills have distinct visible animations, we should probably remove this.
     var skillPopupText = {x: actor.x, y: actor.height, z: actor.z, color: 'white', fontSize: 15, 'vx': 0, 'vy': 1, 'gravity': .1};
     skillPopupText.value = reaction.base.name;
-    appendTextPopup(actor.character.area, skillPopupText, true);
+    appendTextPopup(actor.area, skillPopupText, true);
     skillDefinitions[reaction.base.type].use(actor, reaction, attackStats);
     triggerSkillEffects(actor, reaction);
 }
@@ -416,11 +416,14 @@ skillDefinitions.minion = {
         newMonster.character = actor.character;
         newMonster.heading = actor.heading.slice();
         newMonster.skillSource = minionSkill;
+        console.log(newMonster.owner);
+        actor.minions.push(newMonster);
         newMonster.allies = actor.allies;
         newMonster.enemies = actor.enemies;
         newMonster.time = 0;
         addMinionBonuses(actor, minionSkill, newMonster);
         initializeActorForAdventure(newMonster);
+        newMonster.owner = actor;
         actor.allies.push(newMonster);
         actor.stunned = actor.time + .3;
     }
@@ -490,6 +493,8 @@ skillDefinitions.clone = {
     use: function (actor, cloneSkill, attackStats) {
         var clone = cloneActor(actor, cloneSkill);
         clone.skillSource = cloneSkill;
+        clone.owner = actor;
+        actor.minions.push(clone);
         clone.name = actor.name + ' shadow clone';
         clone.percentHealth = actor.percentHealth;
         clone.health = clone.percentHealth * clone.maxHealth;
@@ -509,6 +514,8 @@ skillDefinitions.decoy = {
     use: function (actor, decoySkill, attackStats) {
         var clone = cloneActor(actor, decoySkill);
         clone.skillSource = decoySkill;
+        clone.owner = actor;
+        actor.minions.push(clone);
         clone.name = actor.name + ' decoy';
         addActions(clone, abilities.explode);
         actor.allies.push(clone);

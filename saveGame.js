@@ -214,7 +214,7 @@ function exportCharacter(character) {
 }
 function importCharacter(characterData) {
     var character = {};
-    character.adventurer = importAdventurer(characterData.adventurer);
+    character.hero = character.adventurer = importAdventurer(characterData.adventurer);
     character.adventurer.character = character;
     character.adventurer.heading = [1, 0, 0]; // Character moves left to right.
     character.adventurer.isMainCharacter = true;
