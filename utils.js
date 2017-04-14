@@ -240,6 +240,9 @@ function constrain(value, min, max) {
 function fillRectangle(context, rectangle) {
     context.fillRect(rectangle.left, rectangle.top, rectangle.width, rectangle.height);
 }
+function drawRectangle(context, rectangle) {
+    context.rect(rectangle.left, rectangle.top, rectangle.width, rectangle.height);
+}
 function rectangle(left, top, width, height) {
     return {left: left, top: top, width: width, height: height, right: left + width, bottom: top + height};
 }

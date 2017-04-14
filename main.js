@@ -505,7 +505,7 @@ function isMouseOverCanvasElement(x, y, element) {
     if (element.isVisible && !element.isVisible()) return false;
     if (element.isOver) return element.isOver(x, y);
     if (element.target) return isPointInRectObject(x, y, element.target);
-    if (ifdefor(currentMapTarget.top) !== null) return isPointInRectObject(x, y, element);
+    if (currentMapTarget && ifdefor(currentMapTarget.top) !== null) return isPointInRectObject(x, y, element);
     return false;
 }
 function removeToolTip() {

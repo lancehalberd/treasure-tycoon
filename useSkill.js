@@ -416,7 +416,6 @@ skillDefinitions.minion = {
         newMonster.character = actor.character;
         newMonster.heading = actor.heading.slice();
         newMonster.skillSource = minionSkill;
-        console.log(newMonster.owner);
         actor.minions.push(newMonster);
         newMonster.allies = actor.allies;
         newMonster.enemies = actor.enemies;

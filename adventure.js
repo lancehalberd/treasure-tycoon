@@ -622,7 +622,7 @@ function runActorLoop(actor) {
     targets.sort(function (A, B) {
         return A.priority - B.priority;
     });
-    if (autoplay) {
+    if (autoplay || !actor.isMainCharacter) {
         for (var target of targets) {
             if (checkToUseSkillOnTarget(actor, target)) {
                 break;

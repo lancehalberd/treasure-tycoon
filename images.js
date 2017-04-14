@@ -37,6 +37,9 @@ var initialImagesToLoad = [
     'gfx/game-icons.png',
     /* nielsenIcons.png from Søren Nielsen at http://opengameart.org/content/grayscale-icons */
     'gfx/nielsenIcons.png',
+    // Public domain images from https://opengameart.org/content/40x56-card-frames-without-the-art
+    'gfx/goldFrame.png',
+    'gfx/silverFrame.png',
     // http://opengameart.org/content/496-pixel-art-icons-for-medievalfantasy-rpg
     'gfx/496RpgIcons/abilityCharm.png',
     'gfx/496RpgIcons/abilityConsume.png',
