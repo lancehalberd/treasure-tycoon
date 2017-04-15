@@ -289,6 +289,7 @@ function moveActor(actor) {
                 actor.isMoving = true;
                 break;
             case 'attack':
+            case 'action':
                 goalTarget = actor.activity.target;
                 break;
         }
@@ -573,6 +574,20 @@ function runActorLoop(actor) {
                     checkToUseSkillOnTarget(actor, actor.activity.target);
                 }
                 break;
+            case 'action':
+                var action = actor.activity.action;
+                var target = actor.activity.target;
+                // console.log([actor, action, target]);
+                // console.log('valid target? ' + canUseSkillOnTarget(actor, action, target));
+                if (!canUseSkillOnTarget(actor, action, target)) {
+                    actor.activity = null;
+                    break;
+                }
+                // console.log('in range? ' + isTargetInRangeOfSkill(actor, action, target));
+                if (!isTargetInRangeOfSkill(actor, action, target)) break;
+                prepareToUseSkillOnTarget(actor, action, target);
+                actor.activity = null;
+                break;
         }
         return;
     } else if (autoplay && actor.character.waveIndex >= actor.area.waves.length) {
@@ -622,17 +637,18 @@ function runActorLoop(actor) {
     targets.sort(function (A, B) {
         return A.priority - B.priority;
     });
-    if (autoplay || !actor.isMainCharacter) {
-        for (var target of targets) {
-            if (checkToUseSkillOnTarget(actor, target)) {
-                break;
-            }
+    for (var target of targets) {
+        if (checkToUseSkillOnTarget(actor, target)) {
+            break;
         }
     }
     actor.cloaked = (actor.cloaking && !actor.skillInUse);
 }
 function checkToUseSkillOnTarget(actor, target) {
+    var autoplay = !actor.area.isGuildArea && actor.isMainCharacter && actor.character.autoplay;
     for(var action of ifdefor(actor.actions, [])) {
+        // Only basic attacks will be used by your hero when you manually control them.
+        if (!autoplay && !action.tags['basic'] && actor.isMainCharacter) continue;
         if (!canUseSkillOnTarget(actor, action, target)) {
             //console.log("cannot use skill");
             continue;

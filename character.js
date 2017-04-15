@@ -148,6 +148,7 @@ function removeAdventureEffects(adventurer) {
     recomputeDirtyStats(adventurer);
 }
 function initializeActorForAdventure(actor) {
+    actor.isActor = true;
     actor.percentHealth = 1;
     actor.maxReflectBarrier = actor.reflectBarrier = 0;
     actor.health = actor.maxHealth;

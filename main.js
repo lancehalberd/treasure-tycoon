@@ -287,6 +287,13 @@ $('.js-mouseContainer').on('mousedown', '.js-mainCanvas', function (event) {
 function handleAdventureClick(x, y, event) {
     var hero = state.selectedCharacter.adventurer;
     if (canvasPopupTarget) {
+        if (selectedAction) {
+            if (canvasPopupTarget.isActor && canUseSkillOnTarget(hero, selectedAction, canvasPopupTarget)) {
+                setActionTarget(hero, selectedAction, canvasPopupTarget);
+                selectedAction = null;
+                return;
+            }
+        }
         if (canvasPopupTarget.onClick) {
             canvasPopupTarget.onClick(state.selectedCharacter, canvasPopupTarget);
         } else if (hero.enemies.indexOf(canvasPopupTarget) >= 0) {
@@ -322,6 +329,13 @@ function setActorDestination(actor, target) {
 function setActorAttackTarget(actor, target) {
     actor.activity = {
         'type': 'attack',
+        'target': target
+    };
+}
+function setActionTarget(actor, action, target) {
+    actor.activity = {
+        'type': 'action',
+        'action': action,
         'target': target
     };
 }
@@ -391,11 +405,9 @@ function getMainCanvasMouseTarget(x, y) {
     var abilityTarget = getAbilityPopupTarget(x, y);
     if (abilityTarget) return abilityTarget;
     // Actors (heroes and enemies) have highest priority in the main game context during fights.
-    if (area.enemies.length) {
-        for (var actor of area.allies.concat(area.enemies)) {
-            if (!actor.isDead && isPointInRect(x, y, actor.left, actor.top, actor.width, actor.height)) {
-                return actor;
-            }
+    for (var actor of area.allies.concat(area.enemies)) {
+        if (!actor.isDead && isPointInRect(x, y, actor.left, actor.top, actor.width, actor.height)) {
+            return actor;
         }
     }
     var sortedObjects = area.objects.slice().sort(function (spriteA, spriteB) {

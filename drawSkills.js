@@ -51,7 +51,7 @@ function drawSkills(actor) {
         fillRectangle(context, shrinkRectangle(action.target, 2));
         drawAbilityIcon(context, iconSource, shrinkRectangle(action.target, frameSize));
         var frame = silverFrame;
-        if (action === selectedAction || action == actor.skillInUse) {
+        if (isSkillActive(action)) {
             frame = goldFrame;
         }
         var cooldown = action.readyAt - actor.time;
@@ -102,4 +102,12 @@ function getAbilityPopupTarget(x, y) {
 
 function actionHelptText(action) {
     return abilityHelpText(action.ability, action.actor);
+}
+
+// Skill is active if it is selected, or if the hero is performing/attempting to perform the skill.
+function isSkillActive(action) {
+    var hero = state.selectedCharacter.hero;
+    return action == selectedAction
+        || action == hero.skillInUse
+        || (hero.activity && hero.activity.action == action);
 }

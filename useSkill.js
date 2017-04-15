@@ -843,7 +843,15 @@ function banishTarget(actor, target, range, rotation) {
     // Adding the delay here creates a shockwave effect where the enemies
     // all get pushed from a certain point at the same time, rather than
     // them all immediately moving towards the point initially.
-    target.pull = {'x': actor.x + actor.heading[0] * (64 + 32 * range), 'z': actor.z + actor.heading[2] * (64 + 32 * range), 'delay': target.time + getDistance(actor, target) * .02 / 32, 'time': target.time + range * .02, 'damage': 0};
+    var dx = target.x - actor.x;
+    var dz = target.z - actor.z;
+    var mag = Math.sqrt(dx * dx + dz * dz);
+    target.pull = {
+        'x': actor.x + actor.width / 2 + 32 * range * dx / mag,
+        'z': actor.z + actor.width / 2 + 32 * range * dz / mag,
+        'delay': target.time + getDistance(actor, target) * .02 / 32,
+        'time': target.time + range * .02, 'damage': 0
+    };
     target.rotation = getXDirection(actor) * rotation;
 }
 
