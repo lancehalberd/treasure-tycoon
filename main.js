@@ -75,7 +75,6 @@ function initializeGame() {
         var startingCharacter = newCharacter(characterClasses[jobKey]);
         updateAdventurer(startingCharacter.adventurer);
         hireCharacter(startingCharacter);
-        $('.js-heroApplication').after($('.js-heroApplication').clone());
         var otherKeys = jobRanks[0].slice();
         removeElementFromArray(otherKeys, jobKey, true);
         for (var i = 0; i < allApplications.length && otherKeys.length; i++) {
