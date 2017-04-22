@@ -215,21 +215,21 @@ var areaObjects = {
     'jewelShrine': {'name': 'Shrine of Creation', 'source': objectSource(guildImage, [360, 180], [60, 60, 4], {'actualWidth': 30, 'yOffset': -6}), 'action': openJewels},
 
     'heroApplication': {'name': 'Application', 'source': {'width': 40, 'height': 60, 'depth': 0}, 'action': showApplication, 'draw': function (area) {
-        this.left = this.x - this.width / 2 - area.cameraX;
-        this.top = groundY - this.y - this.height - this.z / 2;
+        this.target.left = this.x - this.width / 2 - area.cameraX;
+        this.target.top = groundY - this.y - this.height - this.z / 2;
         if (canvasPopupTarget === this) {
             mainContext.fillStyle = 'white';
-            mainContext.fillRect(this.left - 2, this.top - 2, this.width + 4, this.height + 4);
+            fillRectangle(mainContext, shrinkRectangle(this.target, -2));
         }
         mainContext.fillStyle = '#fc8';
-        mainContext.fillRect(this.left, this.top, this.width, this.height);
+        fillRectangle(mainContext, this.target);
         if (!this.character) {
             this.character = createNewHeroApplicant();
         }
         var jobSource = this.character.adventurer.job.iconSource;
         mainContext.save();
-        mainContext.globalAlpha = .6;
-        drawImage(mainContext, jobSource.image, jobSource, {'left': this.left + 4, 'top': this.top + 14, 'width': 32, 'height': 32});
+        mainContext.globalAlpha = 0.6;
+        drawImage(mainContext, jobSource.image, jobSource, {'left': this.target.left + 4, 'top': this.target.top + 14, 'width': 32, 'height': 32});
         mainContext.restore();
     }},
 
