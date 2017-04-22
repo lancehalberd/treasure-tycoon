@@ -149,6 +149,10 @@ function isPointInRect(x, y, l, t, w, h) {
 }
 
 function isPointInRectObject(x, y, rectangle) {
+    if (!rectangle || ifdefor(rectangle.top) === null || ifdefor(rectangle.left) === null
+         || ifdefor(rectangle.width) === null || ifdefor(rectangle.height) === null) {
+        return false;
+    }
     return !(y < rectangle.top || y > (rectangle.top + rectangle.height)
         || x < rectangle.left || x > (rectangle.left + rectangle.width));
 }
