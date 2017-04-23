@@ -298,7 +298,7 @@ addScripts(['utils.js', 'mouse.js', 'drawDashedRectangle.js', 'images.js', 'bonu
     'heroApplication.js', 'effects.js','performAttack.js','useSkill.js',
     'adventure.js', 'drawAdventure.js', 'drawSkills.js', 'monsters.js','levels.js','vector.js',
     'sphereVector.js','camera.js','mapData.js', 'map.js', 'furniture.js', 'guild.js', 'drawMap.js','editLevel.js',
-    'polygon.js','backgrounds.js', 'testCharacters.js','saveGame.js','main.js']);
+    'polygon.js','backgrounds.js', 'testCharacters.js','saveGame.js', 'keyCommands.js', 'main.js']);
 ?>
 </html>
 <?php

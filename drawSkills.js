@@ -1,47 +1,57 @@
 
-function createScaledFrame(r, frame) {
+function createScaledFrame(r, frame, scale = 1) {
     // We want to scale the frame 2x its normal thickness, but we get bad smoothing if we do
     // this as we skew pieces, so we skew the edges at 1x scale, then draw the whole thing scaled
     // up at the very end.
-    var smallCanvas = createCanvas(r.width / 2, r.height / 2);
+    var smallCanvas = createCanvas(r.width / scale, r.height / scale);
     var smallContext = smallCanvas.getContext('2d');
-    smallContext.imageSmoothingEnabled = false
+    smallContext.imageSmoothingEnabled = false;
     // return bigFrameCanvas;
     var canvas = createCanvas(r.width, r.height);
     var context = canvas.getContext('2d');
-    context.imageSmoothingEnabled = false
+    context.imageSmoothingEnabled = false;
     drawImage(smallContext, frame, rectangle(0, 0, 12, 12), rectangle(0, 0, 12, 12));
-    drawImage(smallContext, frame, rectangle(28, 0, 12, 12), rectangle(r.width / 2 - 12, 0, 12, 12));
-    drawImage(smallContext, frame, rectangle(0, 28, 12, 12), rectangle(0, r.height / 2 - 12, 12, 12));
-    drawImage(smallContext, frame, rectangle(28, 28, 12, 12), rectangle(r.width / 2 - 12, r.height / 2 - 12, 12, 12));
-    if (r.width > 48) {
+    drawImage(smallContext, frame, rectangle(28, 0, 12, 12), rectangle(r.width / scale - 12, 0, 12, 12));
+    drawImage(smallContext, frame, rectangle(0, 28, 12, 12), rectangle(0, r.height / scale - 12, 12, 12));
+    drawImage(smallContext, frame, rectangle(28, 28, 12, 12), rectangle(r.width / scale - 12, r.height / scale - 12, 12, 12));
+    if (r.width > 24 * scale) {
         drawImage(smallContext, frame, rectangle(12, 0, 16, 12),
-            rectangle(12, 0, r.width / 2 - 24, 12));
+            rectangle(12, 0, r.width / scale - 24, 12));
         drawImage(smallContext, frame, rectangle(12, 28, 16, 12),
-            rectangle(12, r.height / 2 - 12, r.width / 2 - 24, 12));
+            rectangle(12, r.height / scale - 12, r.width / 2 - 24, 12));
     }
-    if (r.height > 48) {
+    if (r.height > 24 * scale) {
         drawImage(smallContext, frame, rectangle(0, 12, 12, 16),
             rectangle(0, 12, 12, r.height / 2 - 24));
         drawImage(smallContext, frame, rectangle(28, 12, 12, 16),
             rectangle(r.width / 2 - 12, 12, 12, r.height / 2 - 24));
     }
-    drawImage(context, smallCanvas, rectangle(0, 0, r.width / 2, r.height / 2), r);
+    drawImage(context, smallCanvas, rectangle(0, 0, r.width / scale, r.height / scale), r);
     return canvas;
 }
 var goldFrame, silverFrame;
-
+var tinyGoldFrame, tinySilverFrame;
+var actionShortcuts;
+var actionKeyCodes = '1234567890'.split('').map(character => {return character.charCodeAt(0)});
 function drawSkills(actor) {
     var context = mainContext;
+    context.font = "10px Arial";
+    context.textBaseline = 'middle';
+    context.textAlign = 'center';
     var frameSize = 10;
     var size = 40;
+    var tinySize = 20;
     var totalSize = size + 2 * frameSize;
-    if (!goldFrame) goldFrame = createScaledFrame(rectangle(0, 0, totalSize, totalSize), requireImage('gfx/goldFrame.png'));
-    if (!silverFrame) silverFrame = createScaledFrame(rectangle(0, 0, totalSize, totalSize), requireImage('gfx/silverFrame.png'));
+    if (!goldFrame) goldFrame = createScaledFrame(rectangle(0, 0, totalSize, totalSize), requireImage('gfx/goldFrame.png'), 2);
+    if (!silverFrame) silverFrame = createScaledFrame(rectangle(0, 0, totalSize, totalSize), requireImage('gfx/silverFrame.png'), 2);
+    if (!tinyGoldFrame) tinyGoldFrame = createScaledFrame(rectangle(0, 0, tinySize, tinySize), requireImage('gfx/goldFrame.png'));
+    if (!tinySilverFrame) tinySilverFrame = createScaledFrame(rectangle(0, 0, tinySize, tinySize), requireImage('gfx/silverFrame.png'));
     var margin = 20;
     var padding = 2;
     var top = mainCanvas.height - 30 - margin - totalSize; // 30 is the height of the minimap.
     var left = 60 + margin; // 60 pixels to make room for the return to map button.
+    actionShortcuts = {};
+    var keysLeft = actionKeyCodes.slice();
     for (var action of actor.actions) {
         if (action.tags.basic) continue;
         action.target = rectangle(left, top, totalSize, totalSize);
@@ -51,8 +61,10 @@ function drawSkills(actor) {
         fillRectangle(context, shrinkRectangle(action.target, 2));
         drawAbilityIcon(context, iconSource, shrinkRectangle(action.target, frameSize));
         var frame = silverFrame;
+        var tinyFrame = tinySilverFrame;
         if (isSkillActive(action)) {
             frame = goldFrame;
+            tinyFrame = tinyGoldFrame;
         }
         var cooldown = action.readyAt - actor.time;
         if (cooldown > 0) {
@@ -72,6 +84,21 @@ function drawSkills(actor) {
             context.restore();
         }
         drawImage(context, frame, rectangle(0, 0, totalSize, totalSize), action.target);
+        var actionKeyCode = keysLeft.length ? keysLeft.shift() : null;
+        if (actionKeyCode) {
+            actionShortcuts[actionKeyCode] = action;
+            var tinyTarget = rectangle(
+                    action.target.left + action.target.width - frameSize - 6,
+                    action.target.top + action.target.height - frameSize - 6, tinySize, tinySize);
+            context.fillStyle = 'white';
+            fillRectangle(context, tinyTarget);
+            drawImage(context, tinyFrame, rectangle(0, 0, tinySize, tinySize), tinyTarget);
+            context.fillStyle = 'black';
+            context.fillText(String.fromCharCode(actionKeyCode), tinyTarget.left + tinyTarget.width / 2, tinyTarget.top + tinyTarget.height / 2);
+            action.shortcutTarget = tinyTarget;
+        } else {
+            action.shortcutTarget = null;
+        }
         left += totalSize + padding;
     }
 }
@@ -84,15 +111,15 @@ function onClickSkill(character, action) {
             prepareToUseSkillOnTarget(action.actor, action, action.actor);
         }
     } else {
-        selectedAction = action;
+        if (selectedAction === action) selectedAction = null;
+        else selectedAction = action;
     }
 }
-
 
 function getAbilityPopupTarget(x, y) {
     for (var action of state.selectedCharacter.adventurer.actions) {
         if (action.tags.basic) continue;
-        if (isPointInRectObject(x, y, action.target)) {
+        if (isPointInRectObject(x, y, action.target) || isPointInRectObject(x, y, action.shortcutTarget)) {
             action.helpMethod = actionHelptText;
             return action;
         }
