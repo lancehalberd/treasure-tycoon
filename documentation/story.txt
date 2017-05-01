@@ -87,3 +87,17 @@ They did it, the front hall is clear, let's see what we've got:
 
 The world of consequence where defeat can no longer be ignored.
 The world of extreme consequence, where defeat is final.
+
+
+
+
+Final boss will be something like a tree demon (evil Yggdrasil?) with roots growing into all the child worlds of Granfalter.
+From each root it gains increased stats and unique abilities associated each world, for example:
+The ability to infinitely consume restorative and buffing foods.
+The ability to summon powerful minions.
+The effect of returning the hero to the beginning of a long multistage fight on defeat instead of restarting the most recent stage.
+etc.
+
+Completing content in the child worlds of Granfalter will allow the hero to enable inhibitors during the final battle that remove or reduce these abilities.
+This creates multiple goals of first defeating the boss at all (probably be disabling more than half of its abilities) and then powering up a character so
+much that they can defeat the boss without any of the inhibitors enabled.
