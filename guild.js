@@ -69,7 +69,7 @@ guildAreas.guildFoyer = initializeGuldArea({
         fixedObject('mapTable', [250, 0, 90], {'scale': 2}),
         fixedObject('coinStash', [450, 0, 165]),
         fixedObject('woodenAltar', [500, 0, 165], {'scale': 2}),
-        fixedObject('crackedOrb', [550, 0, 150], {'scale': 2}),
+        fixedObject('animaOrb', [550, 0, 150], {'scale': 2}),
         fixedObject('trophyAltar', [600, 0, 0], {'scale': 2}),
         fixedObject('bed', [890, 0, 140], {'scale': 2, 'xScale': -1})
     ],

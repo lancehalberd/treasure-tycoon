@@ -7,9 +7,9 @@ var pointsMap = {
 }
 function points(type, value) {
     if (type === 'coins') {
-        return tag('span', 'icon coin') + ' ' + tag('span', 'value '+ pointsMap[type], value.abbreviate());
+        return tag('span', 'inline-points', tag('span', 'icon coin') + ' ' + tag('span', 'value '+ pointsMap[type], value.abbreviate()));
     }
-    return tag('span', 'icon anima') + ' ' + tag('span', 'value '+ pointsMap[type], value.abbreviate());
+    return tag('span', 'inline-points', tag('span', 'icon anima') + ' ' + tag('span', 'value '+ pointsMap[type], value.abbreviate()));
 }
 
 var fps = 6;
