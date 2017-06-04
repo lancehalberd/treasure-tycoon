@@ -32,6 +32,7 @@ function drawAdventure(character) {
         }
         context.globalAlpha = 1;
     });
+    drawActionTargetCircle(context);
     var sortedSprites = area.allies.concat(area.enemies).concat(area.objects).sort(function (spriteA, spriteB) {
         return spriteB.z - spriteA.z;
     });

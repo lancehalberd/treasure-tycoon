@@ -360,6 +360,7 @@ function drawGuildArea(guildArea) {
             mainContext.globalAlpha = 1;
         });
     }
+    drawActionTargetCircle(mainContext);
     if (guildArea.leftWall) {
         //guildArea.leftWall.draw(guildArea);
         drawLeftWall(guildArea)

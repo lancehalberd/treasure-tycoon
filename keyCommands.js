@@ -4,6 +4,7 @@ function isEditingAllowed() {
 }
 
 $(document).on('keydown', function(event) {
+    if (handleSkillKeyInput(event.which)) return;
     if (event.which === 8) { // delete key
         if (editingMap) {
             event.preventDefault();

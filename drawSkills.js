@@ -1,7 +1,7 @@
 
 function createScaledFrame(r, frame, scale = 1) {
-    // We want to scale the frame 2x its normal thickness, but we get bad smoothing if we do
-    // this as we skew pieces, so we skew the edges at 1x scale, then draw the whole thing scaled
+    // We want to scale the frame Nx its normal thickness, but we get bad smoothing if we do
+    // this as we stretch pieces, so we stretch the edges at 1x scale, then draw the whole thing scaled
     // up at the very end.
     var smallCanvas = createCanvas(r.width / scale, r.height / scale);
     var smallContext = smallCanvas.getContext('2d');
@@ -91,7 +91,7 @@ function drawSkills(actor) {
                     action.target.left + action.target.width - frameSize - 6,
                     action.target.top + action.target.height - frameSize - 6, tinySize, tinySize);
             context.fillStyle = 'white';
-            fillRectangle(context, tinyTarget);
+            fillRectangle(context, shrinkRectangle(tinyTarget, 1));
             drawImage(context, tinyFrame, rectangle(0, 0, tinySize, tinySize), tinyTarget);
             context.fillStyle = 'black';
             context.fillText(String.fromCharCode(actionKeyCode), tinyTarget.left + tinyTarget.width / 2, tinyTarget.top + tinyTarget.height / 2);
@@ -99,27 +99,68 @@ function drawSkills(actor) {
         } else {
             action.shortcutTarget = null;
         }
+        // Display the Manual/Auto indicator.
+        var tinyTarget = rectangle(action.target.left + frameSize + 6 - tinySize, action.target.top + frameSize + 6 - tinySize, tinySize, tinySize);
+        context.fillStyle = 'white';
+        fillRectangle(context, shrinkRectangle(tinyTarget, 1));
+        context.fillStyle = 'black';
+        var letter;
+        if (actor.character.autoplay) letter = actor.character.manualActions[action.base.key] ? 'M' : 'A';
+        else letter = actor.character.autoActions[action.base.key] ? 'A' : 'M';
+        drawImage(context, ((letter === 'M') ? tinySilverFrame : tinyGoldFrame), rectangle(0, 0, tinySize, tinySize), tinyTarget);
+        context.fillText(letter, tinyTarget.left + tinyTarget.width / 2, tinyTarget.top + tinyTarget.height / 2);
+        if (!action.toggleButton) {
+            action.toggleButton = {
+                'onClick': onClickAutoToggle,
+                'action': action,
+                'helpMethod': autoToggleHelpMethod
+            };
+        }
+        action.toggleButton.target = tinyTarget;
         left += totalSize + padding;
     }
 }
 
-var selectedAction = null;
+var selectedAction = null, hoverAction = null;
 function onClickSkill(character, action) {
-    // If a skill has no target, trigger it as soon as they click the skill button.
-    if (action.base.target === 'none') {
-        if (canUseSkillOnTarget(action.actor, action, action.actor)) {
-            prepareToUseSkillOnTarget(action.actor, action, action.actor);
+    activateAction(action);
+}
+
+function onClickAutoToggle(character, toggleButton) {
+    var action = this.action;
+    if (character.autoplay) {
+        character.manualActions[action.base.key] = !ifdefor(character.manualActions[action.base.key], false);
+    } else {
+        character.autoActions[action.base.key] = !ifdefor(character.autoActions[action.base.key], false);
+    }
+}
+function autoToggleHelpMethod() {
+    var action = this.action;
+    var character = action.actor.character;
+    if (character.autoplay) {
+        if (character.manualActions[action.base.key]) {
+            return 'Manual';
+        } else {
+            return 'Auto'
         }
     } else {
-        if (selectedAction === action) selectedAction = null;
-        else selectedAction = action;
+        if (character.autoActions[action.base.key]) {
+            return 'Auto';
+        } else {
+            return 'Manual'
+        }
     }
 }
 
 function getAbilityPopupTarget(x, y) {
+    hoverAction = null;
     for (var action of state.selectedCharacter.adventurer.actions) {
         if (action.tags.basic) continue;
+        if (isPointInRectObject(x, y, action.toggleButton.target)) {
+            return action.toggleButton;
+        }
         if (isPointInRectObject(x, y, action.target) || isPointInRectObject(x, y, action.shortcutTarget)) {
+            hoverAction = action;
             action.helpMethod = actionHelptText;
             return action;
         }
@@ -137,4 +178,55 @@ function isSkillActive(action) {
     return action == selectedAction
         || action == hero.skillInUse
         || (hero.activity && hero.activity.action == action);
+}
+
+function handleSkillKeyInput(keyCode) {
+    var action = actionShortcuts[keyCode];
+    if (!action) return false;
+    activateAction(action);
+    return true;
+}
+
+function activateAction(action) {
+    if (action.readyAt > action.actor.time) return;
+    // If a skill has no target, trigger it as soon as they click the skill button.
+    if (action.base.target === 'none') {
+        if (canUseSkillOnTarget(action.actor, action, action.actor)) {
+            prepareToUseSkillOnTarget(action.actor, action, action.actor);
+        }
+    } else {
+        if (selectedAction === action) selectedAction = null;
+        else selectedAction = action;
+    }
+}
+
+function drawActionTargetCircle(targetContext) {
+    var action = hoverAction;
+    if (!action) action = selectedAction;
+    if (!action) {
+        var hero = state.selectedCharacter.hero;
+        action = hero.activity ? hero.activity.action : null;
+    }
+    if (!action) return;
+    var context = bufferContext;
+    context.clearRect(0,0, bufferCanvas.width, bufferCanvas.height);
+    var area = editingLevelInstance ? editingLevelInstance : action.actor.area;
+    var cameraX = area.cameraX;
+    context.save();
+    var actor = action.actor;
+    var centerY = groundY - ifdefor(actor.y, 0) - ifdefor(actor.z, 0) / 2;
+    var centerX = actor.x - cameraX;
+    context.translate(centerX, centerY);
+    context.scale(1, .5);
+    context.globalAlpha = .3;
+    context.fillStyle = '#0FF';
+    context.beginPath();
+    context.arc(0, 0, ifdefor(action.range, action.area) * 32 + 32, 0, 2 * Math.PI);
+    context.fill();
+    context.globalAlpha = 1;
+    context.lineWidth = 5;
+    context.strokeStyle = '#0FF';
+    context.stroke();
+    context.restore();
+    drawImage(targetContext, bufferCanvas, rectangle(0, 300, bufferCanvas.width, 180), rectangle(0, 300, bufferCanvas.width, 180));
 }

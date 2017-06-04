@@ -36,6 +36,7 @@ var craftingContext = craftingCanvas.getContext('2d');
 var gameHasBeenInitialized = false;
 var mainCanvas, mainContext, jewelsCanvas, jewelsContext, previewContext;
 var mainLoopId = setInterval(mainLoop, 20);
+var bufferCanvas, bufferContext;
 // Load any graphic assets needed by the game here.
 function initializeGame() {
     gameHasBeenInitialized = true;
@@ -46,6 +47,9 @@ function initializeGame() {
     mainCanvas = $('.js-mainCanvas')[0];
     mainContext = mainCanvas.getContext('2d');
     mainContext.imageSmoothingEnabled = false;
+    bufferCanvas = createCanvas(mainCanvas.width, mainCanvas.height);
+    bufferContext = bufferCanvas.getContext('2d');
+    bufferContext.imageSmoothingEnabled = false;
     jewelsCanvas = $('.js-skillCanvas')[0];
     jewelsContext = jewelsCanvas.getContext("2d");
     previewContext = $('.js-characterColumn .js-previewCanvas')[0].getContext("2d")

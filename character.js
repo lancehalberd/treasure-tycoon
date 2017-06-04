@@ -236,6 +236,8 @@ function newCharacter(job) {
     character.divinity = 0;
     character.currentLevelKey = 'guild';
     character.fame = 1;
+    character.autoActions = {};
+    character.manualActions = {};
     var abilityKey = ifdefor(abilities[job.key]) ? job.key : 'heal';
     hero.abilities.push(abilities[abilityKey]);
     for (var i = 0; i < ifdefor(window.testAbilities, []).length; i++) {
