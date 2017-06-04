@@ -1,17 +1,5 @@
 'use strict';
 
-var pointsMap = {
-    'fame': 'Fame',
-    'coins': 'Coins',
-    'anima': 'Anima'
-}
-function points(type, value) {
-    if (type === 'coins') {
-        return tag('span', 'inline-points', tag('span', 'icon coin') + ' ' + tag('span', 'value '+ pointsMap[type], value.abbreviate()));
-    }
-    return tag('span', 'inline-points', tag('span', 'icon anima') + ' ' + tag('span', 'value '+ pointsMap[type], value.abbreviate()));
-}
-
 var fps = 6;
 var state = {
     selectedCharacter: null,
@@ -21,6 +9,7 @@ var state = {
     fame: 0,
     coins: 0,
     anima: 0,
+    maxAnimaJewelMultiplier: 1,
     maxCraftingLevel: 1,
     craftingXOffset: 0,
     craftedItems: {},
@@ -661,9 +650,4 @@ $('.js-charactersBox').on('click', '.js-character', function () {
     setSelectedCharacter($(this).data('character'));
 })
 
-$('.js-coinsContainer').data('helpMethod', function ($container) {
-    var parts = ['Coins are used to create brand new items.',
-                 'Coins are found in chests and dropped from defeated enemies.',
-                 'Your guild can store ' + state.guildStats.maxCoins.abbreviate() + ' coins.'];
-    return parts.join('<br/>');
-})
+

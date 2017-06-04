@@ -239,7 +239,7 @@
                     <span class="js-balance coin" style="display: none;">800</span>
                 </div>
             </div>
-            <div class="points" helptext="Anima is used to enchant items with special powers.<br/>Anima is absorbed from defeated enemies and salvaged from gems.">
+            <div class="points js-animaContainer" helpText>
                 <div class="pointsIcon"><span class="icon anima"></span></div>
                 <div class="pointsColumn">
                     <span class="js-global-anima anima">1000</span>
@@ -291,7 +291,7 @@
 </div>
 </body>
 <?php
-addScripts(['utils.js', 'mouse.js', 'drawDashedRectangle.js', 'images.js', 'bonuses.js',
+addScripts(['utils.js', 'mouse.js', 'drawDashedRectangle.js', 'images.js', 'points.js', 'bonuses.js',
     'drawJewel.js', 'drawBoard.js', 'inventory.js', 'armor.js', 'weapons.js', 'accessories.js',
     'evaluate.js','helpText.js','jewels.js','jewel-inventory.js','skills.js','abilities.js',
     'loot.js','boards.js', 'character.js', 'jobs.js', 'achievements.js', 'crafting.js','enchanting.js','uniques.js',

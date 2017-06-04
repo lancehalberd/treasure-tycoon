@@ -90,6 +90,7 @@ function sellJewel(jewel) {
     gain('coins', jewel.price);
     gain('anima', jewel.price);
     updateJewelCraftingOptions();
+    setMaxAnimaJewelBonus(state.maxAnimaJewelMultiplier * (1 + jewel.tier / 100));
     saveGame();
 }
 

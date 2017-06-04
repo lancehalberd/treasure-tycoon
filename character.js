@@ -101,7 +101,8 @@ var allRoundedVariables = {
     'dexterity' : true, 'strength': true, 'intelligence': true,
     'maxHealth': true, 'speed': true,
     'coins': true, 'anima': true,
-    'evasion': true, 'block': true, 'magicBlock': true, 'armor': true
+    'evasion': true, 'block': true, 'magicBlock': true, 'armor': true,
+    'maxCoins': true, 'maxAnima': true
 };
 
 // All actors receive these bonuses, which give various benefits based on the core stats:
@@ -334,43 +335,6 @@ function readBoardFromData(boardData, character, ability, confirmed) {
         'spaces': boardData.fixed.concat(boardData.spaces).map(convertShapeDataToShape),
         'jewels': []
     };
-}
-
-function previewPointsChange(pointsType, amount) {
-    if (amount === 0) return;
-    var $pointsSpan = $('.js-global-' + pointsType);
-    $pointsSpan.nextAll().show();
-    var $amount = $pointsSpan.nextAll('.js-amount');
-    $amount.toggleClass('cost', amount < 0);
-    if (amount < 0) $amount.text('-' + Math.abs(amount).abbreviate());
-    else $amount.text('+' + amount.abbreviate());
-    if (pointsType === 'divinity') var balance = state.selectedCharacter.divinity + amount;
-    else var balance = state[pointsType] + amount;
-    var $balance = $pointsSpan.nextAll('.js-balance');
-    $balance.toggleClass('cost', balance < 0);
-    if (balance < 0) $balance.text('-' + Math.abs(balance).abbreviate());
-    else $balance.text(balance.abbreviate());
-}
-function hidePointsPreview() {
-    $('.js-amount, .js-bottomLine, .js-balance').hide();
-}
-function gain(pointsType, amount) {
-    state[pointsType] += amount;
-    changedPoints(pointsType);
-}
-function spend(pointsType, amount) {
-    if (amount > state[pointsType]) {
-        return false;
-    }
-    state[pointsType] -= amount;
-    changedPoints(pointsType);
-    return true;
-}
-function changedPoints(pointsType) {
-    if (pointsType == 'fame') updateHireButtons();
-    if (pointsType == 'coins') state.coins = Math.min(state.coins, state.guildStats.maxCoins);
-    else updateReforgeButton();
-    $('.js-global-' + pointsType).text(state[pointsType].abbreviate());
 }
 
 function addActions(actor, source) {

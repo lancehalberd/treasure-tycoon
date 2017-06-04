@@ -22,6 +22,7 @@ function exportState(state) {
     data.anima = state.anima;
     data.characters = state.characters.map(exportCharacter);
     data.completedLevels = copy(state.completedLevels);
+    data.maxAnimaJewelMultiplier = state.maxAnimaJewelMultiplier;
     data.maxCraftingLevel = Math.min(80, state.maxCraftingLevel);
     data.craftingXOffset = state.craftingXOffset;
     data.craftedItems = state.craftedItems;
@@ -105,6 +106,7 @@ function importState(stateData) {
     state.characters = [];
     state.completedLevels = copy(ifdefor(stateData.completedLevels, {}));
     state.visibleLevels = {};
+    setMaxAnimaJewelBonus(ifdefor(stateData.maxAnimaJewelMultiplier, 1));
     state.maxCraftingLevel = stateData.maxCraftingLevel;
     state.craftingXOffset = ifdefor(stateData.craftingXOffset, 0)
     state.craftedItems = ifdefor(stateData.craftedItems, {});

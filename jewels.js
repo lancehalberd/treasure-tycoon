@@ -303,3 +303,11 @@ var jewelTierLevels = [0, 1, 10, 20, 40, 60];
 
 var basicShapeTypes = ['triangle', 'diamond', 'trapezoid'];
 var triangleShapes = ['triangle', 'diamond', 'trapezoid', 'hexagon'];
+
+var maxAnimaJewelBonus;
+function setMaxAnimaJewelBonus(value) {
+    state.maxAnimaJewelMultiplier = value;
+    if (maxAnimaJewelBonus) removeBonusSourceFromObject(state.guildStats, maxAnimaJewelBonus);
+    maxAnimaJewelBonus = {'bonuses': {'*maxAnima': value}};
+    addBonusSourceToObject(state.guildStats, maxAnimaJewelBonus);
+}

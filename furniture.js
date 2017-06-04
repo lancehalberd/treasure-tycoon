@@ -72,28 +72,6 @@ var animaOrbTiers = [
     {'name': 'Perfected Anima Orb', 'bonuses': {'+maxAnima': 500e6}, 'requires': 'magicWorkshop', 'source': objectSource(guildImage, [270, 150], [30, 30], {'yOffset': -6}), 'scale': 2},
 ];
 
-function canAffordCost(cost) {
-    if (typeof cost === 'number') return cost <= state.coins;
-    for (var points in cost) if (cost[points] > state[points]) return false;
-    return true;
-}
-function previewCost(cost) {
-    if (typeof cost === 'number') return previewPointsChange('coins', -cost);
-    for (var points in cost) previewPointsChange(points, -cost[points]);
-}
-function attemptToApplyCost(cost) {
-    if (!canAffordCost(cost)) return false;
-    if (typeof cost === 'number') return spend('coins', cost);
-    for (var points in cost) spend(points, cost[points]);
-    return true;
-}
-function costHelpText(cost) {
-    if (typeof cost === 'number') return points('coins', cost);
-    var parts = [];
-    for (var pointsKey in cost) parts.push(points(pointsKey, cost[pointsKey]));
-    return parts.join(' and ');
-}
-
 function drawMapButton() {
     this.flashColor = state.selectedCharacter.hero.area.completed ? 'white' : null;
     drawHudElement.call(this);
