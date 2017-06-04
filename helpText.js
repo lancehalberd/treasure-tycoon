@@ -339,5 +339,6 @@ var bonusMap = {
     '+weaponRange': '+$1 increased range',
     '+damageOverTime': 'Taking $1 damage per second',
     '+reducedDivinityCost': '%1 reduced divinity cost at shrines',
+    '+maxAnima': '+$1 max anima',
     '+maxCoins': '+$1 max coins'
 };

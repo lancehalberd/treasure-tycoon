@@ -51,6 +51,9 @@
     border-top: none;
     pointer-events: auto;
 }
+.inline-points {
+    display: inline-block;
+}
 .charactersBox {
     position: absolute;
     width: auto;

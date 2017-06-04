@@ -45,10 +45,6 @@ function openTrophySelection(actor) {
     removeToolTip();
     choosingTrophyAltar = this;
 }
-function openCoinStashUpgrade(actor) {
-    removeToolTip();
-    upgradingObject = this;
-}
 $('.js-mouseContainer').on('mousedown', function (event) {
     var x = event.pageX - $('.js-mainCanvas').offset().left;
     var y = event.pageY - $('.js-mainCanvas').offset().top;
@@ -69,12 +65,34 @@ var coinStashTiers = [
 ];
 
 var animaOrbTiers = [
-    {'name': 'Cracked Anima Orb', 'bonuses': {'+maxAnima': 100}, 'upgradeCost': {'coins': 1000}, 'source': objectSource(guildImage, [240, 150], [30, 30], {'yOffset': -6}), 'scale': 2},
+    {'name': 'Cracked Anima Orb', 'bonuses': {'+maxAnima': 100}, 'upgradeCost': {'coins': 1000, 'anima': 50}, 'source': objectSource(guildImage, [240, 150], [30, 30], {'yOffset': -6}), 'scale': 2},
     {'name': '"Fixed" Anima Orb', 'bonuses': {'+maxAnima': 2500}, 'upgradeCost': {'coins': 10000, 'anima': 5000}, 'source': objectSource(guildImage, [240, 150], [30, 30], {'yOffset': -6}), 'scale': 2},
     {'name': 'Restored Anima Orb', 'bonuses': {'+maxAnima': 50000}, 'upgradeCost': {'coins': 10e6, 'anima': 250000}, 'requires': 'workshop', 'source': objectSource(guildImage, [270, 150], [30, 30], {'yOffset': -6}), 'scale': 2},
     {'name': 'Enchanted Anima Orb', 'bonuses': {'+maxAnima': 5e6}, 'upgradeCost': {'coins': 10e9, 'anima': 50e6}, 'requires': 'magicWorkshop', 'source': objectSource(guildImage, [270, 150], [30, 30], {'yOffset': -6}), 'scale': 2},
     {'name': 'Perfected Anima Orb', 'bonuses': {'+maxAnima': 500e6}, 'requires': 'magicWorkshop', 'source': objectSource(guildImage, [270, 150], [30, 30], {'yOffset': -6}), 'scale': 2},
 ];
+
+function canAffordCost(cost) {
+    if (typeof cost === 'number') return cost <= state.coins;
+    for (var points in cost) if (cost[points] > state[points]) return false;
+    return true;
+}
+function previewCost(cost) {
+    if (typeof cost === 'number') return previewPointsChange('coins', -cost);
+    for (var points in cost) previewPointsChange(points, -cost[points]);
+}
+function attemptToApplyCost(cost) {
+    if (!canAffordCost(cost)) return false;
+    if (typeof cost === 'number') return spend('coins', cost);
+    for (var points in cost) spend(points, cost[points]);
+    return true;
+}
+function costHelpText(cost) {
+    if (typeof cost === 'number') return points('coins', cost);
+    var parts = [];
+    for (var pointsKey in cost) parts.push(points(pointsKey, cost[pointsKey]));
+    return parts.join(' and ');
+}
 
 function drawMapButton() {
     this.flashColor = state.selectedCharacter.hero.area.completed ? 'white' : null;
@@ -87,7 +105,7 @@ var upgradeButton = {
     },
     'draw': function () {
         var currentTier = upgradingObject.getCurrentTier();
-        var canUpgrade = currentTier.upgradeCost <= state.coins;
+        var canUpgrade = canAffordCost(currentTier.upgradeCost);
         mainContext.textAlign = 'center'
         mainContext.textBaseline = 'middle';
         mainContext.font = '18px sans-serif';
@@ -108,7 +126,7 @@ var upgradeButton = {
     },
     'helpMethod': function () {
         var currentTier = upgradingObject.getCurrentTier();
-        previewPointsChange('coins', -currentTier.upgradeCost);
+        previewCost(currentTier.upgradeCost);
         return null;
     },
     'onMouseOut': function () {
@@ -116,7 +134,7 @@ var upgradeButton = {
     },
     'onClick': function () {
         var currentTier = upgradingObject.getCurrentTier();
-        if (!spend('coins', currentTier.upgradeCost)) return;
+        if (!attemptToApplyCost(currentTier.upgradeCost)) return;
         removeFurnitureBonuses(upgradingObject, false);
         upgradingObject.level++;
         addFurnitureBonuses(upgradingObject, true);
@@ -151,7 +169,50 @@ function drawUpgradeBox() {
 var areaObjects = {
     'mapTable': {'name': 'World Map', 'source': objectSource(guildImage, [360, 150], [60, 27, 30], {'yOffset': -6}), 'action': openWorldMap},
     'crackedOrb': {'name': 'Cracked Anima Orb', 'source': objectSource(guildImage, [240, 150], [30, 29, 15])},
-    'coinStash': {'action': openCoinStashUpgrade, 'level': 1, 'source': coinStashTiers[0].source,
+    'animaOrb': {
+        'action': function () {
+            removeToolTip();
+            upgradingObject = this;
+        },
+        'level': 1, 'source': animaOrbTiers[0].source,
+        'getActiveBonusSources': function () {
+            return [this.getCurrentTier()];
+        },
+        'getCurrentTier': function () {
+            return animaOrbTiers[this.level - 1];
+        },
+        'getNextTier': function () {
+            return ifdefor(animaOrbTiers[this.level]);
+        },
+        'width': 60, 'height': 60, 'depth': 60,
+        'draw': function (area) {
+            var animaOrbTier = animaOrbTiers[this.level - 1];
+            this.scale = ifdefor(animaOrbTier.scale, 1);
+            this.source = animaOrbTier.source;
+            // Make this coin stash flash if it can be upgraded.
+            this.flashColor = (animaOrbTier.upgradeCost && canAffordCost(animaOrbTier.upgradeCost)) ? 'white' : null;
+            drawFixedObject.call(this, area);
+        },
+        'helpMethod': function (object) {
+            var animaOrbTier = animaOrbTiers[this.level - 1];
+            var parts = [animaOrbTier.name];
+            parts.push(bonusSourceHelpText(animaOrbTier, state.selectedCharacter.adventurer));
+            if (animaOrbTier.upgradeCost) {
+                previewCost(animaOrbTier.upgradeCost);
+                parts.push('Upgrade for ' + costHelpText(animaOrbTier.upgradeCost));
+            }
+            return parts.join('<br/><br/>');
+        },
+        'onMouseOut': function () {
+            hidePointsPreview();
+        }
+    },
+    'coinStash': {
+        'action':  function () {
+            removeToolTip();
+            upgradingObject = this;
+        },
+        'level': 1, 'source': coinStashTiers[0].source,
         'getActiveBonusSources': function () {
             return [this.getCurrentTier()];
         },
@@ -167,7 +228,7 @@ var areaObjects = {
             this.scale = ifdefor(coinStashTier.scale, 1);
             this.source = coinStashTier.source;
             // Make this coin stash flash if it can be upgraded.
-            this.flashColor = (coinStashTier.upgradeCost && state.coins >= coinStashTier.upgradeCost) ? 'white' : null;
+            this.flashColor = (coinStashTier.upgradeCost && canAffordCost(coinStashTier.upgradeCost)) ? 'white' : null;
             drawFixedObject.call(this, area);
         },
         'helpMethod': function (object) {
@@ -175,8 +236,8 @@ var areaObjects = {
             var parts = [coinStashTier.name];
             parts.push(bonusSourceHelpText(coinStashTier, state.selectedCharacter.adventurer));
             if (coinStashTier.upgradeCost) {
-                previewPointsChange('coins', -coinStashTier.upgradeCost);
-                parts.push('Upgrade for ' + points('coins', coinStashTier.upgradeCost));
+                previewCost(coinStashTier.upgradeCost);
+                parts.push('Upgrade for ' + costHelpText(coinStashTier.upgradeCost));
             }
             return parts.join('<br/><br/>');
         },
