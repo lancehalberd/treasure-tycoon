@@ -15,7 +15,7 @@
             background-color: black;
             background-repeat: repeat;
             font-size: 16px;
-            font-family: 'kingthings_calligraphica_2Rg', Georgia, serif;
+            font-family: 'Cormorant SC', Georgia, serif;
             margin: 0;
         }
         .mainGame {
@@ -47,6 +47,7 @@
     <script>
         var assetVersion = '<?= $version ?>';
     </script>
+    <link href="https://fonts.googleapis.com/css?family=Cormorant+SC" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="styles.css?v=<?= hash_file('md5', 'styles.css') ?>"/>
     <script src="lib/jquery.min.js"></script>
     <script src="lib/jstorage.min.js"></script>
@@ -206,7 +207,7 @@
                 <button class="js-sellItem sellItem" disabled helptext="Drag items here to sell them. <br/> You can also hover over an item and type 'S' to sell quickly."><div class="icon money"></div></button>
             </div>
         </div>
-        <div class="js-charactersBox points charactersBox" helptext="Divinity can be used at shrines to level up and gain new bonuses and abilities. <br/><br/> Completing new adventures grants divinity and access to the shrine for that area. <br/><br/> Leveling allows you to equip more powerful gear and increases health and basic stats slightly.">
+        <div class="js-charactersBox points charactersBox" helptext="Use Divinity at shrines to learn skills and level up.<br/><br/>Complete new adventures to find shrines and gain divinity.<br/><br/>Leveling allows you to equip more powerful gear.">
             <div class="js-divinityPoints divinityPoints">
                 <div class="pointsIcon"><span class="icon divinity"></span></div>
                 <div class="pointsColumn">
@@ -219,7 +220,7 @@
             </div>
         </div>
         <div class="js-pointsBar pointsBar">
-            <div class="points" helptext="The fame of your guild effects how powerful your guild recruits will be and how much you will have to pay to recruit them.<br/><br/>Fame is gained by leveling adventurers and completing new areas.<br/>Hiring famous adventurers also increases the fame of your guild.">
+            <div class="points" helptext="Your guild's Fame makes it easier to recruit more powerful guild members.<br/><br/>Improve your guild's game by leveling guild members and completing new adventures.">
                 <div class="pointsIcon"><span class="icon fame"></span></div>
                 <div class="pointsColumn">
                     <span class="js-global-fame fame">1000</span>

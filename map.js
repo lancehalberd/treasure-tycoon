@@ -147,10 +147,10 @@ function getMapPopupTargetProper(x, y) {
 function getMapLevelHelpText(level) {
     var helpText;
     if (level.levelKey === 'guild') {
-        return 'Guild';
+        return titleDiv('Guild');
     }
     if (!editingMap) {
-        helpText = '<p style="font-weight: bold">Level ' + level.level + ' ' + level.name + '</p>';
+        helpText = titleDiv('Level ' + level.level + ' ' + level.name);
     } else {
         helpText = '<p style="font-weight: bold">Level ' + level.level + ' ' + level.name +'(' + level.background +  ')</p><br/>';
         helpText += '<p><span style="font-weight: bold">Enemies:</span> ' + level.monsters.map(function (monsterKey) { return monsters[monsterKey].name;}).join(', ') + '</p>';

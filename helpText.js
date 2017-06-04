@@ -11,8 +11,9 @@ function getItemHelpText($item) {
     var sections = [];
     var actor = state.selectedCharacter.adventurer;
     // Unique items have a distinct display name that is used instead of the affix generated name.
-    if (ifdefor(item.displayName)) sections.push(item.displayName);
-    else sections.push(getNameWithAffixes(item.base.name, item.prefixes, item.suffixes));
+    var title;
+    if (ifdefor(item.displayName)) title = item.displayName;
+    else title = getNameWithAffixes(item.base.name, item.prefixes, item.suffixes);
     if (item.base.tags) {
         var tagParts = [];
         for (var tag in item.base.tags) {
@@ -53,7 +54,7 @@ function getItemHelpText($item) {
         else sellValues.push(points('anima', animaValue * total));
     }
     sections.push('Sell for ' + sellValues.join(' '));
-    return sections.join('<br/>');
+    return titleDiv(title) + sections.join('<br/>');
 }
 
 function bonusSourceHelpText(bonusSource, actor, localObject) {
@@ -161,7 +162,7 @@ function renderBonusText(bonusMap, bonusKey, bonusSource, actor, localObject) {
     return text.split(wildcard).join(renderedValue);
 }
 function abilityHelpText(ability, actor) {
-    var sections = [ability.name, ''];
+    var sections = [];
     if (ability.bonuses) sections.push(bonusSourceHelpText(ability, actor));
     var action = ifdefor(ability.action, ability.reaction);
     if (action) {
@@ -173,7 +174,7 @@ function abilityHelpText(ability, actor) {
     if (ability.minionBonuses) {
         sections.push(tag('div', 'tagText', 'Minions:<br/>' + bonusSourceHelpText({'bonuses': ability.minionBonuses}, actor)));
     }
-    return sections.join('<br/>');
+    return titleDiv(ability.name) + sections.join('<br/>');
 }
 var implicitBonusMap = {
     // Gear implicits
@@ -217,13 +218,13 @@ var bonusMap = {
         throw new Error('unexpected value ' + bonusSource.bonuses['$setRange']);
     },
     '$weaponRange': 'Weapon range is always $1',
-    '*weaponRange': '$1x weapon range',
+    '*weaponRange': '$1× weapon range',
     // Offensive stats
     '+damage': '+$1 damage',
-    '*damage': '$3x damage',
+    '*damage': '$3× damage',
     '%damage': '%1 increased damage',
     '+weaponDamage': '+$1 damage',
-    '*weaponDamage': '$3x damage',
+    '*weaponDamage': '$3× damage',
     '%weaponDamage': '%1 increased damage',
     '+minPhysicalDamage': function (bonusSource, actor) {
         return bonusSource.bonuses['+minPhysicalDamage'].format(1) + ' to ' + bonusSource.bonuses['+maxPhysicalDamage'].format(1) + ' increased physical damage';
@@ -238,54 +239,54 @@ var bonusMap = {
         return bonusSource.bonuses['+minWeaponMagicDamage'].format(1) + ' to ' + bonusSource.bonuses['+maxWeaponMagicDamage'].format(1) + ' increased magic damage';
     },
     '+physicalDamage': '+$1 physical damage',
-    '*physicalDamage': '$3x physical damage',
+    '*physicalDamage': '$3× physical damage',
     '%physicalDamage': '%1 increased physical damage',
     '+magicDamage': '+$1 magic damage',
-    '*magicDamage': '$3x magic damage',
+    '*magicDamage': '$3× magic damage',
     '%magicDamage': '%1 increased magic damage',
     '+weaponPhysicalDamage': '+$1 physical damage',
-    '*weaponPhysicalDamage': '$3x physical damage',
+    '*weaponPhysicalDamage': '$3× physical damage',
     '%weaponPhysicalDamage': '%1 increased physical damage',
     '+weaponMagicDamage': '+$1 magic damage',
-    '*weaponMagicDamage': '$3x magic damage',
+    '*weaponMagicDamage': '$3× magic damage',
     '%weaponMagicDamage': '%1 increased magic damage',
     '+magicPower': '+$1 magic power',
-    '*magicPower': '$1x magic power',
+    '*magicPower': '$1× magic power',
     '%magicPower': '%1 increased magic power',
     '+attackSpeed': '+$1 attacks per second',
-    '*attackSpeed': '$1x attack speed',
+    '*attackSpeed': '$1× attack speed',
     '%attackSpeed': '%1 increased attack speed',
     '+critChance': '+%1 chance to critical strike',
-    '*critChance': '$1x critical chance',
+    '*critChance': '$1× critical chance',
     '%critChance': '%1 increased critical chance',
     '+critDamage': '+%1 critical damage',
-    '*critDamage': '$1x critical damage',
+    '*critDamage': '$1× critical damage',
     '%critDamage': '%1 increased critical damage',
     '+critAccuracy': '+%1 critical accuracy',
-    '*critAccuracy': '$1x critical accuracy',
+    '*critAccuracy': '$1× critical accuracy',
     '%critAccuracy': '%1 increased critical accuracy',
     '+range': '+$1 range',
-    '*range': '$1x range',
+    '*range': '$1× range',
     '+accuracy': '+$1 accuracy',
-    '*accuracy': '$1x accuracy',
+    '*accuracy': '$1× accuracy',
     '%accuracy': '%1 increased accuracy',
     // Defensive stats
     '+armor': '+$1 armor',
     '-armor': '$1 decreased armor',
     '%armor': '%1 increased armor',
     '+evasion': '+$1 evasion',
-    '*evasion': '$1x evasion',
+    '*evasion': '$1× evasion',
     '%evasion': '%1 increased evasion',
     '+block': '+$1 block',
     '-block': '$1 decreased block',
     '%block': '%1 increased block',
     '+magicBlock': '+$1 magic block',
-    '*magicBlock': '$1x magic block',
+    '*magicBlock': '$1× magic block',
     '%magicBlock': '%1 increased magic block',
     '+magicResist': 'Reduces magic damage received by %1',
-    '*magicResist': '$1x magic resist',
+    '*magicResist': '$1× magic resist',
     '+maxHealth': '+$1 health',
-    '*maxHealth': '$1x health',
+    '*maxHealth': '$1× health',
     '%maxHealth': '%1 increased health',
     // Miscellaneous Stats
     '+dexterity': '+$1 Dexterity',
@@ -295,32 +296,32 @@ var bonusMap = {
     '+intelligence': '+$1 Intelligence',
     '%intelligence': '%1 increased Intelligence',
     '+healthGainOnHit': 'Gain $2 health on hit',
-    '*healthGainOnHit': '$1x health gained on hit',
+    '*healthGainOnHit': '$1× health gained on hit',
     '+healthRegen': 'Regenerate $1 health per second',
-    '*healthRegen': '$1x health regenerated per second',
+    '*healthRegen': '$1× health regenerated per second',
     '%healthRegen': '%1 increased health regenerated per second',
     '+damageOnMiss': 'Deals $1 true damage to enemy on miss',
     '+slowOnHit': 'Slow targets by %0 on hit',
     '-speed': '$1 reduced movement speed',
     '+speed': '+$1 movement speed',
     '%speed': '%1 increased movement speed',
-    '*speed': '$1x movement speed',
+    '*speed': '$1× movement speed',
     '+increasedDrops': 'Gain %1 more coins and anima',
     // Ability specific bonuses
     '+area': '+$1 area offect',
-    '*area': '$1x increased area of effect',
+    '*area': '$1× increased area of effect',
     '%area': '%1 increased area of effect',
-    '*power': '$1x more effective',
+    '*power': '$1× more effective',
     '+cooldown': 'Cooldown increased by $1 seconds',
     '-cooldown': 'Cooldown decreased by $1 seconds',
     '%cooldown': '%1 cooldown time',
-    '*cooldown': '$1x cooldown time',
+    '*cooldown': '$1× cooldown time',
     '+limit': '+$0 maximum minions',
     '+armorPenetration': '+%1 armor penetration',
     '+dragDamage': '%1 of initial damage is dealth per distance dragged',
     '+dragStun': 'Target is stunned for $1 seconds per distance dragged',
     '+rangeDamage': '%1 increased damage per distance the attack travels',
-    '*distance': '$1x distance',
+    '*distance': '$1× distance',
     '+chance': '+%1 chance',
     '+cleave': '%1 splash damage to all enemies in range',
     '+cleaveRange': '+$1 range for splash damage',
@@ -333,7 +334,7 @@ var bonusMap = {
     '+overHealReflection': '%1 of health gained beyond your max becomes a reflective barrier',
     '+lifeSteal': '%1 of damage dealt is gained as life',
     '+duration': '+$1s duration',
-    '*duration': '$1x duration',
+    '*duration': '$1× duration',
     '%duration': '%1 increased duration',
     '+count': '+$1 enchantment(s) stolen',
     '+weaponRange': '+$1 increased range',

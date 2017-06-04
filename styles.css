@@ -459,15 +459,58 @@ button {
 
 .toolTip {
     position: absolute;
-    padding: 5px;
-    width: 220px;
+    padding: 2px;
+    padding-bottom: 5px;
+    width: 240px;
+    text-align: center;
+    color: #AAA;
     font-size: 16px;
-    border: 1px solid #204070;
+    border: 1px solid white;
     box-sizing: border-box;
-    background-color: rgba(140, 220, 140, .9);
-    border-radius: 4px;
+    background-color: rgba(0, 0, 0, .8);
     z-index: 100;
 }
+.toolTip .title {
+    border: 2px solid #999;
+    background-color: rgba(150, 150, 150, .5);
+    color: #EEE;
+    padding: 2px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.toolTip .body {
+    /* Move toolTip padding + margin to this element */
+}
+.title:first-child {
+    margin-top: 0;
+}
+.title:last-child {
+    margin-bottom: -3px;
+}
+.medium {
+    width: 150px;
+}
+.divider {
+    height: 20px;
+    border-style: solid;
+    border-color: #AAA;
+    border-width: 1px 0 0 0;
+    border-radius: 10px;
+    margin-top: 10px;
+    margin-bottom: -15px;
+}
+.divider:before { /* Not really supposed to work, but does */
+    display: block;
+    content: "";
+    height: 20px;
+    margin-top: -21px;
+    border-style: solid;
+    border-color: #AAA;
+    border-width: 0 0 1px 0;
+    border-radius: 10px;
+}
+
+
 .centered {
     display: block;
     margin-left: auto;
@@ -636,8 +679,7 @@ button.disabled {
 .effectText {
     position: relative;
     padding: 5px;
-    background-color: rgba(200, 200, 50, .9);
-    border: 1px solid white;
+    background-color: rgba(100, 100, 0, .9);
 }
 .effectCounter {
     color: white;
@@ -648,19 +690,16 @@ button.disabled {
 }
 .abilityText {
     padding: 5px;
-    background-color: rgba(50, 200, 200, .9);
-    border: 1px solid white;
+    background-color: rgba(0, 100, 100, .9);
 }
 .tagText {
     padding: 5px;
-    background-color: rgba(200, 50, 200, .9);
-    border: 1px solid white;
+    background-color: rgba(100, 0, 100, .9);
 }
 
 .uniqueText {
     padding: 5px;
-    background-color: rgba(50, 200, 250, .9);
-    border: 1px solid white;
+    background-color: rgba(0, 100, 150, .9);
 }
 
 select {

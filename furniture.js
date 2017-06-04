@@ -173,13 +173,13 @@ var areaObjects = {
         },
         'helpMethod': function (object) {
             var animaOrbTier = animaOrbTiers[this.level - 1];
-            var parts = [animaOrbTier.name];
+            var parts = [];
             parts.push(bonusSourceHelpText(animaOrbTier, state.selectedCharacter.adventurer));
             if (animaOrbTier.upgradeCost) {
                 previewCost(animaOrbTier.upgradeCost);
                 parts.push('Upgrade for ' + costHelpText(animaOrbTier.upgradeCost));
             }
-            return parts.join('<br/><br/>');
+            return titleDiv(animaOrbTier.name) + parts.join('<br/><br/>');
         },
         'onMouseOut': function () {
             hidePointsPreview();
@@ -211,13 +211,13 @@ var areaObjects = {
         },
         'helpMethod': function (object) {
             var coinStashTier = coinStashTiers[this.level - 1];
-            var parts = [coinStashTier.name];
+            var parts = [];
             parts.push(bonusSourceHelpText(coinStashTier, state.selectedCharacter.adventurer));
             if (coinStashTier.upgradeCost) {
                 previewCost(coinStashTier.upgradeCost);
                 parts.push('Upgrade for ' + costHelpText(coinStashTier.upgradeCost));
             }
-            return parts.join('<br/><br/>');
+            return titleDiv(coinStashTier.name) + parts.join('<br/><br/>');
         },
         'onMouseOut': function () {
             hidePointsPreview();
@@ -242,7 +242,7 @@ var areaObjects = {
         },
         'helpMethod': function (object) {
             if (this.trophy) return this.trophy.helpMethod();
-            return null;
+            return titleDiv('Trophy Altar');
         }
     },
     'candles': {'source': objectSource(guildImage, [540, 145], [25, 40, 0])},
@@ -328,7 +328,7 @@ function fixedObject(baseObjectKey, coords, properties) {
     return newFixedObject;
 }
 function fixedObjectHelpText(object) {
-    return object.base.name;
+    return object.base.name && titleDiv(object.base.name);
 }
 
 function addFurnitureBonuses(furniture, recompute) {

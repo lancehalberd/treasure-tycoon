@@ -82,17 +82,17 @@ function drawJobAchievementWithOutline(context, color, thickness, target) {
     this.draw(context, target);
 }
 function getJobAchievementHelpText() {
-    if (this.value === 0) return '??? Trophy';
-    var parts = [this.title, 'Highest Level: ' + this.value];
+    if (this.value === 0) return titleDiv('Mysterious Trophy') + bodyDiv('???');
+    var parts = [];
     for (var i = 0; i < this.bonusesArray.length; i++) {
         var textColor = (this.level > i) ? 'white' : '#888';
         var levelData = this.bonusesArray[i];
-        var levelText = '<div style="color: ' + textColor + ';">Level ' + levelData.target + ':<div style="margin-left: 20px;">'
+        var levelText = '<div style="color: ' + textColor + ';">Level ' + levelData.target + ':<div>'
             + bonusSourceHelpText(levelData, state.selectedCharacter.adventurer)
             + '</div></div>';
         parts.push(levelText);
     }
-    return parts.join('<br/>');
+    return titleDiv(this.title) + bodyDiv('Highest Level: ' + this.value + divider + parts.join('<br />'));
 }
 function selectTrophy(character) {
     // A trophy must be at least level 1 to be used.

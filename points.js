@@ -84,3 +84,7 @@ $('.js-animaContainer').data('helpMethod', () => [
         'Your guild can store ' + state.guildStats.maxAnima.abbreviate() + ' anima.'
     ].join('<br />')
 );
+
+var divider = tag('div', 'centered medium', tag('div', 'divider'));
+var titleDiv = (titleMarkup) => titleMarkup && tag('div', 'title', titleMarkup);
+var bodyDiv = (bodyMarkup) => bodyMarkup && tag('div', 'body', bodyMarkup);

@@ -379,9 +379,10 @@ function checkToShowCraftingToopTip() {
         if ($popup.data('item') === overCraftingItem) return;
         else $popup.remove();
     }
-    var sections;
+    var sections, title;
     if (state.craftedItems[overCraftingItem.key]) {
-        sections = [overCraftingItem.name];
+        title = overCraftingItem.name;
+        sections = [];
         if (overCraftingItem.tags) {
             sections.push(Object.keys(overCraftingItem.tags).map(tagToDisplayName).join(', '));
         }
@@ -389,16 +390,19 @@ function checkToShowCraftingToopTip() {
         sections.push('');
         sections.push(bonusSourceHelpText(overCraftingItem, state.selectedCharacter.adventurer));
         if (state.craftedItems[overCraftingItem.key] & CRAFTED_UNIQUE) {
-            sections.push(tag('div', 'uniqueText', 'Unique Variant: </br>' + overCraftingItem.unique.displayName + '<br/>' + (100 * overCraftingItem.unique.chance).format(1) + '% chance for unique'));
+            sections.push(tag('div', 'uniqueText', 'Unique Variant:'
+                + titleDiv(overCraftingItem.unique.displayName)
+                + (100 * overCraftingItem.unique.chance).format(1) + '% chance for unique'));
         }
     } else {
-        sections = ['??? ' + overCraftingItem.slot, 'Requires level ' + overCraftingItem.level, ''];
+        title = '??? ' + overCraftingItem.slot;
+        sections = ['Requires level ' + overCraftingItem.level, ''];
     }
     if (itemsFilteredByType.indexOf(overCraftingItem) >= 0) {
         sections.push('');
         sections.push((100 * overCraftingItem.craftingWeight / selectedCraftingWeight).format(1) + '% chance to obtain');
     }
-    $popup = $tag('div', 'toolTip js-toolTip', sections.join('<br/>'));
+    $popup = $tag('div', 'toolTip js-toolTip', titleDiv(title) + sections.join('<br/>'));
     $popup.data('item', overCraftingItem);
     $popupTarget = null;
     updateToolTip(mousePosition[0], mousePosition[1], $popup);
