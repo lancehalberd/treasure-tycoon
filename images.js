@@ -303,6 +303,35 @@ function drawAbilityIcon(context, icon, target) {
     drawImage(context, icon.image, icon, drawTarget);
 }
 
+function drawRectangleBackground(context, rectangle) {
+    context.save();
+    context.beginPath();
+    context.globalAlpha = .9;
+    context.fillStyle = 'black';
+    fillRectangle(context, rectangle);
+    context.globalAlpha = 1;
+    context.fillStyle = 'white';
+    context.beginPath();
+    drawRectangle(context, rectangle);
+    drawRectangle(context, shrinkRectangle(rectangle, 1));
+    context.fill('evenodd');
+    context.restore();
+}
+
+function drawTitleRectangle(context, rectangle) {
+    context.save();
+    context.beginPath();
+    context.globalAlpha = .5;
+    context.fillStyle = '#999';
+    fillRectangle(context, rectangle);
+    context.globalAlpha = 1;
+    context.beginPath();
+    drawRectangle(context, rectangle);
+    drawRectangle(context, shrinkRectangle(rectangle, 2));
+    context.fill('evenodd');
+    context.restore();
+}
+
 function jobIcon(column, row) {
     return {'image': requireImage('gfx/jobIcons.png'), 'width': 40, 'height': 40,
         'left': column * 41, 'top': row * 41,

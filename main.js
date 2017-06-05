@@ -1,25 +1,7 @@
 'use strict';
 
 var fps = 6;
-var state = {
-    selectedCharacter: null,
-    completedLevels: {},
-    visibleLevels: {}, // {'grove': true, 'orchard': true}
-    characters: [],
-    fame: 0,
-    coins: 0,
-    anima: 0,
-    maxAnimaJewelMultiplier: 1,
-    maxCraftingLevel: 1,
-    craftingXOffset: 0,
-    craftedItems: {},
-    craftingLevel: null,
-    craftingTypeFilter: null,
-    applicationSlots: 2,
-    skipShrinesEnabled: false,
-    guildStats: {},
-    'guildAreas': {}
-};
+var toolTipColor = '#AAA';
 var craftingCanvas = $('.js-craftingCanvas')[0];
 var craftingContext = craftingCanvas.getContext('2d');
 var gameHasBeenInitialized = false;

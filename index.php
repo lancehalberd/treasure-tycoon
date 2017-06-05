@@ -2,9 +2,9 @@
     $version = '0.13';
     function addScripts($scriptNames) {
         foreach ($scriptNames as $scriptName) {
-            $version = hash_file('md5', $scriptName);
+            $version = hash_file('md5', $scriptName . '.js');
             ?>
-<script src="<?=  $scriptName . '?v=' . $version ?>"></script><?php
+<script src="<?=  $scriptName . '.js?v=' . $version ?>"></script><?php
         }
     }
 ?>
@@ -292,14 +292,14 @@
 </div>
 </body>
 <?php
-addScripts(['utils.js', 'mouse.js', 'drawDashedRectangle.js', 'images.js', 'points.js', 'bonuses.js',
-    'drawJewel.js', 'drawBoard.js', 'inventory.js', 'armor.js', 'weapons.js', 'accessories.js',
-    'evaluate.js','helpText.js','jewels.js','jewel-inventory.js','skills.js','abilities.js',
-    'loot.js','boards.js', 'character.js', 'jobs.js', 'achievements.js', 'crafting.js','enchanting.js','uniques.js',
-    'heroApplication.js', 'effects.js','performAttack.js','useSkill.js',
-    'adventure.js', 'drawAdventure.js', 'drawSkills.js', 'monsters.js','levels.js','vector.js',
-    'sphereVector.js','camera.js','mapData.js', 'map.js', 'furniture.js', 'guild.js', 'drawMap.js','editLevel.js',
-    'polygon.js','backgrounds.js', 'testCharacters.js','saveGame.js', 'keyCommands.js', 'main.js']);
+addScripts(['utils', 'mouse', 'drawDashedRectangle', 'images', 'points', 'state', 'bonuses',
+    'drawJewel', 'drawBoard', 'inventory', 'armor', 'weapons', 'accessories',
+    'evaluate','helpText','jewels','jewel-inventory','skills','abilities',
+    'loot','boards', 'character', 'jobs', 'achievements', 'crafting','enchanting','uniques',
+    'heroApplication', 'effects','performAttack','useSkill',
+    'adventure', 'drawAdventure', 'drawSkills', 'monsters','levels','vector',
+    'sphereVector','camera','mapData', 'map', 'furniture', 'guild', 'drawMap','editLevel',
+    'polygon','backgrounds', 'testCharacters','saveGame', 'keyCommands', 'main']);
 ?>
 </html>
 <?php

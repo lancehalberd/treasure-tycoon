@@ -225,7 +225,7 @@ function drawCraftingCanvas() {
                 context.arc(item.craftingX + craftingSlotSize / 2, item.craftingY + craftingSlotSize / 2, craftingSlotSize / 2, 0, 2 * Math.PI);
                 context.fill();
                 context.fillStyle = 'white';
-                context.fillText('?', item.craftingX + craftingSlotSize / 2, item.craftingY + craftingSlotSize / 2);
+                context.fillText('?', item.craftingX + craftingSlotSize / 2, item.craftingY + craftingSlotSize / 2 + 1);
             } else if (item.iconSource) {
                 context.fillStyle = '#aaa';
                 context.beginPath();

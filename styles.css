@@ -136,7 +136,6 @@
 
 .panelTitle {
     font-size: 20px;
-    font-family: sans-serif;
     margin-bottom: 5px;
 }
 
@@ -565,7 +564,6 @@ button {
     background-color: rgba(0, 0, 0, .8);
     padding-top: 10px;
     text-align: center;
-    font-family: sans-serif;
     font-size: 20px;
     color: white;
 }

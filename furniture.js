@@ -86,19 +86,17 @@ var upgradeButton = {
         var canUpgrade = canAffordCost(currentTier.upgradeCost);
         mainContext.textAlign = 'center'
         mainContext.textBaseline = 'middle';
-        mainContext.font = '18px sans-serif';
+        setFontSize(mainContext, 18);
         mainContext.strokeStyle = canUpgrade ? 'white' : '#AAA';
         mainContext.lineWidth = 2;
         mainContext.fillStyle = canUpgrade ? '#6C6' : '#CCC';
-        var padding = 5;
+        var padding = 7;
         var metrics = mainContext.measureText('Upgrade to...');
         this.width = metrics.width + 2 * padding;
         this.height = 20 + 2 * padding;
         this.left = upgradeRectangle.left + (upgradeRectangle.width - this.width) / 2;
         this.top = upgradeRectangle.top + (upgradeRectangle.height - this.height) / 2;
-        //console.log([this.left, this.top, this.width, this.height]);
-        mainContext.fillRect(this.left, this.top, this.width, this.height);
-        mainContext.strokeRect(this.left, this.top, this.width, this.height);
+        drawTitleRectangle(mainContext, this)
         mainContext.fillStyle = canUpgrade ? 'white' : '#AAA';
         mainContext.fillText('Upgrade to...', this.left + this.width / 2, this.top + this.height / 2);
     },
@@ -127,19 +125,18 @@ var upgradeButton = {
 var upgradingObject = null;
 var upgradeRectangle = rectangle(250, 150, 300, 180);
 function drawUpgradeBox() {
-    mainContext.fillStyle = '#888';
-    mainContext.fillRect(upgradeRectangle.left, upgradeRectangle.top, upgradeRectangle.width, upgradeRectangle.height);
+    drawRectangleBackground(mainContext, upgradeRectangle);
     var currentTier = upgradingObject.getCurrentTier();
     var nextTier = upgradingObject.getNextTier();
-    drawImage(mainContext, currentTier.source.image, currentTier.source, {'left': upgradeRectangle.left + 10, 'top': upgradeRectangle.top + 5, 'width': 60, 'height': 60});
+    drawImage(mainContext, currentTier.source.image, currentTier.source, {'left': upgradeRectangle.left + 10, 'top': upgradeRectangle.top + 6, 'width': 60, 'height': 60});
     drawImage(mainContext, nextTier.source.image, nextTier.source, {'left': upgradeRectangle.left + 10, 'top': upgradeRectangle.top + 105, 'width': 60, 'height': 60});
     mainContext.textAlign = 'left'
     mainContext.textBaseline = 'middle';
-    mainContext.fillStyle = 'black';
-    mainContext.font = '18px sans-serif';
+    mainContext.fillStyle = 'white';
+    setFontSize(mainContext, 18);
     mainContext.fillText(currentTier.name, upgradeRectangle.left + 80, upgradeRectangle.top + 25);
     mainContext.fillText(nextTier.name, upgradeRectangle.left + 80, upgradeRectangle.top + 125);
-    mainContext.fillStyle = 'white';
+    mainContext.fillStyle = toolTipColor;
     mainContext.fillText(bonusSourceHelpText(currentTier, state.selectedCharacter.adventurer).replace(/<br ?\/?>/g, "\n"), upgradeRectangle.left + 80, upgradeRectangle.top + 45);
     mainContext.fillText(bonusSourceHelpText(nextTier, state.selectedCharacter.adventurer).replace(/<br ?\/?>/g, "\n"), upgradeRectangle.left + 80, upgradeRectangle.top + 145);
 }

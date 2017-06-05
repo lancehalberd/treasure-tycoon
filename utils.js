@@ -122,7 +122,7 @@ function atan2(x1, y1, x2, y2) {
 }
 
 function ifdefor(value, defaultValue) {
-    if (value !== undefined) {
+    if (value !== undefined && !(typeof value === 'number' && isNaN(value))) {
         return value;
     }
     if (defaultValue !== undefined) {

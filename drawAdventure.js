@@ -262,3 +262,7 @@ function drawHud() {
         element.draw();
     }
 }
+
+function setFontSize(context, size) {
+    context.font = size +"px 'Cormorant SC', Georgia, serif";
+}
