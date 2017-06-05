@@ -105,7 +105,7 @@
                 <div>
                     <span class="playerStat"><span helptext="Starting health for each adventure."><span class="icon health"></span> <span class="js-maxHealth">X</span></span>
                     <span style="font-size: 12px" helptext="How fast your adventurer regenerates health.">(<span class="js-healthRegen" >X</span>)</span></span>
-                    <span class="playerStat" helptext="How famous this adventurer is. Famous adventurers are more powerful but also more expensive.<br/> Hiring and retiring famous adventurers increases the fame of your guild.">
+                    <span class="playerStat" helptext="How famous this adventurer is. Famous adventurers are more powerful but also more expensive to hire.<br/> Hiring famous adventurers increases the fame of your guild.">
                         <span class="icon fame"></span> <span class="js-fame">X</span>
                     </span>
                 </div>

@@ -7,7 +7,6 @@
  */
 var choosingTrophyAltar = false;
 var trophySize = 50;
-var trophyRectangle = rectangle(200, 100, 400, 300);
 var altarTrophies = {
     'level-juggler': jobAchievement('juggler', [{'+accuracy': 1}, {'%attackSpeed': 0.1}, {'+attackSpeed': 0.1}, {'*attackSpeed': 1.1}]),
     'level-ranger': jobAchievement('ranger', [{'+accuracy': 2}, {'+ranged:range': 0.5}, {'+ranged:range': 0.5, '+ranged:physicalDamage': 5}, {'*ranged:damage': 1.1}]),
@@ -51,8 +50,7 @@ function drawJobAchievement(context, target) {
     var level = this.level;
     if (level === 0 ) {
         context.save();
-        context.globalAlpha = .5;
-        drawSolidTintedImage(context, jobTrophyImage, 'black', {'left': 0, 'top': 0, 'width': 40, 'height': 40}, target);
+        drawSolidTintedImage(context, jobTrophyImage, '#666', {'left': 0, 'top': 0, 'width': 40, 'height': 40}, target);
         context.restore();
         return;
     }
@@ -138,13 +136,13 @@ function addTrophyToAltar(altar, trophy) {
     addTrophyBonuses(trophy);
 }
 
+var trophyRectangle = rectangle(195, 100, 410, 300);
 function drawTrophySelection() {
-    mainContext.fillStyle = '#888';
-    mainContext.fillRect(trophyRectangle.left, trophyRectangle.top, trophyRectangle.width, trophyRectangle.height);
+    drawRectangleBackground(mainContext, trophyRectangle);
     var trophySpacing = 5;
     var checkSource = {'left': 68, 'top': 90, 'width': 16, 'height': 16};
-    var left = 5;
-    var top = 5;
+    var left = 10;
+    var top = 10;
     for (var trophyKey in altarTrophies) {
         var trophy = altarTrophies[trophyKey];
         trophy.left = trophyRectangle.left + left;
@@ -162,8 +160,8 @@ function drawTrophySelection() {
             drawImage(mainContext, requireImage('gfx/militaryIcons.png'), checkSource, target);
         }
         left += trophySize + trophySpacing;
-        if (left + trophySize + trophySpacing > trophyRectangle.width) {
-            left = 5;
+        if (left + trophySize + trophySpacing > trophyRectangle.width - 10) {
+            left = 10;
             top += trophySize + trophySpacing;
         }
     }
