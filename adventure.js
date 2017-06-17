@@ -255,7 +255,9 @@ function moveActor(actor) {
     var goalTarget = (actor.skillInUse && actor.skillTarget !== actor) ? actor.skillTarget : null;
     actor.isMoving = false;
     var speedBonus = 1;
-    if (actor.activity) {
+    if (actor.chargeEffect) {
+        goalTarget = actor.chargeEffect.target;
+    } else if (actor.activity) {
         switch (actor.activity.type) {
             case 'move':
                 if (getDistanceBetweenPointsSquared(actor, actor.activity) < 10) {
@@ -294,7 +296,7 @@ function moveActor(actor) {
                 break;
         }
     }
-    if ((!actor.isMainCharacter || (actor.character.autoplay && !actor.activity)) && (!goalTarget || goalTarget.isDead)) {
+    if ((actor.chargeEffect || !actor.isMainCharacter || (actor.character.autoplay && !actor.activity)) && (!goalTarget || goalTarget.isDead)) {
         var bestDistance = 10000;
         actor.enemies.forEach(function (target) {
             if (target.isDead) return;
