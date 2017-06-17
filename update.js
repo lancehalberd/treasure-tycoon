@@ -1,0 +1,49 @@
+'use strict';
+
+var frameMilliseconds = 20;
+setInterval(() => {
+    // Initially we don't do any of the main game logic until preloading finishes
+    // then we initialize the game and start running the main game loop.
+    if (!gameHasBeenInitialized) {
+        if (numberOfImagesLeftToLoad <= 0) initializeGame();
+        else return;
+    }
+    try {
+    var characters = testingLevel ? [state.selectedCharacter] : state.characters;
+    var mousePosition = relativeMousePosition($(mainCanvas));
+    var activeGuildAreaHash = {};
+    for (var character of characters) {
+        var hero = character.hero;
+        if ((character.context === 'adventure' && !(character.autoplay && character.paused)) || character.context === 'guild') {
+            character.loopCount = ifdefor(character.loopCount) + 1;
+            var loopSkip = (character.autoplay) ? ifdefor(character.loopSkip, 1) : 1;
+            if (character.loopCount % loopSkip) break;
+            var gameSpeed = (character.autoplay) ? character.gameSpeed : 1;
+            for (var i = 0; i < gameSpeed  && character.adventurer.area; i++) {
+                character.time += frameMilliseconds / 1000;
+                if (character.context === 'adventure') adventureLoop(character, frameMilliseconds / 1000);
+                else if (character.context === 'guild') activeGuildAreaHash[character.guildAreaKey] = true;
+            }
+        }
+    }
+    for (var guildAreaKey in activeGuildAreaHash) guildAreaLoop(guildAreas[guildAreaKey]);
+    if (state.selectedCharacter.context === 'adventure' || state.selectedCharacter.context === 'guild') {
+        var hero = state.selectedCharacter.adventurer;
+        if (mouseDown && state.selectedCharacter.hero.area && clickedToMove) {
+            var targetZ = -(mousePosition[1] - groundY) * 2;
+            if (targetZ >= -200 || targetZ <= 200) {
+                setActorDestination(hero, {'x': hero.area.cameraX + mousePosition[0], 'z': targetZ});
+            }
+        }
+    }
+    if (state.selectedCharacter.context === 'map') updateMap();
+    if (state.selectedCharacter.context === 'item') updateCraftingCanvas();
+    if (state.selectedCharacter.hero.area) refreshStatsPanel(state.selectedCharacter, $('.js-characterColumn .js-stats'))
+    $('.js-inventorySlot').toggle($('.js-inventory .js-item').length === 0);
+    checkRemoveToolTip();
+    updateTrophyPopups();
+    } catch (e) {
+        console.log(e);
+        debugger;
+    }
+}, frameMilliseconds);

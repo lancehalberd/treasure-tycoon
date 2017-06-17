@@ -1,12 +1,10 @@
 'use strict';
 
-var fps = 6;
 var toolTipColor = '#AAA';
 var craftingCanvas = $('.js-craftingCanvas')[0];
 var craftingContext = craftingCanvas.getContext('2d');
 var gameHasBeenInitialized = false;
 var mainCanvas, mainContext, jewelsCanvas, jewelsContext, previewContext;
-var mainLoopId = setInterval(mainLoop, 20);
 var bufferCanvas, bufferContext;
 // Load any graphic assets needed by the game here.
 function initializeGame() {
@@ -73,144 +71,6 @@ function initializeGame() {
     if (!state.selectedCharacter) {
         throw new Error('No selected character found');
     }
-}
-var frameMilliseconds = 20;
-var homeSource = {'image': requireImage('gfx/nielsenIcons.png'), 'left': 32, 'top': 128, 'width': 32, 'height': 32};
-var shrineSource = {'image': requireImage('gfx/militaryIcons.png'), 'left': 102, 'top': 125, 'width': 16, 'height': 16};
-function mainLoop() {
-    // Initially we don't do any of the main game logic until preloading finishes
-    // then we initialize the game and start running the main game loop.
-    if (!gameHasBeenInitialized) {
-        if (numberOfImagesLeftToLoad <= 0) {
-            initializeGame();
-        } else {
-            return;
-        }
-    }
-    try {
-    var time = now();
-    if ($('.js-jewelInventory').is(":visible")) {
-        redrawInventoryJewels();
-    }
-    var fps = Math.floor(3 * 5 / 3);
-    var characters = testingLevel ? [state.selectedCharacter] : state.characters;
-    var mousePosition = relativeMousePosition($(mainCanvas));
-    var activeGuildAreaHash = {};
-    for (var character of characters) {
-        var hero = character.hero;
-        if ((character.context === 'adventure' && !(character.autoplay && character.paused)) || character.context === 'guild') {
-            character.loopCount = ifdefor(character.loopCount) + 1;
-            var loopSkip = (character.autoplay) ? ifdefor(character.loopSkip, 1) : 1;
-            if (character.loopCount % loopSkip) break;
-            var gameSpeed = (character.autoplay) ? character.gameSpeed : 1;
-            for (var i = 0; i < gameSpeed  && character.adventurer.area; i++) {
-                character.time += frameMilliseconds / 1000;
-                if (character.context === 'adventure') adventureLoop(character, frameMilliseconds / 1000);
-                else if (character.context === 'guild') activeGuildAreaHash[character.guildAreaKey] = true;
-                if (character.context !== 'adventure' && character.context !== 'guild') break;
-                var area = character.adventurer.area;
-                // Only update the camera for the guild for the selected character, but
-                // always update the camera for characters in adventure areas.
-                if (character === state.selectedCharacter || (area && !area.isGuildArea)) {
-                    var targetCameraX = getTargetCameraX(hero);
-                    area.cameraX = (area.cameraX * 20 + targetCameraX) / 21;
-                }
-            }
-        }
-        var frame = arrMod(hero.source.walkFrames, Math.floor(now() * fps / 1000));
-        character.characterContext.clearRect(0, 0, 40, 20);
-        if (state.selectedCharacter === character) {
-            previewContext.clearRect(0, 0, 64, 128);
-            previewContext.drawImage(hero.personCanvas, frame * 96, 0 , 96, 64, -64, -20, 192, 128);
-            character.characterContext.globalAlpha = 1;
-        } else {
-            character.characterContext.globalAlpha = .5;
-        }
-        var jobSource = hero.job.iconSource;
-        drawImage(character.characterContext, jobSource.image, jobSource, {'left': 0, 'top': 0, 'width': 20, 'height': 20});
-        //character.characterContext.fillStyle = 'white';
-        character.characterContext.drawImage(hero.personCanvas, frame * 96, 0 , 96, 64, -20, -18, 96, 64);
-        character.characterContext.globalAlpha = 1;
-        if (state.selectedCharacter !== character) {
-            if (ifdefor(character.isStuckAtShrine)) {
-                drawImage(character.characterContext, shrineSource.image, shrineSource, rectangle(0, 0, 16, 16));
-            } else if (!character.adventurer.area) {
-                drawImage(character.characterContext, homeSource.image, homeSource, rectangle(0, 0, 16, 16));
-            }
-        }
-    }
-    for (var guildAreaKey in activeGuildAreaHash) {
-        guildAreaLoop(guildAreas[guildAreaKey]);
-    }
-    if (state.selectedCharacter.context === 'adventure' || state.selectedCharacter.context === 'guild') {
-        if (editingLevel && !testingLevel) {
-            drawAdventure(state.selectedCharacter);
-            if (editingLevel && editingLevel.board) {
-                var board = boards[editingLevel.board];
-                board = readBoardFromData(board, state.selectedCharacter, abilities[editingLevel.skill], true);
-                centerShapesInRectangle(board.fixed.map(jewelToShape).concat(board.spaces), rectangle(600, 0, 150, 150));
-                drawBoardBackground(mainContext, board);
-                drawBoardJewelsProper(mainContext, [0, 0], board);
-            }
-        } else {
-            if (state.selectedCharacter.context === 'guild') drawGuildArea(state.selectedCharacter.hero.area);
-            else drawAdventure(state.selectedCharacter);
-        }
-        var hero = state.selectedCharacter.adventurer;
-        if (mouseDown && state.selectedCharacter.hero.area && clickedToMove) {
-            var targetZ = -(mousePosition[1] - groundY) * 2;
-            if (targetZ >= -200 || targetZ <= 200) {
-                setActorDestination(hero, {'x': hero.area.cameraX + mousePosition[0], 'z': targetZ});
-            }
-        }
-    }
-    if (state.selectedCharacter.context === 'map') {
-        updateMap();
-        drawMap();
-    }
-    if (state.selectedCharacter.context === 'item') {
-        updateCraftingCanvas();
-        drawCraftingCanvas();
-    }
-    if (state.selectedCharacter.context === 'jewel') {
-        drawBoardJewels(state.selectedCharacter, jewelsCanvas);
-    }
-    if (state.selectedCharacter.hero.area) {
-        refreshStatsPanel(state.selectedCharacter, $('.js-characterColumn .js-stats'))
-    }
-    $('.js-inventorySlot').toggle($('.js-inventory .js-item').length === 0);
-    checkRemoveToolTip();
-    if (choosingTrophyAltar) drawTrophySelection();
-    if (upgradingObject) drawUpgradeBox();
-    if ($('.js-mainCanvas').is(':visible')) {
-        drawHud();
-    }
-    updateTrophyPopups();
-    drawTrophyPopups();
-    } catch (e) {
-        console.log(e);
-        killMainLoop();
-    }
-}
-function getTargetCameraX(actor) {
-    var mousePosition = relativeMousePosition($(mainCanvas));
-    var area = actor.area;
-    var centerX = actor.x;
-    var mouseX = Math.max(0, Math.min(800, mousePosition[0]));
-    if (actor.activity && actor.activity.type === 'move') {
-        centerX = (centerX + actor.activity.x) / 2;
-    } else if (actor.goalTarget && !actor.goalTarget.isDead) {
-        centerX = (centerX + actor.goalTarget.x) / 2;
-    }
-    if (mouseX > 700) centerX = centerX + (mouseX - 700) / 2;
-    else if (mouseX < 100) centerX = centerX + (mouseX - 100) / 2;
-    var target = centerX - 400;
-    target = Math.max(ifdefor(area.left, 0), target);
-    if (area.width) target = Math.min(area.width - 800, target);
-    return target;
-}
-function killMainLoop() {
-    clearInterval(mainLoopId);
 }
 
 var $popup = null;

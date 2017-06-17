@@ -31,7 +31,7 @@ function createScaledFrame(r, frame, scale = 1) {
 }
 var goldFrame, silverFrame;
 var tinyGoldFrame, tinySilverFrame;
-var actionShortcuts;
+var actionShortcuts = {};
 var actionKeyCodes = '1234567890'.split('').map(character => {return character.charCodeAt(0)});
 function drawSkills(actor) {
     var context = mainContext;

@@ -1,0 +1,88 @@
+'use strict';
+
+var fps = 6;
+var homeSource = {'image': requireImage('gfx/nielsenIcons.png'), 'left': 32, 'top': 128, 'width': 32, 'height': 32};
+var shrineSource = {'image': requireImage('gfx/militaryIcons.png'), 'left': 102, 'top': 125, 'width': 16, 'height': 16};
+const render = () => {
+    try {
+    window.requestAnimationFrame(render);
+    if (!gameHasBeenInitialized) {
+        return;
+    }
+    if ($('.js-jewelInventory').is(":visible")) redrawInventoryJewels();
+    var fps = Math.floor(3 * 5 / 3);
+    var characters = testingLevel ? [state.selectedCharacter] : state.characters;
+    for (var character of characters) {
+        var hero = character.hero;
+        if (character.context === 'adventure' || character.context === 'guild') {
+            var area = character.adventurer.area;
+            // Only update the camera for the guild for the selected character, but
+            // always update the camera for characters in adventure areas.
+            if (character === state.selectedCharacter || (area && !area.isGuildArea)) {
+                var targetCameraX = getTargetCameraX(hero);
+                area.cameraX = (area.cameraX * 20 + targetCameraX) / 21;
+            }
+        }
+        var frame = arrMod(hero.source.walkFrames, Math.floor(now() * fps / 1000));
+        character.characterContext.clearRect(0, 0, 40, 20);
+        if (state.selectedCharacter === character) {
+            previewContext.clearRect(0, 0, 64, 128);
+            previewContext.drawImage(hero.personCanvas, frame * 96, 0 , 96, 64, -64, -20, 192, 128);
+            character.characterContext.globalAlpha = 1;
+        } else {
+            character.characterContext.globalAlpha = .5;
+        }
+        var jobSource = hero.job.iconSource;
+        drawImage(character.characterContext, jobSource.image, jobSource, {'left': 0, 'top': 0, 'width': 20, 'height': 20});
+        character.characterContext.drawImage(hero.personCanvas, frame * 96, 0 , 96, 64, -20, -18, 96, 64);
+        character.characterContext.globalAlpha = 1;
+        if (state.selectedCharacter !== character) {
+            if (ifdefor(character.isStuckAtShrine)) drawImage(character.characterContext, shrineSource.image, shrineSource, rectangle(0, 0, 16, 16));
+            else if (!character.adventurer.area) drawImage(character.characterContext, homeSource.image, homeSource, rectangle(0, 0, 16, 16));
+        }
+    }
+    if (state.selectedCharacter.context === 'adventure' || state.selectedCharacter.context === 'guild') {
+        if (editingLevel && !testingLevel) {
+            drawAdventure(state.selectedCharacter);
+            if (editingLevel && editingLevel.board) {
+                var board = boards[editingLevel.board];
+                board = readBoardFromData(board, state.selectedCharacter, abilities[editingLevel.skill], true);
+                centerShapesInRectangle(board.fixed.map(jewelToShape).concat(board.spaces), rectangle(600, 0, 150, 150));
+                drawBoardBackground(mainContext, board);
+                drawBoardJewelsProper(mainContext, [0, 0], board);
+            }
+        } else if (state.selectedCharacter.context === 'guild') drawGuildArea(state.selectedCharacter.hero.area);
+        else drawAdventure(state.selectedCharacter);
+    }
+    if (state.selectedCharacter.context === 'map') drawMap();
+    if (state.selectedCharacter.context === 'item') drawCraftingCanvas();
+    if (state.selectedCharacter.context === 'jewel') drawBoardJewels(state.selectedCharacter, jewelsCanvas);
+    if (choosingTrophyAltar) drawTrophySelection();
+    if (upgradingObject) drawUpgradeBox();
+    if ($('.js-mainCanvas').is(':visible')) {
+        drawHud();
+    }
+    drawTrophyPopups();
+    } catch (e) {
+        debugger;
+    }
+};
+render();
+
+const getTargetCameraX = (actor) => {
+    var mousePosition = relativeMousePosition($(mainCanvas));
+    var area = actor.area;
+    var centerX = actor.x;
+    var mouseX = Math.max(0, Math.min(800, mousePosition[0]));
+    if (actor.activity && actor.activity.type === 'move') {
+        centerX = (centerX + actor.activity.x) / 2;
+    } else if (actor.goalTarget && !actor.goalTarget.isDead) {
+        centerX = (centerX + actor.goalTarget.x) / 2;
+    }
+    if (mouseX > 700) centerX = centerX + (mouseX - 700) / 2;
+    else if (mouseX < 100) centerX = centerX + (mouseX - 100) / 2;
+    var target = centerX - 400;
+    target = Math.max(ifdefor(area.left, 0), target);
+    if (area.width) target = Math.min(area.width - 800, target);
+    return target;
+};

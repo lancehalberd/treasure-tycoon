@@ -299,7 +299,7 @@ addScripts(['utils', 'mouse', 'drawDashedRectangle', 'images', 'points', 'state'
     'heroApplication', 'effects','performAttack','useSkill',
     'adventure', 'drawAdventure', 'drawSkills', 'monsters','levels','vector',
     'sphereVector','camera','mapData', 'map', 'furniture', 'guild', 'drawMap','editLevel',
-    'polygon','backgrounds', 'testCharacters','saveGame', 'keyCommands', 'main']);
+    'polygon','backgrounds', 'testCharacters','saveGame', 'keyCommands', 'main', 'update', 'render']);
 ?>
 </html>
 <?php
