@@ -650,7 +650,16 @@ function checkToUseSkillOnTarget(actor, target) {
     var autoplay = !actor.area.isGuildArea && actor.isMainCharacter && actor.character.autoplay;
     for(var action of ifdefor(actor.actions, [])) {
         // Only basic attacks will be used by your hero when you manually control them.
-        if (!autoplay && !action.tags['basic'] && actor.isMainCharacter) continue;
+        if (!autoplay && !action.tags['basic'] && actor.isMainCharacter &&
+            // If the player has set this skill to auto, then it will be used automatically during manual control.
+            !actor.character.autoActions[action.base.key]
+        ) {
+            continue;
+        }
+        // If the skill has been set to manual, it won't be used during autoplay.
+        if (autoplay && actor.character.manualActions[action.base.key]) {
+            continue;
+        }
         if (!canUseSkillOnTarget(actor, action, target)) {
             //console.log("cannot use skill");
             continue;

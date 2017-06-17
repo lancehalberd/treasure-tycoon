@@ -64,6 +64,7 @@ const render = () => {
     }
     drawTrophyPopups();
     } catch (e) {
+        console.log(e);
         debugger;
     }
 };

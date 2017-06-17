@@ -16,7 +16,9 @@ function eraseSave() {
 }
 function exportCharacter(character) {
     var data = {};
-    data.adventurer = exportAdventurer(character.adventurer);
+    data.hero = exportAdventurer(character.hero);
+    data.autoActions = character.autoActions;
+    data.manualActions = character.manualActions;
     data.board = exportJewelBoard(character.board);
     data.autoplay = character.autoplay;
     data.gameSpeed = character.gameSpeed;
@@ -30,9 +32,10 @@ function exportCharacter(character) {
 }
 function importCharacter(characterData) {
     var character = {};
-    character.hero = character.adventurer = importAdventurer(characterData.adventurer);
-    character.autoActions = ifdefor(characterData.autoActions, {});
-    character.manualActions = ifdefor(characterData.manualActions, {});
+    // Old saves used adventurer instead of hero.
+    character.hero = character.adventurer = importAdventurer(characterData.hero || characterData.adventurer);
+    character.autoActions = characterData.autoActions || {};
+    character.manualActions = characterData.manualActions || {};
     character.adventurer.character = character;
     character.adventurer.heading = [1, 0, 0]; // Character moves left to right.
     character.adventurer.isMainCharacter = true;

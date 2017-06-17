@@ -156,7 +156,8 @@ function getAbilityPopupTarget(x, y) {
     hoverAction = null;
     for (var action of state.selectedCharacter.adventurer.actions) {
         if (action.tags.basic) continue;
-        if (isPointInRectObject(x, y, action.toggleButton.target)) {
+        // toggleButton doesn't get set until the ability is drawn the first time.
+        if (isPointInRectObject(x, y, action.toggleButton && action.toggleButton.target)) {
             return action.toggleButton;
         }
         if (isPointInRectObject(x, y, action.target) || isPointInRectObject(x, y, action.shortcutTarget)) {
