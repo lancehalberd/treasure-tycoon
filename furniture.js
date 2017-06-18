@@ -271,6 +271,8 @@ var areaObjects = {
 
     'wall': {'source': objectSource(guildImage, [600, 0], [60, 240, 180])},
     'door': {'source': objectSource(guildImage, [240, 94], [30, 51, 0]), 'action': useDoor},
+    'upstairs': {'source': objectSource(guildImage, [270, 94], [30, 51, 0]), 'action': useDoor},
+    'downstairs': {'source': objectSource(guildImage, [300, 94], [30, 51, 0]), 'action': useDoor},
 
     'skillShrine': {'name': 'Shrine of Divinity', 'source': objectSource(guildImage, [360, 180], [60, 60, 4], {'actualWidth': 30, 'yOffset': -6}), 'action': activateShrine},
     'closedChest': {'name': 'Treasure Chest', 'source': objectSource(requireImage('gfx/treasureChest.png'), [0, 0], [64, 64, 64], {'yOffset': -6}), 'action': openChest},

@@ -2,7 +2,7 @@ var backgrounds = {}; // fully defined background composed of sections.
 var bgSections = {}; // fully defined section with source, parallax, etc. Currently unused.
 var bgSources = {}; // single rectangle from an image.
 function backgroundSource(image, xFrame, y, width, height) {
-    return { image: image, x: xFrame * 60, y: ifdefor(y, 0), width: ifdefor(width, 60), height: ifdefor(height, 300)};
+    return { image: image, x: xFrame * 60, left: xFrame * 60, y: ifdefor(y, 0), top: ifdefor(y, 0), width: ifdefor(width, 60), height: ifdefor(height, 300)};
 }
 (function initializeBackground() {
     var forestImage = requireImage('gfx/forest.png')
@@ -30,7 +30,7 @@ function backgroundSource(image, xFrame, y, width, height) {
     bgSources.dirtCracksB = backgroundSource(fieldImage, 2, 240, 60, 60);
     var caveImage = requireImage('gfx/cave.png')
     bgSources.cave = backgroundSource(caveImage, 0);
-    bgSources.rocks = backgroundSource(caveImage, 1, 210, 60, 60);
+    bgSources.rocks = backgroundSource(caveImage, 1, 240, 60, 60);
     bgSources.spikesA = backgroundSource(caveImage, 1, 0, 60, 60);
     bgSources.spikesB = backgroundSource(caveImage, 2, 0, 60, 60);
     bgSources.spikesC = backgroundSource(caveImage, 3, 0, 60, 60);
@@ -50,6 +50,7 @@ function backgroundSource(image, xFrame, y, width, height) {
     bgSources.houseTiles = backgroundSource(townImage, 3, 0, 60, 150);
     bgSources.fountain = backgroundSource(townImage, 4, 0, 60, 150);
     var guildImage = requireImage('gfx/guildhall.png');
+    bgSources.ceilingAndTrim = backgroundSource(guildImage, 1, 0, 60, 24);
     bgSources.crackedWall = backgroundSource(guildImage, 1, 0, 60, 150);
     bgSources.oldFloorBoards = backgroundSource(guildImage, 1, 150, 60, 90);
     bgSources.woodFloorEdge = backgroundSource(guildImage, 0, 240, 60, 60);
@@ -57,6 +58,13 @@ function backgroundSource(image, xFrame, y, width, height) {
         {'source': bgSources.crackedWall},
         {'source': bgSources.oldFloorBoards},
         {'source': bgSources.woodFloorEdge}
+    ];
+    backgrounds.guildBasement = [
+        {'source': bgSources.cave},
+        {'source': bgSources.ceilingAndTrim},
+        {'source': bgSources.rocks},
+        {'source': bgSources.rootsA, 'spacing': 4},
+        {'source': bgSources.rootsB, 'spacing': 3}
     ];
     backgrounds.forest = [
         {'source': bgSources.forest},

@@ -156,7 +156,7 @@ function importState({
             state.completedLevels[levelKey] = true;
         }
         var bed = allBeds[state.characters.length - 1];
-        if (bed) enterGuildArea(character, {'areaKey': bed.area.key, 'x': bed.x - 80, 'z': bed.z});
+        if (bed) enterGuildArea(character, {'areaKey': bed.area.key, 'x': (bed.x > 400) ? bed.x - 80 : bed.x + 80, 'z': bed.z});
         else enterGuildArea(character, guildYardEntrance);
         $('.js-charactersBox').append(character.$characterCanvas);
     });

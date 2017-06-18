@@ -85,10 +85,12 @@ guildAreas.guildFrontHall = initializeGuldArea({
     'backgroundPatterns': {'0': 'oldGuild'},
     'wallDecorations': [
         fixedObject('candles', [165, 50, wallZ], {'xScale': -1, 'scale': 1.5}),
+        fixedObject('door', [250, 0, wallZ], {'exit': {'areaKey': 'guildGuestRoom', 'x': 400, 'z': 150}, 'scale': 2}),
         fixedObject('candles', [540, 70, wallZ], {'xScale': -1, 'scale': 1.5}),
+        fixedObject('door', [600, 0, wallZ], {'exit': {'areaKey': 'guildKitchen', 'x': 150, 'z': 150}, 'scale': 2}),
         fixedObject('candles', [660, 70, wallZ], {'scale': 1.5}),
         fixedObject('candles', [1035, 50, wallZ], {'scale': 1.5}),
-        fixedObject('door', [600, 0, wallZ], {'exit': {'areaKey': 'guildKitchen', 'x': 150, 'z': 150}, 'scale': 2}),
+        fixedObject('downstairs', [800, 0, wallZ], {'exit': {'areaKey': 'guildBasement', 'x': 800, 'z': 150}, 'scale': 2}),
     ],
     'leftWallDecorations': [
         fixedObject('door', [30, 0, 0], {'exit': {'areaKey': 'guildFoyer', 'x': 880, 'z': 0}, 'scale': 2}),
@@ -99,8 +101,24 @@ guildAreas.guildFrontHall = initializeGuldArea({
         fixedObject('coinStash', [400, 0, 165], {'level': 2, 'key': 'coinStashB'}),
         fixedObject('trophyAltar', [300, 0, 0], {'scale': 2, 'key': 'trophyAltarA'}),
         fixedObject('trophyAltar', [700, 0, 0], {'scale': 2, 'key': 'trophyAltarB'}),
-        fixedObject('bed', [1090, 0, 140], {'scale': 2, 'xScale': -1}),
-        fixedObject('bed', [1140, 0, -140], {'scale': 2, 'xScale': -1})
+    ]
+});
+
+
+guildAreas.guildGuestRoom = initializeGuldArea({
+    'key': 'guildGuestRoom',
+    'width': 800,
+    'backgroundPatterns': {'0': 'oldGuild'},
+    'wallDecorations': [
+        fixedObject('candles', [340, 50, wallZ], {'xScale': -1, 'scale': 1.5}),
+        fixedObject('candles', [460, 50, wallZ], {'scale': 1.5}),
+        fixedObject('door', [400, 0, wallZ], {'exit': {'areaKey': 'guildFrontHall', 'x': 250, 'z': 150}, 'scale': 2}),
+    ],
+    'objects': [
+        fixedObject('bed', [120, 0, 140], {'scale': 2, 'xScale': -1}),
+        fixedObject('bed', [680, 0, 140], {'scale': 2, 'xScale': -1}),
+        fixedObject('coinStash', [60, 0, -140], {'level': 1, 'key': 'coinStashA'}),
+        fixedObject('coinStash', [740, 0, -140], {'level': 1, 'key': 'coinStashB'}),
     ]
 });
 
@@ -119,18 +137,61 @@ guildAreas.guildKitchen = initializeGuldArea({
         fixedObject('trophyAltar', [600, 0, 0], {'scale': 2}),
     ]
 });
+
+guildAreas.guildBasement = initializeGuldArea({
+    'key': 'guildBasement',
+    'width': 1000,
+    'backgroundPatterns': {'0': 'guildBasement'},
+    'wallDecorations': [
+        fixedObject('candles', [740, 50, wallZ], {'xScale': -1, 'scale': 1.5}),
+        fixedObject('candles', [860, 50, wallZ], {'scale': 1.5}),
+        fixedObject('upstairs', [800, 0, wallZ], {'exit': {'areaKey': 'guildFrontHall', 'x': 800, 'z': 150}, 'scale': 2}),
+    ],
+    'leftWallDecorations': [
+        fixedObject('door', [30, 0, 0], {'exit': {'areaKey': 'guildVault', 'x': 600, 'z': 150}, 'scale': 2}),
+    ],
+    'objects': [
+        fixedObject('trophyAltar', [600, 0, 0], {'scale': 2}),
+    ]
+});
+
+guildAreas.guildVault = initializeGuldArea({
+    'key': 'guildVault',
+    'width': 800,
+    'backgroundPatterns': {'0': 'guildBasement'},
+    'wallDecorations': [
+        fixedObject('candles', [215, 50, wallZ], {'xScale': -1, 'scale': 1.5}),
+        fixedObject('candles', [585, 50, wallZ], {'scale': 1.5}),
+    ],
+    'rightWallDecorations': [
+        fixedObject('door', [770, 0, 0], {'exit': {'areaKey': 'guildBasement', 'x': 120, 'z': 0}, 'scale': 2})
+    ],
+    'objects': [
+        fixedObject('coinStash', [350, 0, -160], {'level': 1, 'key': 'coinStashA'}),
+        fixedObject('coinStash', [350, 0, 160], {'level': 1, 'key': 'coinStashB'}),
+        fixedObject('coinStash', [280, 0, -160], {'level': 1, 'key': 'coinStashC'}),
+        fixedObject('coinStash', [280, 0, 160], {'level': 1, 'key': 'coinStashD'}),
+        fixedObject('coinStash', [200, 0, -140], {'level': 2, 'key': 'coinStashE'}),
+        fixedObject('coinStash', [200, 0, 140], {'level': 2, 'key': 'coinStashF'}),
+        fixedObject('coinStash', [150, 0, -70], {'level': 3, 'key': 'coinStashH'}),
+        fixedObject('coinStash', [150, 0, 70], {'level': 3, 'key': 'coinStashI'}),
+        fixedObject('coinStash', [100, 0, 0], {'level': 4, 'key': 'coinStashJ'}),
+    ]
+});
 var wallOriginCoords = [-71, 213];
 var wallDepth = 120;
 var wallHeight = 130;
 var wallCanvas = createCanvas(wallDepth, wallHeight);
 var wallContext = wallCanvas.getContext('2d');
-// $('body').append(wallCanvas);
+//$('body').append(wallCanvas);
 function drawRightWall(guildArea) {
     if (guildArea.cameraX + 800 < guildArea.width - 60) return;
     var source = {'left': 60, 'top': 20, 'width': 60, 'height': 130};
     var target = {'left': 0, 'top': 0, 'width': 60, 'height': 130};
-    drawImage(wallContext, requireImage('gfx/guildhall.png'), source, target);
-    drawImage(wallContext, requireImage('gfx/guildhall.png'), source, $.extend(target, {'left': 60}));
+    var rightBackgroundKey = Object.values(guildArea.backgroundPatterns).pop();
+    var background = backgrounds[rightBackgroundKey];
+    drawWallBackground(wallContext, background);
+    drawImage(wallContext, wallCanvas, target, $.extend({}, target, {'left': 60}));
     for (var decoration of guildArea.rightWallDecorations) {
         source = decoration.base.source;
         decoration.target = {
@@ -169,8 +230,10 @@ function drawLeftWall(guildArea) {
     if (guildArea.cameraX > 60) return;
     var source = {'left': 60, 'top': 20, 'width': 60, 'height': 130};
     var target = {'left': 0, 'top': 0, 'width': 60, 'height': 130};
-    drawImage(wallContext, requireImage('gfx/guildhall.png'), source, target);
-    drawImage(wallContext, requireImage('gfx/guildhall.png'), source, $.extend(target, {'left': 60}));
+    var leftBackgroundKey = Object.values(guildArea.backgroundPatterns).shift();
+    var background = backgrounds[leftBackgroundKey];
+    drawWallBackground(wallContext, background);
+    drawImage(wallContext, wallCanvas, target, $.extend({}, target, {'left': 60}));
     wallContext.save();
     wallContext.fillStyle = 'black';
     //wallContext.fillRect(0, 0, wallDepth, wallHeight);
@@ -200,6 +263,23 @@ function drawLeftWall(guildArea) {
             textureMap(mainContext, wallCanvas, [TL,TR,BR], 0);
             textureMap(mainContext, wallCanvas, [BL,TL,BR], 0);
         }
+    }
+}
+
+// This method is just used to draw the wall background for the left+right walls based on the first+last background patterns for the area.
+function drawWallBackground(context, background) {
+    for (section of background) {
+        var parallax = ifdefor(section.parallax, 1);
+        if (section.velocity || parallax !== 1) continue;
+        var source = section.source;
+        var sourceRectangle
+        var target = rectangle(0, ifdefor(section.y, source.y) - 20,
+            ifdefor(section.width, source.width), ifdefor(section.height, source.height)
+        );
+        context.save();
+        context.globalAlpha = ifdefor(section.alpha, 1);
+        drawImage(context, source.image, source, target);
+        context.restore();
     }
 }
 /*function drawRightWallRectangle(guildArea, color, y, z, height, depth) {
@@ -330,6 +410,7 @@ function drawGuildArea(guildArea) {
     mainContext.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
     for (var xOffset in guildArea.backgroundPatterns) {
         xOffset = parseInt(xOffset);
+        // If next xOFfset < cameraX, skip to next offset.
         if (xOffset < guildArea.cameraX) {
             //code
         }
