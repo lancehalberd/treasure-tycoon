@@ -296,7 +296,7 @@ function moveActor(actor) {
                 break;
         }
     }
-    if ((actor.chargeEffect || !actor.isMainCharacter || (actor.character.autoplay && !actor.activity)) && (!goalTarget || goalTarget.isDead)) {
+    if ((actor.chargeEffect || !actor.isMainCharacter || (heroShouldAutoplay(actor) && !actor.activity)) && (!goalTarget || goalTarget.isDead)) {
         var bestDistance = 10000;
         actor.enemies.forEach(function (target) {
             if (target.isDead) return;
@@ -475,7 +475,7 @@ function startNextWave(character) {
     });
     for (var object of wave.objects) {
         if (object.fixed) {
-            object.z = (150 - object.width / 2) * (Math.random() * 2 - 1);
+            object.z = (120 - object.width / 2) * (Math.random() * 2 - 1);
             object.x = x + object.width / 2;
             x += object.width + 60;
         } else if (entityData.type === 'button') {
@@ -548,7 +548,7 @@ function getAllInRange(x, range, targets) {
     return targetsInRange
 }
 function runActorLoop(actor) {
-    var autoplay = !actor.area.isGuildArea && actor.isMainCharacter && actor.character.autoplay;
+    var autoplay = !actor.area.isGuildArea && heroShouldAutoplay(actor);
     var character = actor.character;
     if (actor.isDead || actor.stunned || actor.pull || actor.chargeEffect) {
         actor.skillInUse = null;
@@ -649,7 +649,7 @@ function runActorLoop(actor) {
     actor.cloaked = (actor.cloaking && !actor.skillInUse);
 }
 function checkToUseSkillOnTarget(actor, target) {
-    var autoplay = !actor.area.isGuildArea && actor.isMainCharacter && actor.character.autoplay;
+    var autoplay = !actor.area.isGuildArea && heroShouldAutoplay(actor);
     for(var action of ifdefor(actor.actions, [])) {
         // Only basic attacks will be used by your hero when you manually control them.
         if (!autoplay && !action.tags['basic'] && actor.isMainCharacter &&
@@ -676,6 +676,10 @@ function checkToUseSkillOnTarget(actor, target) {
         return true;
     }
     return false;
+}
+
+function heroShouldAutoplay(hero) {
+    return hero.isMainCharacter && (hero.character.autoplay || hero.character !== state.selectedCharacter);
 }
 
 // The distance functions assume objects are circular in the x/z plane and are calculating

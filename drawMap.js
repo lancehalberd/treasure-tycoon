@@ -217,8 +217,8 @@ function drawMap() {
             else context.globalAlpha = 1;
             drawAbilityIcon(context, getAbilityIconSource(skill, shrineSource), levelData.shrine);
             // If the character has learned the ability for this level, draw a check mark on the shrine.
-            context.globalAlpha = .7;
-            if (skillLearned) drawImage(context, checkSource.image, checkSource, levelData.shrine);
+            context.globalAlpha = 1;
+            if (skillLearned) drawImage(context, checkSource.image, checkSource, shrinkRectangle(levelData.shrine, 8));
             context.restore();
         }
         if (state.selectedCharacter.currentLevelKey === levelKey) {

@@ -213,7 +213,8 @@ function adventureBoardPreview(boardPreview, character) {
             drawBoardPreview(mainContext, [0, 0], self.boardPreview, true);
         },
         'helpMethod': function () {
-            return "<b>Divine Blessing</b><hr><p>Click on this Jewel Board Augmentation to preview adding it to this hero's Jewel Board.</p><p>A hero must augment their Jewel Board to learn new abilities and Level Up</p>";
+            return titleDiv('Divine Blessing')
+                + bodyDiv("Click on this Jewel Board Augmentation to preview adding it to this hero's Jewel Board." + divider + "Confirm the Augmentation to learn the ability and Level Up.");
         }
     };
     return self;

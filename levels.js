@@ -219,7 +219,8 @@ function chestWave(chest, levelData, closedImage, openImage) {
     var objects = [chest]
     if (levelData.skill && abilities[levelData.skill]) {
         objects.push(fixedObject('skillShrine', [545, 0, 0], {'scale': 3, 'helpMethod': function (actor) {
-            return "<b>Divine Shrine</b><hr><p>You can use divinity as an offering at these shrines to receive a blessing from the Gods and grow more powerful.</p>";
+            return titleDiv('Divine Shrine')
+                + bodyDiv('Offer divinity at these shrines to be blessed by the Gods with new powers.');
         }}));
     }
     var self =  basicWave([], objects, 'T');
@@ -261,7 +262,7 @@ function activateShrine(actor) {
         var boardPreview = readBoardFromData(boardData, character, abilities[level.skill]);
         var boardPreviewSprite = adventureBoardPreview(boardPreview, character);
         boardPreviewSprite.x = this.x - (boardOptions * 150 - 150) / 2 + 150 * i;
-        boardPreviewSprite.y = 200;
+        boardPreviewSprite.y = 220;
         character.objects.push(boardPreviewSprite);
     }
     var blessingText = objectText('Choose Your Blessing');
@@ -313,8 +314,8 @@ function iconButton(iconSource, width, height, onClick, helpText) {
         'width': width,
         'height': height,
         'update': function (area) {
-            self.left = self.x - area.cameraX - self.width / 2;
-            self.top = groundY - self.y - self.height / 2;
+            self.left = Math.round(self.x - area.cameraX - self.width / 2);
+            self.top = Math.round(groundY - self.y - self.height / 2);
         },
         'onClick': onClick,
         'draw': function (area) {

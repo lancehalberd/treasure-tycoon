@@ -14,15 +14,6 @@ const render = () => {
     var characters = testingLevel ? [state.selectedCharacter] : state.characters;
     for (var character of characters) {
         var hero = character.hero;
-        if (character.context === 'adventure' || character.context === 'guild') {
-            var area = character.adventurer.area;
-            // Only update the camera for the guild for the selected character, but
-            // always update the camera for characters in adventure areas.
-            if (character === state.selectedCharacter || (area && !area.isGuildArea)) {
-                var targetCameraX = getTargetCameraX(hero);
-                area.cameraX = (area.cameraX * 20 + targetCameraX) / 21;
-            }
-        }
         var frame = arrMod(hero.source.walkFrames, Math.floor(now() * fps / 1000));
         character.characterContext.clearRect(0, 0, 40, 20);
         if (state.selectedCharacter === character) {
@@ -85,5 +76,5 @@ const getTargetCameraX = (actor) => {
     var target = centerX - 400;
     target = Math.max(ifdefor(area.left, 0), target);
     if (area.width) target = Math.min(area.width - 800, target);
-    return target;
+    return Math.round(target);
 };

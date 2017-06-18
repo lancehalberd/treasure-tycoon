@@ -14,6 +14,15 @@ setInterval(() => {
     var activeGuildAreaHash = {};
     for (var character of characters) {
         var hero = character.hero;
+        if (character.context === 'adventure' || character.context === 'guild') {
+            var area = character.adventurer.area;
+            // Only update the camera for the guild for the selected character, but
+            // always update the camera for characters in adventure areas.
+            if (character === state.selectedCharacter || (area && !area.isGuildArea)) {
+                var targetCameraX = getTargetCameraX(hero);
+                area.cameraX = Math.round((area.cameraX * 20 + targetCameraX) / 21);
+            }
+        }
         if ((character.context === 'adventure' && !(character.autoplay && character.paused)) || character.context === 'guild') {
             character.loopCount = ifdefor(character.loopCount) + 1;
             var loopSkip = (character.autoplay) ? ifdefor(character.loopSkip, 1) : 1;

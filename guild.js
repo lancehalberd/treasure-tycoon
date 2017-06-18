@@ -167,15 +167,15 @@ guildAreas.guildVault = initializeGuldArea({
         fixedObject('door', [770, 0, 0], {'exit': {'areaKey': 'guildBasement', 'x': 120, 'z': 0}, 'scale': 2})
     ],
     'objects': [
-        fixedObject('coinStash', [350, 0, -160], {'level': 1, 'key': 'coinStashA'}),
-        fixedObject('coinStash', [350, 0, 160], {'level': 1, 'key': 'coinStashB'}),
-        fixedObject('coinStash', [280, 0, -160], {'level': 1, 'key': 'coinStashC'}),
-        fixedObject('coinStash', [280, 0, 160], {'level': 1, 'key': 'coinStashD'}),
-        fixedObject('coinStash', [200, 0, -140], {'level': 2, 'key': 'coinStashE'}),
-        fixedObject('coinStash', [200, 0, 140], {'level': 2, 'key': 'coinStashF'}),
-        fixedObject('coinStash', [150, 0, -70], {'level': 3, 'key': 'coinStashH'}),
-        fixedObject('coinStash', [150, 0, 70], {'level': 3, 'key': 'coinStashI'}),
-        fixedObject('coinStash', [100, 0, 0], {'level': 4, 'key': 'coinStashJ'}),
+        fixedObject('coinStash', [310, 0, -150], {'level': 1, 'key': 'coinStashA'}),
+        fixedObject('coinStash', [310, 0, 150], {'level': 1, 'key': 'coinStashB'}),
+        fixedObject('coinStash', [240, 0, -150], {'level': 1, 'key': 'coinStashC'}),
+        fixedObject('coinStash', [240, 0, 150], {'level': 1, 'key': 'coinStashD'}),
+        fixedObject('coinStash', [170, 0, -130], {'level': 2, 'key': 'coinStashE'}),
+        fixedObject('coinStash', [170, 0, 130], {'level': 2, 'key': 'coinStashF'}),
+        fixedObject('coinStash', [120, 0, -90], {'level': 3, 'key': 'coinStashH'}),
+        fixedObject('coinStash', [120, 0, 90], {'level': 3, 'key': 'coinStashI'}),
+        fixedObject('coinStash', [90, 0, 0], {'level': 4, 'key': 'coinStashJ'}),
     ]
 });
 var wallOriginCoords = [-71, 213];
@@ -354,7 +354,7 @@ function enterGuildArea(character, door) {
         action.readyAt = 0;
     });
     if (state.selectedCharacter === character) {
-        guildArea.cameraX = Math.max(guildArea.left, Math.min(guildArea.width - 800, hero.x - 400));
+        guildArea.cameraX = Math.round(Math.max(guildArea.left, Math.min(guildArea.width - 800, hero.x - 400)));
         updateAdventureButtons();
         showContext('guild');
     }
