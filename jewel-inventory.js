@@ -74,7 +74,7 @@ function jewelHelpText(jewel) {
         sections.push('');
     }
     var sellValues = [points('coins',jewel.price), points('anima', jewel.price)];
-    sections.push('Sell for ' + sellValues.join(' '));
+    sections.push('<span style="color: white;">S</span>ell for' + divider + sellValues.join(' ') + '<br/>' + (jewelAnimaBonus(jewel) - 1).percent(1) + ' increased max anima.');
     return sections.join('<br/>');
 }
 function sellJewel(jewel) {
@@ -90,9 +90,12 @@ function sellJewel(jewel) {
     gain('coins', jewel.price);
     gain('anima', jewel.price);
     updateJewelCraftingOptions();
-    setMaxAnimaJewelBonus(state.maxAnimaJewelMultiplier * (1 + jewel.tier / 100));
+    setMaxAnimaJewelBonus(state.maxAnimaJewelMultiplier * jewelAnimaBonus(jewel));
     saveGame();
 }
+
+// This formula is supposed to normalize this bonus so that fusing/expanding jewels doesn't change the value.
+var jewelAnimaBonus = ({tier, area}) => Math.pow(1 + tier / 100, Math.floor(area / .4));
 
 var overVertex = null;
 var overJewel = null;

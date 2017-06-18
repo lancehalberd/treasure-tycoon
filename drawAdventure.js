@@ -47,7 +47,7 @@ function drawAdventure(character) {
     for (var textPopup of ifdefor(area.textPopups, [])) {
         context.fillStyle = ifdefor(textPopup.color, "red");
         var scale = Math.max(0, Math.min(1.5, ifdefor(textPopup.duration, 0) / 10));
-        context.font = Math.round(scale * ifdefor(textPopup.fontSize, 20)) + 'px sans-serif';
+        context.font = 'bold ' + Math.round(scale * ifdefor(textPopup.fontSize, 20)) + "px 'Cormorant SC', Georgia, serif";
         context.textAlign = 'center'
         context.fillText(textPopup.value, textPopup.x - cameraX, groundY - textPopup.y - textPopup.z / 2);
     }

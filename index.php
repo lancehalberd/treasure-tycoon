@@ -47,7 +47,7 @@
     <script>
         var assetVersion = '<?= $version ?>';
     </script>
-    <link href="https://fonts.googleapis.com/css?family=Cormorant+SC" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Cormorant+SC:400,700" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="styles.css?v=<?= hash_file('md5', 'styles.css') ?>"/>
     <script src="lib/jquery.min.js"></script>
     <script src="lib/jstorage.min.js"></script>

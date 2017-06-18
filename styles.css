@@ -37,15 +37,17 @@
 .pointsColumn {
     display: inline-block;
     vertical-align: top;
-    text-align: right;
-    width: 65px;
+    text-align: center;
+    width: 50px;
 }
 .points {
+    box-sizing: border-box;
     padding: 2px;
     display: inline-block;
     margin-right: 20px;
     margin-left: 20px;
-    width: 90px;
+    width: 75px;
+    min-height: 30px;
     background-color: #ccc;
     border: 2px solid black;
     border-top: none;

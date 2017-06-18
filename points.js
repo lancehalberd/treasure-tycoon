@@ -65,10 +65,16 @@ function spend(pointsType, amount) {
     return true;
 }
 function changedPoints(pointsType) {
+    capPoints();
     if (pointsType == 'fame') updateHireButtons();
     if (pointsType == 'coins') state.coins = Math.min(state.coins, state.guildStats.maxCoins);
     else updateReforgeButton();
     $('.js-global-' + pointsType).text(state[pointsType].abbreviate());
+}
+
+function capPoints() {
+    state.coins = Math.min(state.coins, state.guildStats.maxCoins);
+    state.anima = Math.min(state.anima, state.guildStats.maxAnima);
 }
 
 // Add dynamic help text to coins+anima indicators.
