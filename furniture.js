@@ -269,7 +269,6 @@ var areaObjects = {
         mainContext.restore();
     }},
 
-    'wall': {'source': objectSource(guildImage, [600, 0], [60, 240, 180])},
     'door': {'source': objectSource(guildImage, [240, 94], [30, 51, 0]), 'action': useDoor},
     'upstairs': {'source': objectSource(guildImage, [270, 94], [30, 51, 0]), 'action': useDoor},
     'downstairs': {'source': objectSource(guildImage, [300, 94], [30, 51, 0]), 'action': useDoor},

@@ -26,8 +26,6 @@ function initializeGuldArea(guildArea) {
     for (var wallDecoration of guildArea.rightWallDecorations) {
         wallDecoration.area = guildArea;
     }
-    guildArea.leftWall = ifdefor(guildArea.leftWall, fixedObject('wall', [10, 0, 15], {'scale': 2.2, 'xScale': -1}));
-    guildArea.rightWall = ifdefor(guildArea.rightWall, fixedObject('wall', [guildArea.width - 10, 0, 15], {'scale': 2.2}));
     return guildArea;
 }
 var wallZ = 180;
@@ -45,7 +43,7 @@ guildAreas.guildYard = initializeGuldArea({
         fixedObject('door', [970, 0, 0], {'exit': guildFoyerFrontDoor, 'scale': 2})
     ],
     'objects': [],
-    'leftWall': null
+    'rightWall': 'oldGuild',
 });
 guildAreas.guildFoyer = initializeGuldArea({
     'key': 'guildFoyer',
@@ -77,7 +75,9 @@ guildAreas.guildFoyer = initializeGuldArea({
     'waves': [
         ['goblin', 'goblin', 'goblin'],
         ['skeleton', 'skeleton']
-    ]
+    ],
+    'leftWall': 'oldGuild',
+    'rightWall': 'oldGuild',
 });
 guildAreas.guildFrontHall = initializeGuldArea({
     'key': 'guildFrontHall',
@@ -101,7 +101,9 @@ guildAreas.guildFrontHall = initializeGuldArea({
         fixedObject('coinStash', [400, 0, 165], {'level': 2, 'key': 'coinStashB'}),
         fixedObject('trophyAltar', [300, 0, 0], {'scale': 2, 'key': 'trophyAltarA'}),
         fixedObject('trophyAltar', [700, 0, 0], {'scale': 2, 'key': 'trophyAltarB'}),
-    ]
+    ],
+    'leftWall': 'oldGuild',
+    'rightWall': 'oldGuild',
 });
 
 
@@ -119,7 +121,9 @@ guildAreas.guildGuestRoom = initializeGuldArea({
         fixedObject('bed', [680, 0, 140], {'scale': 2, 'xScale': -1}),
         fixedObject('coinStash', [60, 0, -140], {'level': 1, 'key': 'coinStashA'}),
         fixedObject('coinStash', [740, 0, -140], {'level': 1, 'key': 'coinStashB'}),
-    ]
+    ],
+    'leftWall': 'oldGuild',
+    'rightWall': 'oldGuild',
 });
 
 guildAreas.guildKitchen = initializeGuldArea({
@@ -135,7 +139,9 @@ guildAreas.guildKitchen = initializeGuldArea({
     ],
     'objects': [
         fixedObject('trophyAltar', [600, 0, 0], {'scale': 2}),
-    ]
+    ],
+    'leftWall': 'oldGuild',
+    'rightWall': 'oldGuild',
 });
 
 guildAreas.guildBasement = initializeGuldArea({
@@ -152,7 +158,9 @@ guildAreas.guildBasement = initializeGuldArea({
     ],
     'objects': [
         fixedObject('trophyAltar', [600, 0, 0], {'scale': 2}),
-    ]
+    ],
+    'leftWall': 'guildBasement',
+    'rightWall': 'guildBasement',
 });
 
 guildAreas.guildVault = initializeGuldArea({
@@ -176,7 +184,9 @@ guildAreas.guildVault = initializeGuldArea({
         fixedObject('coinStash', [120, 0, -90], {'level': 3, 'key': 'coinStashH'}),
         fixedObject('coinStash', [120, 0, 90], {'level': 3, 'key': 'coinStashI'}),
         fixedObject('coinStash', [90, 0, 0], {'level': 4, 'key': 'coinStashJ'}),
-    ]
+    ],
+    'leftWall': 'guildBasement',
+    'rightWall': 'guildBasement',
 });
 var wallOriginCoords = [-71, 213];
 var wallDepth = 120;
@@ -188,8 +198,7 @@ function drawRightWall(guildArea) {
     if (guildArea.cameraX + 800 < guildArea.width - 60) return;
     var source = {'left': 60, 'top': 20, 'width': 60, 'height': 130};
     var target = {'left': 0, 'top': 0, 'width': 60, 'height': 130};
-    var rightBackgroundKey = Object.values(guildArea.backgroundPatterns).pop();
-    var background = backgrounds[rightBackgroundKey];
+    var background = backgrounds[guildArea.rightWall];
     drawWallBackground(wallContext, background);
     drawImage(wallContext, wallCanvas, target, $.extend({}, target, {'left': 60}));
     for (var decoration of guildArea.rightWallDecorations) {
@@ -230,8 +239,7 @@ function drawLeftWall(guildArea) {
     if (guildArea.cameraX > 60) return;
     var source = {'left': 60, 'top': 20, 'width': 60, 'height': 130};
     var target = {'left': 0, 'top': 0, 'width': 60, 'height': 130};
-    var leftBackgroundKey = Object.values(guildArea.backgroundPatterns).shift();
-    var background = backgrounds[leftBackgroundKey];
+    var background = backgrounds[guildArea.leftWall];
     drawWallBackground(wallContext, background);
     drawImage(wallContext, wallCanvas, target, $.extend({}, target, {'left': 60}));
     wallContext.save();
@@ -442,17 +450,9 @@ function drawGuildArea(guildArea) {
         });
     }
     drawActionTargetCircle(mainContext);
-    if (guildArea.leftWall) {
-        //guildArea.leftWall.draw(guildArea);
-        drawLeftWall(guildArea)
-    }
-    if (guildArea.rightWall) {
-        //guildArea.rightWall.draw(guildArea);
-        drawRightWall(guildArea);
-    }
-    for (var object of guildArea.wallDecorations) {
-        object.draw(guildArea);
-    }
+    if (guildArea.leftWall) drawLeftWall(guildArea)
+    if (guildArea.rightWall) drawRightWall(guildArea);
+    for (var object of guildArea.wallDecorations) object.draw(guildArea);
     guildArea.time += frameMilliseconds / 1000;
     var sortedSprites = guildArea.allies.concat(guildArea.enemies).concat(guildArea.objects).sort(function (spriteA, spriteB) {
         return spriteB.z - spriteA.z;
