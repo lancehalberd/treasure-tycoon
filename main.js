@@ -471,15 +471,15 @@ function updateAdventureButtons() {
     var character = state.selectedCharacter;
     $('.js-autoplayButton').toggleClass('disabled', !character.autoplay);
     if (character.autoplay) {
-        $('.js-repeatButton, .js-pauseButton, .js-fastforwardButton, .js-slowMotionButton, .js-shrineButton').show();
+        $('.js-repeatButton, .js-fastforwardButton, .js-slowMotionButton, .js-shrineButton').show();
         $('.js-repeatButton').toggleClass('disabled', !character.replay);
-        $('.js-pauseButton').toggleClass('disabled', !character.paused);
         $('.js-fastforwardButton').toggleClass('disabled', character.gameSpeed !== 3);
         $('.js-slowMotionButton').toggleClass('disabled', character.loopSkip !== 5);
         $('.js-shrineButton').toggleClass('disabled', !!character.skipShrines);
     } else {
-        $('.js-repeatButton, .js-pauseButton, .js-fastforwardButton, .js-slowMotionButton, .js-shrineButton').hide();
+        $('.js-repeatButton, .js-fastforwardButton, .js-slowMotionButton, .js-shrineButton').hide();
     }
+    $('.js-pauseButton').toggleClass('disabled', !character.paused);
 }
 function canRecall(character) {
     var actor = character.adventurer;

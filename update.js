@@ -23,7 +23,9 @@ setInterval(() => {
                 area.cameraX = Math.round((area.cameraX * 20 + targetCameraX) / 21);
             }
         }
-        if ((character.context === 'adventure' && !(character.autoplay && character.paused)) || character.context === 'guild') {
+        if (character.context === 'guild' ||
+            (character.context === 'adventure' && !isCharacterPaused(character))
+        ) {
             character.loopCount = ifdefor(character.loopCount) + 1;
             var loopSkip = (character.autoplay) ? ifdefor(character.loopSkip, 1) : 1;
             if (character.loopCount % loopSkip) break;
@@ -56,3 +58,12 @@ setInterval(() => {
         debugger;
     }
 }, frameMilliseconds);
+
+function isCharacterPaused(character) {
+    const hero = character.hero;
+    if (!character.paused) return false;
+    if (hero.activity || hero.skillInUse) return false;
+    if (hero.chargeEffect) return false;
+    if (!hero.area.waves[character.waveIndex]) return false;
+    return true;
+}
