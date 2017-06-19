@@ -175,7 +175,6 @@ function initializeActorForAdventure(actor) {
 }
 function returnToMap(character) {
     removeAdventureEffects(character.adventurer);
-    character.paused = false;
     character.adventurer.goalTarget = null;
     character.isStuckAtShrine = false;
     leaveCurrentArea(character.hero);
