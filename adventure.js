@@ -18,7 +18,7 @@ function startArea(character, index) {
         area = instantiateLevel(map[index], character.levelDifficulty, difficultyCompleted);
     }
     area.time = 0;
-    var hero = character.adventurer;
+    var hero = character.hero;
     hero.area = area;
     initializeActorForAdventure(hero);
     area.waveIndex = 0;
@@ -145,10 +145,10 @@ function checkToStartNextWave(area) {
     startNextWave(area);
     updateAdventureButtons();
 }
-function adventureLoop(area) {
-    var delta = frameMilliseconds / 1000;
+
+function updateArea(area) {
     if (timeStopLoop(area)) return;
-    var adventurer = area.hero;
+    var delta = frameMilliseconds / 1000;
     var everybody = area.allies.concat(area.enemies);
     // Advance subjective time of area and each actor.
     area.time += delta;
@@ -162,11 +162,7 @@ function adventureLoop(area) {
         checkIfActorDied(ally);
         expireTimedEffects(ally);
     }
-    for (var i = 0; i < area.objects.length; i++) {
-        var object = area.objects[i];
-        if (object.x + object.width - area.cameraX < 0 ) area.objects.splice(i--, 1);
-        else if (object.update) object.update(area);
-    }
+    for (var object of area.objects) if (object.update) object.update(area);
     checkToStartNextWave(area);
     area.allies.forEach(runActorLoop);
     area.enemies.forEach(runActorLoop);
@@ -737,7 +733,7 @@ function completeLevel(character, completionTime) {
     var gainedDivinity = newDivinityScore - oldDivinityScore;
     if (gainedDivinity > 0) {
         character.divinity += gainedDivinity;
-        var hero = character.adventurer;
+        var hero = character.hero;
         var textPopup = {value:'+' + gainedDivinity.abbreviate() + ' Divinity', x: hero.x, y: hero.height, z: hero.z, color: 'gold', fontSize: 15, 'vx': 0, 'vy': 1, 'gravity': .1};
         appendTextPopup(area, textPopup, true);
     }

@@ -6,6 +6,8 @@ function initializeGuldArea(guildArea) {
     guildArea.left = 0;
     guildArea.cameraX = 0;
     guildArea.time = 0;
+    guildArea.projectiles = [];
+    guildArea.effects = [];
     guildArea.textPopups = [];
     guildArea.treasurePopups = [];
     guildArea.objects = guildArea.objects || [];
@@ -293,21 +295,6 @@ function drawWallBackground(context, background) {
         context.restore();
     }
 }
-/*function drawRightWallRectangle(guildArea, color, y, z, height, depth) {
-    var offset = guildArea.width - guildArea.cameraX;
-    A = projectWallCoords(y + height, z + depth / 2);
-    B = projectWallCoords(y + height, z - depth / 2);
-    C = projectWallCoords(y, z - depth / 2);
-    D = projectWallCoords(y, z + depth / 2);
-    mainContext.fillStyle = color;
-    mainContext.beginPath();
-    mainContext.moveTo(A[0] + offset, A[1]);
-    mainContext.lineTo(B[0] + offset, B[1]);
-    mainContext.lineTo(C[0] + offset, C[1]);
-    mainContext.lineTo(D[0] + offset, D[1]);
-    mainContext.closePath();
-    mainContext.fill();
-}*/
 function projectLeftWallCoords(xOffset, y, z) {
     var slope = (y - wallOriginCoords[1]) / (0 - wallOriginCoords[0]);
     var u = 30 + z * 30 / 180;
@@ -370,47 +357,6 @@ function enterGuildArea(actor, door) {
             showContext('guild');
         }
     }
-}
-
-function guildAreaLoop(guildArea) {
-    if (timeStopLoop(guildArea)) return;
-    var delta = frameMilliseconds / 1000;
-    var everybody = guildArea.allies.concat(guildArea.enemies);
-    for (var object of guildArea.objects) if (object.updated) object.update(guildArea);
-    for (var actor of everybody) actor.time += delta;
-    everybody.forEach(processStatusEffects);
-    everybody.forEach(runActorLoop);
-    everybody.forEach(moveActor);
-    for (var i = 0; i < guildArea.treasurePopups.length; i++) {
-        guildArea.treasurePopups[i].update(guildArea);
-        if (guildArea.treasurePopups[i].done) {
-            guildArea.treasurePopups.splice(i--, 1);
-        }
-    }
-    for (var i = 0; i < guildArea.textPopups.length; i++) {
-        var textPopup = guildArea.textPopups[i];
-        textPopup.y += ifdefor(textPopup.vy, -1);
-        textPopup.x += ifdefor(textPopup.vx, 0);
-        textPopup.duration = ifdefor(textPopup.duration, 35);
-        textPopup.vy += ifdefor(textPopup.gravity, -.5);
-        if (textPopup.duration-- < 0) {
-            guildArea.textPopups.splice(i--, 1);
-        }
-    }
-    everybody.forEach(function (actor) {
-        // Since damage can be dealt at various points in the frame, it is difficult to pin point what damage was dealt
-        // since the last action check. To this end, we keep track of their health over the last five frames and use
-        // these values to determine how much damage has accrued recently for abilities that trigger when a character
-        // is in danger.
-        capHealth(actor);
-        if ((actor.time * 1000) % 100 < 20) {
-            if (!actor.healthValues) actor.healthValues = [];
-            actor.healthValues.unshift(actor.health);
-            while (actor.healthValues.length > 10) actor.healthValues.pop();
-        }
-    });
-    everybody.forEach(updateActorDimensions);
-    everybody.forEach(updateActorAnimationFrame);
 }
 
 var guildBonusSources = [];

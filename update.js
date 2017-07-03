@@ -32,12 +32,12 @@ setInterval(() => {
             var gameSpeed = (character.autoplay) ? character.gameSpeed : 1;
             for (var i = 0; i < gameSpeed  && character.adventurer.area; i++) {
                 character.time += frameMilliseconds / 1000;
-                if (character.context === 'adventure') adventureLoop(character.hero.area, frameMilliseconds / 1000);
+                if (character.context === 'adventure') updateArea(character.hero.area, frameMilliseconds / 1000);
                 else if (character.context === 'guild') activeGuildAreaHash[character.guildAreaKey] = true;
             }
         }
     }
-    for (var guildAreaKey in activeGuildAreaHash) guildAreaLoop(guildAreas[guildAreaKey]);
+    for (var guildAreaKey in activeGuildAreaHash) updateArea(guildAreas[guildAreaKey]);
     if (state.selectedCharacter.context === 'adventure' || state.selectedCharacter.context === 'guild') {
         var hero = state.selectedCharacter.adventurer;
         if (mouseDown && state.selectedCharacter.hero.area && clickedToMove) {
