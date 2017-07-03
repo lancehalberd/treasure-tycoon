@@ -3,35 +3,48 @@ var maxIndex = 9;
 var groundY = 390;
 // Indicates how much to shift drawing the map/level based on the needs of other UI elements.
 var screenYOffset = 0;
-function drawAdventure(area) {
+
+function drawArea(area) {
     var context = mainContext;
     var cameraX = area.cameraX;
     context.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
-    var background = ifdefor(backgrounds[area.background], backgrounds.field);
-    var cloudX = cameraX + area.time * .5;
-    var tileWidth = 120;
-    var fullDrawingWidth = Math.ceil(mainCanvas.width / tileWidth) * tileWidth + tileWidth;
-    background.forEach(function(section) {
-        var source = section.source;
-        var y = ifdefor(section.y, source.y) * 2;
-        var height = ifdefor(section.height, source.height) * 2;
-        var width = ifdefor(section.width, source.width) * 2;
-        var parallax = ifdefor(section.parallax, 1);
-        var spacing = ifdefor(section.spacing, 1);
-        var velocity = ifdefor(section.velocity, 0);
-        var alpha = ifdefor(section.alpha, 1);
-        context.globalAlpha = alpha;
-        for (var i = 0; i <= fullDrawingWidth; i += tileWidth * spacing) {
-            var x = Math.round((fullDrawingWidth + (i - (cameraX - area.time * velocity) * parallax) % fullDrawingWidth) % fullDrawingWidth - tileWidth);
-            context.drawImage(source.image, source.x, source.y, source.width, source.height,
-                                  x, y, width, height);
-            if (x !== Math.round(x) || y !== Math.round(y) || width != Math.round(width) || height != Math.round(height)) {
-                console.log(JSON.stringify([[source.x, x], [source.y, source.z, y], width, height]));
+    context.save();
+    var firstPattern = true;
+    for (var xOffset in area.backgroundPatterns) {
+        xOffset = parseInt(xOffset);
+        var backgroundKey = area.backgroundPatterns[xOffset];
+        var background = ifdefor(backgrounds[backgroundKey], backgrounds.field);
+        var tileWidth = 120;
+        var fullDrawingWidth = Math.ceil(mainCanvas.width / tileWidth) * tileWidth + tileWidth;
+        for (var section of background) {
+            var source = section.source;
+            var y = ifdefor(section.y, source.y) * 2;
+            var height = ifdefor(section.height, source.height) * 2;
+            var width = ifdefor(section.width, source.width) * 2;
+            var parallax = ifdefor(section.parallax, 1);
+            var spacing = ifdefor(section.spacing, 1);
+            var velocity = ifdefor(section.velocity, 0);
+            var alpha = ifdefor(section.alpha, 1);
+            context.globalAlpha = alpha;
+            for (var i = 0; i <= fullDrawingWidth; i += tileWidth * spacing) {
+                var x = Math.round((fullDrawingWidth + (i - (cameraX - area.time * velocity) * parallax) % fullDrawingWidth) % fullDrawingWidth - tileWidth);
+                var realX = area.cameraX + x;
+                if (!firstPattern && realX + tileWidth < xOffset) continue;
+                context.drawImage(source.image, source.x, source.y, source.width, source.height,
+                                      x, y, width, height);
+                if (x !== Math.round(x) || y !== Math.round(y) || width != Math.round(width) || height != Math.round(height)) {
+                    console.log(JSON.stringify([[source.x, x], [source.y, source.z, y], width, height]));
+                }
             }
         }
-        context.globalAlpha = 1;
-    });
+        firstPattern = false;
+    }
+    context.restore();
     drawActionTargetCircle(context);
+    if (area.leftWall) drawLeftWall(area);
+    if (area.rightWall) drawRightWall(area);
+    if (area.wallDecorations) for (var object of area.wallDecorations) object.draw(area);
+    area.allies.concat(area.enemies).forEach(updateActorHelpText);
     var sortedSprites = area.allies.concat(area.enemies).concat(area.objects).sort(function (spriteA, spriteB) {
         return spriteB.z - spriteA.z;
     });
@@ -50,7 +63,7 @@ function drawAdventure(area) {
         context.textAlign = 'center'
         context.fillText(textPopup.value, textPopup.x - cameraX, groundY - textPopup.y - textPopup.z / 2);
     }
-    drawMinimap(area);
+    if (area.waves) drawMinimap(area);
 }
 function updateActorAnimationFrame(actor) {
     if (actor.pull || actor.stunned || actor.isDead ) {

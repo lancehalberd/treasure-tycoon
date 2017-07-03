@@ -297,7 +297,7 @@ addScripts(['utils', 'mouse', 'drawDashedRectangle', 'images', 'points', 'state'
     'evaluate','helpText','jewels','jewel-inventory','skills','abilities',
     'loot','boards', 'character', 'jobs', 'achievements', 'crafting','enchanting','uniques',
     'heroApplication', 'effects','performAttack','useSkill',
-    'adventure', 'drawAdventure', 'drawSkills', 'monsters','levels','vector',
+    'adventure', 'drawArea', 'drawSkills', 'monsters','levels','vector',
     'sphereVector','camera','mapData', 'map', 'furniture', 'guild', 'drawMap','editLevel',
     'polygon','backgrounds', 'testCharacters','saveGame', 'keyCommands', 'main', 'update', 'render']);
 ?>

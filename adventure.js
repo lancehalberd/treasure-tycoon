@@ -83,7 +83,6 @@ function timeStopLoop(area) {
     runActorLoop(actor);
     moveActor(actor);
     capHealth(actor);
-    updateActorHelpText(actor);
     // Update position info.
     area.allies.concat(area.enemies).forEach(updateActorDimensions);
     return true;
@@ -204,7 +203,6 @@ function adventureLoop(area) {
         // these values to determine how much damage has accrued recently for abilities that trigger when a character
         // is in danger.
         capHealth(actor);
-        updateActorHelpText(actor);
         if ((actor.time * 1000) % 100 < 20) {
             if (!actor.healthValues) {
                 actor.healthValues = [];
@@ -442,7 +440,7 @@ function finishChargeEffect(actor, target) {
 }
 function startNextWave(area) {
     var wave = area.waves[area.waveIndex];
-    var x = area.cameraX + 800;
+    var x = area.cameraX + 1200;
     wave.monsters.forEach(function (entityData) {
         var extraSkills = ifdefor(area.enemySkills, []).slice();
         if (wave.extraBonuses) extraSkills.push(wave.extraBonuses);

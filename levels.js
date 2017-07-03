@@ -128,7 +128,7 @@ function instantiateLevel(levelData, levelDifficulty, difficultyCompleted, level
         levelDifficulty,
         'enemySkills': ifdefor(levelData.enemySkills, []).map(function (abilityKey) { return abilities[abilityKey];}),
         waves,
-        'background': levelData.background
+        'backgroundPatterns': {0: levelData.background}
     };
 }
 function getJewelTiewerForLevel(level) {
