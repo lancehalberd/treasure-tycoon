@@ -137,9 +137,9 @@ function hireCharacter(character) {
     gain('fame', character.fame);
     state.characters.push(character);
     // Update the adventurer because it may not have guild bonuses applied to it yet.
-    updateAdventurer(character.adventurer);
-    enterGuildArea(character, guildYardEntrance);
-    updateTrophy('level-' + character.adventurer.job.key, character.adventurer.level);
+    updateAdventurer(character.hero);
+    enterGuildArea(character.hero, guildYardEntrance);
+    updateTrophy('level-' + character.hero.job.key, character.hero.level);
     $('.js-charactersBox').append(character.$characterCanvas);
     $('.js-heroApplication').hide();
     setSelectedCharacter(character);

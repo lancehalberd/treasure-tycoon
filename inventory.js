@@ -9,7 +9,7 @@ function equipItemProper(actor, item, update) {
         return;
     }
     item.$item.detach();
-    if (state.selectedCharacter && state.selectedCharacter.adventurer === actor) {
+    if (actor.character === state.selectedCharacter) {
         $('.js-equipment .js-' + item.base.slot).append(item.$item);
         $('.js-equipment .js-' + item.base.slot + ' .js-placeholder').hide();
     }
@@ -27,7 +27,7 @@ function equipItemProper(actor, item, update) {
     })
     if (update) {
         updateTags(actor, recomputActorTags(actor), true);
-        if (state.selectedCharacter === actor.character) {
+        if (actor.character === state.selectedCharacter) {
             refreshStatsPanel(actor.character, $('.js-characterColumn .js-stats'));
         }
         updateAdventurerGraphics(actor);

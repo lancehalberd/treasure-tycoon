@@ -317,6 +317,7 @@ function castAttackSpell(attacker, spell, target) {
 }
 function performAttackProper(attackStats, target) {
     var attacker = attackStats.source;
+    var area = attacker.area;
     // If the attack allows the user to teleport, teleport them to an optimal location for attacking.
     var teleport = ifdefor(attackStats.attack.teleport, 0) * 32;
     if (teleport) {
@@ -329,15 +330,15 @@ function performAttackProper(attackStats, target) {
         }
     }
     if (attackStats.attack.tags['song']) {
-        attacker.character.effects.push(songEffect(attackStats));
+        area.effects.push(songEffect(attackStats));
     } else if (attackStats.attack.tags['field']) {
-        attacker.character.effects.push(fieldEffect(attackStats, attacker));
+        area.effects.push(fieldEffect(attackStats, attacker));
     } else if (attackStats.attack.tags['nova']) {
         // attackStats.explode--;
-        attacker.character.effects.push(explosionEffect(attackStats, attacker.x, getAttackY(attacker), attacker.z));
+        area.effects.push(explosionEffect(attackStats, attacker.x, getAttackY(attacker), attacker.z));
     } else if (attackStats.attack.tags['blast']) {
         // attackStats.explode--;
-        attacker.character.effects.push(explosionEffect(attackStats, target.x, getAttackY(attacker), target.z));
+        area.effects.push(explosionEffect(attackStats, target.x, getAttackY(attacker), target.z));
     } else if (attackStats.attack.tags['rain']) {
         // attackStats.explode--;
         var targets = [];
@@ -361,7 +362,7 @@ function performAttackProper(attackStats, target) {
             vy *= 15 / mag;
             vx *= 15 / mag;
             vz *= 15 / mag;
-            attacker.character.projectiles.push(projectile(
+            area.projectiles.push(projectile(
                 projectileAttackStats, x, y, z, vx, vy, vz,currentTarget, Math.min(i * maxFrameSpread / count, i * 10), // delay is in frames
                 projectileAttackStats.isCritical ? 'yellow' : 'red', ifdefor(projectileAttackStats.size, 20) * (projectileAttackStats.isCritical ? 1.5 : 1)));
         }
@@ -371,9 +372,10 @@ function performAttackProper(attackStats, target) {
         var y = getAttackY(attacker);
         var z = attacker.z;
         var v = getProjectileVelocity(attackStats, x, y, z, target);
-        attacker.character.projectiles.push(projectile(
+        area.projectiles.push(projectile(
             attackStats, x, y, z, v[0], v[1], v[2], target, 0,
-            attackStats.isCritical ? 'yellow' : 'red', ifdefor(attackStats.size, 10) * (attackStats.isCritical ? 1.5 : 1)));
+            attackStats.isCritical ? 'yellow' : 'red', ifdefor(attackStats.size, 10) * (attackStats.isCritical ? 1.5 : 1)
+        ));
     } else {
         attackStats.distance = getDistance(attacker, target);
         // apply melee attacks immediately
@@ -389,6 +391,7 @@ function applyAttackToTarget(attackStats, target) {
     var attack = attackStats.attack;
     var imprintedSpell = attackStats.imprintedSpell;
     var attacker = attackStats.source;
+    var area = attacker.area;
     var effectiveness = ifdefor(attackStats.effectiveness, 1);
     if (ifdefor(attackStats.strikes, 1) > 1) {
         attackStats.strikes--;
@@ -450,7 +453,7 @@ function applyAttackToTarget(attackStats, target) {
             explosionZ = target.z;
         }
         var explosion = explosionEffect(explodeAttackStats, explosionX, explosionY, explosionZ);
-        attacker.character.effects.push(explosion);
+        area.effects.push(explosion);
         // Meteor calls applyAttackToTarget with a null target so it can explode
         // anywhere. If that has happened, just return once the explosion has
         // been created.
@@ -458,8 +461,6 @@ function applyAttackToTarget(attackStats, target) {
         else return true;
     }
     var distance = attackStats.distance;
-    var character = target.character;
-    var area = target.area;
     var hitText = {x: target.x, y: target.height + 10, z: target.z, color: 'grey', 'vx': -(Math.random() * 3 + 2) * target.heading[0], 'vy': 5};
     if (target.invulnerable) {
         hitText.value = 'invulnerable';

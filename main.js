@@ -53,7 +53,7 @@ function initializeGame() {
         for (var i = 0; i < allApplications.length && otherKeys.length; i++) {
             allApplications[i].character = createNewHeroApplicant(otherKeys.pop());
         }
-        enterGuildArea(state.selectedCharacter, guildFoyerFrontDoor);
+        enterGuildArea(state.selectedCharacter.hero, guildFoyerFrontDoor);
     }
     state.visibleLevels['guild'] = true;
     for (var levelKey of map.guild.unlocks) {
@@ -455,7 +455,7 @@ function setContext(context) {
     state.selectedCharacter.context = context;
     // If the player is not already in the guild when we return to the guild context, move them to the foyer.
     if (context === 'guild' && (!state.selectedCharacter.hero.area || !state.selectedCharacter.hero.area.isGuildArea)) {
-        enterGuildArea(state.selectedCharacter, guildFoyerFrontDoor);
+        enterGuildArea(state.selectedCharacter.hero, guildFoyerFrontDoor);
     }
     showContext(context);
 }
@@ -480,10 +480,6 @@ function updateAdventureButtons() {
         $('.js-repeatButton, .js-fastforwardButton, .js-slowMotionButton, .js-shrineButton').hide();
     }
     $('.js-pauseButton').toggleClass('disabled', !character.paused);
-}
-function canRecall(character) {
-    var actor = character.adventurer;
-    return actor.area && !actor.area.isGuildArea && character.waveIndex < actor.area.waves.length;
 }
 function updateConfirmSkillConfirmationButtons() {
     $('.js-augmentConfirmationButtons').toggle(!!state.selectedCharacter.board.boardPreview);

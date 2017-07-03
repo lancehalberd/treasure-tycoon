@@ -167,7 +167,6 @@ function initializeActorForAdventure(actor) {
     actor.imprintedSpell = null;
     actor.minions = [];
     actor.owner = null;
-    actor.area = actor.character.hero.area;
     // actor.heading = [1, 0, 0];
     var stopTimeAction = findActionByTag(actor.reactions, 'stopTime');
     actor.temporalShield = actor.maxTemporalShield = (stopTimeAction ? stopTimeAction.duration : 0);
@@ -216,7 +215,6 @@ function newCharacter(job) {
     character.hero = hero;
     hero.character = character;
     hero.heading = [1, 0, 0]; // Character moves left to right by default.
-    hero.isMainCharacter = true;
     hero.bonusMaxHealth = 0;
     hero.percentHealth = 1;
     hero.health = hero.maxHealth;

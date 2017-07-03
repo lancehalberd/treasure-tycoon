@@ -34,7 +34,7 @@ const render = () => {
     }
     if (state.selectedCharacter.context === 'adventure' || state.selectedCharacter.context === 'guild') {
         if (editingLevel && !testingLevel) {
-            drawAdventure(state.selectedCharacter);
+            drawAdventure(editingLevel);
             if (editingLevel && editingLevel.board) {
                 var board = boards[editingLevel.board];
                 board = readBoardFromData(board, state.selectedCharacter, abilities[editingLevel.skill], true);
@@ -43,7 +43,8 @@ const render = () => {
                 drawBoardJewelsProper(mainContext, [0, 0], board);
             }
         } else if (state.selectedCharacter.context === 'guild') drawGuildArea(state.selectedCharacter.hero.area);
-        else drawAdventure(state.selectedCharacter);
+        else drawAdventure(state.selectedCharacter.hero.area);
+        drawSkills(state.selectedCharacter.hero);
     }
     if (state.selectedCharacter.context === 'map') drawMap();
     if (state.selectedCharacter.context === 'item') drawCraftingCanvas();

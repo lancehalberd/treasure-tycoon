@@ -83,7 +83,7 @@ function isTargetInRangeOfSkill(actor, skill, pointOrTarget) {
  * @return boolean True if the skill was used.
  */
 function shouldUseSkillOnTarget(actor, skill, target) {
-    if (target.isMainCharacter) return true; // Enemies always use skills on the hero, since they win if the hero dies.
+    if (target.character) return true; // Enemies always use skills on the hero, since they win if the hero dies.
     if (ifdefor(skill.cooldown, 0) < 10) return true; // Don't worry about wasting skills with short cool downs.
     // Make sure combined health of enemies in range is less than the raw damage of the attack, or that the ability
     // will result in life gain that makes it worth using
@@ -304,17 +304,9 @@ function closestEnemyDistance(actor) {
  */
 var skillDefinitions = {};
 
-skillDefinitions.attack = {
-    use: function (actor, attackSkill, target) {
-        performAttack(actor, attackSkill, target);
-    }
-};
+skillDefinitions.attack = {use: performAttack};
 
-skillDefinitions.spell = {
-    use: function (actor, spellSkill, target) {
-        castAttackSpell(actor, spellSkill, target);
-    }
-};
+skillDefinitions.spell = {use: castAttackSpell};
 
 skillDefinitions.consume = {
     use: function (actor, consumeSkill, target) {
@@ -336,7 +328,7 @@ skillDefinitions.heroSong = {
     shouldUse: function (actor, songSkill, target) {
         var healthValues = target.healthValues;
         // healthValues might not be set right when a target spawns.
-        if (!healthValues || target.isMainCharacter) {
+        if (!healthValues || target === actor) {
             return false;
         }
         // Use ability if target is low on life.
@@ -383,7 +375,7 @@ skillDefinitions.stop = {
     },
     use: function (actor, stopSkill, attackStats) {
         actor.stunned = actor.time + .3;
-        actor.character.timeStopEffect = {'actor': actor};
+        actor.area.timeStopEffect = {actor};
         if (actor.health <= 0) actor.health = 1;
     }
 };
@@ -423,6 +415,7 @@ skillDefinitions.minion = {
         addMinionBonuses(actor, minionSkill, newMonster);
         initializeActorForAdventure(newMonster);
         newMonster.owner = actor;
+        newMonster.area = actor.area;
         actor.allies.push(newMonster);
         actor.stunned = actor.time + .3;
     }
@@ -451,6 +444,7 @@ function cloneActor(actor, skill) {
     clone.character = actor.character;
     clone.heading = actor.heading.slice();
     initializeActorForAdventure(clone);
+    clone.area = actor.area;
     clone.allies = actor.allies;
     clone.enemies = actor.enemies;
     clone.stunned = 0;

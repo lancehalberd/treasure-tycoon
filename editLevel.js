@@ -185,7 +185,6 @@ function startEditingLevel(level) {
     state.selectedCharacter.adventurer.isDead = false;
     state.selectedCharacter.adventurer.timeOfDeath = undefined;
     state.selectedCharacter.finishTime = false;
-    state.selectedCharacter.waveIndex = 0;
     $('.js-editingControls').show();
     $('.js-levelSelect option').eq(editingLevel.level - 1).prop('selected', true);
     $('.js-levelBackgroundSelect option[value="' + editingLevel.background + '"]').prop('selected', true);

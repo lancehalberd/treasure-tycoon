@@ -17,23 +17,20 @@ function startArea(character, index) {
     } else {
         area = instantiateLevel(map[index], character.levelDifficulty, difficultyCompleted);
     }
+    area.time = 0;
     var hero = character.adventurer;
     hero.area = area;
     initializeActorForAdventure(hero);
-    character.waveIndex = 0;
-    character.finishTime = false;
-    character.startTime = character.time;
-    character.enemies = [];
-    area.objects = character.objects = [];
-    area.projectiles = character.projectiles = [];
-    area.effects = character.effects = [];
-    character.allies = [hero];
+    area.waveIndex = 0;
+    area.objects = [];
+    area.projectiles = [];
+    area.effects = [];
     area.cameraX = 0;
-    area.allies = hero.allies = character.allies;
-    area.enemies = hero.enemies = character.enemies;
+    area.allies = hero.allies = [hero];
+    area.enemies = hero.enemies = [];
     area.treasurePopups = [];
     area.textPopups = [];
-    area.timeStopEffect = character.timeStopEffect = null;
+    area.timeStopEffect = null;
     hero.x = 120;
     hero.y = 0;
     hero.z = 0;
@@ -41,35 +38,37 @@ function startArea(character, index) {
     hero.actions.concat(hero.reactions).forEach(function (action) {
         action.readyAt = 0;
     });
+    character.finishTime = false;
+    character.startTime = area.time;
     if (state.selectedCharacter === character) {
         updateAdventureButtons();
     }
     saveGame();
 }
 function checkIfActorDied(actor) {
+    const area = actor.area;
     // The actor who has stopped time cannot die while the effect is in place.
-    if (actor.character.timeStopEffect && actor.character.timeStopEffect.actor === actor) return;
+    if (area.timeStopEffect && area.timeStopEffect.actor === actor) return;
     // Actor has not died if they are already dead, have postiive health, cannot die or are currently being pulled.
     if (actor.isDead || actor.health > 0 || actor.undying || actor.pull) return;
-    // If the actor is about to die, check to activate their temporal shield if they have ont.
+    // If the actor is about to die, check to activate their temporal shield if they have one.
     var stopTimeAction = findActionByTag(actor.reactions, 'stopTime');
     if (useSkill(actor, stopTimeAction, null, {})) return;
     // The actor has actually died, mark them as such and begin their death animation and drop spoils.
     actor.isDead = true;
-    actor.timeOfDeath = actor.time;
-    if (actor.character.enemies.indexOf(actor) >= 0 ) {
-        defeatedEnemy(actor.character.adventurer, actor);
-    }
+    actor.timeOfDeath = area.time;
+    // Each enemy that is a main character should gain experience when this actor dies.
+    actor.enemies.filter(enemy => enemy.character).forEach(enemy => defeatedEnemy(enemy, actor));
 }
 
-function timeStopLoop(character) {
-    if (!character.timeStopEffect) return false;
-    var actor = character.timeStopEffect.actor;
+function timeStopLoop(area) {
+    if (!area.timeStopEffect) return false;
+    var actor = area.timeStopEffect.actor;
     var delta = frameMilliseconds / 1000;
     actor.time += delta;
     actor.temporalShield -= delta;
     if (actor.temporalShield <= 0 || actor.health / actor.maxHealth > .5) {
-        character.timeStopEffect = null;
+        area.timeStopEffect = null;
         return false;
     }
     processStatusEffects(actor);
@@ -79,20 +78,14 @@ function timeStopLoop(character) {
         var enemy = actor.enemies[i];
         checkIfActorDied(enemy);
     }
-    checkToStartNextWave(character);
-    if (!character.hero.area) return false;
+    checkToStartNextWave(area);
     expireTimedEffects(actor);
-    runActorLoop(character, actor);
+    runActorLoop(actor);
     moveActor(actor);
     capHealth(actor);
     updateActorHelpText(actor);
     // Update position info.
-    ifdefor(character.enemies, []).forEach(function (actor, index) {
-        return updateActorDimensions(actor, 1 + character.enemies.length - index);
-    });
-    ifdefor(character.allies, []).forEach(function (actor, index) {
-        return updateActorDimensions(actor, -index);
-    });
+    area.allies.concat(area.enemies).forEach(updateActorDimensions);
     return true;
 }
 function actorCanOverHeal(actor) {
@@ -126,11 +119,12 @@ function removeActor(actor) {
         return;
     }
     actor.allies.splice(index, 1);
-    if (actor.isMainCharacter) {
+    if (actor.character) {
         var character = actor.character;
-        if (character.levelDifficulty === 'endless') {
+        var area = actor.area;
+        if (area.levelDifficulty === 'endless') {
             var currentEndlessLevel = getEndlessLevel(character, map[character.currentLevelKey]);
-            character.levelTimes[character.currentLevelKey][character.levelDifficulty] = currentEndlessLevel - 1;
+            character.levelTimes[character.currentLevelKey][area.levelDifficulty] = currentEndlessLevel - 1;
         }
         returnToMap(actor.character);
         if (actor.character === state.selectedCharacter && !actor.character.replay && !testingLevel) {
@@ -138,50 +132,48 @@ function removeActor(actor) {
         }
     }
 }
-function checkToStartNextWave(character) {
-    if (character.waveIndex >= character.hero.area.waves.length) return;
-    for (var enemy of character.enemies) if (!enemy.isDead) return;
-    if (character.waveIndex >= character.hero.area.waves.length - 1) {
-        completeLevel(character, character.time - character.startTime);
+function checkToStartNextWave(area) {
+    if (!area.waves) return;
+    if (area.waveIndex >= area.waves.length) return;
+    if (area.enemies.some(enemy => !enemy.isDead)) return
+    if (area.waveIndex >= area.waves.length - 1) {
+        for (var actor of area.allies) {
+            const character = actor.character;
+            if (!character) continue;
+            completeLevel(character, area.time - character.startTime);
+        }
     }
-    startNextWave(character);
+    startNextWave(area);
     updateAdventureButtons();
 }
-function adventureLoop(character) {
-    var area = character.hero.area;
+function adventureLoop(area) {
     var delta = frameMilliseconds / 1000;
-    if (timeStopLoop(character)) return;
-    var adventurer = character.adventurer;
-    var everybody = character.allies.concat(character.enemies);
-    // Advance subjective time for each actor.
+    if (timeStopLoop(area)) return;
+    var adventurer = area.hero;
+    var everybody = area.allies.concat(area.enemies);
+    // Advance subjective time of area and each actor.
+    area.time += delta;
     for (var actor of everybody) actor.time += delta;
     everybody.forEach(processStatusEffects);
-    for (var i = 0; i < character.enemies.length; i++) {
-        var enemy = character.enemies[i];
+    for (var enemy of area.enemies) {
         checkIfActorDied(enemy);
         expireTimedEffects(enemy);
     }
-    for (var i = 0; i < character.allies.length; i++) {
-        var ally = character.allies[i];
+    for (var ally of area.allies) {
         checkIfActorDied(ally);
         expireTimedEffects(ally);
     }
-    for (var i = 0; i < character.objects.length; i++) {
-        var object = character.objects[i];
-        if (object.x < character.adventurer.x && object.x + object.width - area.cameraX < 0 ) {
-            character.objects.splice(i--, 1);
-            continue;
-        } else if (object.update) object.update(area);
+    for (var i = 0; i < area.objects.length; i++) {
+        var object = area.objects[i];
+        if (object.x + object.width - area.cameraX < 0 ) area.objects.splice(i--, 1);
+        else if (object.update) object.update(area);
     }
-    checkToStartNextWave(character);
-    if (!character.hero.area) return;
-    character.allies.forEach(runActorLoop);
-    character.enemies.forEach(runActorLoop);
+    checkToStartNextWave(area);
+    area.allies.forEach(runActorLoop);
+    area.enemies.forEach(runActorLoop);
     // A skill may have removed an actor from one of the allies/enemies array, so remake everybody.
-    everybody = character.allies.concat(character.enemies);
-    everybody.forEach(function (actor) {
-        moveActor(actor);
-    });
+    everybody = area.allies.concat(area.enemies);
+    everybody.forEach(moveActor);
     for (var i = 0; i < area.projectiles.length; i++) {
         area.projectiles[i].update(area);
         if (area.projectiles[i].done) area.projectiles.splice(i--, 1);
@@ -203,7 +195,7 @@ function adventureLoop(character) {
         if (textPopup.duration-- < 0) area.textPopups.splice(i--, 1);
     }
     everybody.forEach(function (actor) {
-        if (actor.timeOfDeath < actor.time - 1) {
+        if (actor.timeOfDeath < area.time - 1) {
             removeActor(actor);
             return;
         }
@@ -244,8 +236,9 @@ function updateActorDimensions(actor) {
 var rotationA = Math.cos(Math.PI / 20);
 var rotationB = Math.sin(Math.PI / 20);
 function moveActor(actor) {
+    const area = actor.area;
     var delta = frameMilliseconds / 1000;
-    if (ifdefor(actor.character.isStuckAtShrine)) {
+    if (actor.character && actor.character.isStuckAtShrine) {
         actor.walkFrame = 0;
         return;
     }
@@ -296,7 +289,7 @@ function moveActor(actor) {
                 break;
         }
     }
-    if ((actor.chargeEffect || !actor.isMainCharacter || (heroShouldAutoplay(actor) && !actor.activity)) && (!goalTarget || goalTarget.isDead)) {
+    if ((actor.chargeEffect || (actorShouldAutoplay(actor) && !actor.activity)) && (!goalTarget || goalTarget.isDead)) {
         var bestDistance = 10000;
         actor.enemies.forEach(function (target) {
             if (target.isDead) return;
@@ -375,7 +368,7 @@ function moveActor(actor) {
             }
         }
         if (!collision) {
-            for (var object of actor.character.objects) {
+            for (var object of area.objects) {
                 var distance = getDistanceOverlap(actor, object);
                 if (distance <= -8 && new Vector([speedBonus * (actor.x - currentX), speedBonus * (actor.z - currentZ)]).dotProduct(new Vector([object.x - currentX, object.z - currentZ])) > 0) {
                     collision = true;
@@ -447,30 +440,29 @@ function finishChargeEffect(actor, target) {
     }
     actor.chargeEffect = null;
 }
-function startNextWave(character) {
-    var hero = character.hero;
-    var wave = hero.area.waves[character.waveIndex];
-    var x = hero.x + 800;
+function startNextWave(area) {
+    var wave = area.waves[area.waveIndex];
+    var x = area.cameraX + 800;
     wave.monsters.forEach(function (entityData) {
-        var extraSkills = ifdefor(hero.area.enemySkills, []).slice();
+        var extraSkills = ifdefor(area.enemySkills, []).slice();
         if (wave.extraBonuses) extraSkills.push(wave.extraBonuses);
-        if (character.levelDifficulty === 'easy') {
+        if (area.levelDifficulty === 'easy') {
             extraSkills.push(easyBonuses);
         }
-        if (character.levelDifficulty === 'hard' || character.levelDifficulty === 'endless') {
+        if (area.levelDifficulty === 'hard' || area.levelDifficulty === 'endless') {
             extraSkills.push(hardBonuses);
         }
-        var newMonster = makeMonster(entityData, hero.area.level, extraSkills, !!wave.extraBonuses);
+        var newMonster = makeMonster(entityData, area.level, extraSkills, !!wave.extraBonuses);
         newMonster.heading = [-1, 0, 0]; // Monsters move right to left
         newMonster.x = x;
         newMonster.y = ifdefor(newMonster.y, 0);
         newMonster.z = -150 + Math.random() * 300;
-        newMonster.character = character;
+        newMonster.area = area;
         initializeActorForAdventure(newMonster);
         newMonster.time = 0;
-        newMonster.allies = character.enemies;
-        newMonster.enemies = character.allies;
-        character.enemies.push(newMonster);
+        newMonster.allies = area.enemies;
+        newMonster.enemies = area.allies;
+        area.enemies.push(newMonster);
         x += 40 + Math.floor(Math.random() * 40);
     });
     for (var object of wave.objects) {
@@ -482,12 +474,12 @@ function startNextWave(character) {
         } else {
             throw Error("Unrecognized object: " + JSON.stringify(entityData));
         }
-        object.area = hero.area;
-        character.objects.push(object);
+        object.area = area;
+        area.objects.push(object);
     }
-    character.waveIndex++;
-    hero.area.left = hero.x - 800;
-    hero.area.width = x + 400;
+    area.waveIndex++;
+    area.left = area.cameraX - 800;
+    area.width = x + 400;
 }
 function processStatusEffects(target) {
     if (target.isDead ) return;
@@ -548,8 +540,7 @@ function getAllInRange(x, range, targets) {
     return targetsInRange
 }
 function runActorLoop(actor) {
-    var autoplay = !actor.area.isGuildArea && heroShouldAutoplay(actor);
-    var character = actor.character;
+    const area = actor.area;
     if (actor.isDead || actor.stunned || actor.pull || actor.chargeEffect) {
         actor.skillInUse = null;
         return;
@@ -594,9 +585,10 @@ function runActorLoop(actor) {
                 break;
         }
         return;
-    } else if (autoplay && actor.character.waveIndex >= actor.area.waves.length) {
+    } else if (actor.character && actorShouldAutoplay(actor) && area.waves && area.waveIndex >= area.waves.length) {
+        const character = actor.character;
         // Code for intracting with chest/shrine at the end of level and leaving the area.
-        for (var object of actor.area.objects) {
+        for (var object of area.objects) {
             if (object.considered) continue;
             // The AI only considers each object once.
             object.considered = true;
@@ -604,20 +596,17 @@ function runActorLoop(actor) {
                 setActorInteractionTarget(actor, object);
                 break;
             }
-            if (object.key === 'skillShrine' && !actor.character.skipShrines) {
+            if (object.key === 'skillShrine' && !character.skipShrines) {
                 setActorInteractionTarget(actor, object);
                 break;
             }
         }
-        if (!actor.activity && !actor.character.isStuckAtShrine) {
-            if (!actor.character.finishTime) {
-                actor.character.finishTime = actor.character.time + 1;
-            }
-            if (actor.character.time >= actor.character.finishTime) {
-                returnToMap(actor.character);
-            }
+        if (!actor.activity && !character.isStuckAtShrine) {
+            if (!character.finishTime) character.finishTime = area.time + 1;
+            if (area.time >= character.finishTime) returnToMap(actor.character);
         }
-    } else if (actor.owner) {
+        // Make minions follow their owners when there are no enemies present.
+    } else if (actor.owner && !actor.owner.enemies.length) {
         if (getDistance(actor, actor.owner) > actor.owner.width / 2 + 10) {
             setActorInteractionTarget(actor, actor.owner);
         }
@@ -649,17 +638,17 @@ function runActorLoop(actor) {
     actor.cloaked = (actor.cloaking && !actor.skillInUse);
 }
 function checkToUseSkillOnTarget(actor, target) {
-    var autoplay = !actor.area.isGuildArea && heroShouldAutoplay(actor);
+    var autoplay = actorShouldAutoplay(actor);
     for(var action of ifdefor(actor.actions, [])) {
         // Only basic attacks will be used by your hero when you manually control them.
-        if (!autoplay && !action.tags['basic'] && actor.isMainCharacter &&
+        if (!autoplay && !action.tags['basic'] && actor.character &&
             // If the player has set this skill to auto, then it will be used automatically during manual control.
             !actor.character.autoActions[action.base.key]
         ) {
             continue;
         }
         // If the skill has been set to manual, it won't be used during autoplay.
-        if (autoplay && actor.character.manualActions[action.base.key]) {
+        if (autoplay && actor.character && actor.character.manualActions[action.base.key]) {
             continue;
         }
         if (!canUseSkillOnTarget(actor, action, target)) {
@@ -678,8 +667,8 @@ function checkToUseSkillOnTarget(actor, target) {
     return false;
 }
 
-function heroShouldAutoplay(hero) {
-    return hero.isMainCharacter && (hero.character.autoplay || hero.character !== state.selectedCharacter);
+function actorShouldAutoplay(actor) {
+    return !actor.character || (actor.character.autoplay || actor.character !== state.selectedCharacter);
 }
 
 // The distance functions assume objects are circular in the x/z plane and are calculating
@@ -695,6 +684,7 @@ function getDistanceOverlap(spriteA, spriteB) {
     if (isNaN(distance)) {
         console.log(JSON.stringify(['A:', spriteA.x, spriteA.y, spriteA.z, spriteA.width]));
         console.log(JSON.stringify(['B:', spriteB.x, spriteB.y, spriteB.z, spriteB.width]));
+        debugger;
     }
     return distance;
 }
@@ -719,7 +709,8 @@ function defeatedEnemy(hero, enemy) {
 }
 
 function completeLevel(character, completionTime) {
-    character.hero.area.completed = true;
+    const area = character.hero.area;
+    area.completed = true;
     // If the character beat the last adventure open to them, unlock the next one
     var level = map[character.currentLevelKey];
     increaseAgeOfApplications();
@@ -736,10 +727,10 @@ function completeLevel(character, completionTime) {
     }
     var newDivinityScore;
     var currentEndlessLevel = getEndlessLevel(character, level);
-    if (character.levelDifficulty === 'endless') {
+    if (area.levelDifficulty === 'endless') {
         newDivinityScore = Math.max(10, Math.round(baseDivinity(currentEndlessLevel)));
     } else {
-        var difficultyBonus = difficultyBonusMap[character.levelDifficulty];
+        var difficultyBonus = difficultyBonusMap[area.levelDifficulty];
         var timeBonus = .8;
         if (completionTime <= getGoldTimeLimit(level, difficultyBonus)) timeBonus = 1.2;
         else if (completionTime <= getSilverTimeLimit(level, difficultyBonus)) timeBonus = 1;
@@ -750,18 +741,18 @@ function completeLevel(character, completionTime) {
         character.divinity += gainedDivinity;
         var hero = character.adventurer;
         var textPopup = {value:'+' + gainedDivinity.abbreviate() + ' Divinity', x: hero.x, y: hero.height, z: hero.z, color: 'gold', fontSize: 15, 'vx': 0, 'vy': 1, 'gravity': .1};
-        appendTextPopup(hero.area, textPopup, true);
+        appendTextPopup(area, textPopup, true);
     }
     character.divinityScores[character.currentLevelKey] = Math.max(oldDivinityScore, newDivinityScore);
     // Initialize level times for this level if not yet set.
     character.levelTimes[character.currentLevelKey] = ifdefor(character.levelTimes[character.currentLevelKey], {});
-    if (character.levelDifficulty === 'endless') {
+    if (area.levelDifficulty === 'endless') {
         unlockItemLevel(currentEndlessLevel + 1);
-        character.levelTimes[character.currentLevelKey][character.levelDifficulty] = currentEndlessLevel + 5;
+        character.levelTimes[character.currentLevelKey][area.levelDifficulty] = currentEndlessLevel + 5;
     } else {
         unlockItemLevel(level.level + 1);
-        var oldTime = ifdefor(character.levelTimes[character.currentLevelKey][character.levelDifficulty], 99999);
-        character.levelTimes[character.currentLevelKey][character.levelDifficulty] = Math.min(completionTime, oldTime);
+        var oldTime = ifdefor(character.levelTimes[character.currentLevelKey][area.levelDifficulty], 99999);
+        character.levelTimes[character.currentLevelKey][area.levelDifficulty] = Math.min(completionTime, oldTime);
     }
     saveGame();
 }

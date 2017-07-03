@@ -38,7 +38,6 @@ function importCharacter(characterData) {
     character.manualActions = characterData.manualActions || {};
     character.adventurer.character = character;
     character.adventurer.heading = [1, 0, 0]; // Character moves left to right.
-    character.adventurer.isMainCharacter = true;
     character.adventurer.bonusMaxHealth = 0;
     character.adventurer.percentHealth = 1;
     character.adventurer.health = character.adventurer.maxHealth;

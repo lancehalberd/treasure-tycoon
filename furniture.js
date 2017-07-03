@@ -35,7 +35,7 @@ function openJewels(actor) {
     setContext('jewel');
 }
 function useDoor(actor) {
-    enterGuildArea(actor.character, this.exit);
+    enterGuildArea(actor, this.exit);
 }
 function showApplication(actor) {
     setHeroApplication($('.js-heroApplication'), this);

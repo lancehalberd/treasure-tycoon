@@ -1,4 +1,4 @@
-function instantiateLevel(levelData, difficulty, difficultyCompleted, level) {
+function instantiateLevel(levelData, levelDifficulty, difficultyCompleted, level) {
     var waves = [];
     level = ifdefor(level, levelData.level);
     var numberOfWaves = Math.min(10, 3 + Math.floor(2 * Math.sqrt(level)));
@@ -60,7 +60,7 @@ function instantiateLevel(levelData, difficulty, difficultyCompleted, level) {
     // Make sure we have at least enough waves for the required events
     numberOfWaves = Math.max(events.length, numberOfWaves);
     // To keep endless levels from dragging on forever, they just have 1 random wave per event wave.
-    if (difficulty === 'endless') {
+    if (levelDifficulty === 'endless') {
         numberOfWaves = Math.min(Math.max(10, events.length), 2 * events.length);
     }
     var eventsLeft = events;
@@ -106,12 +106,12 @@ function instantiateLevel(levelData, difficulty, difficultyCompleted, level) {
                           [(blueComponent + allComponent) * 0.9, (blueComponent + allComponent) * 1.1]];
         if (maxComponent < 90) {
             var shapeTypes = ['rhombus']
-            if (difficulty !== 'easy') shapeTypes.push('square');
-            if (difficulty === 'hard') shapeTypes.push('trapezoid');
+            if (levelDifficulty !== 'easy') shapeTypes.push('square');
+            if (levelDifficulty === 'hard') shapeTypes.push('trapezoid');
         } else {
             var shapeTypes = ['triangle'];
-            if (difficulty !== 'easy') shapeTypes.push('diamond');
-            if (difficulty === 'hard') shapeTypes.push('trapezoid');
+            if (levelDifficulty !== 'easy') shapeTypes.push('diamond');
+            if (levelDifficulty === 'hard') shapeTypes.push('trapezoid');
         }
         // console.log(tier);
         // console.log(shapeTypes.join(','));
@@ -124,9 +124,10 @@ function instantiateLevel(levelData, difficulty, difficultyCompleted, level) {
 
     return {
         'base': levelData,
-        'level': level,
+        level,
+        levelDifficulty,
         'enemySkills': ifdefor(levelData.enemySkills, []).map(function (abilityKey) { return abilities[abilityKey];}),
-        'waves': waves,
+        waves,
         'background': levelData.background
     };
 }
@@ -241,6 +242,7 @@ function drawLetter(context, letter, x, y) {
 
 function activateShrine(actor) {
     var character = actor.character;
+    var area = actor.area;
     var level = map[character.currentLevelKey];
     if (character.adventurer.level >= maxLevel) {
         messageCharacter(character, character.adventurer.name + ' is already max level');
@@ -263,23 +265,24 @@ function activateShrine(actor) {
         var boardPreviewSprite = adventureBoardPreview(boardPreview, character);
         boardPreviewSprite.x = this.x - (boardOptions * 150 - 150) / 2 + 150 * i;
         boardPreviewSprite.y = 220;
-        character.objects.push(boardPreviewSprite);
+        area.objects.push(boardPreviewSprite);
     }
     var blessingText = objectText('Choose Your Blessing');
     blessingText.x = this.x;
     blessingText.y = 300;
-    character.objects.push(blessingText);
+    area.objects.push(blessingText);
     var skipButton = iconButton({'image': images['gfx/nielsenIcons.png'], 'left': 160, 'top': 160, 'width': 32, 'height': 32}, 64, 64, finishShrine, 'Continue without leveling');
     skipButton.x = this.x + 128;
     skipButton.y = 112;
-    character.objects.push(skipButton);
+    area.objects.push(skipButton);
     character.isStuckAtShrine = true;
 }
 function finishShrine(character) {
-    for (var i = 0; i < character.objects.length; i++) {
-        var object = character.objects[i];
+    var objects = character.hero.area.objects;
+    for (var i = 0; i < objects.length; i++) {
+        var object = objects[i];
         if (object.type === 'button' || object.type === 'text') {
-            character.objects.splice(i--, 1);
+            objects.splice(i--, 1);
         } else if (object.type === 'shrine') {
             object.done = true;
         }

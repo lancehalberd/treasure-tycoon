@@ -32,7 +32,7 @@ setInterval(() => {
             var gameSpeed = (character.autoplay) ? character.gameSpeed : 1;
             for (var i = 0; i < gameSpeed  && character.adventurer.area; i++) {
                 character.time += frameMilliseconds / 1000;
-                if (character.context === 'adventure') adventureLoop(character, frameMilliseconds / 1000);
+                if (character.context === 'adventure') adventureLoop(character.hero.area, frameMilliseconds / 1000);
                 else if (character.context === 'guild') activeGuildAreaHash[character.guildAreaKey] = true;
             }
         }
@@ -55,6 +55,7 @@ setInterval(() => {
     updateTrophyPopups();
     } catch (e) {
         console.log(e);
+        console.log(e.stack);
         debugger;
     }
 }, frameMilliseconds);
@@ -64,6 +65,6 @@ function isCharacterPaused(character) {
     if (!character.paused) return false;
     if (hero.activity || hero.skillInUse) return false;
     if (hero.chargeEffect) return false;
-    if (!hero.area.waves[character.waveIndex]) return false;
+    if (!hero.area.waves || !hero.area.waves[hero.area.waveIndex]) return false;
     return true;
 }

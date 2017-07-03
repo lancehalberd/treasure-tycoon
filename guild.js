@@ -28,6 +28,9 @@ function initializeGuldArea(guildArea) {
     }
     return guildArea;
 }
+function spawner(spawner) {
+    return spawner;
+}
 var wallZ = 180;
 var guildAreas = {};
 var guildFoyerFrontDoor = {'areaKey': 'guildFoyer', 'x': 120, 'z': 0};
@@ -72,9 +75,9 @@ guildAreas.guildFoyer = initializeGuldArea({
         fixedObject('bed', [890, 0, 140], {'scale': 2, 'xScale': -1})
     ],
     'level': 1,
-    'waves': [
-        ['goblin', 'goblin', 'goblin'],
-        ['skeleton', 'skeleton']
+    'spawners': [
+        spawner({monsters: ['goblin', 'goblin', 'goblin'], location: [600, 0, 40], delay: 2}),
+        spawner({monsters: ['skeleton', 'skeleton'], location: [880, 0, 0], delay: 2}),
     ],
     'leftWall': 'oldGuild',
     'rightWall': 'oldGuild',
@@ -341,34 +344,36 @@ function leaveCurrentArea(actor) {
     if (allyIndex >= 0) actor.area.allies.splice(allyIndex, 1);
     actor.area = null;
 }
-function enterGuildArea(character, door) {
-    var hero = character.hero;
-    leaveCurrentArea(hero);
-    character.context = 'guild'
-    character.currentLevelKey = 'guild';
-    character.guildAreaKey = door.areaKey;
+function enterGuildArea(actor, door) {
+    leaveCurrentArea(actor);
     var guildArea = guildAreas[door.areaKey];
-    initializeActorForAdventure(hero);
-    hero.area = guildArea;
-    hero.x = door.x;
-    hero.y = 0;
-    hero.z = door.z;
-    guildArea.allies.push(hero);
-    character.allies = hero.allies = guildArea.allies;
-    character.enemies = hero.enemies = guildArea.enemies;
-    character.objects = guildArea.objects;
-    hero.activity = null;
-    hero.actions.concat(hero.reactions).forEach(function (action) {
+    initializeActorForAdventure(actor);
+    actor.area = guildArea;
+    actor.x = door.x;
+    actor.y = 0;
+    actor.z = door.z;
+    guildArea.allies.push(actor);
+    actor.allies = guildArea.allies;
+    actor.enemies = guildArea.enemies;
+    actor.activity = null;
+    actor.actions.concat(actor.reactions).forEach(function (action) {
         action.readyAt = 0;
     });
-    if (state.selectedCharacter === character) {
-        guildArea.cameraX = Math.round(Math.max(guildArea.left, Math.min(guildArea.width - 800, hero.x - 400)));
-        updateAdventureButtons();
-        showContext('guild');
+    const character = actor.character;
+    if (character) {
+        character.context = 'guild'
+        character.currentLevelKey = 'guild';
+        character.guildAreaKey = guildArea.key;
+        if (character === state.selectedCharacter) {
+            guildArea.cameraX = Math.round(Math.max(guildArea.left, Math.min(guildArea.width - 800, actor.x - 400)));
+            updateAdventureButtons();
+            showContext('guild');
+        }
     }
 }
 
 function guildAreaLoop(guildArea) {
+    if (timeStopLoop(guildArea)) return;
     var delta = frameMilliseconds / 1000;
     var everybody = guildArea.allies.concat(guildArea.enemies);
     for (var object of guildArea.objects) if (object.updated) object.update(guildArea);
@@ -398,16 +403,10 @@ function guildAreaLoop(guildArea) {
         // these values to determine how much damage has accrued recently for abilities that trigger when a character
         // is in danger.
         capHealth(actor);
-        // This updates the text displayed to the user if they are currently viewing the help text for the actor.
-        updateActorHelpText(actor);
         if ((actor.time * 1000) % 100 < 20) {
-            if (!actor.healthValues) {
-                actor.healthValues = [];
-            }
+            if (!actor.healthValues) actor.healthValues = [];
             actor.healthValues.unshift(actor.health);
-            while (actor.healthValues.length > 10) {
-                actor.healthValues.pop();
-            }
+            while (actor.healthValues.length > 10) actor.healthValues.pop();
         }
     });
     everybody.forEach(updateActorDimensions);
@@ -457,6 +456,7 @@ function drawGuildArea(guildArea) {
     var sortedSprites = guildArea.allies.concat(guildArea.enemies).concat(guildArea.objects).sort(function (spriteA, spriteB) {
         return spriteB.z - spriteA.z;
     });
+    guildArea.allies.concat(guildArea.enemies).forEach(updateActorHelpText);
     for (var sprite of sortedSprites) {
         if (sprite.draw) sprite.draw(guildArea);
         else drawActor(sprite);
@@ -472,7 +472,6 @@ function drawGuildArea(guildArea) {
         mainContext.textAlign = 'center'
         mainContext.fillText(textPopup.value, textPopup.x - guildArea.cameraX, groundY - textPopup.y - textPopup.z / 2);
     }
-    drawSkills(state.selectedCharacter.adventurer);
 }
 
 var guildBonusSources = [];

@@ -3,13 +3,12 @@ var maxIndex = 9;
 var groundY = 390;
 // Indicates how much to shift drawing the map/level based on the needs of other UI elements.
 var screenYOffset = 0;
-function drawAdventure(character) {
-    var area = editingLevelInstance ? editingLevelInstance : character.hero.area;
+function drawAdventure(area) {
     var context = mainContext;
     var cameraX = area.cameraX;
     context.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
     var background = ifdefor(backgrounds[area.background], backgrounds.field);
-    var cloudX = cameraX + character.time * .5;
+    var cloudX = cameraX + area.time * .5;
     var tileWidth = 120;
     var fullDrawingWidth = Math.ceil(mainCanvas.width / tileWidth) * tileWidth + tileWidth;
     background.forEach(function(section) {
@@ -23,7 +22,7 @@ function drawAdventure(character) {
         var alpha = ifdefor(section.alpha, 1);
         context.globalAlpha = alpha;
         for (var i = 0; i <= fullDrawingWidth; i += tileWidth * spacing) {
-            var x = Math.round((fullDrawingWidth + (i - (cameraX - character.time * velocity) * parallax) % fullDrawingWidth) % fullDrawingWidth - tileWidth);
+            var x = Math.round((fullDrawingWidth + (i - (cameraX - area.time * velocity) * parallax) % fullDrawingWidth) % fullDrawingWidth - tileWidth);
             context.drawImage(source.image, source.x, source.y, source.width, source.height,
                                   x, y, width, height);
             if (x !== Math.round(x) || y !== Math.round(y) || width != Math.round(width) || height != Math.round(height)) {
@@ -51,8 +50,7 @@ function drawAdventure(character) {
         context.textAlign = 'center'
         context.fillText(textPopup.value, textPopup.x - cameraX, groundY - textPopup.y - textPopup.z / 2);
     }
-    drawSkills(character.adventurer);
-    drawMinimap(character);
+    drawMinimap(area);
 }
 function updateActorAnimationFrame(actor) {
     if (actor.pull || actor.stunned || actor.isDead ) {
@@ -223,14 +221,13 @@ function drawEffectIcons(actor, x, y) {
         }
     }
 }
-function drawMinimap(character) {
+function drawMinimap(area) {
     var y = 600 - 30;
     var height = 6;
     var x = 10;
     var width = 750;
     var context = mainContext;
-    var area = editingLevelInstance ? editingLevelInstance : character.hero.area;
-    drawBar(context, x, y, width, height, 'white', 'white', character.waveIndex / area.waves.length);
+    drawBar(context, x, y, width, height, 'white', 'white', area.waveIndex / area.waves.length);
     for (var i = 0; i < area.waves.length; i++) {
         var centerX = x + (i + 1) * width / area.waves.length;
         var centerY = y + height / 2;
@@ -240,17 +237,17 @@ function drawMinimap(character) {
         context.fill();
     }
     context.fillStyle = 'orange';
-    context.fillRect(x + 1, y + 1, (width - 2) * (character.waveIndex / area.waves.length) - 10, height - 2);
+    context.fillRect(x + 1, y + 1, (width - 2) * (area.waveIndex / area.waves.length) - 10, height - 2);
     for (var i = 0; i < area.waves.length; i++) {
         var centerX = x + (i + 1) * width / area.waves.length;
         var centerY = y + height / 2;
-        if (i < character.waveIndex) {
+        if (i < area.waveIndex) {
             context.fillStyle = 'orange';
             context.beginPath();
             context.arc(centerX, centerY, 10, 0, 2 * Math.PI);
             context.fill();
         }
-        var waveCompleted = (i < character.waveIndex - 1)  || (i <= character.waveIndex - 1 && (ifdefor(character.enemies, []).length + ifdefor(character.objects, []).length) === 0);
+        var waveCompleted = (i < area.waveIndex - 1)  || (i <= area.waveIndex - 1 && (ifdefor(area.enemies, []).length + ifdefor(area.objects, []).length) === 0);
         area.waves[i].draw(context, waveCompleted, centerX, centerY);
     }
 }
