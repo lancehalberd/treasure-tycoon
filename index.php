@@ -207,8 +207,8 @@
                 <button class="js-sellItem sellItem" disabled helptext="Drag items here to sell them. <br/> You can also hover over an item and type 'S' to sell quickly."><div class="icon money"></div></button>
             </div>
         </div>
-        <div class="js-charactersBox points charactersBox" helptext="Use Divinity at shrines to learn skills and level up.<br/><br/>Complete new adventures to find shrines and gain divinity.<br/><br/>Leveling allows you to equip more powerful gear.">
-            <div class="js-divinityPoints divinityPoints">
+        <div class="js-charactersBox points charactersBox">
+            <div class="js-divinityPoints divinityPoints" helptext="Use Divinity at shrines to learn skills and level up.<br/><br/>Complete new adventures to find shrines and gain divinity.<br/><br/>Leveling allows you to equip more powerful gear.">
                 <div class="pointsIcon"><span class="icon divinity"></span></div>
                 <div class="pointsColumn">
                     <span class="js-global-divinity divinity">1000</span>
