@@ -79,16 +79,14 @@ function capPoints() {
 
 // Add dynamic help text to coins+anima indicators.
 $('.js-coinsContainer').data('helpMethod', () =>
-    titleDiv( state.coins + ' / ' + state.guildStats.maxCoins.abbreviate() + ' coins') + [
-        'Coins are used to create brand new items.',
-        'Coins are found in chests and dropped from defeated enemies.'
-    ].map(bodyDiv).join('')
+    titleDiv( state.coins + ' / ' + state.guildStats.maxCoins.abbreviate() + ' coins')
+        + bodyDiv('Coins are used to create brand new items.')
+        + bodyDiv('Coins are found in chests and dropped from defeated enemies.')
 );
-$('.js-animaContainer').data('helpMethod', () => [
-        'Anima is used to enchant items with special powers.',
-        'Anima is absorbed from defeated enemies and salvaged from gems.',
-        'Your guild can store ' + state.guildStats.maxAnima.abbreviate() + ' anima.'
-    ].join('<br />')
+$('.js-animaContainer').data('helpMethod', () =>
+    titleDiv( state.anima + ' / ' + state.guildStats.maxAnima.abbreviate() + ' anima')
+        + bodyDiv('Anima is used to enchant items with special powers.')
+        + bodyDiv('Anima is absorbed from defeated enemies and salvaged from gems.')
 );
 
 var divider = tag('div', 'centered medium', tag('div', 'divider'));
