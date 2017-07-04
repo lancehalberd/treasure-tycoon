@@ -221,7 +221,7 @@ function newCharacter(job) {
     var characterCanvas = createCanvas(40, 20);
     character.$characterCanvas = $(characterCanvas);
     character.$characterCanvas.addClass('js-character character')
-        .attr('helptext', hero.job.name + ' ' + hero.name)
+        .attr('helptext', '').data('helpMethod', () => actorHelpText(hero))
         .data('character', character);
     character.characterContext = characterCanvas.getContext("2d");
     character.boardCanvas = createCanvas(jewelsCanvas.width, jewelsCanvas.height);
@@ -562,26 +562,31 @@ function recomputActorTags(actor) {
     return tags;
 }
 function updateActorHelpText(actor) {
-    if ($popup && canvasPopupTarget === actor) {
-        $popup.html(actorHelpText(actor));
-    }
+    if (!$popup) return;
+    if (canvasPopupTarget === actor) return $popup.html(actorHelpText(actor));
+    if (!$popupTarget) return;
+    const character = $popupTarget.data('character');
+    if (character && character.hero === actor) return $popup.html(actorHelpText(actor));
 }
 function actorHelpText(actor) {
     var name = actor.name;
+    if (actor.job) {
+        name = actor.job.name + ' ' + name;
+    }
     var prefixNames = [];
     var suffixNames = [];
     for (var prefix of ifdefor(actor.prefixes, [])) prefixNames.push(prefix.base.name);
     for (var suffix of ifdefor(actor.suffixes, [])) suffixNames.push(suffix.base.name);
     if (prefixNames.length) name = prefixNames.join(', ') + ' ' + name;
     if (suffixNames.length) name = name + ' of ' + suffixNames.join(' and ');
-    var sections = [name + ' ' + Math.ceil(actor.health).abbreviate() + '/' + Math.ceil(actor.maxHealth).abbreviate()];
+    var title = 'Lvl ' + actor.level + ' ' + name;
+    var sections = ['Health: ' + Math.ceil(actor.health).abbreviate() + '/' + Math.ceil(actor.maxHealth).abbreviate()];
     if (actor.temporalShield > 0) {
         sections.push('Temporal Shield: ' + actor.temporalShield.format(1) + 's');
     }
     if (actor.reflectBarrier > 0) {
         sections.push('Reflect: ' + actor.reflectBarrier.format(0).abbreviate());
     }
-    sections.push('');
     ifdefor(actor.prefixes, []).forEach(function (affix) {
         sections.push(bonusSourceHelpText(affix, actor));
     });
@@ -597,7 +602,7 @@ function actorHelpText(actor) {
         if (countMap[text] > 1) text += tag('div', 'effectCounter', 'x' + countMap[text]);
         sections.push(tag('div', 'effectText', text));
     }
-    return sections.join('<br/>');
+    return titleDiv(title) + sections.map(bodyDiv).join('');
 }
 function gainLevel(adventurer) {
     adventurer.level++;

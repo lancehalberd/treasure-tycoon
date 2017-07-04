@@ -44,7 +44,6 @@ function drawArea(area) {
     if (area.leftWall) drawLeftWall(area);
     if (area.rightWall) drawRightWall(area);
     if (area.wallDecorations) for (var object of area.wallDecorations) object.draw(area);
-    area.allies.concat(area.enemies).forEach(updateActorHelpText);
     var sortedSprites = area.allies.concat(area.enemies).concat(area.objects).sort(function (spriteA, spriteB) {
         return spriteB.z - spriteA.z;
     });

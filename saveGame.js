@@ -44,7 +44,7 @@ function importCharacter(characterData) {
     var characterCanvas = createCanvas(40, 20);
     character.$characterCanvas = $(characterCanvas);
     character.$characterCanvas.addClass('js-character character')
-        .attr('helptext', character.adventurer.job.name + ' ' + character.adventurer.name)
+        .attr('helptext', '').data('helpMethod', () => actorHelpText(character.hero))
         .data('character', character);
     character.characterContext = characterCanvas.getContext("2d");
     character.boardCanvas = createCanvas(jewelsCanvas.width, jewelsCanvas.height);

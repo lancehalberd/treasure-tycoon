@@ -356,14 +356,22 @@ function setStat(object, statKey, newValue) {
     if (oldValue === newValue) return;
     // If the old value was a variable child, remove it since it is either gone or
     // going to be replaced by a new version of the variable child.
-    if (typeof object[statKey] === 'object' && object[statKey].base) {
-        var index = object.variableChildren.indexOf(object[statKey]);
-        if (index < 0) {
-            console.log(object[statKey]);
-            console.log(object.variableChildren);
-            throw Error("Variable child was not found on parent object.");
+    try {
+        // This will throw an exception if object[statKey] is null because
+        // typeof null is 'object'. I'm not fixing this though because this
+        // should never be null, so it is informative to have this exception
+        // when that happens.
+        if (typeof object[statKey] === 'object' && object[statKey].base) {
+            var index = object.variableChildren.indexOf(object[statKey]);
+            if (index < 0) {
+                console.log(object[statKey]);
+                console.log(object.variableChildren);
+                throw Error("Variable child was not found on parent object.");
+            }
+            object.variableChildren.splice(index, 1);
         }
-        object.variableChildren.splice(index, 1);
+    } catch (e) {
+        debugger;
     }
     // Remove all bonuses depending on the old value of this stat, if any.
     for (var dependency of ifdefor(object.bonusesDependingOn[statKey], [])) {

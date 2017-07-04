@@ -211,6 +211,7 @@ function updateArea(area) {
     });
     everybody.forEach(updateActorDimensions);
     everybody.forEach(updateActorAnimationFrame);
+    everybody.forEach(updateActorHelpText);
 }
 function updateActorDimensions(actor) {
     var source = actor.source;
