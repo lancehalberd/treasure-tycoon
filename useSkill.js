@@ -83,11 +83,12 @@ function isTargetInRangeOfSkill(actor, skill, pointOrTarget) {
  * @return boolean True if the skill was used.
  */
 function shouldUseSkillOnTarget(actor, skill, target) {
-    if (target.character) return true; // Enemies always use skills on the hero, since they win if the hero dies.
-    if (ifdefor(skill.cooldown, 0) < 10) return true; // Don't worry about wasting skills with short cool downs.
+    if (!actor.character && target.character) return true; // Enemies always use skills on the hero, since they win if the hero dies.
     // Make sure combined health of enemies in range is less than the raw damage of the attack, or that the ability
     // will result in life gain that makes it worth using
-    if (ifdefor(skill.base.target, 'enemies') === 'enemies') {
+    if (ifdefor(skill.base.target, 'enemies') === 'enemies'
+        && ifdefor(skill.cooldown, 0) < 10 // Don't worry about wasting skills with short cool downs.
+    ) {
         var health = 0;
         if (skill.cleave || skill.tags['nova'] || skill.tags['field'] || skill.tags['blast'] || skill.tags['rain']) {
             var targetsInRange = getEnemiesLikelyToBeHitIfEnemyIsTargetedBySkill(actor, skill, target);
@@ -395,12 +396,12 @@ skillDefinitions.minion = {
     use: function (actor, minionSkill, target) {
         var newMonster;
         if (minionSkill.base.consumeCorpse) {
-            newMonster = makeMonster({'key': target.base.key}, target.level, [], true);
+            newMonster = makeMonster({'key': target.base.key}, target.level, [], 0);
             newMonster.x = target.x;
             newMonster.y = target.y;
             newMonster.z = target.z;
         } else {
-            newMonster = makeMonster({'key': minionSkill.base.monsterKey}, actor.level, [], true);
+            newMonster = makeMonster({'key': minionSkill.base.monsterKey}, actor.level, [], 0);
             newMonster.x = actor.x + actor.heading[0] * 32;
             newMonster.y = actor.y + actor.heading[1] * 32;
             newMonster.z = actor.z + actor.heading[2] * 32;
@@ -436,7 +437,7 @@ function cloneActor(actor, skill) {
         }
         if (actor.character) addBonusSourceToObject(clone, actor.character.jewelBonuses);
     } else {
-        clone = makeMonster({'key': actor.base.key}, actor.level, [], true);
+        clone = makeMonster({'key': actor.base.key}, actor.level, [], 0);
     }
     clone.x = actor.x + actor.heading[0] * 32;
     clone.y = actor.y + actor.heading[1] * 32;
@@ -545,7 +546,7 @@ skillDefinitions.explode = {
 skillDefinitions.heal = {
     shouldUse: function (actor, healSkill, target) {
         // Don't use a heal ability unless none of it will be wasted or the actor is below half life.
-        return actorCanOverHeal(actor) || (target.health + healSkill.power <= target.maxHealth) || (target.health <= target.maxHealth / 2);
+        return actorCanOverHeal(target) || (target.health + healSkill.power <= target.maxHealth) || (target.health <= target.maxHealth / 2);
     },
     use: function (actor, healSkill, target) {
         target.health += healSkill.power;

@@ -88,7 +88,8 @@ function timeStopLoop(area) {
     return true;
 }
 function actorCanOverHeal(actor) {
-    return ifdefor(actor.overHeal, 0) + ifdefor(actor.overHealReflection, 0) > 0;
+    return (ifdefor(actor.overHeal, 0) > 0)
+        || (ifdefor(actor.overHealReflection, 0) > 0 && actor.reflectBarrier < actor.maxReflectBarrier);
 }
 function capHealth(actor) {
     // Apply overhealing if the actor is over their health cap and possesses overhealing.
@@ -447,7 +448,7 @@ function startNextWave(area) {
         if (area.levelDifficulty === 'hard' || area.levelDifficulty === 'endless') {
             extraSkills.push(hardBonuses);
         }
-        var newMonster = makeMonster(entityData, area.level, extraSkills, !!wave.extraBonuses);
+        var newMonster = makeMonster(entityData, area.level, extraSkills, wave.extraBonuses ? 0 : undefined);
         newMonster.heading = [-1, 0, 0]; // Monsters move right to left
         newMonster.x = x;
         newMonster.y = ifdefor(newMonster.y, 0);

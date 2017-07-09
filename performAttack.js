@@ -68,7 +68,7 @@ function updateDamageInfo(character, $statsPanel, monsterLevel) {
             }
         }
     }
-    var dummy = makeMonster('dummy', monsterLevel, [], true);
+    var dummy = makeMonster('dummy', monsterLevel, [], 0);
     var hitPercent;
     // tie breaker is given to hitting, so for this calculation use 1 less evasion.
     var evasion = dummy.evasion;

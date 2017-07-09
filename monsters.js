@@ -50,9 +50,9 @@ var monsterSuffixes = [
     ]
 ];
 
-function makeMonster(monsterData, level, extraSkills, noRarity) {
+function makeMonster(monsterData, level, extraSkills, specifiedRarity) {
     var monster = {
-        'level': level,
+        level,
         'slow': 0,
         'equipment': {},
         'attackCooldown': 0,
@@ -82,32 +82,32 @@ function makeMonster(monsterData, level, extraSkills, noRarity) {
     monster.base = baseMonster;
     monster.source = baseMonster.source;
     monster.stationary = ifdefor(baseMonster.stationary);
+    monster.noBasicAttack = ifdefor(baseMonster.noBasicAttack);
     monster.y = ifdefor(monster.source.y, 0);
     /* $.each(baseMonster, function (key, value) {
         monster[key] = value;
     }); */
 
-    if (!ifdefor(noRarity)) {
-        var rarity = (Math.random() < .25) ? (Math.random() * (level - 1) * .6) : 0;
-        if (rarity < 1) {
 
-        } else if (rarity < 3) {
-            if (Math.random() > .5) addMonsterPrefix(monster);
-            else addMonsterSuffix(monster);
-        } else if (rarity < 10) {
-            addMonsterPrefix(monster);
-            addMonsterSuffix(monster);
-        } else if (rarity < 20) {
-            addMonsterPrefix(monster);
-            addMonsterSuffix(monster);
-            if (Math.random() > .5) addMonsterPrefix(monster);
-            else addMonsterSuffix(monster);
-        } else {
-            addMonsterPrefix(monster);
-            addMonsterSuffix(monster);
-            addMonsterPrefix(monster);
-            addMonsterSuffix(monster);
-        }
+    var rarity = ifdefor(specifiedRarity, (Math.random() < .25) ? (Math.random() * (level - 1) * .6) : 0);
+    if (rarity < 1) {
+
+    } else if (rarity < 3) {
+        if (Math.random() > .5) addMonsterPrefix(monster);
+        else addMonsterSuffix(monster);
+    } else if (rarity < 10) {
+        addMonsterPrefix(monster);
+        addMonsterSuffix(monster);
+    } else if (rarity < 20) {
+        addMonsterPrefix(monster);
+        addMonsterSuffix(monster);
+        if (Math.random() > .5) addMonsterPrefix(monster);
+        else addMonsterSuffix(monster);
+    } else {
+        addMonsterPrefix(monster);
+        addMonsterSuffix(monster);
+        addMonsterPrefix(monster);
+        addMonsterSuffix(monster);
     }
     monster.allEffects = [];
     monster.minionBonusSources = [];
@@ -184,7 +184,7 @@ function updateMonster(monster) {
             addActions(monster, affix);
         })
     });
-    addActions(monster, abilities.basicAttack);
+    if (!monster.noBasicAttack) addActions(monster, abilities.basicAttack);
     recomputeDirtyStats(monster);
     //console.log(monster);
 }
@@ -528,5 +528,12 @@ function initalizeMonsters() {
                             '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 2, '+magicResist': .5,
                             '*speed': 2, '*scale': 2}, 'tags': ['ranged'],
         'abilities': [abilities.fireball, abilities.sideStep]
+    });
+
+    addMonster('goblinDen', {'name': 'Goblin Den', 'source': dragonSource, 'noBasicAttack': true, 'stationary': true, // speed still effects animation
+        'implicitBonuses': {'*maxHealth': 1.6, '+weaponRange': 12, '+critChance': .15, '*accuracy': 2,
+                            '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 2, '+magicResist': .5,
+                            '*speed': 2, '*scale': 2}, 'tags': ['spawner'],
+        'abilities': [],
     });
 }
