@@ -142,7 +142,9 @@ function drawUpgradeBox() {
 }
 
 var areaObjects = {
-    'mapTable': {'name': 'World Map', 'source': objectSource(guildImage, [360, 150], [60, 27, 30], {'yOffset': -6}), 'action': openWorldMap},
+    'mapTable': {'name': 'World Map', 'source': objectSource(guildImage, [360, 150], [60, 27, 30], {'yOffset': -6}), 'action': openWorldMap,
+        'getActiveBonusSources': () => [{'bonuses': {'$hasMap': true}}],
+    },
     'crackedOrb': {'name': 'Cracked Anima Orb', 'source': objectSource(guildImage, [240, 150], [30, 29, 15])},
     'animaOrb': {
         'action': function () {
@@ -220,7 +222,9 @@ var areaObjects = {
             hidePointsPreview();
         }
     },
-    'woodenAltar': {'name': 'Shrine of Fortune', 'source': objectSource(guildImage, [450, 150], [30, 30, 20], {'yOffset': -6}), 'action': openCrafting},
+    'woodenAltar': {'name': 'Shrine of Fortune', 'source': objectSource(guildImage, [450, 150], [30, 30, 20], {'yOffset': -6}), 'action': openCrafting,
+        'getActiveBonusSources': () => [{'bonuses': {'$hasItemCrafting': true}}],
+    },
     'trophyAltar': {'name': 'Trophy Altar', 'source': objectSource(guildImage, [420, 180], [30, 30, 20], {'yOffset': -6}), 'action': openTrophySelection,
         'getTrophyRectangle': function () {
             return {'left': this.target.left + (this.target.width - this.trophy.width) / 2,
@@ -248,8 +252,9 @@ var areaObjects = {
             return [{'bonuses': {'+maxHeroes': 1}}];
         }
     },
-    'jewelShrine': {'name': 'Shrine of Creation', 'source': objectSource(guildImage, [360, 180], [60, 60, 4], {'actualWidth': 30, 'yOffset': -6}), 'action': openJewels},
-
+    'jewelShrine': {'name': 'Shrine of Creation', 'source': objectSource(guildImage, [360, 180], [60, 60, 4], {'actualWidth': 30, 'yOffset': -6}), 'action': openJewels,
+        'getActiveBonusSources': () => [{'bonuses': {'$hasJewelCrafting': true}}],
+    },
     'heroApplication': {'name': 'Application', 'source': {'width': 40, 'height': 60, 'depth': 0}, 'action': showApplication, 'draw': function (area) {
         this.target.left = this.x - this.width / 2 - area.cameraX;
         this.target.top = groundY - this.y - this.height - this.z / 2;
@@ -269,9 +274,9 @@ var areaObjects = {
         mainContext.restore();
     }},
 
-    'door': {'source': objectSource(guildImage, [240, 94], [30, 51, 0]), 'action': useDoor},
-    'upstairs': {'source': objectSource(guildImage, [270, 94], [30, 51, 0]), 'action': useDoor},
-    'downstairs': {'source': objectSource(guildImage, [300, 94], [30, 51, 0]), 'action': useDoor},
+    'door': {'source': objectSource(guildImage, [240, 94], [30, 51, 0]), 'action': useDoor, 'isEnabled': isGuildExitEnabled},
+    'upstairs': {'source': objectSource(guildImage, [270, 94], [30, 51, 0]), 'action': useDoor, 'isEnabled': isGuildExitEnabled},
+    'downstairs': {'source': objectSource(guildImage, [300, 94], [30, 51, 0]), 'action': useDoor, 'isEnabled': isGuildExitEnabled},
 
     'skillShrine': {'name': 'Shrine of Divinity', 'source': objectSource(guildImage, [360, 180], [60, 60, 4], {'actualWidth': 30, 'yOffset': -6}), 'action': activateShrine},
     'closedChest': {'name': 'Treasure Chest', 'source': objectSource(requireImage('gfx/treasureChest.png'), [0, 0], [64, 64, 64], {'yOffset': -6}), 'action': openChest},
@@ -296,6 +301,18 @@ function drawFixedObject(area) {
     else if (this.flashColor) drawTintedImage(mainContext, imageSource.image, this.flashColor, .5 + .2 * Math.sin(now() / 150), imageSource, this.target);
     else drawImage(mainContext, imageSource.image, imageSource, this.target);
 }
+function isGuildObjectEnabled() {
+    if (!this.area) debugger;
+    return state.unlockedGuildAreas[this.area.key] && !this.area.enemies.length;
+}
+function isGuildExitEnabled() {
+    //if (this.area.key === 'guildFoyer') debugger;
+    // A door can be used if the are is unlocked.
+    if (isGuildObjectEnabled.call(this)) return true;
+    //if (this.area.key === 'guildFoyer') debugger;
+    // It can also be used if the area it is connected to is unlocked.
+    return state.unlockedGuildAreas[this.exit.areaKey];
+}
 
 function fixedObject(baseObjectKey, coords, properties) {
     properties = ifdefor(properties, {});
@@ -313,6 +330,7 @@ function fixedObject(baseObjectKey, coords, properties) {
                         'height': imageSource.height * scale
                     },
                     'depth': ifdefor(properties.depth, ifdefor(base.depth, imageSource.depth)),
+                    'isEnabled': base.isEnabled || isGuildObjectEnabled,
                     'action': properties.action || base.action,
                     'draw': properties.draw || base.draw || drawFixedObject,
                     'helpMethod': properties.helpMethod || fixedObjectHelpText
@@ -366,11 +384,11 @@ function removeFurnitureBonuses(furniture, recompute) {
 }
 
 function addAllUnlockedFurnitureBonuses() {
-    for (var areaKey in guildAreas) {
-        var guildArea = guildAreas[areaKey];
-        for (var object of guildArea.objects) {
-            addFurnitureBonuses(object, false);
-        }
-    }
+    for (var areaKey in state.unlockedGuildAreas) addAreaFurnitureBonuses(guildAreas[areaKey]);
     recomputeAllCharacterDirtyStats();
+}
+
+function addAreaFurnitureBonuses(guildArea, recompute) {
+    for (var object of guildArea.objects) addFurnitureBonuses(object, false);
+    if (recompute) recomputeAllCharacterDirtyStats();
 }

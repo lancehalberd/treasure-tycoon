@@ -132,7 +132,7 @@ function hireHeroHelpMethod($button) {
 $('.js-hireApplicant').data('helpMethod', hireHeroHelpMethod);
 
 function hireCharacter(character) {
-    if (state.characters.length >= state.guildStats.maxHeroes) return;
+    if (state.characters.length > 0 && state.characters.length >= state.guildStats.maxHeroes) return;
     unlockMapLevel(character.currentLevelKey);
     gain('fame', character.fame);
     state.characters.push(character);

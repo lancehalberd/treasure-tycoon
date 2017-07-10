@@ -85,6 +85,10 @@ function Vector(v){
         if (length === undefined) {
             length = 1;
         }
+        const magnitude = this.magnitude();
+        // If this vector has no direction, just use scale to return a copy
+        // and set the first coordinate of that copy to the desired length.
+        if (magnitude === 0) return this.scale(0).setCoordinate(0, length);
         return this.scale(length / this.magnitude());
     }
 

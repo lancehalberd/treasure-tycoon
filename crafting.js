@@ -355,6 +355,7 @@ function craftItem() {
 
     updateItem(item);
     lastCraftedItem = craftedItem;
+    updateReforgeButton();
     return item;
 }
 

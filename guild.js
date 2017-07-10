@@ -77,9 +77,9 @@ guildAreas.guildFoyer = initializeGuldArea({
         fixedObject('bed', [890, 0, 140], {'scale': 2, 'xScale': -1})
     ],
     'level': 1,
-    'spawners': [
-        spawner({monsters: ['goblin', 'goblin', 'goblin'], location: [600, 0, 40], delay: 2}),
-        spawner({monsters: ['skeleton', 'skeleton'], location: [880, 0, 0], delay: 2}),
+    'monsters': [
+        {key: 'goblin', level: 1, location: [600, 0, 40]},
+        {key: 'skeleton', level: 1, location: [880, 0, 0]},
     ],
     'leftWall': 'oldGuild',
     'rightWall': 'oldGuild',
@@ -339,6 +339,25 @@ function enterGuildArea(actor, door) {
     actor.x = door.x;
     actor.y = 0;
     actor.z = door.z;
+    if (isNaN(actor.x) || isNaN(actor.z)) {
+        debugger;
+    }
+    if (!guildArea.allies.length && !state.unlockedGuildAreas[guildArea.key]) {
+        guildArea.enemies = [];
+        for (var monsterData of (guildArea.monsters || [])) {
+            var newMonster = makeMonster(monsterData.key, monsterData.level, [], 0);
+            newMonster.heading = [-1, 0, 0]; // Monsters move right to left
+            newMonster.x = monsterData.location[0];
+            newMonster.y = monsterData.location[1];
+            newMonster.z = monsterData.location[2];
+            newMonster.area = guildArea;
+            initializeActorForAdventure(newMonster);
+            newMonster.time = 0;
+            newMonster.allies = newMonster.area.enemies;
+            newMonster.enemies = newMonster.area.allies;
+            newMonster.allies.push(newMonster);
+        }
+    }
     guildArea.allies.push(actor);
     actor.allies = guildArea.allies;
     actor.enemies = guildArea.enemies;

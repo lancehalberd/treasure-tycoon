@@ -73,15 +73,15 @@ $(document).on('keydown', function(event) {
             }
         }
     }
-    if (!editingMap && !editingLevel && (event.which === 67 || event.which === 73)) { // 'c'|'i'
+    if (!editingMap && !editingLevel && (event.which === 67 || event.which === 73)  && state.guildStats.hasItemCrafting) { // 'c'|'i'
         if (state.selectedCharacter.context === 'item') setContext('guild');
         else if (state.selectedCharacter.context !== 'adventure') setContext('item');
     }
-    if (!editingMap && !editingLevel && event.which === 74) { // 'j'
+    if (!editingMap && !editingLevel && event.which === 74 && state.guildStats.hasJewelCrafting) { // 'j'
         if (state.selectedCharacter.context === 'jewel') setContext('guild');
         else if (state.selectedCharacter.context !== 'adventure') setContext('jewel');
     }
-    if (event.which === 77) { // 'm'
+    if (event.which === 77 && state.guildStats.hasMap) { // 'm'
         if (state.selectedCharacter.context === 'map') {
             if (!state.selectedCharacter.hero.area) {
                 enterGuildArea(state.selectedCharacter.hero, guildFoyerFrontDoor);

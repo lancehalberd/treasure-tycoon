@@ -146,8 +146,17 @@ function checkToStartNextWave(area) {
     startNextWave(area);
     updateAdventureButtons();
 }
+function unlockGuildArea(guildArea) {
+    state.unlockedGuildAreas[guildArea.key] = true;
+    // Now that the guild area is unlocked the furniture bonuses should apply.
+    addAreaFurnitureBonuses(guildArea, true);
+    saveGame();
+}
 
 function updateArea(area) {
+    if (area.isGuildArea && !state.unlockedGuildAreas[area.key] && !area.enemies.length && area.allies.some(actor => !actor.isDead)) {
+        unlockGuildArea(area);
+    }
     if (timeStopLoop(area)) return;
     var delta = frameMilliseconds / 1000;
     var everybody = area.allies.concat(area.enemies);
@@ -277,6 +286,7 @@ function moveActor(actor) {
                     break;
                 }
                 actor.heading = [actor.activity.target.x - actor.x, 0, actor.activity.target.z - actor.z];
+                if (isNaN(actor.heading[0])) debugger;
                 actor.isMoving = true;
                 break;
             case 'attack':
@@ -298,6 +308,7 @@ function moveActor(actor) {
     }
     if (goalTarget) {
         actor.heading = [goalTarget.x - actor.x, 0, goalTarget.z - actor.z];
+                if (isNaN(actor.heading[0])) debugger;
         actor.heading[2] -= actor.z / 180;
         actor.isMoving = true;
         actor.goalTarget = goalTarget;
@@ -305,6 +316,7 @@ function moveActor(actor) {
         actor.goalTarget = null;
     }
     actor.heading = new Vector(actor.heading).normalize().getArrayValue();
+                if (isNaN(actor.heading[0])) debugger;
     if (!actor.isMoving) {
         return;
     }
@@ -346,6 +358,9 @@ function moveActor(actor) {
     while (true) {
         actor.x = currentX + speedBonus * actor.speed * actor.heading[0] * Math.max(.1, 1 - actor.slow) * delta;
         actor.z = currentZ + speedBonus * actor.speed * actor.heading[2] * Math.max(.1, 1 - actor.slow) * delta;
+        if (isNaN(actor.x) || isNaN(actor.z)) {
+            debugger;
+        }
         // Actor is not allowed to leave the path.
         actor.z = Math.max(-180 + actor.width / 2, Math.min(180 - actor.width / 2, actor.z));
         if (actor.area.leftWall) actor.x = Math.max(ifdefor(actor.area.left, 0) + 25 + actor.width / 2 + actor.z / 6, actor.x);
@@ -409,7 +424,7 @@ function moveActor(actor) {
                 actor.heading = originalHeading.slice();
                 if (actor.activity) {
                     // If there is at least 1 enemy blocking the way, attack it
-                    if (blockedByEnemy)setActorAttackTarget(actor, blockedByEnemy);
+                    if (blockedByEnemy) setActorAttackTarget(actor, blockedByEnemy);
                     // If the way is only blocked by objects (non-enemies/non-allies), give up on the current action as those obstacles won't disappear or move.
                     else if (!blockedByAlly) actor.activity = null;
                 }
@@ -648,7 +663,7 @@ function checkToUseSkillOnTarget(actor, target) {
             continue;
         }
         if (!canUseSkillOnTarget(actor, action, target)) {
-            //console.log("cannot use skill");
+            // console.log("cannot use skill");
             continue;
         }
         if (!isTargetInRangeOfSkill(actor, action, target)) {

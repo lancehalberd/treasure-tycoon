@@ -305,6 +305,7 @@ function openChest(actor) {
     }
     // Replace this chest with an opened chest in the same location.
     var openedChest = fixedObject('openChest', [this.x, this.y, this.z], {'scale': ifdefor(this.scale, 1)});
+    openedChest.area = this.area;
     this.area.objects[this.area.objects.indexOf(this)] = openedChest;
     this.wave.chestOpened = true;
 }

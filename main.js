@@ -32,10 +32,11 @@ function initializeGame() {
             eraseSave();
         }
     }
-    initializeVariableObject(state.guildStats, {'variableObjectType': 'guild'}, state.guildStats);
     if (loadSavedData()) {
         showContext(state.selectedCharacter.context);
     } else {
+        initializeVariableObject(state.guildStats, {'variableObjectType': 'guild'}, state.guildStats);
+        addBonusSourceToObject(state.guildStats, implicitGuildBonusSource);
         addAllUnlockedFurnitureBonuses();
         gainJewel(makeJewel(1, 'triangle', [90, 5, 5], 1.1));
         gainJewel(makeJewel(1, 'triangle', [5, 90, 5], 1.1));
@@ -53,7 +54,7 @@ function initializeGame() {
         for (var i = 0; i < allApplications.length && otherKeys.length; i++) {
             allApplications[i].character = createNewHeroApplicant(otherKeys.pop());
         }
-        enterGuildArea(state.selectedCharacter.hero, guildFoyerFrontDoor);
+        enterGuildArea(state.selectedCharacter.hero, guildYardEntrance);
     }
     state.visibleLevels['guild'] = true;
     for (var levelKey of map.guild.unlocks) {
@@ -248,8 +249,7 @@ function getMainCanvasMouseTarget(x, y) {
         return spriteA.z - spriteB.z;
     });
     for (var object of sortedObjects.concat(ifdefor(area.wallDecorations, [])).concat(globalHud)) {
-        if (!object.action && !object.onClick) continue;
-        if (object.isVisible && !object.isVisible()) continue;
+        if (!isCanvasTargetActive(object)) continue;
         // (x,y) of objects is the bottom middle of their graphic.
         var targetRectangle = ifdefor(object.target, object);
         var left = ifdefor(targetRectangle.left, object.x - area.cameraX - object.width / 2);
@@ -262,6 +262,7 @@ function getMainCanvasMouseTarget(x, y) {
         var coords = unprojectLeftWallCoords(area, x, y);
         // wallMouseCoords = coords;
         for (var leftWallDecoration of ifdefor(area.leftWallDecorations, [])) {
+            if (!isCanvasTargetActive(leftWallDecoration)) continue;
             // decoration.target stores the rectangle that the decoration was drawn to on the wallCanvas before
             // it is projected to the wall trapezoid and uses the same coordinates the unprojectRightWallCoords returns in.
             var target = leftWallDecoration.target;
@@ -275,6 +276,7 @@ function getMainCanvasMouseTarget(x, y) {
         var coords = unprojectRightWallCoords(area, x, y);
         // wallMouseCoords = coords;
         for (var rightWallDecoration of ifdefor(area.rightWallDecorations, [])) {
+            if (!isCanvasTargetActive(rightWallDecoration)) continue;
             // decoration.target stores the rectangle that the decoration was drawn to on the wallCanvas before
             // it is projected to the wall trapezoid and uses the same coordinates the unprojectRightWallCoords returns in.
             var target = rightWallDecoration.target;
@@ -285,6 +287,12 @@ function getMainCanvasMouseTarget(x, y) {
         }
     }
     return null;
+}
+function isCanvasTargetActive(canvasTarget) {
+    if (!canvasTarget.action && !canvasTarget.onClick) return false;
+    if (canvasTarget.isVisible && !canvasTarget.isVisible()) return false;
+    if (canvasTarget.isEnabled && !canvasTarget.isEnabled()) return false;
+    return true;
 }
 function checkToShowJewelToolTip() {
     var jewel = draggedJewel || overJewel;

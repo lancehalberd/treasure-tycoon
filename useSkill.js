@@ -87,7 +87,7 @@ function shouldUseSkillOnTarget(actor, skill, target) {
     // Make sure combined health of enemies in range is less than the raw damage of the attack, or that the ability
     // will result in life gain that makes it worth using
     if (ifdefor(skill.base.target, 'enemies') === 'enemies'
-        && ifdefor(skill.cooldown, 0) < 10 // Don't worry about wasting skills with short cool downs.
+        && ifdefor(skill.cooldown, 0) >= 10 // Don't worry about wasting skills with short cool downs.
     ) {
         var health = 0;
         if (skill.cleave || skill.tags['nova'] || skill.tags['field'] || skill.tags['blast'] || skill.tags['rain']) {

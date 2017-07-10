@@ -18,13 +18,18 @@ const getDefaultState = () => {
         selectedCharacter: null,
         skipShrinesEnabled: false,
         visibleLevels: {}, // This isn't stored, it is computed from completedLevels on load.
+        unlockedGuildAreas: {'guildYard': true},
     }
 };
+
+const implicitGuildBonusSource = {bonuses: {
+    '+maxCoins': 100,
+}};
 
 function exportState({
     anima, characters, coins, completedLevels, craftedItems, craftingLevel, craftingTypeFilter, craftingXOffset,
     fame, guildAreas, jewelCraftingLevel, jewelCraftingExperience, maxAnimaJewelMultiplier, maxCraftingLevel,
-    selectedCharacter, skipShrinesEnabled,
+    selectedCharacter, skipShrinesEnabled, unlockedGuildAreas
 }) {
     var data = {
         fame, coins, anima,
@@ -40,6 +45,7 @@ function exportState({
         maxCraftingLevel: Math.min(maxCraftingLevel, 80),
         selectedCharacterIndex: state.characters.indexOf(state.selectedCharacter),
         trophies: {},
+        unlockedGuildAreas,
     };
     $('.js-jewelInventory .js-jewel').each(function () {
         data.jewels.push(exportJewel($(this).data('jewel')));
@@ -84,7 +90,7 @@ function importState({
         craftingXOffset, craftedItems, craftingItems, craftingLevel, craftingTypeFilter,
         enchantmentItem, fame, guildAreas, items, jewels,
         jewelCraftingLevel, jewelCraftingExperience, maxAnimaJewelMultiplier,
-        maxCraftingLevel, selectedCharacterIndex, skipShrinesEnabled, trophies,
+        maxCraftingLevel, selectedCharacterIndex, skipShrinesEnabled, trophies, unlockedGuildAreas
 }, globalGuildAreas) {
     var $helperSlot = $('.js-inventory .js-inventorySlot').detach();
     $('.js-inventory').empty().append($helperSlot);
@@ -102,9 +108,12 @@ function importState({
         guildStats: {},
         jewelCraftingLevel, jewelCraftingExperience, maxCraftingLevel,
         skipShrinesEnabled,
+        unlockedGuildAreas,
         visibleLevels: {},
+        availableBeds: [],
     };
     initializeVariableObject(state.guildStats, {'variableObjectType': 'guild'}, state.guildStats);
+    addBonusSourceToObject(state.guildStats, implicitGuildBonusSource);
     guildAreas = guildAreas || {};
     for (var areaKey in ifdefor(globalGuildAreas, {})) {
         state.guildAreas[areaKey] = globalGuildAreas[areaKey];
@@ -137,6 +146,11 @@ function importState({
         addTrophyToAltar(altar, trophy);
     }
     addAllUnlockedFurnitureBonuses();
+    for (var bed of allBeds) {
+        if (state.unlockedGuildAreas[bed.area.key]) {
+            state.availableBeds.push(bed);
+        }
+    }
     // This might happen if we changed how much each holder contains during an update.
     characters.map(importCharacter).forEach(character => {
         if (isNaN(character.divinity) || typeof(character.divinity) !== "number") {
@@ -155,7 +169,7 @@ function importState({
             }
             state.completedLevels[levelKey] = true;
         }
-        var bed = allBeds[state.characters.length - 1];
+        var bed = state.availableBeds[state.characters.length - 1];
         if (bed) enterGuildArea(character.hero, {'areaKey': bed.area.key, 'x': (bed.x > 400) ? bed.x - 80 : bed.x + 80, 'z': bed.z});
         else enterGuildArea(character.hero, guildYardEntrance);
         $('.js-charactersBox').append(character.$characterCanvas);
