@@ -56,7 +56,7 @@ function checkIfActorDied(actor) {
     if (useSkill(actor, stopTimeAction, null, {})) return;
     // The actor has actually died, mark them as such and begin their death animation and drop spoils.
     actor.isDead = true;
-    actor.timeOfDeath = area.time;
+    actor.timeOfDeath = actor.time;
     // Each enemy that is a main character should gain experience when this actor dies.
     actor.enemies.filter(enemy => enemy.character).forEach(enemy => defeatedEnemy(enemy, actor));
 }
@@ -200,7 +200,7 @@ function updateArea(area) {
         if (textPopup.duration-- < 0) area.textPopups.splice(i--, 1);
     }
     everybody.forEach(function (actor) {
-        if (actor.timeOfDeath < area.time - 1) {
+        if (actor.timeOfDeath < actor.time - 1) {
             removeActor(actor);
             return;
         }

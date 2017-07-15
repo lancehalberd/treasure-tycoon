@@ -116,7 +116,7 @@ function drawActor(actor) {
         context.scale(-1, 1);
     }
     if (actor.isDead && !ifdefor(source.deathFrames)) {
-        mainContext.globalAlpha = 1 - (actor.time - actor.timeOfDeath);
+        context.globalAlpha = Math.max(0, 1 - (actor.time - actor.timeOfDeath));
     }
     if (actor.pull || actor.stunned || (actor.isDead && !ifdefor(source.deathFrames))) {
         frame = 0;

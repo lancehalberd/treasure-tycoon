@@ -76,7 +76,6 @@ guildAreas.guildFoyer = initializeGuldArea({
         fixedObject('trophyAltar', [600, 0, 0], {'scale': 2}),
         fixedObject('bed', [890, 0, 140], {'scale': 2, 'xScale': -1})
     ],
-    'level': 1,
     'monsters': [
         {key: 'goblin', level: 1, location: [600, 0, 40]},
         {key: 'skeleton', level: 1, location: [880, 0, 0]},
