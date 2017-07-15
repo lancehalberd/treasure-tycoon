@@ -1,5 +1,7 @@
 function loadSavedData() {
-    /** @type Object */
+    if (window.location.search.substr(1) === 'reset' && confirm("Clear your saved data?")) {
+        return false;
+    }
     var importedSaveData = $.jStorage.get("savedGame");
     if (importedSaveData) {
         importState(importedSaveData, guildAreas);

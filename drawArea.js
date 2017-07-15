@@ -166,8 +166,12 @@ function drawActor(actor) {
 
     // life bar
     if (actor.isDead) return;
-    if (!actor.area.enemies.length) return;
+    // if (!actor.area.enemies.length) return;
     var x = left + actor.width / 2 - 32;
+    // Don't allow the main character's life bar to fall off the edges of the screen.
+    if (actor.character === state.selectedCharacter) {
+        x = Math.min(800 - 5 - 64, Math.max(5, x));
+    }
     var y = top - 5;
     drawBar(context, x, y, 64, 4, 'white', ifdefor(actor.lifeBarColor, 'red'), actor.health / actor.maxHealth);
     if (actor.bonusMaxHealth >= 1 && actor.health >= actor.maxHealth - actor.bonusMaxHealth) {
