@@ -355,6 +355,7 @@ var abilities = {
     'consumeRatio': {'name': 'Consume Range', 'bonuses': {'+consume:consumeRatio': .5}},
     'howl': {'name': 'Howl', 'action': skills.howl},
     'howlSingAttack': {'name': 'Howl Sing Attack', 'bonuses': {'$howl:instantCooldown': 'attackSong', '$attackSong:instantCooldown': 'sicem'}},
+    'minorFlatEvasion': {'name': 'Minor Flat Evasion', 'bonuses': {'+evasion': 5}},
 };
 var testJob;// = 'blackbelt';
 var testAbilities = [];

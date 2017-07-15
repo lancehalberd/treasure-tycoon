@@ -189,7 +189,7 @@ var map = {
         'background': "cave",
         'unlocks': ["savannah","dancer2"],
         'skill': "distract",
-        'enemySkills': ["sap","meleeDamage","enemyDancing","flatEvasion","minorIntelligence"],
+        'enemySkills': ["sap","meleeDamage","enemyDancing","minorFlatEvasion", "minorIntelligence"],
         'monsters': ["bat"],
         'events': [
             ["vampireBat"]

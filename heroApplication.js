@@ -88,6 +88,7 @@ function getNewApplicationCost(character) {
 
 $('body').on('click', '.js-hireApplicant', function () {
     if (state.characters.length >= 8) return;
+    if (state.characters.length >= state.guildStats.maxHeroes) return;
     var $applicationPanel = $(this).closest('.js-heroApplication');
     var application = $applicationPanel.data('application');
     var character = application.character;
