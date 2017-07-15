@@ -122,6 +122,11 @@ function removeActor(actor) {
     if (actor.character) {
         var character = actor.character;
         var area = actor.area;
+        if (area.isGuildArea) {
+            removeAdventureEffects(actor);
+            enterGuildArea(actor, actor.escapeExit || guildFoyerFrontDoor);
+            return;
+        }
         if (area.levelDifficulty === 'endless') {
             var currentEndlessLevel = getEndlessLevel(character, map[character.currentLevelKey]);
             character.levelTimes[character.currentLevelKey][area.levelDifficulty] = currentEndlessLevel - 1;
@@ -296,7 +301,7 @@ function moveActor(actor) {
         }
     }
     if ((actor.chargeEffect || (actorShouldAutoplay(actor) && !actor.activity)) && (!goalTarget || goalTarget.isDead)) {
-        var bestDistance = 10000;
+        var bestDistance = actor.aggroRadius || 10000;
         actor.enemies.forEach(function (target) {
             if (target.isDead) return;
             var distance = getDistance(actor, target);

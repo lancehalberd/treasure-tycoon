@@ -59,6 +59,7 @@ function makeMonster(monsterData, level, extraSkills, specifiedRarity) {
         'prefixes': [],
         'suffixes': [],
         'extraSkills': ifdefor(extraSkills, []),
+        'aggroRadius': 600,
         'percentHealth': 1,
         'helpMethod': actorHelpText
     };
@@ -363,12 +364,12 @@ function initalizeMonsters() {
     });
     addMonster('alphaWolf', {
         'name': 'Alpha Wolf', 'source': wolfSource,
-        'implicitBonuses': {'+weaponRange': 1, '*maxHealth': 2, '*weaponMagicDamage': 0, '*accuracy': 1.5, '+critChance': .1, '*speed': 2, '*scale': .8},
+        'implicitBonuses': {'+weaponRange': 1, '*maxHealth': 2, '*weaponMagicDamage': 0, '*accuracy': 1.5, '+critChance': .1, '*speed': 1.5, '*scale': .8},
         'abilities': [abilities.attackSong]
     });
     addMonster('packLeader', {
         'name': 'Pack Leader', 'source': wolfSource,
-        'implicitBonuses': {'+weaponRange': 2, '*maxHealth': 2, '*weaponMagicDamage': 0, '*accuracy': 1.5, '+critChance': .1, '*speed': 2, '*scale': .8},
+        'implicitBonuses': {'+weaponRange': 2, '*maxHealth': 2, '*weaponMagicDamage': 0, '*accuracy': 1.5, '+critChance': .1, '*speed': 1.5, '*scale': .8},
         'abilities': [abilities.majorDexterity, abilities.majorStrength, abilities.majorIntelligence,
                       abilities.howl, abilities.howl, abilities.attackSong, abilities.defenseSong, abilities.sicem, abilities.howlSingAttack]
     });
@@ -380,11 +381,11 @@ function initalizeMonsters() {
     });
     addMonster('bat', {
         'name': 'Bat', 'source': batSource,
-        'implicitBonuses': {'*evasion': 1.2, '*accuracy': 1.2, '*weaponDamage': .6, '*speed': 2.5}
+        'implicitBonuses': {'*evasion': 1.2, '*accuracy': 1.2, '*weaponDamage': .6, '*speed': 2}
     });
     addMonster('vampireBat', {
         'name': 'Vampire Bat', 'source': batSource,
-        'implicitBonuses': {'*evasion': 1.2, '*accuracy': 1.2, '*weaponDamage': .8, '*speed': 2.5, '*scale': 1.25},
+        'implicitBonuses': {'*evasion': 1.2, '*accuracy': 1.2, '*weaponDamage': .8, '*speed': 2, '*scale': 1.25},
         'abilities': [abilities.darkknight, abilities.distract, abilities.drainLife]
     });
     addMonster('caterpillar', {
@@ -452,7 +453,7 @@ function initalizeMonsters() {
         // Fast to counter ranged heroes, low range+damage + fast attacks to be weak to armored heroes.
         'implicitBonuses': {'+weaponRange': -.5, '+accuracy': 2, '*attackSpeed': 2, '*weaponMagicDamage': 0,
                             '*evasion': 1.3, '*magicBlock': 0.1, '*magicResist': 0.1,
-                            '*speed': 2},
+                            '*speed': 1.5},
         'abilities': [abilities.sideStep]
     });
     addMonster('skeletalBuccaneer', {'name': 'Skeletal Buccaneer', 'source': skeletonWithHatSource,
@@ -473,7 +474,7 @@ function initalizeMonsters() {
         // Fast to counter ranged heroes, low range+damage + fast attacks to be weak to armored heroes.
         'implicitBonuses': {'+weaponRange': -.5, '*minPhysicalDamage': .4, '*maxPhysicalDamage': .4, '+accuracy': 2, '*attackSpeed': 2, '*weaponMagicDamage': 0,
                             '*block': 0, '+armor': 2, '*magicBlock': 0.1, '*magicResist': 0.1,
-                            '*speed': 2},
+                            '*speed': 1.5},
         'abilities': [abilities.blinkStrike, abilities.soulStrike, abilities.majorStrength, abilities.vitality]
     });
     //console.log(JSON.stringify(makeMonster('skeleton', 1)));

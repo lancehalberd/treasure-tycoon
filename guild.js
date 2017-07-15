@@ -106,6 +106,10 @@ guildAreas.guildFrontHall = initializeGuldArea({
         fixedObject('trophyAltar', [300, 0, 0], {'scale': 2, 'key': 'trophyAltarA'}),
         fixedObject('trophyAltar', [700, 0, 0], {'scale': 2, 'key': 'trophyAltarB'}),
     ],
+    'monsters': [
+        {key: 'spider', level: 3, location: [600, 0, 40]},
+        {key: 'gnome', level: 3, location: [880, 0, 0]},
+    ],
     'leftWall': 'oldGuild',
     'rightWall': 'oldGuild',
 });
@@ -144,6 +148,10 @@ guildAreas.guildKitchen = initializeGuldArea({
     'objects': [
         fixedObject('trophyAltar', [600, 0, 0], {'scale': 2}),
     ],
+    'monsters': [
+        {key: 'motherfly', level: 6, location: [400, 0, 40]},
+        {key: 'giantSpider', level: 6, location: [880, 0, 0]},
+    ],
     'leftWall': 'oldGuild',
     'rightWall': 'oldGuild',
 });
@@ -162,6 +170,11 @@ guildAreas.guildBasement = initializeGuldArea({
     ],
     'objects': [
         fixedObject('trophyAltar', [600, 0, 0], {'scale': 2}),
+    ],
+    'monsters': [
+        {key: 'vampireBat', level: 15, location: [100, 0, 40]},
+        {key: 'vampireBat', level: 15, location: [100, 0, -40]},
+        {key: 'vampireBat', level: 15, location: [600, 0, 0]},
     ],
     'leftWall': 'guildBasement',
     'rightWall': 'guildBasement',
@@ -326,18 +339,23 @@ function unprojectRightWallCoords(area, left, top) {
 }
 function leaveCurrentArea(actor) {
     if (!actor.area) return;
+    // If the are is a safe guild area, it becomes the actors 'escape exit',
+    // where they will respawn next if they die.
+    if (actor.area.isGuildArea && !actor.area.enemies.length) {
+        actor.escapeExit = {x: actor.x, z: actor.z, areaKey: actor.area.key};
+    }
     var allyIndex = actor.area.allies.indexOf(actor);
     if (allyIndex >= 0) actor.area.allies.splice(allyIndex, 1);
     actor.area = null;
 }
-function enterGuildArea(actor, door) {
+function enterGuildArea(actor, {x, z, areaKey}) {
     leaveCurrentArea(actor);
-    var guildArea = guildAreas[door.areaKey];
+    var guildArea = guildAreas[areaKey];
     initializeActorForAdventure(actor);
     actor.area = guildArea;
-    actor.x = door.x;
+    actor.x = x;
     actor.y = 0;
-    actor.z = door.z;
+    actor.z = z;
     if (isNaN(actor.x) || isNaN(actor.z)) {
         debugger;
     }
