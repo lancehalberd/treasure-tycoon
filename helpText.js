@@ -81,12 +81,27 @@ function bonusSourceHelpText(bonusSource, actor, localObject) {
         displayedStats['+duration'] = true;
     }
     var sections = [];
+    var weaponRestrictions = [];
+    var weaponsStyle = '';
     for (var restriction of ifdefor(bonusSource.restrictions, [])) {
         var style = '';
         if (!state.selectedCharacter.adventurer.tags[restriction]) {
             style = ' style="color: #c00;"';
         }
-        sections.push('<u' + style + '>' + restrictionToCategoryDisplayName(restriction) + ' Only</u>');
+        var displayName = restrictionToCategoryDisplayName(restriction);
+        if (displayName.indexOf('Weapons') >= 0) {
+            if (!state.selectedCharacter.adventurer.tags[restriction]) {
+                weaponsStyle = ' style="color: #c00;"';
+            }
+            var parts = displayName.split(' ');
+            parts.pop();
+            weaponRestrictions.push(parts.join(' '));
+        } else {
+            sections.push('<u' + style + '>' + displayName + ' Only</u>');
+        }
+    }
+    if (weaponRestrictions.length) {
+        sections.push('<u' + weaponsStyle + '>' + weaponRestrictions.join(' ') + ' Weapons Only</u>');
     }
     if (bonusSource.helpText) {
         sections.push(bonusSource.helpText.replace(/\{([^\}]+)\}/g, function (match, key) {
