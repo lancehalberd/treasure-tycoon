@@ -120,7 +120,7 @@ function explosionEffect(attackStats, x, y, z) {
             mainContext.fillStyle = color;
             mainContext.beginPath();
             mainContext.save();
-            mainContext.translate((self.x - area.cameraX), groundY - self.y);
+            mainContext.translate((self.x - area.cameraX), groundY - self.y - self.z / 2);
             mainContext.scale(1, height / (2 * radius));
             mainContext.arc(0, 0, currentRadius, ifdefor(self.attack.base.minTheta, 0), ifdefor(self.attack.base.maxTheta, 2 * Math.PI));
             mainContext.fill();
@@ -202,6 +202,7 @@ function projectile(attackStats, x, y, z, vx, vy, vz, target, delay, color, size
     if (!size) {
         pause();
         console.log(attackStats);
+        debugger;
         throw new Error('Projectile found withou size');
     }
     var self = {
@@ -210,7 +211,10 @@ function projectile(attackStats, x, y, z, vx, vy, vz, target, delay, color, size
         'hit': false, 'target': target, 'attackStats': attackStats, 'hitTargets': [],
         'update': function (area) {
             // Put an absolute cap on how far a projectile can travel
-            if (self.y < 0 || self.distance > 2000) self.done = true;
+            if (self.y < 0 || self.distance > 2000) {
+                applyAttackToTarget(self.attackStats, {'x': self.x, 'y': self.y, 'z': self.z, 'width': 0, 'height': 0});
+                self.done = true;
+            }
             if (self.done || self.delay-- > 0) return
             self.x += self.vx;
             self.y += self.vy;
@@ -230,7 +234,7 @@ function projectile(attackStats, x, y, z, vx, vy, vz, target, delay, color, size
                 }
             } else {
                 // normal projectiles hit when they overlap the target.
-                hit = (getDistance(self, self.target) <= 0) && self.target.health > 0;
+                hit = (getDistance(self, self.target) <= 0) && (!self.target.isActor || self.target.health > 0);
             }
             self.vy -= attackStats.gravity;
             self.t += 1;
@@ -348,6 +352,7 @@ function getProjectileVelocity(attackStats, x, y, z, target) {
         console.log(distance);
         console.log(v);
         pause();
+        debugger;
     }
     return [v[0] * attackStats.speed / distance, v[1] * attackStats.speed / distance, v[2] * attackStats.speed / distance];
 }

@@ -100,11 +100,11 @@ guildAreas.guildFrontHall = initializeGuldArea({
         fixedObject('door', [30, 0, 0], {'exit': {'areaKey': 'guildFoyer', 'x': 880, 'z': 0}, 'scale': 2}),
     ],
     'objects': [
-        fixedObject('jewelShrine', [120, 0, 150], {'scale': 2}),
+        fixedObject('jewelShrine', [600, 0, 0], {'scale': 2}),
         fixedObject('coinStash', [340, 0, 165], {'level': 1, 'key': 'coinStashA'}),
         fixedObject('coinStash', [400, 0, 165], {'level': 2, 'key': 'coinStashB'}),
         fixedObject('trophyAltar', [300, 0, 0], {'scale': 2, 'key': 'trophyAltarA'}),
-        fixedObject('trophyAltar', [700, 0, 0], {'scale': 2, 'key': 'trophyAltarB'}),
+        fixedObject('trophyAltar', [900, 0, 0], {'scale': 2, 'key': 'trophyAltarB'}),
     ],
     'monsters': [
         {key: 'spider', level: 3, location: [600, 0, 40]},

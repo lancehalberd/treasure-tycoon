@@ -11,7 +11,7 @@ function canUseSkillOnTarget(actor, skill, target) {
     if (!target) throw new Error('No target was passed to canUseSkillOnTarget');
     if (skill.readyAt > actor.time) return false; // Skill is still on cool down.
     if (skill.tags['basic'] && actor.healingAttacks) return false;
-    if (!!ifdefor(skill.base.targetDeadUnits) !== target.isDead) return false; // targetDeadUnits must match target.isDead.
+    if (!!ifdefor(skill.base.targetDeadUnits) !== !!target.isDead) return false; // targetDeadUnits must match target.isDead.
     for (var i = 0; i < ifdefor(skill.base.restrictions, []).length; i++) {
         if (!actor.tags[skill.base.restrictions[i]]) {
             return false;
@@ -19,11 +19,13 @@ function canUseSkillOnTarget(actor, skill, target) {
     }
     if (actor.cannotAttack && skill.tags['attack']) return false; // Jujutsu prevents a user from using active attacks.
     // Make sure target matches the target type of the skill.
-    if (ifdefor(skill.base.target) === 'self' && actor !== target) return false;
-    if (ifdefor(skill.base.target) === 'otherAllies' && (actor === target || actor.allies.indexOf(target) < 0)) return false;
-    if (ifdefor(skill.base.target) === 'allies' && actor.allies.indexOf(target) < 0) return false;
-    if (ifdefor(skill.base.target, 'enemies') === 'enemies' && actor.enemies.indexOf(target) < 0) return false;
-    if (ifdefor(skill.base.target, 'enemies') === 'enemies' && target.cloaked) return false;
+    if (target.isActor) {
+        if (ifdefor(skill.base.target) === 'self' && actor !== target) return false;
+        if (ifdefor(skill.base.target) === 'otherAllies' && (actor === target || actor.allies.indexOf(target) < 0)) return false;
+        if (ifdefor(skill.base.target) === 'allies' && actor.allies.indexOf(target) < 0) return false;
+        if (ifdefor(skill.base.target, 'enemies') === 'enemies' && actor.enemies.indexOf(target) < 0) return false;
+        if (ifdefor(skill.base.target, 'enemies') === 'enemies' && target.cloaked) return false;
+    }
     var skillDefinition = skillDefinitions[skill.base.type];
     if (!skillDefinition) return false; // Invalid skill, maybe from a bad/old save file.
     return !skillDefinition.isValid || skillDefinition.isValid(actor, skill, target);
@@ -137,7 +139,7 @@ function shouldUseSkillOnTarget(actor, skill, target) {
  * @return boolean True if the skill was used. Only false if the ability is probabilistic like raise dead.
  */
 function prepareToUseSkillOnTarget(actor, skill, target) {
-    if (target && ifdefor(skill.base.consumeCorpse) && target.isDead) {
+    if (target.isActor && ifdefor(skill.base.consumeCorpse) && target.isDead) {
         removeActor(target);
     }
     // Only use skill if they meet the RNG for using it. This is currently only used by the
@@ -305,11 +307,18 @@ function closestEnemyDistance(actor) {
  */
 var skillDefinitions = {};
 
-skillDefinitions.attack = {use: performAttack};
+skillDefinitions.attack = {
+    isValid: (actor, attackSkill, target) => target.isActor,
+    use: performAttack
+};
 
-skillDefinitions.spell = {use: castAttackSpell};
+skillDefinitions.spell = {
+    isValid: (actor, spellSkill, target) => target.isActor || spellSkill.area,
+    use: castAttackSpell
+};
 
 skillDefinitions.consume = {
+    isValid: (actor, consumeSkill, target) => target.isActor,
     use: function (actor, consumeSkill, target) {
         actor.health += target.maxHealth * ifdefor(consumeSkill.consumeRatio, 1);
         stealAffixes(actor, target, consumeSkill);
@@ -385,7 +394,7 @@ skillDefinitions.minion = {
     isValid: function (actor, minionSkill, target) {
         var count = 0;
         // Cannot raise corpses of uncontrollable enemies as minions.
-        if (minionSkill.base.consumeCorpse && (target.uncontrollable || target.stationary)) {
+        if (minionSkill.base.consumeCorpse && (!target.isActor || target.uncontrollable || target.stationary)) {
             return false;
         }
         actor.allies.forEach(function (ally) {
@@ -544,6 +553,7 @@ skillDefinitions.explode = {
 };
 
 skillDefinitions.heal = {
+    isValid: (actor, healSkill, target) => target.isActor,
     shouldUse: function (actor, healSkill, target) {
         // Don't use a heal ability unless none of it will be wasted or the actor is below half life.
         return actorCanOverHeal(target) || (target.health + healSkill.power <= target.maxHealth) || (target.health <= target.maxHealth / 2);
@@ -560,6 +570,10 @@ skillDefinitions.heal = {
 };
 
 skillDefinitions.effect = {
+    isValid: function (actor, effectSkill, target) {
+        // Effects with buff/debuff require a target.
+        return target.isActor || (!effectSkill.buff && !effectSkill.debuff);
+    },
     shouldUse: function (actor, effectSkill, target) {
         if (closestEnemyDistance(target) >= 500) {
             return false;
@@ -771,7 +785,7 @@ function gainReflectionBarrier(actor, amount) {
 
 skillDefinitions.plunder = {
     isValid: function (actor, plunderSkill, target) {
-        return ifdefor(target.prefixes, []).length + ifdefor(target.suffixes, []).length;
+        return target.isActor && (ifdefor(target.prefixes, []).length + ifdefor(target.suffixes, []).length);
     },
     use: function (actor, plunderSkill, target) {
         stealAffixes(actor, target, plunderSkill);
@@ -808,6 +822,7 @@ function stealAffixes(actor, target, skill) {
 }
 
 skillDefinitions.banish = {
+    isValid: (actor, banishSkill, target) => target.isActor,
     use: function (actor, banishSkill, target) {
         var attackStats = performAttack(actor, banishSkill, target);
         // The purify upgrade removes all enchantments from a target.
@@ -856,7 +871,7 @@ function getXDirection(actor) {
 
 skillDefinitions.charm = {
     isValid: function (actor, charmSkill, target) {
-        return !(target.uncontrollable || target.stationary);
+        return target.isActor && !(target.uncontrollable || target.stationary);
     },
     use: function (actor, charmSkill, target) {
         target.allies = actor.allies;

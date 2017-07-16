@@ -137,12 +137,22 @@ function handleAdventureClick(x, y, event) {
             setActorInteractionTarget(hero, canvasPopupTarget);
         }
     } else if (!upgradingObject && !choosingTrophyAltar) {
-        var targetZ = -(y - groundY) * 2;
-        if (targetZ >= -200 || targetZ <= 200) {
-            setActorDestination(hero, {'x': hero.area.cameraX + x, 'z': targetZ});
+        var targetLocation = getTargetLocation(hero.area, x, y);
+        if (!targetLocation) return;
+        if (selectedAction && canUseSkillOnTarget(hero, selectedAction, targetLocation)) {
+            setActionTarget(hero, selectedAction, targetLocation);
+            selectedAction = null;
+        } else {
+            setActorDestination(hero, targetLocation);
             clickedToMove = true;
         }
     }
+}
+function getTargetLocation(area, canvasX, canvasY) {
+    var z = -(canvasY - groundY) * 2;
+    if (z < -200 || z > 200) return null;
+    z = Math.max(-180, Math.min(180, z));
+    return {'x': area.cameraX + canvasX, y: 0, z, width:0, height: 0};
 }
 $(document).on('mouseup',function (event) {
     clickedToMove = false;

@@ -163,7 +163,7 @@ function updateDamageInfo(character, $statsPanel, monsterLevel) {
 
 function createAttackStats(attacker, attack, target) {
     var isCritical = Math.random() <= attack.critChance;
-    if (ifdefor(attack.firstStrike) && target) {
+    if (ifdefor(attack.firstStrike) && target && target.isActor) {
         isCritical = isCritical || target.health >= target.maxHealth;
     }
     var damage = Random.range(attack.minPhysicalDamage, attack.maxPhysicalDamage);
@@ -214,7 +214,7 @@ function createAttackStats(attacker, attack, target) {
 
 function createSpellStats(attacker, spell, target) {
     var isCritical = Math.random() <= spell.critChance;
-    if (ifdefor(spell.firstStrike) && target) {
+    if (ifdefor(spell.firstStrike) && target && target.isActor) {
         isCritical = isCritical || target.health >= target.maxHealth;
     }
     var magicDamage = spell.power;
@@ -250,7 +250,7 @@ function createSpellStats(attacker, spell, target) {
 
 function createSpellImprintedAttackStats(attacker, attack, spell, target) {
     var isCritical = Math.random() <= spell.critChance;
-    if (ifdefor(spell.firstStrike) && target) {
+    if (ifdefor(spell.firstStrike) && target && target.isActor) {
         isCritical = isCritical || target.health >= target.maxHealth;
     }
     var magicDamage = spell.power;
@@ -383,6 +383,8 @@ function performAttackProper(attackStats, target) {
     }
 }
 function getAttackY(attacker) {
+    // This could actually be a location for abilities targeting locations. Just use 0, which is the height of the floor.
+    if (!attacker.isActor) return 0;
     // Y value of projectiles can either be set on the source for the actor, or it will use the set yCenter or half the height.
     var height = ifdefor(attacker.source.height, 64);
     return attacker.scale * ifdefor(attacker.source.attackY, height - ifdefor(attacker.source.yCenter, height / 2));
@@ -460,6 +462,8 @@ function applyAttackToTarget(attackStats, target) {
         if (target) explosion.hitTargets.push(target);
         else return true;
     }
+    // All the logic beyond this point does not apply to location targets.
+    if (!target.isActor) return true;
     var distance = attackStats.distance;
     var hitText = {x: target.x, y: target.height + 10, z: target.z, color: 'grey', 'vx': -(Math.random() * 3 + 2) * target.heading[0], 'vy': 5};
     if (target.invulnerable) {

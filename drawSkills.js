@@ -200,6 +200,23 @@ function activateAction(action) {
         else selectedAction = action;
     }
 }
+function drawTargetCircle(context, area, x, z, radius, alpha) {
+    var centerY = groundY - z / 2;
+    var centerX = x - area.cameraX;
+    context.save();
+    context.translate(centerX, centerY);
+    context.scale(1, .5);
+    context.globalAlpha = alpha;
+    context.fillStyle = '#0FF';
+    context.beginPath();
+    context.arc(0, 0, radius * 32 + 32, 0, 2 * Math.PI);
+    context.fill();
+    context.globalAlpha = 1;
+    context.lineWidth = 5;
+    context.strokeStyle = '#0FF';
+    context.stroke();
+    context.restore();
+}
 
 function drawActionTargetCircle(targetContext) {
     var action = hoverAction;
@@ -212,22 +229,11 @@ function drawActionTargetCircle(targetContext) {
     var context = bufferContext;
     context.clearRect(0,0, bufferCanvas.width, bufferCanvas.height);
     var area = editingLevelInstance ? editingLevelInstance : action.actor.area;
-    var cameraX = area.cameraX;
-    context.save();
-    var actor = action.actor;
-    var centerY = groundY - ifdefor(actor.y, 0) - ifdefor(actor.z, 0) / 2;
-    var centerX = actor.x - cameraX;
-    context.translate(centerX, centerY);
-    context.scale(1, .5);
-    context.globalAlpha = .3;
-    context.fillStyle = '#0FF';
-    context.beginPath();
-    context.arc(0, 0, ifdefor(action.range, action.area) * 32 + 32, 0, 2 * Math.PI);
-    context.fill();
-    context.globalAlpha = 1;
-    context.lineWidth = 5;
-    context.strokeStyle = '#0FF';
-    context.stroke();
-    context.restore();
+    drawTargetCircle(context, area, action.actor.x, ifdefor(action.actor.z), ifdefor(action.range, action.area), .1);
+    var targetLocation = getTargetLocation(area, canvasCoords[0], canvasCoords[1]);
+    //console.log([targetLocation, targetLocation && canUseSkillOnTarget(action.actor, action, targetLocation)]);
+    if (targetLocation && canUseSkillOnTarget(action.actor, action, targetLocation)) {
+        drawTargetCircle(context, area, targetLocation.x, targetLocation.z, action.area || .5, .3);
+    }
     drawImage(targetContext, bufferCanvas, rectangle(0, 300, bufferCanvas.width, 180), rectangle(0, 300, bufferCanvas.width, 180));
 }
