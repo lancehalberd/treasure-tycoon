@@ -5,8 +5,9 @@ setInterval(() => {
     // Initially we don't do any of the main game logic until preloading finishes
     // then we initialize the game and start running the main game loop.
     if (!gameHasBeenInitialized) {
-        if (numberOfImagesLeftToLoad <= 0) initializeGame();
-        else return;
+        if (numberOfImagesLeftToLoad <= 0 && numberOfSoundsLeftToLoad <= 0)  {
+            initializeGame();
+        } else return;
     }
     try {
     var characters = testingLevel ? [state.selectedCharacter] : state.characters;

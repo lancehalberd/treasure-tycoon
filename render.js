@@ -73,7 +73,7 @@ const getTargetCameraX = (actor) => {
     }
     if (mouseX > 700) centerX = centerX + (mouseX - 700) / 2;
     else if (mouseX < 100) centerX = centerX + (mouseX - 100) / 2;
-    var target = centerX - 400;
+    var target = Math.min(actor.x - 20, centerX - 400);
     target = Math.max(ifdefor(area.left, 0), target);
     if (area.width) target = Math.min(area.width - 800, target);
     return Math.round(target);

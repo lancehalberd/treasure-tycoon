@@ -177,6 +177,8 @@ function createAttackStats(attacker, attack, target) {
         accuracy *= (1 + attack.critAccuracy);
     }
     var animation = ifdefor(attack.base.animation);
+    var attackType = (attacker.equipment.weapon && attacker.equipment.weapon.base.type) || (attacker.character && 'unarmed');
+    var sound = attack.base.sound || attackSounds[attackType];
     if (!animation && attacker.equipment.weapon) {
         animation = ifdefor(attacker.equipment.weapon.base.animation);
     }
@@ -184,7 +186,10 @@ function createAttackStats(attacker, attack, target) {
         pause();
         throw new Error('Missing animation for ' + animation);
     }
-    if (animation) animation = projectileAnimations[animation];
+    if (animation) {
+        sound = attackSounds[animation] || sound;
+        animation = projectileAnimations[animation];
+    }
     var gravity = ifdefor(attack.base.gravity);
     if (!gravity && attacker.equipment.weapon) {
         gravity = ifdefor(attacker.equipment.weapon.base.gravity);
@@ -195,6 +200,7 @@ function createAttackStats(attacker, attack, target) {
     return {
         'distance': 0,
         'animation': animation,
+        sound,
         'size': animation ? animation.frames[0][2] : ifdefor(attack.base.size, 10),
         'gravity': gravity,
         'speed': ifdefor(attack.speed, ifdefor(attack.base.speed, ifdefor(attack.range, 10) * 2.5)),
@@ -224,14 +230,19 @@ function createSpellStats(attacker, spell, target) {
         magicDamage *= (1 + spell.critDamage);
     }
     var animation = ifdefor(spell.base.animation);
+    var sound = spell.base.sound;
     if (animation && !projectileAnimations[animation]) {
         pause();
         throw new Error('Missing animation for ' + animation);
     }
-    if (animation) animation = projectileAnimations[animation];
+    if (animation) {
+        sound = attackSounds[animation] || sound;
+        animation = projectileAnimations[animation];
+    }
     return {
         'distance': 0,
         'animation': animation,
+        sound,
         'size': animation ? animation.frames[0][2] : ifdefor(spell.base.size, 10),
         'gravity': ifdefor(spell.base.gravity, .8),
         'speed': ifdefor(spell.speed, ifdefor(spell.base.speed, ifdefor(spell.range, 10) * 2.5)),
@@ -262,6 +273,7 @@ function createSpellImprintedAttackStats(attacker, attack, spell, target) {
         accuracy *= (1 + attack.critAccuracy);
     }
     var animation = ifdefor(attack.base.animation);
+    var sound = attack.base.sound;
     if (!animation && attacker.equipment.weapon) {
         animation = ifdefor(attacker.equipment.weapon.base.animation);
     }
@@ -269,7 +281,10 @@ function createSpellImprintedAttackStats(attacker, attack, spell, target) {
         pause();
         throw new Error('Missing animation for ' + animation);
     }
-    if (animation) animation = projectileAnimations[animation];
+    if (animation) {
+        sound = attackSounds[animation] || sound;
+        animation = projectileAnimations[animation];
+    }
     var gravity = ifdefor(attack.base.gravity);
     if (!gravity && attacker.equipment.weapon) {
         gravity = ifdefor(attacker.equipment.weapon.base.gravity);
@@ -280,6 +295,7 @@ function createSpellImprintedAttackStats(attacker, attack, spell, target) {
     return {
         'distance': 0,
         'animation': animation,
+        sound,
         'size': animation ? animation.frames[0][2] : ifdefor(attack.base.size, 10),
         'gravity': gravity,
         'speed': ifdefor(attack.speed, ifdefor(attack.base.speed, ifdefor(attack.range, 10) * 2.5)),
@@ -316,6 +332,9 @@ function castAttackSpell(attacker, spell, target) {
     return attackStats;
 }
 function performAttackProper(attackStats, target) {
+    if (attackStats.sound) {
+        playSound(attackStats.sound);
+    }
     var attacker = attackStats.source;
     var area = attacker.area;
     // If the attack allows the user to teleport, teleport them to an optimal location for attacking.

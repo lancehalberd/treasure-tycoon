@@ -56,6 +56,7 @@
 </head>
 <body class="pagebody">
 
+<a href="credits.html" target="_blank" style="color: white; font-size: 20px; position: absolute; left: 5px; top: 5px;">Credits</a>
 <div class="js-mainGame js-mouseContainer mainGame">
     <div class="js-loading loading" style="display: none">
         Loading...
@@ -292,7 +293,7 @@
 </div>
 </body>
 <?php
-addScripts(['utils', 'mouse', 'drawDashedRectangle', 'images', 'points', 'state', 'bonuses',
+addScripts(['utils', 'mouse', 'drawDashedRectangle', 'images', 'sounds', 'points', 'state', 'bonuses',
     'drawJewel', 'drawBoard', 'inventory', 'armor', 'weapons', 'accessories',
     'evaluate','helpText','jewels','jewel-inventory','skills','abilities',
     'loot','boards', 'character', 'jobs', 'achievements', 'crafting','enchanting','uniques',
