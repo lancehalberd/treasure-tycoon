@@ -112,6 +112,10 @@ function importState({
         visibleLevels: {},
         availableBeds: [],
     };
+    const defaultState = getDefaultState();
+    for (var key in defaultState) {
+        state[key] = ifdefor(state[key], defaultState[key]);
+    }
     initializeVariableObject(state.guildStats, {'variableObjectType': 'guild'}, state.guildStats);
     addBonusSourceToObject(state.guildStats, implicitGuildBonusSource);
     guildAreas = guildAreas || {};
@@ -203,10 +207,6 @@ function importState({
             $('.js-craftingOptions').hide();
             updateEnchantmentOptions();
         }
-    }
-    const defaultState = getDefaultState();
-    for (var key in defaultState) {
-        state[key] = ifdefor(state[key], defaultState[key]);
     }
     changedPoints('coins');
     changedPoints('anima');

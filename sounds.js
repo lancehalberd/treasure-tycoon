@@ -37,7 +37,7 @@ var playSound = source => {
 
 [
     // See credits.html for: Pack: Melee Attack by Unfa.
-    'sounds/unfa/melee1.flac', 'sounds/unfa/melee2.flac', 'sounds/unfa/melee3.flac',
+    'sounds/unfa/melee1.flac+200', 'sounds/unfa/melee2.flac', 'sounds/unfa/melee3.flac',
     // See credits.html for: Negative Magic Spell by Iwan Gabovitch.
     'sounds/fireball.flac',
     // See credits.html for: Pack: Sword Sounds by 32cheeseman32
