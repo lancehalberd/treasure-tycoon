@@ -79,7 +79,8 @@ var initialImagesToLoad = [
     'gfx/bat.png', // http://opengameart.org/content/bat-32x32
     'gfx/militaryIcons.png', // http://opengameart.org/content/140-military-icons-set-fixed
     'gfx/spider.png', // Stephen "Redshrike" Challener as graphic artist and William.Thompsonj as contributor. If reasonable link to this page or the OGA homepage. http://opengameart.org/content/lpc-spider
-    'gfx/wolf.png' // Stephen "Redshrike" Challener as graphic artist and William.Thompsonj as contributor. If reasonable link back to this page or the OGA homepage. http://opengameart.org/content/lpc-wolf-animation
+    'gfx/wolf.png', // Stephen "Redshrike" Challener as graphic artist and William.Thompsonj as contributor. If reasonable link back to this page or the OGA homepage. http://opengameart.org/content/lpc-wolf-animation
+    'gfx/explosion.png', //https://opengameart.org/content/pixel-explosion-12-frames
 ];
 for (var initialImageToLoad of initialImagesToLoad) {
     requireImage(initialImageToLoad);
@@ -88,6 +89,7 @@ for (var initialImageToLoad of initialImagesToLoad) {
 
 var coins, animaDrops;
 var projectileAnimations = [];
+var effectAnimations = [];
 function initializeCoins() {
     var coinImage = images['gfx/moneyIcon.png'];
     coins = [
@@ -113,8 +115,18 @@ function initializeCoins() {
         {'value': 200000, 'image': coinImage, 'x': 160, 'y': 64, 'width': 24, 'height': 24},
     ];
 }
+function makeFrames(length, size, origin = [0, 0], padding = 0, frameRepeat = 1) {
+    var frames = [];
+    for (var i =0; i < length; i++) {
+        for (var j = 0; j < frameRepeat; j++) frames.push([origin[0] + (size[0] + padding) * i, origin[1], size[0], size[1]]);
+    }
+    return frames;
+}
 function initializeProjectileAnimations() {
-    projectileAnimations['fireball'] = {'image': images['gfx/projectiles.png'], 'frames': [[0, 0, 20, 20], [32, 0, 20, 20], [64, 0, 20, 20]]};
+    projectileAnimations['fireball'] = {'image': requireImage('gfx/projectiles.png'), 'frames': [[0, 0, 20, 20], [32, 0, 20, 20], [64, 0, 20, 20]]};
+    effectAnimations.explosion = {image: requireImage('gfx/explosion.png'),
+        frames: makeFrames(5, [96, 96], [0, 0], 0, 3),
+        endFrames: makeFrames(7, [96, 96], [5 * 96, 0], 0, 3)};
     var projectileCanvas = createCanvas(96, 96);
     projectileCanvas.imageSmoothingEnabled = false;
     var context = projectileCanvas.getContext('2d');

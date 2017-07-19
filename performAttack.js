@@ -201,7 +201,7 @@ function createAttackStats(attacker, attack, target) {
         'distance': 0,
         'animation': animation,
         sound,
-        'size': animation ? animation.frames[0][2] : ifdefor(attack.base.size, 10),
+        'size': ifdefor(attack.base.size, animation ? animation.frames[0][2] : 10),
         'gravity': gravity,
         'speed': ifdefor(attack.speed, ifdefor(attack.base.speed, ifdefor(attack.range, 10) * 2.5)),
         'healthSacrificed': sacrificedHealth,
@@ -243,7 +243,7 @@ function createSpellStats(attacker, spell, target) {
         'distance': 0,
         'animation': animation,
         sound,
-        'size': animation ? animation.frames[0][2] : ifdefor(spell.base.size, 10),
+        'size': ifdefor(spell.base.size, animation ? animation.frames[0][2] : 10),
         'gravity': ifdefor(spell.base.gravity, .8),
         'speed': ifdefor(spell.speed, ifdefor(spell.base.speed, ifdefor(spell.range, 10) * 2.5)),
         'healthSacrificed': sacrificedHealth,
@@ -296,7 +296,7 @@ function createSpellImprintedAttackStats(attacker, attack, spell, target) {
         'distance': 0,
         'animation': animation,
         sound,
-        'size': animation ? animation.frames[0][2] : ifdefor(attack.base.size, 10),
+        'size': ifdefor(attack.base.size, animation ? animation.frames[0][2] : 10),
         'gravity': gravity,
         'speed': ifdefor(attack.speed, ifdefor(attack.base.speed, ifdefor(attack.range, 10) * 2.5)),
         'healthSacrificed': sacrificedHealth,
@@ -474,6 +474,7 @@ function applyAttackToTarget(attackStats, target) {
             explosionZ = target.z;
         }
         var explosion = explosionEffect(explodeAttackStats, explosionX, explosionY, explosionZ);
+        if (attack.base.explosionSound) playSound(attack.base.explosionSound);
         area.effects.push(explosion);
         // Meteor calls applyAttackToTarget with a null target so it can explode
         // anywhere. If that has happened, just return once the explosion has

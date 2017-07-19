@@ -52,6 +52,7 @@
     <script src="lib/jquery.min.js"></script>
     <script src="lib/jstorage.min.js"></script>
     <script src="lib/async.js"></script>
+    <script src="lib/lodash.js"></script>
     <title>Treasure Tycoon</title>
 </head>
 <body class="pagebody">

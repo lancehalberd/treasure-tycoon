@@ -74,7 +74,13 @@ function explosionEffect(attackStats, x, y, z) {
     var attack = attackStats.imprintedSpell || attackStats.attack;
     var color = ifdefor(attack.base.color, 'red');
     var alpha = ifdefor(attack.base.alpha, .5);
-    var frames = ifdefor(attack.base.frames, 10);
+    var animation, frames = attack.base.frames || 10, endFrames = attack.base.endFrames || 5;
+    if (attack.base.explosionAnimation) {
+        animation = effectAnimations[attack.base.explosionAnimation];
+        frames = animation.frames.length;
+        if (animation.endFrames) endFrames = animation.endFrames.length;
+        alpha = ifdefor(attack.base.alpha, 1);
+    }
     if (!attack.area) {
         throw new Error('Explosion effect called with no area set.');
     }
@@ -90,27 +96,27 @@ function explosionEffect(attackStats, x, y, z) {
         'hitTargets': [], 'attack': attack, 'attackStats': attackStats, 'x': x, 'y': y, 'z': z, 'width': 0, 'height': 0, 'currentFrame': 0, 'done': false,
         'update': function (area) {
             self.currentFrame++;
-            if (self.currentFrame > frames + 5) {
-                self.done = true;
-            } else {
-                var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
-                self.width = currentRadius * 2;
-                self.height = height * currentRadius / radius;
-                self.height = self.width * currentRadius / radius;
-                // areaCoefficient is the amount of effectiveness lost at the very edge of the radius.
-                // areaCoefficient = 0 means the blast is equally effective everywhere.
-                // areaCoefficient = 1 means the blast has no effect at the edge.
-                // areaCoefficient < 0 means the blast has increased effect the further it is from the center.
-                self.attackStats.effectiveness = 1 - currentRadius / radius * ifdefor(self.attack.areaCoefficient, 1);
-                for (var i = 0; i < self.attackStats.source.enemies.length; i++) {
-                    var target = self.attackStats.source.enemies[i];
-                    if (target.isDead || self.hitTargets.indexOf(target) >= 0) continue;
-                    var distance = getDistance(self, target);
-                    if (distance > 0) continue;
-                    applyAttackToTarget(attackStats, target);
-                    // console.log("Hit with effectiveness " + attackStats.effectiveness);
-                    self.hitTargets.push(target);
-                }
+            if (self.currentFrame > frames) {
+                if (self.currentFrame > frames + endFrames) self.done = true;
+                return;
+            }
+            var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
+            self.width = currentRadius * 2;
+            self.height = height * currentRadius / radius;
+            self.height = self.width * currentRadius / radius;
+            // areaCoefficient is the amount of effectiveness lost at the very edge of the radius.
+            // areaCoefficient = 0 means the blast is equally effective everywhere.
+            // areaCoefficient = 1 means the blast has no effect at the edge.
+            // areaCoefficient < 0 means the blast has increased effect the further it is from the center.
+            self.attackStats.effectiveness = 1 - currentRadius / radius * ifdefor(self.attack.areaCoefficient, 1);
+            for (var i = 0; i < self.attackStats.source.enemies.length; i++) {
+                var target = self.attackStats.source.enemies[i];
+                if (target.isDead || self.hitTargets.indexOf(target) >= 0) continue;
+                var distance = getDistance(self, target);
+                if (distance > 0) continue;
+                applyAttackToTarget(attackStats, target);
+                // console.log("Hit with effectiveness " + attackStats.effectiveness);
+                self.hitTargets.push(target);
             }
         },
         'draw': function (area) {
@@ -118,12 +124,21 @@ function explosionEffect(attackStats, x, y, z) {
             var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
             mainContext.globalAlpha = alpha;
             mainContext.fillStyle = color;
-            mainContext.beginPath();
             mainContext.save();
             mainContext.translate((self.x - area.cameraX), groundY - self.y - self.z / 2);
-            mainContext.scale(1, height / (2 * radius));
-            mainContext.arc(0, 0, currentRadius, ifdefor(self.attack.base.minTheta, 0), ifdefor(self.attack.base.maxTheta, 2 * Math.PI));
-            mainContext.fill();
+            if (animation) {
+                var size = 96;
+                var frame = (self.currentFrame < frames || !animation.endFrames)
+                    ? animation.frames[Math.min(frames - 1, self.currentFrame)]
+                    : animation.endFrames[Math.min(endFrames - 1, self.currentFrame - frames)];
+                mainContext.drawImage(animation.image, frame[0], frame[1], frame[2], frame[3],
+                                               -currentRadius, -currentRadius, currentRadius * 2, currentRadius * 2);
+            } else {
+                mainContext.beginPath();
+                mainContext.scale(1, height / (2 * radius));
+                mainContext.arc(0, 0, currentRadius, ifdefor(self.attack.base.minTheta, 0), ifdefor(self.attack.base.maxTheta, 2 * Math.PI));
+                mainContext.fill();
+            }
             mainContext.restore();
             mainContext.globalAlpha = 1;
         }
@@ -203,7 +218,7 @@ function projectile(attackStats, x, y, z, vx, vy, vz, target, delay, color, size
         pause();
         console.log(attackStats);
         debugger;
-        throw new Error('Projectile found withou size');
+        throw new Error('Projectile found without size');
     }
     var self = {
         'distance': 0, 'x': x, 'y': y, 'z': z, 'vx': vx, 'vy': vy, 'vz': vz, 't': 0, 'done': false, 'delay': delay,
