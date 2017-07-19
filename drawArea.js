@@ -54,6 +54,8 @@ function drawArea(area) {
     for (var treasurePopup of ifdefor(area.treasurePopups, [])) treasurePopup.draw(area);
     for (var projectile of ifdefor(area.projectiles, [])) projectile.draw(area);
     for (var effect of ifdefor(area.effects, [])) effect.draw(area);
+    // Draw actor lifebar/status effects on top of effects/projectiles
+    sortedSprites.filter(sprite => sprite.isActor).forEach(drawActorEffects);
     // Draw text popups such as damage dealt, item points gained, and so on.
     for (var textPopup of ifdefor(area.textPopups, [])) {
         context.fillStyle = ifdefor(textPopup.color, "red");
@@ -163,16 +165,18 @@ function drawActor(actor) {
     context.fillStyle = 'red';
     context.fillRect(target.left, target.top, target.width, target.height);*/
     context.restore();
-
+}
+function drawActorEffects(actor) {
+    var context = mainContext;
     // life bar
     if (actor.isDead) return;
     // if (!actor.area.enemies.length) return;
-    var x = left + actor.width / 2 - 32;
+    var x = actor.left + actor.width / 2 - 32;
     // Don't allow the main character's life bar to fall off the edges of the screen.
     if (actor.character === state.selectedCharacter) {
         x = Math.min(800 - 5 - 64, Math.max(5, x));
     }
-    var y = top - 5;
+    var y = actor.top - 5;
     drawBar(context, x, y, 64, 4, 'white', ifdefor(actor.lifeBarColor, 'red'), actor.health / actor.maxHealth);
     if (actor.bonusMaxHealth >= 1 && actor.health >= actor.maxHealth - actor.bonusMaxHealth) {
         // This logic is kind of a mess but it is to make sure the % of the bar that is due to bonusMaxHealth
@@ -193,15 +197,15 @@ function drawActor(actor) {
         y -= 3;
         drawBar(context, x, y, 64, 4, 'white', '#aaa', actor.temporalShield / actor.maxTemporalShield);
     }
-    var y = top - 5;
+    var y = actor.top - 5;
     drawEffectIcons(actor, x, y);
     if (!actor.isDead && actor.stunned) {
         var target =  {'left': 0, 'top': 0, 'width': shrineSource.width, 'height': shrineSource.height}
         for (var i = 0; i < 3; i++ ) {
             var theta = 2 * Math.PI * (i + 3 * actor.time) / 3;
             var scale = ifdefor(actor.scale, 1);
-            target.left = left + (actor.width - shrineSource.width) / 2 + Math.cos(theta) * 30;
-            target.top = top - 5 + Math.sin(theta) * 10;
+            target.left = actor.left + (actor.width - shrineSource.width) / 2 + Math.cos(theta) * 30;
+            target.top = actor.top - 5 + Math.sin(theta) * 10;
             drawImage(context, shrineSource.image, shrineSource, target);
         }
     }
