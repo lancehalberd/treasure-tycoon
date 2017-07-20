@@ -72,6 +72,7 @@ function initializeGame() {
     if (!state.selectedCharacter) {
         throw new Error('No selected character found');
     }
+    playTrack(soundTrack.map);
 }
 
 var $popup = null;

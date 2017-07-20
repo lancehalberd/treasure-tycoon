@@ -3,13 +3,14 @@ var sounds = new Map(),
     soundsMuted = false;
 
 var requireSound = source => {
-    var source, offset;
-    [source, offset] = source.split('+');
+    var source, offset, volume;
+    [source, offset, volume] = source.split('+');
 
     if (sounds.has(source)) return sounds.get(source);
     var newSound = new Audio(source);
     newSound.instances = new Set();
     newSound.offset = offset || 0;
+    newSound.defaultVolume = volume || 1;
     numberOfSoundsLeftToLoad++;
     sounds.set(source, newSound);
     newSound.oncanplaythrough = () => {
@@ -18,14 +19,15 @@ var requireSound = source => {
     return newSound;
 };
 
-var playSound = source => {
-    if (soundsMuted) return;
-    var source, offset;
-    [source, offset] = source.split('+');
+var playSound = (source, area) => {
+    if (soundsMuted || state.selectedCharacter.hero.area !== area ) return;
+    var source, offset,volume;
+    [source, offset, volume] = source.split('+');
     var sound = requireSound(source);
     if (sound.instances.size >= 5) return;
     var newInstance = sound.cloneNode(false);
     newInstance.currentTime = (ifdefor(offset, sound.offset) || 0) / 1000;
+    newInstance.volume = Math.min(1, (ifdefor(volume, sound.defaultVolume) || 1) / 50);
     newInstance.play();
     sound.instances.add(newInstance);
     newInstance.onended = () => {
@@ -33,7 +35,22 @@ var playSound = source => {
         newInstance.onended = null;
         delete newInstance;
     }
-}
+};
+
+var previousTrack = null;
+var playTrack = source => {
+    if (soundsMuted) return;
+    var source, offset, volume;
+    [source, offset, volume] = source.split('+');
+    if (previousTrack) {
+        previousTrack.stop();
+    }
+    var sound = requireSound(source);
+    sound.currentTime = (ifdefor(offset, sound.offset) || 0) / 1000;
+    sound.volume = Math.min(1, (ifdefor(volume, sound.defaultVolume) || 1) / 50);
+    sound.play();
+    previousTrack = sound;
+};
 
 [
     // See credits.html for: Pack: Melee Attack by Unfa.
@@ -41,9 +58,11 @@ var playSound = source => {
     // See credits.html for: Negative Magic Spell by Iwan Gabovitch.
     'sounds/fireball.flac',
     // See credits.html for: Pack: Sword Sounds by 32cheeseman32
-    'sounds/cheeseman/arrow.wav', 'sounds/cheeseman/sword.wav',
+    'sounds/cheeseman/arrow.wav+0+50', 'sounds/cheeseman/sword.wav', 'sounds/cheeseman/arrowHit.wav+300',
     // See credits.hml for: Laser Fire by dklon
     'sounds/laser.wav',
+    // mobbrobb:
+    'music/mobbrobb/map.mp3+0+.5',
 ].forEach(requireSound);
 
 var attackSounds = {
@@ -59,4 +78,13 @@ var attackSounds = {
     greatsword: 'sounds/cheeseman/sword.wav',
     wand: 'sounds/laser.wav',
 };
+
+var attackHitSounds = {
+    bow: 'sounds/cheeseman/arrowHit.wav',
+    throwing: 'sounds/cheeseman/arrowHit.wav',
+}
+
+var soundTrack = {
+    map: 'music/mobbrobb/map.mp3',
+}
 

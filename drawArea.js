@@ -44,18 +44,17 @@ function drawArea(area) {
     if (area.leftWall) drawLeftWall(area);
     if (area.rightWall) drawRightWall(area);
     if (area.wallDecorations) for (var object of area.wallDecorations) object.draw(area);
-    var sortedSprites = area.allies.concat(area.enemies).concat(area.objects).sort(function (spriteA, spriteB) {
-        return spriteB.z - spriteA.z;
+    var sortedSprites = area.allies.concat(area.enemies).concat(area.objects)
+        .concat(area.projectiles).concat(area.treasurePopups).concat(area.effects).sort(function (spriteA, spriteB) {
+        return (spriteB.z || 0) - (spriteA.z || 0);
     });
     for (var sprite of sortedSprites) {
         if (sprite.draw) sprite.draw(area);
         else drawActor(sprite);
     }
-    for (var treasurePopup of ifdefor(area.treasurePopups, [])) treasurePopup.draw(area);
-    for (var projectile of ifdefor(area.projectiles, [])) projectile.draw(area);
-    for (var effect of ifdefor(area.effects, [])) effect.draw(area);
+    //for (var effect of ifdefor(area.effects, [])) effect.draw(area);
     // Draw actor lifebar/status effects on top of effects/projectiles
-    sortedSprites.filter(sprite => sprite.isActor).forEach(drawActorEffects);
+    area.allies.concat(area.enemies).forEach(drawActorEffects);
     // Draw text popups such as damage dealt, item points gained, and so on.
     for (var textPopup of ifdefor(area.textPopups, [])) {
         context.fillStyle = ifdefor(textPopup.color, "red");
@@ -93,8 +92,8 @@ function drawActor(actor) {
     if (actor.cloaked) {
         context.globalAlpha = .2;
     }
-    var top = groundY - actor.height - ifdefor(actor.y, 0) - ifdefor(actor.z, 0) / 2;
-    var left = actor.x - actor.width / 2 - cameraX;
+    var top = Math.round(groundY - actor.height - ifdefor(actor.y, 0) - ifdefor(actor.z, 0) / 2);
+    var left = Math.round(actor.x - actor.width / 2 - cameraX);
     // These values are used for determining when the mouse is hovering over the actor.
     // We only need these when the screen is displayed, so we can set them only on draw.
     actor.top = top;

@@ -332,11 +332,11 @@ function castAttackSpell(attacker, spell, target) {
     return attackStats;
 }
 function performAttackProper(attackStats, target) {
-    if (attackStats.sound) {
-        playSound(attackStats.sound);
-    }
     var attacker = attackStats.source;
     var area = attacker.area;
+    if (attackStats.sound) {
+        playSound(attackStats.sound, area);
+    }
     // If the attack allows the user to teleport, teleport them to an optimal location for attacking.
     var teleport = ifdefor(attackStats.attack.teleport, 0) * 32;
     if (teleport) {
@@ -447,43 +447,47 @@ function applyAttackToTarget(attackStats, target) {
             applyAttackToTarget(cleaveAttackStats, cleaveTarget);
         }
     }
-    if (ifdefor(attackStats.explode) > 0) {
-        var explodeAttackStats = {
-            'distance': 0,
-            'source': attackStats.source,
-            'attack': attackStats.attack,
-            'imprintedSpell': attackStats.imprintedSpell,
-            'isCritical': attackStats.isCritical,
-            'damage': attackStats.damage,
-            'magicDamage': attackStats.magicDamage,
-            'accuracy': attackStats.accuracy,
-            'explode': attackStats.explode - 1
-        };
-        var explosionX,explosionY,explosionZ;
-        if (attackStats.projectile) {
-            explosionX = attackStats.projectile.x;
-            explosionY = attackStats.projectile.y;
-            explosionZ = attackStats.projectile.z;
-        } else if (target) {
-            explosionX = target.x;
-            explosionY = ifdefor(attackStats.y, getAttackY(target));
-            explosionZ = target.z;
-        } else {
-            explosionX = attacker.x;
-            explosionY = ifdefor(attackStats.y, getAttackY(attacker));
-            explosionZ = target.z;
+    var makeExplosions = () => {
+        if (ifdefor(attackStats.explode) > 0) {
+            var explodeAttackStats = {
+                'distance': 0,
+                'source': attackStats.source,
+                'attack': attackStats.attack,
+                'imprintedSpell': attackStats.imprintedSpell,
+                'isCritical': attackStats.isCritical,
+                'damage': attackStats.damage,
+                'magicDamage': attackStats.magicDamage,
+                'accuracy': attackStats.accuracy,
+                'explode': attackStats.explode - 1
+            };
+            var explosionX,explosionY,explosionZ;
+            if (attackStats.projectile) {
+                explosionX = attackStats.projectile.x;
+                explosionY = attackStats.projectile.y;
+                explosionZ = attackStats.projectile.z;
+            } else if (target) {
+                explosionX = target.x;
+                explosionY = ifdefor(attackStats.y, getAttackY(target));
+                explosionZ = target.z;
+            } else {
+                explosionX = attacker.x;
+                explosionY = ifdefor(attackStats.y, getAttackY(attacker));
+                explosionZ = target.z;
+            }
+            var explosion = explosionEffect(explodeAttackStats, explosionX, explosionY, explosionZ);
+            if (attack.base.explosionSound) playSound(attack.base.explosionSound, area);
+            area.effects.push(explosion);
+            // Meteor calls applyAttackToTarget with a null target so it can explode
+            // anywhere. If that has happened, just return once the explosion has
+            // been created.
+            if (target.isActor) explosion.hitTargets.push(target);
         }
-        var explosion = explosionEffect(explodeAttackStats, explosionX, explosionY, explosionZ);
-        if (attack.base.explosionSound) playSound(attack.base.explosionSound);
-        area.effects.push(explosion);
-        // Meteor calls applyAttackToTarget with a null target so it can explode
-        // anywhere. If that has happened, just return once the explosion has
-        // been created.
-        if (target) explosion.hitTargets.push(target);
-        else return true;
     }
     // All the logic beyond this point does not apply to location targets.
-    if (!target.isActor) return true;
+    if (!target.isActor) {
+        makeExplosions();
+        return true;
+    }
     var distance = attackStats.distance;
     var hitText = {x: target.x, y: target.height + 10, z: target.z, color: 'grey', 'vx': -(Math.random() * 3 + 2) * target.heading[0], 'vy': 5};
     if (target.invulnerable) {
@@ -568,6 +572,13 @@ function applyAttackToTarget(attackStats, target) {
     if (attackStats.dodged && !ifdefor(attack.undodgeable)) {
         return false;
     }
+
+    if (target.isActor && attack.tags['basic']) {
+        var attackType = (attacker.equipment.weapon && attacker.equipment.weapon.base.type) || (attacker.character && 'unarmed');
+        var hitSound = attack.base.hitSound || attackHitSounds[attackType];
+        if (hitSound) playSound(hitSound, area);
+    }
+    makeExplosions();
     attacker.health += ifdefor(attack.healthGainOnHit, 0) * effectiveness;
     target.slow += ifdefor(attack.slowOnHit, 0) * effectiveness;
     if (imprintedSpell) {
