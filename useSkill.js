@@ -560,7 +560,7 @@ skillDefinitions.heal = {
                 target.health += healSkill.power;
             }
         }
-        actor.area.effects.push(animationEffect(effectAnimations.heal, actor, [2, 1]));
+        actor.area.effects.push(animationEffect(effectAnimations.heal, target, [2, 1]));
     }
 };
 
