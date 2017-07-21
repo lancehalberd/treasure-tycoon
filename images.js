@@ -127,6 +127,7 @@ function initializeProjectileAnimations() {
     effectAnimations.explosion = {image: requireImage('gfx/explosion.png'),
         frames: makeFrames(5, [96, 96], [0, 0], 0, 3),
         endFrames: makeFrames(7, [96, 96], [5 * 96, 0], 0, 3)};
+    effectAnimations.heal = {image: requireImage('gfx/heal.png'), frames: makeFrames(6, [64, 64], [0, 0], 0, 3)};
     var projectileCanvas = createCanvas(96, 96);
     projectileCanvas.imageSmoothingEnabled = false;
     var context = projectileCanvas.getContext('2d');

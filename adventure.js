@@ -107,9 +107,7 @@ function removeActor(actor) {
     var index = actor.allies.indexOf(actor);
     if (actor.owner) {
         var minionIndex = actor.owner.minions.indexOf(actor);
-        if (minionIndex >= 0) {
-            actor.owner.minions.splice(minionIndex, 1);
-        }
+        if (minionIndex >= 0) actor.owner.minions.splice(minionIndex, 1);
     }
     if (index < 0) {
         console.log("Tried to remove actor that was not amongst its allies");
@@ -252,7 +250,7 @@ function moveActor(actor) {
         actor.walkFrame = 0;
         return;
     }
-    if (actor.isDead || actor.stunned || actor.pull || ifdefor(actor.stationary) || (actor.skillInUse && actor.skillInUse.preparationTime < actor.skillInUse.totalPreparationTime)) {
+    if (actor.isDead || actor.stunned || actor.pull || ifdefor(actor.stationary) || (actor.skillInUse && actor.preparationTime < actor.skillInUse.totalPreparationTime)) {
         return;
     }
     var goalTarget = (actor.skillInUse && actor.skillTarget !== actor) ? actor.skillTarget : null;
@@ -311,6 +309,22 @@ function moveActor(actor) {
             }
         });
     }
+    if (!goalTarget && actor.owner) {
+        // Set desired relative position to ahead if there are enemies and to follow if there are none.
+        var pointPosition = actor.owner.enemies.length
+            ? {x: actor.owner.x + actor.owner.heading[0] * 300, y: 0, z: Math.max(-180, Math.min(180, actor.owner.z + actor.owner.heading[2] * 100))}
+            : {x: actor.owner.x - actor.owner.heading[2] * 200, y: 0, z: actor.owner.z > 0 ? actor.owner.z - 150 : actor.owner.z + 150};
+        var distanceToGoal = getDistance(actor, pointPosition);
+        if (distanceToGoal > 20) {
+            // Minions tend to be faster than their owners, so if they are following them they will stutter as they
+            // try to match the desired relative position. To prevent this from happening, we slow minions down as they approach
+            // their desired position so the don't reach it.
+            speedBonus *= Math.min(1, distanceToGoal / 80);
+            //goalTarget = pointPosition;
+            setActorInteractionTarget(actor, pointPosition);
+            //goalTarget = {x: actor.owner.x + actor.owner.heading[0] * 200, y: 0, z: actor.owner.z + actor.owner.heading[2] * 200};
+        }
+    }
     if (goalTarget) {
         actor.heading = [goalTarget.x - actor.x, 0, goalTarget.z - actor.z];
                 if (isNaN(actor.heading[0])) debugger;
@@ -342,13 +356,13 @@ function moveActor(actor) {
     } else if (goalTarget && !goalTarget.cloaked) {
         // If the character is closer than they need to be to auto attack then they can back away from
         // them slowly to try and stay at range.
-        var basicAttackRange = getBasicAttack(actor).range;
+        var skillRange = actor.skillInUse ? (actor.skillInUse.range || .5) : getBasicAttack(actor).range;
         var distanceToTarget = getDistanceOverlap(actor, goalTarget);
         // Set the max distance to back away to to 10, otherwise they will back out of the range
         // of many activated abilities like fireball and meteor.
-        if (distanceToTarget < (Math.min(basicAttackRange - 1.5, 10)) * 32) {
+        if (distanceToTarget < (Math.min(skillRange - 1.5, 10)) * 32) {
             speedBonus *= -.25;
-        } else if (distanceToTarget <= basicAttackRange * 32) {
+        } else if (distanceToTarget <= skillRange * 32) {
             speedBonus = 0;
         }
     }
@@ -368,10 +382,10 @@ function moveActor(actor) {
         }
         // Actor is not allowed to leave the path.
         actor.z = Math.max(-180 + actor.width / 2, Math.min(180 - actor.width / 2, actor.z));
-        if (actor.area.leftWall) actor.x = Math.max(ifdefor(actor.area.left, 0) + 25 + actor.width / 2 + actor.z / 6, actor.x);
-        else actor.x = Math.max(ifdefor(actor.area.left, 0) + actor.width / 2, actor.x);
-        if (actor.area.rightWall) actor.x = Math.min(actor.area.width - 25 - actor.width / 2 - actor.z / 6, actor.x);
-        else actor.x = Math.min(actor.area.width - actor.width / 2, actor.x);
+        if (area.leftWall) actor.x = Math.max(ifdefor(area.left, 0) + 25 + actor.width / 2 + actor.z / 6, actor.x);
+        else actor.x = Math.max(ifdefor(area.left, 0) + actor.width / 2, actor.x);
+        if (area.rightWall) actor.x = Math.min(area.width - 25 - actor.width / 2 - actor.z / 6, actor.x);
+        else actor.x = Math.min(area.width - actor.width / 2, actor.x);
         var collision = false;
         // Ignore ally collision during charge effects.
         if (!actor.chargeEffect) {
@@ -563,9 +577,9 @@ function runActorLoop(actor) {
     }
     if (actor.skillInUse) {
         var actionDelta = frameMilliseconds / 1000 * Math.max(.1, 1 - actor.slow);
-        if (actor.skillInUse.preparationTime < actor.skillInUse.totalPreparationTime) {
-            actor.skillInUse.preparationTime += actionDelta;
-            if (actor.skillInUse.preparationTime >= actor.skillInUse.totalPreparationTime) {
+        if (actor.preparationTime < actor.skillInUse.totalPreparationTime) {
+            actor.preparationTime += actionDelta;
+            if (actor.preparationTime >= actor.skillInUse.totalPreparationTime) {
                 useSkill(actor);
             }
             return;
@@ -622,10 +636,6 @@ function runActorLoop(actor) {
             if (area.time >= character.finishTime) returnToMap(actor.character);
         }
         // Make minions follow their owners when there are no enemies present.
-    } else if (actor.owner && !actor.owner.enemies.length) {
-        if (getDistance(actor, actor.owner) > actor.owner.width / 2 + 10) {
-            setActorInteractionTarget(actor, actor.owner);
-        }
     }
     var targets = [];
     for (var ally of actor.allies) {

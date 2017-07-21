@@ -70,7 +70,7 @@ function updateActorAnimationFrame(actor) {
         actor.walkFrame = 0;
     } else if (actor.skillInUse && actor.recoveryTime < Math.min(actor.totalRecoveryTime, .3)) { // attacking loop
         if (actor.recoveryTime === 0) {
-            actor.attackFrame = actor.skillInUse.preparationTime / actor.skillInUse.totalPreparationTime * (actor.source.attackPreparationFrames.length - 1);
+            actor.attackFrame = actor.preparationTime / actor.skillInUse.totalPreparationTime * (actor.source.attackPreparationFrames.length - 1);
         } else {
             actor.attackFrame = actor.recoveryTime / actor.totalRecoveryTime * (actor.source.attackRecoveryFrames.length - 1);
         }

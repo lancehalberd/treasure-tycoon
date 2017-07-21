@@ -159,13 +159,14 @@ function prepareToUseSkillOnTarget(actor, skill, target) {
     } else {
         // As of writing this, no skill uses prepTime, but we could use it to make certain spells
         // take longer to cast than others.
-        skill.totalPreparationTime = ifdefor(skill.prepTime, .2);
-        actor.totalRecoveryTime = ifdefor(skill.recoveryTime, .1);
+        // prepTime and recoveryTime cannot be 0 as programmed.
+        skill.totalPreparationTime = skill.prepTime || .2;
+        actor.totalRecoveryTime = skill.recoveryTime || .1;
     }
     actor.skillInUse = skill;
     actor.skillTarget = target;
     // These values will count up until completion. If a character is slowed, it will reduce how quickly these numbers accrue.
-    skill.preparationTime = actor.recoveryTime = 0;
+    actor.preparationTime = actor.recoveryTime = 0;
 }
 
 /**
@@ -185,7 +186,7 @@ function useSkill(actor) {
     skill.readyAt = actor.time + ifdefor(skill.cooldown, 0);
     // Show the name of the skill used if it isn't a basic attack. When skills have distinct
     // visible animations, we should probably remove this.
-    if (!skill.tags['basic']) {
+    if (skill.base.showName) {
         var hitText = {x: actor.x, y: actor.height, z: actor.z, color: 'white', fontSize: 15, 'vx': 0, 'vy': 1, 'gravity': .1};
         hitText.value = skill.base.name;
         appendTextPopup(actor.area, hitText, true);
@@ -372,7 +373,6 @@ skillDefinitions.revive = {
         attackStats.stopped = true;
         actor.health = reviveSkill.power;
         actor.percentHealth = actor.health / actor.maxHealth;
-        actor.stunned = actor.time + .3;
         if (reviveSkill.buff) {
             addTimedEffect(actor, reviveSkill.buff, 0);
         }
@@ -384,13 +384,14 @@ skillDefinitions.stop = {
         return (actor.health / actor.maxHealth < .1) && (actor.temporalShield > 0);
     },
     use: function (actor, stopSkill, attackStats) {
-        actor.stunned = actor.time + .3;
         actor.area.timeStopEffect = {actor};
         if (actor.health <= 0) actor.health = 1;
     }
 };
 
 skillDefinitions.minion = {
+    // Only use minion skills when there are enemies present.
+    shouldUse: (actor, minionSkill, target) => actor.enemies.length,
     isValid: function (actor, minionSkill, target) {
         var count = 0;
         // Cannot raise corpses of uncontrollable enemies as minions.
@@ -411,11 +412,10 @@ skillDefinitions.minion = {
             newMonster.z = target.z;
         } else {
             newMonster = makeMonster({'key': minionSkill.base.monsterKey}, actor.level, [], 0);
-            newMonster.x = actor.x + actor.heading[0] * 32;
-            newMonster.y = actor.y + actor.heading[1] * 32;
-            newMonster.z = actor.z + actor.heading[2] * 32;
+            newMonster.x = actor.x + actor.heading[0] * (actor.width / 2 + 48);
+            newMonster.y = actor.y + actor.heading[1] * (actor.width / 2 + 48);
+            newMonster.z = actor.z + actor.heading[2] * (actor.width / 2 + 48);
         }
-        newMonster.character = actor.character;
         newMonster.heading = actor.heading.slice();
         newMonster.skillSource = minionSkill;
         actor.minions.push(newMonster);
@@ -427,7 +427,6 @@ skillDefinitions.minion = {
         newMonster.owner = actor;
         newMonster.area = actor.area;
         actor.allies.push(newMonster);
-        actor.stunned = actor.time + .3;
     }
 };
 
@@ -451,7 +450,6 @@ function cloneActor(actor, skill) {
     clone.x = actor.x + actor.heading[0] * 32;
     clone.y = actor.y + actor.heading[1] * 32;
     clone.z = actor.z + actor.heading[2] * 32;
-    clone.character = actor.character;
     clone.heading = actor.heading.slice();
     initializeActorForAdventure(clone);
     clone.area = actor.area;
@@ -463,7 +461,6 @@ function cloneActor(actor, skill) {
     clone.time = 0;
     clone.allEffects = [];
     addMinionBonuses(actor, skill, clone);
-    actor.stunned = actor.time + .3;
     return clone;
 }
 function addMinionBonuses(actor, skill, minion) {
@@ -502,7 +499,6 @@ skillDefinitions.clone = {
         clone.percentHealth = actor.percentHealth;
         clone.health = clone.percentHealth * clone.maxHealth;
         actor.allies.push(clone);
-        actor.stunned = actor.time + .3;
     }
 };
 
@@ -522,7 +518,6 @@ skillDefinitions.decoy = {
         clone.name = actor.name + ' decoy';
         addActions(clone, abilities.explode);
         actor.allies.push(clone);
-        actor.stunned = actor.time + .3;
         clone.health = Math.max(1, clone.maxHealth * actor.percentHealth);
         clone.percentHealth = clone.health / clone.maxHealth;
     }
@@ -565,7 +560,7 @@ skillDefinitions.heal = {
                 target.health += healSkill.power;
             }
         }
-        actor.stunned = actor.time + .3;
+        actor.area.effects.push(animationEffect(effectAnimations.heal, actor, [2, 1]));
     }
 };
 
@@ -599,7 +594,6 @@ skillDefinitions.effect = {
         if (effectSkill.debuff) {
             addTimedEffect(target, effectSkill.debuff);
         }
-        actor.stunned = actor.time + .3;
     }
 };
 
@@ -880,7 +874,6 @@ skillDefinitions.charm = {
         actor.enemies.splice(actor.enemies.indexOf(target), 1);
         actor.allies.push(target);
         target.heading = actor.heading.slice();
-        actor.stunned = actor.time + 1;
     }
 };
 skillDefinitions.charge = {

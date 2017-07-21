@@ -54,14 +54,14 @@ var playTrack = source => {
 
 [
     // See credits.html for: Pack: Melee Attack by Unfa.
-    'sounds/unfa/melee1.flac+200', 'sounds/unfa/melee2.flac', 'sounds/unfa/melee3.flac',
+    'sounds/unfa/melee1.flac+200+10', 'sounds/unfa/melee2.flac', 'sounds/unfa/melee3.flac',
     // See credits.html for: Negative Magic Spell by Iwan Gabovitch.
     'sounds/fireball.flac',
-    // See credits.html for: Pack: Sword Sounds by 32cheeseman32
+    // See credits.html for: Pack: Sword Sounds by 32cheeseman32.
     'sounds/cheeseman/arrow.wav+0+50', 'sounds/cheeseman/sword.wav', 'sounds/cheeseman/arrowHit.wav+300',
-    // See credits.hml for: Laser Fire by dklon
+    // See credits.html for: Laser Fire by dklon.
     'sounds/laser.wav',
-    // mobbrobb:
+    // See credits.html for: mobbrobb.
     'music/mobbrobb/map.mp3+0+.5',
 ].forEach(requireSound);
 

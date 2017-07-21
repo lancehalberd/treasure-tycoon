@@ -70,6 +70,35 @@ function songEffect(attackStats) {
     return self;
 }
 
+// Used to play an animation that has no other effects, for example, the sparkles for the heal spell.
+// Set target to a character to have an effect follow them, or to a static target to display in place.
+function animationEffect(animation, target, scale = [1, 1]) {
+    return {
+        'x': target.x, 'y': target.y, 'z': target.z, 'width': target.width * scale[0], 'height': target.height * scale[1], 'currentFrame': 0, 'done': false,
+        'update': function (area) {
+            this.currentFrame++;
+            this.x = target.x;
+            this.y = target.y;
+            this.z = target.z - 1; //Show the effect in front of the target.
+            this.width = target.width * scale[0];
+            this.height = target.height * scale[1];
+            if (this.currentFrame >= animation.frames.length) this.done = true;
+        },
+        'draw': function (area) {
+            if (this.done) return
+            mainContext.save();
+            // mainContext.globalAlpha = alpha;
+            mainContext.translate((this.x - area.cameraX), groundY - this.y - this.z / 2 - target.height / 2);
+            mainContext.fillStyle = 'red';
+            // fillRectangle(mainContext, rectangle(-this.width / 2, -this.height / 2, this.width, this.height));
+            var frame = animation.frames[this.currentFrame % animation.frames.length];
+            mainContext.drawImage(animation.image, frame[0], frame[1], frame[2], frame[3],
+                                           -this.width / 2, -this.height / 2, this.width, this.height);
+            mainContext.restore();
+        }
+    };
+}
+
 function explosionEffect(attackStats, x, y, z) {
     var attack = attackStats.imprintedSpell || attackStats.attack;
     var color = ifdefor(attack.base.color, 'red');
@@ -122,12 +151,10 @@ function explosionEffect(attackStats, x, y, z) {
         'draw': function (area) {
             if (self.done) return
             var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
-            mainContext.globalAlpha = alpha;
-            mainContext.fillStyle = color;
             mainContext.save();
+            mainContext.globalAlpha = alpha;
             mainContext.translate((self.x - area.cameraX), groundY - self.y - self.z / 2);
             if (animation) {
-                var size = 96;
                 var frame = (self.currentFrame < frames || !animation.endFrames)
                     ? animation.frames[Math.min(frames - 1, self.currentFrame)]
                     : animation.endFrames[Math.min(endFrames - 1, self.currentFrame - frames)];
@@ -137,10 +164,10 @@ function explosionEffect(attackStats, x, y, z) {
                 mainContext.beginPath();
                 mainContext.scale(1, height / (2 * radius));
                 mainContext.arc(0, 0, currentRadius, ifdefor(self.attack.base.minTheta, 0), ifdefor(self.attack.base.maxTheta, 2 * Math.PI));
+                mainContext.fillStyle = color;
                 mainContext.fill();
             }
             mainContext.restore();
-            mainContext.globalAlpha = 1;
         }
     };
     return self;
@@ -419,6 +446,11 @@ function addEffectToActor(actor, effect, triggerComputation) {
 }
 function removeEffectFromActor(actor, effect, triggerComputation) {
     var index = actor.allEffects.indexOf(effect);
-    if (index >= 0) actor.allEffects.splice(index, 1);
-    removeBonusSourceFromObject(actor, effect, triggerComputation);
+    // One reason this might not be set is if an actor was removed from an area while an aoe buff was
+    // still targeting it. In this case, the aoe buff will attempt to remove the out of range target
+    // but the target has already had all effects removed from it.
+    if (index >= 0) {
+        actor.allEffects.splice(index, 1);
+        removeBonusSourceFromObject(actor, effect, triggerComputation);
+    }
 }

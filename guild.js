@@ -341,11 +341,13 @@ function leaveCurrentArea(actor) {
     if (!actor.area) return;
     // If the are is a safe guild area, it becomes the actors 'escape exit',
     // where they will respawn next if they die.
-    if (actor.area.isGuildArea && !actor.area.enemies.length) {
+    if (actor.character && actor.area.isGuildArea && !actor.area.enemies.length) {
         actor.escapeExit = {x: actor.x, z: actor.z, areaKey: actor.area.key};
     }
     var allyIndex = actor.area.allies.indexOf(actor);
     if (allyIndex >= 0) actor.area.allies.splice(allyIndex, 1);
+    // Can change this to leaveCurrentArea to allow moving the minion with you.
+    (actor.minions || []).forEach(removeActor);
     actor.area = null;
 }
 function enterGuildArea(actor, {x, z, areaKey}) {
@@ -359,7 +361,7 @@ function enterGuildArea(actor, {x, z, areaKey}) {
     if (isNaN(actor.x) || isNaN(actor.z)) {
         debugger;
     }
-    if (!guildArea.allies.length && !state.unlockedGuildAreas[guildArea.key]) {
+    if (!guildArea.allies.length && false || !state.unlockedGuildAreas[guildArea.key]) {
         guildArea.enemies = [];
         for (var monsterData of (guildArea.monsters || [])) {
             var newMonster = makeMonster(monsterData.key, monsterData.level, [], 0);
@@ -393,6 +395,8 @@ function enterGuildArea(actor, {x, z, areaKey}) {
             showContext('guild');
         }
     }
+    // This can be uncommented to allow minions to follow you through guild areas.
+    //(actor.minions || []).forEach(minion => enterGuildArea(minion, {x:x + actor.heading[0] * 10, z: z - 90, areaKey}));
 }
 
 var guildBonusSources = [];

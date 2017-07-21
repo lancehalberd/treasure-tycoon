@@ -63,6 +63,8 @@ var commonActionVariables = {
     'critChance': 'The percent chance for this ability to strike critically.',
     'critDamage': 'The percentage of bonus damage critical strikes gain.',
     'critAccuracy': 'The percentage of bonus accuracy critical strikes gain.',
+    'prepTime': 'Time the character must wait before using this action',
+    'recoveryTime': 'Time the character must wait after using this action',
     // common skill stats
     'cooldown': 'How long you have to wait before this skill can be used again.',
     'power': 'How powerful a spell is',
@@ -168,8 +170,7 @@ function initializeActorForAdventure(actor) {
     actor.rotation = 0;
     actor.activity = null;
     actor.imprintedSpell = null;
-    actor.minions = [];
-    actor.owner = null;
+    actor.minions = actor.minions || [];
     // actor.heading = [1, 0, 0];
     var stopTimeAction = findActionByTag(actor.reactions, 'stopTime');
     actor.temporalShield = actor.maxTemporalShield = (stopTimeAction ? stopTimeAction.duration : 0);
@@ -640,8 +641,10 @@ function totalCostForNextLevel(character, level) {
     }
     return Math.ceil((1 - ifdefor(character.adventurer.reducedDivinityCost, 0)) * totalDivinityCost);
 }
+var Hero = null;
 function setSelectedCharacter(character) {
     state.selectedCharacter = character;
+    Hero = state.selectedCharacter.hero;
     var adventurer = character.adventurer;
     // update the equipment displayed.
     equipmentSlots.forEach(function (type) {
