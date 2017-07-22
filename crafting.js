@@ -64,7 +64,7 @@ function initializeCraftingGrid() {
                         // console.log([imageFile, offsets.join(',')]);
                         $itemDiv.remove();
                         iconSources[icon] = {
-                            'image': image,
+                            image,
                             'left': offsets[0] / scale,
                             'top': offsets[1] / scale,
                             'width': craftingSlotSize / scale,

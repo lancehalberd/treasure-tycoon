@@ -112,7 +112,7 @@ function drawSkills(actor) {
         if (!action.toggleButton) {
             action.toggleButton = {
                 'onClick': onClickAutoToggle,
-                'action': action,
+                action,
                 'helpMethod': autoToggleHelpMethod
             };
         }

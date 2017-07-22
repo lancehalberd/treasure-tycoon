@@ -117,9 +117,9 @@ function instantiateLevel(levelData, levelDifficulty, difficultyCompleted, level
         // console.log(shapeTypes.join(','));
         // console.log(components.join(','));
         loot.push(jewelLoot(shapeTypes, [tier, tier], components, false));
-        waves.push(chestWave(fixedObject('closedChest', [0, 0, 0], {'scale': 1, 'loot': loot}), levelData, closedChestSource, openChestSource));
+        waves.push(chestWave(fixedObject('closedChest', [0, 0, 0], {'scale': 1, loot}), levelData, closedChestSource, openChestSource));
     } else {
-        waves.push(chestWave(fixedObject('closedChest', [0, 0, 0], {'scale': .8, 'loot': loot}), levelData, openChestSource, openChestSource));
+        waves.push(chestWave(fixedObject('closedChest', [0, 0, 0], {'scale': .8, loot}), levelData, openChestSource, openChestSource));
     }
 
     return {
@@ -165,15 +165,15 @@ function createEndlessLevel(key, level) {
             monsters = ['gnome', 'caterpillar'];
             events = [['motherfly'], ['dragon'], ['motherfly', 'dragon', 'motherfly']];
     }
-    addLevel({'name': name, 'level': level, 'background': background, 'specialLoot': [jewelLoot(basicShapeTypes, [tier, tier], components, false)], 'next': [key + (level + 1)],
-             'enemySkills': [], 'monsters': monsters, 'events': events, 'key' : key + level});
+    addLevel({name, level, background, 'specialLoot': [jewelLoot(basicShapeTypes, [tier, tier], components, false)], 'next': [key + (level + 1)],
+             'enemySkills': [], monsters, events, 'key' : key + level});
 }
 function basicWave(monsters, objects, letter, extraBonuses) {
     return {
-        'monsters': monsters,
-        'objects': objects,
-        'extraBonuses': extraBonuses,
-        'draw': function (context, completed, x, y) {
+        monsters,
+        objects,
+        extraBonuses,
+        draw(context, completed, x, y) {
             if (!completed) drawLetter(context, letter, x, y);
         }
     };
@@ -219,7 +219,7 @@ var openChestSource = {'image': requireImage('gfx/chest-open.png'), 'left': 0, '
 function chestWave(chest, levelData, closedImage, openImage) {
     var objects = [chest]
     if (levelData.skill && abilities[levelData.skill]) {
-        objects.push(fixedObject('skillShrine', [545, 0, 0], {'scale': 3, 'helpMethod': function (actor) {
+        objects.push(fixedObject('skillShrine', [545, 0, 0], {'scale': 3, helpMethod(actor) {
             return titleDiv('Divine Shrine')
                 + bodyDiv('Offer divinity at these shrines to be blessed by the Gods with new powers.');
         }}));
@@ -315,17 +315,17 @@ function iconButton(iconSource, width, height, onClick, helpText) {
         'x': 0,
         'y': 0,
         'type': 'button',
-        'width': width,
-        'height': height,
-        'update': function (area) {
+        width,
+        height,
+        update(area) {
             self.left = Math.round(self.x - area.cameraX - self.width / 2);
             self.top = Math.round(groundY - self.y - self.height / 2);
         },
-        'onClick': onClick,
-        'draw': function (area) {
+        onClick,
+        draw(area) {
             drawImage(mainContext, iconSource.image, iconSource, self);
         },
-        'helpMethod': function () {
+        helpMethod() {
             return ifdefor(helpText, '');
         }
     };
@@ -337,9 +337,9 @@ function objectText(text) {
         'x': 0,
         'y': 0,
         'type': 'text',
-        'isOver': function (x, y) {return false;},
-        'update': function (area) {},
-        'draw': function (area) {
+        isOver(x, y) {return false;},
+        update(area) {},
+        draw(area) {
             mainContext.fillStyle = 'white';
             mainContext.textBaseline = "middle";
             mainContext.textAlign = 'center'

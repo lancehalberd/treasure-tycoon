@@ -17,7 +17,7 @@ var guildImage = requireImage('gfx/guildhall.png');
  should have their perceived center at this position, which means offsetting the images by half of their depth pixels.
  */
 function objectSource(image, coords, size, additionalProperties) {
-    var source = $.extend({'image': image, 'left': coords[0], 'top': coords[1],
+    var source = $.extend({image, 'left': coords[0], 'top': coords[1],
             'width': size[0], 'height': size[1], 'depth': ifdefor(size[2], size[0])}, ifdefor(additionalProperties, {}));
     if (!source.actualWidth) source.actualWidth = source.width;
     if (!source.actualHeight) source.actualHeight = source.height;
@@ -78,10 +78,10 @@ function drawMapButton() {
 }
 
 var upgradeButton = {
-    'isVisible': function () {
+    isVisible() {
         return !!upgradingObject;
     },
-    'draw': function () {
+    draw() {
         var currentTier = upgradingObject.getCurrentTier();
         var canUpgrade = canAffordCost(currentTier.upgradeCost);
         mainContext.textAlign = 'center'
@@ -100,15 +100,15 @@ var upgradeButton = {
         mainContext.fillStyle = canUpgrade ? 'white' : '#AAA';
         mainContext.fillText('Upgrade to...', this.left + this.width / 2, this.top + this.height / 2);
     },
-    'helpMethod': function () {
+    helpMethod() {
         var currentTier = upgradingObject.getCurrentTier();
         previewCost(currentTier.upgradeCost);
         return null;
     },
-    'onMouseOut': function () {
+    onMouseOut() {
         hidePointsPreview();
     },
-    'onClick': function () {
+    onClick() {
         var currentTier = upgradingObject.getCurrentTier();
         if (!attemptToApplyCost(currentTier.upgradeCost)) return;
         removeFurnitureBonuses(upgradingObject, false);
@@ -147,22 +147,22 @@ var areaObjects = {
     },
     'crackedOrb': {'name': 'Cracked Anima Orb', 'source': objectSource(guildImage, [240, 150], [30, 29, 15])},
     'animaOrb': {
-        'action': function () {
+        action() {
             removeToolTip();
             upgradingObject = this;
         },
         'level': 1, 'source': animaOrbTiers[0].source,
-        'getActiveBonusSources': function () {
+        getActiveBonusSources() {
             return [this.getCurrentTier()];
         },
-        'getCurrentTier': function () {
+        getCurrentTier() {
             return animaOrbTiers[this.level - 1];
         },
-        'getNextTier': function () {
+        getNextTier() {
             return ifdefor(animaOrbTiers[this.level]);
         },
         'width': 60, 'height': 60, 'depth': 60,
-        'draw': function (area) {
+        draw(area) {
             var animaOrbTier = animaOrbTiers[this.level - 1];
             this.scale = ifdefor(animaOrbTier.scale, 1);
             this.source = animaOrbTier.source;
@@ -170,7 +170,7 @@ var areaObjects = {
             this.flashColor = (animaOrbTier.upgradeCost && canAffordCost(animaOrbTier.upgradeCost)) ? 'white' : null;
             drawFixedObject.call(this, area);
         },
-        'helpMethod': function (object) {
+        helpMethod(object) {
             var animaOrbTier = animaOrbTiers[this.level - 1];
             var parts = [];
             parts.push(bonusSourceHelpText(animaOrbTier, state.selectedCharacter.adventurer));
@@ -180,7 +180,7 @@ var areaObjects = {
             }
             return titleDiv(animaOrbTier.name) + parts.join('<br/><br/>');
         },
-        'onMouseOut': function () {
+        onMouseOut() {
             hidePointsPreview();
         }
     },
@@ -190,17 +190,17 @@ var areaObjects = {
             upgradingObject = this;
         },
         'level': 1, 'source': coinStashTiers[0].source,
-        'getActiveBonusSources': function () {
+        getActiveBonusSources() {
             return [this.getCurrentTier()];
         },
-        'getCurrentTier': function () {
+        getCurrentTier() {
             return coinStashTiers[this.level - 1];
         },
-        'getNextTier': function () {
+        getNextTier() {
             return ifdefor(coinStashTiers[this.level]);
         },
         'width': 60, 'height': 60, 'depth': 60,
-        'draw': function (area) {
+        draw(area) {
             var coinStashTier = coinStashTiers[this.level - 1];
             this.scale = ifdefor(coinStashTier.scale, 1);
             this.source = coinStashTier.source;
@@ -208,7 +208,7 @@ var areaObjects = {
             this.flashColor = (coinStashTier.upgradeCost && canAffordCost(coinStashTier.upgradeCost)) ? 'white' : null;
             drawFixedObject.call(this, area);
         },
-        'helpMethod': function (object) {
+        helpMethod(object) {
             var coinStashTier = coinStashTiers[this.level - 1];
             var parts = [];
             parts.push(bonusSourceHelpText(coinStashTier, state.selectedCharacter.adventurer));
@@ -218,7 +218,7 @@ var areaObjects = {
             }
             return titleDiv(coinStashTier.name) + parts.join('<br/><br/>');
         },
-        'onMouseOut': function () {
+        onMouseOut() {
             hidePointsPreview();
         }
     },
@@ -226,11 +226,11 @@ var areaObjects = {
         'getActiveBonusSources': () => [{'bonuses': {'$hasItemCrafting': true}}],
     },
     'trophyAltar': {'name': 'Trophy Altar', 'source': objectSource(guildImage, [420, 180], [30, 30, 20], {'yOffset': -6}), 'action': openTrophySelection,
-        'getTrophyRectangle': function () {
+        getTrophyRectangle() {
             return {'left': this.target.left + (this.target.width - this.trophy.width) / 2,
                     'top': this.target.top - this.trophy.height + 10, 'width': this.trophy.width, 'height': this.trophy.height};
         },
-        'draw': function (area) {
+        draw(area) {
             // Make this altar flash if it is open and there is an unused trophy available to place on it.
             this.flashColor = (!this.trophy && isAltarTrophyAvailable) ? 'white' : null;
             drawFixedObject.call(this, area);
@@ -238,24 +238,24 @@ var areaObjects = {
                 if (canvasPopupTarget === this) drawSourceWithOutline(mainContext, this.trophy, '#fff', 2, this.getTrophyRectangle());
                 else this.trophy.draw(mainContext, this.getTrophyRectangle());
             }
-        }, 'isOver': function (x, y) {
+        }, isOver(x, y) {
             return isPointInRectObject(x, y, this.target) || (this.trophy && isPointInRectObject(x,y, this.getTrophyRectangle()));
         },
-        'helpMethod': function (object) {
+        helpMethod(object) {
             if (this.trophy) return this.trophy.helpMethod();
             return titleDiv('Trophy Altar');
         }
     },
     'candles': {'source': objectSource(guildImage, [540, 145], [25, 40, 0])},
     'bed': {'name': 'Worn Cot', 'source': objectSource(guildImage, [480, 210], [60, 24, 30], {'yOffset': -6}),
-        'getActiveBonusSources': function () {
+        getActiveBonusSources() {
             return [{'bonuses': {'+maxHeroes': 1}}];
         }
     },
     'jewelShrine': {'name': 'Shrine of Creation', 'source': objectSource(guildImage, [360, 180], [60, 60, 4], {'actualWidth': 30, 'yOffset': -6}), 'action': openJewels,
         'getActiveBonusSources': () => [{'bonuses': {'$hasJewelCrafting': true}}],
     },
-    'heroApplication': {'name': 'Application', 'source': {'width': 40, 'height': 60, 'depth': 0}, 'action': showApplication, 'draw': function (area) {
+    'heroApplication': {'name': 'Application', 'source': {'width': 40, 'height': 60, 'depth': 0}, 'action': showApplication, draw(area) {
         this.target.left = this.x - this.width / 2 - area.cameraX;
         this.target.top = groundY - this.y - this.height - this.z / 2;
         if (canvasPopupTarget === this) {
@@ -280,7 +280,7 @@ var areaObjects = {
 
     'skillShrine': {'name': 'Shrine of Divinity', 'source': objectSource(guildImage, [360, 180], [60, 60, 4], {'actualWidth': 30, 'yOffset': -6}), 'action': activateShrine},
     'closedChest': {'name': 'Treasure Chest', 'source': objectSource(requireImage('gfx/treasureChest.png'), [0, 0], [64, 64, 64], {'yOffset': -6}), 'action': openChest},
-    'openChest': {'name': 'Opened Treasure Chest', 'source': objectSource(requireImage('gfx/treasureChest.png'), [64, 0], [64, 64, 64], {'yOffset': -6}), 'action': function (actor) {
+    'openChest': {'name': 'Opened Treasure Chest', 'source': objectSource(requireImage('gfx/treasureChest.png'), [64, 0], [64, 64, 64], {'yOffset': -6}), action(actor) {
         messageCharacter(actor.character, 'Empty');
     }},
 }
@@ -321,8 +321,8 @@ function fixedObject(baseObjectKey, coords, properties) {
     var imageSource = base.source;
     var newFixedObject = $.extend({
                     'key': properties.key || baseObjectKey,
-                    'scale': scale,
-                    'fixed': true, 'base': base, 'x': coords[0], 'y': coords[1], 'z': coords[2],
+                    scale,
+                    'fixed': true, base, 'x': coords[0], 'y': coords[1], 'z': coords[2],
                     'width': ifdefor(properties.width, ifdefor(base.width, ifdefor(imageSource.actualWidth, imageSource.width))) * scale,
                     'height': ifdefor(properties.height, ifdefor(base.height, ifdefor(imageSource.actualHeight, imageSource.height))) * scale,
                     'target': {

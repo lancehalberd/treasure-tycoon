@@ -47,12 +47,12 @@ function drawTintIcon(context, target) {
 function tintIcon(imageFile, color) {
     requireImage(imageFile);
     return {
-        'imageFile': imageFile,
+        imageFile,
         'left': 0,
         'top': 0,
         'width': 32,
         'height': 32,
-        'color': color,
+        color,
         'draw': drawTintIcon
     };
 }

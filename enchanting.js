@@ -4,7 +4,7 @@ var allEnchantments = [];
 function addPrefix(level, name, tags, bonuses) {
     var bonusesKey = '';
     for (var bonusKey in bonuses) bonusesKey += bonusKey;
-    var affix = {'level': level, 'name':name, 'tags':tags, 'bonuses': bonuses, 'prefix': true, 'bonusesKey': bonusesKey};
+    var affix = {level, 'name':name, 'tags':tags, bonuses, 'prefix': true, bonusesKey};
     prefixes[level] = ifdefor(prefixes[level], []);
     prefixes[level].push(affix);
     allEnchantments.push(affix);
@@ -14,7 +14,7 @@ var suffixesByKey = {};
 function addSuffix(level, name, tags, bonuses) {
     var bonusesKey = '';
     for (var bonusKey in bonuses) bonusesKey += bonusKey;
-    var affix = {'level': level, 'name':name, 'tags':tags, 'bonuses': bonuses, 'suffix': true, 'bonusesKey': bonusesKey};
+    var affix = {level, 'name':name, 'tags':tags, bonuses, 'suffix': true, bonusesKey};
     suffixes[level] = ifdefor(suffixes[level], []);
     suffixes[level].push(affix);
     allEnchantments.push(affix);

@@ -175,20 +175,20 @@ function setActorDestination(actor, target) {
 function setActorAttackTarget(actor, target) {
     actor.activity = {
         'type': 'attack',
-        'target': target
+        target
     };
 }
 function setActionTarget(actor, action, target) {
     actor.activity = {
         'type': 'action',
-        'action': action,
-        'target': target
+        action,
+        target
     };
 }
 function setActorInteractionTarget(actor, target) {
     actor.activity = {
         'type': 'interact',
-        'target': target
+        target
     };
 }
 $('.js-mouseContainer').on('mouseout', '.js-mainCanvas', function (event) {
@@ -207,11 +207,11 @@ function drawMapButton() {
 }
 
 var returnToMapButton = {'source': {'image': requireImage('gfx/worldIcon.png'), 'top': 0, 'left': 0, 'width': 72, 'height': 72},
-    'isVisible': function () {
+    isVisible() {
         return state.selectedCharacter.context === 'adventure';
     },
     'draw': drawMapButton,
-    'top': 500, 'left': 20, 'width': 54, 'height': 54, 'helpText': 'Return to Map', 'onClick': function () {
+    'top': 500, 'left': 20, 'width': 54, 'height': 54, 'helpText': 'Return to Map', onClick() {
         state.selectedCharacter.replay = false;
         returnToMap(state.selectedCharacter);
 }};

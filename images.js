@@ -307,7 +307,7 @@ function drawAbilityIcon(context, icon, target) {
     var hPadding = (target.width - width) / 2;
     var height = Math.min(icon.height, target.height);
     var vPadding = (target.height - height) / 2;
-    var drawTarget = {'left': target.left + Math.ceil(hPadding), 'top': target.top + Math.ceil(vPadding), 'width': width, 'height': height};
+    var drawTarget = {'left': target.left + Math.ceil(hPadding), 'top': target.top + Math.ceil(vPadding), width, height};
     if (icon.draw) {
         icon.draw(context, drawTarget);
         return;

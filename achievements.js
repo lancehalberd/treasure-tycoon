@@ -37,7 +37,7 @@ var altarTrophies = {
 };
 function jobAchievement(jobKey, bonusesArray) {
     var job = characterClasses[jobKey];
-    return {'jobKey': jobKey, 'title': job.name + ' Trophy', 'level': 0, 'value': 0, 'width': trophySize, 'height': trophySize, 'bonusesArray': [
+    return {jobKey, 'title': job.name + ' Trophy', 'level': 0, 'value': 0, 'width': trophySize, 'height': trophySize, 'bonusesArray': [
                 {'target': 2, 'bonuses': bonusesArray[0]},
                 {'target': 10, 'bonuses': bonusesArray[1]},
                 {'target': 30, 'bonuses': bonusesArray[2]},
@@ -256,9 +256,9 @@ function showTophyPopup(trophy) {
         'left': Math.min(800, (lastPopup ? lastPopup.left : 800)) - 5 - trophyPopupWidth,
         'top': 600,
         'width': trophyPopupWidth, 'height': trophyPopupHeight,
-        'trophy': trophy,
+        trophy,
         'time': 0,
-        'onClick': function () {
+        onClick() {
             this.dismissed = true;
         }
     });

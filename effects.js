@@ -15,8 +15,8 @@ function songEffect(attackStats) {
     // are added/removed from this list.
     var effectedTargets = new Set();
     var self = {
-        'attackStats': attackStats, 'currentFrame': 0, 'done': false,
-        'update': function (area) {
+        attackStats, 'currentFrame': 0, 'done': false,
+        update(area) {
             self.currentFrame++;
             if (followTarget.time > endTime || attackStats.source.isDead) {
                 self.done = true;
@@ -37,7 +37,7 @@ function songEffect(attackStats) {
                 }
             }
         },
-        'draw': function (area) {
+        draw(area) {
             if (self.done) return;
             var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
             mainContext.save();
@@ -59,7 +59,7 @@ function songEffect(attackStats) {
 function animationEffect(animation, target, scale = [1, 1]) {
     return {
         'x': target.x, 'y': target.y, 'z': target.z, 'width': target.width * scale[0], 'height': target.height * scale[1], 'currentFrame': 0, 'done': false,
-        'update': function (area) {
+        update(area) {
             this.currentFrame++;
             this.x = target.x;
             this.y = target.y;
@@ -68,7 +68,7 @@ function animationEffect(animation, target, scale = [1, 1]) {
             this.height = target.height * scale[1];
             if (this.currentFrame >= animation.frames.length) this.done = true;
         },
-        'draw': function (area) {
+        draw(area) {
             if (this.done) return
             mainContext.save();
             // mainContext.globalAlpha = alpha;
@@ -106,8 +106,8 @@ function explosionEffect(attackStats, x, y, z) {
         height = radius * 2 * attack.base.heightRatio;
     }
     var self = {
-        'hitTargets': [], 'attack': attack, 'attackStats': attackStats, 'x': x, 'y': y, 'z': z, 'width': 0, 'height': 0, 'currentFrame': 0, 'done': false,
-        'update': function (area) {
+        'hitTargets': [], attack, attackStats, x, y, z, 'width': 0, 'height': 0, 'currentFrame': 0, 'done': false,
+        update(area) {
             self.currentFrame++;
             if (self.currentFrame > frames) {
                 if (self.currentFrame > frames + endFrames) self.done = true;
@@ -132,7 +132,7 @@ function explosionEffect(attackStats, x, y, z) {
                 self.hitTargets.push(target);
             }
         },
-        'draw': function (area) {
+        draw(area) {
             if (self.done) return
             var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
             mainContext.save();
@@ -171,13 +171,13 @@ function fieldEffect(attackStats, followTarget) {
     var nextHit = attackStats.source.time + 1 / attack.hitsPerSecond;
     var yOffset = getAttackY(attackStats.source) + ifdefor(attack.base.yOffset, 0);
     var self = {
-        'attackStats': attackStats,
+        attackStats,
         'x': followTarget.x,
         'y': followTarget.y,
         'z': followTarget.z,
-        'width': radius * 2, 'height': height,
+        'width': radius * 2, height,
         'currentFrame': 0, 'done': false,
-        'update': function (area) {
+        update(area) {
             self.currentFrame++;
             if (self.attackStats.source.time > endTime || attackStats.source.isDead) {
                 self.done = true;
@@ -205,7 +205,7 @@ function fieldEffect(attackStats, followTarget) {
             }
             applyAttackToTarget(attackStats, Random.element(targets));
         },
-        'draw': function (area) {
+        draw(area) {
             if (self.done) return
             var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
             mainContext.globalAlpha = alpha;
@@ -232,10 +232,10 @@ function projectile(attackStats, x, y, z, vx, vy, vz, target, delay, color, size
         throw new Error('Projectile found without size');
     }
     var self = {
-        'distance': 0, 'x': x, 'y': y, 'z': z, 'vx': vx, 'vy': vy, 'vz': vz, 't': 0, 'done': false, 'delay': delay,
+        'distance': 0, x, y, z, vx, vy, vz, 't': 0, 'done': false, delay,
         'width': size, 'height': size,
-        'hit': false, 'target': target, 'attackStats': attackStats, 'hitTargets': [],
-        'update': function (area) {
+        'hit': false, target, attackStats, 'hitTargets': [],
+        update(area) {
             // Put an absolute cap on how far a projectile can travel
             if (self.y < 0 || self.distance > 2000) {
                 applyAttackToTarget(self.attackStats, {'x': self.x, 'y': self.y, 'z': self.z, 'width': 0, 'height': 0});
@@ -334,7 +334,7 @@ function projectile(attackStats, x, y, z, vx, vy, vz, target, delay, color, size
                 }
             }
         },
-        'draw': function (area) {
+        draw(area) {
             if (self.done || self.delay > 0) return
             mainContext.save();
             mainContext.translate(self.x - area.cameraX, groundY - self.y - self.z / 2);

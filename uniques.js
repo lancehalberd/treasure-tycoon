@@ -7,12 +7,12 @@ function addUnique(itemKey, initialChance, incrementChance, displayName, prefixe
     }
     var baseItem = itemsByKey[itemKey];
     baseItem.unique = {
-        'initialChance': initialChance,
-        'incrementChance': incrementChance,
+        initialChance,
+        incrementChance,
         'chance': initialChance,
-        'displayName': displayName,
-        'prefixes': prefixes,
-        'suffixes': suffixes
+        displayName,
+        prefixes,
+        suffixes
     };
 }
 function checkToMakeItemUnique(item) {

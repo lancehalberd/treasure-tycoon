@@ -228,7 +228,7 @@ function updateLevelKey(level) {
 
 function createNewLevel(coords) {
     var key = coords.map(function (number) {return number.toFixed(0);}).join('_');
-    newMapTarget = {'x': 0, 'y': 0, 'coords': coords, 'levelKey': key, 'name': key, 'unlocks': [], 'level': 1, 'background': 'field', 'specialLoot': [], 'skill': null, 'board': null, 'enemySkills': [], 'monsters': ['skeleton'], 'events': [['dragon']]};
+    newMapTarget = {'x': 0, 'y': 0, coords, 'levelKey': key, 'name': key, 'unlocks': [], 'level': 1, 'background': 'field', 'specialLoot': [], 'skill': null, 'board': null, 'enemySkills': [], 'monsters': ['skeleton'], 'events': [['dragon']]};
     // If there already happens to be a level with this key, update it.
     updateLevelKey(map[key]);
     map[key] = newMapTarget;
@@ -271,7 +271,7 @@ function handleMapClick(x, y, event) {
             }
         } else {
             originalSelectedNodes = selectedMapNodes;
-            selectionStartPoint = {'x': x, 'y': y};
+            selectionStartPoint = {x, y};
         }
     }
     if (event.which != 1) return; // Handle only left click.
@@ -358,7 +358,7 @@ $('.js-mouseContainer').on('mousemove', function (event) {
     var y = event.pageY - $(this).offset().top;
     if (editingMap) {
         if (selectionStartPoint) {
-            var endPoint = {'x': x, 'y': y};
+            var endPoint = {x, y};
             var selectedRectangle = (rectangleFromPoints(selectionStartPoint, endPoint));
             selectedMapNodes = originalSelectedNodes.slice();
             $.each(visibleNodes, function (levelKey, levelData) {

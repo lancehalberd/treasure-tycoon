@@ -39,6 +39,7 @@ var playSound = (source, area) => {
 
 var previousTrack = null;
 var playTrack = source => {
+    return;
     if (soundsMuted) return;
     var source, offset, volume;
     [source, offset, volume] = source.split('+');

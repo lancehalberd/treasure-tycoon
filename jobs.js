@@ -33,15 +33,15 @@ function addCharacterClass(name, dexterityBonus, strengthBonus, intelligenceBonu
     startingEquipment = ifdefor(startingEquipment, {});
     startingEquipment.body = ifdefor(startingEquipment.body, itemsByKey.woolshirt);
     characterClasses[key] = {
-        'key': key,
-        'name': name,
-        'dexterityBonus': dexterityBonus,
-        'strengthBonus': strengthBonus,
-        'intelligenceBonus': intelligenceBonus,
-        'startingEquipment': startingEquipment,
+        key,
+        name,
+        dexterityBonus,
+        strengthBonus,
+        intelligenceBonus,
+        startingEquipment,
         'startingBoard': ifdefor(classBoards[key], squareBoard),
-        'jewelLoot': jewelLoot,
-        'iconSource': iconSource
+        jewelLoot,
+        iconSource
     };
 }
 function jobJewels(r,g,b) {

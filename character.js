@@ -297,8 +297,8 @@ function makeAdventurerFromData(adventurerData) {
         'skinColorOffset': ifdefor(adventurerData.skinColorOffset, Random.range(0, 2)) % 3,
         'level': adventurerData.level,
         'image': personCanvas,
-        'personCanvas': personCanvas,
-        'personContext': personContext,
+        personCanvas,
+        personContext,
         'attackCooldown': 0,
         'percentHealth': 1,
         'helpMethod': actorHelpText
@@ -312,11 +312,11 @@ function makeAdventurerFromData(adventurerData) {
 function makeAdventurerFromJob(job, level, equipment) {
     var adventurer = makeAdventurerFromData({
         'jobKey': job.key,
-        'level': level,
+        level,
         'name': Random.element(names),
         'hairOffset': Random.range(0, 6),
         'skinColorOffset': Random.range(0, 2),
-        'equipment': equipment
+        equipment
     });
     $.each(equipment, function (key, item) {
         state.craftedItems[item.key] = ifdefor(state.craftedItems[item.key], 0) | CRAFTED_NORMAL;

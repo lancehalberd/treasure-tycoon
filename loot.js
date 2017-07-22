@@ -1,8 +1,8 @@
 
 function coinTreasurePopup(coin, x, y, vx, vy, delay) {
     var self = {
-        'x': x, 'y': y, 'vx': vx, 'vy': vy, 't': 0, 'done': false, 'delay': delay,
-        'update': function (area) {
+        x, y, vx, vy, 't': 0, 'done': false, delay,
+        update(area) {
             if (delay-- > 0) return
             self.x += self.vx;
             self.y += self.vy;
@@ -10,7 +10,7 @@ function coinTreasurePopup(coin, x, y, vx, vy, delay) {
             self.t += 1;
             self.done = self.t > 40;
         },
-        'draw': function (area) {
+        draw(area) {
             if (delay > 0) return
             mainContext.drawImage(coin.image, coin.x, coin.y, coin.width, coin.height,
                 self.x - coin.width / 2 - area.cameraX, groundY - self.y - coin.height / 2, coin.width, coin.height);
@@ -21,10 +21,10 @@ function coinTreasurePopup(coin, x, y, vx, vy, delay) {
 
 function coinsLootDrop(amount) {
     return {
-        'gainLoot': function (hero) {
+        gainLoot(hero) {
             gain('coins', Math.round(amount * (1 + hero.increasedDrops)));
         },
-        'addTreasurePopup': function (hero, x, y, vx, vy, delay) {
+        addTreasurePopup(hero, x, y, vx, vy, delay) {
             var total = Math.round(amount * (1 + hero.increasedDrops));
             var nextDelay = delay;
             var index = coins.length - 1;
@@ -46,15 +46,15 @@ function coinsLootDrop(amount) {
 function coinsLoot(range) {
     return {
         'type': 'coinsLoot',
-        'generateLootDrop': function () {
+        generateLootDrop() {
         return coinsLootDrop(Random.range(range[0], range[1]));
     }};
 }
 
 function animaTreasurePopup(hero, coin, x, y, vx, vy, delay) {
     var self = {
-        'x': x, 'y': y, 'vx': vx, 'vy': vy, 't': 0, 'done': false, 'delay': delay,
-        'update': function (area) {
+        x, y, vx, vy, 't': 0, 'done': false, delay,
+        update(area) {
             if (delay-- > 0) return
             self.x += self.vx;
             self.y += self.vy;
@@ -71,7 +71,7 @@ function animaTreasurePopup(hero, coin, x, y, vx, vy, delay) {
             self.t += 1;
             self.done = self.t > 40;
         },
-        'draw': function (area) {
+        draw(area) {
             if (delay > 0 || self.x < hero.x + 16) return
             mainContext.drawImage(coin.image, coin.x, coin.y, coin.width, coin.height,
                 self.x - coin.width / 2 - area.cameraX, groundY - self.y - coin.height / 2, coin.width, coin.height);
@@ -81,10 +81,10 @@ function animaTreasurePopup(hero, coin, x, y, vx, vy, delay) {
 }
 function animaLootDrop(amount) {
     return {
-        'gainLoot': function (hero) {
+        gainLoot(hero) {
             gain('anima', Math.round(amount * (1 + hero.increasedDrops)));
         },
-        'addTreasurePopup': function (hero, x, y, vx, vy, delay) {
+        addTreasurePopup(hero, x, y, vx, vy, delay) {
             var total = Math.round(amount * (1 + hero.increasedDrops));
             var nextDelay = delay;
             var index = animaDrops.length - 1;
@@ -110,15 +110,15 @@ function jewelTreasurePopup(jewel, x, y, vx, vy, delay) {
     var popupShape = jewel.shape.clone().scale(.5);
     popupShape.color = jewel.shape.color;
     var self = {
-        'x': x, 'y': y, 'vx': vx, 'vy': vy, 't': 0, 'done': false, 'delay': delay,
-        'update': function (area) {
+        x, y, vx, vy, 't': 0, 'done': false, delay,
+        update(area) {
             if (delay-- > 0) return
             self.x += self.vx;
             self.y += self.vy;
             self.t += 1;
             self.done = self.t > 40;
         },
-        'draw': function (area) {
+        draw(area) {
             if (delay > 0) return
             popupShape.setCenterPosition(self.x - area.cameraX, groundY - self.y);
             var lightSource = relativeMousePosition(mainCanvas);
@@ -130,11 +130,11 @@ function jewelTreasurePopup(jewel, x, y, vx, vy, delay) {
 
 function jewelLootDrop(jewel) {
     return {
-        'gainLoot': function (hero) {
+        gainLoot(hero) {
             gainJewel(jewel);
             return jewel;
         },
-        'addTreasurePopup': function (hero, x, y, vx, vy, delay) {
+        addTreasurePopup(hero, x, y, vx, vy, delay) {
             hero.area.treasurePopups.push(jewelTreasurePopup(jewel, x, y, vx, vy, delay));
         }
     }
@@ -146,7 +146,7 @@ function gainJewel(jewel) {
 function jewelLoot(shapes, tiers, components, permute) {
     return {
         'type': 'jewelLoot',
-        'generateLootDrop': function () {
+        generateLootDrop() {
         return jewelLootDrop(createRandomJewel(shapes, tiers, components, permute));
     }};
 }
@@ -165,11 +165,11 @@ var simpleEmeraldLoot = jewelLoot(basicShapeTypes, [1, 1], [[5, 10], [90,100], [
 var simpleSaphireLoot = jewelLoot(basicShapeTypes, [1, 1], [[5, 10], [5, 10], [90, 100]], false);
 
 var loots = {
-    'smallJewelLoot': smallJewelLoot,
-    'simpleJewelLoot': simpleJewelLoot,
-    'simpleRubyLoot': simpleRubyLoot,
-    'simpleEmeraldLoot': simpleEmeraldLoot,
-    'simpleSaphireLoot': simpleSaphireLoot
+    smallJewelLoot,
+    simpleJewelLoot,
+    simpleRubyLoot,
+    simpleEmeraldLoot,
+    simpleSaphireLoot
 };
 
 function messageCharacter(character, text) {
@@ -184,10 +184,10 @@ function adventureBoardPreview(boardPreview, character) {
         'type': 'button',
         'width': 150,
         'height': 150,
-        'boardPreview': boardPreview,
-        'update': function (area) {
+        boardPreview,
+        update(area) {
         },
-        'isOver': function (x, y) {
+        isOver(x, y) {
             for (var shape of self.boardPreview.fixed.map(jewelToShape).concat(self.boardPreview.spaces)) {
                 if (isPointInPoints([x, y], shape.points)) {
                     return true;
@@ -195,7 +195,7 @@ function adventureBoardPreview(boardPreview, character) {
             }
             return false;
         },
-        'onClick': function (character) {
+        onClick(character) {
             centerShapesInRectangle(self.boardPreview.fixed.map(jewelToShape).concat(self.boardPreview.spaces), rectangle(0, 0, character.boardCanvas.width, character.boardCanvas.height));
             snapBoardToBoard(self.boardPreview, character.board);
             character.board.boardPreview = self.boardPreview;
@@ -203,7 +203,7 @@ function adventureBoardPreview(boardPreview, character) {
             updateConfirmSkillConfirmationButtons();
             setContext('jewel');
         },
-        'draw': function (area) {
+        draw(area) {
             // Remove the preview from the character if we draw it to the adventure screen since they both use the same coordinate variables
             // and displaying it in the adventure screen will mess up the display of it on the character's board. I think this will be okay
             // since they can't look at both screens at once.
@@ -212,7 +212,7 @@ function adventureBoardPreview(boardPreview, character) {
             centerShapesInRectangle(self.boardPreview.fixed.map(jewelToShape).concat(self.boardPreview.spaces), rectangle(self.x - area.cameraX - 5, groundY - self.y -5, 10, 10));
             drawBoardPreview(mainContext, [0, 0], self.boardPreview, true);
         },
-        'helpMethod': function () {
+        helpMethod() {
             return titleDiv('Divine Blessing')
                 + bodyDiv("Click on this Jewel Board Augmentation to preview adding it to this hero's Jewel Board." + divider + "Confirm the Augmentation to learn the ability and Level Up.");
         }

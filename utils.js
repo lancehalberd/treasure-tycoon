@@ -4,7 +4,7 @@ var Random = {
      * @param {Number} min  The smallest returned value
      * @param {Number} max  The largest returned value
      */
-    'range': function (A, B) {
+    range(A, B) {
         var min = Math.min(A, B);
         var max = Math.max(A, B);
         return Math.floor(Math.random() * (max + 1 - min)) + min;
@@ -13,7 +13,7 @@ var Random = {
     /**
      * @param {Array} array  The array of elements to return random element from
      */
-    'element': function (collection) {
+    element(collection) {
         if (collection.constructor == Object) {
             var keys = Object.keys(collection);
             return collection[this.element(keys)];
@@ -28,7 +28,7 @@ var Random = {
     /**
      * @param {Array} array  The array of elements to return random element from
      */
-    'removeElement': function (collection) {
+    removeElement(collection) {
         if (collection.constructor == Object) {
             var keys = Object.keys(collection);
             var key = this.element(keys);
@@ -52,7 +52,7 @@ var Random = {
      *
      * @param {Array} array  The array of elements to shuffle
      */
-    'shuffle': function (array) {
+    shuffle(array) {
         array = array.slice();
         var currentIndex = array.length, temporaryValue, randomIndex;
         // While there remain elements to shuffle...

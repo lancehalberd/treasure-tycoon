@@ -882,9 +882,9 @@ skillDefinitions.charge = {
     },
     use: function (actor, chargeSkill, target) {
         actor.chargeEffect = {
-            'chargeSkill': chargeSkill,
+            chargeSkill,
             'distance': 0,
-            'target': target,
+            target,
         };
     }
 };

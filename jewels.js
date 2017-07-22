@@ -81,16 +81,16 @@ function makeJewelProper(tier, shape, components, quality) {
     var shapeDefinition = shapeDefinitions[shape.key][0];
     var area = shapeDefinition.area;
     var jewel = {
-        'tier': tier,
+        tier,
         'shapeType': shape.key,
         'components': savedComponents,
-        'componentBonuses': componentBonuses,
+        componentBonuses,
         'qualifierName': ['Perfect', 'Brilliant', 'Shining', '', 'Dull'][qualifierIndex],
-        'qualifierBonus': qualifierBonus,
-        'jewelType': jewelType,
-        'quality': quality,
-        'shape': shape,
-        'area': area,
+        qualifierBonus,
+        jewelType,
+        quality,
+        shape,
+        area,
         'price': Math.round(10 * Math.pow(quality, 6) * (5 - qualifierIndex) * area),
         'adjacentJewels': [],
         'adjacencyBonuses': {}
@@ -253,15 +253,15 @@ function updateJewelBonuses(character) {
 function makeFixedJewel(shape, character, ability) {
     shape.color = '#333333';
     return {
-        'shape': shape,
+        shape,
         'shapeType': shape.key,
         'quality': 1,
         'jewelType': 0,
         'fixed': true,
         'disabled': false,
-        'character': character,
-        'ability': ability,
-        'helpMethod': function () {
+        character,
+        ability,
+        helpMethod() {
             var coreHelpText = abilityHelpText(ability, character.adventurer);
             var bonusText = bonusSourceHelpText({'bonuses': this.adjacencyBonuses}, state.selectedCharacter.adventurer);
             if (bonusText) coreHelpText += '<br/><br/>' + bonusText;

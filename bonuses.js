@@ -26,7 +26,7 @@ function parseBonus(bonusKeyString, bonusValue) {
         stats = [stat];
     }
     var statDependencies = getStatDependencies(bonusValue, {});
-    return {'operator': operator, 'tags': tags, 'stats': stats, 'value': bonusValue, 'statDependencies': statDependencies, 'shortHand': operator + tags.join(':') + ':' + stat + ':' + bonusValue};
+    return {operator, tags, stats, 'value': bonusValue, statDependencies, 'shortHand': operator + tags.join(':') + ':' + stat + ':' + bonusValue};
 }
 function getStatDependencies(bonusValue, dependencies) {
     if (ifdefor(bonusValue, null) === null) throw Error('bonusValue was null or undefined');
@@ -140,12 +140,12 @@ function addBonusSourceToObject(object, bonusSource, triggerComputation, isImpli
             if (dependencyString.indexOf('this.') === 0) {
                 var stat = dependencyString.substring(5);
                 object.bonusesDependingOn[stat] = ifdefor(object.bonusesDependingOn[stat], []);
-                object.bonusesDependingOn[stat].push({'object': object, 'bonus': bonus});
+                object.bonusesDependingOn[stat].push({object, bonus});
             } else {
                 var stat = dependencyString;
                 var dependencySource = ifdefor(object.actor, object);
                 dependencySource.bonusesDependingOn[stat] = ifdefor(dependencySource.bonusesDependingOn[stat], []);
-                dependencySource.bonusesDependingOn[stat].push({'object': object, 'bonus': bonus});
+                dependencySource.bonusesDependingOn[stat].push({object, bonus});
             }
         }
         addBonusToObject(object, bonus, isImplicit);

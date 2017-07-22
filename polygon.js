@@ -199,7 +199,7 @@ $.each(shapeDefinitions, function (key, shapes) {
     shapeTypes.push(key);
     for (var i = 0; i < shapes.length; i++) {
         shapes[i] = {
-            'key': key,
+            key,
             'lengths': shapes[i][0],
             'angles': shapes[i][1],
             'color': shapes[i][2],

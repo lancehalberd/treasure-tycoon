@@ -96,7 +96,7 @@ function baseItemLevelCost(itemLevel) {
 }
 function makeItem(base, level) {
     var item = {
-        'base': base,
+        base,
         'prefixes': [],
         'suffixes': [],
         // level is used to represent the required level, itemLevel is used
