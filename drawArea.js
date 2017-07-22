@@ -225,7 +225,12 @@ function getActorTints(actor) {
 function drawEffectIcons(actor, x, y) {
     var effectXOffset = 0;
     var effectYOffset = 2;
+    var seenEffects = {};
     for (var effect of actor.allEffects) {
+        var effectText = bonusSourceHelpText(effect, actor);
+        // Don't show icons for stacks of the same effect.
+        if (seenEffects[effectText]) continue;
+        seenEffects[effectText] = true;
         var icons = effect.base ? ifdefor(effect.base.icons, []) : [];
         if (!icons.length) continue;
         for (var iconData of icons) {

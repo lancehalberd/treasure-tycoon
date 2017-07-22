@@ -565,11 +565,18 @@ function applyAttackToTarget(attackStats, target) {
             break;
         }
     }
+    // Apply any on miss effects if the attack has missed.
+    if (attackStats.evaded || (attackStats.dodged && !attack.undodgeable)) {
+        for (var effect of (attacker.onMissEffects || [])) {
+            if (effect.debuff) addTimedEffect(target, effect.debuff, 0);
+            if (effect.buff) addTimedEffect(attacker, effect.buff, 0);
+        }
+    }
     if (attackStats.deflected || attackStats.evaded || attackStats.stopped) {
         return false;
     }
     // Attacks that always hit can still be avoided by a 'dodge' skill.
-    if (attackStats.dodged && !ifdefor(attack.undodgeable)) {
+    if (attackStats.dodged && !attack.undodgeable) {
         return false;
     }
 
@@ -579,30 +586,18 @@ function applyAttackToTarget(attackStats, target) {
         if (hitSound) playSound(hitSound, area);
     }
     makeExplosions();
-    attacker.health += ifdefor(attack.healthGainOnHit, 0) * effectiveness;
-    target.slow += ifdefor(attack.slowOnHit, 0) * effectiveness;
-    if (imprintedSpell) {
-        target.slow += ifdefor(imprintedSpell.slowOnHit, 0) * effectiveness;
-    }
-    if (attack.debuff) {
-        addTimedEffect(target, attack.debuff, 0);
-    }
-    if (imprintedSpell && imprintedSpell.debuff) {
-        addTimedEffect(target, imprintedSpell.debuff, 0);
-    }
-    var effects = ifdefor(attacker.onHitEffects, []);
-    if (attackStats.isCritical) {
-        effects = effects.concat(ifdefor(attacker.onCritEffects, []));
-    }
+    attacker.health += (attack.healthGainOnHit || 0) * effectiveness;
+    target.slow += (attack.slowOnHit || 0) * effectiveness;
+    if (imprintedSpell) target.slow += (imprintedSpell.slowOnHit || 0) * effectiveness;
+    if (attack.debuff) addTimedEffect(target, attack.debuff, 0);
+    if (imprintedSpell && imprintedSpell.debuff) addTimedEffect(target, imprintedSpell.debuff, 0);
+    var effects = attacker.onHitEffects || [];
+    if (attackStats.isCritical) effects = effects.concat(attacker.onCritEffects || []);
     for (var effect of effects) {
         // Some abilities like corsairs venom add a stacking debuff to the target every hit.
-        if (ifdefor(effect.debuff)) {
-            addTimedEffect(target, effect.debuff, 0);
-        }
+        if (effect.debuff) addTimedEffect(target, effect.debuff, 0);
         // Some abilities like dancer's whirling dervish add a stacking buff to the attacker every hit.
-        if (ifdefor(effect.buff)) {
-            addTimedEffect(attacker, effect.buff, 0);
-        }
+        if (effect.buff) addTimedEffect(attacker, effect.buff, 0);
     }
     if (totalDamage > 0) {
         var percentPhysical = damage / totalDamage;

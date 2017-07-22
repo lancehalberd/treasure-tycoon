@@ -143,6 +143,7 @@ function updateMonster(monster) {
     monster.reactions = [];
     monster.onHitEffects = [];
     monster.onCritEffects = [];
+    monster.onMissEffects = [];
     monster.tags = recomputActorTags(monster);
     addBonusSourceToObject(monster, {'bonuses': monster.base.implicitBonuses}, false);
     addBonusSourceToObject(monster, {'bonuses': getMonsterBonuses(monster)}, false);

@@ -352,6 +352,12 @@ function addActions(actor, source) {
         actor.onCritEffects.push(effect);
         addVariableChildToObject(actor, effect);
     }
+    if (ifdefor(source.onMissEffect)) {
+        effect = initializeVariableObject({}, source.onMissEffect, actor);
+        effect.ability = source;
+        actor.onMissEffects.push(effect);
+        addVariableChildToObject(actor, effect);
+    }
     if (ifdefor(source.action)) {
         action = initializeVariableObject({}, source.action, actor);
         action.ability = source;
@@ -410,6 +416,7 @@ function updateAdventurer(adventurer) {
     adventurer.reactions = [];
     adventurer.onHitEffects = [];
     adventurer.onCritEffects = [];
+    adventurer.onMissEffects = [];
     adventurer.allEffects = [];
     adventurer.minionBonusSources = [];
     var levelCoefficient = Math.pow(1.05, adventurer.level);

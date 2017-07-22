@@ -290,6 +290,7 @@ var bonusMap = {
     '-armor': '$1 decreased armor',
     '%armor': '%1 increased armor',
     '+evasion': '+$1 evasion',
+    '-evasion': '-$1 evasion',
     '*evasion': '$1× evasion',
     '%evasion': '%1 increased evasion',
     '+block': '+$1 block',

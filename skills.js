@@ -78,6 +78,7 @@ var effectSourceArmor = ['gfx/militaryIcons.png', 65, 180, 12, 12, 8, 8];
 //var effectSourceSword = ['gfx/militaryIcons.png', 52, 180, 12, 12, 8, 8];
 var effectSourceSword = ['gfx/militaryIcons.png', 85, 74, 16, 16, 6, 4];
 var effectSourcePoison = ['gfx/militaryIcons.png', 51, 74, 16, 16, 0, 0];
+var effectAccuracy = ['gfx/militaryIcons.png', 65, 194, 12, 12, 8, 8];
 var skills = {
     // Movement actions
     'dodge': movementAction('dodge', {'icon': dancerIcon}, {'+cooldown': 10, '+distance': -128, '$buff': buffEffect({}, {'+%evasion': .5, '+duration': 5})},
