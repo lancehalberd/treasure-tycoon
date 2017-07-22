@@ -3,13 +3,15 @@ var sounds = new Map(),
     soundsMuted = false;
 
 var requireSound = source => {
-    var source, offset, volume;
+    var source, offset, volume, customDuration;
     [source, offset, volume] = source.split('+');
+    if (offset) [offset, customDuration] = offset.split(':');
 
     if (sounds.has(source)) return sounds.get(source);
     var newSound = new Audio(source);
     newSound.instances = new Set();
     newSound.offset = offset || 0;
+    newSound.customDuration = customDuration || 0;
     newSound.defaultVolume = volume || 1;
     numberOfSoundsLeftToLoad++;
     sounds.set(source, newSound);
@@ -21,20 +23,32 @@ var requireSound = source => {
 
 var playSound = (source, area) => {
     if (soundsMuted || state.selectedCharacter.hero.area !== area ) return;
-    var source, offset,volume;
+    var source, offset,volume, customDuration;
     [source, offset, volume] = source.split('+');
+    if (offset) [offset, customDuration] = offset.split(':');
     var sound = requireSound(source);
     if (sound.instances.size >= 5) return;
     var newInstance = sound.cloneNode(false);
     newInstance.currentTime = (ifdefor(offset, sound.offset) || 0) / 1000;
     newInstance.volume = Math.min(1, (ifdefor(volume, sound.defaultVolume) || 1) / 50);
-    newInstance.play();
-    sound.instances.add(newInstance);
-    newInstance.onended = () => {
-        sound.instances.delete(newInstance);
-        newInstance.onended = null;
-        delete newInstance;
-    }
+    newInstance.play().then(() => {
+        var timeoutId;
+        if (customDuration || sound.customDuration) {
+            stimeoutId = setTimeout(() => {
+                sound.instances.delete(newInstance);
+                newInstance.onended = null;
+                newInstance.pause();
+                delete newInstance;
+            }, parseInt(customDuration || sound.customDuration));
+        }
+        sound.instances.add(newInstance);
+        newInstance.onended = () => {
+            sound.instances.delete(newInstance);
+            newInstance.onended = null;
+            delete newInstance;
+            clearTimeout(timeoutId);
+        }
+    });
 };
 
 var previousTrack = null;
@@ -59,7 +73,7 @@ var playTrack = source => {
     // See credits.html for: Negative Magic Spell by Iwan Gabovitch.
     'sounds/fireball.flac',
     // See credits.html for: Pack: Sword Sounds by 32cheeseman32.
-    'sounds/cheeseman/arrow.wav+0+50', 'sounds/cheeseman/sword.wav', 'sounds/cheeseman/arrowHit.wav+300',
+    'sounds/cheeseman/arrow.wav+0+50', 'sounds/cheeseman/sword.wav', 'sounds/cheeseman/arrowHit.wav+300:100',
     // See credits.html for: Laser Fire by dklon.
     'sounds/laser.wav',
     // See credits.html for: mobbrobb.

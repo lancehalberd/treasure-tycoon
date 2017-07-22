@@ -436,5 +436,7 @@ function removeEffectFromActor(actor, effect, triggerComputation) {
     if (index >= 0) {
         actor.allEffects.splice(index, 1);
         removeBonusSourceFromObject(actor, effect, triggerComputation);
+    } else {
+        debugger;
     }
 }

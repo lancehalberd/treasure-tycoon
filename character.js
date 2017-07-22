@@ -144,14 +144,11 @@ var coreStatBonusSource = {'bonuses': {
     '$lifeBarColor': 'red'
 }};
 
-function removeAdventureEffects(adventurer) {
-    setStat(adventurer, 'bonusMaxHealth', 0);
-    while (adventurer.allEffects.length) {
-        var effect = adventurer.allEffects.pop();
-        removeEffectFromActor(adventurer, effect, false);
-    }
-    initializeActorForAdventure(adventurer);
-    recomputeDirtyStats(adventurer);
+function removeAdventureEffects(actor) {
+    setStat(actor, 'bonusMaxHealth', 0);
+    while (actor.allEffects.length) removeBonusSourceFromObject(actor, actor.allEffects.pop(), false);
+    initializeActorForAdventure(actor);
+    recomputeDirtyStats(actor);
 }
 function initializeActorForAdventure(actor) {
     actor.isActor = true;
