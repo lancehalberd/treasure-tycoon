@@ -706,7 +706,7 @@ function getDistance(spriteA, spriteB) {
 function getDistanceOverlap(spriteA, spriteB) {
     var dx = spriteA.x - spriteB.x;
     var dz = spriteA.z - spriteB.z;
-    var distance = Math.sqrt(dx*dx + dz*dz) - (ifdefor(spriteA.width, 0) + ifdefor(spriteB.width, 0)) / 2;
+    var distance = Math.sqrt(dx*dx + dz*dz) - ((spriteA.width || 0) + (spriteB.width || 0)) / 2;
     if (isNaN(distance)) {
         console.log(JSON.stringify(['A:', spriteA.x, spriteA.y, spriteA.z, spriteA.width]));
         console.log(JSON.stringify(['B:', spriteB.x, spriteB.y, spriteB.z, spriteB.width]));

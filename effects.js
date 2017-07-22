@@ -13,45 +13,29 @@ function songEffect(attackStats) {
     var yOffset = getAttackY(attackStats.source) + ifdefor(attackStats.attack.base.yOffset, 0);
     // This list is kept up to date each frame and targets stats are updated as they
     // are added/removed from this list.
-    var effectedTargets = [];
+    var effectedTargets = new Set();
     var self = {
         'attackStats': attackStats, 'currentFrame': 0, 'done': false,
-        'x': followTarget.x,
-        'y': followTarget.y,
-        'z': followTarget.z,
-        'width': 0,
-        'height': 0,
         'update': function (area) {
             self.currentFrame++;
-            self.x = followTarget.x;
-            self.y = followTarget.y;
             if (followTarget.time > endTime || attackStats.source.isDead) {
                 self.done = true;
                 while (effectedTargets.length) removeEffectFromActor(effectedTargets.pop(), self.attackStats.attack.buff, true);
                 return;
             }
             var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
-            var oldTargets = effectedTargets;
-            var currentTargets = [];
-            for (var i = 0; i < self.attackStats.source.allies.length; i++) {
-                var target = self.attackStats.source.allies[i];
-                // distance is 1d right now, maybe we should change that?
-                var distance = getDistance(self, target);
-                if (distance > currentRadius) continue;
-                currentTargets.push(target);
-                var oldIndex = oldTargets.indexOf(target);
-                if (oldIndex >= 0) {
-                    // Remove this from the set of old targets, since it is still being
-                    // targeted. Below we remove the effect from old targets that
-                    // are no longer being targeted.
-                    oldTargets.splice(oldIndex, 1);
-                } else {
+            var currentLocation = {x: followTarget.x, z: followTarget.z}; // We can't just use followTarget because we need width/height to be 0.
+            for (target of self.attackStats.source.allies) {
+                if (getDistance(currentLocation, target) > currentRadius) {
+                    if (effectedTargets.has(target)) {
+                        removeEffectFromActor(target, self.attackStats.attack.buff, true);
+                        effectedTargets.delete(target);
+                    }
+                } else if (!effectedTargets.has(target)) {
                     addEffectToActor(target, self.attackStats.attack.buff, true);
+                    effectedTargets.add(target);
                 }
             }
-            while (oldTargets.length) removeEffectFromActor(oldTargets.pop(), self.attackStats.attack.buff, true);
-
-            effectedTargets = currentTargets;
         },
         'draw': function (area) {
             if (self.done) return;
@@ -60,7 +44,7 @@ function songEffect(attackStats) {
             mainContext.globalAlpha = alpha;
             mainContext.fillStyle = color;
             mainContext.beginPath();
-            mainContext.translate((followTarget.x - area.cameraX), groundY - yOffset);
+            mainContext.translate((followTarget.x - area.cameraX), groundY - yOffset - followTarget.z / 2);
             mainContext.scale(1, height / currentRadius);
             mainContext.arc(0, 0, currentRadius, 0, 2 * Math.PI);
             mainContext.fill();
