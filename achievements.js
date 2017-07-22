@@ -185,12 +185,16 @@ function updateTrophy(trophyKey, value) {
     if (i === trophy.level) return;
     // If we are changing the level of the trophy, and the trophy is on display, we need to
     // remove its bonuses, then add them again after changing the level.
-    if (trophy.area) removeTrophyBonuses(trophy);
+    if (trophy.areaKey) {
+        removeTrophyBonuses(trophy);
+    }
     trophy.level = i;
-    if (trophy.area) addTrophyBonuses(trophy);
+    if (trophy.areaKey) {
+        addTrophyBonuses(trophy, true);
+    }
     // This may be a newly available trophy, so update trophy availability.
     checkIfAltarTrophyIsAvailable();
-    showTophyPopup(trophy);
+    showTrophyPopup(trophy);
 }
 
 function addTrophyBonuses(trophy, recompute) {
@@ -204,7 +208,6 @@ function addTrophyBonuses(trophy, recompute) {
         guildBonusSources.push(bonusSource);
         for (var character of state.characters) {
             addBonusSourceToObject(character.adventurer, bonusSource);
-            //console.log(bonusSource.bonuses);
         }
     }
     if (recompute) recomputeAllCharacterDirtyStats();
@@ -247,7 +250,7 @@ var trophyPopups = [];
 var trophyPopupWidth = 160;
 var trophyPopupHeight = 80;
 
-function showTophyPopup(trophy) {
+function showTrophyPopup(trophy) {
     var lastPopup;
     if (trophyPopups.length) {
         lastPopup = trophyPopups[trophyPopups.length - 1];
@@ -282,7 +285,7 @@ function updateTrophyPopups() {
         }
         if (trophyPopup.top > 600 - 5 - trophyPopupHeight) {
             trophyPopup.top -= 10;
-        } else if (trophyPopup.time < 3) {
+        } else if (trophyPopup.time < 5) {
             trophyPopup.time += .02;
         } else {
             trophyPopup.dismissed = true;
