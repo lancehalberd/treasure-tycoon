@@ -425,6 +425,9 @@ function moveActor(actor) {
                     break;
                 }
             }
+            if (actor.chargeEffect && getDistanceOverlap(actor, actor.chargeEffect.target) <= 0) {
+                finishChargeEffect(actor, actor.chargeEffect.target);
+            }
         }
         if (!collision) {
             break;
