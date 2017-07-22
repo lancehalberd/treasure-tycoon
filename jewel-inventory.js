@@ -87,10 +87,10 @@ function sellJewel(jewel) {
     }
     // unequip and deletes the jewel.
     destroyJewel(jewel);
+    setMaxAnimaJewelBonus(state.maxAnimaJewelMultiplier * jewelAnimaBonus(jewel));
     gain('coins', jewel.price);
     gain('anima', jewel.price);
     updateJewelCraftingOptions();
-    setMaxAnimaJewelBonus(state.maxAnimaJewelMultiplier * jewelAnimaBonus(jewel));
     saveGame();
 }
 

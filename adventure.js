@@ -261,7 +261,9 @@ function moveActor(actor) {
     } else if (actor.activity) {
         switch (actor.activity.type) {
             case 'move':
-                if (getDistanceBetweenPointsSquared(actor, actor.activity) < 10) {
+                if (getDistanceBetweenPointsSquared(actor, actor.activity) < 10
+                    || (actor.character && actor.character.paused && !mouseDown)
+                ) {
                     actor.activity = null;
                     break;
                 }
@@ -356,7 +358,8 @@ function moveActor(actor) {
     } else if (goalTarget && !goalTarget.cloaked) {
         // If the character is closer than they need to be to auto attack then they can back away from
         // them slowly to try and stay at range.
-        var skillRange = actor.skillInUse ? (actor.skillInUse.range || .5) : getBasicAttack(actor).range;
+        var skill = actor.skillInUse || (actor.activity && actor.activity.action) || getBasicAttack(actor);
+        var skillRange = skill.range || .5;
         var distanceToTarget = getDistanceOverlap(actor, goalTarget);
         // Set the max distance to back away to to 10, otherwise they will back out of the range
         // of many activated abilities like fireball and meteor.
@@ -588,6 +591,9 @@ function runActorLoop(actor) {
             return;
         } else {
             actor.skillInUse = null;
+            if (actor.character && actor.character.paused && !mouseDown) {
+                actor.activity = null;
+            }
         }
     }
     if (actor.activity) {
@@ -596,7 +602,20 @@ function runActorLoop(actor) {
                 if (actor.activity.target.isDead) {
                     actor.activity = null;
                 } else {
-                    checkToUseSkillOnTarget(actor, actor.activity.target);
+                    var target = actor.activity.target;
+                    // If the actor is in manual mode, only do auto attacks.
+                    if (actor.character && actor.character.paused) {
+                        var basicAttack = getBasicAttack(actor);
+                        if (!basicAttack) {
+                            actor.acitity = null;
+                            break;
+                        }
+                        if (!canUseSkillOnTarget(actor, basicAttack, target)) break;
+                        if (!isTargetInRangeOfSkill(actor, basicAttack, target)) break;
+                        prepareToUseSkillOnTarget(actor, basicAttack, target);
+                    } else {
+                        checkToUseSkillOnTarget(actor, target);
+                    }
                 }
                 break;
             case 'action':
@@ -636,6 +655,10 @@ function runActorLoop(actor) {
             if (area.time >= character.finishTime) returnToMap(actor.character);
         }
         // Make minions follow their owners when there are no enemies present.
+    }
+    // Manual control doesn't use the auto targeting logic.
+    if (actor.character && actor.character.paused) {
+        return;
     }
     var targets = [];
     for (var ally of actor.allies) {

@@ -85,7 +85,7 @@
                 <span class="js-autoplayButton icon autoplayButton adventureButton" helptext="Auto Explore"></span>
                 <span class="js-repeatButton icon repeatButton adventureButton" helptext="Repeat this adventure"></span>
                 <span class="js-fastforwardButton icon fastforwardButton adventureButton" helptext="Fast Forward"></span>
-                <span class="js-pauseButton icon pauseButton adventureButton" helptext="Wait Mode<br/>When Wait Mode is active, time will stop when your hero is not acting."></span>
+                <span class="js-pauseButton icon pauseButton adventureButton" helptext="Wait Mode<br/>When Wait Mode is active, time will stop when your hero is not acting.<br/>Click a location and hold to move. Click an enemy and hold to autoattack."></span>
                 <span class="js-slowMotionButton icon slowMotionButton adventureButton" helptext="Slow Motion"></span>
                 <span class="js-shrineButton icon shrineButton adventureButton" helptext="Visit Shrines" style="display: none;"></span>
             </div>

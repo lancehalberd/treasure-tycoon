@@ -309,5 +309,5 @@ function setMaxAnimaJewelBonus(value) {
     state.maxAnimaJewelMultiplier = value;
     if (maxAnimaJewelBonus) removeBonusSourceFromObject(state.guildStats, maxAnimaJewelBonus);
     maxAnimaJewelBonus = {'bonuses': {'*maxAnima': value}};
-    addBonusSourceToObject(state.guildStats, maxAnimaJewelBonus);
+    addBonusSourceToObject(state.guildStats, maxAnimaJewelBonus, true);
 }
