@@ -471,6 +471,9 @@ $('body').on('click', '.js-shrineButton', function (event) {
 });
 
 function setContext(context) {
+    if (state.selectedCharacter.context === 'item') {
+        stopDrag();
+    }
     state.selectedCharacter.context = context;
     // If the player is not already in the guild when we return to the guild context, move them to the foyer.
     if (context === 'guild' && (!state.selectedCharacter.hero.area || !state.selectedCharacter.hero.area.isGuildArea)) {

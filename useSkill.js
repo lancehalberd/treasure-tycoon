@@ -551,7 +551,7 @@ skillDefinitions.heal = {
     isValid: (actor, healSkill, target) => target.isActor,
     shouldUse: function (actor, healSkill, target) {
         // Don't use a heal ability unless none of it will be wasted or the actor is below half life.
-        return actorCanOverHeal(target) || (target.health + healSkill.power <= target.maxHealth) || (target.health <= target.maxHealth / 2);
+        return (actorCanOverHeal(target) && actor.enemies.length) || (target.health + healSkill.power <= target.maxHealth) || (target.health <= target.maxHealth / 2);
     },
     use: function (actor, healSkill, target) {
         target.health += healSkill.power;
