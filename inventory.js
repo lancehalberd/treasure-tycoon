@@ -39,7 +39,8 @@ function equipItemProper(actor, item, update) {
 function unequipSlot(actor, slotKey, update) {
     //console.log(new Error("unequip " + slotKey));
     if (actor.equipment[slotKey]) {
-        var item = actor.equipment[slotKey]
+        var item = actor.equipment[slotKey];
+        item.$item.detach();
         item.actor = null;
         actor.equipment[slotKey] = null;
         removeActions(actor, item.base);
@@ -299,6 +300,7 @@ $('body').on('mousedown', '.js-item', function (event) {
     updateDragHelper();
     dragged = false;
     var item = $(this).data('item');
+    if (item.actor) unequipSlot(item.actor, item.base.slot, true);
     $('.js-equipment .js-' + item.base.slot).addClass(!canEquipItem(state.selectedCharacter.adventurer, item) ? 'invalid' : 'active');
     $('.js-enchantmentSlot').addClass('active');
     $('.js-inventorySlot').addClass('active');
@@ -384,9 +386,6 @@ function applyDragResults() {
         if ($otherItem.length) {
             addToInventory($otherItem.data('item'));
         }
-        if (item.actor) {
-            unequipSlot(item.actor, item.base.slot, true);
-        }
         $('.js-enchantmentSlot').append($source);
         return;
     }
@@ -397,44 +396,35 @@ function applyDragResults() {
         equipItem(state.selectedCharacter.adventurer, item)
         return false;
     });
-    if (!hit) {
-        var $target = null;
-        var largestCollision = 0;
-        $('.js-inventory .js-item').each(function (index, element) {
-            var $element = $(element);
-            var collisionArea = getCollisionArea($dragHelper, $element);
-            if (collisionArea > largestCollision) {
-                $target = $element;
-                largestCollision = collisionArea;
-            }
-        });
-        if ($target && $target.is($source)) {
-            // Not need to do anything if the item was dropped where it started.
-            hit = true;
-        } else if ($target) {
-            hit = true;
-            if (item.actor) {
-                unequipSlot(item.actor, item.base.slot, true);
-            }
-            // If an item is already in the inventory and it is before the item we are dropping
-            // it onto, place it after, not before that item because that item will move
-            // back one slot when the current item is removed, so the slot the player is hovering
-            // over will be after that item.
-            // Normally we want to place an item before the item they are hovering over since
-            // that is what will move the hovered item into that slot.
-            if ($source.closest('.js-inventory').length && $target.index() > $source.index()) {
-                $target.after($source.detach());
-            } else {
-                $target.before($source.detach());
-            }
+    if (hit) return;
+    var $target = null;
+    var largestCollision = 0;
+    $('.js-inventory .js-item').each(function (index, element) {
+        var $element = $(element);
+        var collisionArea = getCollisionArea($dragHelper, $element);
+        if (collisionArea > largestCollision) {
+            $target = $element;
+            largestCollision = collisionArea;
         }
-    }
-    if (!hit && collision($dragHelper, $('.js-inventory'))) {
-        if (item.actor) {
-            unequipSlot(item.actor, item.base.slot, true);
+    });
+    // Not need to do anything if the item was dropped where it started.
+    if ($target && $target.is($source)) return;
+    if ($target) {
+        // If an item is already in the inventory and it is before the item we are dropping
+        // it onto, place it after, not before that item because that item will move
+        // back one slot when the current item is removed, so the slot the player is hovering
+        // over will be after that item.
+        // Normally we want to place an item before the item they are hovering over since
+        // that is what will move the hovered item into that slot.
+        if ($source.closest('.js-inventory').length && $target.index() > $source.index()) {
+            $target.after($source.detach());
+        } else {
+            $target.before($source.detach());
         }
-        addToInventory(item);
+        return;
     }
+    // By default, if no other action is taken, we place the item at the end of the inventory.
+    addToInventory(item);
 }
 function stopInventoryDrag() {
     if ($dragHelper) {
