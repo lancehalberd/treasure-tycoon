@@ -73,8 +73,7 @@ var initialImagesToLoad = [
     'gfx/496RpgIcons/spellRevive.png',
     'gfx/496RpgIcons/spellStorm.png',
     'gfx/496RpgIcons/target.png',
-    // http://topps.diku.dk/torbenm/maps.msp
-    'gfx/squareMap.bmp',
+    'gfx/squareMap.bmp', // http://topps.diku.dk/torbenm/maps.msp
     'gfx/chest-closed.png', 'gfx/chest-open.png', // http://opengameart.org/content/treasure-chests
     'gfx/bat.png', // http://opengameart.org/content/bat-32x32
     'gfx/militaryIcons.png', // http://opengameart.org/content/140-military-icons-set-fixed
