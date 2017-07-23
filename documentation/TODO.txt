@@ -1,6 +1,5 @@
 
 Bug Fixes
--Drop dragged jewel when closing the jewel context.
 
 Content
 -Add Freeze animation+sound.
