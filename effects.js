@@ -20,7 +20,7 @@ function songEffect(attackStats) {
             self.currentFrame++;
             if (followTarget.time > endTime || attackStats.source.isDead) {
                 self.done = true;
-                while (effectedTargets.length) removeEffectFromActor(effectedTargets.pop(), self.attackStats.attack.buff, true);
+                effectedTargets.forEach(target => removeEffectFromActor(target, self.attackStats.attack.buff, true));
                 return;
             }
             var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
