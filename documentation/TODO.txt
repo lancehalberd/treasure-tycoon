@@ -1,0 +1,31 @@
+
+Bug Fixes
+-Drop dragged jewel when closing the jewel context.
+
+Content
+-Update credits.html
+-Add Freeze animation+sound.
+-Add storm animation+sound.
+-Add descriptions+monster definitions to areas
+-Finish job achievements
+-Plan+add additional achievements (gold/anima/fame)
+
+
+Feature Improvements
+-Add color bar to jewel help text
+-ctrl click to equip/unequip inventory
+-ctrl click to unequip jewels
+-ctrl click to craft jewels
+-Don't reset character stats on entering areas
+    - Dark Knight overheal should lose N% health per second when not aggrod
+    - Permanent effects should be removed on entering a guild area or when their source disappears
+    - Restore cooldowns on entering a guild area?
+
+
+Testing
+-Make sure skills work in 2d
+
+New Features
+-Add NPCs + dialogue
+-Add tutorial story
+-Jewel Crafting Leveling
