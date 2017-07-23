@@ -10,7 +10,6 @@ Content
 
 
 Feature Improvements
--Add color bar to jewel help text
 -ctrl click to equip/unequip inventory
 -ctrl click to unequip jewels
 -ctrl click to craft jewels

@@ -62,8 +62,29 @@ function jewelHelpText(jewel) {
         normalizedComponenets[i] = jewel.components[i] / componentSum;
     }
     sections.push('');
+    var totalWidth = 150;
+    var height = 10;
+    var components = [
+        {color: '#f00', value: normalizedComponenets[0], width: Math.round(normalizedComponenets[0] * totalWidth), 'active': jewel.jewelType & 1},
+        {color: '#0b0', value: normalizedComponenets[1], width: Math.round(normalizedComponenets[1] * totalWidth), 'active': jewel.jewelType & 2},
+        {color: '#00f', value: normalizedComponenets[2], width: Math.round(normalizedComponenets[2] * totalWidth), 'active': jewel.jewelType & 4},
+    ];
+    components.sort((A, B) => B.value - A.value);
+    // Adjust the final element so the total width is exactly totalWidth.
+    components[2].width = totalWidth - (components[0].width + components[1].width);
+    var activeColor = 'white';
+    var inactiveColor = '#AAA';
+    var balanceComponent = `<div style="box-sizing: border-box; display: inline-block; height: ${height}px; border-left: 2px solid ${activeColor}; border-right: 2px solid ${components[2].active ? activeColor : inactiveColor}">`;
+    for (var component of components) {
+        var color = component.active ? activeColor : inactiveColor;
+        balanceComponent += `<span style="box-sizing: border-box; display: inline-block; background-color: ${component.color}; height: ${height}px; width: ${component.width}px;`
+            + ` border-top: 2px solid ${color}; border-bottom: 2px solid ${color}"></span>`;
+    }
+    balanceComponent += '</div>';
+    sections.push(balanceComponent);
     sections.push('Quality ' + jewel.quality.format(2));
-    sections.push('Balance ' + [(300 * normalizedComponenets[0]).format(0), (300 * normalizedComponenets[1]).format(0), (300 * normalizedComponenets[2]).format(0)].join('/'));
+
+    //sections.push('Balance ' + [(300 * normalizedComponenets[0]).format(0), (300 * normalizedComponenets[1]).format(0), (300 * normalizedComponenets[2]).format(0)].join('/'));
     // sections.push('Color ' + jewel.shape.color);
     sections.push('');
     sections.push(bonusSourceHelpText(jewel, state.selectedCharacter.adventurer));
