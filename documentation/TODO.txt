@@ -3,7 +3,6 @@ Bug Fixes
 -Drop dragged jewel when closing the jewel context.
 
 Content
--Update credits.html
 -Add Freeze animation+sound.
 -Add storm animation+sound.
 -Add descriptions+monster definitions to areas
