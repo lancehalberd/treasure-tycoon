@@ -84,7 +84,7 @@ function makeMonster(monsterData, level, extraSkills, specifiedRarity) {
     monster.source = baseMonster.source;
     monster.stationary = ifdefor(baseMonster.stationary);
     monster.noBasicAttack = ifdefor(baseMonster.noBasicAttack);
-    monster.y = ifdefor(monster.source.y, 0);
+    monster.baseY = monster.y = ifdefor(monster.source.y, 0);
     /* $.each(baseMonster, function (key, value) {
         monster[key] = value;
     }); */

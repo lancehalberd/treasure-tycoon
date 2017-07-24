@@ -81,7 +81,7 @@ var effectSourcePoison = ['gfx/militaryIcons.png', 51, 74, 16, 16, 0, 0];
 var effectAccuracy = ['gfx/militaryIcons.png', 65, 194, 12, 12, 8, 8];
 var skills = {
     // Movement actions
-    'dodge': movementAction('dodge', {'icon': dancerIcon}, {'+cooldown': 10, '+distance': -128, '$buff': buffEffect({}, {'+%evasion': .5, '+duration': 5})},
+    'dodge': movementAction('dodge', {'icon': dancerIcon, jump: true}, {'+cooldown': 10, '+distance': -128, '$buff': buffEffect({}, {'+%evasion': .5, '+duration': 5})},
                             'Leap back to dodge an attack and gain: {$buff}'),
     'sideStep': movementAction('sideStep', {'icon': samuraiIcon, 'rangedOnly': true}, {'+cooldown': 10, '+moveDuration': .05, '+distance': 64,
                                         '$buff': buffEffect({}, {'++critChance': .2, '+duration': 2})},

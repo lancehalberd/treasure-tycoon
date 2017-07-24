@@ -207,9 +207,11 @@ function useSkill(actor) {
 function useReaction(actor, reaction, attackStats) {
     reaction.readyAt = actor.time + ifdefor(reaction.cooldown, 0);
     // Show the name of the skill. When skills have distinct visible animations, we should probably remove this.
-    var skillPopupText = {x: actor.x, y: actor.height, z: actor.z, color: 'white', fontSize: 15, 'vx': 0, 'vy': 1, 'gravity': .1};
-    skillPopupText.value = reaction.base.name;
-    appendTextPopup(actor.area, skillPopupText, true);
+    if (reaction.base.showName) {
+        var skillPopupText = {x: actor.x, y: actor.height, z: actor.z, color: 'white', fontSize: 15, 'vx': 0, 'vy': 1, 'gravity': .1};
+        skillPopupText.value = reaction.base.name;
+        appendTextPopup(actor.area, skillPopupText, true);
+    }
     skillDefinitions[reaction.base.type].use(actor, reaction, attackStats);
     triggerSkillEffects(actor, reaction);
 }
@@ -609,8 +611,19 @@ skillDefinitions.dodge = {
     use: function (actor, dodgeSkill, attackStats) {
         attackStats.dodged = true;
         if (ifdefor(dodgeSkill.distance)) {
-            actor.pull = {'x': actor.x + actor.heading[0] * dodgeSkill.distance,
+            var minX = actor.area.left, maxX = actor.area.width - actor.width / 2;
+            var targetX = actor.x + actor.heading[0] * dodgeSkill.distance;
+            // If the dodgeSkill distance is negative, it is designed to get away from the enemy.
+            // However, if the actor is cornered, this isn't possible by jumping backwards,
+            // so in this case, reverse the direction of the dodge skill.
+            if (dodgeSkill.distance < 0 && targetX < minX || targetX > maxX) {
+                targetX = actor.x - actor.heading[0] * dodgeSkill.distance;
+            }
+            // Constrain the landing position to the bounds of the area.
+            targetX = Math.min(maxX, Math.max(minX, targetX));
+            actor.pull = {'x': targetX,
                         'z': actor.z + actor.heading[2] * dodgeSkill.distance,
+                        'y': dodgeSkill.base.jump ? Math.min(100, Math.max(20, Math.abs(dodgeSkill.distance / 2))) : 0,
                         'time': actor.time + ifdefor(dodgeSkill.moveDuration, .3), 'damage': 0};
         }
         if (ifdefor(dodgeSkill.buff)) {

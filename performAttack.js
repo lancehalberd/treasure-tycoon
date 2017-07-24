@@ -554,6 +554,9 @@ function applyAttackToTarget(attackStats, target) {
     if (!ifdefor(attack.ignoreResistance)) {
         magicDamage = Math.round(magicDamage * Math.max(0, (1 - target.magicResist)));
     }
+    if (damage < 0 || magicDamage < 0) {
+        debugger;
+    }
     var totalDamage = damage + magicDamage;
     attackStats.totalDamage = totalDamage;
     attackStats.deflected = false;
@@ -602,9 +605,11 @@ function applyAttackToTarget(attackStats, target) {
     if (totalDamage > 0) {
         var percentPhysical = damage / totalDamage;
         var percentMagic = 1 - percentPhysical;
-        var percentOffset = Math.min(.9 - percentPhysical, .9 - percentMagic);
+        var percentOffset = Math.max(0, Math.min(.9 - percentPhysical, .9 - percentMagic));
         percentPhysical += percentOffset;
         percentMagic += percentOffset;
+        if (percentPhysical < 0 || percentPhysical > 1) debugger;
+        if (percentMagic < 0 || percentMagic > 1) debugger;
         var critBonus = attackStats.isCritical ? 30 : 0;
         var r = toHex(Math.floor(220 * percentPhysical) + critBonus);
         var b = toHex(Math.floor(220 * percentMagic) + critBonus);

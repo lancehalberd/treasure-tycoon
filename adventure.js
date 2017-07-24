@@ -544,11 +544,16 @@ function processStatusEffects(target) {
         }
     }
     if (ifdefor(target.pull) && ifdefor(target.pull.delay, 0) < target.time) {
+        if (!target.pull.duration) {
+            target.pull.duration = target.pull.time - target.time;
+        }
         if (target.pull.attackStats) {
             performAttackProper(target.pull.attackStats, target);
             target.pull.attackStats = null;
         }
         var timeLeft = (target.pull.time - target.time);
+        var radius = target.pull.duration / 2
+        var parabolaValue = (radius**2 - (timeLeft - radius)**2) / (radius ** 2);
         if (timeLeft > 0) {
             var dx = (target.pull.x - target.x) * Math.min(1, delta / timeLeft);
             var dr = (0 - target.rotation) * Math.min(1, delta / timeLeft);
@@ -556,11 +561,15 @@ function processStatusEffects(target) {
             var damage = target.pull.damage * Math.min(1, delta / timeLeft);
             target.pull.damage -= damage;
             target.x += dx;
+            var baseY = target.baseY || 0;
+            var dy = target.pull.y || 0 - baseY;
+            target.y = baseY + dy * parabolaValue;
             target.health -= damage;
         } else {
             var dx = target.pull.x - target.x;
             target.rotation = 0;
             target.x = target.pull.x;
+            target.y = target.baseY || 0;
             target.health -= target.pull.damage;
             target.pull = null;
         }
