@@ -115,7 +115,7 @@ var skills = {
     'soulStrike': attackAction('attack', {'icon': darkknightIcon, 'restrictions': ['melee'], showName: true}, {'+range': 2, '*damage': 2, '+cooldown': 15,
                                '$alwaysHits': 'Never misses', '+healthSacrifice': .2, '+cleave': 1},
                     'Sacrifice a portion of your current health to deal a cleaving attack that hits all enemies in an extended range.'),
-    'powerShot': attackAction('attack', {'icon': 'gfx/496RpgIcons/abilityPowerShot.png', 'restrictions': ['ranged'], showName: true}, {'+range': ['{weaponRange}', '+', 5], '+critChance': 1, '*damage': 1.5,
+    'powerShot': attackAction('attack', {'icon': 'gfx/496RpgIcons/abilityPowerShot.png', 'restrictions': ['ranged'], 'afterImages': 4}, {'+range': ['{weaponRange}', '+', 5], '+critChance': 1, '*damage': 1.5,
                                         '+cooldown': 10, '$alwaysHits': 'Never misses'},
                                 'Perform a powerful long ranged attack that always strikes critically.'),
     'snipe': attackAction('attack', {'icon': sniperIcon, 'restrictions': ['ranged'], showName: true}, {'+range': ['{weaponRange}', '+', 10], '*damage': 2, '+cooldown': 30,

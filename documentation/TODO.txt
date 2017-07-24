@@ -1,5 +1,8 @@
 
 Bug Fixes
+-Dodging can knock a player off camera.
+-Players/monsters get backed into corners too much.
+-Explosion animation is smaller than the effective radius and is obviously smaller for large radii
 
 Content
 -Add Freeze animation+sound.

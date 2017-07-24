@@ -222,7 +222,38 @@ function fieldEffect(attackStats, followTarget) {
     };
     return self;
 }
-
+// These are fake projectiles created by a projectile to be displayed as blurred after images.
+function afterImage({attackStats, x, y, z, vx, vy, vz, color, size, t} ) {
+    var alpha = 1;
+    return {
+        update(area) {
+            alpha -= 1 / ((attackStats.attack.base.afterImages || 3) + 1);
+            if (alpha <= 0) this.done = true;
+        },
+        draw(area) {
+            if (this.done || alpha >= 1) return;
+            mainContext.save();
+            mainContext.globalAlpha = alpha;
+            mainContext.translate(x - area.cameraX, groundY - y - z / 2);
+            if (vx < 0) {
+                mainContext.scale(-1, 1);
+                mainContext.rotate(-Math.atan2(vy, -vx));
+            } else {
+                mainContext.rotate(-Math.atan2(vy, vx));
+            }
+            var animation = attackStats.animation;
+            if (animation) {
+                var frame = animation.frames[Math.floor(ifdefor(animation.fps, 10) * t * 20 / 1000) % animation.frames.length];
+                mainContext.drawImage(animation.image, frame[0], frame[1], frame[2], frame[3],
+                                   -size / 2, -size / 2, size, size);
+            } else {
+                mainContext.fillStyle = ifdefor(color, '#000');
+                mainContext.fillRect(-size / 2, -size / 2, size, size);
+            }
+            mainContext.restore();
+        }
+    };
+}
 function projectile(attackStats, x, y, z, vx, vy, vz, target, delay, color, size) {
     size = ifdefor(size, 10);
     if (!size) {
@@ -232,8 +263,8 @@ function projectile(attackStats, x, y, z, vx, vy, vz, target, delay, color, size
         throw new Error('Projectile found without size');
     }
     var self = {
-        'distance': 0, x, y, z, vx, vy, vz, 't': 0, 'done': false, delay,
-        'width': size, 'height': size,
+        'distance': 0, x, y, z, vx, vy, vz, size, 't': 0, 'done': false, delay,
+        'width': size, 'height': size, color,
         'hit': false, target, attackStats, 'hitTargets': [],
         update(area) {
             // Put an absolute cap on how far a projectile can travel
@@ -241,7 +272,10 @@ function projectile(attackStats, x, y, z, vx, vy, vz, target, delay, color, size
                 applyAttackToTarget(self.attackStats, {'x': self.x, 'y': self.y, 'z': self.z, 'width': 0, 'height': 0});
                 self.done = true;
             }
-            if (self.done || self.delay-- > 0) return
+            if (self.done || self.delay-- > 0) return;
+            if (attackStats.attack.base.afterImages > 0) {
+                area.projectiles.push(new afterImage(this));
+            }
             self.x += self.vx;
             self.y += self.vy;
             self.z += self.vz;
@@ -277,60 +311,58 @@ function projectile(attackStats, x, y, z, vx, vy, vz, target, delay, color, size
                 }
             }
             // Don't do any collision detection once the projectile is spent.
-            if (self.hit) return;
-            if (hit) {
-                self.hit = true;
-                // Juggler can bounce attacks back to himself with friendly set to true to allow him to bounce
-                // attacks back to himself without injuring himself.
-                if (!ifdefor(attackStats.friendly) && ifdefor(self.target.reflectBarrier, 0) > 0) {
-                    // Allow reflect barrier to become negative so that it can take time to restore after being hit by a much more powerful attack.
-                    self.target.reflectBarrier = self.target.reflectBarrier - self.attackStats.magicDamage - self.attackStats.damage;
-                    self.hit = false;
-                    var newTarget = self.attackStats.source;
-                    self.attackStats.source = self.target;
-                    self.target = newTarget;
-                    var v = getProjectileVelocity(self.attackStats, self.x, self.y, self.z, newTarget);
-                    self.vx = v[0];
-                    self.vy = v[1];
-                    self.vz = v[2];
-                } else if (ifdefor(attackStats.friendly) || applyAttackToTarget(self.attackStats, self.target)) {
-                    attackStats.friendly = false;
-                    self.done = true;
-                    if (ifdefor(attackStats.attack.chaining)) {
-                        self.done = false;
-                        // every bounce allows piercing projectiles to hit each target again.
-                        self.hitTargets = [];
-                        // reduce the speed. This seems realistic and make it easier to
-                        // distinguish bounced attacks from new attacks.
-                        self.vx = -self.vx / 2;
-                        self.vz = -self.vz / 2;
-                        var targets = self.attackStats.source.enemies.slice();
-                        targets.push(attackStats.source);
-                        while (targets.length) {
-                            var index = Math.floor(Math.random() * targets.length);
-                            var newTarget = targets[index];
-                            if (newTarget.health <= 0 || newTarget === self.target || newTarget.cloaked
-                                || getDistance(self.target, newTarget) > self.attackStats.attack.range * 32
-                            ) {
-                                targets.splice(index--, 1);
-                                continue;
-                            }
-                            self.hit = false;
-                            self.target = newTarget;
-                            if (newTarget === attackStats.source) {
-                                attackStats.friendly = true;
-                            }
-                            // Calculate new velocity
-                            var v = getProjectileVelocity(self.attackStats, self.x, self.y, self.z, newTarget);
-                            self.vx = v[0];
-                            self.vy = v[1];
-                            self.vz = v[2];
-                            break;
+            if (self.hit || !hit) return;
+            self.hit = true;
+            // Juggler can bounce attacks back to himself with friendly set to true to allow him to bounce
+            // attacks back to himself without injuring himself.
+            if (!ifdefor(attackStats.friendly) && ifdefor(self.target.reflectBarrier, 0) > 0) {
+                // Allow reflect barrier to become negative so that it can take time to restore after being hit by a much more powerful attack.
+                self.target.reflectBarrier = self.target.reflectBarrier - self.attackStats.magicDamage - self.attackStats.damage;
+                self.hit = false;
+                var newTarget = self.attackStats.source;
+                self.attackStats.source = self.target;
+                self.target = newTarget;
+                var v = getProjectileVelocity(self.attackStats, self.x, self.y, self.z, newTarget);
+                self.vx = v[0];
+                self.vy = v[1];
+                self.vz = v[2];
+            } else if (ifdefor(attackStats.friendly) || applyAttackToTarget(self.attackStats, self.target)) {
+                attackStats.friendly = false;
+                self.done = true;
+                if (ifdefor(attackStats.attack.chaining)) {
+                    self.done = false;
+                    // every bounce allows piercing projectiles to hit each target again.
+                    self.hitTargets = [];
+                    // reduce the speed. This seems realistic and make it easier to
+                    // distinguish bounced attacks from new attacks.
+                    self.vx = -self.vx / 2;
+                    self.vz = -self.vz / 2;
+                    var targets = self.attackStats.source.enemies.slice();
+                    targets.push(attackStats.source);
+                    while (targets.length) {
+                        var index = Math.floor(Math.random() * targets.length);
+                        var newTarget = targets[index];
+                        if (newTarget.health <= 0 || newTarget === self.target || newTarget.cloaked
+                            || getDistance(self.target, newTarget) > self.attackStats.attack.range * 32
+                        ) {
+                            targets.splice(index--, 1);
+                            continue;
                         }
-                    } else if (ifdefor(self.attackStats.piercing)) {
-                        self.done = false;
-                        //console.log('pierce');
+                        self.hit = false;
+                        self.target = newTarget;
+                        if (newTarget === attackStats.source) {
+                            attackStats.friendly = true;
+                        }
+                        // Calculate new velocity
+                        var v = getProjectileVelocity(self.attackStats, self.x, self.y, self.z, newTarget);
+                        self.vx = v[0];
+                        self.vy = v[1];
+                        self.vz = v[2];
+                        break;
                     }
+                } else if (ifdefor(self.attackStats.piercing)) {
+                    self.done = false;
+                    //console.log('pierce');
                 }
             }
         },
