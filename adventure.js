@@ -53,7 +53,10 @@ function checkIfActorDied(actor) {
     if (actor.isDead || actor.health > 0 || actor.undying || actor.pull) return;
     // If the actor is about to die, check to activate their temporal shield if they have one.
     var stopTimeAction = findActionByTag(actor.reactions, 'stopTime');
-    if (useSkill(actor, stopTimeAction, null, {})) return;
+    if (stopTimeAction && canUseReaction(actor, stopTimeAction, {})) {
+        useReaction(actor, stopTimeAction, {});
+        return;
+    }
     // The actor has actually died, mark them as such and begin their death animation and drop spoils.
     actor.isDead = true;
     actor.timeOfDeath = actor.time;

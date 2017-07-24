@@ -76,5 +76,11 @@ const getTargetCameraX = (actor) => {
     var target = Math.min(actor.x - 20, centerX - 400);
     target = Math.max(ifdefor(area.left, 0), target);
     if (area.width) target = Math.min(area.width - 800, target);
+    // If a timestop is in effect, the caster must be in the frame.
+    if (area.timeStopEffect) {
+        var focusTarget = area.timeStopEffect.actor;
+        target = Math.max(focusTarget.x + focusTarget.width + 64 - 800, target);
+        target = Math.min(focusTarget.x - 64, target);
+    }
     return Math.round(target);
 };

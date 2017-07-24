@@ -386,6 +386,7 @@ skillDefinitions.stop = {
     use: function (actor, stopSkill, attackStats) {
         actor.area.timeStopEffect = {actor};
         if (actor.health <= 0) actor.health = 1;
+        actor.slow = 0;
     }
 };
 
