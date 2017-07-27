@@ -12,7 +12,6 @@ Content
 
 Feature Improvements
 - Player's divinity score should be effected by their kill %
--escape to close furniture popups (trophy altar, anima orb, coin stash, hero applications)
 -ctrl click to equip/unequip inventory
 -ctrl click to unequip jewels
 -ctrl click to craft jewels

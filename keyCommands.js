@@ -33,13 +33,11 @@ $(document).on('keydown', function(event) {
                     setContext('guild');
                 }
             }
-            /*if (state.selectedCharacter.context !== 'adventure') {
-                setContext('adventure');
-            } else if (state.selectedCharacter.hero.area) {
-                recallSelectedCharacter();
-            } else {
-                $('.js-areaMenu').hide();
-            }*/
+            if (state.selectedCharacter.context === 'adventure' || state.selectedCharacter.context === 'guild') {
+                $('.js-heroApplication').hide();
+                choosingTrophyAltar = null;
+                upgradingObject = null;
+            }
         }
     }
     if (isEditingAllowed()) {
