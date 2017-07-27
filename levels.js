@@ -230,6 +230,8 @@ var drawLetter = (context, letter, x, y) => {
 
 function activateShrine(actor) {
     var character = actor.character;
+    // Don't activate the shrine a second time.
+    if (character.isStuckAtShrine) return;
     var area = actor.area;
     var level = map[character.currentLevelKey];
     if (character.adventurer.level >= maxLevel) {
@@ -259,10 +261,6 @@ function activateShrine(actor) {
     blessingText.x = this.x;
     blessingText.y = 330;
     area.objects.push(blessingText);
-    var skipButton = iconButton({'image': images['gfx/nielsenIcons.png'], 'left': 160, 'top': 160, 'width': 32, 'height': 32}, 64, 64, finishShrine, 'Continue without leveling');
-    skipButton.x = this.x + 128;
-    skipButton.y = 112;
-    area.objects.push(skipButton);
     character.isStuckAtShrine = true;
 }
 function finishShrine(character) {
@@ -303,6 +301,7 @@ function iconButton(iconSource, width, height, onClick, helpText) {
         'x': 0,
         'y': 0,
         'type': 'button',
+        'solid': false,
         width,
         height,
         update(area) {
@@ -325,6 +324,7 @@ function objectText(text) {
         'x': 0,
         'y': 0,
         'type': 'text',
+        'solid': false,
         isOver(x, y) {return false;},
         update(area) {},
         draw(area) {

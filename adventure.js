@@ -413,7 +413,7 @@ function runActorLoop(actor) {
         // Code for intracting with chest/shrine at the end of level and leaving the area.
         for (var object of area.objects) {
             // Hack the actor will only check objects the he hasn't passed yet.
-            if (object.x < actor.x + 100) continue;
+            if (object.solid !== false && object.x < actor.x + 100) continue;
             // The AI only considers each object once.
             object.considered = true;
             if (object.key === 'closedChest') {
@@ -491,7 +491,9 @@ function checkToUseSkillOnTarget(actor, target) {
 }
 
 function actorShouldAutoplay(actor) {
-    return !actor.character || (actor.character.autoplay || (actor.character !== state.selectedCharacter && actor.enemies.length));
+    if (!actor.character) return true; // Only character heroes can be manually controlled.
+    return !actor.character.isStuckAtShrine
+        && (actor.character.autoplay || (actor.character !== state.selectedCharacter && actor.enemies.length));
 }
 
 // The distance functions assume objects are circular in the x/z plane and are calculating

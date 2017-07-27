@@ -181,6 +181,7 @@ function adventureBoardPreview(boardPreview, character) {
     var self = {
         'x': 0,
         'y': 0,
+        'solid': false,
         'type': 'button',
         'width': 150,
         'height': 150,

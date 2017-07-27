@@ -3,10 +3,6 @@ var rotationB = Math.sin(Math.PI / 20);
 function moveActor(actor) {
     const area = actor.area;
     var delta = frameMilliseconds / 1000;
-    if (actor.character && actor.character.isStuckAtShrine) {
-        actor.walkFrame = 0;
-        return;
-    }
     if (actor.isDead || actor.stunned || actor.pull || ifdefor(actor.stationary) || (actor.skillInUse && actor.preparationTime < actor.skillInUse.totalPreparationTime)) {
         return;
     }
@@ -159,6 +155,7 @@ function moveActor(actor) {
         }
         if (!collision) {
             for (var object of area.objects) {
+                if (object.solid === false) continue;
                 var distance = getDistanceOverlap(actor, object);
                 if (distance <= -8 && new Vector([(actor.x - currentX), (actor.z - currentZ)]).dotProduct(new Vector([object.x - currentX, object.z - currentZ])) > 0) {
                     collision = true;
