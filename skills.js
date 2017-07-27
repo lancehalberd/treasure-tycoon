@@ -83,7 +83,7 @@ var skills = {
     // Movement actions
     'dodge': movementAction('dodge', {'icon': dancerIcon, jump: true}, {'+cooldown': 10, '+distance': -128, '$buff': buffEffect({}, {'+%evasion': .5, '+duration': 5})},
                             'Leap back to dodge an attack and gain: {$buff}'),
-    'sideStep': movementAction('sideStep', {'icon': samuraiIcon, 'rangedOnly': true}, {'+cooldown': 10, '+moveDuration': .05, '+distance': 64,
+    'sideStep': movementAction('sideStep', {'icon': samuraiIcon, 'rangedOnly': true}, {'+cooldown': 10, '+moveDuration': .1, '+distance': 192,
                                         '$buff': buffEffect({}, {'++critChance': .2, '+duration': 2})},
                             'Side step a ranged attack and advance toward enemis gaining: {$buff}'),
 

@@ -13,11 +13,13 @@ var requireSound = source => {
     newSound.offset = offset || 0;
     newSound.customDuration = customDuration || 0;
     newSound.defaultVolume = volume || 1;
-    numberOfSoundsLeftToLoad++;
     sounds.set(source, newSound);
+    /*numberOfSoundsLeftToLoad++;
+    console.log('loading: ' + source);
     newSound.oncanplaythrough = () => {
         numberOfSoundsLeftToLoad--;
-    };
+        console.log('loaded: ' + source);
+    };*/
     return newSound;
 };
 
