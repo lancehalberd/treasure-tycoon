@@ -174,13 +174,14 @@ function initializeActorForAdventure(actor) {
     updateActorDimensions(actor);
 }
 function returnToMap(character) {
-    removeAdventureEffects(character.adventurer);
-    character.adventurer.goalTarget = null;
+    //character.hero.levelInstance = null
+    removeAdventureEffects(character.hero);
+    character.hero.goalTarget = null;
     character.isStuckAtShrine = false;
     leaveCurrentArea(character.hero);
     updateAdventureButtons();
     if (character.autoplay && character.replay) {
-        startArea(character, character.currentLevelKey);
+        startLevel(character, character.currentLevelKey);
     } else if (testingLevel) {
         stopTestingLevel();
     } else if (state.selectedCharacter === character) {
@@ -227,7 +228,6 @@ function newCharacter(job) {
     character.characterContext = characterCanvas.getContext("2d");
     character.boardCanvas = createCanvas(jewelsCanvas.width, jewelsCanvas.height);
     character.boardContext = character.boardCanvas.getContext("2d");
-    character.time = now();
     character.gameSpeed = 1;
     character.replay = false;
     character.divinityScores = {};

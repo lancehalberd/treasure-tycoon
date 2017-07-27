@@ -85,12 +85,10 @@ function makeMonster(monsterData, level, extraSkills, specifiedRarity) {
     monster.stationary = ifdefor(baseMonster.stationary);
     monster.noBasicAttack = ifdefor(baseMonster.noBasicAttack);
     monster.baseY = monster.y = ifdefor(monster.source.y, 0);
-    /* $.each(baseMonster, function (key, value) {
-        monster[key] = value;
-    }); */
 
-
-    var rarity = ifdefor(specifiedRarity, (Math.random() < .25) ? (Math.random() * (level - 1) * .6) : 0);
+    var rarity = (ifdefor(specifiedRarity) !== null) // Note (null >= 0) is true...
+        ? specifiedRarity
+        : ((Math.random() < .25) ? (Math.random() * (level - 1) * .6) : 0);
     if (rarity < 1) {
 
     } else if (rarity < 3) {

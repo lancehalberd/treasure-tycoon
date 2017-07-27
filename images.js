@@ -201,7 +201,7 @@ function makeTintedImage(image, tint) {
     resultContext.globalAlpha = 1;
     return resultCanvas;
 }
-var globalTintCanvas = createCanvas(150, 300);
+var globalTintCanvas = createCanvas(400, 300);
 var globalTintContext = globalTintCanvas.getContext('2d');
 globalTintContext.imageSmoothingEnabled = false;
 function drawTintedImage(context, image, tint, amount, source, target) {

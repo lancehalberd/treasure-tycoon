@@ -63,7 +63,7 @@ function drawArea(area) {
         context.textAlign = 'center'
         context.fillText(textPopup.value, textPopup.x - cameraX, groundY - textPopup.y - textPopup.z / 2);
     }
-    if (area.waves) drawMinimap(area);
+    if (area.areas) drawMinimap(area);
 }
 function updateActorAnimationFrame(actor) {
     if (actor.pull || actor.stunned || actor.isDead ) {
@@ -251,29 +251,40 @@ function drawMinimap(area) {
     var x = 10;
     var width = 750;
     var context = mainContext;
-    drawBar(context, x, y, width, height, 'white', 'white', area.waveIndex / area.waves.length);
-    for (var i = 0; i < area.waves.length; i++) {
-        var centerX = x + (i + 1) * width / area.waves.length;
+    var areaIndex = 0;
+    var numberOfAreas = area.areas.size;
+    var i = 0;
+    area.areas.forEach(mapArea => {
+        if (mapArea === area) areaIndex = i + 1;
+        i++;
+    });
+    drawBar(context, x, y, width, height, 'white', 'white', areaIndex / numberOfAreas);
+    var i = 0;
+    area.areas.forEach(mapArea => {
+        var centerX = x + (i + 1) * width / area.areas.size;
         var centerY = y + height / 2;
         context.fillStyle = 'white';
         context.beginPath();
             context.arc(centerX, centerY, 11, 0, 2 * Math.PI);
         context.fill();
-    }
+        i++;
+    });
     context.fillStyle = 'orange';
-    context.fillRect(x + 1, y + 1, (width - 2) * (area.waveIndex / area.waves.length) - 10, height - 2);
-    for (var i = 0; i < area.waves.length; i++) {
-        var centerX = x + (i + 1) * width / area.waves.length;
+    context.fillRect(x + 1, y + 1, (width - 2) * (areaIndex / numberOfAreas) - 10, height - 2);
+    i = 0;
+    area.areas.forEach(mapArea => {
+        var centerX = x + (i + 1) * width / numberOfAreas;
         var centerY = y + height / 2;
-        if (i < area.waveIndex) {
+        if (i < areaIndex) {
             context.fillStyle = 'orange';
             context.beginPath();
             context.arc(centerX, centerY, 10, 0, 2 * Math.PI);
             context.fill();
         }
-        var waveCompleted = (i < area.waveIndex - 1)  || (i <= area.waveIndex - 1 && (ifdefor(area.enemies, []).length + ifdefor(area.objects, []).length) === 0);
-        area.waves[i].draw(context, waveCompleted, centerX, centerY);
-    }
+        var areaCompleted = !(mapArea.enemies || []).length;
+        mapArea.drawMinimapIcon(context, areaCompleted, centerX, centerY);
+        i++;
+    });
 }
 
 

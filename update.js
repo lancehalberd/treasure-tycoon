@@ -15,15 +15,6 @@ setInterval(() => {
     var activeGuildAreaHash = {};
     for (var character of characters) {
         var hero = character.hero;
-        if (character.context === 'adventure' || character.context === 'guild') {
-            var area = character.adventurer.area;
-            // Only update the camera for the guild for the selected character, but
-            // always update the camera for characters in adventure areas.
-            if (character === state.selectedCharacter || (area && !area.isGuildArea)) {
-                var targetCameraX = getTargetCameraX(hero);
-                area.cameraX = Math.round((area.cameraX * 20 + targetCameraX) / 21);
-            }
-        }
         if (character.context === 'guild' ||
             (character.context === 'adventure' && !isCharacterPaused(character))
         ) {
@@ -33,12 +24,17 @@ setInterval(() => {
             var gameSpeed = (character.autoplay) ? character.gameSpeed : 1;
             for (var i = 0; i < gameSpeed  && character.adventurer.area; i++) {
                 character.time += frameMilliseconds / 1000;
-                if (character.context === 'adventure') updateArea(character.hero.area, frameMilliseconds / 1000);
-                else if (character.context === 'guild') activeGuildAreaHash[character.guildAreaKey] = true;
+                if (character.context === 'adventure') {
+                    updateAreaCamera(hero.area, hero);
+                    updateArea(hero.area, frameMilliseconds / 1000);
+                } else if (character.context === 'guild') activeGuildAreaHash[character.guildAreaKey] = true;
             }
         }
     }
-    for (var guildAreaKey in activeGuildAreaHash) updateArea(guildAreas[guildAreaKey]);
+    for (var guildAreaKey in activeGuildAreaHash) {
+        updateAreaCamera(guildAreas[guildAreaKey], state.selectedCharacter.hero);
+        updateArea(guildAreas[guildAreaKey]);
+    }
     if (state.selectedCharacter.context === 'adventure' || state.selectedCharacter.context === 'guild') {
         var hero = state.selectedCharacter.adventurer;
         if (mouseDown && state.selectedCharacter.hero.area && clickedToMove) {
@@ -60,11 +56,44 @@ setInterval(() => {
     }
 }, frameMilliseconds);
 
+function updateAreaCamera(area, hero) {
+    // Only update the camera for the guild for the selected character, but
+    // always update the camera for characters in adventure areas.
+    if (hero.area === area || (area && !area.isGuildArea)) {
+        var targetCameraX = getTargetCameraX(hero);
+        area.cameraX = Math.round((area.cameraX * 15 + targetCameraX) / 16);
+    }
+}
+
+const getTargetCameraX = (actor) => {
+    var mousePosition = relativeMousePosition($(mainCanvas));
+    var area = actor.area;
+    var centerX = actor.x;
+    var mouseX = Math.max(0, Math.min(800, mousePosition[0]));
+    if (actor.activity && actor.activity.type === 'move') {
+        centerX = (centerX + actor.activity.x) / 2;
+    } else if (actor.goalTarget && !actor.goalTarget.isDead) {
+        centerX = (centerX + actor.goalTarget.x) / 2;
+    }
+    if (mouseX > 700) centerX = centerX + (mouseX - 700) / 2;
+    else if (mouseX < 100) centerX = centerX + (mouseX - 100) / 2;
+    var target = Math.min(actor.x - 20, centerX - 400);
+    target = Math.max(area.left || 0, target);
+    if (area.width) target = Math.min(area.width - 800, target);
+    // If a timestop is in effect, the caster must be in the frame.
+    if (area.timeStopEffect) {
+        var focusTarget = area.timeStopEffect.actor;
+        target = Math.max(focusTarget.x + focusTarget.width + 64 - 800, target);
+        target = Math.min(focusTarget.x - 64, target);
+    }
+    return Math.round(target);
+};
+
 function isCharacterPaused(character) {
     const hero = character.hero;
     if (!character.paused) return false;
     if (hero.activity || hero.skillInUse) return false;
     if (hero.chargeEffect) return false;
-    if (!hero.area.waves || !hero.area.waves[hero.area.waveIndex]) return false;
+    if (!hero.area.enemies) return false;
     return true;
 }

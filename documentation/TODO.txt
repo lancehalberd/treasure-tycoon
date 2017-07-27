@@ -1,4 +1,3 @@
-
 Bug Fixes
 -Players/monsters get backed into corners too much.
 -Explosion animation is smaller than the effective radius and is obviously smaller for large radii
@@ -12,6 +11,11 @@ Content
 
 
 Feature Improvements
+-Divide each area into subareas and don't require defeating any monsters but the boss.
+    - Player's divinity score will be effected by their kill %
+    - Arches are used to connect areas, and will be present at the start and end to return to the map.
+    - Auto adventure will defeat all monsters before proceeding to the next area.
+-escape to close furniture popups (trophy altar, anima orb, coin stash, hero applications)
 -ctrl click to equip/unequip inventory
 -ctrl click to unequip jewels
 -ctrl click to craft jewels

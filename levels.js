@@ -1,9 +1,9 @@
+
+var closedChestSource = {image: requireImage('gfx/chest-closed.png'), source: rectangle(0, 0, 32, 32)};
+var openChestSource = {image: requireImage('gfx/chest-open.png'), source: rectangle(0, 0, 32, 32)};
+
 function instantiateLevel(levelData, levelDifficulty, difficultyCompleted, level) {
-    var waves = [];
     level = ifdefor(level, levelData.level);
-    var numberOfWaves = Math.min(10, 3 + Math.floor(2 * Math.sqrt(level)));
-    var minWaveSize = Math.floor(Math.min(4, Math.sqrt(level)) * 10);
-    var maxWaveSize = Math.floor(Math.min(10, 2.2 * Math.sqrt(level)) * 10);
     var levelDegrees = (360 + 180 * Math.atan2(levelData.coords[1], levelData.coords[0]) / Math.PI) % 360;
     var possibleMonsters = levelData.monsters.slice();
     var strengthMonsters = ['skeleton','skeletalBuccaneer','undeadPaladin','undeadWarrior', 'stealthyCaterpillar'];
@@ -57,38 +57,83 @@ function instantiateLevel(levelData, levelDifficulty, difficultyCompleted, level
         events.push([Random.element(possibleMonsters), Random.element(eventMonsters), Random.element(bossMonsters)]);
         //console.log(JSON.stringify(events));
     }
-    // Make sure we have at least enough waves for the required events
-    numberOfWaves = Math.max(events.length, numberOfWaves);
-    // To keep endless levels from dragging on forever, they just have 1 random wave per event wave.
-    if (levelDifficulty === 'endless') {
-        numberOfWaves = Math.min(Math.max(10, events.length), 2 * events.length);
-    }
-    var eventsLeft = events;
-    while (waves.length < numberOfWaves) {
-        var waveSize = Math.max(1, Math.floor(Random.range(minWaveSize, maxWaveSize) / 10));
-        var wave = [];
-        // The probability of including an event is the number of events over the number
-        // of open waves left (ex)
-        var wavesLeft = numberOfWaves - waves.length;
-        // This will be 100% chance to include event wave once # events = # waves left
-        if ((wavesLeft === 1 || eventsLeft.length > 1) && Math.random() < eventsLeft.length / wavesLeft) {
-            wave = eventsLeft.shift();
-            waves.push(!eventsLeft.length ? bossWave(wave) : eventWave(wave));
-        } else {
-            // Don't add random mobs to boss waves.
-            while (wave.length < waveSize) {
-                wave.push(Random.element(possibleMonsters));
-            }
-            waves.push(monsterWave(wave));
-        }
+    var minMonstersPerArea = Math.ceil(Math.min(4, 1.5 * level / events.length));
+    var maxMonstersPerArea = Math.floor(Math.min(10, 4 * level / events.length));
 
+    var eventsLeft = events;
+    var areas = new Map();
+    var lastArea;
+    var levelBonuses = (levelData.enemySkills || []).map(abilityKey => abilities[abilityKey]);
+    if (levelDifficulty === 'easy') levelBonuses.push(easyBonuses);
+    else if (levelDifficulty === 'hard' || levelDifficulty === 'endless') levelBonuses.push(hardBonuses);
+    var maxLoops = 2000;
+    // most objects are always enabled in levels.
+    var isEnabled = () => true;
+    while (true) {
+        var area = {
+            key: `area${areas.size}`,
+            left: 0,
+            width: 600,
+            backgroundPatterns: {0: levelData.background},
+            objects: [],
+            drawMinimapIcon: eventsLeft.length > 1 ? drawMinimapMonsterIcon : drawMinimapBossIcon,
+            areas,
+            time: 0,
+            projectiles: [],
+            effects: [],
+            cameraX: 0,
+            allies: [],
+            enemies: [],
+            treasurePopups: [],
+            textPopups: [],
+        };
+        if (lastArea) {
+            area.objects.push(fixedObject('woodBridge', [-60, 0, 0], {isEnabled, exit: {areaKey: lastArea.key, x: lastArea.width - 120, z: 0}}));
+        } else {
+            area.objects.push(fixedObject('stoneBridge', [-20, 0, 0], {isEnabled, exit: {areaKey: 'worldMap'}}));
+        }
+        areas.set(area.key, area);
+        lastArea = area;
+        if (!eventsLeft.length) break;
+        var eventMonsters = eventsLeft.shift().slice();
+        area.isBossArea = !eventsLeft.length;
+        var numberOfMonsters = Random.range(minMonstersPerArea, maxMonstersPerArea);
+        var areaMonsters = [];
+        // Add random monsters to the beginning of the area to fill it up the desired amount.
+        while (areaMonsters.length < numberOfMonsters - eventMonsters.length) {
+            var monster = {key: Random.element(possibleMonsters), level, location: [area.width + Random.range(0, 200), 0, 40]};
+            areaMonsters.push(monster);
+            area.width = monster.location[0] + 50;
+            if (maxLoops-- < 0) debugger;
+        }
+        // Add the predtermined monsters towards the end of the area.
+        while (eventMonsters.length) {
+            var bonusSources = eventsLeft.length ? [] : [bossMonsterBonuses];
+            var monster = {key: eventMonsters.shift(), level, location: [area.width + Random.range(0, 200), 0, 40]};
+            if (area.isBossArea) {
+                monster.bonusSources = [bossMonsterBonuses];
+                monster.rarity = 0; // Bosses cannot be enchanted or imbued.
+            }
+            areaMonsters.push(monster);
+            area.width = monster.location[0] + 50;
+            if (maxLoops-- < 0) debugger;
+        }
+        addMonstersToArea(area, areaMonsters, levelBonuses);
+        area.width += 600;
+        area.objects.push(fixedObject('woodBridge', [area.width + 60, 0, 0], {isEnabled() {
+            return !this.area.isBossArea || !this.area.enemies.length;
+        }, exit: {areaKey: `area${areas.size}`, x: 120, z: 0}}));
+        if (maxLoops-- < 0) debugger;
     };
+    // lastArea is now an empty area for adding the treasure chest + shrine.
+    lastArea.isShrineArea = true;
     var loot = [];
     var pointsFactor = difficultyCompleted ? 1 : 4;
     var maxCoinsPerNormalEnemy = Math.floor(level * Math.pow(1.15, level));
     // coins are granted at the end of each level, but diminished after the first completion.
     loot.push(coinsLoot([pointsFactor * maxCoinsPerNormalEnemy * 10, pointsFactor * maxCoinsPerNormalEnemy * 15]));
 
+    var chest, initialChestIcon, completedChestIcon;
     if (!difficultyCompleted) {
         // Special Loot drops are given only the first time an adventurer complets an area on a given difficulty.
         // This is the minimum distance the level is from one of the main str/dex/int leylines.
@@ -117,18 +162,43 @@ function instantiateLevel(levelData, levelDifficulty, difficultyCompleted, level
         // console.log(shapeTypes.join(','));
         // console.log(components.join(','));
         loot.push(jewelLoot(shapeTypes, [tier, tier], components, false));
-        waves.push(chestWave(fixedObject('closedChest', [0, 0, 0], {'scale': 1, loot}), levelData, closedChestSource, openChestSource));
+        chest = fixedObject('closedChest', [0, 0, 0], {isEnabled, scale: 1, loot});
+        initialChestIcon = closedChestSource;
+        completedChestIcon = openChestSource;
     } else {
-        waves.push(chestWave(fixedObject('closedChest', [0, 0, 0], {'scale': .8, loot}), levelData, openChestSource, openChestSource));
+        chest = fixedObject('closedChest', [0, 0, 0], {isEnabled, scale: .8, loot});
+        // When the area has already been completed on this difficulty, we always draw the chest mini map icon as open
+        // so the player can tell at a glance that they are replaying the difficulty.
+        initialChestIcon = completedChestIcon = openChestSource;
     }
-
+    lastArea.objects.push(chest);
+    chest.x = lastArea.width + Random.range(0, 100);
+    chest.z = Random.range(-140, -160);
+    lastArea.width = chest.x + 100;
+    lastArea.drawMinimapIcon = function (context, completed, x, y) {
+        var source = this.chestOpened ? completedChestIcon : initialChestIcon;
+        drawImage(context, source.image, source.source, rectangle(x - 16, y - 18, 32, 32));
+    }
+    if (levelData.skill && abilities[levelData.skill]) {
+        var shrine = fixedObject('skillShrine', [lastArea.width + Random.range(0, 100), 20, 0], {isEnabled, scale: 3, helpMethod(actor) {
+            return titleDiv('Divine Shrine')
+                + bodyDiv('Offer divinity at these shrines to be blessed by the Gods with new powers.');
+        }});
+        lastArea.objects.push(shrine);
+        lastArea.width = shrine.x + 100;
+    }
+    lastArea.width += 250;
+    lastArea.objects.push(fixedObject('stoneBridge', [lastArea.width + 20, 0, 0], {isEnabled, exit: {areaKey: 'worldMap'}}));
+    areas.forEach(area => {
+        for (object of area.objects)
+            object.area = area;
+    });
     return {
         'base': levelData,
         level,
         levelDifficulty,
-        'enemySkills': ifdefor(levelData.enemySkills, []).map(function (abilityKey) { return abilities[abilityKey];}),
-        waves,
-        'backgroundPatterns': {0: levelData.background}
+        entrance: {areaKey: 'area0', x: 120, z: 0},
+        areas,
     };
 }
 function getJewelTiewerForLevel(level) {
@@ -139,106 +209,24 @@ function getJewelTiewerForLevel(level) {
     else if (level >= jewelTierLevels[2]) tier = 2
     return tier;
 }
-function createEndlessLevel(key, level) {
-    tier = getJewelTiewerForLevel(level);
-    var componentBonus = (10 + tier) * (level - jewelTierLevels[tier]);
-    var name, background, monsters, events;
-    switch (key) {
-        case 'eternalfields':
-            name = 'Eternal Fields';
-            background = backgrounds.field;
-            components = [[80 + componentBonus, 100 + componentBonus], [5,20], [5, 20]];
-            monsters = ['skeleton', 'caterpillar'];
-            events = [['butcher'], ['dragon'], ['butcher', 'giantSkeleton', 'dragon']];
-            break;
-        case 'bottomlessdepths':
-            name = 'Bottomless Depths';
-            background = backgrounds.cave;
-            components = [[5,20], [5, 20], [80 + componentBonus, 100 + componentBonus]];
-            monsters = ['skeleton', 'gnome'];
-            events = [['giantSkeleton'], ['butcher', 'butterfly', 'butterfly'], ['motherfly', 'gnomecromancer', 'gnomecromancer']];
-            break;
-        case 'oceanoftrees':
-            name = 'Ocean of Trees';
-            background = backgrounds.forest;
-            components = [[5,20], [80 + componentBonus, 100 + componentBonus], [5, 20]];
-            monsters = ['gnome', 'caterpillar'];
-            events = [['motherfly'], ['dragon'], ['motherfly', 'dragon', 'motherfly']];
-    }
-    addLevel({name, level, background, 'specialLoot': [jewelLoot(basicShapeTypes, [tier, tier], components, false)], 'next': [key + (level + 1)],
-             'enemySkills': [], monsters, events, 'key' : key + level});
-}
-function basicWave(monsters, objects, letter, extraBonuses) {
-    return {
-        monsters,
-        objects,
-        extraBonuses,
-        draw(context, completed, x, y) {
-            if (!completed) drawLetter(context, letter, x, y);
-        }
-    };
-}
-function monsterWave(monsters) {
-    if (editingLevel) {
-        return basicWave(monsters, [], 'M');
-    }
-    return eventWave(monsters);
-}
-function eventWave(monsters) {
-    var self =  basicWave(monsters, [], 'M');
-    self.draw = function (context, completed, x, y) {
-        var source = {'image': images['gfx/militaryIcons.png'], 'left': 136, 'top': 23, 'width': 16, 'height': 16};
-        if (completed) {
-            source = {'image': images['gfx/militaryIcons.png'], 'left': 68, 'top': 90, 'width': 16, 'height': 16};
-            context.drawImage(source.image, source.left, source.top, source.width, source.height,
-                              x - 16, y - 18, 32, 32);
-        } else {
-            context.drawImage(source.image, source.left, source.top, source.width, source.height,
-                              x - 16, y - 14, 32, 32);
-        }
-    }
-    return self;
-}
-function bossWave(monsters) {
-    var self =  basicWave(monsters, [], 'B', bossMonsterBonuses);
-    self.draw = function (context, completed, x, y) {
-        var source = {'image': images['gfx/militaryIcons.png'], 'left': 119, 'top': 23, 'width': 16, 'height': 16};
-        context.drawImage(source.image, source.left, source.top, source.width, source.height,
-                          x - 16, y - 18, 32, 32);
-        if (completed) {
-            source = {'image': images['gfx/militaryIcons.png'], 'left': 51, 'top': 90, 'width': 16, 'height': 16};
-            context.drawImage(source.image, source.left, source.top, source.width, source.height,
-                              x - 16, y - 18, 32, 32);
-        }
-    }
-    return self;
-}
 
-var closedChestSource = {'image': requireImage('gfx/chest-closed.png'), 'left': 0, 'top': 0, 'width': 32, 'height': 32};
-var openChestSource = {'image': requireImage('gfx/chest-open.png'), 'left': 0, 'top': 0, 'width': 32, 'height': 32};
-function chestWave(chest, levelData, closedImage, openImage) {
-    var objects = [chest]
-    if (levelData.skill && abilities[levelData.skill]) {
-        objects.push(fixedObject('skillShrine', [545, 0, 0], {'scale': 3, helpMethod(actor) {
-            return titleDiv('Divine Shrine')
-                + bodyDiv('Offer divinity at these shrines to be blessed by the Gods with new powers.');
-        }}));
-    }
-    var self =  basicWave([], objects, 'T');
-    chest.wave = self;
-    self.draw = function (context, completed, x, y) {
-        var source = self.chestOpened ? openImage : closedImage;
-        context.drawImage(source.image, source.left, source.top, source.width, source.height,
-                          x - 16, y - 18, 32, 32);
-    }
-    return self;
-}
-function drawLetter(context, letter, x, y) {
+var militaryIcons = requireImage('gfx/militaryIcons.png');
+var drawMinimapMonsterIcon = (context, completed, x, y) => {
+    var target = rectangle(x - 16, y - 18, 32, 32);
+    if (completed) drawImage(context, militaryIcons, rectangle(68, 90, 16, 16), target);
+    else drawImage(context, militaryIcons, rectangle(136, 23, 16, 16), target);
+};
+var drawMinimapBossIcon = (context, completed, x, y) => {
+    var target = rectangle(x - 16, y - 18, 32, 32);
+    drawImage(context, militaryIcons, rectangle(119, 23, 16, 16), target);
+    if (completed) drawImage(context, militaryIcons, rectangle(51, 90, 16, 16), target);
+};
+var drawLetter = (context, letter, x, y) => {
     context.fillStyle = 'black';
     context.font = "20px sans-serif";
     context.textAlign = 'center'
     context.fillText(letter, x, y + 7);
-}
+};
 
 function activateShrine(actor) {
     var character = actor.character;
@@ -264,12 +252,12 @@ function activateShrine(actor) {
         var boardPreview = readBoardFromData(boardData, character, abilities[level.skill]);
         var boardPreviewSprite = adventureBoardPreview(boardPreview, character);
         boardPreviewSprite.x = this.x - (boardOptions * 150 - 150) / 2 + 150 * i;
-        boardPreviewSprite.y = 220;
+        boardPreviewSprite.y = 250;
         area.objects.push(boardPreviewSprite);
     }
     var blessingText = objectText('Choose Your Blessing');
     blessingText.x = this.x;
-    blessingText.y = 300;
+    blessingText.y = 330;
     area.objects.push(blessingText);
     var skipButton = iconButton({'image': images['gfx/nielsenIcons.png'], 'left': 160, 'top': 160, 'width': 32, 'height': 32}, 64, 64, finishShrine, 'Continue without leveling');
     skipButton.x = this.x + 128;
@@ -304,10 +292,10 @@ function openChest(actor) {
         theta += thetaRange / Math.max(1, this.loot.length - 1);
     }
     // Replace this chest with an opened chest in the same location.
-    var openedChest = fixedObject('openChest', [this.x, this.y, this.z], {'scale': ifdefor(this.scale, 1)});
+    var openedChest = fixedObject('openChest', [this.x, this.y, this.z], {isEnabled: () => true, 'scale': ifdefor(this.scale, 1)});
     openedChest.area = this.area;
     this.area.objects[this.area.objects.indexOf(this)] = openedChest;
-    this.wave.chestOpened = true;
+    this.area.chestOpened = true;
 }
 
 function iconButton(iconSource, width, height, onClick, helpText) {

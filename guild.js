@@ -30,13 +30,10 @@ function initializeGuldArea(guildArea) {
     }
     return guildArea;
 }
-function spawner(spawner) {
-    return spawner;
-}
 var wallZ = 180;
 var guildAreas = {};
 var guildFoyerFrontDoor = {'areaKey': 'guildFoyer', 'x': 120, 'z': 0};
-var guildYardEntrance = {'areaKey': 'guildYard', 'x': 120, 'z': 0};
+var guildYardEntrance = {'areaKey': 'guildYard', 'x': 150, 'z': 0};
 var allApplications = [];
 var allBeds = [];
 guildAreas.guildYard = initializeGuldArea({
@@ -47,7 +44,9 @@ guildAreas.guildYard = initializeGuldArea({
     'rightWallDecorations': [
         fixedObject('door', [970, 0, 0], {'exit': guildFoyerFrontDoor, 'scale': 2})
     ],
-    'objects': [],
+    objects: [
+        fixedObject('stoneBridge', [-20, 0, 0], {exit: {areaKey: 'worldMap'}, scale: 1}),
+    ],
     'rightWall': 'oldGuild',
 });
 guildAreas.guildFoyer = initializeGuldArea({
@@ -349,54 +348,6 @@ function leaveCurrentArea(actor) {
     // Can change this to leaveCurrentArea to allow moving the minion with you.
     (actor.minions || []).forEach(removeActor);
     actor.area = null;
-}
-function enterGuildArea(actor, {x, z, areaKey}) {
-    leaveCurrentArea(actor);
-    var guildArea = guildAreas[areaKey];
-    initializeActorForAdventure(actor);
-    actor.area = guildArea;
-    actor.x = x;
-    actor.y = 0;
-    actor.z = z;
-    if (isNaN(actor.x) || isNaN(actor.z)) {
-        debugger;
-    }
-    if (!guildArea.allies.length && false || !state.unlockedGuildAreas[guildArea.key]) {
-        guildArea.enemies = [];
-        for (var monsterData of (guildArea.monsters || [])) {
-            var newMonster = makeMonster(monsterData.key, monsterData.level, [], 0);
-            newMonster.heading = [-1, 0, 0]; // Monsters move right to left
-            newMonster.x = monsterData.location[0];
-            newMonster.y = monsterData.location[1];
-            newMonster.z = monsterData.location[2];
-            newMonster.area = guildArea;
-            initializeActorForAdventure(newMonster);
-            newMonster.time = 0;
-            newMonster.allies = newMonster.area.enemies;
-            newMonster.enemies = newMonster.area.allies;
-            newMonster.allies.push(newMonster);
-        }
-    }
-    guildArea.allies.push(actor);
-    actor.allies = guildArea.allies;
-    actor.enemies = guildArea.enemies;
-    actor.activity = null;
-    actor.actions.concat(actor.reactions).forEach(function (action) {
-        action.readyAt = 0;
-    });
-    const character = actor.character;
-    if (character) {
-        character.context = 'guild'
-        character.currentLevelKey = 'guild';
-        character.guildAreaKey = guildArea.key;
-        if (character === state.selectedCharacter) {
-            guildArea.cameraX = Math.round(Math.max(guildArea.left, Math.min(guildArea.width - 800, actor.x - 400)));
-            updateAdventureButtons();
-            showContext('guild');
-        }
-    }
-    // This can be uncommented to allow minions to follow you through guild areas.
-    //(actor.minions || []).forEach(minion => enterGuildArea(minion, {x:x + actor.heading[0] * 10, z: z - 90, areaKey}));
 }
 
 var guildBonusSources = [];

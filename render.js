@@ -60,27 +60,3 @@ const render = () => {
     }
 };
 render();
-
-const getTargetCameraX = (actor) => {
-    var mousePosition = relativeMousePosition($(mainCanvas));
-    var area = actor.area;
-    var centerX = actor.x;
-    var mouseX = Math.max(0, Math.min(800, mousePosition[0]));
-    if (actor.activity && actor.activity.type === 'move') {
-        centerX = (centerX + actor.activity.x) / 2;
-    } else if (actor.goalTarget && !actor.goalTarget.isDead) {
-        centerX = (centerX + actor.goalTarget.x) / 2;
-    }
-    if (mouseX > 700) centerX = centerX + (mouseX - 700) / 2;
-    else if (mouseX < 100) centerX = centerX + (mouseX - 100) / 2;
-    var target = Math.min(actor.x - 20, centerX - 400);
-    target = Math.max(ifdefor(area.left, 0), target);
-    if (area.width) target = Math.min(area.width - 800, target);
-    // If a timestop is in effect, the caster must be in the frame.
-    if (area.timeStopEffect) {
-        var focusTarget = area.timeStopEffect.actor;
-        target = Math.max(focusTarget.x + focusTarget.width + 64 - 800, target);
-        target = Math.min(focusTarget.x - 64, target);
-    }
-    return Math.round(target);
-};

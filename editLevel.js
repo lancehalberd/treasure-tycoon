@@ -244,7 +244,7 @@ function startTestingLevel(character) {
     $('.js-editingControls').hide();
     state.lastSelectedCharacter = state.selectedCharacter;
     setSelectedCharacter(character);
-    startArea(state.selectedCharacter, editingLevel.levelKey);
+    startLevel(state.selectedCharacter, editingLevel.levelKey);
     testingLevel = true;
     updateEditingState();
 }

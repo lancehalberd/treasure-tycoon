@@ -222,7 +222,7 @@
             </div>
         </div>
         <div class="js-pointsBar pointsBar">
-            <div class="points" helptext="Your guild's Fame makes it easier to recruit more powerful guild members.<br/><br/>Improve your guild's game by leveling guild members and completing new adventures.">
+            <div class="points" helptext="Your guild's Fame makes it easier to recruit more powerful guild members.<br/><br/>Improve your guild's Fame by leveling guild members and completing new adventures.">
                 <div class="pointsIcon"><span class="icon fame"></span></div>
                 <div class="pointsColumn">
                     <span class="js-global-fame fame">1000</span>
@@ -299,7 +299,7 @@ addScripts(['utils', 'mouse', 'drawDashedRectangle', 'images', 'sounds', 'points
     'evaluate','helpText','jewels','jewel-inventory','skills','abilities',
     'loot','boards', 'character', 'jobs', 'achievements', 'crafting','enchanting','uniques',
     'heroApplication', 'effects','performAttack','useSkill',
-    'adventure', 'drawArea', 'drawSkills', 'monsters','levels','vector',
+    'adventure', 'moveActor', 'drawArea', 'drawSkills', 'monsters','levels','vector',
     'sphereVector','camera','mapData', 'map', 'furniture', 'guild', 'drawMap','editLevel',
     'polygon','backgrounds', 'testCharacters','saveGame', 'keyCommands', 'main', 'update', 'render']);
 ?>

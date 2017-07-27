@@ -35,7 +35,7 @@ function openJewels(actor) {
     setContext('jewel');
 }
 function useDoor(actor) {
-    enterGuildArea(actor, this.exit);
+    enterArea(actor, this.exit);
 }
 function showApplication(actor) {
     setHeroApplication($('.js-heroApplication'), this);
@@ -283,6 +283,8 @@ var areaObjects = {
     'openChest': {'name': 'Opened Treasure Chest', 'source': objectSource(requireImage('gfx/treasureChest.png'), [64, 0], [64, 64, 64], {'yOffset': -6}), action(actor) {
         messageCharacter(actor.character, 'Empty');
     }},
+    'woodBridge': {'source': objectSource(requireImage('gfx/bridge2E.png'), [0, 0], [360, 160, 0], {yOffset: -60}), 'action': useDoor},
+    'stoneBridge': {'source': objectSource(requireImage('gfx/bridgeE.png'), [0, 0], [240, 120, 0], {yOffset: -45}), 'action': useDoor},
 }
 
 function drawFixedObject(area) {

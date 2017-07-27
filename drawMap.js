@@ -184,8 +184,7 @@ function drawMap() {
     $.each(visibleNodes, function (levelKey, levelData){
         if (editingMap) {
             var source = closedChestSource;
-            context.drawImage(source.image, source.left, source.top, source.width, source.height,
-                              levelData.left + levelData.width / 2 - 16, levelData.top + levelData.height / 2 - 18, 32, 32);
+            drawImage(context, source.image, source.source, rectangle(levelData.left + levelData.width / 2 - 16, levelData.top + levelData.height / 2 - 18, 32, 32));
             context.fillStyle = new Vector(levelData.coords).dotProduct(camera.forward) >= 0 ? 'red' : 'black';
             context.fillRect(levelData.left - 30, levelData.top + 19, 100, 15);
             context.fillStyle = 'white';
@@ -230,8 +229,7 @@ function drawMap() {
 
         var times = ifdefor(state.selectedCharacter.levelTimes[levelKey], {});
         var source = (times['easy'] && times['normal'] && times['hard']) ? openChestSource : closedChestSource;
-        context.drawImage(source.image, source.left, source.top, source.width, source.height,
-                            levelData.left + levelData.width / 2 - 16, levelData.top + levelData.height / 2 - 18, 32, 32);
+        drawImage(context, source.image, source.source, rectangle(levelData.left + levelData.width / 2 - 16, levelData.top + levelData.height / 2 - 18, 32, 32));
 
         context.save();
         context.fillStyle = 'black';

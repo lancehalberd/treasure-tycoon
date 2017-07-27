@@ -434,31 +434,31 @@ $('.js-easyDifficulty').on('click', function (event) {
     $('.js-areaMenu').hide();
     state.selectedCharacter.levelDifficulty = 'easy';
     setContext('adventure');
-    startArea(state.selectedCharacter, state.selectedCharacter.selectedLevelKey);
+    startLevel(state.selectedCharacter, state.selectedCharacter.selectedLevelKey);
 });
 $('.js-normalDifficulty').on('click', function (event) {
     $('.js-areaMenu').hide();
     state.selectedCharacter.levelDifficulty = 'normal';
     setContext('adventure');
-    startArea(state.selectedCharacter, state.selectedCharacter.selectedLevelKey);
+    startLevel(state.selectedCharacter, state.selectedCharacter.selectedLevelKey);
 });
 $('.js-hardDifficulty').on('click', function (event) {
     $('.js-areaMenu').hide();
     state.selectedCharacter.levelDifficulty = 'hard';
     setContext('adventure');
-    startArea(state.selectedCharacter, state.selectedCharacter.selectedLevelKey);
+    startLevel(state.selectedCharacter, state.selectedCharacter.selectedLevelKey);
 });
 $('.js-challengeDifficulty').on('click', function (event) {
     $('.js-areaMenu').hide();
     state.selectedCharacter.levelDifficulty = 'challenge';
     setContext('adventure');
-    startArea(state.selectedCharacter, state.selectedCharacter.selectedLevelKey);
+    startLevel(state.selectedCharacter, state.selectedCharacter.selectedLevelKey);
 });
 $('.js-endlessDifficulty').on('click', function (event) {
     $('.js-areaMenu').hide();
     state.selectedCharacter.levelDifficulty = 'endless';
     setContext('adventure');
-    startArea(state.selectedCharacter, state.selectedCharacter.selectedLevelKey);
+    startLevel(state.selectedCharacter, state.selectedCharacter.selectedLevelKey);
 });
 
 function getEndlessLevel(character, level) {
@@ -472,12 +472,12 @@ $(document).on('mousedown', function (event) {
     }
 });
 function getGoldTimeLimit(level, difficultyMultiplier) {
-    var numberOfWaves = Math.max(level.events.length,  Math.floor(5 * Math.sqrt(level.level))) + 1; // Count the chest as a wave.
-    return difficultyMultiplier * numberOfWaves * (5 + level.level / 2);
+    var sections = Math.max(level.events.length,  5 * Math.sqrt(level.level)) + 1;
+    return difficultyMultiplier * sections * (5 + level.level / 2);
 }
 function getSilverTimeLimit(level, difficultyMultiplier) {
-    var numberOfWaves = Math.max(level.events.length,  Math.floor(5 * Math.sqrt(level.level))) + 1; // Count the chest as a wave.
-    return difficultyMultiplier * numberOfWaves * (10 + level.level);
+    var sections = Math.max(level.events.length,  5 * Math.sqrt(level.level)) + 1;
+    return difficultyMultiplier * sections * (10 + level.level);
 }
 $('body').on('click', '.js-confirmSkill', function (event) {
     var character = state.selectedCharacter;
