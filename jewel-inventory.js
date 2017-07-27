@@ -145,6 +145,7 @@ $('body').on('dblclick', function (event) {
     saveGame();
 });
 $('body').on('mousedown', function (event) {
+    var specialClick = event.ctrlKey || event.metaKey;
     if (event.which != 1) return; // Handle only left click.
     if (draggedJewel || draggingBoardJewel) {
         stopJewelDrag();
@@ -165,6 +166,18 @@ $('body').on('mousedown', function (event) {
         }
         draggingBoardJewel = overJewel;
         dragged = false;
+        return;
+    }
+    if (specialClick) {
+        // If the jewel is on a board or in the crafting panel, return it to the inventory.
+        if (overJewel.character || overJewel.$canvas.closest('.js-jewelCraftingSlot').length) {
+            returnToInventory(overJewel);
+        } else if ($('.js-jewelCraftingSlot:empty').length) {
+            // If there is room, add the jewel to a crafting panel.
+            $('.js-jewelCraftingSlot:empty').first().append(overJewel.$item);
+        }
+        updateJewelUnderMouse();
+        updateJewelCraftingOptions();
         return;
     }
     draggedJewel = overJewel;
@@ -216,15 +229,32 @@ $('body').on('mousemove', '.js-jewel', function (event) {
         }
     }
 });
-$('body').on('mousemove', '.js-skillCanvas', function (event) {
-    if (draggedJewel || $dragHelper || draggingBoardJewel) {
-        return;
-    }
-    updateMousePosition(event);
+function updateJewelUnderMouse() {
     overJewel = null;
     overVertex = null;
-    var character = $(this).data('character');
-    var relativePosition = relativeMousePosition(this);
+    var $jewelBoard = $('.js-skillCanvas');
+    if (!isPointInRectObject(mousePosition[0], mousePosition[1], getElementRectangle($jewelBoard, $('.js-mouseContainer')))) {
+        $('.js-jewel').each(function (index, element) {
+            var jewel = $(this).data('jewel');
+            var points = jewel.shape.points;
+            var relativePosition = relativeMousePosition(jewel.canvas);
+            if (isPointInPoints(relativePosition, points)) {
+                overJewel = jewel;
+                return false;
+            }
+            for (var j = 0; j < points.length; j++) {
+                if (distanceSquared(points[j], relativePosition) < 25) {
+                    overJewel = jewel;
+                    overVertex = points[j].concat();
+                    checkToShowJewelToolTip();
+                    return false;
+                }
+            }
+        });
+        return;
+    }
+    var character = $jewelBoard.data('character');
+    var relativePosition = relativeMousePosition($jewelBoard);
     var jewels = character.board.jewels;
     for (var i = 0; i < jewels.length; i++) {
         var jewel = jewels[i];
@@ -264,6 +294,13 @@ $('body').on('mousemove', '.js-skillCanvas', function (event) {
             }
         }
     }
+}
+$('body').on('mousemove', '.js-skillCanvas', function (event) {
+    if (draggedJewel || $dragHelper || draggingBoardJewel) {
+        return;
+    }
+    updateMousePosition(event);
+    updateJewelUnderMouse();
 });
 $('body').on('mousemove', function () {
     checkIfStillOverJewel();

@@ -279,13 +279,25 @@ $('body').on('mouseup', function (event) {
     dragged = false;
 });
 $('body').on('mousedown', '.js-item', function (event) {
+    var specialClick = event.ctrlKey || event.metaKey;
     if (event.which != 1) return; // Handle only left click.
     if ($dragHelper) {
         stopDrag();
         return;
     }
+    var item = $(this).data('item');
+    if (specialClick) {
+        if (item.actor) {
+            unequipSlot(item.actor, item.base.slot, true);
+            addToInventory(item);
+        } else {
+            equipItem(state.selectedCharacter.hero, item);
+        }
+        checkIfCraftedItemWasClaimed();
+        return;
+    }
     $dragHelper = $(this).clone();
-    $dragHelper.data('item', $(this).data('item'));
+    $dragHelper.data('item', item);
     $dragHelper.data('helpMethod', $(this).data('helpMethod'));
     $dragHelper.data('$source', $(this));
     $(this).css('opacity', '.3');
@@ -335,17 +347,19 @@ $(document).on('mousemove', function (event) {
 });
 function stopDrag() {
     applyDragResults();
-    // Check if the player has claimed an item from the craftingSelectOptions
-    if ($('.js-craftingSelectOptions:visible').length) {
-        if ($('.js-craftingSelectOptions .js-itemSlot').length > $('.js-craftingSelectOptions .js-itemSlot .js-item').length) {
-            $('.js-craftingSelectOptions .js-itemSlot').empty();
-            $('.js-craftingSelectOptions').hide();
-            state.craftingLevel = null;
-            state.craftingTypeFilter = null;
-            saveGame();
-        }
-    }
+    checkIfCraftedItemWasClaimed();
     stopInventoryDrag();
+}
+function checkIfCraftedItemWasClaimed() {
+    // Check if the player has claimed an item from the craftingSelectOptions
+    if (!$('.js-craftingSelectOptions:visible').length) return;
+    if ($('.js-craftingSelectOptions .js-itemSlot').length > $('.js-craftingSelectOptions .js-itemSlot .js-item').length) {
+        $('.js-craftingSelectOptions .js-itemSlot').empty();
+        $('.js-craftingSelectOptions').hide();
+        state.craftingLevel = null;
+        state.craftingTypeFilter = null;
+        saveGame();
+    }
 }
 function equipItem(actor, item) {
     if (!canEquipItem(actor, item)) return false;

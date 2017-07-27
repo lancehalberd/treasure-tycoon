@@ -212,9 +212,15 @@ function $getClosestElement($element, $elements, threshold) {
     return closestElement ? $(closestElement) : null;
 }
 
-function getElementRectangle(element) {
+function getElementRectangle(element, container) {
     var $element = $(element);
-    return rectangle($element.offset().left, $element.offset().top, $element.outerWidth(true), $element.outerHeight(true));
+    var rect = rectangle($element.offset().left, $element.offset().top, $element.outerWidth(true), $element.outerHeight(true));
+    if (container) {
+        var offset = $(container).offset();
+        rect.left -= offset.left;
+        rect.top -= offset.top;
+    }
+    return rect;
 }
 
 /**
