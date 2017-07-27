@@ -420,7 +420,7 @@ function updateAdventurer(adventurer) {
     var adventurerBonuses = {
         '+maxHealth': 50 + 20 * (adventurer.level + adventurer.job.dexterityBonus + adventurer.job.strengthBonus + adventurer.job.intelligenceBonus),
         '+levelCoefficient': levelCoefficient,
-        '+accuracy': 2 + 2 * adventurer.level,
+        '+accuracy': 4 + 2 * adventurer.level,
         '+evasion': adventurer.level,
         '+block': adventurer.level,
         '+magicBlock': adventurer.level / 2,

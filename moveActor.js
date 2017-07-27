@@ -26,7 +26,7 @@ function moveActor(actor) {
                 // if they are in recovery.
                 if (actor.skillInUse) {
                     if (actor.heading[0] * (actor.activity.x - actor.x) < 0) {
-                        speedBonus = -.25;
+                        speedBonus = -.1;
                     } else {
                         speedBonus = .25;
                     }
@@ -117,7 +117,7 @@ function moveActor(actor) {
         // Set the max distance to back away to to 10, otherwise they will back out of the range
         // of many activated abilities like fireball and meteor.
         if (distanceToTarget < (Math.min(skillRange - 1.5, 10)) * 32) {
-            speedBonus *= -.25;
+            speedBonus *= -.1;
         } else if (distanceToTarget <= skillRange * 32) {
             speedBonus = 0;
         }

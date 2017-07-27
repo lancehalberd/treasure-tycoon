@@ -8,6 +8,7 @@ function startLevel(character, index) {
         drawBoardBackground(character.boardContext, character.board);
     }
     var hero = character.hero;
+    hero.heading = [1, 0, 0];
     character.currentLevelKey = index;
     var levelCompleted = ifdefor(character.divinityScores[index], 0) !== 0;
     var difficultyCompleted = !!ifdefor(character.levelTimes[index], {})[character.levelDifficulty];
@@ -169,7 +170,7 @@ function removeActor(actor) {
         var area = actor.area;
         if (area.isGuildArea) {
             removeAdventureEffects(actor);
-            enterArea(actor, actor.escapeExit || guildFoyerFrontDoor);
+            enterArea(actor, actor.escapeExit || guildYardEntrance);
             return;
         }
         if (area.levelDifficulty === 'endless') {

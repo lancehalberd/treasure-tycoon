@@ -57,9 +57,6 @@ function initializeGame() {
         enterArea(state.selectedCharacter.hero, guildYardEntrance);
     }
     state.visibleLevels['guild'] = true;
-    for (var levelKey of map.guild.unlocks) {
-        state.visibleLevels[levelKey] = true;
-    }
     if (state.skipShrinesEnabled) {
         $('.js-shrineButton').show();
     }
@@ -482,7 +479,7 @@ function setContext(context) {
     state.selectedCharacter.context = context;
     // If the player is not already in the guild when we return to the guild context, move them to the foyer.
     if (context === 'guild' && (!state.selectedCharacter.hero.area || !state.selectedCharacter.hero.area.isGuildArea)) {
-        enterArea(state.selectedCharacter.hero, guildFoyerFrontDoor);
+        enterArea(state.selectedCharacter.hero, guildYardEntrance);
     }
     showContext(context);
 }

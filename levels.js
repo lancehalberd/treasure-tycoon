@@ -73,7 +73,7 @@ function instantiateLevel(levelData, levelDifficulty, difficultyCompleted, level
         var area = {
             key: `area${areas.size}`,
             left: 0,
-            width: 600,
+            width: 800,
             backgroundPatterns: {0: levelData.background},
             objects: [],
             drawMinimapIcon: eventsLeft.length > 1 ? drawMinimapMonsterIcon : drawMinimapBossIcon,
@@ -88,7 +88,7 @@ function instantiateLevel(levelData, levelDifficulty, difficultyCompleted, level
             textPopups: [],
         };
         if (lastArea) {
-            area.objects.push(fixedObject('woodBridge', [-60, 0, 0], {isEnabled, exit: {areaKey: lastArea.key, x: lastArea.width - 120, z: 0}}));
+            area.objects.push(fixedObject('woodBridge', [-60, 0, 0], {isEnabled, exit: {areaKey: lastArea.key, x: lastArea.width - 150, z: 0}}));
         } else {
             area.objects.push(fixedObject('stoneBridge', [-20, 0, 0], {isEnabled, exit: {areaKey: 'worldMap'}}));
         }
@@ -122,7 +122,7 @@ function instantiateLevel(levelData, levelDifficulty, difficultyCompleted, level
         area.width += 600;
         area.objects.push(fixedObject('woodBridge', [area.width + 60, 0, 0], {isEnabled() {
             return !this.area.isBossArea || !this.area.enemies.length;
-        }, exit: {areaKey: `area${areas.size}`, x: 120, z: 0}}));
+        }, exit: {areaKey: `area${areas.size}`, x: 150, z: 0}}));
         if (maxLoops-- < 0) debugger;
     };
     // lastArea is now an empty area for adding the treasure chest + shrine.

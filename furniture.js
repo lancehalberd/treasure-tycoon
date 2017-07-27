@@ -26,6 +26,10 @@ function objectSource(image, coords, size, additionalProperties) {
     return source;
 }
 function openWorldMap(actor) {
+    // Unlock the first areas on the map if they aren't unlocked yet.
+    for (var levelKey of map.guild.unlocks) {
+        state.visibleLevels[levelKey] = true;
+    }
     setContext('map');
 }
 function openCrafting(actor) {

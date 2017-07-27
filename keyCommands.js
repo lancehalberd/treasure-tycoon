@@ -22,7 +22,7 @@ $(document).on('keydown', function(event) {
             if (state.selectedCharacter.context === 'map') {
                 if ($('.js-areaMenu').is(':visible')) $('.js-areaMenu').hide();
                 else if (!state.selectedCharacter.hero.area) {
-                    enterArea(state.selectedCharacter.hero, guildFoyerFrontDoor);
+                    enterArea(state.selectedCharacter.hero, guildYardEntrance);
                 } else {
                     setContext('guild');
                 }
@@ -80,9 +80,13 @@ $(document).on('keydown', function(event) {
         else if (state.selectedCharacter.context !== 'adventure') setContext('jewel');
     }
     if (event.which === 77 && state.guildStats.hasMap) { // 'm'
+        // Unlock the first areas on the map if they aren't unlocked yet.
+        for (var levelKey of map.guild.unlocks) {
+            state.visibleLevels[levelKey] = true;
+        }
         if (state.selectedCharacter.context === 'map') {
             if (!state.selectedCharacter.hero.area) {
-                enterArea(state.selectedCharacter.hero, guildFoyerFrontDoor);
+                enterArea(state.selectedCharacter.hero, guildYardEntrance);
             } else {
                 setContext('guild');
             }
