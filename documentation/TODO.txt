@@ -25,3 +25,10 @@ New Features
 -Add NPCs + dialogue
 -Add tutorial story
 -Jewel Crafting Leveling
+
+
+Notes:
+Using imagemagick montage to convert animated gif to sprite sheet:
+XXX This skewed the image: montage -geometry 30x60+1+1 -background transparent musicAnimation.gif montage.png
+This is pretty good, but the first frame was too high for some reason, also there are 2 pixels between each frame...
+montage musicAnimation.gif -tile x1 -geometry '1x1+1+1<' -background transparent montage2.png

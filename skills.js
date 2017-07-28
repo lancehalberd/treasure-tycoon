@@ -1,6 +1,10 @@
 function genericAction(type, action, bonuses, helpText) {
     action.type = type;
     action.variableObjectType = 'action';
+    // Generic actions have 0 range unless a specific modifier is set.
+    if (typeof(bonuses['+range']) === 'undefined') {
+        bonuses['*range'] = 0;
+    }
     action.icon = ifdefor(action.icon, 'gfx/496RpgIcons/openScroll.png');
     action.bonuses = bonuses;
     action.helpText = helpText;
@@ -175,13 +179,13 @@ var skills = {
                             '+%cooldown': -.2, '+*magicPower': 1.2, '+*weaponDamage': 1.2, '+*range': 1.2, '+duration': 5})},
                     'Enhance your own abilities granting: {$buff}'),
     // Song buffs should be based on the singer's stats, not the stats of the targets. Not sure if this is the case or not.
-    'attackSong': genericAction('song', {'icon': bardIcon, 'tags': ['song', 'field'], 'target': 'none', 'color': 'orange', 'alpha': .2},
+    'attackSong': genericAction('song', {'icon': bardIcon, 'tags': ['song', 'field'], 'target': 'none', 'color': 'red', 'alpha': .2},
                                 {'+area': 8, '+cooldown': 30, '+duration': 10, '$buff': buffEffect({'icons': [effectSourceUp, effectSourceSword]}, {
                                     '+%attackSpeed': [.2, '+', ['{dexterity}', '/', 1000]],
                                     '+%accuracy': [.2, '+', ['{intelligence}', '/', 1000]],
                                     '+%weaponDamage': [.2, '+', ['{strength}', '/', 1000]]})},
             'Play a tune that inspires you and your allies to attack more fiercely, granting all allies in range: {$buff}'),
-    'defenseSong': genericAction('song', {'icon': bardIcon, 'tags': ['song', 'field'], 'target': 'none', 'color': 'purple', 'alpha': .2},
+    'defenseSong': genericAction('song', {'icon': bardIcon, 'tags': ['song', 'field'], 'target': 'none', 'color': 'blue', 'alpha': .2},
                                  {'+area': 10, '+cooldown': 45, '+duration': 20, '$buff': buffEffect({'icons': [effectSourceUp, effectSourceArmor]}, {
                                     '+%evasion': [.2, '+', ['{dexterity}', '/', 1000]],
                                     '+%block': [.2, '+', ['{intelligence}', '/', 1000]],

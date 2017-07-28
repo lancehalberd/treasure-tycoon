@@ -1,8 +1,8 @@
 
 function songEffect(attackStats) {
     var color = ifdefor(attackStats.attack.base.color, 'red');
-    var alpha = ifdefor(attackStats.attack.base.alpha, .5);
-    var frames = ifdefor(attackStats.attack.base.frames, 10);
+    var alpha = ifdefor(attackStats.attack.base.alpha, .3);
+    var frames = ifdefor(attackStats.attack.base.frames, 30);
     if (!attackStats.attack.area) {
         throw new Error('Song effect called with no area set.');
     }
@@ -13,18 +13,34 @@ function songEffect(attackStats) {
     var yOffset = getAttackY(attackStats.source) + ifdefor(attackStats.attack.base.yOffset, 0);
     // This list is kept up to date each frame and targets stats are updated as they
     // are added/removed from this list.
+    var notes = [];
+    var thetaOffset = Math.PI * Math.random();
     var effectedTargets = new Set();
     var self = {
         attackStats, 'currentFrame': 0, 'done': false,
         update(area) {
             self.currentFrame++;
+            if (notes.length < 6) {
+                var note = animationEffect(effectAnimations.song,
+                    {x:0, y: 20, z: 0, width: 25, height: 50}, {loop: true, frameSpeed: .5, tintColor: color, tintValue: .5});
+                area.effects.push(note);
+                notes.push(note);
+            }
             if (followTarget.time > endTime || attackStats.source.isDead) {
-                self.done = true;
-                effectedTargets.forEach(target => removeEffectFromActor(target, self.attackStats.attack.buff, true));
+                this.finish();
                 return;
             }
             var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
             var currentLocation = {x: followTarget.x, z: followTarget.z}; // We can't just use followTarget because we need width/height to be 0.
+            for (var i = 0; i < notes.length; i++) {
+                var note = notes[i];
+                var timeTheta = thetaOffset + followTarget.time;
+                var xRadius = Math.min(currentRadius, 300);
+                var zRadius = Math.min(currentRadius, 90);
+                note.target.x = currentLocation.x + Math.cos(i * 2 * Math.PI / 6 + timeTheta) * xRadius;
+                note.target.z = currentLocation.z + Math.sin(i * 2 * Math.PI / 6 + timeTheta) * zRadius;
+                note.target.y = 40 + 20 * Math.cos(i * Math.PI / 4 + 6 * timeTheta);
+            }
             for (target of self.attackStats.source.allies) {
                 if (getDistance(currentLocation, target) > currentRadius) {
                     if (effectedTargets.has(target)) {
@@ -37,18 +53,25 @@ function songEffect(attackStats) {
                 }
             }
         },
-        draw(area) {
-            if (self.done) return;
-            var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
-            mainContext.save();
-            mainContext.globalAlpha = alpha;
-            mainContext.fillStyle = color;
-            mainContext.beginPath();
-            mainContext.translate((followTarget.x - area.cameraX), groundY - yOffset - followTarget.z / 2);
-            mainContext.scale(1, height / currentRadius);
-            mainContext.arc(0, 0, currentRadius, 0, 2 * Math.PI);
-            mainContext.fill();
-            mainContext.restore();
+        drawGround(area) {
+            drawOnGround(context => {
+                var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
+                drawGroundCircle(context, area, followTarget.x, followTarget.z, currentRadius)
+                context.save();
+                context.globalAlpha = alpha;
+                context.fillStyle = color;
+                context.fill();
+                context.globalAlpha = .1;
+                context.lineWidth = 8;
+                context.strokeStyle = '#FFF';
+                context.stroke();
+                context.restore();
+            });
+        },
+        finish() {
+            effectedTargets.forEach(target => removeEffectFromActor(target, self.attackStats.attack.buff, true));
+            self.done = true;
+            while (notes.length) notes.pop().done = true;
         }
     };
     return self;
@@ -56,17 +79,17 @@ function songEffect(attackStats) {
 
 // Used to play an animation that has no other effects, for example, the sparkles for the heal spell.
 // Set target to a character to have an effect follow them, or to a static target to display in place.
-function animationEffect(animation, target, scale = [1, 1]) {
+function animationEffect(animation, target, {scale = [1, 1], loop = false, frameSpeed = 1, tintColor, tintValue}) {
     return {
-        'x': target.x, 'y': target.y, 'z': target.z, 'width': target.width * scale[0], 'height': target.height * scale[1], 'currentFrame': 0, 'done': false,
+        target, x: target.x, 'y': target.y, 'z': target.z, 'width': target.width * scale[0], 'height': target.height * scale[1], 'currentFrame': 0, 'done': false,
         update(area) {
-            this.currentFrame++;
+            this.currentFrame+=frameSpeed;
             this.x = target.x;
             this.y = target.y;
             this.z = target.z - 1; //Show the effect in front of the target.
             this.width = target.width * scale[0];
             this.height = target.height * scale[1];
-            if (this.currentFrame >= animation.frames.length) this.done = true;
+            if (!loop && this.currentFrame >= animation.frames.length) this.done = true;
         },
         draw(area) {
             if (this.done) return
@@ -75,9 +98,15 @@ function animationEffect(animation, target, scale = [1, 1]) {
             mainContext.translate((this.x - area.cameraX), groundY - this.y - this.z / 2 - target.height / 2);
             mainContext.fillStyle = 'red';
             // fillRectangle(mainContext, rectangle(-this.width / 2, -this.height / 2, this.width, this.height));
-            var frame = animation.frames[this.currentFrame % animation.frames.length];
-            mainContext.drawImage(animation.image, frame[0], frame[1], frame[2], frame[3],
-                                           -this.width / 2, -this.height / 2, this.width, this.height);
+            var frame = animation.frames[Math.floor(this.currentFrame) % animation.frames.length];
+            var sourceRectangle = rectangle(frame[0], frame[1], frame[2], frame[3]);
+            var targetRectangle = rectangle(-this.width / 2, -this.height / 2, this.width, this.height);
+            if (tintColor) {
+                drawTintedImage(mainContext, animation.image, tintColor, ifdefor(tintValue, .5),
+                    sourceRectangle, targetRectangle);
+            } else {
+                drawImage(mainContext, animation.image, sourceRectangle, targetRectangle);
+            }
             mainContext.restore();
         }
     };

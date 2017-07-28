@@ -207,6 +207,10 @@ var implicitBonusMap = {
     },
     '+weaponRange': 'Range: $1',
     '+range': 'Range: $1',
+    // Range is currently only implicit on genericActions with *range:0 so
+    // targeting circles ignore their range. If this stops working for some reason
+    // we could try using $range: 0 instead.
+    '*range': true,
     '+attackSpeed': 'Attack Speed: $1',
     '+critChance': '%1 critical strike chance',
     '+armor': 'Armor: $1',

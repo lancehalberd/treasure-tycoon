@@ -80,6 +80,7 @@ var initialImagesToLoad = [
     'gfx/spider.png', // Stephen "Redshrike" Challener as graphic artist and William.Thompsonj as contributor. If reasonable link to this page or the OGA homepage. http://opengameart.org/content/lpc-spider
     'gfx/wolf.png', // Stephen "Redshrike" Challener as graphic artist and William.Thompsonj as contributor. If reasonable link back to this page or the OGA homepage. http://opengameart.org/content/lpc-wolf-animation
     'gfx/explosion.png', //https://opengameart.org/content/pixel-explosion-12-frames
+    'gfx/musicNote.png', //http://www.animatedimages.org/img-animated-music-note-image-0044-154574.htm
 ];
 for (var initialImageToLoad of initialImagesToLoad) {
     requireImage(initialImageToLoad);
@@ -114,10 +115,16 @@ function initializeCoins() {
         {'value': 200000, 'image': coinImage, 'x': 160, 'y': 64, 'width': 24, 'height': 24},
     ];
 }
-function makeFrames(length, size, origin = [0, 0], padding = 0, frameRepeat = 1) {
+function makeFrames(length, size, origin = [0, 0], padding = 0, frameRepeat = 1, columns = 0) {
+    columns = columns || length;
     var frames = [];
-    for (var i =0; i < length; i++) {
-        for (var j = 0; j < frameRepeat; j++) frames.push([origin[0] + (size[0] + padding) * i, origin[1], size[0], size[1]]);
+    for (var r = 0; r < Math.ceil(length / columns); r++) {
+        for (var i = 0; i < columns; i++) {
+            if (r * columns + i >= length) break;
+            for (var j = 0; j < frameRepeat; j++) {
+                frames.push([origin[0] + (size[0] + padding) * i, origin[1] + (size[1] + padding) * r, size[0], size[1]]);
+            }
+        }
     }
     return frames;
 }
@@ -127,6 +134,7 @@ function initializeProjectileAnimations() {
         frames: makeFrames(5, [96, 96], [0, 0], 0, 3),
         endFrames: makeFrames(7, [96, 96], [5 * 96, 0], 0, 3)};
     effectAnimations.heal = {image: requireImage('gfx/heal.png'), frames: makeFrames(6, [64, 64], [0, 0], 0, 3)};
+    effectAnimations.song = {image: requireImage('gfx/musicNote.png'), frames: makeFrames(15, [30, 60])};
     var projectileCanvas = createCanvas(96, 96);
     projectileCanvas.imageSmoothingEnabled = false;
     var context = projectileCanvas.getContext('2d');

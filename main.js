@@ -148,7 +148,7 @@ function handleAdventureClick(x, y, event) {
 }
 function getTargetLocation(area, canvasX, canvasY) {
     var z = -(canvasY - groundY) * 2;
-    if (z < -200 || z > 200) return null;
+    if (z < -190 || z > 190) return null;
     z = Math.max(-180, Math.min(180, z));
     return {'x': area.cameraX + canvasX, y: 0, z, width:0, height: 0};
 }

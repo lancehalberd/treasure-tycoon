@@ -106,7 +106,7 @@ var abilities = {
     'percentAreaOfEffect': {name: 'Influence', 'bonuses': {'%area': 0.2}},
     'majorCharisma': {name: 'Major Charisma', 'bonuses': {'+dexterity': 15, '*dexterity': 1.05, '+intelligence': 15, '*intelligence': 1.05}, 'icon': tintIcon('gfx/upArrowsTint.png', '#0ff')},
     'healthPerLevel': {name: 'Life Force', 'bonuses': {'+maxHealth': [5, '*', '{level}']}},
-    'flatRange': {name: 'Farsight', 'bonuses': {'+range': 1}},
+    'flatRange': {name: 'Farsight', 'bonuses': {'+ranged:range': 1}},
     'percentHealth': {name: 'Larger than Life', 'bonuses': {'%maxHealth': 0.2, '+scale': .2}},
     'percentAccuracy': {name: 'Concentration', 'bonuses': {'%accuracy': 0.4}},
     'cooldownReduction': {name: 'Acuity', 'bonuses': {'%cooldown': -0.05}},

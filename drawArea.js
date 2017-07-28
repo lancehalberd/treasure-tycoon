@@ -4,6 +4,19 @@ var groundY = 390;
 // Indicates how much to shift drawing the map/level based on the needs of other UI elements.
 var screenYOffset = 0;
 
+function drawAnimation(context, animation, target) {
+    var frame = Math.floor(Date.now() * 20 / 1000) % animation.frames.length;
+    var frameData = animation.frames[frame];
+    drawImage(context, animation.image, rectangle(frameData[0], frameData[1], frameData[2], frameData[3]), target);
+}
+
+function drawOnGround(draw) {
+    var context = bufferContext;
+    context.clearRect(0,0, bufferCanvas.width, bufferCanvas.height);
+    draw(context);
+    drawImage(mainContext, bufferCanvas, rectangle(0, 300, bufferCanvas.width, 180), rectangle(0, 300, bufferCanvas.width, 180));
+}
+
 function drawArea(area) {
     var context = mainContext;
     var cameraX = area.cameraX;
@@ -40,17 +53,21 @@ function drawArea(area) {
         firstPattern = false;
     }
     context.restore();
+    var allSprites = area.allies.concat(area.enemies).concat(area.objects)
+        .concat(area.projectiles).concat(area.treasurePopups).concat(area.effects);
+    var sortedSprites = allSprites.slice().sort(function (spriteA, spriteB) {
+        return (spriteB.z || 0) - (spriteA.z || 0);
+    });
+    // Draw effects that appear underneath sprites. Do not sort these, rather, just draw them in
+    // the order they are present in the arrays.
+    for (var sprite of allSprites) if (sprite.drawGround) sprite.drawGround(area);
     drawActionTargetCircle(context);
     if (area.leftWall) drawLeftWall(area);
     if (area.rightWall) drawRightWall(area);
     if (area.wallDecorations) for (var object of area.wallDecorations) object.draw(area);
-    var sortedSprites = area.allies.concat(area.enemies).concat(area.objects)
-        .concat(area.projectiles).concat(area.treasurePopups).concat(area.effects).sort(function (spriteA, spriteB) {
-        return (spriteB.z || 0) - (spriteA.z || 0);
-    });
     for (var sprite of sortedSprites) {
         if (sprite.draw) sprite.draw(area);
-        else drawActor(sprite);
+        else if (sprite.isActor) drawActor(sprite);
     }
     //for (var effect of ifdefor(area.effects, [])) effect.draw(area);
     // Draw actor lifebar/status effects on top of effects/projectiles

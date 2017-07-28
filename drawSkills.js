@@ -200,16 +200,22 @@ function activateAction(action) {
         else selectedAction = action;
     }
 }
-function drawTargetCircle(context, area, x, z, radius, alpha) {
+
+function drawGroundCircle(context, area, x, z, radius) {
     var centerY = groundY - z / 2;
     var centerX = x - area.cameraX;
     context.save();
     context.translate(centerX, centerY);
     context.scale(1, .5);
+    context.beginPath();
+    context.arc(0, 0, radius, 0, 2 * Math.PI);
+    context.restore();
+}
+function drawTargetCircle(context, area, x, z, radius, alpha) {
+    drawGroundCircle(context, area, x, z, radius * 32);
+    context.save();
     context.globalAlpha = alpha;
     context.fillStyle = '#0FF';
-    context.beginPath();
-    context.arc(0, 0, radius * 32 + 32, 0, 2 * Math.PI);
     context.fill();
     context.globalAlpha = 1;
     context.lineWidth = 5;
@@ -226,14 +232,19 @@ function drawActionTargetCircle(targetContext) {
         action = hero.activity ? hero.activity.action : null;
     }
     if (!action) return;
-    var context = bufferContext;
-    context.clearRect(0,0, bufferCanvas.width, bufferCanvas.height);
-    var area = editingLevelInstance ? editingLevelInstance : action.actor.area;
-    drawTargetCircle(context, area, action.actor.x, ifdefor(action.actor.z), ifdefor(action.range, action.area), .1);
-    var targetLocation = getTargetLocation(area, canvasCoords[0], canvasCoords[1]);
-    //console.log([targetLocation, targetLocation && canUseSkillOnTarget(action.actor, action, targetLocation)]);
-    if (targetLocation && canUseSkillOnTarget(action.actor, action, targetLocation)) {
-        drawTargetCircle(context, area, targetLocation.x, targetLocation.z, action.area || .5, .3);
-    }
-    drawImage(targetContext, bufferCanvas, rectangle(0, 300, bufferCanvas.width, 180), rectangle(0, 300, bufferCanvas.width, 180));
+    drawOnGround(context => {
+        var area = editingLevelInstance ? editingLevelInstance : action.actor.area;
+        if (action.range) drawTargetCircle(context, area, action.actor.x, ifdefor(action.actor.z), action.range + 1, .1);
+        else if (action.area) drawTargetCircle(context, area, action.actor.x, ifdefor(action.actor.z), action.area, .1);
+        else drawTargetCircle(context, area, action.actor.x, ifdefor(action.actor.z), 1, .1);
+
+        var targetLocation = getTargetLocation(area, canvasCoords[0], canvasCoords[1]);
+        //console.log([targetLocation, targetLocation && canUseSkillOnTarget(action.actor, action, targetLocation)]);
+        if (targetLocation && canUseSkillOnTarget(action.actor, action, targetLocation)) {
+            drawTargetCircle(context, area, targetLocation.x, targetLocation.z, action.area || .5, .3);
+        }
+    });
+    //var context = bufferContext;
+    //context.clearRect(0,0, bufferCanvas.width, bufferCanvas.height);
+    //drawImage(targetContext, bufferCanvas, rectangle(0, 300, bufferCanvas.width, 180), rectangle(0, 300, bufferCanvas.width, 180));
 }
