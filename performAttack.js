@@ -182,11 +182,11 @@ function createAttackStats(attacker, attack, target) {
     if (!animation && attacker.equipment.weapon) {
         animation = ifdefor(attacker.equipment.weapon.base.animation);
     }
-    if (animation && !projectileAnimations[animation]) {
+    if (typeof(animation) === 'string' && !projectileAnimations[animation]) {
         pause();
         throw new Error('Missing animation for ' + animation);
     }
-    if (animation) {
+    if (typeof(animation) === 'string') {
         sound = attackSounds[animation] || sound;
         animation = projectileAnimations[animation];
     }
@@ -231,11 +231,11 @@ function createSpellStats(attacker, spell, target) {
     }
     var animation = ifdefor(spell.base.animation);
     var sound = spell.base.sound;
-    if (animation && !projectileAnimations[animation]) {
+    if (typeof(animation) === 'string' && !projectileAnimations[animation]) {
         pause();
         throw new Error('Missing animation for ' + animation);
     }
-    if (animation) {
+    if (typeof(animation) === 'string') {
         sound = attackSounds[animation] || sound;
         animation = projectileAnimations[animation];
     }
@@ -277,11 +277,11 @@ function createSpellImprintedAttackStats(attacker, attack, spell, target) {
     if (!animation && attacker.equipment.weapon) {
         animation = ifdefor(attacker.equipment.weapon.base.animation);
     }
-    if (animation && !projectileAnimations[animation]) {
+    if (typeof(animation) === 'string' && !projectileAnimations[animation]) {
         pause();
         throw new Error('Missing animation for ' + animation);
     }
-    if (animation) {
+    if (typeof(animation) === 'string') {
         sound = attackSounds[animation] || sound;
         animation = projectileAnimations[animation];
     }
@@ -649,7 +649,8 @@ function applyAttackToTarget(attackStats, target) {
         if (attack.pullsTarget) {
             target.stunned =  Math.max(ifdefor(target.stunned, 0), target.time + .3 + distance / 32 * ifdefor(attack.dragStun * effectiveness, 0));
             var targetX = (attacker.x > target.x) ? (attacker.x - target.width) : (attacker.x + attacker.width);
-            target.pull = {'x': targetX, 'time': target.time + .3, 'damage': Math.floor(distance / 32 * damage * ifdefor(attack.dragDamage * effectiveness, 0))};
+            var targetZ = (attacker.z > target.z) ? (attacker.z - target.width) : (attacker.z + attacker.width);
+            target.pull = {sourceAttackStats: attackStats, x: targetX, z: targetZ, 'time': target.time + .3, 'damage': Math.floor(distance / 32 * damage * ifdefor(attack.dragDamage * effectiveness, 0))};
             attacker.pull = {'x': attacker.x, 'time': attacker.time + .3, 'damage': 0};
             target.rotation = direction * ifdefor(attack.knockbackRotation, -45);
             hitText.value += ' hooked!';

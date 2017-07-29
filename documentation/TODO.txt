@@ -1,9 +1,11 @@
 Bug Fixes
 -Players/monsters get backed into corners too much.
--Explosion animation is smaller than the effective radius and is obviously smaller for large radii
 
 Content
 -Add Freeze animation+sound.
+-Add ground effect for protect
+-Add effect for reflect that fades and shatters at 0.
+-Add chain for grappling hook
 -Add storm animation+sound.
 -Add descriptions+monster definitions to areas
 -Finish job achievements

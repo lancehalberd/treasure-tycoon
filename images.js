@@ -81,6 +81,7 @@ var initialImagesToLoad = [
     'gfx/wolf.png', // Stephen "Redshrike" Challener as graphic artist and William.Thompsonj as contributor. If reasonable link back to this page or the OGA homepage. http://opengameart.org/content/lpc-wolf-animation
     'gfx/explosion.png', //https://opengameart.org/content/pixel-explosion-12-frames
     'gfx/musicNote.png', //http://www.animatedimages.org/img-animated-music-note-image-0044-154574.htm
+    'gfx/hook.png', //https://www.flaticon.com/free-icon/hook_91034
 ];
 for (var initialImageToLoad of initialImagesToLoad) {
     requireImage(initialImageToLoad);
@@ -115,6 +116,9 @@ function initializeCoins() {
         {'value': 200000, 'image': coinImage, 'x': 160, 'y': 64, 'width': 24, 'height': 24},
     ];
 }
+function staticAnimation(image, frame) {
+    return {image, frames: [frame]};
+}
 function makeFrames(length, size, origin = [0, 0], padding = 0, frameRepeat = 1, columns = 0) {
     columns = columns || length;
     var frames = [];
@@ -132,7 +136,9 @@ function initializeProjectileAnimations() {
     projectileAnimations['fireball'] = {'image': requireImage('gfx/projectiles.png'), 'frames': [[0, 0, 20, 20], [32, 0, 20, 20], [64, 0, 20, 20]]};
     effectAnimations.explosion = {image: requireImage('gfx/explosion.png'),
         frames: makeFrames(5, [96, 96], [0, 0], 0, 3),
-        endFrames: makeFrames(7, [96, 96], [5 * 96, 0], 0, 3)};
+        endFrames: makeFrames(7, [96, 96], [5 * 96, 0], 0, 3),
+        // The graphic doesn't fill the frame, so it must be scaled this much to match a given size.
+        scale: 1.5};
     effectAnimations.heal = {image: requireImage('gfx/heal.png'), frames: makeFrames(6, [64, 64], [0, 0], 0, 3)};
     effectAnimations.song = {image: requireImage('gfx/musicNote.png'), frames: makeFrames(15, [30, 60])};
     var projectileCanvas = createCanvas(96, 96);

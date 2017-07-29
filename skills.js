@@ -100,8 +100,11 @@ var skills = {
     'dragonPunch': attackAction('attack', {'icon': blackbeltIcon, 'restrictions': ['fist'], showName: true},
                               {'*damage': 3, '+cooldown': 30, '$alwaysHits': 'Never misses', '$undodgeable': 'Cannot be dodged',
                                         '+distance': 256, '$domino': 'Knocks target away possibly damaging other enemies.'}),
-    'hook':  attackAction('attack', {'icon': corsairIcon, showName: true}, {'+cooldown': 10, '+range': 10, '+dragDamage': 0, '+dragStun': 0, '+knockbackRotation': -60, '+rangeDamage': 0, '$alwaysHits': 'Never misses', '$pullsTarget': 'Pulls target'},
-                            'Throw a hook to damage and pull enemies closer.'),
+    'hook':  attackAction('attack',
+        {'icon': corsairIcon, speed: 50, size: 50, animation: staticAnimation(requireImage('gfx/hook.png'), [0, 0, 32, 32]), tags: ['ranged']},
+        {'+cooldown': 10, '+range': 10, '+dragDamage': 0, '+dragStun': 0, '+knockbackRotation': -60, '+rangeDamage': 0, '$alwaysHits': 'Never misses', '$pullsTarget': 'Pulls target'},
+        'Throw a hook to damage and pull enemies closer.'),
+
     'banishingStrike': attackAction('banish', {'icon': paladinIcon, 'restrictions': ['melee'], showName: true}, {'+cooldown': 30, '*damage': 2, '+distance': [6, '+', ['{strength}' , '/', 20]],
                 '$alwaysHits': 'Never misses', '+purify': 0, '+shockwave': 0, '+knockbackRotation': 30,
                 '$debuff': debuffEffect({}, {'+*weaponDamage': .5, '+duration': ['{intelligence}', '/', 20]}),

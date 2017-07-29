@@ -171,6 +171,7 @@ function explosionEffect(attackStats, x, y, z) {
                 var frame = (self.currentFrame < frames || !animation.endFrames)
                     ? animation.frames[Math.min(frames - 1, self.currentFrame)]
                     : animation.endFrames[Math.min(endFrames - 1, self.currentFrame - frames)];
+                var currentRadius = currentRadius * (animation.scale || 1)
                 mainContext.drawImage(animation.image, frame[0], frame[1], frame[2], frame[3],
                                                -currentRadius, -currentRadius, currentRadius * 2, currentRadius * 2);
             } else {
@@ -291,13 +292,27 @@ function projectile(attackStats, x, y, z, vx, vy, vz, target, delay, color, size
         debugger;
         throw new Error('Projectile found without size');
     }
+    var stuckDelta, stuckTarget;
     var self = {
         'distance': 0, x, y, z, vx, vy, vz, size, 't': 0, 'done': false, delay,
         'width': size, 'height': size, color,
         'hit': false, target, attackStats, 'hitTargets': [],
+        stickToTarget(target) {
+            stuckTarget = target;
+            stuckDelta = {x: self.x - self.vx - target.x, y: self.y - self.vy - target.y, z: self.z - self.vz - target.z};
+        },
         update(area) {
+            if (stuckDelta) {
+                if (!stuckTarget.pull || stuckTarget.pull.sourceAttackStats !== attackStats) {
+                    self.done = true;
+                    return;
+                }
+                self.x = stuckTarget.x + stuckDelta.x;
+                self.y = stuckTarget.y + stuckDelta.y;
+                self.z = stuckTarget.z + stuckDelta.z;
+            }
             // Put an absolute cap on how far a projectile can travel
-            if (self.y < 0 || self.distance > 2000) {
+            if (self.y < 0 || self.distance > 2000 && !stuckDelta) {
                 applyAttackToTarget(self.attackStats, {'x': self.x, 'y': self.y, 'z': self.z, 'width': 0, 'height': 0});
                 self.done = true;
             }
@@ -334,8 +349,11 @@ function projectile(attackStats, x, y, z, vx, vy, vz, target, delay, color, size
                         continue;
                     }
                     if (getDistance(self, enemy) && enemy.health > 0) {
-                        applyAttackToTarget(self.attackStats, enemy);
                         self.hitTargets.push(enemy);
+                        if (applyAttackToTarget(self.attackStats, enemy) && self.attackStats.attack.pullsTarget) {
+                            self.stickToTarget(enemy);
+                            return;
+                        }
                     }
                 }
             }
@@ -356,6 +374,11 @@ function projectile(attackStats, x, y, z, vx, vy, vz, target, delay, color, size
                 self.vy = v[1];
                 self.vz = v[2];
             } else if (ifdefor(attackStats.friendly) || applyAttackToTarget(self.attackStats, self.target)) {
+                // Friendly attack shouldn't hook the user, this is like when a juggler bounces a ball off of himself.
+                if (!attackStats.friendly && self.attackStats.attack.pullsTarget) {
+                    self.stickToTarget(self.target);
+                    return;
+                }
                 attackStats.friendly = false;
                 self.done = true;
                 if (ifdefor(attackStats.attack.chaining)) {
