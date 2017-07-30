@@ -28,8 +28,9 @@ function startLevel(character, index) {
 }
 
 function enterArea(actor, {x, z, areaKey}) {
+    var character = actor.character;
     if (areaKey === 'worldMap') {
-        returnToMap(state.selectedCharacter);
+        returnToMap(character);
         return;
     }
     leaveCurrentArea(actor);
@@ -43,7 +44,6 @@ function enterArea(actor, {x, z, areaKey}) {
         actor.actions.concat(actor.reactions).forEach(function (action) {
             action.readyAt = 0;
         });
-        var character = actor.character;
         if (character) {
             character.context = 'guild'
             character.currentLevelKey = 'guild';
