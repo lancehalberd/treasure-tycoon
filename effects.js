@@ -118,7 +118,7 @@ function explosionEffect(attackStats, x, y, z) {
     var alpha = ifdefor(attack.base.alpha, .5);
     var animation, frames = attack.base.frames || 10, endFrames = attack.base.endFrames || 5;
     if (attack.base.explosionAnimation) {
-        animation = effectAnimations[attack.base.explosionAnimation];
+        animation = attack.base.explosionAnimation;
         frames = animation.frames.length;
         if (animation.endFrames) endFrames = animation.endFrames.length;
         alpha = ifdefor(attack.base.alpha, 1);

@@ -93,7 +93,7 @@ var skills = {
 
     // Attack actions
     'basicAttack': attackAction('attack', {'tags': ['basic']}, {}, 'A basic attack'),
-    'healingAttack': attackAction('attack', {'animation': 'wandHealing', 'restrictions': ['wand'], 'target': 'otherAllies'}, {'$heals': true}, 'Basic attacks heal allies instead of damage enemies.'),
+    'healingAttack': attackAction('attack', {'animation': projectileAnimations.wandHealing, 'restrictions': ['wand'], 'target': 'otherAllies'}, {'$heals': true}, 'Basic attacks heal allies instead of damage enemies.'),
     'bullseye': attackAction('attack', {'icon': jugglerIcon, showName: true}, {'*damage': 2, '+cooldown': 15, '$alwaysHits': 'Never misses', '$undodgeable': 'Cannot be dodged'}),
     'counterAttack': attackAction('counterAttack', {'icon': blackbeltIcon, showName: true}, {'*damage': 1.5, '+chance': .1},
                             'Perform a powerful counter attack.<br/>The chance to counter is lower the further away the attacker is.'),
@@ -101,7 +101,7 @@ var skills = {
                               {'*damage': 3, '+cooldown': 30, '$alwaysHits': 'Never misses', '$undodgeable': 'Cannot be dodged',
                                         '+distance': 256, '$domino': 'Knocks target away possibly damaging other enemies.'}),
     'hook':  attackAction('attack',
-        {'icon': corsairIcon, speed: 50, size: 50, animation: staticAnimation(requireImage('gfx/hook.png'), [0, 0, 32, 32]), tags: ['ranged']},
+        {'icon': corsairIcon, speed: 50, size: 50, animation: staticAnimation(requireImage('gfx/effects/hook.png'), [0, 0, 32, 32]), tags: ['ranged']},
         {'+cooldown': 10, '+range': 10, '+dragDamage': 0, '+dragStun': 0, '+knockbackRotation': -60, '+rangeDamage': 0, '$alwaysHits': 'Never misses', '$pullsTarget': 'Pulls target'},
         'Throw a hook to damage and pull enemies closer.'),
 
@@ -219,13 +219,27 @@ var skills = {
             'Create a magical barrier that will reflect projectile attacks until it breaks after taking {+power} damage. Further casting strengthens the barrier.'),
     'revive': spellAction('revive', {'icon': 'gfx/496RpgIcons/spellRevive.png', showName: true}, {'+cooldown': 120},
             'Upon receiving a lethal blow, cast a spell that brings you back to life with {+power} health.'),
-    'protect': spellAction('effect', {'icon': 'gfx/496RpgIcons/spellProtect.png', 'target': 'allies', showName: true}, {'+cooldown': 30, '+range': 10, '$buff': buffEffect({'icons': [effectSourceUp, effectSourceArmor]}, {'++armor': ['{intelligence}'], '+duration': 20})},
+    'protect': spellAction('effect', {'icon': 'gfx/496RpgIcons/spellProtect.png', 'target': 'allies', showName: true},
+            {'+cooldown': 30, '+range': 10, '$buff': buffEffect({'icons': [effectSourceUp, effectSourceArmor], drawGround(actor) {
+                var animation = effectAnimations.blueRune;
+                var size = Math.max(actor.width, 128);
+                var frame = animation.frames[frame];
+                drawOnGround(context => {
+                    context.save();
+                    context.globalAlpha = .8 + .2 * Math.cos(3 * actor.time * Math.PI);
+                    context.translate((actor.x - actor.area.cameraX), groundY - actor.z / 2);
+                    context.scale(1, .5);
+                    context.rotate(actor.time * Math.PI / 2);
+                    drawTintedImage(context, requireImage('gfx/effects/circleOfProtection.png'), '#08F', 1, rectangle(0,0,200,200), rectangle(-size / 2, -size / 2, size, size));
+                    context.restore();
+                });
+            }}, {'++armor': ['{intelligence}'], '+duration': 20})},
                            'Create a magic barrier that grants: {$buff}'),
     'aegis': spellAction('criticalCounter', {'icon': 'gfx/496RpgIcons/buffShield.png', showName: true}, {'+cooldown': 60, '+stopAttack': 1,
                 '$buff': buffEffect({}, {'$$maxBlock': 'Block checks are always perfect', '$$maxMagicBlock': 'Magic Block checks are always perfect', '+duration': 5})},
                 'If an attack would deal more than half of your remaining life, prevent it and cast an enchantment that grants you: {$buff}'),
     'fireball': spellAction('spell', {'icon': 'gfx/496RpgIcons/spellFire.png', 'tags': ['ranged'],
-                                        'animation': 'fireball', explosionAnimation: 'explosion', 'alpha': .8,
+                                        'animation': projectileAnimations.fireball, explosionAnimation: effectAnimations.explosion, 'alpha': .8,
                                         sound: 'sounds/cheeseman/arrow.wav', explosionSound: 'sounds/fireball.flac', 'size': 40, 'color': 'red', 'gravity': 0},
                                     {'+range': 12, '+cooldown': 8, '$alwaysHits': 'Never misses', '+explode': 1, '+area': 3, '+areaCoefficient': .5},
                             'Conjure an explosive fireball to hurl at enemies dealing {+power} damage.'),
@@ -252,7 +266,7 @@ var skills = {
                     {'+range': 10, '+area': [8, '+', ['{intelligence}', '/', '100']], '+cooldown': 15,
                     '$alwaysHits': 'Never misses', '$debuff': debuffEffect({}, {'+*magicResist': .5, '+*magicBlock': .5, '$duration': 'forever', '+maxStacks': 3})},
                     'Premanently reduce the magic resistances of all enemies in a large area.'),
-    'meteor': spellAction('spell', {'icon': 'gfx/496RpgIcons/spellMeteor.png', 'animation': 'fireball', 'tags': ['rain'],
+    'meteor': spellAction('spell', {'icon': 'gfx/496RpgIcons/spellMeteor.png', 'animation': projectileAnimations.fireball, 'tags': ['rain'],
                           'heightRatio': 1, 'minTheta': Math.PI, 'color': 'brown', 'alpha': .4, 'size': 30, 'gravity': .5},
                        {'+count': [2, '+', ['{intelligence}', '/', '100']], '+explode': 1, '+power': ['{magicPower}', '/', 2],
                        '+range': 10, '+area': [3, '+', ['{intelligence}', '/', '200']], '+cooldown': 25, '$alwaysHits': 'Never misses'},

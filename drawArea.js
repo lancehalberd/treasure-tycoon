@@ -61,6 +61,7 @@ function drawArea(area) {
     // Draw effects that appear underneath sprites. Do not sort these, rather, just draw them in
     // the order they are present in the arrays.
     for (var sprite of allSprites) if (sprite.drawGround) sprite.drawGround(area);
+    for (var actor of area.allies.concat(area.enemies)) drawActorGroundEffects(actor);
     drawActionTargetCircle(context);
     if (area.leftWall) drawLeftWall(area);
     if (area.rightWall) drawRightWall(area);
@@ -97,6 +98,35 @@ function updateActorAnimationFrame(actor) {
         actor.walkFrame = ifdefor(actor.walkFrame, 0) + walkFps * frameMilliseconds * Math.max(.1, 1 - actor.slow) * (actor.skillInUse ? .25 : 1) / 1000;
     } else {
         actor.walkFrame = 0;
+    }
+}
+function drawRune(context, actor, animation, frame) {
+    var size = [Math.max(actor.width, 128), Math.max(actor.width / 2, 64)];
+    context.save();
+    context.translate((actor.x - actor.area.cameraX), groundY - actor.z / 2);
+    var frame = animation.frames[frame];
+    context.drawImage(animation.image, frame[0], frame[1], frame[2], frame[3], -size[0] / 2, -size[1] / 2, size[0], size[1]);
+    context.restore();
+}
+function drawActorGroundEffects(actor) {
+    var usedEffects = new Set();
+    for (var effect of actor.allEffects) {
+        if (!effect.base.drawGround) continue;
+        // Don't draw the same effect animation twice on the same character.
+        if (usedEffects.has(effect.base)) continue;
+        usedEffects.add(effect.base);
+        effect.base.drawGround(actor);
+    }
+    if (!actor.pull && !actor.stunned && !actor.isDead && actor.skillInUse && actor.recoveryTime === 0) {
+        if (actor.skillInUse.tags['spell']) {
+            var castAnimation = effectAnimations.cast;
+            var castFrame = Math.floor(actor.preparationTime / actor.skillInUse.totalPreparationTime * castAnimation.frames.length);
+            if (castFrame < castAnimation.frames.length) {
+                drawOnGround((context) => {
+                    drawRune(context, actor, castAnimation, castFrame);
+                });
+            }
+        }
     }
 }
 function drawActor(actor) {

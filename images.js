@@ -3,9 +3,7 @@ var assetVersion = ifdefor(assetVersion, '0.4');
 var images = {};
 function loadImage(source, callback) {
     images[source] = new Image();
-    images[source].onload = function () {
-        callback();
-    };
+    images[source].onload = () => callback();
     images[source].src = source + '?v=' + assetVersion;
     return images[source];
 }
@@ -14,9 +12,7 @@ var numberOfImagesLeftToLoad = 0;
 function requireImage(imageFile) {
     if (images[imageFile]) return images[imageFile];
     numberOfImagesLeftToLoad++;
-    return loadImage(imageFile, function () {
-        numberOfImagesLeftToLoad--;
-    });
+    return loadImage(imageFile, () => numberOfImagesLeftToLoad--);
 }
 var initialImagesToLoad = [
     // Original images from project contributors:
@@ -24,7 +20,7 @@ var initialImagesToLoad = [
     'gfx/grass.png', 'gfx/cave.png', 'gfx/forest.png', 'gfx/beach.png', 'gfx/town.png',
     'gfx/caterpillar.png', 'gfx/gnome.png', 'gfx/skeletonGiant.png', 'gfx/skeletonSmall.png', 'gfx/dragonEastern.png',
     'gfx/turtle.png', 'gfx/monarchButterfly.png', 'gfx/yellowButterfly.png',
-    'gfx/treasureChest.png', 'gfx/moneyIcon.png', 'gfx/projectiles.png',
+    'gfx/treasureChest.png', 'gfx/moneyIcon.png', 'gfx/effects/projectiles.png',
     'gfx/iconSet.png',
     'gfx/monsterPeople.png',
     /**
@@ -79,9 +75,12 @@ var initialImagesToLoad = [
     'gfx/militaryIcons.png', // http://opengameart.org/content/140-military-icons-set-fixed
     'gfx/spider.png', // Stephen "Redshrike" Challener as graphic artist and William.Thompsonj as contributor. If reasonable link to this page or the OGA homepage. http://opengameart.org/content/lpc-spider
     'gfx/wolf.png', // Stephen "Redshrike" Challener as graphic artist and William.Thompsonj as contributor. If reasonable link back to this page or the OGA homepage. http://opengameart.org/content/lpc-wolf-animation
-    'gfx/explosion.png', //https://opengameart.org/content/pixel-explosion-12-frames
-    'gfx/musicNote.png', //http://www.animatedimages.org/img-animated-music-note-image-0044-154574.htm
-    'gfx/hook.png', //https://www.flaticon.com/free-icon/hook_91034
+    'gfx/effects/explosion.png', //https://opengameart.org/content/pixel-explosion-12-frames
+    'gfx/effects/musicNote.png', //http://www.animatedimages.org/img-animated-music-note-image-0044-154574.htm
+    'gfx/effects/hook.png', //https://www.flaticon.com/free-icon/hook_91034
+
+    'gfx/effects/greenRune.png', 'gfx/effects/blueRune.png', 'gfx/effects/redRune.png', //https://opengameart.org/content/teleport-rune
+    'gfx/effects/circleOfProtection.png', //https://opengameart.org/content/circles-glow
 ];
 for (var initialImageToLoad of initialImagesToLoad) {
     requireImage(initialImageToLoad);
@@ -132,47 +131,54 @@ function makeFrames(length, size, origin = [0, 0], padding = 0, frameRepeat = 1,
     }
     return frames;
 }
+projectileAnimations['fireball'] = {'image': requireImage('gfx/effects/projectiles.png'), 'frames': [[0, 0, 20, 20], [32, 0, 20, 20], [64, 0, 20, 20]]};
+effectAnimations.explosion = {image: requireImage('gfx/effects/explosion.png'),
+    frames: makeFrames(5, [96, 96], [0, 0], 0, 3),
+    endFrames: makeFrames(7, [96, 96], [5 * 96, 0], 0, 3),
+    // The graphic doesn't fill the frame, so it must be scaled this much to match a given size.
+    scale: 1.5};
+effectAnimations.heal = {image: requireImage('gfx/effects/heal.png'), frames: makeFrames(6, [64, 64], [0, 0], 0, 3)};
+effectAnimations.song = {image: requireImage('gfx/effects/musicNote.png'), frames: makeFrames(15, [30, 60])};
+effectAnimations.cast = {image: requireImage('gfx/effects/greenRune.png'), frames: makeFrames(4, [64, 32], [0, 16])};
+effectAnimations.blueRune = {image: requireImage('gfx/effects/blueRune.png'), frames: makeFrames(4, [64, 32], [0, 16])};
+var projectileCanvas = createCanvas(96, 96);
+projectileCanvas.imageSmoothingEnabled = false;
+projectileAnimations.wandHealing = {image: projectileCanvas, 'frames': makeFrames(4, [20, 20], [0, 0], 12), 'fps': 20};
+projectileAnimations.throwingAttack = {image: projectileCanvas, 'frames': [[0, 64, 20, 20]]};
+projectileAnimations.wandAttack = {image: projectileCanvas, 'frames': makeFrames(4, [20, 20], [0, 32], 12), 'fps': 20};
+projectileAnimations.bowAttack = {'image': projectileCanvas, 'frames': [[32, 64, 20, 20]]};
+// This code draws modified copes of images to the projectile canvas and must run after the images it uses have loaded.
 function initializeProjectileAnimations() {
-    projectileAnimations['fireball'] = {'image': requireImage('gfx/projectiles.png'), 'frames': [[0, 0, 20, 20], [32, 0, 20, 20], [64, 0, 20, 20]]};
-    effectAnimations.explosion = {image: requireImage('gfx/explosion.png'),
-        frames: makeFrames(5, [96, 96], [0, 0], 0, 3),
-        endFrames: makeFrames(7, [96, 96], [5 * 96, 0], 0, 3),
-        // The graphic doesn't fill the frame, so it must be scaled this much to match a given size.
-        scale: 1.5};
-    effectAnimations.heal = {image: requireImage('gfx/heal.png'), frames: makeFrames(6, [64, 64], [0, 0], 0, 3)};
-    effectAnimations.song = {image: requireImage('gfx/musicNote.png'), frames: makeFrames(15, [30, 60])};
-    var projectileCanvas = createCanvas(96, 96);
-    projectileCanvas.imageSmoothingEnabled = false;
     var context = projectileCanvas.getContext('2d');
+    // Draw the healing attacks for the wand
     prepareTintedImage();
-    var tintedRow = getTintedImage(images['gfx/projectiles.png'], 'green', .5, {'left':96, 'top':32, 'width': 96, 'height': 32});
+    var tintedRow = getTintedImage(images['gfx/effects/projectiles.png'], 'green', .5, {'left':96, 'top':32, 'width': 96, 'height': 32});
     context.drawImage(tintedRow, 0, 0, 96, 32, 0, 0, 96, 32);
     context.save();
     context.translate(32 + 10, 10);
     context.rotate(Math.PI / 8);
     context.clearRect(-10, -10, 20, 20);
     context.drawImage(tintedRow, 32, 0, 20, 20, -10, -10, 20, 20);
-    projectileAnimations['wandHealing'] = {'image': projectileCanvas, 'frames': [[0, 0, 20, 20], [32, 0, 20, 20], [64, 0, 20, 20], [32, 0, 20, 20]], 'fps': 20};
     context.restore();
     context.save();
+    // Draw the regular attacks for the wand.
     prepareTintedImage();
-    tintedRow = getTintedImage(images['gfx/projectiles.png'], 'orange', .5, {'left':96, 'top':32, 'width': 96, 'height': 32});
+    tintedRow = getTintedImage(images['gfx/effects/projectiles.png'], 'orange', .5, {'left':96, 'top':32, 'width': 96, 'height': 32});
     context.drawImage(tintedRow, 0, 0, 96, 32, 0, 32, 96, 32);
     context.translate(32 + 10, 32 + 10);
     context.rotate(Math.PI / 8);
     context.clearRect(-10, -10, 20, 20);
     context.drawImage(tintedRow, 32, 0, 20, 20, -10, -10, 20, 20);
-    projectileAnimations['wandAttack'] = {'image': projectileCanvas, 'frames': [[0, 32, 20, 20], [32, 32, 20, 20], [64, 32, 20, 20], [32, 32, 20, 20]], 'fps': 20};
     context.restore();
+    // Draw the ball for throwing weapon projectiels
     context.drawImage(images['gfx/weapons.png'], 38, 363, 10, 10, 0, 64, 20, 20);
-    projectileAnimations['throwingAttack'] = {'image': projectileCanvas, 'frames': [[0, 64, 20, 20]]};
+    // Draw an arrow by hand for bow attacks.
     context.fillStyle = 'brown';
     context.fillRect(32, 72, 15, 1);
     context.fillRect(32, 73, 20, 1);
     context.fillStyle = 'white';
     context.fillRect(32, 71, 5, 1);
     context.fillRect(32, 74, 5, 1);
-    projectileAnimations['bowAttack'] = {'image': projectileCanvas, 'frames': [[32, 64, 20, 20]]};
     //$('body').append(projectileCanvas);
 }
 
