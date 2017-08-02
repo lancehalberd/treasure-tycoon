@@ -140,6 +140,13 @@ function actorCanOverHeal(actor) {
         || (ifdefor(actor.overHealReflection, 0) > 0 && actor.reflectBarrier < actor.maxReflectBarrier);
 }
 function capHealth(actor) {
+
+    if (actor.targetHealth < actor.health) {
+        // Life is lost at a rate dictated by the actors tenacity.
+        var healthLostPerFrame = actor.maxHealth * frameMilliseconds / (actor.tenacity * 1000);
+        // Lost health each frame until actor.health === actor.targetHealth.
+        actor.health = Math.max(actor.targetHealth, actor.health - healthLostPerFrame);
+    } else actor.health = actor.targetHealth; //Life gained is immediately applied
     // Apply overhealing if the actor is over their health cap and possesses overhealing.
     var excessHealth = actor.health - actor.maxHealth;
     if (actor.overHeal && excessHealth > 0) {
@@ -150,6 +157,8 @@ function capHealth(actor) {
     }
     actor.health = Math.min(actor.maxHealth, Math.max(0, actor.health));
     actor.percentHealth = actor.health / actor.maxHealth;
+    actor.targetHealth = Math.min(actor.maxHealth, actor.targetHealth);
+    actor.percentTargetHealth = actor.targetHealth / actor.maxHealth;
 }
 function removeActor(actor) {
     var index = actor.allies.indexOf(actor);
@@ -246,20 +255,7 @@ function updateArea(area) {
             removeActor(actor);
             return;
         }
-        // Since damage can be dealt at various points in the frame, it is difficult to pin point what damage was dealt
-        // since the last action check. To this end, we keep track of their health over the last five frames and use
-        // these values to determine how much damage has accrued recently for abilities that trigger when a character
-        // is in danger.
         capHealth(actor);
-        if ((actor.time * 1000) % 100 < 20) {
-            if (!actor.healthValues) {
-                actor.healthValues = [];
-            }
-            actor.healthValues.unshift(actor.health);
-            while (actor.healthValues.length > 10) {
-                actor.healthValues.pop();
-            }
-        }
     });
     everybody.forEach(updateActorDimensions);
     everybody.forEach(updateActorAnimationFrame);
@@ -288,10 +284,8 @@ function processStatusEffects(target) {
     if (target.slow) {
         target.slow = Math.max(0, Math.min(target.slow - .5 * target.slow * delta, target.slow - .1 * delta));
     }
-    if (target.health > 0 && ifdefor(target.healthRegen)) {
-        target.health = target.health + target.healthRegen * delta;
-    }
-    target.health = target.health - ifdefor(target.damageOverTime, 0) * delta;
+    healActor(target, (target.healthRegen || 0) * delta);
+    damageActor(target, (target.damageOverTime || 0) * delta);
     if (target.pull && target.dominoAttackStats) {
         for (var i = 0; i < target.allies.length; i++) {
             var ally = target.allies[i];
@@ -324,13 +318,13 @@ function processStatusEffects(target) {
             var baseY = target.baseY || 0;
             var dy = target.pull.y || 0 - baseY;
             target.y = baseY + dy * parabolaValue;
-            target.health -= damage;
+            damageActor(target, damage);
         } else {
             var dx = target.pull.x - target.x;
             target.rotation = 0;
             target.x = target.pull.x;
             target.y = target.baseY || 0;
-            target.health -= target.pull.damage;
+            damageActor(target, target.pull.damage);
             target.pull = null;
         }
     }

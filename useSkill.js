@@ -249,7 +249,7 @@ function triggerSkillEffects(actor, skill) {
         }
     }
     if (skill.tags.spell && actor.healOnCast) {
-        actor.health += actor.maxHealth * actor.healOnCast;
+        healActor(actor, actor.maxHealth * actor.healOnCast);
     }
 }
 
@@ -323,7 +323,7 @@ skillDefinitions.spell = {
 skillDefinitions.consume = {
     isValid: (actor, consumeSkill, target) => target.isActor,
     use: function (actor, consumeSkill, target) {
-        actor.health += target.maxHealth * ifdefor(consumeSkill.consumeRatio, 1);
+        healActor(actor, target.maxHealth * (consumeSkill.consumeRatio || 1));
         stealAffixes(actor, target, consumeSkill);
     }
 };
@@ -332,36 +332,16 @@ skillDefinitions.song = {
         return closestEnemyDistance(actor) < 500;
     },
     use: function (actor, songSkill, target) {
-        var attackStats = createSpellStats(actor, songSkill, target);
-        performAttackProper(attackStats, target);
-        return attackStats;
+        performAttackProper(createSpellStats(actor, songSkill, target), target);
     }
 };
 skillDefinitions.heroSong = {
     shouldUse: function (actor, songSkill, target) {
-        var healthValues = target.healthValues;
-        // healthValues might not be set right when a target spawns.
-        if (!healthValues || target === actor) {
-            return false;
-        }
-        // Use ability if target is low on life.
-        //console.log(target.health / target.maxHealth);
-        if (target.health / target.maxHealth <= 1 / 3) {
-            return true;
-        }
-        // Use ability if target is losing remaining life rapidly.
-        var maxHealth = Math.max.apply(null, healthValues);
-        //console.log(healthValues[0] + ' / ' + target.maxHealth);
-        if (healthValues[0] / maxHealth <= .6) {
-            ///console.log(healthValues);
-            return true;
-        }
-        return false;
+        // Use ability if an ally is on low life.
+        return target !== actor && (target.health / target.maxHealth) < .3;
     },
     use: function (actor, songSkill, target) {
-        var attackStats = createSpellStats(actor, songSkill, target);
-        performAttackProper(attackStats, target);
-        return attackStats;
+        performAttackProper(createSpellStats(actor, songSkill, target), target);
     }
 };
 
@@ -373,8 +353,7 @@ skillDefinitions.revive = {
     },
     use: function (actor, reviveSkill, attackStats) {
         attackStats.stopped = true;
-        actor.health = reviveSkill.power;
-        actor.percentHealth = actor.health / actor.maxHealth;
+        setActorHealth(actor, reviveSkill.power);
         if (reviveSkill.buff) {
             addTimedEffect(actor, reviveSkill.buff, 0);
         }
@@ -487,11 +466,8 @@ function getMinionSpeedBonus(actor, minion) {
 
 skillDefinitions.clone = {
     isValid: function (actor, cloneSkill, attackStats) {
-        var count = 0;
-        actor.allies.forEach(function (ally) {
-            if (ally.skillSource == cloneSkill) count++;
-        });
-        return count < cloneSkill.limit && Math.random() < cloneSkill.chance;
+        var numberOfClones = actor.allies.filter(ally => ally.skillSource === cloneSkill).length;
+        return numberOfClones < cloneSkill.limit && Math.random() < cloneSkill.chance;
     },
     use: function (actor, cloneSkill, attackStats) {
         var clone = cloneActor(actor, cloneSkill);
@@ -499,19 +475,15 @@ skillDefinitions.clone = {
         clone.owner = actor;
         actor.minions.push(clone);
         clone.name = actor.name + ' shadow clone';
-        clone.percentHealth = actor.percentHealth;
-        clone.health = clone.percentHealth * clone.maxHealth;
+        setActorHealth(clone, actor.percentHealth * clone.maxHealth);
         actor.allies.push(clone);
     }
 };
 
 skillDefinitions.decoy = {
     isValid: function (actor, decoySkill, attackStats) {
-        var count = 0;
-        actor.allies.forEach(function (ally) {
-            if (ally.skillSource == decoySkill) count++;
-        });
-        return count < ifdefor(decoySkill.limit, 10);
+        var numberOfDecoys = actor.allies.filter(ally => ally.skillSource === decoySkill).length;
+        return numberOfDecoys < (decoySkill.limit || 10);
     },
     use: function (actor, decoySkill, attackStats) {
         var clone = cloneActor(actor, decoySkill);
@@ -521,8 +493,7 @@ skillDefinitions.decoy = {
         clone.name = actor.name + ' decoy';
         addActions(clone, abilities.explode);
         actor.allies.push(clone);
-        clone.health = Math.max(1, clone.maxHealth * actor.percentHealth);
-        clone.percentHealth = clone.health / clone.maxHealth;
+        setActorHealth(clone, Math.max(1, clone.maxHealth * actor.percentHealth));
     }
 };
 
@@ -557,13 +528,14 @@ skillDefinitions.heal = {
         return (actorCanOverHeal(target) && actor.enemies.length) || (target.health + healSkill.power <= target.maxHealth) || (target.health <= target.maxHealth / 2);
     },
     use: function (actor, healSkill, target) {
-        target.health += healSkill.power;
+        healActor(target, healSkill.power);
+        actor.area.effects.push(animationEffect(effectAnimations.heal, target, {scale: [2, 1]}));
         if (healSkill.area > 0) {
             for (target of getActorsInRange(target, healSkill.area, target.allies)) {
-                target.health += healSkill.power;
+                healActor(target, healSkill.power);
+                actor.area.effects.push(animationEffect(effectAnimations.heal, target, {scale: [2, 1]}));
             }
         }
-        actor.area.effects.push(animationEffect(effectAnimations.heal, target, {scale: [2, 1]}));
     }
 };
 

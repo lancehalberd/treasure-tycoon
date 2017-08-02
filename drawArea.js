@@ -234,6 +234,13 @@ function drawActorEffects(actor) {
         mainContext.fillStyle = 'orange';
         mainContext.fillRect(x + 1 + normalWidth, y + 1, bonusWidth, 2);
     }
+    mainContext.save();
+    mainContext.fillStyle = 'white';
+    mainContext.globalAlpha = .7;
+    var targetSize = Math.floor(62 * Math.max(0, actor.targetHealth) / actor.maxHealth);
+    mainContext.fillRect(x + 1 + targetSize, y + 1, 62 - targetSize, 2);
+    mainContext.restore();
+
     if (ifdefor(actor.reflectBarrier, 0) > 0) {
         y -= 3;
         var width = Math.ceil(Math.min(1, actor.maxReflectBarrier / actor.maxHealth) * 64);

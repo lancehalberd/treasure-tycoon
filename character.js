@@ -21,6 +21,7 @@ var allActorVariables = {
     'intelligence': '.',
     'maxHealth': '.',
     'healthRegen': '.',
+    'tenacity': 'Minimum number of seconds for this actor to go from full health to 0 health',
     'speed': '.',
     'magicPower': '.',
     // These stats are used as input into the actual range/damage stats on abilities/attacks.
@@ -152,9 +153,8 @@ function removeAdventureEffects(actor) {
 }
 function initializeActorForAdventure(actor) {
     actor.isActor = true;
-    actor.percentHealth = 1;
+    setActorHealth(actor, actor.maxHealth);
     actor.maxReflectBarrier = actor.reflectBarrier = 0;
-    actor.health = actor.maxHealth;
     actor.bonusMaxHealth = 0;
     actor.stunned = 0;
     actor.pull = null;
@@ -218,8 +218,7 @@ function newCharacter(job) {
     hero.character = character;
     hero.heading = [1, 0, 0]; // Character moves left to right by default.
     hero.bonusMaxHealth = 0;
-    hero.percentHealth = 1;
-    hero.health = hero.maxHealth;
+    setActorHealth(hero, hero.maxHealth);
     var characterCanvas = createCanvas(40, 20);
     character.$characterCanvas = $(characterCanvas);
     character.$characterCanvas.addClass('js-character character')
@@ -298,6 +297,7 @@ function makeAdventurerFromData(adventurerData) {
         personContext,
         'attackCooldown': 0,
         'percentHealth': 1,
+        'percentTargetHealth': 1,
         'helpMethod': actorHelpText
     };
     initializeVariableObject(adventurer, {'variableObjectType': 'actor'}, adventurer);
@@ -419,6 +419,7 @@ function updateAdventurer(adventurer) {
     var levelCoefficient = Math.pow(1.05, adventurer.level);
     var adventurerBonuses = {
         '+maxHealth': 50 + 20 * (adventurer.level + adventurer.job.dexterityBonus + adventurer.job.strengthBonus + adventurer.job.intelligenceBonus),
+        '+tenacity': 4 + 2 * adventurer.level / 100,
         '+levelCoefficient': levelCoefficient,
         '+accuracy': 4 + 2 * adventurer.level,
         '+evasion': adventurer.level,
@@ -629,6 +630,16 @@ function gainLevel(adventurer) {
     // Enable the skipShrines option only once an adventurer levels the first time.
     state.skipShrinesEnabled = true;
     $('.js-shrineButton').show();
+}
+function damageActor(actor, damage) {
+    actor.targetHealth -= damage;
+}
+function healActor(actor, healAmount) {
+    actor.targetHealth += healAmount;
+}
+function setActorHealth(actor, health) {
+    actor.targetHealth = actor.health = health;
+    actor.percentHealth = actor.percentTargetHealth = health / actor.maxHealth;
 }
 
 function divinityToLevelUp(currentLevel) {

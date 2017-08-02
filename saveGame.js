@@ -41,8 +41,7 @@ function importCharacter(characterData) {
     character.adventurer.character = character;
     character.adventurer.heading = [1, 0, 0]; // Character moves left to right.
     character.adventurer.bonusMaxHealth = 0;
-    character.adventurer.percentHealth = 1;
-    character.adventurer.health = character.adventurer.maxHealth;
+    setActorHealth(character.hero, character.hero.maxHealth);
     var characterCanvas = createCanvas(40, 20);
     character.$characterCanvas = $(characterCanvas);
     character.$characterCanvas.addClass('js-character character')

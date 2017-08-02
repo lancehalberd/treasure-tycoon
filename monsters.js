@@ -1,7 +1,7 @@
 
-var enchantedMonsterBonuses = {'bonuses': {'*maxHealth': 1.5, '*weaponDamage': 1.5, '*coins': 2, '*anima': 3,
+var enchantedMonsterBonuses = {'bonuses': {'*maxHealth': 1.5, '*tenacity': 2, '*weaponDamage': 1.5, '*coins': 2, '*anima': 3,
                                     '$tint': '#af0', '$tintMinAlpha': 0.2, '$tintMaxAlpha': 0.5, '$lifeBarColor': '#af0'}};
-var imbuedMonsterBonuses = {'bonuses': {'*maxHealth': 2, '*weaponDamage': 2, '*coins': 6, '*anima': 10,
+var imbuedMonsterBonuses = {'bonuses': {'*maxHealth': 2, '*tenacity': 4, '*weaponDamage': 2, '*coins': 6, '*anima': 10,
                                     '$tint': '#c6f', '$tintMinAlpha': 0.2, '$tintMaxAlpha': 0.5, '$lifeBarColor': '#c6f'}};
 
 
@@ -13,7 +13,7 @@ var hardBonuses = {'bonuses': {'*maxHealth': 1.3, '*strength': 1.3, '*dexterity'
                                 '*coins': 1.5, '*anima': 1.5}};
 // To make bosses intimidating, give them lots of health and damage, but to keep them from being overwhelming,
 // scale down their health regen, attack speed and critical multiplier.
-var bossMonsterBonuses = {'bonuses': {'*maxHealth': [2.5, '+', ['{level}', '/', 2]], '*weaponDamage': 2, '*attackSpeed': .75, '*critDamage': .5, '*critChance': .5, '*evasion': .5,
+var bossMonsterBonuses = {'bonuses': {'*maxHealth': [2.5, '+', ['{level}', '/', 2]], '*tenacity': 5, '*weaponDamage': 2, '*attackSpeed': .75, '*critDamage': .5, '*critChance': .5, '*evasion': .5,
                             '*healthRegen': [1, '/', [1.5, '+', ['{level}', '/', 2]]], '+coins': 2, '*coins': 4, '+anima': 1, '*anima': 4,
                             '$uncontrollable': 'Cannot be controlled.', '$tint': 'red', '$tintMinAlpha': 0.2, '$tintMaxAlpha': 0.5}};
 var monsterPrefixes = [
@@ -60,8 +60,9 @@ function makeMonster(monsterData, level, extraSkills, specifiedRarity) {
         'suffixes': [],
         'extraSkills': ifdefor(extraSkills, []),
         'aggroRadius': 600,
-        'percentHealth': 1,
-        'helpMethod': actorHelpText
+        percentHealth: 1,
+        percentTargetHealth: 1,
+        helpMethod: actorHelpText
     };
     var baseMonster;
     if (typeof(monsterData) == 'string') {
@@ -200,6 +201,7 @@ function getMonsterBonuses(monster) {
     return {
         // Health scales linearly to level 10, then 10% a level.
         '+maxHealth': (10 + 25 * growth),
+        '+tenacity': 1 + growth / 100,
         '+levelCoefficient': levelCoefficient,
         '+range': 1,
         '+minWeaponPhysicalDamage': Math.round(.9 * (5 + 5 * growth)) * levelCoefficient,

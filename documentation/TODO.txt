@@ -1,6 +1,7 @@
 Bug Fixes
 -Players/monsters get backed into corners too much.
 -Make sure 'dodge' is displayed when an attack is dodged.
+-Fix actors shouldn't target non-heroes that are dying (targetHealth < 0 or maybe < -target.tenacity * target.healthRegen)
 
 Content
 -Add ice wolf with leap attack, freeze and white tint. Restores cooldowns at 66% and 33% health.
@@ -23,17 +24,6 @@ Feature Improvements
     enchantments to entire groups, and imbued to only leaders, add aoe buffs to imbued monsters.
 -Add AI overrides to monsters. If present run this before actor loop is called. It should set an
     activity or do nothing. Can be set on a monster type, and overidden on a particular monster instance.
--Add tenacity stat:
-    - Tenacity is minimum seconds to die from full life. When damaged, your target life is set
-        and you lose life at the rate of maxLife / (50(fps) * tenacity(seconds)) per frame until
-        current life equals target life. Life gain above current life instantly sets current life.
-        Damage is tracked below 0 target life, but at 25% effectiveness, making it easier to heal
-        out of lethal damage but not always possible.
-    - Players have 4s tenacity by default scaling up to 6s at level 100
-    - Monsters have 1s tenacity by default scaling up to 2s at level 100
-    - Enchanted monsters have x2 tenacity
-    - Imbued(rare) monsters have x4 tenacity
-    - Bosses have x5 tenacity
 -Player's divinity score should be effected by their kill %
 -Don't reset character stats on entering areas
     - Dark Knight overheal should lose N% health per second when not aggrod

@@ -320,13 +320,13 @@ function performAttack(attacker, attack, target) {
     } else {
         attackStats = createAttackStats(attacker, attack, target);
     }
-    attacker.health -= attackStats.healthSacrificed;
+    damageActor(attacker, attackStats.healthSacrificed);
     performAttackProper(attackStats, target);
     return attackStats;
 }
 function castAttackSpell(attacker, spell, target) {
     var attackStats = createSpellStats(attacker, spell, target);
-    attacker.health -= attackStats.healthSacrificed;
+    damageActor(attacker, attackStats.healthSacrificed);
     performAttackProper(attackStats, target);
     if (attacker.imprintSpell) attacker.imprintedSpell = spell;
     return attackStats;
@@ -510,7 +510,7 @@ function applyAttackToTarget(attackStats, target) {
     if (attack.heals) {
         hitText.color = 'green';
         hitText.value = (damage + magicDamage).abbreviate();
-        target.health += (damage + magicDamage);
+        healActor(target, damage + magicDamage);
         var speed = 1 + Math.log(damage+magicDamage) / 10;
         hitText.vy *= speed;
         hitText.vx *= speed;
@@ -527,7 +527,7 @@ function applyAttackToTarget(attackStats, target) {
             hitText.value = 'miss';
             if (ifdefor(attack.damageOnMiss)) {
                 var damageOnMiss = Math.round(attack.damageOnMiss * effectiveness);
-                target.health -= damageOnMiss;
+                damageActor(target, damageOnMiss);
                 hitText.value = 'miss (' + damageOnMiss + ')';
             }
             // Target has evaded the attack.
@@ -589,7 +589,7 @@ function applyAttackToTarget(attackStats, target) {
         if (hitSound) playSound(hitSound, area);
     }
     makeExplosions();
-    attacker.health += (attack.healthGainOnHit || 0) * effectiveness;
+    healActor(attacker, (attack.healthGainOnHit || 0) * effectiveness);
     target.slow += (attack.slowOnHit || 0) * effectiveness;
     if (imprintedSpell) target.slow += (imprintedSpell.slowOnHit || 0) * effectiveness;
     if (attack.debuff) addTimedEffect(target, attack.debuff, 0);
@@ -617,17 +617,17 @@ function applyAttackToTarget(attackStats, target) {
         hitText.color = "#" + r + g + b;
         var cull = Math.max(ifdefor(attack.cull, 0), imprintedSpell ? ifdefor(imprintedSpell.cull, 0) : 0);
         if (cull > 0 && target.health / target.maxHealth <= cull) {
-            target.health = 0;
+            setActorHealth(target, 0);
             hitText.value = 'culled!';
         } else {
-            target.health -= totalDamage;
+            damageActor(target, totalDamage);
             hitText.value = totalDamage.abbreviate();
             var speed = 1 + Math.log(totalDamage) / 10;
             hitText.vy *= speed;
             hitText.vx *= speed;
         }
-        attacker.health += ifdefor(attack.lifeSteal, 0) * totalDamage
-        if (imprintedSpell) attacker.health += ifdefor(imprintedSpell.lifeSteal, 0) * totalDamage
+        healActor(attacker, (attack.lifeSteal || 0) * totalDamage);
+        if (imprintedSpell) healActor(attacker, (imprintedSpell.lifeSteal || 0) * totalDamage);
         if (ifdefor(attack.poison)) {
             addTimedEffect(target, {'bonuses': {'+damageOverTime': totalDamage * attack.poison}}, 0);
         }
