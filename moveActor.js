@@ -86,6 +86,12 @@ function moveActor(actor) {
         actor.heading[2] -= actor.z / 180;
         actor.isMoving = true;
         actor.goalTarget = goalTarget;
+        // This was an attempt to move away from targets when they are dying.
+        /*if ((!actor.activity || actor.activity.target !== goalTarget) && goalTarget.targetHealth < 0) {
+            console.log('run');
+            actor.heading[0] = -actor.heading[0];
+            actor.heading[2] = -actor.heading[2];
+        }*/
     } else {
         actor.goalTarget = null;
     }
@@ -93,13 +99,6 @@ function moveActor(actor) {
                 if (isNaN(actor.heading[0])) debugger;
     if (!actor.isMoving) {
         return;
-    }
-    //console.log(JSON.stringify(actor.heading));
-    // Make sure the main character doesn't run in front of their allies.
-    // If the allies are fast enough, this shouldn't be an isse.
-    var xOffset = 0;
-    for (var i = 0; i < actor.allies.length; i++) {
-        xOffset += actor.x - actor.allies[i].x;
     }
     if (actor.chargeEffect) {
         speedBonus *= actor.chargeEffect.chargeSkill.speedBonus;
@@ -116,7 +115,7 @@ function moveActor(actor) {
         var distanceToTarget = getDistanceOverlap(actor, goalTarget);
         // Set the max distance to back away to to 10, otherwise they will back out of the range
         // of many activated abilities like fireball and meteor.
-        if (distanceToTarget < (Math.min(skillRange - 1.5, 10)) * 32) {
+        if (distanceToTarget < (Math.min(skillRange - 1.5, 10)) * 32 || goalTarget.targetHealth < 0) {
             speedBonus *= -.1;
         } else if (distanceToTarget <= skillRange * 32) {
             speedBonus = 0;

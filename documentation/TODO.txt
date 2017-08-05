@@ -1,7 +1,8 @@
 Bug Fixes
 -Players/monsters get backed into corners too much.
--Make sure 'dodge' is displayed when an attack is dodged.
--Fix actors shouldn't target non-heroes that are dying (targetHealth < 0 or maybe < -target.tenacity * target.healthRegen)
+-Add hit detection to pulls, players can get stuck inside of objects :(
+-Make sure tenacity works with overheal correctly.
+-Keep effects + minions across areas.
 
 Content
 -Add ice wolf with leap attack, freeze and white tint. Restores cooldowns at 66% and 33% health.

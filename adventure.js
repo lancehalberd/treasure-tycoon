@@ -403,12 +403,18 @@ function runActorLoop(actor) {
                 break;
         }
         return;
-    } else if (actor.character && actorShouldAutoplay(actor) && !actor.enemies.length) {
+    } else if (actor.character && actorShouldAutoplay(actor) && !actor.enemies.filter(enemy => enemy.targetHealth >= 0).length) {
         const character = actor.character;
         // Code for intracting with chest/shrine at the end of level and leaving the area.
         for (var object of area.objects) {
             // Hack the actor will only check objects the he hasn't passed yet.
-            if (object.solid !== false && object.x < actor.x + 100) continue;
+            if (
+                object.solid === false
+                || object.x < actor.x + 100
+                || (object.isEnabled && !object.isEnabled())
+            ) {
+                continue;
+            }
             // The AI only considers each object once.
             object.considered = true;
             if (object.key === 'closedChest') {

@@ -86,10 +86,23 @@ function isTargetInRangeOfSkill(actor, skill, pointOrTarget) {
  */
 function shouldUseSkillOnTarget(actor, skill, target) {
     if (!actor.character && target.character) return true; // Enemies always use skills on the hero, since they win if the hero dies.
+    if ((skill.base.target || 'enemies') === 'enemies') {
+        var percentHealth = target.health / target.maxHealth;
+        // It will take this many seconds for the target to reach 0 life if they lose life constantly.
+        var secondsLeft = target.tenacity * percentHealth;
+        if (
+            // If this ability targets an enemy, don't use it if the enemy is already going to die.
+            target.targetHealth < - target.healthRegen * secondsLeft
+            // Unless the enemy has low enough health that they can be culled by this skill.
+            && (skill.cull || 0) < percentHealth
+        ) {
+            return false;
+        }
+    }
     // Make sure combined health of enemies in range is less than the raw damage of the attack, or that the ability
     // will result in life gain that makes it worth using
-    if (ifdefor(skill.base.target, 'enemies') === 'enemies'
-        && ifdefor(skill.cooldown, 0) >= 10 // Don't worry about wasting skills with short cool downs.
+    if ((skill.base.target || 'enemies') === 'enemies'
+        && (skill.cooldown || 0) >= 10 // Don't worry about wasting skills with short cool downs.
     ) {
         var health = 0;
         if (skill.cleave || skill.tags['nova'] || skill.tags['field'] || skill.tags['blast'] || skill.tags['rain']) {

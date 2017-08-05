@@ -580,6 +580,9 @@ function applyAttackToTarget(attackStats, target) {
     }
     // Attacks that always hit can still be avoided by a 'dodge' skill.
     if (attackStats.dodged && !attack.undodgeable) {
+        hitText.value = 'dodged';
+        hitText.font = 15;
+        appendTextPopup(area, hitText);
         return false;
     }
 
@@ -615,7 +618,7 @@ function applyAttackToTarget(attackStats, target) {
         var b = toHex(Math.floor(220 * percentMagic) + critBonus);
         var g = toHex(critBonus * 5);
         hitText.color = "#" + r + g + b;
-        var cull = Math.max(ifdefor(attack.cull, 0), imprintedSpell ? ifdefor(imprintedSpell.cull, 0) : 0);
+        var cull = Math.max(attack.cull || 0, (imprintedSpell && imprintedSpell.cull) || 0);
         if (cull > 0 && target.health / target.maxHealth <= cull) {
             setActorHealth(target, 0);
             hitText.value = 'culled!';
