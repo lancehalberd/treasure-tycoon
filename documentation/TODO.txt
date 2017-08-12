@@ -1,6 +1,5 @@
 Bug Fixes
 -Players/monsters get backed into corners too much.
--Add hit detection to pulls, players can get stuck inside of objects :(
 -Make sure tenacity works with overheal correctly.
 -Keep effects + minions across areas.
 

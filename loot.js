@@ -1,22 +1,33 @@
 
-function coinTreasurePopup(coin, x, y, vx, vy, delay) {
-    var self = {
-        x, y, vx, vy, 't': 0, 'done': false, delay,
+function coinTreasurePopup(coin, x, y, z, vx, vy, vz, delay) {
+    return {
+        x, y, z, vx, vy, vz, 't': 0, 'done': false, delay,
         update(area) {
             if (delay-- > 0) return
-            self.x += self.vx;
-            self.y += self.vy;
-            self.vy--;
-            self.t += 1;
-            self.done = self.t > 40;
+            this.x += this.vx;
+            this.y += this.vy;
+            this.z += this.vz;
+            if (this.z > 180) {
+                this.z = 180 - (this.z - 180) * .6;
+                this.vz = -this.vz * .6;
+            } else if (this.z < -180) {
+                this.z = -180 - (this.z + 180) * .6;
+                this.vz = -this.vz * .6;
+            }
+            if (this.y > 0) this.vy--;
+            else {
+                this.y = -this.y * .8;
+                this.vy = -this.vy * .8;
+            }
+            this.t += 1;
+            this.done = this.t > 60;
         },
         draw(area) {
             if (delay > 0) return
             mainContext.drawImage(coin.image, coin.x, coin.y, coin.width, coin.height,
-                self.x - coin.width / 2 - area.cameraX, groundY - self.y - coin.height / 2, coin.width, coin.height);
+                this.x - coin.width / 2 - area.cameraX, groundY - this.y - coin.height - this.z / 2, coin.width, coin.height);
         }
     };
-    return self;
 }
 
 function coinsLootDrop(amount) {
@@ -24,7 +35,7 @@ function coinsLootDrop(amount) {
         gainLoot(hero) {
             gain('coins', Math.round(amount * (1 + hero.increasedDrops)));
         },
-        addTreasurePopup(hero, x, y, vx, vy, delay) {
+        addTreasurePopup(hero, x, y, z, delay) {
             var total = Math.round(amount * (1 + hero.increasedDrops));
             var nextDelay = delay;
             var index = coins.length - 1;
@@ -34,7 +45,8 @@ function coinsLootDrop(amount) {
                 // break single coins into smaller drops.
                 while (coins[index].value <= total && (drops || coins[index].value < total || total < 5) && drops < 50) {
                     total -= coins[index].value;
-                    hero.area.treasurePopups.push(coinTreasurePopup(coins[index], x, y, Math.random() * 10 - 5, 10, nextDelay));
+                    var coinPopup = coinTreasurePopup(coins[index], x, y, z, Math.random() * 10 - 5, 10, Math.random() * 10 - 5, nextDelay);
+                    hero.area.treasurePopups.push(coinPopup);
                     nextDelay += 5;
                     drops++;
                 }
@@ -51,40 +63,36 @@ function coinsLoot(range) {
     }};
 }
 
-function animaTreasurePopup(hero, coin, x, y, vx, vy, delay) {
-    var self = {
-        x, y, vx, vy, 't': 0, 'done': false, delay,
+function animaTreasurePopup(hero, coin, x, y, z, vx, vy, vz, delay) {
+    return {
+        x, y, z, vx, vy, vz, t: 0, done: false, delay,
         update(area) {
             if (delay-- > 0) return
-            self.x += self.vx;
-            self.y += self.vy;
-            if (self.y > (hero.height / 2)) {
-                self.vy--;
-            } else {
-                self.vy++;
-            }
-            if (self.x > hero.x) {
-                self.vx--;
-            } else {
-                self.vx++;
-            }
-            self.t += 1;
-            self.done = self.t > 40;
+            this.x += this.vx;
+            this.y += this.vy;
+            this.z += this.vz;
+            if (this.y > (hero.height / 2)) this.vy--;
+            else this.vy++;
+            if (this.x > hero.x) this.vx--;
+            else this.vx++;
+            if (this.z > hero.z) this.vz--;
+            else this.vz++;
+            this.t += 1;
+            this.done = this.t > 40;
         },
         draw(area) {
-            if (delay > 0 || self.x < hero.x + 16) return
+            if (delay > 0 || this.x < hero.x + 16) return
             mainContext.drawImage(coin.image, coin.x, coin.y, coin.width, coin.height,
-                self.x - coin.width / 2 - area.cameraX, groundY - self.y - coin.height / 2, coin.width, coin.height);
+                this.x - coin.width / 2 - area.cameraX, groundY - this.y - this.z / 2 - coin.height / 2, coin.width, coin.height);
         }
     };
-    return self;
 }
 function animaLootDrop(amount) {
     return {
         gainLoot(hero) {
             gain('anima', Math.round(amount * (1 + hero.increasedDrops)));
         },
-        addTreasurePopup(hero, x, y, vx, vy, delay) {
+        addTreasurePopup(hero, x, y, z, delay) {
             var total = Math.round(amount * (1 + hero.increasedDrops));
             var nextDelay = delay;
             var index = animaDrops.length - 1;
@@ -94,7 +102,11 @@ function animaLootDrop(amount) {
                 // break single anima into smaller drops.
                 while (animaDrops[index].value <= total && (drops || animaDrops[index].value < total || total < 5) && drops < 50) {
                     total -= animaDrops[index].value;
-                    hero.area.treasurePopups.push(animaTreasurePopup(hero, animaDrops[index], x, y, 10 + Math.random() * 5, Math.random() * 10 - 5, nextDelay));
+                    hero.area.treasurePopups.push(animaTreasurePopup(hero, animaDrops[index],
+                        x, y, z,
+                        10 + Math.random() * 5, Math.random() * 10 - 5, 10 + Math.random() * 10 - 5,
+                        nextDelay
+                    ));
                     nextDelay += 5;
                     drops++;
                 }
@@ -104,28 +116,28 @@ function animaLootDrop(amount) {
     }
 }
 
-function jewelTreasurePopup(jewel, x, y, vx, vy, delay) {
+function jewelTreasurePopup(jewel, x, y, z, vx, vy, vz, delay) {
     // We need to duplicate the shape so we can draw it on the adventure panel
     // independent of drawing it in the inventory.
     var popupShape = jewel.shape.clone().scale(.5);
     popupShape.color = jewel.shape.color;
-    var self = {
-        x, y, vx, vy, 't': 0, 'done': false, delay,
+    return {
+        x, y, z, vx, vy, vz, t: 0, done: false, delay,
         update(area) {
             if (delay-- > 0) return
-            self.x += self.vx;
-            self.y += self.vy;
-            self.t += 1;
-            self.done = self.t > 40;
+            this.x += this.vx;
+            this.y += this.vy;
+            this.z += this.vz;
+            this.t += 1;
+            this.done = this.t > 40;
         },
         draw(area) {
             if (delay > 0) return
-            popupShape.setCenterPosition(self.x - area.cameraX, groundY - self.y);
+            popupShape.setCenterPosition(this.x - area.cameraX, groundY - this.y - this.z / 2);
             var lightSource = relativeMousePosition(mainCanvas);
             drawJewel(mainContext, popupShape, lightSource, 'white');
         }
     };
-    return self;
 }
 
 function jewelLootDrop(jewel) {
@@ -134,8 +146,12 @@ function jewelLootDrop(jewel) {
             gainJewel(jewel);
             return jewel;
         },
-        addTreasurePopup(hero, x, y, vx, vy, delay) {
-            hero.area.treasurePopups.push(jewelTreasurePopup(jewel, x, y, vx, vy, delay));
+        addTreasurePopup(hero, x, y, z, delay) {
+            var thetaRange = Math.random() * 2 * Math.PI / 3;
+            var theta = (Math.PI - thetaRange) / 2;
+            var vx =  Math.cos(theta) * 2;
+            var vy = Math.sin(theta) * 2;
+            hero.area.treasurePopups.push(jewelTreasurePopup(jewel, x, y, z, vx, vy, 0, delay));
         }
     }
 }
@@ -178,7 +194,7 @@ function messageCharacter(character, text) {
 }
 
 function adventureBoardPreview(boardPreview, character) {
-    var self = {
+    return {
         'x': 0,
         'y': 0,
         'solid': false,
@@ -189,7 +205,7 @@ function adventureBoardPreview(boardPreview, character) {
         update(area) {
         },
         isOver(x, y) {
-            for (var shape of self.boardPreview.fixed.map(jewelToShape).concat(self.boardPreview.spaces)) {
+            for (var shape of this.boardPreview.fixed.map(jewelToShape).concat(this.boardPreview.spaces)) {
                 if (isPointInPoints([x, y], shape.points)) {
                     return true;
                 }
@@ -197,9 +213,9 @@ function adventureBoardPreview(boardPreview, character) {
             return false;
         },
         onClick(character) {
-            centerShapesInRectangle(self.boardPreview.fixed.map(jewelToShape).concat(self.boardPreview.spaces), rectangle(0, 0, character.boardCanvas.width, character.boardCanvas.height));
-            snapBoardToBoard(self.boardPreview, character.board);
-            character.board.boardPreview = self.boardPreview;
+            centerShapesInRectangle(this.boardPreview.fixed.map(jewelToShape).concat(this.boardPreview.spaces), rectangle(0, 0, character.boardCanvas.width, character.boardCanvas.height));
+            snapBoardToBoard(this.boardPreview, character.board);
+            character.board.boardPreview = this.boardPreview;
             // This will show the confirm skill button if this character is selected.
             updateConfirmSkillConfirmationButtons();
             setContext('jewel');
@@ -210,13 +226,12 @@ function adventureBoardPreview(boardPreview, character) {
             // since they can't look at both screens at once.
             character.board.boardPreview = null;
             updateConfirmSkillConfirmationButtons();
-            centerShapesInRectangle(self.boardPreview.fixed.map(jewelToShape).concat(self.boardPreview.spaces), rectangle(self.x - area.cameraX - 5, groundY - self.y -5, 10, 10));
-            drawBoardPreview(mainContext, [0, 0], self.boardPreview, true);
+            centerShapesInRectangle(this.boardPreview.fixed.map(jewelToShape).concat(this.boardPreview.spaces), rectangle(this.x - area.cameraX - 5, groundY - this.y -5, 10, 10));
+            drawBoardPreview(mainContext, [0, 0], this.boardPreview, true);
         },
         helpMethod() {
             return titleDiv('Divine Blessing')
                 + bodyDiv("Click on this Jewel Board Augmentation to preview adding it to this hero's Jewel Board." + divider + "Confirm the Augmentation to learn the ability and Level Up.");
         }
     };
-    return self;
 }

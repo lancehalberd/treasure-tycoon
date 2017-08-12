@@ -278,16 +278,12 @@ function finishShrine(character) {
 function openChest(actor) {
     // The loot array is an array of objects that can generate specific loot drops. Iterate over each one, generate a
     // drop and then give the loot to the player and display it on the screen.
-    var thetaRange = Math.min(2 * Math.PI / 3, (this.loot.length - 1) * Math.PI / 6);
-    var theta = (Math.PI - thetaRange) / 2;
     var delay = 0;
-    for (var loot of this.loot) {
-        var drop = loot.generateLootDrop();
+    for (var i = 0; i < this.loot.length; i++) {
+        var drop = this.loot[i].generateLootDrop();
         drop.gainLoot(actor);
-        var vx =  Math.cos(theta) * 2;
-        var vy = Math.sin(theta) * 2;
-        drop.addTreasurePopup(actor, this.x + vx * 20, this.y + 64, vx, vy, delay += 5);
-        theta += thetaRange / Math.max(1, this.loot.length - 1);
+        var xOffset = (this.loot.length > 1) ? - 50 + 100 * i / (this.loot.length - 1) : 0;
+        drop.addTreasurePopup(actor, this.x + xOffset, this.y + 64, this.z, delay += 5);
     }
     // Replace this chest with an opened chest in the same location.
     var openedChest = fixedObject('openChest', [this.x, this.y, this.z], {isEnabled: () => true, 'scale': ifdefor(this.scale, 1)});

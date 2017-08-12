@@ -158,6 +158,9 @@ function capHealth(actor) {
     actor.health = Math.min(actor.maxHealth, Math.max(0, actor.health));
     actor.percentHealth = actor.health / actor.maxHealth;
     actor.targetHealth = Math.min(actor.maxHealth, actor.targetHealth);
+    if (!actor.enemies.length && actor.bonusMaxHealth) {
+        actor.bonusMaxHealth *= .99;
+    }
     actor.percentTargetHealth = actor.targetHealth / actor.maxHealth;
 }
 function removeActor(actor) {
@@ -326,6 +329,17 @@ function processStatusEffects(target) {
             target.y = target.baseY || 0;
             damageActor(target, target.pull.damage);
             target.pull = null;
+        }
+        // End the pull if the target hits something.
+        for (var object of target.area.objects) {
+            if (object.solid === false) continue;
+            var distance = getDistanceOverlap(target, object);
+            if (distance <= -8) {
+                target.pull = null;
+                target.y = target.baseY || 0;
+                target.rotation = 0;
+                break;
+            }
         }
     }
     if (target.stunned && target.stunned <= target.time) {
@@ -530,7 +544,7 @@ function defeatedEnemy(hero, enemy) {
     if (enemy.anima) loot.push(animaLootDrop(enemy.anima));
     loot.forEach(function (loot, index) {
         loot.gainLoot(hero);
-        loot.addTreasurePopup(hero, enemy.x + index * 20, enemy.height, 0, 1, index * 10);
+        loot.addTreasurePopup(hero, enemy.x + index * 20, enemy.height, index * 10);
         // If the last enemy is defeated in the boss area, the level is completed.
     });
     if (hero.area.isBossArea && hero.enemies.every(enemy => enemy.isDead)) {
