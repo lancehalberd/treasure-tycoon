@@ -2,6 +2,9 @@ var rotationA = Math.cos(Math.PI / 20);
 var rotationB = Math.sin(Math.PI / 20);
 function moveActor(actor) {
     const area = actor.area;
+    if (!area) {
+        return;
+    }
     var delta = frameMilliseconds / 1000;
     if (actor.isDead || actor.stunned || actor.pull || ifdefor(actor.stationary) || (actor.skillInUse && actor.preparationTime < actor.skillInUse.totalPreparationTime)) {
         return;

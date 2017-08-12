@@ -345,8 +345,7 @@ function leaveCurrentArea(actor) {
     }
     var allyIndex = actor.area.allies.indexOf(actor);
     if (allyIndex >= 0) actor.area.allies.splice(allyIndex, 1);
-    // Can change this to leaveCurrentArea to allow moving the minion with you.
-    (actor.minions || []).forEach(removeActor);
+    (actor.minions || []).forEach(leaveCurrentArea);
     actor.area = null;
 }
 

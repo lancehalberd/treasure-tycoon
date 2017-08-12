@@ -12,13 +12,16 @@ function startLevel(character, index) {
     character.currentLevelKey = index;
     var levelCompleted = ifdefor(character.divinityScores[index], 0) !== 0;
     var difficultyCompleted = !!ifdefor(character.levelTimes[index], {})[character.levelDifficulty];
-    leaveCurrentArea(character.hero);
+    leaveCurrentArea(hero);
+    // Can't bring minions with you into new areas.
+    (hero.minions || []).forEach(removeActor);
+    // Effects don't persist accross areas.
+    removeAdventureEffects(hero);
     if (character.levelDifficulty === 'endless') {
         hero.levelInstance = instantiateLevel(map[index], character.levelDifficulty, difficultyCompleted, getEndlessLevel(character, map[index]));
     } else {
         hero.levelInstance = instantiateLevel(map[index], character.levelDifficulty, difficultyCompleted);
     }
-    initializeActorForAdventure(hero);
     for (var action of hero.actions.concat(hero.reactions)) action.readyAt = 0;
     enterArea(hero, hero.levelInstance.entrance);
     if (state.selectedCharacter === character) {
@@ -53,11 +56,11 @@ function enterArea(actor, {x, z, areaKey}) {
                 showContext('guild');
             }
         }
-        // This can be uncommented to allow minions to follow you through guild areas.
-        //(actor.minions || []).forEach(minion => enterArea(minion, {x:x + actor.heading[0] * 10, z: z - 90, areaKey}));
     } else {
-        area = actor.levelInstance.areas.get(areaKey);
+        area = (actor.owner || actor).levelInstance.areas.get(areaKey);
     }
+    // This can be uncommented to allow minions to follow you through areas.
+    (actor.minions || []).forEach(minion => enterArea(minion, {x:x + actor.heading[0] * 10, z: z - 90, areaKey}));
     actor.area = area;
     actor.x = x;
     actor.y = 0;
@@ -164,18 +167,14 @@ function capHealth(actor) {
     actor.percentTargetHealth = actor.targetHealth / actor.maxHealth;
 }
 function removeActor(actor) {
-    var index = actor.allies.indexOf(actor);
     if (actor.owner) {
         var minionIndex = actor.owner.minions.indexOf(actor);
         if (minionIndex >= 0) actor.owner.minions.splice(minionIndex, 1);
     }
-    if (index < 0) {
-        console.log("Tried to remove actor that was not amongst its allies");
-        console.log(actor);
-        console.log(actor.allies);
-        pause();
-        return;
-    }
+    var index = actor.allies.indexOf(actor);
+    // When a character with minions exits to the world map, this method is called on minions
+    // after they are already removed from the area, so they won't be in the list of allies already.
+    if (index < 0) return;
     actor.allies.splice(index, 1);
     if (actor.character) {
         var character = actor.character;
@@ -233,6 +232,8 @@ function updateArea(area) {
     // A skill may have removed an actor from one of the allies/enemies array, so remake everybody.
     everybody = area.allies.concat(area.enemies);
     everybody.forEach(moveActor);
+    // This may have changed if actors left the area.
+    everybody = area.allies.concat(area.enemies);
     for (var i = 0; i < area.projectiles.length; i++) {
         area.projectiles[i].update(area);
         if (area.projectiles[i].done) area.projectiles.splice(i--, 1);

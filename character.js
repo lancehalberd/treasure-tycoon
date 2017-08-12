@@ -179,6 +179,8 @@ function returnToMap(character) {
     character.hero.goalTarget = null;
     character.isStuckAtShrine = false;
     leaveCurrentArea(character.hero);
+    // Can't bring minions with you to the world map.
+    (character.hero.minions || []).forEach(removeActor);
     updateAdventureButtons();
     if (character.autoplay && character.replay) {
         startLevel(character, character.currentLevelKey);
