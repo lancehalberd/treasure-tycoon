@@ -364,6 +364,7 @@ var abilities = {
 };
 var testJob;// = 'blackbelt';
 var testAbilities = [];
+//var testAbilities = [abilities.darkknight, abilities.vitality, abilities.minorStrength];
 //var testAbilities = [abilities.charge];
 //var testAbilities = [abilities.counterAttack, abilities.fistParadigmShift, abilities.counterChance, abilities.counterPower];
 //var testAbilities = [abilities.fireball, abilities.chainReaction, abilities.wizard];

@@ -53,6 +53,10 @@ function spellAction(type, action, bonuses, helpText) {
     if (typeof(bonuses['+recoveryTime']) === 'undefined') {
         bonuses['+recoveryTime'] = .5;
     }
+    // Spells have 0 range unless a specific modifier is set.
+    if (typeof(bonuses['+range']) === 'undefined') {
+        bonuses['*range'] = 0;
+    }
     action.icon = ifdefor(action.icon, sageIcon);
     action.bonuses = bonuses;
     action.helpText = helpText;
