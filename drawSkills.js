@@ -191,7 +191,7 @@ function handleSkillKeyInput(keyCode) {
 function activateAction(action) {
     if (action.readyAt > action.actor.time) return;
     // If a skill has no target, trigger it as soon as they click the skill button.
-    if (action.base.target === 'none') {
+    if (action.base.target === 'none' || action.tags.field) {
         if (canUseSkillOnTarget(action.actor, action, action.actor)) {
             prepareToUseSkillOnTarget(action.actor, action, action.actor);
         }

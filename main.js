@@ -414,7 +414,7 @@ $('body').on('click', '.js-retire', function (event) {
     }
     var $panel = $(this).closest('.js-playerPanel');
     $panel.remove();
-    leaveCurrentArea(state.selectedCharacter.hero);
+    leaveCurrentArea(state.selectedCharacter.hero, true);
     var removedCharacter = state.selectedCharacter;
     var index = state.characters.indexOf(removedCharacter);
     state.characters.splice(index, 1);

@@ -12,9 +12,10 @@ function startLevel(character, index) {
     character.currentLevelKey = index;
     var levelCompleted = ifdefor(character.divinityScores[index], 0) !== 0;
     var difficultyCompleted = !!ifdefor(character.levelTimes[index], {})[character.levelDifficulty];
-    leaveCurrentArea(hero);
+    leaveCurrentArea(hero, true);
     // Can't bring minions with you into new areas.
     (hero.minions || []).forEach(removeActor);
+    hero.boundEffects = [];
     // Effects don't persist accross areas.
     removeAdventureEffects(hero);
     if (character.levelDifficulty === 'endless') {
@@ -61,6 +62,10 @@ function enterArea(actor, {x, z, areaKey}) {
     }
     // This can be uncommented to allow minions to follow you through areas.
     (actor.minions || []).forEach(minion => enterArea(minion, {x:x + actor.heading[0] * 10, z: z - 90, areaKey}));
+    // Any effects bound to the hero should be added to the area they have entered.
+    (actor.boundEffects || []).forEach(effect => {
+        area.effects.push(effect);
+    });
     actor.area = area;
     actor.x = x;
     actor.y = 0;
@@ -166,11 +171,20 @@ function capHealth(actor) {
     }
     actor.percentTargetHealth = actor.targetHealth / actor.maxHealth;
 }
+// Remove bound effects from an area. Called when the actor dies or leaves the area.
+function removeBoundEffects(actor, area, finishEffect = false) {
+    (actor.boundEffects || []).forEach(effect => {
+        var index = area.effects.indexOf(effect);
+        if (index >= 0) area.effects.splice(index, 1);
+        if (finishEffect && effect.finish) effect.finish();
+    });
+}
 function removeActor(actor) {
     if (actor.owner) {
         var minionIndex = actor.owner.minions.indexOf(actor);
         if (minionIndex >= 0) actor.owner.minions.splice(minionIndex, 1);
     }
+    if (actor.area) removeBoundEffects(actor, actor.area, true);
     var index = actor.allies.indexOf(actor);
     // When a character with minions exits to the world map, this method is called on minions
     // after they are already removed from the area, so they won't be in the list of allies already.
@@ -239,8 +253,15 @@ function updateArea(area) {
         if (area.projectiles[i].done) area.projectiles.splice(i--, 1);
     }
     for (var i = 0; i < area.effects.length; i++) {
-        area.effects[i].update(area);
-        if (area.effects[i].done) area.effects.splice(i--, 1);
+        var effect = area.effects[i];
+        effect.update(area);
+        // If the effect was removed from the array already (when a song follows its owner between areas)
+        // we need to decrement i to not skip the next effect.
+        if (effect !== area.effects[i]) {
+            i--;
+        } else {
+            if (area.effects[i].done) area.effects.splice(i--, 1);
+        }
     }
     for (var i = 0; i < area.treasurePopups.length; i++) {
         area.treasurePopups[i].update(area);

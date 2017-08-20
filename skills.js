@@ -247,7 +247,7 @@ var skills = {
                                     {'+power': ['{magicPower}', '/', 2], '+area': [4, '+', ['{intelligence}', '/', '50']],
                                     '+areaCoefficient': 1, '+cooldown': 10, '$alwaysHits': 'Never misses', '+slowOnHit': 1},
                         'Emit a blast of icy air that deals {+power} damage and slows enemies. The effect is less the further away the enemy is.'),
-    'storm': spellAction('spell', {'icon': 'gfx/496RpgIcons/spellStorm.png', 'tags': ['field'], 'yOffset': 100, 'height': 80, 'color': 'yellow', 'alpha': .2},
+    'storm': spellAction('spell', {'icon': 'gfx/496RpgIcons/spellStorm.png', 'tags': ['field'], 'yOffset': 200, 'height': 80, 'color': 'yellow', 'alpha': .2},
                          {'+hitsPerSecond': 2, '+duration': 5, '+power': ['{magicPower}', '/', 4],
                          '+area': [5, '+', ['{intelligence}', '/', '200']], '+cooldown': 20, '$alwaysHits': 'Never misses'},
                         'Create a cloud of static electricity that randomly deals magic damage to nearby enemies.'),

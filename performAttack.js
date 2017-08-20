@@ -349,9 +349,13 @@ function performAttackProper(attackStats, target) {
         }
     }
     if (attackStats.attack.tags['song']) {
-        area.effects.push(songEffect(attackStats));
+        var songSpellEffect = songEffect(attackStats)
+        area.effects.push(songSpellEffect);
+        attacker.boundEffects.push(songSpellEffect);
     } else if (attackStats.attack.tags['field']) {
-        area.effects.push(fieldEffect(attackStats, attacker));
+        var fieldSpellEffect = fieldEffect(attackStats, attacker);
+        area.effects.push(fieldSpellEffect);
+        attacker.boundEffects.push(fieldSpellEffect);
     } else if (attackStats.attack.tags['nova']) {
         // attackStats.explode--;
         area.effects.push(explosionEffect(attackStats, attacker.x, getAttackY(attacker), attacker.z));

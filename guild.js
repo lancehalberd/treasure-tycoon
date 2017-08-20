@@ -336,7 +336,7 @@ function unprojectRightWallCoords(area, left, top) {
     //console.log([vanishingPoint.join(','), mousePoint.join(','), slope, x, y]);
     return [x, y];
 }
-function leaveCurrentArea(actor) {
+function leaveCurrentArea(actor, leavingZone = false) {
     if (!actor.area) return;
     // If the are is a safe guild area, it becomes the actors 'escape exit',
     // where they will respawn next if they die.
@@ -345,7 +345,8 @@ function leaveCurrentArea(actor) {
     }
     var allyIndex = actor.area.allies.indexOf(actor);
     if (allyIndex >= 0) actor.area.allies.splice(allyIndex, 1);
-    (actor.minions || []).forEach(leaveCurrentArea);
+    (actor.minions || []).forEach(minion => leaveCurrentArea(minion, leavingZone));
+    removeBoundEffects(actor, actor.area, leavingZone);
     actor.area = null;
 }
 

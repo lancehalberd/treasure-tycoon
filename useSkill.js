@@ -19,7 +19,7 @@ function canUseSkillOnTarget(actor, skill, target) {
     }
     if (actor.cannotAttack && skill.tags['attack']) return false; // Jujutsu prevents a user from using active attacks.
     // Make sure target matches the target type of the skill.
-    if (target.isActor) {
+    if (target.isActor && !skill.tags.field) {
         if (ifdefor(skill.base.target) === 'self' && actor !== target) return false;
         if (ifdefor(skill.base.target) === 'otherAllies' && (actor === target || actor.allies.indexOf(target) < 0)) return false;
         if (ifdefor(skill.base.target) === 'allies' && actor.allies.indexOf(target) < 0) return false;
@@ -69,6 +69,15 @@ function isTargetInRangeOfSkill(actor, skill, pointOrTarget) {
     return getDistance(actor, pointOrTarget) <= (skill.range + ifdefor(skill.teleport, 0)) * 32;
 }
 
+function isActorDying(actor) {
+    var percentHealth = actor.health / actor.maxHealth;
+    // It will take this many seconds for the target to reach 0 life if they lose life constantly.
+    var secondsLeft = actor.tenacity * percentHealth;
+    // If their target health is low enough that after secondsLeft passes, they will not have
+    // regenerated above zero health, then the target is dying.
+    return actor.targetHealth < -actor.healthRegen * secondsLeft;
+}
+
 /**
  * Checks if the AI thinks the actor should use a skill.
  *
@@ -88,11 +97,8 @@ function shouldUseSkillOnTarget(actor, skill, target) {
     if (!actor.character && target.character) return true; // Enemies always use skills on the hero, since they win if the hero dies.
     if ((skill.base.target || 'enemies') === 'enemies') {
         var percentHealth = target.health / target.maxHealth;
-        // It will take this many seconds for the target to reach 0 life if they lose life constantly.
-        var secondsLeft = target.tenacity * percentHealth;
-        if (
-            // If this ability targets an enemy, don't use it if the enemy is already going to die.
-            target.targetHealth < - target.healthRegen * secondsLeft
+        if (// If this ability targets an enemy, don't use it if the enemy is already going to die.
+            isActorDying(target)
             // Unless the enemy has low enough health that they can be culled by this skill.
             && (skill.cull || 0) < percentHealth
         ) {

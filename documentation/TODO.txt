@@ -1,7 +1,5 @@
 Bug Fixes
 -Players/monsters get backed into corners too much.
--Make sure tenacity works with overheal correctly.
--Keep effects + minions across areas.
 
 Content
 -Add ice wolf with leap attack, freeze and white tint. Restores cooldowns at 66% and 33% health.

@@ -24,9 +24,10 @@ function songEffect(attackStats) {
                 var note = animationEffect(effectAnimations.song,
                     {x:0, y: 20, z: 0, width: 25, height: 50}, {loop: true, frameSpeed: .5, tintColor: color, tintValue: .5});
                 area.effects.push(note);
+                followTarget.boundEffects.push(note);
                 notes.push(note);
             }
-            if (followTarget.time > endTime || attackStats.source.isDead) {
+            if (followTarget.time > endTime || followTarget.isDead) {
                 this.finish();
                 return;
             }
@@ -41,15 +42,27 @@ function songEffect(attackStats) {
                 note.target.z = currentLocation.z + Math.sin(i * 2 * Math.PI / 6 + timeTheta) * zRadius;
                 note.target.y = 40 + 20 * Math.cos(i * Math.PI / 4 + 6 * timeTheta);
             }
+            var currentTargets = new Set();
             for (target of self.attackStats.source.allies) {
                 if (getDistance(currentLocation, target) > currentRadius) {
                     if (effectedTargets.has(target)) {
                         removeEffectFromActor(target, self.attackStats.attack.buff, true);
                         effectedTargets.delete(target);
                     }
-                } else if (!effectedTargets.has(target)) {
-                    addEffectToActor(target, self.attackStats.attack.buff, true);
-                    effectedTargets.add(target);
+                } else {
+                    currentTargets.add(target);
+                    if (!effectedTargets.has(target)) {
+                        addEffectToActor(target, self.attackStats.attack.buff, true);
+                        effectedTargets.add(target);
+                    }
+                }
+            }
+            // Remove any targets not currently found, for instance a target that was effected
+            // before the owner moved to another area.
+            for (var target of effectedTargets) {
+                if (!currentTargets.has(target)) {
+                    removeEffectFromActor(target, self.attackStats.attack.buff, true);
+                    effectedTargets.delete(target);
                 }
             }
         },
@@ -70,6 +83,7 @@ function songEffect(attackStats) {
         },
         finish() {
             effectedTargets.forEach(target => removeEffectFromActor(target, self.attackStats.attack.buff, true));
+            effectedTargets = new Set();
             self.done = true;
             while (notes.length) notes.pop().done = true;
         }
@@ -213,27 +227,29 @@ function fieldEffect(attackStats, followTarget) {
                 self.done = true;
                 return;
             }
+            // followTarget.time gets changed when changing areas, so we need to correct the
+            // next hit time when this happens. It is sufficent to just move it closer if the
+            // current next hit time is too far in the future.
+            nextHit = Math.min(followTarget.time + 1 / attack.hitsPerSecond, nextHit);
             var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
             self.width = currentRadius * 2;
             self.x = followTarget.x;
             self.y = followTarget.y;
+            self.z = followTarget.z;
             self.height = height * currentRadius / radius;
-            if (self.attackStats.source.time < nextHit) {
+            if (followTarget.time < nextHit) {
                 return;
             }
             nextHit += 1 / attack.hitsPerSecond;
 
-            var targets = [];
-            for (var i = 0; i < self.attackStats.source.enemies.length; i++) {
-                var target = self.attackStats.source.enemies[i];
-                var distance = getDistance(self, target);
-                if (distance > 0) continue;
-                targets.push(target);
+            var livingTargets = followTarget.enemies.filter(target => !target.isDead);
+            var livingTargetsInRange = livingTargets.filter(target => getDistance(self, target) <= 0);
+            var healthyTargetsInRange = livingTargetsInRange.filter(target => !isActorDying(target));
+            if (healthyTargetsInRange.length) {
+                applyAttackToTarget(attackStats, Random.element(healthyTargetsInRange));
+            } else if (livingTargetsInRange.length) {
+                applyAttackToTarget(attackStats, Random.element(livingTargetsInRange));
             }
-            if (!targets.length) {
-                return;
-            }
-            applyAttackToTarget(attackStats, Random.element(targets));
         },
         draw(area) {
             if (self.done) return
@@ -242,13 +258,28 @@ function fieldEffect(attackStats, followTarget) {
             mainContext.fillStyle = color;
             mainContext.beginPath();
             mainContext.save();
-            mainContext.translate((followTarget.x - area.cameraX), groundY - yOffset);
+            mainContext.translate((followTarget.x - area.cameraX), groundY - yOffset - followTarget.z / 2);
             mainContext.scale(1, height / (2 * currentRadius));
             mainContext.arc(0, 0, currentRadius, 0, 2 * Math.PI);
             mainContext.fill();
             mainContext.restore();
             mainContext.globalAlpha = 1;
-        }
+        },
+        drawGround(area) {
+            drawOnGround(context => {
+                var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
+                drawGroundCircle(context, area, followTarget.x, followTarget.z, currentRadius)
+                context.save();
+                context.globalAlpha = alpha;
+                context.fillStyle = color;
+                context.fill();
+                context.globalAlpha = .1;
+                context.lineWidth = 8;
+                context.strokeStyle = '#FFF';
+                context.stroke();
+                context.restore();
+            });
+        },
     };
     return self;
 }
@@ -521,6 +552,10 @@ function removeEffectFromActor(actor, effect, triggerComputation) {
         actor.allEffects.splice(index, 1);
         removeBonusSourceFromObject(actor, effect, triggerComputation);
     } else {
-        debugger;
+        // This case definitely happens when an actor playing a song returns to the world map.
+        // Returning to the world map removes all effects, but doesn't remove the actor from the list of effected
+        // targets, then the song is removed and tries to remove the effect from the actor since it still has
+        // them listed as effected.
+        //debugger;
     }
 }

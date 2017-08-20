@@ -168,6 +168,7 @@ function initializeActorForAdventure(actor) {
     actor.activity = null;
     actor.imprintedSpell = null;
     actor.minions = actor.minions || [];
+    actor.boundEffects = actor.boundEffects || [];
     // actor.heading = [1, 0, 0];
     var stopTimeAction = findActionByTag(actor.reactions, 'stopTime');
     actor.temporalShield = actor.maxTemporalShield = (stopTimeAction ? stopTimeAction.duration : 0);
@@ -178,9 +179,10 @@ function returnToMap(character) {
     removeAdventureEffects(character.hero);
     character.hero.goalTarget = null;
     character.isStuckAtShrine = false;
-    leaveCurrentArea(character.hero);
+    leaveCurrentArea(character.hero, true);
     // Can't bring minions with you to the world map.
     (character.hero.minions || []).forEach(removeActor);
+    character.hero.boundEffects = [];
     updateAdventureButtons();
     if (character.autoplay && character.replay) {
         startLevel(character, character.currentLevelKey);
