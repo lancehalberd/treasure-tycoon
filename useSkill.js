@@ -186,6 +186,8 @@ function prepareToUseSkillOnTarget(actor, skill, target) {
     actor.skillTarget = target;
     // These values will count up until completion. If a character is slowed, it will reduce how quickly these numbers accrue.
     actor.preparationTime = actor.recoveryTime = 0;
+    var skillDefinition = skillDefinitions[skill.base.type];
+    if (skillDefinition.prepareToUseSkillOnTarget) skillDefinition.prepareToUseSkillOnTarget(actor, skill, target);
 }
 
 /**
@@ -891,5 +893,22 @@ skillDefinitions.charge = {
             'distance': 0,
             target,
         };
+    }
+};
+skillDefinitions.recover = {
+    // The recover skill is used whenever an actor reaches a certain health threshold for the first, time, for example 75%, then 50%, then 25%.
+    // Since the threshold is stored on the actor, currently only one recover skill per actor is supported.
+    isValid: (actor, recoverSkill, attackStats) => {
+        var healthThreshold = (actor.recoverSkillHealthThreshold || actor.maxHealth) - actor.maxHealth / (recoverSkill.uses + 1);
+        return actor.health < healthThreshold;
+    },
+    use: (actor, recoverSkill, attackStats) => {
+        // Set the health threshold one step lower.
+        actor.recoverSkillHealthThreshold = (actor.recoverSkillHealthThreshold || actor.maxHealth) - actor.maxHealth / (recoverSkill.uses + 1);
+        // Recover stops the actor from losing further health, but doesn't actually restore them above their current health.
+        // It also comes built in with universal instant cooldown of abilities, which is handled in `triggerSkillEffects`.
+        actor.targetHealth = actor.health;
+        actor.damageOverTime = 0;
+        actor.slow = 0;
     }
 };

@@ -57,8 +57,8 @@ function instantiateLevel(levelData, levelDifficulty, difficultyCompleted, level
         events.push([Random.element(possibleMonsters), Random.element(eventMonsters), Random.element(bossMonsters)]);
         //console.log(JSON.stringify(events));
     }
-    var minMonstersPerArea = Math.ceil(Math.min(4, 1.5 * level / events.length));
-    var maxMonstersPerArea = Math.floor(Math.min(10, 4 * level / events.length));
+    var minMonstersPerArea = levelData.minMonstersPerArea || Math.ceil(Math.min(4, 1.5 * level / events.length));
+    var maxMonstersPerArea = levelData.maxMonstersPerArea || Math.floor(Math.min(10, 4 * level / events.length));
 
     var eventsLeft = events;
     var areas = new Map();

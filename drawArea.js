@@ -194,7 +194,7 @@ function drawActor(actor) {
     var frameSource = {'left': xFrame * source.width, 'top': yFrame * source.height, 'width': source.width, 'height': source.height};
     var target = {'left': -source.xCenter * scale, 'top': -source.yCenter * scale, 'width': source.width * scale, 'height': source.height * scale};
 
-    var tints = getActorTints(actor), sourceRectangle;
+    var tints = getActorTints(actor);
     if (tints.length) {
         prepareTintedImage();
         var tint = tints.pop();
@@ -266,6 +266,9 @@ function drawActorEffects(actor) {
 // Get array of tint effects to apply when drawing the given actor.
 function getActorTints(actor) {
     var tints = [];
+    if (actor.base.tint) {
+        tints.push(actor.base.tint);
+    }
     if (ifdefor(actor.tint)) {
         var min = ifdefor(actor.tintMinAlpha, .5);
         var max = ifdefor(actor.tintMaxAlpha, .5);

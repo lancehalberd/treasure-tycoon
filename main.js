@@ -56,6 +56,10 @@ function initializeGame() {
         }
         enterArea(state.selectedCharacter.hero, guildYardEntrance);
     }
+    if (window.location.search.substr(1) === 'test') {
+        setContext('adventure');
+        startLevel(state.selectedCharacter, 'testLevelData');
+    }
     state.visibleLevels['guild'] = true;
     if (state.skipShrinesEnabled) {
         $('.js-shrineButton').show();

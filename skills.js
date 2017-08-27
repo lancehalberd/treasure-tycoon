@@ -274,7 +274,13 @@ var skills = {
                           'heightRatio': 1, 'minTheta': Math.PI, 'color': 'brown', 'alpha': .4, 'size': 30, 'gravity': .5},
                        {'+count': [2, '+', ['{intelligence}', '/', '100']], '+explode': 1, '+power': ['{magicPower}', '/', 2],
                        '+range': 10, '+area': [3, '+', ['{intelligence}', '/', '200']], '+cooldown': 25, '$alwaysHits': 'Never misses'},
-                        'Rain {+count} meteors down on your enemies each dealing {+power} damage.')
+                        'Rain {+count} meteors down on your enemies each dealing {+power} damage.'),
+    secondWind: spellAction('recover', {'icon': 'gfx/496RpgIcons/spellHeal.png', showName: true, 'target': 'self'},
+        {
+            '$instantCooldown': '*', '+uses': 2, '+prepTime': .2, '+recoveryTime': .1,
+        },
+        'Stops health loss and resets all cooldowns.'),
+
 };
 // The skill key should be applied as a tag to each skill.
 for (var skillKey in skills) {

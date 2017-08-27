@@ -242,9 +242,11 @@ function newCharacter(job) {
     character.manualActions = {};
     var abilityKey = ifdefor(abilities[job.key]) ? job.key : 'heal';
     hero.abilities.push(abilities[abilityKey]);
-    for (var i = 0; i < ifdefor(window.testAbilities, []).length; i++) {
-        hero.abilities.push(testAbilities[i]);
-        console.log(abilityHelpText(testAbilities[i], hero));
+    if (window.location.search.substr(1) === 'test') {
+        for (var i = 0; i < ifdefor(window.testAbilities, []).length; i++) {
+            hero.abilities.push(testAbilities[i]);
+            console.log(abilityHelpText(testAbilities[i], hero));
+        }
     }
     character.board = readBoardFromData(job.startingBoard, character, abilities[abilityKey], true);
     centerShapesInRectangle(character.board.fixed.map(jewelToShape).concat(character.board.spaces), rectangle(0, 0, character.boardCanvas.width, character.boardCanvas.height));

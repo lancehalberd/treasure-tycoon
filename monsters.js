@@ -190,9 +190,26 @@ function updateMonster(monster) {
     //console.log(monster);
 }
 var monsters = {};
-function addMonster(key, data) {
+function addMonster(key, data, parent) {
     data.key = key;
     data.variableObjectType = 'actor';
+
+    if (parent) {
+        for (var property in parent) {
+            console.log(`inheriting ${property} from parent`);
+            switch (property) {
+                case 'abilities':
+                    data.abilities = parent.abilities.concat(data.abilities || []);
+                    break;
+                case 'implicitBonuses':
+                    data.implicitBonuses = $.extend(parent.implicitBonuses, data.implicitBonuses || {});
+                    break;
+                default:
+                    data[property] = ifdefor(data[property], parent[property]);
+            }
+        }
+        console.log(data);
+    }
     monsters[key] = data;
 }
 function getMonsterBonuses(monster) {
@@ -374,6 +391,8 @@ function initalizeMonsters() {
         'abilities': [abilities.majorDexterity, abilities.majorStrength, abilities.majorIntelligence,
                       abilities.howl, abilities.howl, abilities.attackSong, abilities.defenseSong, abilities.sicem, abilities.howlSingAttack]
     });
+    addMonster('snowWolf', {'name': 'Snow Wolf', 'tint': ['white', 1]}, monsters.wolf);
+    addMonster('frostBite', {name: 'Frost Bite', abilities: [abilities.secondWind]}, monsters.snowWolf);
     addMonster('giantSpider', {
         'name': 'Giant Spider', 'source': spiderSource,
         'implicitBonuses': {'+weaponRange': 12, '*evasion': .8, '*accuracy': .8, '*weaponDamage': 1.4, '+critChance': .25, '*scale': 1.15},
@@ -531,11 +550,16 @@ function initalizeMonsters() {
                             '*speed': 2, '*scale': 2}, 'tags': ['ranged'],
         'abilities': [abilities.fireball, abilities.sideStep]
     });
-
-    addMonster('goblinDen', {'name': 'Goblin Den', 'source': dragonSource, 'noBasicAttack': true, 'stationary': true, // speed still effects animation
-        'implicitBonuses': {'*maxHealth': 1.6, '+weaponRange': 12, '+critChance': .15, '*accuracy': 2,
-                            '*evasion': .5, '*block': 0, '*armor': .5, '*magicBlock': 2, '+magicResist': .5,
-                            '*speed': 2, '*scale': 2}, 'tags': ['spawner'],
-        'abilities': [],
-    });
 }
+
+map.testLevelData = {
+    name: "Test Area", description: "Area for testing monsters", background: "cave", unlocks: [], coords: [-443,-152,-375],
+    minMonstersPerArea: 1, maxMonstersPerArea: 1,
+    level: 15,
+    enemySkills: [],
+    monsters: ['snowWolf'],
+    events: [
+        ['frostBite'],
+    ]
+};
+
