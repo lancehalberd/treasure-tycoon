@@ -95,7 +95,7 @@ function updateActorAnimationFrame(actor) {
         actor.walkFrame = 0;
     } else if (actor.isMoving) {
         var walkFps = ifdefor(actor.base.fpsMultiplier, 1) * 3 * actor.speed / 100;
-        actor.walkFrame = ifdefor(actor.walkFrame, 0) + walkFps * frameMilliseconds * Math.max(.1, 1 - actor.slow) * (actor.skillInUse ? .25 : 1) / 1000;
+        actor.walkFrame = ifdefor(actor.walkFrame, 0) + walkFps * frameMilliseconds * Math.max(MIN_SLOW, 1 - actor.slow) * (actor.skillInUse ? .25 : 1) / 1000;
     } else {
         actor.walkFrame = 0;
     }

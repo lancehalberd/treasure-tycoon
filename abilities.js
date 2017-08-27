@@ -363,6 +363,7 @@ var abilities = {
     'howlSingAttack': {name: 'Howl Sing Attack', 'bonuses': {'$howl:instantCooldown': 'attackSong', '$attackSong:instantCooldown': 'sicem'}},
     secondWind: {name: 'Second Wind', reaction: skills.secondWind},
 };
+var leapAndAct = action => ({name: 'Leap', action: skills.leap, 'bonuses': {'$leap:action': action}});
 var testJob;// = 'blackbelt';
 var testAbilities = [];
 //var testAbilities = [abilities.darkknight, abilities.vitality, abilities.minorStrength];

@@ -388,6 +388,7 @@ skillDefinitions.stop = {
     use: function (actor, stopSkill, attackStats) {
         actor.area.timeStopEffect = {actor};
         if (actor.health <= 0) actor.health = 1;
+        if (actor.targetHealth <= 0) actor.targetHealth = 1;
         actor.slow = 0;
     }
 };
@@ -910,5 +911,33 @@ skillDefinitions.recover = {
         actor.targetHealth = actor.health;
         actor.damageOverTime = 0;
         actor.slow = 0;
+    }
+};
+skillDefinitions.leap = {
+    // Leap is basically a decorator for another action, and will only be used if that action can be used.
+    isValid: (actor, leapSkill, target) => {
+        var followupAction = _.find(actor.actions, {base: {key: leapSkill.action}});
+        if (followupAction.readyAt > actor.time) return false; // Skill is still on cool down.
+        if (!followupAction) {
+            console.log(`Missing action ${leapSkill.action}`);
+            debugger;
+        }
+        // Use the skill directly if the target is already in range.
+        if (isTargetInRangeOfSkill(actor, followupAction, target)) return false;
+        var skillDefinition = skillDefinitions[followupAction.key];
+        if (!skillDefinitions.shouldUse) return true;
+        return skillDefinitions.shouldUse(actor, followupAction, target);
+    },
+    use: (actor, leapSkill, target) => {
+        var combinedRadius = (target.width + actor.width) / 2;
+        var distance = getDistance(actor, target);
+        actor.pull = {
+            x: (target.x < actor.x) ? target.x + combinedRadius : target.x - combinedRadius,
+            z: (target.z < actor.z) ? target.z + combinedRadius : target.z - combinedRadius,
+            y: Math.min(100, Math.max(20, distance / 2)),
+            time: actor.time + .3, damage: 0,
+            action: _.find(actor.actions, {base: {key: leapSkill.action}}),
+            target: target,
+        };
     }
 };

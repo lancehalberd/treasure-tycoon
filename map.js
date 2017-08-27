@@ -400,6 +400,7 @@ $('.js-mouseContainer').on('mousemove', function (event) {
 var difficultyBonusMap = {'easy': 0.8, 'normal': 1, 'hard': 1.5, 'challenge': 2};
 function displayAreaMenu() {
     selectedLevel = map[state.selectedCharacter.selectedLevelKey];
+    if (!selectedLevel) return;
     centerMapOnLevel(selectedLevel);
     // Do this in timeout so that it happens after the check for hiding the areaMenu...
     setTimeout(function () {

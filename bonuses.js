@@ -119,6 +119,7 @@ function initializeVariableObject(object, baseObject, actor) {
     return object;
 }
 function addBonusSourceToObject(object, bonusSource, triggerComputation, isImplicit) {
+    if (!bonusSource) debugger;
     if (!bonusSource.bonuses) return;
     // Nonimplicit bonuses apply recursively to all the children of this object (actions of actors, buffs on actions, bonuses on buffs, etc).
     if (!isImplicit) {

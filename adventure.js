@@ -1,3 +1,4 @@
+var MIN_SLOW = .33;
 function startLevel(character, index) {
     if (!map[index]) {
         throw new Error('No level found for ' + index);
@@ -335,21 +336,27 @@ function processStatusEffects(target) {
         var parabolaValue = (radius**2 - (timeLeft - radius)**2) / (radius ** 2);
         if (timeLeft > 0) {
             var dx = (target.pull.x - target.x) * Math.min(1, delta / timeLeft);
+            var dz = (target.pull.z - target.z) * Math.min(1, delta / timeLeft);
             var dr = (0 - target.rotation) * Math.min(1, delta / timeLeft);
             target.rotation += dr;
             var damage = target.pull.damage * Math.min(1, delta / timeLeft);
             target.pull.damage -= damage;
             target.x += dx;
+            target.z += dz;
             var baseY = target.baseY || 0;
             var dy = target.pull.y || 0 - baseY;
             target.y = baseY + dy * parabolaValue;
             damageActor(target, damage);
         } else {
-            var dx = target.pull.x - target.x;
             target.rotation = 0;
             target.x = target.pull.x;
+            target.z = target.pull.z;
             target.y = target.baseY || 0;
             damageActor(target, target.pull.damage);
+            if (target.pull.action) {
+                prepareToUseSkillOnTarget(target, target.pull.action, target.pull.target);
+                target.pull.action.totalPreparationTime = 0;
+            }
             target.pull = null;
         }
         // End the pull if the target hits something.
@@ -384,10 +391,11 @@ function runActorLoop(actor) {
         return;
     }
     if (actor.skillInUse) {
-        var actionDelta = frameMilliseconds / 1000 * Math.max(.1, 1 - actor.slow);
-        if (actor.preparationTime < actor.skillInUse.totalPreparationTime) {
+        var actionDelta = frameMilliseconds / 1000 * Math.max(MIN_SLOW, 1 - actor.slow);
+        if (actor.preparationTime <= actor.skillInUse.totalPreparationTime) {
             actor.preparationTime += actionDelta;
             if (actor.preparationTime >= actor.skillInUse.totalPreparationTime) {
+                actor.preparationTime++; // make sure this is strictly greater than totalPreparation time.
                 useSkill(actor);
             }
             return;

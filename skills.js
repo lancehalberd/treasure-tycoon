@@ -94,7 +94,9 @@ var skills = {
     'sideStep': movementAction('sideStep', {'icon': samuraiIcon, 'rangedOnly': true}, {'+cooldown': 10, '+moveDuration': .1, '+distance': 192,
                                         '$buff': buffEffect({}, {'++critChance': .2, '+duration': 2})},
                             'Side step a ranged attack and advance toward enemis gaining: {$buff}'),
-
+    // The preparation time for this depends on the skill set under $action, and $action will be used immediately after leaping with no preparation time.
+    // The actor must actually have the skill specified under $action to use it.
+    leap: movementAction('leap', {icon: dancerIcon}, {'+range': 8, '$action': 'basicAttack'}, 'Leap to a target'),
     // Attack actions
     'basicAttack': attackAction('attack', {'tags': ['basic']}, {}, 'A basic attack'),
     'healingAttack': attackAction('attack', {'animation': projectileAnimations.wandHealing, 'restrictions': ['wand'], 'target': 'otherAllies'}, {'$heals': true}, 'Basic attacks heal allies instead of damage enemies.'),
@@ -247,7 +249,7 @@ var skills = {
                                         sound: 'sounds/cheeseman/arrow.wav', explosionSound: 'sounds/fireball.flac', 'size': 40, 'color': 'red', 'gravity': 0},
                                     {'+range': 12, '+cooldown': 8, '$alwaysHits': 'Never misses', '+explode': 1, '+area': 3, '+areaCoefficient': .5},
                             'Conjure an explosive fireball to hurl at enemies dealing {+power} damage.'),
-    'freeze': spellAction('spell', {'icon': 'gfx/496RpgIcons/spellFreeze.png', 'tags': ['nova'], 'height': 20, 'color': 'white', 'alpha': .7},
+    'freeze': spellAction('spell', {'icon': 'gfx/496RpgIcons/spellFreeze.png', 'tags': ['nova'], 'height': 20, 'color': 'white', 'alpha': .6},
                                     {'+power': ['{magicPower}', '/', 2], '+area': [4, '+', ['{intelligence}', '/', '50']],
                                     '+areaCoefficient': 1, '+cooldown': 10, '$alwaysHits': 'Never misses', '+slowOnHit': 1},
                         'Emit a blast of icy air that deals {+power} damage and slows enemies. The effect is less the further away the enemy is.'),

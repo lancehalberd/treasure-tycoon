@@ -105,7 +105,7 @@ function moveActor(actor) {
     }
     if (actor.chargeEffect) {
         speedBonus *= actor.chargeEffect.chargeSkill.speedBonus;
-        actor.chargeEffect.distance += speedBonus * actor.speed * Math.max(.1, 1 - actor.slow) * delta;
+        actor.chargeEffect.distance += speedBonus * actor.speed * Math.max(MIN_SLOW, 1 - actor.slow) * delta;
         // Cancel charge if they run for too long.
         if (actor.chargeEffect.distance > 2000) {
             actor.chargeEffect = null;
@@ -133,8 +133,8 @@ function moveActor(actor) {
     var blockedByEnemy = null;
     var blockedByAlly = null;
     while (true) {
-        actor.x = currentX + speedBonus * actor.speed * actor.heading[0] * Math.max(.1, 1 - actor.slow) * delta;
-        actor.z = currentZ + speedBonus * actor.speed * actor.heading[2] * Math.max(.1, 1 - actor.slow) * delta;
+        actor.x = currentX + speedBonus * actor.speed * actor.heading[0] * Math.max(MIN_SLOW, 1 - actor.slow) * delta;
+        actor.z = currentZ + speedBonus * actor.speed * actor.heading[2] * Math.max(MIN_SLOW, 1 - actor.slow) * delta;
         if (isNaN(actor.x) || isNaN(actor.z)) {
             debugger;
         }

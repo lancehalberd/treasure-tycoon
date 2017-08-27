@@ -358,7 +358,7 @@ function performAttackProper(attackStats, target) {
         attacker.boundEffects.push(fieldSpellEffect);
     } else if (attackStats.attack.tags['nova']) {
         // attackStats.explode--;
-        area.effects.push(explosionEffect(attackStats, attacker.x, getAttackY(attacker), attacker.z));
+        area.effects.push(novaEffect(attackStats, attacker.x, getAttackY(attacker), attacker.z));
     } else if (attackStats.attack.tags['blast']) {
         // attackStats.explode--;
         area.effects.push(explosionEffect(attackStats, target.x, getAttackY(attacker), target.z));

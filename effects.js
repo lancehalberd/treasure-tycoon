@@ -201,6 +201,97 @@ function explosionEffect(attackStats, x, y, z) {
     return self;
 }
 
+
+function novaEffect(attackStats, x, y, z) {
+    var attack = attackStats.imprintedSpell || attackStats.attack;
+    var color = ifdefor(attack.base.color, 'red');
+    var alpha = ifdefor(attack.base.alpha, .5);
+    var animation, frames = attack.base.frames || 10, endFrames = attack.base.endFrames || 5;
+    if (attack.base.explosionAnimation) {
+        animation = attack.base.explosionAnimation;
+        frames = animation.frames.length;
+        if (animation.endFrames) endFrames = animation.endFrames.length;
+        alpha = ifdefor(attack.base.alpha, 1);
+    }
+    if (!attack.area) {
+        throw new Error('Explosion effect called with no area set.');
+    }
+    var radius = attack.area * ifdefor(attackStats.effectiveness, 1) * 32;
+    var height = radius * 2;
+    if (attack.base.height) {
+        height = attack.base.height;
+    }
+    if (attack.base.heightRatio) {
+        height = radius * 2 * attack.base.heightRatio;
+    }
+    var self = {
+        'hitTargets': [], attack, attackStats, x, y, z, 'width': 0, 'height': 0, 'currentFrame': 0, 'done': false,
+        update(area) {
+            self.currentFrame++;
+            if (self.currentFrame > frames) {
+                if (self.currentFrame > frames + endFrames) self.done = true;
+                return;
+            }
+            var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
+            self.width = currentRadius * 2;
+            self.height = height * currentRadius / radius;
+            self.height = self.width * currentRadius / radius;
+            // areaCoefficient is the amount of effectiveness lost at the very edge of the radius.
+            // areaCoefficient = 0 means the blast is equally effective everywhere.
+            // areaCoefficient = 1 means the blast has no effect at the edge.
+            // areaCoefficient < 0 means the blast has increased effect the further it is from the center.
+            self.attackStats.effectiveness = 1 - currentRadius / radius * ifdefor(self.attack.areaCoefficient, 1);
+            for (var i = 0; i < self.attackStats.source.enemies.length; i++) {
+                var target = self.attackStats.source.enemies[i];
+                if (target.isDead || self.hitTargets.indexOf(target) >= 0) continue;
+                var distance = getDistance(self, target);
+                if (distance > 0) continue;
+                applyAttackToTarget(attackStats, target);
+                // console.log("Hit with effectiveness " + attackStats.effectiveness);
+                self.hitTargets.push(target);
+            }
+        },
+        draw(area) {
+            if (self.done) return
+            var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
+            mainContext.save();
+            mainContext.globalAlpha = alpha;
+            mainContext.translate((self.x - area.cameraX), groundY - self.y - self.z / 2);
+            if (animation) {
+                var frame = (self.currentFrame < frames || !animation.endFrames)
+                    ? animation.frames[Math.min(frames - 1, self.currentFrame)]
+                    : animation.endFrames[Math.min(endFrames - 1, self.currentFrame - frames)];
+                var currentRadius = currentRadius * (animation.scale || 1)
+                mainContext.drawImage(animation.image, frame[0], frame[1], frame[2], frame[3],
+                                               -currentRadius, -currentRadius, currentRadius * 2, currentRadius * 2);
+            } else {
+                mainContext.beginPath();
+                mainContext.scale(1, height / (2 * radius));
+                mainContext.arc(0, 0, currentRadius, ifdefor(self.attack.base.minTheta, 0), ifdefor(self.attack.base.maxTheta, 2 * Math.PI));
+                mainContext.fillStyle = color;
+                mainContext.fill();
+            }
+            mainContext.restore();
+        },
+        drawGround(area) {
+            drawOnGround(context => {
+                var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
+                drawGroundCircle(context, area, self.x, self.z, currentRadius)
+                context.save();
+                context.globalAlpha = alpha;
+                context.fillStyle = color;
+                context.fill();
+                context.globalAlpha = .1;
+                context.lineWidth = 8;
+                context.strokeStyle = '#FFF';
+                context.stroke();
+                context.restore();
+            });
+        },
+    };
+    return self;
+}
+
 function fieldEffect(attackStats, followTarget) {
     var attack = attackStats.imprintedSpell || attackStats.attack;
     var color = ifdefor(attack.base.color, 'red');
@@ -327,6 +418,7 @@ function projectile(attackStats, x, y, z, vx, vy, vz, target, delay, color, size
     var self = {
         'distance': 0, x, y, z, vx, vy, vz, size, 't': 0, 'done': false, delay,
         'width': size, 'height': size, color,
+        totalHits: 0,
         'hit': false, target, attackStats, 'hitTargets': [],
         stickToTarget(target) {
             stuckTarget = target;
@@ -343,7 +435,7 @@ function projectile(attackStats, x, y, z, vx, vy, vz, target, delay, color, size
                 self.z = stuckTarget.z + stuckDelta.z;
             }
             // Put an absolute cap on how far a projectile can travel
-            if (self.y < 0 || self.distance > 2000 && !stuckDelta) {
+            if (self.y < 0 || self.totalHits >= 5 || self.distance > 2000 && !stuckDelta) {
                 applyAttackToTarget(self.attackStats, {'x': self.x, 'y': self.y, 'z': self.z, 'width': 0, 'height': 0});
                 self.done = true;
             }
@@ -369,7 +461,7 @@ function projectile(attackStats, x, y, z, vx, vy, vz, target, delay, color, size
                 }
             } else {
                 // normal projectiles hit when they overlap the target.
-                hit = (getDistance(self, self.target) <= 0) && (!self.target.isActor || self.target.health > 0);
+                hit = (getDistanceOverlap(self, self.target) <= -self.width / 2) && (!self.target.isActor || self.target.health > 0);
             }
             self.vy -= attackStats.gravity;
             self.t += 1;
@@ -414,6 +506,7 @@ function projectile(attackStats, x, y, z, vx, vy, vz, target, delay, color, size
                 self.done = true;
                 if (ifdefor(attackStats.attack.chaining)) {
                     self.done = false;
+                    self.totalHits++;
                     // every bounce allows piercing projectiles to hit each target again.
                     self.hitTargets = [];
                     // reduce the speed. This seems realistic and make it easier to
@@ -480,24 +573,23 @@ function getProjectileVelocity(attackStats, x, y, z, target) {
     var ty = ifdefor(target.y, 0) + ifdefor(target.height, 128) * 3 / 4;
     var v = [target.x - x, ty - y, target.z - z];
     var distance = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
-    var frameEstimate = distance / attackStats.speed;
+    var speed = Math.min(attackStats.speed, distance / 5);
+    var frameEstimate = distance / speed;
     // Over a period of N frames, the projectile will fall roughly N^2 / 2, update target velocity accordingly
     v[1] += attackStats.gravity * frameEstimate * frameEstimate / 2;
     distance = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
     if (distance === 0 || isNaN(distance) || isNaN(v[0]) || isNaN(v[1])) {
         console.log("invalid velocity");
-        console.log([attackStats.speed, attackStats.gravity]);
+        console.log([speed, attackStats.gravity]);
         console.log([x, y, z, target.x, ty, target.z]);
         console.log([target.x, target.y, target.width, target.height]);
         console.log(target);
         console.log(distance);
         console.log(v);
-        pause();
         debugger;
     }
-    return [v[0] * attackStats.speed / distance, v[1] * attackStats.speed / distance, v[2] * attackStats.speed / distance];
+    return [v[0] * speed / distance, v[1] * speed / distance, v[2] * speed / distance];
 }
-
 
 function expireTimedEffects(actor) {
     if (actor.isDead ) return;
