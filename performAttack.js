@@ -650,7 +650,7 @@ function applyAttackToTarget(attackStats, target) {
         var direction = (target.x < attacker.x) ? -1 : 1;
         if (Math.random() < ifdefor(attack.knockbackChance, 0)) {
             var targetX = target.x + direction * 32 * ifdefor(attack.knockbackDistance, 1);
-            target.pull = {'x': targetX, 'time': target.time + .3, 'damage': 0};
+            target.pull = {'x': targetX, z: target.z, time: target.time + .3, 'damage': 0};
             target.rotation = direction * ifdefor(attack.knockbackRotation, 45);
         }
         if (attack.pullsTarget) {
@@ -658,14 +658,14 @@ function applyAttackToTarget(attackStats, target) {
             var targetX = (attacker.x > target.x) ? (attacker.x - target.width) : (attacker.x + attacker.width);
             var targetZ = (attacker.z > target.z) ? (attacker.z - target.width) : (attacker.z + attacker.width);
             target.pull = {sourceAttackStats: attackStats, x: targetX, z: targetZ, 'time': target.time + .3, 'damage': Math.floor(distance / 32 * damage * ifdefor(attack.dragDamage * effectiveness, 0))};
-            attacker.pull = {'x': attacker.x, 'time': attacker.time + .3, 'damage': 0};
+            attacker.pull = {'x': attacker.x, z: attacker.z, 'time': attacker.time + .3, 'damage': 0};
             target.rotation = direction * ifdefor(attack.knockbackRotation, -45);
             hitText.value += ' hooked!';
         }
         if (attack.domino) {
             target.dominoAttackStats = attackStats;
             var targetX = (attacker.x < target.x) ? (target.x + attacker.width + ifdefor(attack.distance * effectiveness, 128)) : (target.x - ifdefor(attack.distance * effectiveness, 128));
-            target.pull = {'x': targetX, 'time': target.time + .3, 'damage': 0};
+            target.pull = {'x': targetX, z: target.z, 'time': target.time + .3, 'damage': 0};
             target.rotation = direction * ifdefor(attack.knockbackRotation, 45);
         }
     } else {

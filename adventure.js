@@ -334,6 +334,7 @@ function processStatusEffects(target) {
         var timeLeft = (target.pull.time - target.time);
         var radius = target.pull.duration / 2
         var parabolaValue = (radius**2 - (timeLeft - radius)**2) / (radius ** 2);
+        target.pull.z = Math.max(-180, Math.min(180, target.pull.z));
         if (timeLeft > 0) {
             var dx = (target.pull.x - target.x) * Math.min(1, delta / timeLeft);
             var dz = (target.pull.z - target.z) * Math.min(1, delta / timeLeft);
