@@ -95,7 +95,9 @@ function songEffect(attackStats) {
 // Set target to a character to have an effect follow them, or to a static target to display in place.
 function animationEffect(animation, target, {scale = [1, 1], loop = false, frameSpeed = 1, tintColor, tintValue}) {
     return {
-        target, x: target.x, 'y': target.y, 'z': target.z, 'width': target.width * scale[0], 'height': target.height * scale[1], 'currentFrame': 0, 'done': false,
+        target, x: target.x, y: target.y, z: target.z,
+        width: target.width * scale[0], height: target.height * scale[1],
+        currentFrame: 0, done: false,
         update(area) {
             this.currentFrame+=frameSpeed;
             this.x = target.x;
@@ -206,24 +208,13 @@ function novaEffect(attackStats, x, y, z) {
     var attack = attackStats.imprintedSpell || attackStats.attack;
     var color = ifdefor(attack.base.color, 'red');
     var alpha = ifdefor(attack.base.alpha, .5);
-    var animation, frames = attack.base.frames || 10, endFrames = attack.base.endFrames || 5;
-    if (attack.base.explosionAnimation) {
-        animation = attack.base.explosionAnimation;
-        frames = animation.frames.length;
-        if (animation.endFrames) endFrames = animation.endFrames.length;
-        alpha = ifdefor(attack.base.alpha, 1);
-    }
+    var frames = attack.base.frames || 10, endFrames = attack.base.endFrames || 5;
+    var blasts = [];
+    var theta = Math.random() * 2 * Math.PI;
     if (!attack.area) {
         throw new Error('Explosion effect called with no area set.');
     }
     var radius = attack.area * ifdefor(attackStats.effectiveness, 1) * 32;
-    var height = radius * 2;
-    if (attack.base.height) {
-        height = attack.base.height;
-    }
-    if (attack.base.heightRatio) {
-        height = radius * 2 * attack.base.heightRatio;
-    }
     var self = {
         'hitTargets': [], attack, attackStats, x, y, z, 'width': 0, 'height': 0, 'currentFrame': 0, 'done': false,
         update(area) {
@@ -233,8 +224,24 @@ function novaEffect(attackStats, x, y, z) {
                 return;
             }
             var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
+            // This animation shows up randomly in the circle.
+            for (var i = 0; i < 2; i++) {
+                var animation = _.sample(attack.base.blastAnimation);
+                var scale = 1.5 * attack.area / 5;
+                var width = scale * animation.frames[0][2];
+                if (currentRadius > 32 + width / 4 && blasts.length < 15) {
+                    var blastZ = self.z + Math.sin(theta) * (currentRadius - width / 4);
+                    if (blastZ > -180 && blastZ < 180) {
+                        var blast = animationEffect(animation,
+                            {x: self.x + Math.cos(theta) * (currentRadius - width / 4), y: -16, z: blastZ,
+                                width: width, height: scale * animation.frames[0][3]}, {frameSpeed: .2});
+                        area.effects.push(blast);
+                        blasts.push(blast);
+                    }
+                    theta += Math.PI * (Math.random() * .1 + .9) / 3;
+                }
+            }
             self.width = currentRadius * 2;
-            self.height = height * currentRadius / radius;
             self.height = self.width * currentRadius / radius;
             // areaCoefficient is the amount of effectiveness lost at the very edge of the radius.
             // areaCoefficient = 0 means the blast is equally effective everywhere.
@@ -249,29 +256,19 @@ function novaEffect(attackStats, x, y, z) {
                 applyAttackToTarget(attackStats, target);
                 // console.log("Hit with effectiveness " + attackStats.effectiveness);
                 self.hitTargets.push(target);
+                // This animation just shows up on the targets that are hit.
+                /*var animation = _.sample(attack.base.blastAnimation);
+                var scale = 2;
+                var width = scale * animation.frames[0][2];
+                var blast = animationEffect(animation,
+                    {x: target.x, y: -16, z: target.z - 16,
+                        width: width, height: scale * animation.frames[0][3]}, {frameSpeed: .2});
+                area.effects.push(blast);
+                blasts.push(blast);*/
             }
         },
         draw(area) {
-            if (self.done) return
-            var currentRadius = Math.round(radius * Math.min(1, self.currentFrame / frames));
-            mainContext.save();
-            mainContext.globalAlpha = alpha;
-            mainContext.translate((self.x - area.cameraX), groundY - self.y - self.z / 2);
-            if (animation) {
-                var frame = (self.currentFrame < frames || !animation.endFrames)
-                    ? animation.frames[Math.min(frames - 1, self.currentFrame)]
-                    : animation.endFrames[Math.min(endFrames - 1, self.currentFrame - frames)];
-                var currentRadius = currentRadius * (animation.scale || 1)
-                mainContext.drawImage(animation.image, frame[0], frame[1], frame[2], frame[3],
-                                               -currentRadius, -currentRadius, currentRadius * 2, currentRadius * 2);
-            } else {
-                mainContext.beginPath();
-                mainContext.scale(1, height / (2 * radius));
-                mainContext.arc(0, 0, currentRadius, ifdefor(self.attack.base.minTheta, 0), ifdefor(self.attack.base.maxTheta, 2 * Math.PI));
-                mainContext.fillStyle = color;
-                mainContext.fill();
-            }
-            mainContext.restore();
+            // Only the ground circle and the blasts are drawn for this effect.
         },
         drawGround(area) {
             drawOnGround(context => {

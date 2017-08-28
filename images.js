@@ -131,6 +131,11 @@ function makeFrames(length, size, origin = [0, 0], padding = 0, frameRepeat = 1,
     }
     return frames;
 }
+function undoFrames(frames) {
+    var reversedFrames = frames.slice();
+    reversedFrames.pop();
+    return frames.concat(reversedFrames.reverse());
+}
 projectileAnimations['fireball'] = {'image': requireImage('gfx/effects/projectiles.png'), 'frames': [[0, 0, 20, 20], [32, 0, 20, 20], [64, 0, 20, 20]]};
 effectAnimations.explosion = {image: requireImage('gfx/effects/explosion.png'),
     frames: makeFrames(5, [96, 96], [0, 0], 0, 3),
@@ -141,6 +146,11 @@ effectAnimations.heal = {image: requireImage('gfx/effects/heal.png'), frames: ma
 effectAnimations.song = {image: requireImage('gfx/effects/musicNote.png'), frames: makeFrames(15, [30, 60])};
 effectAnimations.cast = {image: requireImage('gfx/effects/greenRune.png'), frames: makeFrames(4, [64, 32], [0, 16])};
 effectAnimations.blueRune = {image: requireImage('gfx/effects/blueRune.png'), frames: makeFrames(4, [64, 32], [0, 16])};
+effectAnimations.freeze = [
+    {image: requireImage('gfx/effects/freeze.png'), frames: undoFrames(makeFrames(4, [64, 58], [0, 0]))},
+    {image: requireImage('gfx/effects/freeze.png'), frames: undoFrames(makeFrames(4, [64, 58], [0, 64]))},
+    {image: requireImage('gfx/effects/freeze.png'), frames: undoFrames(makeFrames(4, [64, 58], [0, 128]))}
+];
 var projectileCanvas = createCanvas(96, 96);
 projectileCanvas.imageSmoothingEnabled = false;
 projectileAnimations.wandHealing = {image: projectileCanvas, 'frames': makeFrames(4, [20, 20], [0, 0], 12), 'fps': 20};

@@ -58,6 +58,8 @@ function initializeGame() {
     }
     if (window.location.search.substr(1) === 'test') {
         setContext('adventure');
+        state.selectedCharacter.autoplay = state.selectedCharacter.replay = true;
+        state.selectedCharacter.currentLevelKey = 'testLevelData';
         startLevel(state.selectedCharacter, 'testLevelData');
     }
     state.visibleLevels['guild'] = true;

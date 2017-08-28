@@ -392,7 +392,7 @@ function initalizeMonsters() {
                       abilities.howl, abilities.howl, abilities.attackSong, abilities.defenseSong, abilities.sicem, abilities.howlSingAttack]
     });
     addMonster('snowWolf', {'name': 'Snow Wolf', 'tint': ['white', 1], abilities: [leapAndAct('freeze'), abilities.freeze]}, monsters.wolf);
-    addMonster('frostBite', {name: 'Frost Bite', abilities: [abilities.secondWind]}, monsters.snowWolf);
+    addMonster('frostBite', {name: 'Frost Bite', abilities: [abilities.secondWind, abilities.wizard]}, monsters.snowWolf);
     addMonster('giantSpider', {
         'name': 'Giant Spider', 'source': spiderSource,
         'implicitBonuses': {'+weaponRange': 12, '*evasion': .8, '*accuracy': .8, '*weaponDamage': 1.4, '+critChance': .25, '*scale': 1.15},
@@ -554,7 +554,8 @@ function initalizeMonsters() {
 
 map.testLevelData = {
     name: "Test Area", description: "Area for testing monsters", background: "cave", unlocks: [], coords: [-443,-152,-375],
-    minMonstersPerArea: 10, maxMonstersPerArea: 10,
+    minMonstersPerArea: 2, maxMonstersPerArea: 2,
+    noTreasure: true,
     level: 14,
     enemySkills: [],
     monsters: ['snowWolf'],

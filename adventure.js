@@ -1,4 +1,4 @@
-var MIN_SLOW = .33;
+var MIN_SLOW = .5;
 function startLevel(character, index) {
     if (!map[index]) {
         throw new Error('No level found for ' + index);

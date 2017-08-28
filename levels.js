@@ -122,7 +122,7 @@ function instantiateLevel(levelData, levelDifficulty, difficultyCompleted, level
         area.width += 600;
         area.objects.push(fixedObject('woodBridge', [area.width + 60, 0, 0], {isEnabled() {
             return !this.area.isBossArea || !this.area.enemies.length;
-        }, exit: {areaKey: `area${areas.size}`, x: 150, z: 0}}));
+        }, exit: {areaKey: levelData.noTreasure ? 'worldMap' : `area${areas.size}`, x: 150, z: 0}}));
         if (maxLoops-- < 0) debugger;
     };
     // lastArea is now an empty area for adding the treasure chest + shrine.
