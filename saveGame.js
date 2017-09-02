@@ -87,8 +87,10 @@ function exportAdventurer(adventurer) {
 }
 function importAdventurer(adventurerData) {
     var adventurer = makeAdventurerFromData(adventurerData);
-    for (var i = 0; i < ifdefor(window.testAbilities, []).length; i++) {
-        adventurer.abilities.push(testAbilities[i]);
+    if (window.location.search.substr(1) === 'test') {
+        for (var i = 0; i < ifdefor(window.testAbilities, []).length; i++) {
+            adventurer.abilities.push(testAbilities[i]);
+        }
     }
     $.each(adventurerData.equipment, function (key, itemData) {
         if (itemData) {

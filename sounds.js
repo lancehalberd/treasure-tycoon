@@ -70,6 +70,8 @@ var playTrack = source => {
 };
 
 [
+    // Original sounds using bfxr
+    'sounds/bfxr/strum.wav+0+10', 'sounds/bfxr/freeze.wav+0+10',
     // See credits.html for: Pack: Melee Attack by Unfa.
     'sounds/unfa/melee1.flac+200+10', 'sounds/unfa/melee2.flac', 'sounds/unfa/melee3.flac',
     // See credits.html for: Negative Magic Spell by Iwan Gabovitch.

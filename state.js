@@ -180,7 +180,10 @@ function importState({
     });
     for (var completedLevelKey in state.completedLevels) {
         var level = map[completedLevelKey];
-        if (!level) delete state.completedLevels[completedLevelKey];
+        if (!level) {
+            delete state.completedLevels[completedLevelKey];
+            continue;
+        }
         state.visibleLevels[completedLevelKey] = true;
         for (var nextLevelKey of level.unlocks) state.visibleLevels[nextLevelKey] = true;
     }

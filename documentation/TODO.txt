@@ -1,11 +1,11 @@
 Bug Fixes
 -Players/monsters get backed into corners too much.
+-Enemy Hook is missing too much.
+-Butcher is jumping outside of the z-range. (add a fixZ(zValue, range=180) utility function)
 
 Content
--Add ice wolf with leap attack, freeze and white tint. Restores cooldowns at 66% and 33% health.
-    Only uses leap attack when target is at range, 5s cooldown. Always casts freeze after leap attack.
-    Leap attack has tell at which point his target is locked and can be evaded manually.
--Add Freeze animation+sound.
+-Add sound effects for deflect and reflect projectile.
+
 -Add rolling animation for caterpillars, use for attack and reaction (like knocking them away with a melee hit).
 -Draw a clock under players with temporal shields. The seconds hand moves depending on how much time is left.
 -Add effect for reflect that fades and shatters at 0.
@@ -17,6 +17,13 @@ Content
 
 
 Feature Improvements
+-Add ability to edit areas by setting ?edit flag and pressing shift + 'E' in areas.
+    -Add/remove monsters.
+    -Change background
+    -Increase length of area
+    -Add sections
+
+-Add warnings for powerful enemy attacks to encourage players to manually evade them.
 -Fewer areas more monsters. Switch monsters to appear in groups and have up to 3 groups per area.
 -At some point implement monster group patterns and preset monster groups with leaders. Apply
     enchantments to entire groups, and imbued to only leaders, add aoe buffs to imbued monsters.

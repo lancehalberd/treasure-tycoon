@@ -13,7 +13,9 @@ var hardBonuses = {'bonuses': {'*maxHealth': 1.3, '*strength': 1.3, '*dexterity'
                                 '*coins': 1.5, '*anima': 1.5}};
 // To make bosses intimidating, give them lots of health and damage, but to keep them from being overwhelming,
 // scale down their health regen, attack speed and critical multiplier.
-var bossMonsterBonuses = {'bonuses': {'*maxHealth': [2.5, '+', ['{level}', '/', 2]], '*tenacity': 5, '*weaponDamage': 2, '*attackSpeed': .75, '*critDamage': .5, '*critChance': .5, '*evasion': .5,
+var bossMonsterBonuses = {'bonuses': {'*maxHealth': [2.5, '+', ['{level}', '/', 2]], '*tenacity': 5,
+                        '*weaponDamage': 2, '*attackSpeed': .75, '*critDamage': .5, '*critChance': .5, '*magicPower': 2,
+                        '*evasion': .5,
                             '*healthRegen': [1, '/', [1.5, '+', ['{level}', '/', 2]]], '+coins': 2, '*coins': 4, '+anima': 1, '*anima': 4,
                             '$uncontrollable': 'Cannot be controlled.', '$tint': 'red', '$tintMinAlpha': 0.2, '$tintMaxAlpha': 0.5}};
 var monsterPrefixes = [
@@ -196,7 +198,6 @@ function addMonster(key, data, parent) {
 
     if (parent) {
         for (var property in parent) {
-            console.log(`inheriting ${property} from parent`);
             switch (property) {
                 case 'abilities':
                     data.abilities = parent.abilities.concat(data.abilities || []);
@@ -208,7 +209,6 @@ function addMonster(key, data, parent) {
                     data[property] = ifdefor(data[property], parent[property]);
             }
         }
-        console.log(data);
     }
     monsters[key] = data;
 }
@@ -378,20 +378,21 @@ function initalizeMonsters() {
     });
     addMonster('wolf', {
         'name': 'Wolf', 'source': wolfSource,
-        'implicitBonuses': {'*maxHealth': 1.5, '*weaponMagicDamage': 0, '*accuracy': 1.5, '+critChance': .1, '*speed': 2, '*scale': .75}
+        'implicitBonuses': {'+weaponRange': 1, '*maxHealth': 1.5, '*weaponDamage': 1.2, 'weaponMagicDamage': 0, '*accuracy': 1.5, '+critChance': .1, '*speed': 1.5, '*scale': .75}
     });
     addMonster('alphaWolf', {
         'name': 'Alpha Wolf', 'source': wolfSource,
-        'implicitBonuses': {'+weaponRange': 1, '*maxHealth': 2, '*weaponMagicDamage': 0, '*accuracy': 1.5, '+critChance': .1, '*speed': 1.5, '*scale': .8},
+        'implicitBonuses': {'*maxHealth': 2, '*scale': .8},
         'abilities': [abilities.attackSong]
-    });
+    }, monsters.wolf);
     addMonster('packLeader', {
         'name': 'Pack Leader', 'source': wolfSource,
-        'implicitBonuses': {'+weaponRange': 2, '*maxHealth': 2, '*weaponMagicDamage': 0, '*accuracy': 1.5, '+critChance': .1, '*speed': 1.5, '*scale': .8},
+        'implicitBonuses': {'+weaponRange': 2},
         'abilities': [abilities.majorDexterity, abilities.majorStrength, abilities.majorIntelligence,
                       abilities.howl, abilities.howl, abilities.attackSong, abilities.defenseSong, abilities.sicem, abilities.howlSingAttack]
-    });
-    addMonster('snowWolf', {'name': 'Snow Wolf', 'tint': ['white', 1], abilities: [leapAndAct('freeze'), abilities.freeze]}, monsters.wolf);
+    }, monsters.alphaWolf);
+    addMonster('snowWolf', {'name': 'Snow Wolf', 'tint': ['white', 1],
+            abilities: [leapAndAct('freeze'), abilities.freeze, abilities.minorIntelligence, abilities.sage]}, monsters.wolf);
     addMonster('frostBite', {name: 'Frost Bite', abilities: [abilities.secondWind, abilities.wizard]}, monsters.snowWolf);
     addMonster('giantSpider', {
         'name': 'Giant Spider', 'source': spiderSource,
@@ -552,15 +553,17 @@ function initalizeMonsters() {
     });
 }
 
-map.testLevelData = {
-    name: "Test Area", description: "Area for testing monsters", background: "cave", unlocks: [], coords: [-443,-152,-375],
-    minMonstersPerArea: 2, maxMonstersPerArea: 2,
-    noTreasure: true,
-    level: 14,
-    enemySkills: [],
-    monsters: ['snowWolf'],
-    events: [
-        ['frostBite'],
-    ]
-};
+if (window.location.search.substr(1) === 'test') {
+    map.testLevelData = {
+        name: "Test Area", description: "Area for testing monsters", background: "cave", unlocks: [], coords: [-443,-152,-375],
+        minMonstersPerArea: 2, maxMonstersPerArea: 2,
+        noTreasure: true,
+        level: 2,
+        enemySkills: [],
+        monsters: ['snowWolf'],
+        events: [
+            ['frostBite'],
+        ]
+    };
+}
 
