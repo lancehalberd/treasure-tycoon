@@ -2,9 +2,9 @@
     $version = '0.13';
     function addScripts($scriptNames) {
         foreach ($scriptNames as $scriptName) {
-            $version = hash_file('md5', $scriptName . '.js');
+            $version = hash_file('md5', 'js/' . $scriptName . '.js');
             ?>
-<script src="<?=  $scriptName . '.js?v=' . $version ?>"></script><?php
+<script src="js/<?=  $scriptName . '.js?v=' . $version ?>"></script><?php
         }
     }
 ?>

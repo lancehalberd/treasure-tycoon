@@ -1,6 +1,6 @@
 var MIN_SLOW = .5;
 var MIN_Z = -180, MAX_Z = 180;
-var limitZ = zValue => Math.max(MIN_Z, Math.min(MAX_Z, zValue));
+var limitZ = (zValue, radius = 0) => Math.max(MIN_Z + radius, Math.min(MAX_Z - radius, zValue));
 function startLevel(character, index) {
     if (!map[index]) {
         throw new Error('No level found for ' + index);

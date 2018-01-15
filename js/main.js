@@ -155,7 +155,7 @@ function handleAdventureClick(x, y, event) {
 function getTargetLocation(area, canvasX, canvasY) {
     var z = -(canvasY - groundY) * 2;
     if (z < -190 || z > 190) return null;
-    z = Math.max(-180, Math.min(180, z));
+    z = limitZ(z);
     return {'x': area.cameraX + canvasX, y: 0, z, width:0, height: 0};
 }
 $(document).on('mouseup',function (event) {
@@ -163,10 +163,10 @@ $(document).on('mouseup',function (event) {
 });
 function setActorDestination(actor, target) {
     var activity = {
-        'type': 'move',
-        'x': target.x,
-        'y': 0,
-        'z': Math.max(-180 + actor.width / 2, Math.min(180 - actor.width / 2, target.z))
+        type: 'move',
+        x: target.x,
+        y: 0,
+        z: limitZ(target.z, actor.width / 2)
     };
     if (getDistanceBetweenPointsSquared(actor, activity) > 200) {
         if (!actor.activity) {

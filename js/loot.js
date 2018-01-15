@@ -9,11 +9,11 @@ function coinTreasurePopup(coin, x, y, z, vx, vy, vz, delay) {
             this.x += this.vx;
             this.y += this.vy;
             this.z += this.vz;
-            if (this.z > 180) {
-                this.z = 180 - (this.z - 180) * .6;
+            if (this.z > MAX_Z) {
+                this.z = MAX_Z - (this.z - MAX_Z) * .6;
                 this.vz = -this.vz * .6;
-            } else if (this.z < -180) {
-                this.z = -180 - (this.z + 180) * .6;
+            } else if (this.z < MIN_Z) {
+                this.z = MIN_Z - (this.z - MIN_Z) * .6;
                 this.vz = -this.vz * .6;
             }
             if (this.y > 0) this.vy -= .8;

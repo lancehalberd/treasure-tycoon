@@ -86,7 +86,7 @@ function moveActor(actor) {
     if (goalTarget) {
         actor.heading = [goalTarget.x - actor.x, 0, goalTarget.z - actor.z];
                 if (isNaN(actor.heading[0])) debugger;
-        actor.heading[2] -= actor.z / 180;
+        actor.heading[2] -= actor.z / MAX_Z;
         actor.isMoving = true;
         actor.goalTarget = goalTarget;
         // This was an attempt to move away from targets when they are dying.
@@ -139,7 +139,7 @@ function moveActor(actor) {
             debugger;
         }
         // Actor is not allowed to leave the path.
-        actor.z = Math.max(-180 + actor.width / 2, Math.min(180 - actor.width / 2, actor.z));
+        actor.z = limitZ(actor.z, actor.width / 2);
         if (area.leftWall) actor.x = Math.max(ifdefor(area.left, 0) + 25 + actor.width / 2 + actor.z / 6, actor.x);
         else actor.x = Math.max(ifdefor(area.left, 0) + actor.width / 2, actor.x);
         if (area.rightWall) actor.x = Math.min(area.width - 25 - actor.width / 2 - actor.z / 6, actor.x);
