@@ -29,6 +29,11 @@ var playSound = (source, area) => {
     [source, offset, volume] = source.split('+');
     if (offset) [offset, customDuration] = offset.split(':');
     var sound = requireSound(source);
+    // Custom sound objects just have a play and forget method on them.
+    if (!(sound instanceof Audio)) {
+        sound.play();
+        return;
+    }
     if (sound.instances.size >= 5) return;
     var newInstance = sound.cloneNode(false);
     newInstance.currentTime = (ifdefor(offset, sound.offset) || 0) / 1000;
@@ -95,15 +100,83 @@ var attackSounds = {
     dagger: 'sounds/cheeseman/sword.wav',
     sword: 'sounds/cheeseman/sword.wav',
     greatsword: 'sounds/cheeseman/sword.wav',
-    wand: 'sounds/laser.wav',
+    wand: 'wand',
 };
 
 var attackHitSounds = {
     bow: 'sounds/cheeseman/arrowHit.wav',
     throwing: 'sounds/cheeseman/arrowHit.wav',
-}
+};
 
 var soundTrack = {
     map: 'music/mobbrobb/map.mp3',
+};
+
+
+var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+function makeDistortionCurve(amount) {
+  var k = typeof amount === 'number' ? amount : 50,
+    n_samples = 44100,
+    curve = new Float32Array(n_samples),
+    deg = Math.PI / 180,
+    i = 0,
+    x;
+  for ( ; i < n_samples; ++i ) {
+    x = i * 2 / n_samples - 1;
+    curve[i] = ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
+  }
+  return curve;
+};
+var distortionCurve = makeDistortionCurve(100);
+
+function playBeeps(frequencies, volume, duration, {smooth=false, swell=false, taper=false, distortion=false}) {
+    const oscillator = audioContext.createOscillator();
+    oscillator.type = 'square';
+    if (smooth) oscillator.frequency.setValueCurveAtTime(frequencies, audioContext.currentTime, duration);
+    else {
+        for (var i = 0; i < frequencies.length; i++) {
+            oscillator.frequency.setValueAtTime(frequencies[i], audioContext.currentTime + duration * i / frequencies.length);
+        }
+    }
+    var lastNode = oscillator;
+    if (distortion) {
+        distortion = audioContext.createWaveShaper();
+        distortion.curve = distortionCurve;
+        distortion.oversample = '4x';
+        lastNode.connect(distortion);
+        lastNode = distortion;
+    }
+
+    gainNode = audioContext.createGain();
+    if (swell) {
+        gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+        gainNode.gain.linearRampToValueAtTime(volume, audioContext.currentTime + duration * .1);
+    } else {
+        gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
+    }
+    if (taper) {
+        gainNode.gain.setValueAtTime(volume, audioContext.currentTime + duration * .9);
+        // gainNode.gain.setTargetAtTime(0, audioContext.currentTime, duration / 10);
+        gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + duration);
+    }
+    lastNode.connect(gainNode);
+    lastNode = gainNode;
+
+
+    lastNode.connect(audioContext.destination);
+    oscillator.start();
+    oscillator.stop(audioContext.currentTime + duration);
 }
+
+sounds.set('reflect', {
+    play() {
+        playBeeps([2000, 8000, 4000], .01, .1, {});
+    }
+});
+sounds.set('wand', {
+    play() {
+        playBeeps([1200, 400], 0.01, .1, {smooth: true, taper: true, swell: true, distortion: true});
+    }
+})
 

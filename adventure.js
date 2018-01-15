@@ -1,4 +1,6 @@
 var MIN_SLOW = .5;
+var MIN_Z = -180, MAX_Z = 180;
+var limitZ = zValue => Math.max(MIN_Z, Math.min(MAX_Z, zValue));
 function startLevel(character, index) {
     if (!map[index]) {
         throw new Error('No level found for ' + index);
@@ -334,7 +336,7 @@ function processStatusEffects(target) {
         var timeLeft = (target.pull.time - target.time);
         var radius = target.pull.duration / 2
         var parabolaValue = (radius**2 - (timeLeft - radius)**2) / (radius ** 2);
-        target.pull.z = Math.max(-180, Math.min(180, target.pull.z));
+        target.pull.z = limitZ(target.pull.z);
         if (timeLeft > 0) {
             var dx = (target.pull.x - target.x) * Math.min(1, delta / timeLeft);
             var dz = (target.pull.z - target.z) * Math.min(1, delta / timeLeft);

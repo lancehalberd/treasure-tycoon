@@ -231,7 +231,7 @@ function novaEffect(attackStats, x, y, z) {
                 var width = scale * animation.frames[0][2];
                 if (currentRadius > 32 + width / 4 && blasts.length < 15) {
                     var blastZ = self.z + Math.sin(theta) * (currentRadius - width / 4);
-                    if (blastZ > -180 && blastZ < 180) {
+                    if (blastZ > MIN_Z && blastZ < MAX_Z) {
                         var blast = animationEffect(animation,
                             {x: self.x + Math.cos(theta) * (currentRadius - width / 4), y: -16, z: blastZ,
                                 width: width, height: scale * animation.frames[0][3]}, {frameSpeed: .2});
@@ -485,6 +485,7 @@ function projectile(attackStats, x, y, z, vx, vy, vz, target, delay, color, size
             if (!ifdefor(attackStats.friendly) && ifdefor(self.target.reflectBarrier, 0) > 0) {
                 // Allow reflect barrier to become negative so that it can take time to restore after being hit by a much more powerful attack.
                 self.target.reflectBarrier = self.target.reflectBarrier - self.attackStats.magicDamage - self.attackStats.damage;
+                playSound('reflect', area);
                 self.hit = false;
                 var newTarget = self.attackStats.source;
                 self.attackStats.source = self.target;

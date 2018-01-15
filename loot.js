@@ -1,4 +1,6 @@
 
+
+
 function coinTreasurePopup(coin, x, y, z, vx, vy, vz, delay) {
     return {
         x, y, z, vx, vy, vz, 't': 0, 'done': false, delay,
@@ -14,18 +16,19 @@ function coinTreasurePopup(coin, x, y, z, vx, vy, vz, delay) {
                 this.z = -180 - (this.z + 180) * .6;
                 this.vz = -this.vz * .6;
             }
-            if (this.y > 0) this.vy--;
+            if (this.y > 0) this.vy -= .8;
             else {
-                this.y = -this.y * .8;
-                this.vy = -this.vy * .8;
+                this.y = -this.y * .6;
+                this.vy = -this.vy * .6;
             }
             this.t += 1;
-            this.done = this.t > 60;
+            this.done = this.t > 80;
         },
         draw(area) {
-            if (delay > 0) return
+            if (delay > 0) return;
+            var p = 1.4 * Math.min(1, 1 - (this.t - 60) / 20);
             mainContext.drawImage(coin.image, coin.x, coin.y, coin.width, coin.height,
-                this.x - coin.width / 2 - area.cameraX, groundY - this.y - coin.height - this.z / 2, coin.width, coin.height);
+                this.x - p * coin.width / 2 - area.cameraX, groundY - this.y - p * coin.height - this.z / 2, p * coin.width, p * coin.height);
         }
     };
 }
@@ -70,20 +73,26 @@ function animaTreasurePopup(hero, coin, x, y, z, vx, vy, vz, delay) {
             if (delay-- > 0) return
             this.x += this.vx;
             this.y += this.vy;
-            this.z += this.vz;
-            if (this.y > (hero.height / 2)) this.vy--;
+            this.z = limitZ(this.z + this.vz);
+            if (this.y > (hero.height / 2)) this.vy = Math.max(-8, this.vy - .5);
             else this.vy++;
-            if (this.x > hero.x) this.vx--;
-            else this.vx++;
-            if (this.z > hero.z) this.vz--;
-            else this.vz++;
+            if (this.x > hero.x) this.vx = Math.max(-8 + hero.heading[0], this.vx - .5);
+            else this.vx = Math.min(8 + hero.heading[0], this.vx + .5);
+            if (this.z > hero.z) this.vz -= .5;
+            else this.vz+=.5;
             this.t += 1;
-            this.done = this.t > 40;
+            this.done = this.done || this.t > 60 || (Math.abs(this.x - hero.x) < 10);
         },
         draw(area) {
-            if (delay > 0 || this.x < hero.x + 16) return
+            if (delay > 0) return;
+            mainContext.save();
+            mainContext.globalAlpha = .6 + .2 * Math.cos(this.t / 5);
+            // Anima disappears over time or as it approachs the hero.
+            var p = 1.5 * Math.max(0, Math.min(1, 1 - Math.max((this.t - 60) / 20, (20 - Math.abs(this.x - hero.x)) / 20)));
             mainContext.drawImage(coin.image, coin.x, coin.y, coin.width, coin.height,
-                this.x - coin.width / 2 - area.cameraX, groundY - this.y - this.z / 2 - coin.height / 2, coin.width, coin.height);
+                this.x - p * coin.width / 2 - area.cameraX,
+                groundY - this.y - this.z / 2 - p * coin.height / 2, p * coin.width, p * coin.height);
+            mainContext.restore();
         }
     };
 }
@@ -102,9 +111,11 @@ function animaLootDrop(amount) {
                 // break single anima into smaller drops.
                 while (animaDrops[index].value <= total && (drops || animaDrops[index].value < total || total < 5) && drops < 50) {
                     total -= animaDrops[index].value;
+                    // Set this so the anima always moves away from the hero's x location initially.
+                    var dx = (hero.x < x) ? 1 : -1;
                     hero.area.treasurePopups.push(animaTreasurePopup(hero, animaDrops[index],
                         x, y, z,
-                        10 + Math.random() * 5, Math.random() * 10 - 5, 10 + Math.random() * 10 - 5,
+                        dx * (10 + Math.random() * 5), 2 + Math.random() * 4, 10 + Math.random() * 10 - 5,
                         nextDelay
                     ));
                     nextDelay += 5;

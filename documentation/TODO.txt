@@ -1,11 +1,15 @@
-Bug Fixes
+
+        ********************************
+                    Bug Fixes
+        ********************************
 -Players/monsters get backed into corners too much.
 -Enemy Hook is missing too much.
--Butcher is jumping outside of the z-range. (add a fixZ(zValue, range=180) utility function)
 
-Content
--Add sound effects for deflect and reflect projectile.
 
+
+        ********************************
+                    Content
+        ********************************
 -Add rolling animation for caterpillars, use for attack and reaction (like knocking them away with a melee hit).
 -Draw a clock under players with temporal shields. The seconds hand moves depending on how much time is left.
 -Add effect for reflect that fades and shatters at 0.
@@ -16,7 +20,20 @@ Content
 -Plan+add additional achievements (gold/anima/fame)
 
 
-Feature Improvements
+
+        ********************************
+                    New Features
+        ********************************
+-Add NPCs + dialogue
+-Add tutorial story
+-Jewel Crafting Leveling
+
+
+
+        ********************************
+              Feature Improvements
+        ********************************
+-Get font for displaying formulas.
 -Add ability to edit areas by setting ?edit flag and pressing shift + 'E' in areas.
     -Add/remove monsters.
     -Change background
@@ -36,13 +53,12 @@ Feature Improvements
     - Restore cooldowns on entering a guild area?
 
 
-Testing
+
+        ********************************
+                    Testing
+        ********************************
 -Make sure skills work in 2d
 
-New Features
--Add NPCs + dialogue
--Add tutorial story
--Jewel Crafting Leveling
 
 
 Notes:

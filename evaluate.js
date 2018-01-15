@@ -83,10 +83,19 @@ function evaluateForDisplay(value, actor, localObject) {
         value = evaluateForDisplay(formula.shift(), null, localObject);
     }
     if (formula.length > 1) {
-        value = '(' + value + ' '+ formula.shift() + ' ' + evaluateForDisplay(formula.shift(), null, localObject) +')';
+        value = '(' + value + ' '+ mapOperand(formula.shift()) + ' ' + evaluateForDisplay(formula.shift(), null, localObject) +')';
     }
     if (actor) {
         value += ' ' + tag('span', 'formulaStat', '[=' +  evaluateValue(actor, fullFormula, localObject).format(2) +  ']');
     }
     return value;
+}
+
+// Change shorthand operands to display versions.
+function mapOperand(operand) {
+    switch (operand) {
+        case '/': return '÷';
+        case '*': return '×';
+        default: return operand;
+    }
 }

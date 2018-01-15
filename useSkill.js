@@ -737,6 +737,7 @@ skillDefinitions.deflect = {
         projectile.vy = -getDistance(actor, projectile.target) / 200;
         // This prevents the attack in progress from hitting the deflector.
         attackStats.deflected = true;
+        playSound('reflect', actor.area);
     }
 };
 skillDefinitions.evadeAndCounter = {
