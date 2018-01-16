@@ -92,8 +92,8 @@ $('.js-mouseContainer').on('mouseover mousemove', '[helpText]', function (event)
     var y = event.pageY - $('.js-mouseContainer').offset().top;
     //console.log([event.pageX,event.pageY]);
     $popup = $tag('div', 'toolTip js-toolTip', getHelpText($popupTarget));
-    updateToolTip(x, y, $popup);
     $('.js-mouseContainer').append($popup);
+    updateToolTip(x, y, $popup);
 });
 $('.js-mouseContainer').on('mouseout', '[helpText]', function (event) {
     removeToolTip();
@@ -493,6 +493,8 @@ function showContext(context) {
     hidePointsPreview();
     $('.js-areaMenu').hide();
     canvasPopupTarget = null;
+    overJewel = null;
+    overVertex = null;
     if (context === 'jewel') drawBoardJewels(state.selectedCharacter, jewelsCanvas);
     $('.js-adventureContext, .js-jewelContext, .js-itemContext, .js-guildContext, .js-mapContext').hide();
     $('.js-' + context + 'Context').show();

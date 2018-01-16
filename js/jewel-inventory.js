@@ -176,7 +176,7 @@ $('body').on('mousedown', function (event) {
             // If there is room, add the jewel to a crafting panel.
             $('.js-jewelCraftingSlot:empty').first().append(overJewel.$item);
         }
-        updateJewelUnderMouse();
+        updateJewelUnderMouse($('.js-skillCanvas'));
         updateJewelCraftingOptions();
         return;
     }
@@ -229,11 +229,10 @@ $('body').on('mousemove', '.js-jewel', function (event) {
         }
     }
 });
-function updateJewelUnderMouse() {
+function updateJewelUnderMouse($jewelCanvas) {
     overJewel = null;
     overVertex = null;
-    var $jewelBoard = $('.js-skillCanvas');
-    if (!isPointInRectObject(mousePosition[0], mousePosition[1], getElementRectangle($jewelBoard, $('.js-mouseContainer')))) {
+    if (!isPointInRectObject(mousePosition[0], mousePosition[1], getElementRectangle($jewelCanvas, $('.js-mouseContainer')))) {
         $('.js-jewel').each(function (index, element) {
             var jewel = $(this).data('jewel');
             var points = jewel.shape.points;
@@ -253,8 +252,8 @@ function updateJewelUnderMouse() {
         });
         return;
     }
-    var character = $jewelBoard.data('character');
-    var relativePosition = relativeMousePosition($jewelBoard);
+    var character = $jewelCanvas.data('character');
+    var relativePosition = relativeMousePosition($jewelCanvas);
     var jewels = character.board.jewels;
     for (var i = 0; i < jewels.length; i++) {
         var jewel = jewels[i];
@@ -300,7 +299,14 @@ $('body').on('mousemove', '.js-skillCanvas', function (event) {
         return;
     }
     updateMousePosition(event);
-    updateJewelUnderMouse();
+    updateJewelUnderMouse($(this));
+});
+$('body').on('mousemove', '.js-applicationSkillCanvas', function (event) {
+    if (draggedJewel || $dragHelper || draggingBoardJewel) {
+        return;
+    }
+    updateMousePosition(event);
+    updateJewelUnderMouse($(this));
 });
 $('body').on('mousemove', function () {
     checkIfStillOverJewel();
