@@ -2,7 +2,6 @@
         ********************************
                     Bug Fixes
         ********************************
--Players/monsters get backed into corners too much.
 -Enemy Hook is missing too much.
 
 

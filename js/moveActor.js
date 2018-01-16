@@ -119,7 +119,11 @@ function moveActor(actor) {
         // Set the max distance to back away to to 10, otherwise they will back out of the range
         // of many activated abilities like fireball and meteor.
         if (distanceToTarget < (Math.min(skillRange - 1.5, 10)) * 32 || goalTarget.targetHealth < 0) {
-            speedBonus *= -.1;
+            // Actors backing away from their targets will eventually corner themselves in the edge of the room.
+            // This looks bad, so make them stop backing up within 130 pixels of the edge of the area.
+            if ((actor.heading[0] > 0 && actor.x > 130) || (actor.heading[0] < 0 && actor.x < actor.area.width - 130)) {
+                speedBonus *= -.1;
+            } else speedBonus *= 0;
         } else if (distanceToTarget <= skillRange * 32) {
             speedBonus = 0;
         }
