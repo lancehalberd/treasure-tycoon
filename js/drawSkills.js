@@ -170,7 +170,11 @@ function getAbilityPopupTarget(x, y) {
 }
 
 function actionHelptText(action) {
-    return abilityHelpText(action.ability, action.actor);
+    var actor = action.actor;
+    var actionSource = action.ability.action;
+    var actionInstance = initializeVariableObject({}, actionSource, actor);
+    applyParentToVariableChild(actor, actionInstance);
+    return titleDiv(action.ability.name) + bodyDiv(bonusSourceHelpText(actionSource, actor, actionInstance));
 }
 
 // Skill is active if it is selected, or if the hero is performing/attempting to perform the skill.
