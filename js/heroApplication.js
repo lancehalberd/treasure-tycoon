@@ -27,7 +27,8 @@ function createNewHeroApplicant(jobKey) {
 function setHeroApplication($applicationPanel, application) {
     var character = application.character;
     $applicationPanel.data('application', application);
-    $applicationPanel.find('.js-skillCanvas').data('character', character);
+    var $jewelCanvas = $applicationPanel.find('.js-applicationSkillCanvas');
+    $jewelCanvas.data('character', character);
     var $statsPanel = $applicationPanel.find('.js-stats');
     refreshStatsPanel(character, $statsPanel);
     $statsPanel.find('.js-dexterityGrowth').empty();
@@ -42,7 +43,7 @@ function setHeroApplication($applicationPanel, application) {
     for (var i = 0; i < character.adventurer.job.intelligenceBonus; i++) {
         $statsPanel.find('.js-intelligenceGrowth').append($tag('div', 'statGrowthFill'));
     }
-    character.jewelsCanvas = $applicationPanel.find('.js-skillCanvas')[0];
+    character.jewelsCanvas = $jewelCanvas[0];
     updateHireButtonsForApplication($applicationPanel);
     var applicantPreviewContext = $applicationPanel.find('.js-previewCanvas')[0].getContext("2d");
     applicantPreviewContext.imageSmoothingEnabled = false;
@@ -52,7 +53,7 @@ function setHeroApplication($applicationPanel, application) {
     drawImage(applicantPreviewContext, jobSource.image, jobSource, {'left': 0, 'top': 0, 'width': 32, 'height': 32});
     applicantPreviewContext.globalAlpha = .6;
     applicantPreviewContext.drawImage(character.adventurer.personCanvas, character.adventurer.source.walkFrames[0] * 96, 0, 96, 64, -64, 0, 192, 128);
-    drawBoardJewels(character, $applicationPanel.find('.js-skillCanvas')[0]);
+    drawBoardJewels(character, $jewelCanvas[0]);
 }
 
 function increaseAgeOfApplications() {

@@ -12,19 +12,6 @@ function drawShapesPath(context, shapes, fill, stroke) {
     }
 }
 
-function drawBoardBackground(context, board) {
-    context.lineWidth = 5;
-    context.lineCap = 'round';
-    context.lineJoin = 'round';
-    context.fillStyle = '#888888';
-    context.strokeStyle = '#888888';
-    drawShapesPath(context, board.spaces, true, true);
-    // This 1 pixel edge keeps gaps from appearing between sections
-    context.lineWidth = 1;
-    context.fillStyle = '#555555';
-    context.strokeStyle = '#555555';
-    drawShapesPath(context, board.spaces, true, true);
-}
 function drawBoardJewels(character, canvas) {
     var context = canvas.getContext('2d');
     var board = character.board;
@@ -81,17 +68,24 @@ function drawBoardJewelsProper(context, lightSource, board, mouseIsOverBoard) {
     }*/
 }
 
-function drawBoardPreview(context, lightSource, boardPreview, showIcon) {
-    context.lineWidth = 5;
+function drawBoardBackground(context, board) {
+    context.lineWidth = 10;
     context.lineCap = 'round';
     context.lineJoin = 'round';
-    context.fillStyle = '#888888';
-    context.strokeStyle = '#888888';
-    drawShapesPath(context, boardPreview.spaces, true, true);
+    context.fillStyle = '#DDDDEE';
+    context.strokeStyle = '#DDDDEE';
+    drawShapesPath(context, board.spaces, true, true);
+    // This 1 pixel edge keeps gaps from appearing between sections
     context.lineWidth = 1;
-    context.fillStyle = '#555555';
-    context.strokeStyle = '#555555';
-    drawShapesPath(context, boardPreview.spaces, true, true);
+    context.fillStyle = '#666655';
+    context.strokeStyle = '#666655';
+    drawShapesPath(context, board.spaces, true, true);
+}
+function drawBoardPreview(context, lightSource, boardPreview, showIcon) {
+    drawBoardBackground(context, boardPreview);
+
+
+
     var fixedJewel = boardPreview.fixed[0];
     context.globalAlpha = 1;
     drawJewel(context, fixedJewel.shape, lightSource);

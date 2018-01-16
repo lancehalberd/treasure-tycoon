@@ -109,7 +109,7 @@
                     </span>
                     <span helptext="Starting health for each adventure."><span class="icon health"></span> <span class="js-maxHealth">X</span></span>
                     <div style="position: relative; overflow: hidden; height: 160px; width: 160px;">
-                        <canvas class="js-canvas js-skillCanvas" width="360" height="360" style="width: 360px; height: 360px; position: relative; left: -80px; top: -80px; opacity: .6"></canvas>
+                        <canvas class="js-canvas js-applicationSkillCanvas" width="360" height="360" style="width: 360px; height: 360px; position: relative; left: -80px; top: -80px; opacity: .6"></canvas>
                     </div>
                     <div class="statGrowth">
                         <div class="js-dexterityGrowth statGrowthBar dexterity" helptext="Dexterity increases attack speed, evasion and damage with ranged weapons."></div>
